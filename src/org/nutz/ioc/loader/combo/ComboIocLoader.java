@@ -41,7 +41,7 @@ public class ComboIocLoader implements IocLoader {
      * <p/>
      * 第一种,以*开头,后面接类名, 如 <code>*org.nutz.ioc.loader.json.JsonLoader</code>
      * <p/>
-     * 1.b.45版开始支持类别名: js , json, xml, annotation trans分别对应其加载类
+     * 支持类别名: js, json, xml, annotation, anno, trans, async, props, tx, quartz分别对应其加载类
      * <p/>
      * 第二种,为具体的参数
      * <p/>
@@ -50,10 +50,10 @@ public class ComboIocLoader implements IocLoader {
      * <p/>
      * 例子:
      * <p/>
-     * <code>{"*org.nutz.ioc.loader.json.JsonLoader","dao.js","service.js","*org.nutz.ioc.loader.xml.XmlIocLoader","config.xml"}</code>
+     * <code>{"*js","ioc/dao.js","ioc/service.js","*xml","ioc/config.xml", "*anoo", "net.wendal.nutzbook"}</code>
      * <p/>
-     * 这样的参数, 会生成一个以{"dao.js","service.js"}作为参数的JsonLoader,一个以{"dao.xml"}
-     * 作为参数的XmlIocLoader
+     * 这样的参数, 会生成一个以{"ioc/dao.js","ioc/service.js"}作为参数的JsonLoader,一个以{"ioc/dao.xml"}
+     * 作为参数的XmlIocLoader, 一个以"net.wendal.nutzbook"为参数的AnnotationIocLoader
      * 
      * @throws ClassNotFoundException
      *             如果*开头的参数所指代的类不存在

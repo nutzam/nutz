@@ -3,6 +3,7 @@ package org.nutz.dao.impl.link;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.LinkField;
@@ -24,7 +25,7 @@ public class DoInsertLinkVisitor extends AbstractLinkVisitor {
 
         // 从宿主对象更新关联对象
         opt.add(Pojos.createRun(new PojoCallback() {
-            public Object invoke(Connection conn, ResultSet rs, Pojo pojo) throws SQLException {
+            public Object invoke(Connection conn, ResultSet rs, Pojo pojo, Statement stmt) throws SQLException {
                 lnk.updateLinkedField(obj, value);
                 return pojo.getOperatingObject();
             }
@@ -40,7 +41,7 @@ public class DoInsertLinkVisitor extends AbstractLinkVisitor {
                 opt.addInsert(en, ele);
                 // 更新字段
                 opt.add(Pojos.createRun(new PojoCallback() {
-                    public Object invoke(Connection conn, ResultSet rs, Pojo pojo)
+                    public Object invoke(Connection conn, ResultSet rs, Pojo pojo, Statement stmt)
                             throws SQLException {
                         lnk.saveLinkedField(obj, pojo.getOperatingObject());
                         return pojo.getOperatingObject();

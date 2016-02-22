@@ -669,4 +669,12 @@ public class SimpleDaoTest extends DaoCase {
             }
         }
     }
+    
+    @Test
+    public void test_insert_ignore_null() {
+    	Pet pet = Pet.create(R.UU32());
+    	dao.insert(pet, true, true, true);
+    	assertTrue(pet.getId() > 0);
+    	dao.insert(Pet.create(1000), true, true, true);
+    }
 }

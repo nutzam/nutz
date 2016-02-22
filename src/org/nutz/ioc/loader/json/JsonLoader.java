@@ -27,8 +27,11 @@ public class JsonLoader extends MapLoader {
     
     private static final Log log = Logs.get();
     
-    private String[] paths;
+    protected String[] paths;
     
+    /**
+     * 供子类继承用.
+     */
     protected JsonLoader(){}
 
     public JsonLoader(Reader reader) {

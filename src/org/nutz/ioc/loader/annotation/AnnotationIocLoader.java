@@ -133,8 +133,8 @@ public class AnnotationIocLoader implements IocLoader {
                 IocValue iocValue;
                 if (Strings.isBlank(inject.value())) {
                     iocValue = new IocValue();
-                    iocValue.setType(IocValue.TYPE_REFER);
-                    iocValue.setValue(field.getName());
+                    iocValue.setType(IocValue.TYPE_REFER_TYPE);
+                    iocValue.setValue(field);
                 } else
                     iocValue = Iocs.convert(inject.value(), true);
                 iocField.setValue(iocValue);
@@ -179,8 +179,8 @@ public class AnnotationIocLoader implements IocLoader {
                     IocValue iocValue;
                     if (Strings.isBlank(inject.value())) {
                         iocValue = new IocValue();
-                        iocValue.setType(IocValue.TYPE_REFER);
-                        iocValue.setValue(Strings.lowerFirst(methodName.substring(3)));
+                        iocValue.setType(IocValue.TYPE_REFER_TYPE);
+                        iocValue.setValue(Strings.lowerFirst(methodName.substring(3)) + "#" + method.getParameterTypes()[0].getName());
                     } else
                         iocValue = Iocs.convert(inject.value(), true);
                     iocField.setValue(iocValue);

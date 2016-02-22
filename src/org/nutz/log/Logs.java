@@ -16,11 +16,6 @@ public final class Logs {
 
     static {
         init();
-        try {
-            get().info("Nutz is licensed under the Apache License, Version 2.0 .\nReport bugs : https://github.com/nutzam/nutz/issues");
-        } catch (Throwable e) {
-            // just pass!!
-        }
     }
 
     /**

@@ -23,7 +23,6 @@ public class Log4jLogAdapter implements LogAdapter, Plugin {
     public boolean canWork() {
         try {
             Class.forName("org.apache.log4j.Logger", false, Log4jLogAdapter.class.getClassLoader());
-            System.out.println("ALL Nutz Log via Log4jLogAdapter");
             return true;
         }
         catch (Throwable e) {}

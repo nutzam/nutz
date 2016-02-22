@@ -831,13 +831,13 @@ public abstract class Times {
                    + (useEnglish ? TIME_H_EN : TIME_H_CN)
                    + _fromMillis(mi - h * T_1H, useEnglish);
         }
-        if (mi >= T_1D) {
-            int d = (int) (mi / T_1D);
-            return d
+        //if (mi >= T_1D) {
+        int d = (int) (mi / T_1D);
+        return d
                    + (useEnglish ? TIME_D_EN : TIME_D_CN)
                    + _fromMillis(mi - d * T_1D, useEnglish);
-        }
+        //}
         // WTF ?
-        throw Lang.impossible();
+        //throw Lang.impossible();
     }
 }

@@ -218,7 +218,7 @@ public class NutIoc implements Ioc2 {
         }
         synchronized (lock_get) {
             T re = op.get(type, ing);
-            if (re instanceof IocLoader) {
+            if (!name.startsWith("$") && re instanceof IocLoader) {
                 loader.addLoader((IocLoader) re);
             }
             return re;
@@ -316,6 +316,10 @@ public class NutIoc implements Ioc2 {
     }
     
     public String[] getNamesByType(Class<?> klass) {
+    	return this.getNamesByType(klass, null);
+    }
+    
+    public String[] getNamesByType(Class<?> klass, IocContext context) {
     	List<String> names = new ArrayList<String>();
     	for (String name:getNames()) {
 			try {
@@ -325,11 +329,25 @@ public class NutIoc implements Ioc2 {
 			} catch (ObjectLoadException e) {
 			}
 		}
-    	return names.toArray(new String[names.size()]);
+    	IocContext cntx;
+        if (null == context || context == this.context)
+            cntx = this.context;
+        else
+        	cntx = new ComboContext(context, this.context);
+    	for (String name : cntx.names()) {
+			ObjectProxy op = cntx.fetch(name);
+			if (op.getObj() != null && klass.isAssignableFrom(op.getObj().getClass()))
+				names.add(name);
+		}
+    	return new LinkedHashSet<String>(names).toArray(new String[names.size()]);
     }
     
     public <K> K getByType(Class<K> klass) {
-    	String[] names = getNamesByType(klass);
+    	return this.getByType(klass, null);
+    }
+    
+    public <K> K getByType(Class<K> klass, IocContext context) {
+    	String[] names = getNamesByType(klass, context);
     	if (names == null || names.length == 0)
     		throw new IocException("No such ioc bean by type="+klass.getName());
     	if (names.length != 1) 

@@ -71,6 +71,7 @@ public class NutLoading implements Loading {
             if (config.getServletContext().getMajorVersion() > 2
                 || config.getServletContext().getMinorVersion() > 4)
                 log.debugf(" - ContextPath     : %s", config.getServletContext().getContextPath());
+            log.debugf(" - context.tempdir : %s", config.getAttribute("javax.servlet.context.tempdir"));
         }
         /*
          * 准备返回值
@@ -361,7 +362,7 @@ public class NutLoading implements Loading {
         if (log.isDebugEnabled()) {
             StringBuilder sb = new StringBuilder();
             for (ViewMaker maker : makers) {
-                sb.append(maker.getClass().getSimpleName()).append(",");
+                sb.append(maker.getClass().getSimpleName()).append(".class,");
             }
             sb.setLength(sb.length() - 1);
             log.debugf("@Views(%s)", sb);

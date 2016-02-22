@@ -32,10 +32,12 @@ import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.entity.EntityIndex;
+import org.nutz.dao.entity.LinkField;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.annotation.ColType;
 import org.nutz.dao.entity.annotation.Table;
 import org.nutz.dao.impl.NutDao;
+import org.nutz.dao.impl.entity.field.ManyManyLinkField;
 import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.jdbc.Jdbcs;
@@ -505,7 +507,7 @@ public abstract class Daos {
     }
 
     /**
-     * 为特定package下带@Table注解的类调用dao.create(XXX.class, force), 批量建表
+     * 为特定package下带@Table注解的类调用dao.create(XXX.class, force), 批量建表,优先建立带@ManyMany的表
      * 
      * @param dao
      *            Dao实例
@@ -515,10 +517,25 @@ public abstract class Daos {
      *            如果表存在,是否先删后建
      */
     public static void createTablesInPackage(Dao dao, String packageName, boolean force) {
-        for (Class<?> klass : Scans.me().scanPackage(packageName)) {
-            if (klass.getAnnotation(Table.class) != null)
-                dao.create(klass, force);
+    	List<Class<?>> list = new ArrayList<Class<?>>();
+        OUT: for (Class<?> klass : Scans.me().scanPackage(packageName)) {
+            if (klass.getAnnotation(Table.class) != null) {
+            	Entity<?> en = dao.getEntity(klass);
+            	List<LinkField> tmp = en.getLinkFields(null);
+            	if (tmp != null && tmp.size() > 0) {
+            		for (LinkField lf : tmp) {
+            			if (lf instanceof ManyManyLinkField) {
+            				list.add(0, klass); // 优先建立带@ManyMany的表
+            				continue OUT;
+            			}
+					}
+            	}
+                list.add(klass);
+            }
         }
+    	for (Class<?> klass : list) {
+			dao.create(klass, force);
+		}
     }
 
     /**

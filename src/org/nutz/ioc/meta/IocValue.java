@@ -41,6 +41,7 @@ public class IocValue {
     public static final String TYPE_NORMAL = "normal";
     public static final String TYPE_INNER = "inner";
     public static final String TYPE_REFER = "refer";
+    public static final String TYPE_REFER_TYPE = "refer_type";
     public static final String TYPE_ENV = "env";
     public static final String TYPE_SYS = "sys";
     public static final String TYPE_FILE = "file";
@@ -105,6 +106,11 @@ public class IocValue {
     public String toJson(JsonFormat jf) {
         if (this.type == null || TYPE_NORMAL.equals(type))
             return Json.toJson(this.value, jf);
+        if (TYPE_REFER_TYPE.equals(type) && value instanceof Field) {
+        	Field field = (Field)value;
+        	String val = field.getName() + "#" + field.getType().getName();
+        	return Json.toJson(new NutMap().addv(this.type, val), jf);
+        }
         return Json.toJson(new NutMap().addv(this.type, this.value), jf);
     }
 }

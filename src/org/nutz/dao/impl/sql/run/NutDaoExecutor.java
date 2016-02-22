@@ -12,6 +12,7 @@ import java.sql.Statement;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.impl.DaoExecutor;
+import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.DaoStatement;
@@ -49,11 +50,10 @@ public class NutDaoExecutor implements DaoExecutor {
             case CREATE:
             case DROP:
                 _runStatement(conn, st);
-                st.onAfter(conn, null);
                 break;
             // 仅仅是运行回调
             case RUN:
-                st.onAfter(conn, null);
+                st.onAfter(conn, null, null);
                 break;
             case CALL:
             case EXEC:
@@ -81,8 +81,6 @@ public class NutDaoExecutor implements DaoExecutor {
                 else {
                     _runPreparedStatement(conn, st, paramMatrix);
                 }
-                // 运行回调
-                st.onAfter(conn, null);
             }
         }
         // If any SQLException happend, throw out the SQL string
@@ -131,7 +129,7 @@ public class NutDaoExecutor implements DaoExecutor {
 			//先尝试读取第一个,并调用一次回调
 			rs = stmt.getResultSet();
 			try {
-				st.onAfter(conn, rs);
+				st.onAfter(conn, rs, null);
 			}
 			finally {
 				if (rs != null)
@@ -143,7 +141,7 @@ public class NutDaoExecutor implements DaoExecutor {
 					rs = stmt.getResultSet();
 					try {
 						if (rs != null)
-							st.onAfter(conn, rs);
+							st.onAfter(conn, rs, null);
 					}
 					finally {
 						if (rs != null)
@@ -232,7 +230,7 @@ public class NutDaoExecutor implements DaoExecutor {
             if (startRow > 0)
                 rs.absolute(startRow);
             // 执行回调
-            st.onAfter(conn, rs);
+            st.onAfter(conn, rs, stat);
         } finally {
             Daos.safeClose(stat, rs);
         }
@@ -257,7 +255,10 @@ public class NutDaoExecutor implements DaoExecutor {
 
         try {
             // 创建 SQL 语句
-            pstat = conn.prepareStatement(sql);
+        	if (st.getContext().attr("RETURN_GENERATED_KEYS") == null)
+        		pstat = conn.prepareStatement(sql);
+        	else
+        		pstat = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             // 就一条记录，不要批了吧
             if (paramMatrix.length == 1) {
@@ -266,6 +267,7 @@ public class NutDaoExecutor implements DaoExecutor {
                 }
                 pstat.execute();
                 st.getContext().setUpdateCount(pstat.getUpdateCount());
+                st.onAfter(conn, null, pstat);
                 pstat.close();
                 statIsClosed = true;
             }
@@ -288,6 +290,7 @@ public class NutDaoExecutor implements DaoExecutor {
                 if (sum == 0)
                     sum = pstat.getUpdateCount();
 
+                st.onAfter(conn, null, pstat);
                 pstat.close();
                 statIsClosed = true;
                 
@@ -317,6 +320,7 @@ public class NutDaoExecutor implements DaoExecutor {
             stat = conn.createStatement();
             stat.execute(sql);
             st.getContext().setUpdateCount(stat.getUpdateCount());
+            st.onAfter(conn, null, stat);
             stat.close();
             statIsClosed = true;
         }
@@ -331,7 +335,13 @@ public class NutDaoExecutor implements DaoExecutor {
     
     protected DatabaseMeta meta;
     
+    protected JdbcExpert expert;
+    
     public void setMeta(DatabaseMeta meta) {
 		this.meta = meta;
+	}
+    
+    public void setExpert(JdbcExpert expert) {
+		this.expert = expert;
 	}
 }
