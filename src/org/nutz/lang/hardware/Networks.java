@@ -2,12 +2,14 @@ package org.nutz.lang.hardware;
 
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
 /**
@@ -39,6 +41,8 @@ public class Networks {
                         for (byte b : data)
                             sb.append(Strings.toHex(b, 2));
                         netItem.setMac(sb.toString().toUpperCase());
+                        if (netItem.getMac().startsWith("000000000"))
+                            continue;
                     }
                 }
                 catch (Throwable e) {}
@@ -62,6 +66,15 @@ public class Networks {
             }
         }
         catch (Throwable e) {}
+        if (Lang.isWin() && netFaces.size() > 0) {
+            for (Entry<String, NetworkItem> en : netFaces.entrySet()) {
+                NetworkItem item = en.getValue();
+                if (item != null && ipOk(item.getIpv4()) && item.getIpv4().startsWith("10.")) {
+                    netFaces.put("tun0", item);
+                    break;
+                }
+            }
+        }
         return netFaces;
     }
 
@@ -69,9 +82,20 @@ public class Networks {
      * @return 返回当前第一个可用的IP地址
      */
     public static String ipv4() {
-    	for (NetworkItem item : networkItems().values()) {
-			if (!Strings.isBlank(item.getIpv4()) && !"127.0.0.1".equals(item.getIpv4()))
-				return item.getIpv4();
+        Map<String, NetworkItem> items = networkItems();
+        // 先遍历一次eth开头的
+        for (int i = 0; i < 10; i++) {
+            NetworkItem item = items.get("eth"+i);
+            if (item != null) {
+                String ip = item.getIpv4();
+                if (ipOk(ip))
+                    return ip;
+            }
+        }
+    	for (NetworkItem item : items.values()) {
+    	    String ip = item.getIpv4();
+			if (ipOk(ip))
+				return ip;
 		}
     	return null;
     }
@@ -85,8 +109,12 @@ public class Networks {
         if (netFaces.isEmpty()) {
             return null;
         }
-        NetworkItem networkItem = getNetworkByType(netFaces, ntMap.get(nt));
-        return networkItem == null ? null : networkItem.getIpv4();
+        List<NetworkItem> list = getNetworkByTypes(netFaces, ntMap.get(nt));
+        for (NetworkItem item : list) {
+            if (!Strings.isBlank(item.getIpv4()))
+                return item.getIpv4();
+        }
+        return null;
     }
 
     /**
@@ -108,8 +136,12 @@ public class Networks {
         if (netFaces.isEmpty()) {
             return null;
         }
-        NetworkItem networkItem = getNetworkByType(netFaces, ntMap.get(nt));
-        return networkItem == null ? null : networkItem.getMac();
+        List<NetworkItem> list = getNetworkByTypes(netFaces, ntMap.get(nt));
+        for (NetworkItem item : list) {
+            if (!Strings.isBlank(item.getMac()))
+                return item.getMac();
+        }
+        return null;
     }
 
     private static NetworkItem firstNetwokrItem() {
@@ -118,18 +150,18 @@ public class Networks {
             return null;
         }
         // 依次尝试
-        NetworkItem re = null;
-        re = getNetworkByType(netFaces, ntMap.get(NetworkType.LAN));
-        if (re == null) {
-            re = getNetworkByType(netFaces, ntMap.get(NetworkType.WIFI));
+        List<NetworkItem> re = null;
+        re = getNetworkByTypes(netFaces, ntMap.get(NetworkType.LAN));
+        if (re.isEmpty()) {
+            re = getNetworkByTypes(netFaces, ntMap.get(NetworkType.WIFI));
         }
-        if (re == null) {
-            re = getNetworkByType(netFaces, ntMap.get(NetworkType.ThreeG));
+        if (re.isEmpty()) {
+            re = getNetworkByTypes(netFaces, ntMap.get(NetworkType.ThreeG));
         }
-        if (re == null) {
-            re = getNetworkByType(netFaces, ntMap.get(NetworkType.VPN));
+        if (re.isEmpty()) {
+            re = getNetworkByTypes(netFaces, ntMap.get(NetworkType.VPN));
         }
-        if (re == null) {
+        if (re.isEmpty()) {
         	for (Entry<String, NetworkItem> en : netFaces.entrySet()) {
 				if (Strings.isBlank(en.getValue().getIpv4()))
 					continue;
@@ -138,17 +170,22 @@ public class Networks {
 				return en.getValue();
 			}
         }
-        return re;
+        return re.get(0);
     }
 
-    private static NetworkItem getNetworkByType(Map<String, NetworkItem> netFaces, String nt) {
+    private static List<NetworkItem> getNetworkByTypes(Map<String, NetworkItem> netFaces, String nt) {
+        List<NetworkItem> list = new ArrayList<NetworkItem>();
         String[] nss = Strings.splitIgnoreBlank(nt, ",");
         for (String ns : nss) {
             for (int i = 0; i < 10; i++) {
                 if (netFaces.containsKey(ns + i))
-                    return netFaces.get(ns + i);
+                    list.add(netFaces.get(ns + i));
             }
         }
-        return null;
+        return list;
+    }
+    
+    public static boolean ipOk(String ip) {
+        return (!Strings.isBlank(ip) && !ip.startsWith("127.0") && !ip.startsWith("169."));
     }
 }

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringReader;
@@ -19,6 +20,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -2588,5 +2590,20 @@ public abstract class Lang {
 			// TODO 支持getter/setter比对
 		}
     	return target;
+    }
+    
+    public static StringBuilder execOutput(String cmd, Charset charset) throws IOException {
+        Process p = Runtime.getRuntime().exec(cmd.split(" "));
+        InputStreamReader r = new InputStreamReader(p.getInputStream(), charset);
+        StringBuilder sb = new StringBuilder();
+        char[] buf = new char[1024];
+        while (true) {
+            int len = r.read(buf);
+            if (len < 0)
+                break;
+            if (len > 0)
+                sb.append(buf, 0, len);
+        }
+        return sb;
     }
 }
