@@ -1,0 +1,54 @@
+#title: 1.r.55 发行注记
+#index:0,1
+#author:wendal(wendal1985@gmail.com)
+--------------------------------------------------------------------------------------------------------
+1.r.55 [羊驼炒鸭梨] 发行注记(20160218)
+    
+  上个月的寒潮,真的够"鸡冻"的,连广州也下"雪"了,春节期间也是各种"红包来了!!"
+  
+  上一版本没有起名字,激起民愤,作为吃货的我,鸭梨很大很大...
+  
+  距54版两个月,这次更新新增了几个功能,详情请查阅文档或社区的帖子
+  
+  理论上,在源码级别完全兼容1.r.54,除了"兼容性变化"列出的几个接口,应该没多少人会实现它们.
+  
+  另外,值得一提的是NutzCN社区的ios客户端也上线了("這輩孓の倖福"做的原生app),及Nutz社区的服务器("淡蓝"赞助)也迁移到香港.
+  
+  最后,套用eclipse的一句话"Because you can't fix it if you don't know it's broken." 欢迎发帖提issue ^_^
+
+--------------------------------------------------------------------------------------------------------
+新功能/问题修复
+
+  主要内容: 
+    * add: 异步注解@Async
+    * add: 改进自增主键的获取,并自动识别可批量插入的insert操作
+    * add: 更智能的@Inject -- 自动按类型注入
+    * add: dao.insert可忽略空值和零值
+    * add: 方法上的Mvc注解支持继承,但方法参数上的注解是不会继承的.
+    * add: PropertiesIocLoader,用properties文件简易定义ioc bean
+    * add: SimpleAopMaker,自定义Aop注解变成非常简单
+    * add: @EL再加一个默认方法'by' 代理调用任意类的任意public方法
+    * add: 入口方法支持@Cookie注解
+    * update: 继续优化NutDao的事务处理机制
+    * fix: Daos.migration在oracle下,如果新增TimeStamp类型的字段会报错
+    * fix: db2/sqlite/sqlserver 2008自动建表会失败的bug
+    * fix: UU32FilePool的文件夹分隔符错误
+    
+  兼容性
+    * DaoStatement.onAfter和PojoCallback.invoke添加了Statement参数
+    * Ioc/Ioc2接口添加了getNamesByType和getByType方法
+    * JdbcExpert接口添加了addColumnNeedColumn和supportTimestampDefault方法
+    
+  性能变化
+    * dao.fastInsert轻微下降,但支持获取自增主键的值了(Oracle数据库除外)
+    * dao.insert提高10%+(Oracle数据库除外)
+
+
+  详细列表:
+  
+    * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.55 issue@github] 不再详细列出
+
+
+欢迎访问[http://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
+    
+[https://nutz.cn Nutz社区]已经累计了800+的问答帖子,平均首次回复时间少于1小时哦
