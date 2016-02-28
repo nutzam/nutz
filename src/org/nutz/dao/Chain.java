@@ -34,8 +34,7 @@ public abstract class Chain {
      * @return 链头
      */
     public static Chain make(String name, Object value) {
-        DefaultChain chain = new DefaultChain(name, value);
-        return chain;
+        return new DefaultChain(name, value);
     }
 
     /**
@@ -226,7 +225,7 @@ public abstract class Chain {
                 if (null == v) {
                     if (fm.isIgnoreNull())
                         continue;
-                } else if (fm.isIgnoreBlankStr() && v instanceof String) {
+                } else if (fm != null && fm.isIgnoreBlankStr() && v instanceof String) {
                     if (Strings.isBlank((String)v))
                         continue;
                 }

@@ -5,7 +5,9 @@
 --------------------------------------------------------------------------------------------------------
 使用Json
 
-    NutIoc 包含一个 JsonLoader，通常同学们会这么用:
+    NutIoc 包含一个 JsonLoader，通常同学们*不*会这么用!!!
+    
+    在Mvc环境下,声明了@IocBy,那么new NutIoc基本上等于自寻死路!!! 通过Mvcs.getIoc()可以获取已有Ioc容器.
 
     {{{
     Ioc ioc = new NutIoc(new JsonLoader("path/to/mybeans.js"));
@@ -30,7 +32,8 @@
 				"字段名称1" : 字段值1 ,
 				"字段名称2" : 字段值2 ,
 				...
-			}
+			},
+			factory : "xxx.yyy.zzz#create" //工厂类#工厂方法
 		}
 	}
 	}}}

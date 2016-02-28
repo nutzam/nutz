@@ -22,9 +22,9 @@ public class UrlMappingImpl implements UrlMapping {
 
     private static final Log log = Logs.get();
 
-    private Map<String, ActionInvoker> map;// 这个对象有点多余,考虑换成AtMap吧!!
+    protected Map<String, ActionInvoker> map;// 这个对象有点多余,考虑换成AtMap吧!!
 
-    private MappingNode<ActionInvoker> root;
+    protected MappingNode<ActionInvoker> root;
 
     public UrlMappingImpl() {
         this.map = new HashMap<String, ActionInvoker>();
@@ -100,6 +100,11 @@ public class UrlMappingImpl implements UrlMapping {
         if (log.isDebugEnabled())
             log.debugf("Search mapping for path=%s : NOT Action match", path);
         return null;
+    }
+    
+    public void add(String path, ActionInvoker invoker) {
+    	root.add(path, invoker);
+    	map.put(path, invoker);
     }
 
     protected void printActionMapping(ActionInfo ai) {

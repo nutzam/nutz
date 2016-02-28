@@ -16,11 +16,6 @@ public final class Logs {
 
     static {
         init();
-        try {
-            get().info("Nutz is licensed under the Apache License, Version 2.0 .\nReport bugs : https://github.com/nutzam/nutz/issues");
-        } catch (Throwable e) {
-            // just pass!!
-        }
     }
 
     /**
@@ -71,7 +66,9 @@ public final class Logs {
     public static void init() {
         try {
             String packageName = Logs.class.getPackage().getName() + ".impl.";
-            adapter = new SimplePluginManager<LogAdapter>(    packageName + "Slf4jLogAdapter",
+            adapter = new SimplePluginManager<LogAdapter>(
+                    packageName + "CustomLogAdapter",
+                    packageName + "Slf4jLogAdapter",
                     packageName + "Log4jLogAdapter",
                     packageName + "SystemLogAdapter").get();
         }

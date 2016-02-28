@@ -1,0 +1,27 @@
+#title: 声明式Aop事务
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+--------------------------------------------------------------------------------------------------------
+声明式事务
+	
+	{{{
+	@IocBy(type=ComboIocProvider.class,
+        args={"*json","org/nutz/mvc/testapp/classes/ioc",
+              "*anno","org.nutz.mvc.testapp.classes",
+              "*tx" // 你只需要加上这一行,即可声明5种不同事务级别的拦截器.
+		})
+	public class MainModule {}
+	
+	// 演示aop事务
+	@IocBean // 需要aop,那当然需要时ioc的bean
+	public class UserService {
+		@Inject Dao dao; // 注入NutDao实例,必须的,哈哈
+	
+		@Aop(TransAop.READ_COMMITTED) // TransAop里面定义5个产量,分别对应不同级别的事务拦截器
+		public void add(User user) {
+			dao.insert(user);
+			dao.update(UserToken.class, Chain.make("xxx","xxx"), Cnd.where(.......);
+			// 务必注意,必须抛出异常,才能回滚!! 是抛出,不能被catch吃掉.
+		}
+	}	
+	}}}

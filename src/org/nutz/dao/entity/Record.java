@@ -26,7 +26,7 @@ import org.nutz.log.Logs;
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  */
-public class Record implements Map<String, Object>, java.io.Serializable {
+public class Record implements Map<String, Object>, java.io.Serializable, Cloneable {
 
     /**
      * @author mawenming at Jan 11, 2011 2:20:09 PM
@@ -396,5 +396,12 @@ public class Record implements Map<String, Object>, java.io.Serializable {
      */
     protected void setSqlType(String name, int value) {
         sqlTypeMap.put(name.toLowerCase(), value);
+    }
+    
+    public Record clone() {
+        Record re = new Record();
+        re.putAll(this);
+        re.sqlTypeMap.putAll(this.sqlTypeMap);
+        return re;
     }
 }

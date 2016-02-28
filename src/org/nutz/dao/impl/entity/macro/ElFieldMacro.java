@@ -3,6 +3,7 @@ package org.nutz.dao.impl.entity.macro;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.impl.jdbc.NutPojo;
@@ -28,7 +29,7 @@ public class ElFieldMacro extends NutPojo {
 
     private ElFieldMacro() {}
 
-    public void onAfter(Connection conn, ResultSet rs) throws SQLException {
+    public void onAfter(Connection conn, ResultSet rs, Statement stmt) throws SQLException {
         Context context = entityField.getEntity()
                                      .wrapAsContext(getOperatingObject());
         context.set("field", entityField.getColumnName());

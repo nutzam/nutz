@@ -96,4 +96,8 @@ public interface JdbcExpert {
     boolean isSupportAutoIncrement();
     
     String evalFieldType(MappingField mf);
+    
+    boolean addColumnNeedColumn();
+    
+    boolean supportTimestampDefault();
 }

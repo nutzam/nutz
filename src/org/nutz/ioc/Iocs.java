@@ -6,6 +6,8 @@ import java.util.Map.Entry;
 import org.nutz.ioc.meta.IocEventSet;
 import org.nutz.ioc.meta.IocField;
 import org.nutz.ioc.meta.IocObject;
+import org.nutz.ioc.meta.IocValue;
+import org.nutz.ioc.val.StaticValue;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.meta.Pair;
@@ -79,10 +81,54 @@ public abstract class Iocs {
             me.copyArgys(it.getArgs());
 
         // merge fields
-        for (IocField fld : it.getFields())
+        for (IocField fld : it.getFields().values())
             if (!me.hasField(fld.getName()))
                 me.addField(fld);
 
         return me;
+    }
+    
+    public static IocValue convert(String value, boolean dftRefer) {
+        IocValue iocValue = new IocValue();
+        if (dftRefer && value.startsWith(":")) {
+            iocValue.setType(IocValue.TYPE_NORMAL);
+            iocValue.setValue(value.substring(1));
+//        } else if (value.startsWith("$")) {
+//            iocValue.setType(IocValue.TYPE_REFER);
+//            iocValue.setValue(value.substring(1));
+        }
+        else if (value.contains(":")) {
+            String type = value.substring(0, value.indexOf(':'));
+            if (IocValue.types.contains(type)) {
+                iocValue.setType(type);
+                if (value.endsWith(":")) {
+                    iocValue.setValue("");
+                }
+                else
+                    iocValue.setValue(value.substring(value.indexOf(':') + 1));
+            } else {
+                iocValue.setType(IocValue.TYPE_NORMAL);
+                iocValue.setValue(value);
+            }
+        } else {
+            // XXX 兼容性改变, 1.b.52 开始默认就是refer, 如果真的要输入常量
+            //log.info("auto set as         refer:" + value);
+            iocValue.setType(IocValue.TYPE_REFER);
+            iocValue.setValue(value);
+        }
+        return iocValue;
+    }
+    
+    public static Object self(Object obj) {
+        return obj;
+    }
+    
+    public static IocObject wrap(Object obj) {
+        IocObject iobj = new IocObject();
+        //iobj.setType(obj.getClass());
+        iobj.setFactory(Iocs.class.getName() + "#self");
+        IocValue ival = new IocValue(null, new StaticValue(obj));
+        iobj.addArg(ival);
+        return iobj;
     }
 }

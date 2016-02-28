@@ -10,20 +10,25 @@
 		* 基本实现 - 生成标准的 Connection 对象
 		* 连接池实现 - 生成自动参与连接池的 Connection 对象。此实现与中间层连接池管理器一起使用。
 		
-	简单来说,就是获取数据库连接的一个通用接口, 常见的dbcp,c3p0,druid,bonecp都是DataSource的实现.
+	简单来说,就是获取数据库连接的一个通用接口, 常见的dbcp,c3p0,druid都是DataSource的实现.
 	
 	NutDao也选用DataSource作为获取数据库连接的方式, 且只调用其无参数的getConnection()方法,
 	也是大部分数据库连接池唯一支持的方法.
+	
+	提醒一下, DataSource只是接口,不等于连接池
+	
+	NutDao不挑剔任何连接池/DataSource实现,只要实现了DataSource接口就行,不存在是否支持"XXXX连接池"的问题
 	
 --------------------------------------------------------------------------------------
 这篇文档该怎么用?
 
 	直接书写 Java 代码 
-		* 如果你只是在main方法中尝试一下NutDao的功能,那么请选取Java
+		* 请使用DaoUp类
 		
 	通过 Nutz.Ioc 的 JSON 配置文件
 		* Nutz项目中最常见的配置方式, 由NutIoc来管理DataSource和NutDao实例
 		* 特别强调, NutDao与NutIoc没有任何依赖关系, NutDao在NutIoc看来,只是普通的bean
+		* 严禁new NutIoc然后单单为了获取一个Dao实例!!
 		
 	通过 Nutz.Ioc 的 XML 配置文件
 		* 满足XML强迫症的程序猿, 功能与JSON配置文件类似
@@ -37,56 +42,16 @@
 --------------------------------------------------------------------------------------
 内置的SimpleDataSource
 	
-	Nutz内置,非常适合新手!!无需额外下载其他连接池,方便尝试NutDao的功能.
+	Nutz内置,无需额外下载其他连接池/DataSource实现,方便尝试NutDao的功能.
 		
 		* 不要生产环境中使用这个DataSource!!
 		* 不要用它来测试NutDao的性能!!
 		* 自动加载NutDao所支持的数据库的驱动(说白了就是我们认识那几款,不就Class.forName一下嘛)
 		* 无额外依赖,适合新手试用
 		* 非连接池,配置简单
-		* 1.b.43开始提供,旧版本的Nutz可通过拷贝源文件的方式添加这个类
-
-	SimpleDataSource: 直接书写 Java 代码
-		{{{<Java>
-		import org.nutz.dao.impl.SimpleDataSource;
+		* Oracle数据库不能使用,原因是Oracle的数据库连接是重量级的,必须用连接池才不会崩
 		
-		...
-		
-		SimpleDataSource ds = new SimpleDataSource();
-		//ds.setDriverClassName("org.postgresql.Driver"); //默认加载了大部分数据库的驱动!!
-		ds.setJdbcUrl("jdbc:postgresql://localhost:5432/mydatabase");
-		ds.setUsername("demo");
-		ds.setPassword("123456");
-		...
-		//ds.close();  // 这个DataSource不是一个连接池,所以关不关都行
-		}}}
-		
-	SimpleDataSource: 通过 Nutz.Ioc 的 JSON 配置文件
-		{{{<IOC-JSON 配置>
-		{
-			dataSource : {
-				type : "org.nutz.dao.impl.SimpleDataSource",
-				fields : {
-					jdbcUrl : 'jdbc:postgresql://localhost:5432/mydatabase',
-					username : 'demo',
-					password : '123456'
-				}
-			}
-		}
-		}}}
-		
-	SimpleDataSource: 通过 Nutz.Ioc 的 XML 配置文件
-		{{{<IOC-XML 配置>
-			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
-				<obj name="dataSource" type="org.nutz.dao.impl.SimpleDataSource">
-					<field name="jdbcUrl"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
-					<field name="username"><str>demo</str></field>
-					<field name="password"><str>123456</str></field>
-				</obj>
-			</ioc>
-		}}}
-	
-	附送一个完整的NutDao配置js文件
+	完整的NutDao配置js文件
 	
 		{{{<IOC-JSON 配置>
 		var ioc = {
@@ -109,22 +74,8 @@
 --------------------------------------------------------------------------------------
 Druid(推荐)
 
-	国产精品连接池,淘宝温少诚意出品,带强大的监控功能哦
+	国产精品连接池,淘宝温少诚意出品,带强大的监控功能哦, 推荐1.0.16+
 	
-	druid : 直接书写 Java 代码
-		{{{<Java>
-		import com.alibaba.druid.pool.DruidDataSource;
-		
-		...
-		
-		DruidDataSource dds = new DruidDataSource();
-        dds.setDriverClassName("org.postgresql.Driver");
-        dds.setUrl("jdbc:postgresql://localhost:5432/mydatabase");
-        dds.setUsername("enzozhong");
-        dds.setPassword("123");
-		...
-		dds.close();  // 关闭池内所有连接
-		}}}
 	druid : 通过 Nutz.Ioc 的 JSON 配置文件
 		{{{<IOC-JSON 配置>
 		{
@@ -138,96 +89,16 @@ Druid(推荐)
                     url : "jdbc:postgresql://localhost:5432/mydatabase",
                     username : "enzozhong",
                     password : "123",
-                    maxWait: 15000, // 若不配置此项,如果数据库未启动,druid会一直等可用连接,卡住启动过程
+                    maxWait: 15000, // 若不配置此项,如果数据库未启动,druid会一直等可用连接,卡住启动过程,
+                    defaultAutoCommit : false // 提高fastInsert的性能
                 }
             }
 		}
 		}}}
-	druid: 通过 Nutz.Ioc 的 XML 配置文件
-		{{{<IOC-XML 配置>
-			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
-				<obj name="dataSource" type="com.alibaba.druid.pool.DruidDataSource">
-					<events>
-						<depose>close</depose>
-					</events>
-					<field name="driverClassName"><str>org.postgresql.Driver</str></field>
-					<field name="url"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
-					<field name="username"><str>enzozhong</str></field>
-					<field name="password"><str>123</str></field>
-				</obj>
-			</ioc>
-		}}}
-		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
-		 * [http://code.alibabatech.com/wiki/pages/viewpage.action?pageId=2916406 更多配置]
---------------------------------------------------------------------------------------
-Apache Tomcat 7 连接池
-
-	这里使用的是tomcat7新的自带连接,但是,请把其2个jar移到项目的lib中!!
-	
-	直接书写 Java 代码
-		{{{<Java>
-		import org.apache.tomcat.jdbc.pool.DataSource;
-		
-		...
-		
-		DataSource ds = new DataSource();
-		ds.setDriverClassName("org.postgresql.Driver");
-		ds.setUrl("jdbc:postgresql://localhost:5432/mydatabase");
-		ds.setUsername("demo");
-		ds.setPassword("123456");
-		...
-		ds.close();  // 关闭池内所有连接
-		}}}
-	通过 Nutz.Ioc 的 JSON 配置文件
-		{{{<IOC-JSON 配置>
-		{
-			dataSource : {
-				type : "org.apache.tomcat.jdbc.pool.DataSource",
-				events : {
-					depose : 'close'
-				},
-				fields : {
-					driverClassName : 'org.postgresql.Driver',
-					url : 'jdbc:postgresql://localhost:5432/mydatabase',
-					username : 'demo',
-					password : '123456'
-				}
-			}
-		}
-		}}}
-	通过 Nutz.Ioc 的 XML 配置文件
-		{{{<IOC-XML 配置>
-			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
-				<obj name="dataSource" type="org.apache.tomcat.jdbc.pool.DataSource">
-					<events>
-						<depose>close</depose>
-					</events>
-					<field name="driverClassName"><str>org.postgresql.Driver</str></field>
-					<field name="url"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
-					<field name="username"><str>demo</str></field>
-					<field name="password"><str>123456</str></field>
-				</obj>
-			</ioc>
-		}}}
-		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
-		 * 关于 depose 事件，更多详情请参看 [../ioc/events.man 事件监听]
 	
 --------------------------------------------------------------------------------------
 Apache DBCP
-	dbcp: 直接书写 Java 代码
-		{{{<Java>
-		import org.apache.commons.dbcp.BasicDataSource;
-		
-		...
-		
-		BasicDataSource ds = new BasicDataSource();
-		ds.setDriverClassName("org.postgresql.Driver");
-		ds.setUrl("jdbc:postgresql://localhost:5432/mydatabase");
-		ds.setUsername("demo");
-		ds.setPassword("123456");
-		...
-		ds.close();  // 关闭池内所有连接
-		}}}
+
 	dbcp: 通过 Nutz.Ioc 的 JSON 配置文件
 		{{{<IOC-JSON 配置>
 		{
@@ -245,38 +116,9 @@ Apache DBCP
 			}
 		}
 		}}}
-	dbcp: 通过 Nutz.Ioc 的 XML 配置文件
-		{{{<IOC-XML 配置>
-			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
-				<obj name="dataSource" type="org.apache.commons.dbcp.BasicDataSource">
-					<events>
-						<depose>close</depose>
-					</events>
-					<field name="driverClassName"><str>org.postgresql.Driver</str></field>
-					<field name="url"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
-					<field name="username"><str>demo</str></field>
-					<field name="password"><str>123456</str></field>
-				</obj>
-			</ioc>
-		}}}
-		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
-		 * 关于 depose 事件，更多详情请参看 [../ioc/events.man 事件监听]
 --------------------------------------------------------------------------------------
 C3P0(不推荐)
-	c3p0: 直接书写 Java 代码
-		{{{<Java>
-		import com.mchange.v2.c3p0.ComboPooledDataSource;
-		
-		...
-		
-		ComboPooledDataSource ds = new ComboPooledDataSource();
-		ds.setDriverClass("org.postgresql.Driver");
-		ds.setJdbcUrl("jdbc:postgresql://localhost:5432/mydatabase");
-		ds.setUser("demo");
-		ds.setPassword("123456");
-		...
-		ds.close();  // 关闭池内所有连接
-		}}}
+
 	c3p0: 通过 Nutz.Ioc 的 JSON 配置文件
 		{{{<IOC-JSON 配置>
 		{
@@ -294,36 +136,9 @@ C3P0(不推荐)
 			}
 		}
 		}}}
-	c3p0: 通过 Nutz.Ioc 的 XML 配置文件
-		{{{<IOC-XML 配置>
-			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
-				<obj name="dataSource" type="com.mchange.v2.c3p0.ComboPooledDataSource">
-					<events>
-						<depose>close</depose>
-					</events>
-					<field name="driverClass"><str>org.postgresql.Driver</str></field>
-					<field name="jdbcUrl"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
-					<field name="user"><str>demo</str></field>
-					<field name="password"><str>123456</str></field>
-				</obj>
-			</ioc>
-		}}}
-		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
 --------------------------------------------------------------------------------------
 Proxool(严重不推荐)
-	proxool: 直接书写 Java 代码
-		{{{<Java>
-		import org.logicalcobwebs.proxool.ProxoolDataSource;
-		
-		...
-		
-		ProxoolDataSource ds = new ProxoolDataSource();
-		ds.setDriver("org.postgresql.Driver");
-		ds.setDriverUrl("jdbc:postgresql://localhost:5432/mydatabase");
-		ds.setUser("demo");
-		ds.setPassword("123456");
-		...
-		}}}
+
 	proxool: 通过 Nutz.Ioc 的 JSON 配置文件
 		{{{<IOC-JSON 配置>
 		{
@@ -338,19 +153,6 @@ Proxool(严重不推荐)
 			}
 		}
 		}}}
-	proxool: 通过 Nutz.Ioc 的 XML 配置文件
-		{{{<IOC-XML 配置>
-			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
-				<obj name="dataSource" type="org.logicalcobwebs.proxool.ProxoolDataSource">
-					<field name="driver"><str>org.postgresql.Driver</str></field>
-					<field name="driverUrl"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
-					<field name="user"><str>demo</str></field>
-					<field name="password"><str>123456</str></field>
-				</obj>
-			</ioc>
-		}}}
-		 * Proxool 没有提供关闭所有连接的函数，不过你可以参看它的官方文档，自己写一个释放所有连接的类，配置在 Ioc 容器的 depose 事件中
-		 * 关于 depose 事件，更多详情请参看 [../ioc/events.man 事件监听] - {*通过实现一个触发器}
 
 --------------------------------------------------------------------------------------
 容器提供的连接池(JNDI)
@@ -367,9 +169,42 @@ Proxool(严重不推荐)
 			}
 		}
 		}}}
+		
+--------------------------------------------------------------------------------------
+遗留系统
+
+	指一些不能提供连接池或自定义获取Connection的项目,可以实现如下封装类,代理为DataSource
+	
+	{{{
+	public class MyDataSource implements DataSource {
+		
+		public Connection getConnection() throws SQLException {
+			// 调用遗留系统中获取数据库连接的方法即可
+		}
+		// 还有其他一些方法,全部默认实现就可以了,不会调用到.
+	}
+	
+	}}}
+	
+	
+	配置
+	
+		{{{<js>
+		{
+			dao : {
+				type : "org.nutz.dao.impl.NutDao",
+				args : [{refer:"dataSource"}]
+			},
+			dataSource : {
+				type : "net.wendal.nutzbook.MyDataSource"
+			}
+		}
+		}}}
 	
 --------------------------------------------------------------------------------------
 如何使用这些配置
+
+	推荐使用org.nutz.dao.util.DaoUp类,非Mvc环境下的全生命周期Dao工具.下面描述的是纯手工创建的代码.
 
 	Java代码的方式:
 		{{{<java>
@@ -425,6 +260,8 @@ Proxool(严重不推荐)
 --------------------------------------------------------------------------------------
 严重提醒
 
+	* 非Mvc环境建议用DaoUp类!!!
+	* Mvc环境下请使用IocBy!!!
 	* 上面提及的Java代码均为演示(main方法中的简单示例),实际用的时候, 必须将ioc容器本身单例化(例如存放到一个static属性)
 	* 重复创建DataSource(例如反复创建ioc容器, new NutIoc(...))会导致数据库连接数耗尽!!
 	* ioc容器本身,应该尽可能作为单例, 不要创建一个ioc容器后,获取ioc对象,然后就抛弃, 例如:
@@ -437,7 +274,7 @@ Proxool(严重不推荐)
 		}
 		}}}
 		
-	比较正确的用法
+	不那么错误的用法,严重建议用DaoUp类
 		{{{
 		private static Ioc ioc;
 		

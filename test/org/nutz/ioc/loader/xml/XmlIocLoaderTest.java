@@ -38,7 +38,7 @@ public class XmlIocLoaderTest {
                 }
             }
             if (iocObject.getFields() != null) {
-                for (IocField iocField : iocObject.getFields()) {
+                for (IocField iocField : iocObject.getFields().values()) {
                     assertNotNull(iocField.getName());
                     if (iocField.getValue() != null) {
                         IocValue iocValue = iocField.getValue();
@@ -47,7 +47,7 @@ public class XmlIocLoaderTest {
                 }
             }
         }
-        iocLoader.load(null, "obj").getFields()[0].getValue().getValue();
+        iocLoader.load(null, "obj").getFields().values().iterator().next().getValue().getValue();
     }
 
     private void checkValue(IocValue iocValue) {
@@ -72,6 +72,7 @@ public class XmlIocLoaderTest {
         assertEquals("TheB", c.getFriends().get(1).getName());
         assertEquals(1,c.getMap().size());
         assertEquals("ABC",c.getMap().get("abc"));
+    	ioc.depose();
     }
     
 }

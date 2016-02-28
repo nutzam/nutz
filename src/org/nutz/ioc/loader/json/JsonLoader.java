@@ -18,7 +18,6 @@ import org.nutz.resource.Scans;
 /**
  * 从 Json 文件中读取配置信息。 支持 Merge with parent ，利用 MapLoader
  * <p>
- * 注，如果 JSON 配置文件被打入 Jar 包中，这个加载器将不能正常工作
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
@@ -28,7 +27,12 @@ public class JsonLoader extends MapLoader {
     
     private static final Log log = Logs.get();
     
-    private String[] paths;
+    protected String[] paths;
+    
+    /**
+     * 供子类继承用.
+     */
+    protected JsonLoader(){}
 
     public JsonLoader(Reader reader) {
         loadFromReader(reader);
@@ -63,6 +67,6 @@ public class JsonLoader extends MapLoader {
     public String toString() {
     	if (paths == null)
     		return super.toString();
-    	return "/*JsonLoader" + Arrays.toString(paths) + "*/\n" + Json.toJson(map);
+    	return "/*" + getClass().getSimpleName() + Arrays.toString(paths) + "*/\n" + Json.toJson(map);
     }
 }

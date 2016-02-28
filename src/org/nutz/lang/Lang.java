@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringReader;
@@ -14,10 +15,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -651,6 +654,35 @@ public abstract class Lang {
             sb.append(c).append(objs[i]);
 
         return sb;
+    }
+
+    /**
+     * 清除数组中的特定值
+     * 
+     * @param objs
+     *            数组
+     * @param val
+     *            值，可以是 null，如果是对象，则会用 equals 来比较
+     * @return 新的数组实例
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] without(T[] objs, T val) {
+        if (null == objs || objs.length == 0) {
+            return objs;
+        }
+        List<T> list = new ArrayList<T>(objs.length);
+        Class<?> eleType = null;
+        for (T obj : objs) {
+            if (obj == val || (null != obj && null != val && obj.equals(val)))
+                continue;
+            if (null == eleType)
+                eleType = obj.getClass();
+            list.add(obj);
+        }
+        if (list.isEmpty()) {
+            return (T[]) new Object[0];
+        }
+        return list.toArray((T[]) Array.newInstance(eleType, list.size()));
     }
 
     /**
@@ -2484,15 +2516,32 @@ public abstract class Lang {
      * @return
      */
     public static String getIP(HttpServletRequest request) {
-        String ip = request.getHeader("x-forwarded-for");
+        String ip = request.getHeader("X-Forwarded-For");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
+            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getHeader("Proxy-Client-IP");
+            }
+            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getHeader("WL-Proxy-Client-IP");
+            }
+            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getHeader("HTTP_CLIENT_IP");
+            }
+            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+            }
+            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getRemoteAddr();
+            }
+        } else if (ip.length() > 15) {
+            String[] ips = ip.split(",");
+            for (int index = 0; index < ips.length; index++) {
+                String strIp = ips[index];
+                if (!("unknown".equalsIgnoreCase(strIp))) {
+                    ip = strIp;
+                    break;
+                }
+            }
         }
         return ip;
     }
@@ -2506,5 +2555,55 @@ public abstract class Lang {
             cp = cp.substring("file:".length());
         }
         return cp;
+    }
+    
+    public static <T> T copyProperties(Object origin, T target) {
+    	return copyProperties(origin, target, null, null, false, true);
+    }
+    
+    public static <T> T copyProperties(Object origin, T target, String active, String lock, boolean ignoreNull, boolean ignoreStatic) {
+    	if (origin == null)
+    		throw new IllegalArgumentException("origin is null");
+    	if (target == null)
+    		throw new IllegalArgumentException("target is null");
+    	Pattern at = active == null ? null : Pattern.compile(active);
+    	Pattern lo = lock == null ? null : Pattern.compile(lock);
+    	Mirror<Object> originMirror = Mirror.me(origin);
+    	Mirror<T> targetMirror = Mirror.me(target);
+    	Field[] fields = targetMirror.getFields();
+    	for (Field field : originMirror.getFields()) {
+    		String name = field.getName();
+    		if (at != null && !at.matcher(name).find())
+    			continue;
+    		if (lock != null && lo.matcher(name).find())
+    			continue;
+    		if (ignoreStatic && Modifier.isStatic(field.getModifiers()))
+    			continue;
+			Object val = originMirror.getValue(origin, field);
+			if (ignoreNull && val == null)
+				continue;
+			for (Field _field : fields) {
+				if (_field.getName().equals(field.getName())) {
+					targetMirror.setValue(target, _field, val);
+				}
+			}
+			// TODO 支持getter/setter比对
+		}
+    	return target;
+    }
+    
+    public static StringBuilder execOutput(String cmd, Charset charset) throws IOException {
+        Process p = Runtime.getRuntime().exec(cmd.split(" "));
+        InputStreamReader r = new InputStreamReader(p.getInputStream(), charset);
+        StringBuilder sb = new StringBuilder();
+        char[] buf = new char[1024];
+        while (true) {
+            int len = r.read(buf);
+            if (len < 0)
+                break;
+            if (len > 0)
+                sb.append(buf, 0, len);
+        }
+        return sb;
     }
 }

@@ -49,6 +49,10 @@ public class UTF8JsonView implements View {
     public UTF8JsonView(JsonFormat format) {
         this.format = format;
     }
+    
+    public UTF8JsonView() {
+    	this.format = new JsonFormat();
+	}
 
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
             throws IOException {

@@ -16,8 +16,12 @@ import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
-public class HttpServerResponse {
+public class HttpServerResponse implements Cloneable {
+	
+    private static final Log log = Logs.get();
 
     private int statusCode;
 
@@ -91,7 +95,9 @@ public class HttpServerResponse {
             }
             // 否则就认为是 HTTP 200
             else {
-                this.updateCode(200, null);
+                if (statusCode <= 0) {
+                    this.updateCode(200, null);
+                }
                 this.body = str.getBytes(Encoding.UTF8);
             }
         }
@@ -139,17 +145,31 @@ public class HttpServerResponse {
         this.statusText = Strings.sNull(statusText, Http.getStatusText(statusCode));
     }
 
+    public void updateBody(String body) {
+        if (!Strings.isBlank(body))
+            try {
+                this.body = body.getBytes(Encoding.UTF8);
+            }
+            catch (UnsupportedEncodingException e) {
+                throw Lang.wrapThrow(e);
+            }
+    }
+
     public void render(HttpServletResponse resp) {
         resp.setStatus(statusCode);
-
+        
+        // 标记是否需要sendError
+        boolean flag = statusCode >= 400;
+        
         if (null != header && header.size() > 0) {
             for (Map.Entry<String, String> en : header.entrySet()) {
                 resp.setHeader(en.getKey(), en.getValue());
             }
+            flag = false;
         }
 
         if (body != null) {
-            resp.setHeader("CONTENT-LENGTH", "" + body.length);
+            resp.setContentLength(body.length);
             OutputStream out;
             try {
                 out = resp.getOutputStream();
@@ -158,6 +178,15 @@ public class HttpServerResponse {
                 throw Lang.wrapThrow(e);
             }
             Streams.writeAndClose(out, body);
+            flag = false;
+        }
+        
+        if (flag){
+            try {
+                resp.sendError(statusCode);
+            } catch (IOException e) {
+                log.debugf("sendError(%d) failed -- %s",statusCode, e.getMessage());
+            }
         }
     }
 

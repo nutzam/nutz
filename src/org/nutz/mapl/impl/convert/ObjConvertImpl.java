@@ -142,7 +142,11 @@ public class ObjConvertImpl implements MaplConvert {
     @SuppressWarnings({"rawtypes", "unchecked"})
     private Object injectCollection(Object model, Mirror<?> me) {
         if (! (model instanceof Collection)) {
-            throw Lang.makeThrow("Not a Collection --> " + model.getClass());
+            if (model instanceof Map) {
+                model = ((Map)model).values();
+            } else {
+                throw Lang.makeThrow("Not a Collection --> " + model.getClass());
+            }
         }
         Collection re = null;
         if (!me.isInterface()) {
@@ -222,7 +226,7 @@ public class ObjConvertImpl implements MaplConvert {
         return obj;
     }
 
-    private boolean isLeaf(Object obj) {
+    private static boolean isLeaf(Object obj) {
         if (obj instanceof Map) {
             return false;
         }

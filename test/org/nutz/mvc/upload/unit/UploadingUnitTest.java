@@ -65,8 +65,8 @@ public class UploadingUnitTest {
         assertEquals(1, map.size());
         TempFile tf = (TempFile) map.get("theF");
 
-        assertEquals("_r_n.txt", tf.getMeta().getFileLocalName());
-        assertTrue(Files.equals(f, tf.getFile()));
+        assertEquals("_r_n.txt", tf.getSubmittedFileName());
+        assertTrue(Streams.equals(Streams.fileIn(f), tf.getInputStream()));
     }
 
     /**
@@ -170,7 +170,7 @@ public class UploadingUnitTest {
      * 测试忽略空文件
      */
     @Test
-    public void test_upload_ignore_null() throws UploadException {
+    public void test_upload_ignore_null() throws Exception {
         MockHttpServletRequest req = Mock.servlet.request();
         req.setPathInfo("/nutz/junit/uploading");
         File txt = Files.findFile("org/nutz/mvc/upload/files/quick/abc.zdoc");
@@ -191,11 +191,11 @@ public class UploadingUnitTest {
         TempFile txt2 = (TempFile) map.get("abc");
         TempFile empty2 = (TempFile) map.get("empty");
 
-        assertEquals("abc.zdoc", txt2.getMeta().getFileLocalName());
-        assertTrue(Files.equals(txt, txt2.getFile()));
+        assertEquals("abc.zdoc", txt2.getSubmittedFileName());
+        assertTrue(Streams.equals(Streams.fileIn(txt), txt2.getInputStream()));
 
-        assertEquals("empty.txt", empty2.getMeta().getFileLocalName());
-        assertTrue(Files.equals(empty, empty2.getFile()));
+        assertEquals("empty.txt", empty2.getSubmittedFileName());
+        assertTrue(Streams.equals(Streams.fileIn(empty), empty2.getInputStream()));
 
         /*
          * 设置忽略空文件
@@ -211,8 +211,8 @@ public class UploadingUnitTest {
         txt2 = (TempFile) map.get("abc");
         empty2 = (TempFile) map.get("empty");
 
-        assertEquals("abc.zdoc", txt2.getMeta().getFileLocalName());
-        assertTrue(Files.equals(txt, txt2.getFile()));
+        assertEquals("abc.zdoc", txt2.getSubmittedFileName());
+        assertTrue(Streams.equals(Streams.fileIn(txt), txt2.getInputStream()));
 
         assertNull(empty2);
     }
@@ -317,7 +317,7 @@ public class UploadingUnitTest {
         // zzh: JUnit 测试必须在多数常用环境下可以比较方便的测试通过，经过这次修改，相信
         // 即可以达到这个目的，又可以测试出中文文件名的编码问题。如果没有其他的问题，在
         // 1.a.30 发布前，这段注释将被删除
-        assertEquals("中文.txt", txt2.getMeta().getFileLocalName());
+        assertEquals("中文.txt", txt2.getSubmittedFileName());
 
         /*
          * 为了验证上传是否是真的可以解码，再次准备模拟 GBK 的输入流，但是这次将用 UTF-8 来解码
@@ -326,11 +326,11 @@ public class UploadingUnitTest {
         up = UploadUnit.TYPE.born();
         txt2 = (TempFile) up.parse(req, UploadingContext.create(tmps))
                             .get("F0");
-        assertFalse("中文.txt".equals(txt2.getMeta().getFileLocalName()));
+        assertFalse("中文.txt".equals(txt2.getSubmittedFileName()));
     }
 
     @Test
-    public void test_upload_1txt_3img() throws UploadException {
+    public void test_upload_1txt_3img() throws Exception {
         MockHttpServletRequest req = Mock.servlet.request();
         req.setPathInfo("/nutz/junit/uploading");
         File txt = Files.findFile("org/nutz/mvc/upload/files/quick/abc.zdoc");
@@ -354,17 +354,17 @@ public class UploadingUnitTest {
         TempFile blue2 = (TempFile) map.get("blue");
         TempFile green2 = (TempFile) map.get("green");
 
-        assertEquals("abc.zdoc", txt2.getMeta().getFileLocalName());
-        assertTrue(Files.equals(txt, txt2.getFile()));
+        assertEquals("abc.zdoc", txt2.getSubmittedFileName());
+        assertTrue(Streams.equals(Streams.fileIn(txt), txt2.getInputStream()));
 
-        assertEquals("red.png", red2.getMeta().getFileLocalName());
-        assertTrue(Files.equals(red, red2.getFile()));
+        assertEquals("red.png", red2.getSubmittedFileName());
+        assertTrue(Streams.equals(Streams.fileIn(red), red2.getInputStream()));
 
-        assertEquals("blue.png", blue2.getMeta().getFileLocalName());
-        assertTrue(Files.equals(blue, blue2.getFile()));
+        assertEquals("blue.png", blue2.getSubmittedFileName());
+        assertTrue(Streams.equals(Streams.fileIn(blue), blue2.getInputStream()));
 
-        assertEquals("green.png", green2.getMeta().getFileLocalName());
-        assertTrue(Files.equals(green, green2.getFile()));
+        assertEquals("green.png", green2.getSubmittedFileName());
+        assertTrue(Streams.equals(Streams.fileIn(green), green2.getInputStream()));
 
     }
 
@@ -412,8 +412,7 @@ public class UploadingUnitTest {
         Map<String, Object> map = up.parse(req, UploadingContext.create(tmps));
         assertEquals(1, map.size());
         assertEquals("Shapes100.jpg",
-                     ((TempFile) map.get("fileData")).getMeta()
-                                                     .getFileLocalPath());
+                     ((TempFile) map.get("fileData")).getSubmittedFileName());
     }
 
     @Test

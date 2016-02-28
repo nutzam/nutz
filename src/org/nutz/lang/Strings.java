@@ -1152,4 +1152,17 @@ public class Strings {
         // 返回拆分后的数组
         return list.toArray(new String[list.size()]);
     }
+    
+    public static String safeToString(Object obj, String dft) {
+        try {
+            if (obj == null)
+                return "null";
+            return obj.toString();
+        }
+        catch (Exception e) {
+        }
+        if (dft != null)
+            return dft;
+        return String.format("/*%s(toString FAILED)*/", obj.getClass().getName());
+    }
 }

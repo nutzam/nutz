@@ -23,6 +23,10 @@ public class HttpStatusView implements View {
     public static final View HTTP_500 = new HttpStatusView(500);
     public static final View HTTP_502 = new HttpStatusView(502);
 
+    public static HttpStatusException makeThrow(int status, String body) {
+        return new HttpStatusException(status, body);
+    }
+
     /**
      * 这个异常用于，在某个入口函数,如果你声明了 `@Fail("http:500")` 但是你真正的返回值想根据运行时决定。 <br>
      * 那么，你就直接抛这个异常好了
@@ -70,19 +74,32 @@ public class HttpStatusView implements View {
         info.update(map);
     }
 
+    public HttpStatusView setBody(String body) {
+        info.updateBody(body);
+        return this;
+    }
+
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj) {
         HttpServerResponse info = this.info.clone();
 
-        // 指明了动态的 code
-        if (obj != null && obj instanceof HttpStatusException) {
-            HttpStatusException hse = ((HttpStatusException) obj);
-            info.updateCode(hse.getStatus(), hse.getMessage());
-        }
-        // 指明了 Header
-        else if (obj instanceof Map<?, ?>) {
-            info.update((Map<?, ?>) obj);
+        if (null != obj) {
+            // 指明了动态的 code
+            if (obj instanceof HttpStatusException) {
+                HttpStatusException hse = ((HttpStatusException) obj);
+                info.updateCode(hse.getStatus(), null);
+                info.updateBody(hse.getMessage());
+            }
+            // 指明了 Header
+            else if (obj instanceof Map<?, ?>) {
+                info.update((Map<?, ?>) obj);
+            }
+            // 字符串 ...
+            else if (obj instanceof CharSequence) {
+                info.updateBy(obj.toString());
+            }
         }
 
+        // 执行渲染
         info.render(resp);
 
         // if (code >= 400){

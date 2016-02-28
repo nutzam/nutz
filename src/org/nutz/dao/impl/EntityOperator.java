@@ -178,7 +178,7 @@ public class EntityOperator {
     }
 
     public Pojo addInsertSelfOnly(Entity<?> en, Object obj) {
-        if (null == entity)
+        if (null == en)
             return null;
 
         Pojo pojo;
@@ -220,4 +220,7 @@ public class EntityOperator {
         return dao.holder.makeEntity(tableName, map);
     }
 
+    public int getPojoListSize() {
+    	return pojoList.size();
+    }
 }

@@ -934,4 +934,6 @@ public interface Dao {
     Sql execute(Sql sql);
     
     void setExpert(Object obj) throws Exception;
+    
+    <T> T insert(T t, boolean ignoreNull, boolean ignoreZero, boolean ignoreBlankStr);
 }

@@ -14,6 +14,7 @@
 	 * Forward － 服务器端中转
 	 * Json － 将对象输出成 Json 字符串
 	 * void - 什么都不做
+	 * Raw - 二进制输出,图片输出,文件下载等
 	当然你还可以根据需要开发你自己的视图实现类，定制自己的视图也非常简单，请参看
 	本文 [#定制自己的视图] 一节
 
@@ -479,6 +480,6 @@
 	--------------------------------------------------------------------------------------
 	已有的,经过检验的自定义视图
 	
-		[http://axhack.javaeye.com/blog/542441 Freemarker]
-		
-		[http://wendal.net/100 Freemarker] 可以拓展为Velocity
+		[https://github.com/nutzam/nutzmore/tree/master/nutz-plugins-views 官方扩展集]
+		[https://ibeetl.com ibeetl模板自带BeetlViewMaker]
+		[http://nutzbook.wendal.net/templates/templates.html nutzbook中集成第三方模板引擎的描述]

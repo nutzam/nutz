@@ -23,7 +23,6 @@ public class Log4jLogAdapter implements LogAdapter, Plugin {
     public boolean canWork() {
         try {
             Class.forName("org.apache.log4j.Logger", false, Log4jLogAdapter.class.getClassLoader());
-            System.out.println("ALL Nutz Log via Log4jLogAdapter");
             return true;
         }
         catch (Throwable e) {}
@@ -122,6 +121,38 @@ public class Log4jLogAdapter implements LogAdapter, Plugin {
             default:
                 break;
             }
+        }
+
+        @Override
+        public boolean isDebugEnabled() {
+            return logger.isDebugEnabled();
+        }
+
+        @Override
+        public boolean isErrorEnabled() {
+            return logger.isEnabledFor(Level.ERROR);
+        }
+
+        @Override
+        public boolean isFatalEnabled() {
+            return logger.isEnabledFor(Level.FATAL);
+        }
+
+        @Override
+        public boolean isInfoEnabled() {
+            return logger.isInfoEnabled();
+        }
+
+        @Override
+        public boolean isTraceEnabled() {
+            if (!hasTrace)
+                return logger.isDebugEnabled();
+            return logger.isTraceEnabled();
+        }
+
+        @Override
+        public boolean isWarnEnabled() {
+            return logger.isEnabledFor(Level.WARN);
         }
     }
 }

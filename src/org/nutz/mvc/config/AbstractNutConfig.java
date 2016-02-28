@@ -15,11 +15,14 @@ import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.mvc.ActionChainMaker;
 import org.nutz.mvc.Loading;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.NutConfigException;
 import org.nutz.mvc.SessionProvider;
+import org.nutz.mvc.UrlMapping;
+import org.nutz.mvc.ViewMaker;
 import org.nutz.mvc.annotation.LoadingBy;
 import org.nutz.mvc.impl.NutLoading;
 import org.nutz.resource.Scans;
@@ -28,7 +31,13 @@ public abstract class AbstractNutConfig implements NutConfig {
 
     private static final Log log = Logs.get();
     
-    private SessionProvider sessionProvider;
+    protected SessionProvider sessionProvider;
+    
+    protected UrlMapping urlMapping;
+    
+    protected ActionChainMaker chainMaker;
+    
+    protected ViewMaker[] viewMakers;
     
     public AbstractNutConfig(ServletContext context) {
         Scans.me().init(context);
@@ -145,4 +154,28 @@ public abstract class AbstractNutConfig implements NutConfig {
     public SessionProvider getSessionProvider() {
         return sessionProvider;
     }
+
+	public UrlMapping getUrlMapping() {
+		return urlMapping;
+	}
+
+	public void setUrlMapping(UrlMapping urlMapping) {
+		this.urlMapping = urlMapping;
+	}
+	
+	public ActionChainMaker getActionChainMaker() {
+		return chainMaker;
+	}
+	
+	public void setActionChainMaker(ActionChainMaker acm) {
+		this.chainMaker = acm;
+	}
+	
+	public void setViewMakers(ViewMaker[] makers) {
+		this.viewMakers = makers;
+	}
+	
+	public ViewMaker[] getViewMakers() {
+		return viewMakers;
+	}
 }

@@ -16,7 +16,7 @@ import org.nutz.mvc.impl.Loadings;
  */
 public abstract class AbstractProcessor implements Processor {
 
-    private Processor next;
+    protected Processor next;
     
     /**
      * 建议覆盖这个方法,以便从NutConfig/ActionInfo获取需要的信息

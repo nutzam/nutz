@@ -5,9 +5,7 @@
 ---------------------------------------------------
 beetl的官方文档描述
 
-	文档地址 http://ibeetl.com/guide/#_nuts集成
-	
-	地址中写的是nuts,如果将来修正了, 那应该是 http://ibeetl.com/guide/#_nutz集成
+	文档地址 http://ibeetl.com/guide/#_nutz集成
 	
 ---------------------------------------------------
 关联配置,修改MainModule类,添加注解

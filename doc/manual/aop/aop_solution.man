@@ -45,7 +45,7 @@
 	{{{
 	java.lang.Throwable
 		at org.nutz.aop.asm.test.Aop1.mixArgsVoid(Aop1.java:55)
-		at org.nutz.aop.asm.test.Aop1$$NUTZAOP._aop_invoke(Unknown Source)
+		at org.nutz.aop.asm.test.Aop1$$NUTZAOP._aop_invoke(Unknown Source) // 这是被aop化的标志
 		at org.nutz.aop.InterceptorChain.invoke(InterceptorChain.java:51)
 		at org.nutz.aop.InterceptorChain.doChain(InterceptorChain.java:39)
 		at org.nutz.aop.interceptor.LoggingMethodInterceptor.filter(LoggingMethodInterceptor.java:29) //拦截器B

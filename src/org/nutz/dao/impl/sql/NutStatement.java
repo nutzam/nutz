@@ -118,9 +118,48 @@ public abstract class NutStatement implements DaoStatement {
     }
 
     public int getInt() {
-        return getObject(Integer.class);
+        return getNumber().intValue();
     }
     
+    public int getInt(int defaultValue) {
+        Number re = getNumber();
+        if (re == null)
+            return defaultValue;
+        return re.intValue();
+    }
+
+    public long getLong() {
+        return getNumber().longValue();
+    }
+    public long getLong(long defaultValue) {
+        Number re = getNumber();
+        if (re == null)
+            return defaultValue;
+        return re.longValue();
+    }
+
+    public double getDouble() {
+        return getNumber().doubleValue();
+    }
+
+    public double getDouble(double defaultValue) {
+        Number re = getNumber();
+        if (re == null)
+            return defaultValue;
+        return re.doubleValue();
+    }
+
+    public float getFloat() {
+        return getNumber().floatValue();
+    }
+
+    public float getFloat(float defaultValue) {
+        Number re = getNumber();
+        if (re == null)
+            return defaultValue;
+        return re.floatValue();
+    }
+
     public Number getNumber() {
     	return getObject(Number.class);
     }
@@ -170,7 +209,7 @@ public abstract class NutStatement implements DaoStatement {
 
             // 输出内容到字符串缓冲区
             // XXX 只输出50行
-            int maxRow = mtrx.length > 50 ? 50 : mtrx.length;
+            int maxRow = mtrx.length > 10 ? 10 : mtrx.length;
             for (int row = 0; row < maxRow; row++) {
                 sb.append("\n    |");
                 for (int col = 0; col < mtrx[0].length; col++) {
@@ -181,9 +220,7 @@ public abstract class NutStatement implements DaoStatement {
             }
 
             if (maxRow != mtrx.length)
-                sb.append("\n  .............................................")
-                  .append("\n  !!!Too many data . Only display 50 lines , don't show the remaining record")
-                  .append("\n  .............................................");
+                sb.append("\n -- Only display first 10 lines , don't show the remaining record(count="+mtrx.length+")");
             // 输出可执行的 SQL 语句, TODO 格式非常不好看!!如果要复制SQL,很麻烦!!!
             sb.append("\n  For example:> \"");
             sb.append(toExampleStatement(mtrx, sql));

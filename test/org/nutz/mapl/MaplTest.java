@@ -6,11 +6,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Test;
 import org.nutz.json.Abc;
@@ -18,7 +21,13 @@ import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
+import org.nutz.lang.util.NutMap;
+import org.nutz.lang.util.NutType;
 import org.nutz.mapl.impl.MaplRebuild;
+import org.nutz.mock.servlet.MockHttpServletRequest;
+import org.nutz.mvc.adaptor.ParamExtractor;
+import org.nutz.mvc.adaptor.Params;
+import org.nutz.mvc.adaptor.injector.ObjectNaviNode;
 
 /**
  * MapList测试
@@ -419,5 +428,40 @@ public class MaplTest {
         req.put("s1[0]", "test");
         req.put("s2.s2[0]", "test");
         System.out.println(Json.toJson(req.fetchNewobj()));
+    }
+    
+    @Test
+    public void test_complex_prefix() throws Exception {
+        String params = "draw=1&columns%5B0%5D%5Bdata%5D=userId&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=loginname&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=nickname&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&order%5B0%5D%5Bcolumn%5D=0&order%5B0%5D%5Bdir%5D=asc&start=0&length=10&search%5Bvalue%5D=&search%5Bregex%5D=false";
+        //String params = "columns%5B0%5D%5Bdata%5D=userId&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true";
+        NutMap map = new NutMap();
+        for (String kv : params.split("&")) {
+            //System.out.println(kv);
+            String[] tmp = kv.split("=");
+            String key = URLDecoder.decode(tmp[0], "UTF-8");
+            String value = URLDecoder.decode(tmp.length > 1 ? tmp[1] : "", "UTF-8");
+            map.put(key, value);
+        }
+        System.out.println(map);
+        String prefix = "columns";
+        Object refer = map;
+        HttpServletRequest req = new MockHttpServletRequest();
+
+        ObjectNaviNode no = new ObjectNaviNode();
+        String pre = "";
+        if ("".equals(prefix))
+            pre = "node.";
+        ParamExtractor pe = Params.makeParamExtractor(req, refer);
+        for (Object name : pe.keys()) {
+            String na = (String) name;
+            if (na.startsWith(prefix)) {
+                String[] val = pe.extractor(na);
+                no.put(pre + na, val);
+            }
+        }
+        Object model = no.get();
+        System.out.println(Json.toJson(model));
+        Object re = Mapl.maplistToObj(model, NutType.list(DataTableColumn.class));
+        System.out.println(Json.toJson(re));
     }
 }

@@ -40,6 +40,10 @@ class AopMethodAdapter extends NormalMethodAdapter implements Opcodes {
 
     void enhandMethod_Void() {
         mv.visitCode();
+        // start of fuck linenumber
+        Label tmp = new Label();
+        mv.visitLabel(tmp);
+        mv.visitLineNumber(1, tmp);
         Label l0 = new Label();
         Label l1 = new Label();
         Label l2 = new Label();

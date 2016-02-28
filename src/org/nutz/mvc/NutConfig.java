@@ -135,4 +135,16 @@ public interface NutConfig {
     void setSessionProvider(SessionProvider provider);
     
     SessionProvider getSessionProvider();
+    
+    UrlMapping getUrlMapping();
+    
+    void setUrlMapping(UrlMapping urlMapping);
+    
+    ActionChainMaker getActionChainMaker();
+    
+    void setActionChainMaker(ActionChainMaker acm);
+    
+    ViewMaker[] getViewMakers();
+    
+    void setViewMakers(ViewMaker[] makers);
 }

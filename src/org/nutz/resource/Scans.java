@@ -49,7 +49,7 @@ public class Scans {
      * 调用一次就可以了
      */
     @SuppressWarnings("unchecked")
-    public Scans init(ServletContext sc) {
+	public Scans init(ServletContext sc) {
         // 获取classes文件夹的路径
         String classesPath = sc.getRealPath("/WEB-INF/classes/");
         if (classesPath != null) {
@@ -349,7 +349,7 @@ public class Scans {
      * @return 类对象列表
      */
     private static List<Class<?>> rs2class(String pkg, List<NutResource> list) {
-        Set<Class<?>> re = new HashSet<Class<?>>(list.size());
+        Set<Class<?>> re = new LinkedHashSet<Class<?>>(list.size());
         if (!list.isEmpty()) {
             for (NutResource nr : list) {
                 if (!nr.getName().endsWith(".class") || nr.getName().endsWith("package-info.class")) {
@@ -378,7 +378,7 @@ public class Scans {
                 }
                 catch (Throwable e) {
                     if (log.isInfoEnabled())
-                        log.info("Resource can't map to Class, Resource " + nr.getName(), e);
+                        log.info("Resource can't map to Class, Resource " + nr.getName());
                 }
                 finally {
                     Streams.safeClose(in);

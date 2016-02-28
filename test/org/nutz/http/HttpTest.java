@@ -58,7 +58,7 @@ public class HttpTest {
         Response response = Http.get("www.baidu.com", 10 * 1000);
         assertTrue(response.getStatus() == 200);
         // 抛出超时异常
-        Http.get("www.baidu.com", 1);
+        Http.get("www.sina.com.cn", 1);
     }
 
     @Test

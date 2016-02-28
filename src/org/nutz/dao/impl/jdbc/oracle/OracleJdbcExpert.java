@@ -230,4 +230,12 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
     public boolean isSupportAutoIncrement() {
         return false;
     }
+    
+    public boolean addColumnNeedColumn() {
+        return false;
+    }
+    
+    public boolean supportTimestampDefault() {
+        return false;
+    }
 }

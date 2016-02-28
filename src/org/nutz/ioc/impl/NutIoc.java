@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -13,6 +14,7 @@ import org.nutz.ioc.IocException;
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.IocLoading;
 import org.nutz.ioc.IocMaking;
+import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.ObjectMaker;
 import org.nutz.ioc.ObjectProxy;
 import org.nutz.ioc.ValueProxyMaker;
@@ -22,8 +24,10 @@ import org.nutz.ioc.aop.impl.DefaultMirrorFactory;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.ioc.loader.combo.ComboIocLoader;
 import org.nutz.ioc.meta.IocObject;
+import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.lang.Times;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.repo.LevenshteinDistance;
@@ -166,7 +170,7 @@ public class NutIoc implements Ioc2 {
                 if (null == op) {
                     try {
                         if (log.isDebugEnabled())
-                            log.debug("\t >> Load definition");
+                            log.debug("\t >> Load definition name="+name);
 
                         // 读取对象定义
                         IocObject iobj = loader.load(createLoading(), name);
@@ -214,7 +218,7 @@ public class NutIoc implements Ioc2 {
         }
         synchronized (lock_get) {
             T re = op.get(type, ing);
-            if (re instanceof IocLoader) {
+            if (!name.startsWith("$") && re instanceof IocLoader) {
                 loader.addLoader((IocLoader) re);
             }
             return re;
@@ -238,11 +242,11 @@ public class NutIoc implements Ioc2 {
             return;
         }
         if (log.isInfoEnabled())
-            log.infof("Closing %s@%s startup date [%s]", getClass(), hashCode(), this.createTime);
+            log.infof("%s@%s is closing. startup date [%s]", getClass().getName(), hashCode(), Times.sDTms2(this.createTime));
         context.depose();
         deposed = true;
         if (log.isInfoEnabled())
-            log.infof("%s@%s is deposed.", getClass(), hashCode());
+            log.infof("%s@%s is deposed. startup date [%s]", getClass().getName(), hashCode(), Times.sDTms2(this.createTime));
     }
 
     public void reset() {
@@ -250,9 +254,10 @@ public class NutIoc implements Ioc2 {
     }
 
     public String[] getNames() {
-        Set<String> list = new HashSet<String>();
+    	LinkedHashSet<String> list = new LinkedHashSet<String>();
         list.addAll(Arrays.asList(loader.getName()));
-        list.addAll(context.names());
+        if (context != null)
+        	list.addAll(context.names());
         return list.toArray(new String[list.size()]);
     }
 
@@ -308,5 +313,45 @@ public class NutIoc implements Ioc2 {
             depose();
         }
         super.finalize();
+    }
+    
+    public String[] getNamesByType(Class<?> klass) {
+    	return this.getNamesByType(klass, null);
+    }
+    
+    public String[] getNamesByType(Class<?> klass, IocContext context) {
+    	List<String> names = new ArrayList<String>();
+    	for (String name:getNames()) {
+			try {
+				IocObject iobj = loader.load(createLoading(), name);
+				if (iobj != null && iobj.getType() != null && klass.isAssignableFrom(iobj.getType()))
+					names.add(name);
+			} catch (ObjectLoadException e) {
+			}
+		}
+    	IocContext cntx;
+        if (null == context || context == this.context)
+            cntx = this.context;
+        else
+        	cntx = new ComboContext(context, this.context);
+    	for (String name : cntx.names()) {
+			ObjectProxy op = cntx.fetch(name);
+			if (op.getObj() != null && klass.isAssignableFrom(op.getObj().getClass()))
+				names.add(name);
+		}
+    	return new LinkedHashSet<String>(names).toArray(new String[names.size()]);
+    }
+    
+    public <K> K getByType(Class<K> klass) {
+    	return this.getByType(klass, null);
+    }
+    
+    public <K> K getByType(Class<K> klass, IocContext context) {
+    	String[] names = getNamesByType(klass, context);
+    	if (names == null || names.length == 0)
+    		throw new IocException("No such ioc bean by type="+klass.getName());
+    	if (names.length != 1) 
+    		throw new IocException("More than one ioc bean by type=" + klass + "," + Json.toJson(names));
+    	return get(klass, names[0]);
     }
 }

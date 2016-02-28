@@ -39,6 +39,7 @@ import org.nutz.mvc.View;
  * <li><b>InputStream</b> - 按二进制方式写入响应流，并关闭 InputStream
  * <li><b>char[]</b> - 按文本方式写入HTTP响应流
  * <li><b>Reader</b> - 按文本方式写入HTTP响应流，并关闭 Reader
+ * <li><b>BufferedImage</b> - 按图片方式写入HTTP响应流，并关闭 Reader
  * <li><b>默认的</b> - 直接将对象 toString() 后按文本方式写入HTTP响应流
  * </ol>
  * <p>
@@ -48,6 +49,12 @@ import org.nutz.mvc.View;
  * <li><b>html</b> - 表示 <b>text/html</b>
  * <li><b>htm</b> - 表示 <b>text/html</b>
  * <li><b>stream</b> - 表示 <b>application/octet-stream</b>
+ * <li><b>js</b> - 表示 <b>application/javascript</b>
+ * <li><b>json</b> - 表示 <b>application/json</b>
+ * <li><b>jpeg</b> - 表示 <b>image/jpeg</b> 返回值是BufferedImage对象时自动转二进制流,质量为0.8f
+ * <li><b>jpg</b> - 表示 <b>image/jpeg</b> 返回值是BufferedImage对象时自动转二进制流,质量为0.8f
+ * <li><b>png</b> - 表示 <b>image/png</b> 返回值是BufferedImage对象时自动转二进制流
+ * <li><b>webp</b> - 表示 <b>application/webp</b> 返回值是BufferedImage对象时自动转二进制流
  * <li><b>默认的</b>(即 '@Ok("raw")' ) - 将采用 <b>ContentType=text/plain</b>
  * </ul>
  * 

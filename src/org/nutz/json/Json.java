@@ -214,12 +214,12 @@ public class Json {
         try {
             if (format == null)
                 format = JsonFormat.nice();
-
+            JsonRender jr;
             Class<? extends JsonRender> jrCls = getJsonRenderCls();
             if (jrCls == null)
-                jrCls = JsonRenderImpl.class;
-
-            JsonRender jr = Mirror.me(jrCls).born();
+                jr = new JsonRenderImpl();
+            else
+            	jr = Mirror.me(jrCls).born();
             jr.setWriter(writer);
             jr.setFormat(format);
             jr.render(obj);

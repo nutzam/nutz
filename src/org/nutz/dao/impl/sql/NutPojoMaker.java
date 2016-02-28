@@ -1,11 +1,24 @@
 package org.nutz.dao.impl.sql;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import org.nutz.dao.DaoException;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.sql.Pojo;
+import org.nutz.dao.sql.PojoCallback;
 import org.nutz.dao.sql.PojoMaker;
 import org.nutz.dao.sql.SqlType;
 import org.nutz.dao.util.Pojos;
+import org.nutz.lang.ContinueLoop;
+import org.nutz.lang.Each;
+import org.nutz.lang.ExitLoop;
+import org.nutz.lang.Lang;
+import org.nutz.lang.LoopException;
 
 public class NutPojoMaker implements PojoMaker {
 
@@ -16,17 +29,22 @@ public class NutPojoMaker implements PojoMaker {
     }
 
     public Pojo makePojo(SqlType type) {
-        Pojo pojo = expert.createPojo(type);
-
-        return pojo;
+        return expert.createPojo(type);
     }
 
-    public Pojo makeInsert(Entity<?> en) {
+    public Pojo makeInsert(final Entity<?> en) {
         Pojo pojo = Pojos.pojo(expert, en, SqlType.INSERT);
         pojo.setEntity(en);
         pojo.append(Pojos.Items.entityTableName());
         pojo.append(Pojos.Items.insertFields());
         pojo.append(Pojos.Items.insertValues());
+        if (expert.isSupportAutoIncrement()) {
+        	MappingField mf = en.getIdField();
+        	if (mf != null && mf.isAutoIncreasement()) {
+        		pojo.setAfter(new GeneratedKeys());
+        		pojo.getContext().attr("RETURN_GENERATED_KEYS", true);
+        	}
+        }
         return pojo;
     }
 
@@ -79,4 +97,23 @@ public class NutPojoMaker implements PojoMaker {
         return pojo;
     }
 
+    static class GeneratedKeys implements PojoCallback {
+    	
+    	public Object invoke(Connection conn, ResultSet rs, final Pojo pojo, Statement stmt) throws SQLException {
+			final ResultSet _rs = stmt.getGeneratedKeys();
+			Lang.each(pojo.getOperatingObject(), new Each<Object>() {
+				public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop, LoopException {
+					try {
+						if (!_rs.next())
+							throw new ExitLoop();
+						Object key = _rs.getObject(1);
+						pojo.getEntity().getIdField().setValue(ele, key);
+					} catch (SQLException e) {
+						throw new DaoException(e);
+					}
+				}
+			});
+			return pojo.getOperatingObject();
+		}
+    }
 }

@@ -9,7 +9,6 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
 import org.nutz.dao.entity.annotation.ColType;
-import org.nutz.dao.impl.entity.macro.SqlFieldMacro;
 import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
 import org.nutz.dao.pager.Pager;
@@ -173,9 +172,10 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
     }
 
     public Pojo fetchPojoId(Entity<?> en, MappingField idField) {
-        String autoSql = "SELECT @@@@IDENTITY";
-        Pojo autoInfo = new SqlFieldMacro(idField, autoSql);
-        autoInfo.setEntity(en);
-        return autoInfo;
+//        String autoSql = "SELECT @@@@IDENTITY";
+//        Pojo autoInfo = new SqlFieldMacro(idField, autoSql);
+//        autoInfo.setEntity(en);
+//        return autoInfo;
+    	return null;
     }
 }
