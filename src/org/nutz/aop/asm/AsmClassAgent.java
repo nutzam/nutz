@@ -43,7 +43,6 @@ public class AsmClassAgent extends AbstractClassAgent {
             methodInterceptorList[i] = pair2.listeners;
         }
         byte[] bytes = ClassY.enhandClass(klass, newName, methodArray, constructors);
-        //Files.write(new File(newName), bytes);
         Class<T> newClass = (Class<T>) cd.define(newName, bytes, klass.getClassLoader());
         try {
             Mirror<T> mirror = Mirror.me(newClass);
