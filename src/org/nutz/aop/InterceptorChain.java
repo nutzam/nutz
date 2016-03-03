@@ -19,7 +19,7 @@ public class InterceptorChain {
 
     protected int methodIndex;
 
-    protected Object args[];
+    protected Object[] args;
 
     protected AopCallback callingObj;
 
@@ -27,7 +27,7 @@ public class InterceptorChain {
 
     protected List<MethodInterceptor> miList;
 
-    private static Log LOG = Logs.get();
+    private static Log log = Logs.get();
 
     private boolean invoked = false;
 
@@ -71,7 +71,7 @@ public class InterceptorChain {
      */
     public void invoke() throws Throwable {
         if (invoked)
-            LOG.warnf("!! Calling Method more than once! Method --> %s", callingMethod.toString());
+            log.warnf("!! Calling Method more than once! Method --> %s", callingMethod.toString());
         else
             invoked = true;
         this.returnValue = callingObj._aop_invoke(methodIndex, args);
