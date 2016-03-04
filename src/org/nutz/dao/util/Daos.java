@@ -39,6 +39,7 @@ import org.nutz.dao.entity.annotation.Table;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.impl.entity.field.ManyManyLinkField;
 import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
+import org.nutz.dao.impl.sql.SqlFormat;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
@@ -1026,6 +1027,17 @@ public abstract class Daos {
         });
         return name[0];
     }
+
+    private static SqlFormat sqlFormat = SqlFormat.full;
+
+    public static SqlFormat getSqlFormat() {
+        return sqlFormat;
+    }
+
+    public static void setSqlFormat(SqlFormat sqlFormat) {
+        Daos.sqlFormat = sqlFormat;
+    }
+    
 }
 
 class ExtDaoInvocationHandler implements InvocationHandler {

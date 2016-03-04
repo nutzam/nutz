@@ -15,6 +15,7 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.sql.SqlContext;
 import org.nutz.dao.sql.SqlType;
+import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.blob.SimpleBlob;
 import org.nutz.dao.util.blob.SimpleClob;
 import org.nutz.lang.Strings;
@@ -29,8 +30,6 @@ public abstract class NutStatement implements DaoStatement {
     
     private boolean forceExecQuery;
     
-    private static SqlFormat sqlFormat = SqlFormat.full;
-
     public NutStatement() {
         this.context = new SqlContext();
     }
@@ -183,7 +182,7 @@ public abstract class NutStatement implements DaoStatement {
         StringBuilder sb = new StringBuilder(sql);
         // 准备打印参数表
         Object[][] mtrx = this.getParamMatrix();
-        SqlFormat format = sqlFormat.clone();
+        SqlFormat format = Daos.getSqlFormat().clone();
         if (null != mtrx && mtrx.length > 0 && mtrx[0].length > 0) {
             if (format.isPrintParam()) {
                 // 计算每列最大宽度，以及获取列参数的内容
@@ -342,7 +341,4 @@ public abstract class NutStatement implements DaoStatement {
         return super.toString();
     }
     
-    public static void setSqlFormat(SqlFormat sqlFormat) {
-        NutStatement.sqlFormat = sqlFormat;
-    }
 }
