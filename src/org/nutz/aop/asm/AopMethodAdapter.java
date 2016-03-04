@@ -13,6 +13,8 @@ import org.nutz.repo.org.objectweb.asm.Type;
  */
 class AopMethodAdapter extends NormalMethodAdapter implements Opcodes {
 
+    private static final String ORG_NUTZ_AOP_INTERCEPTOR_CHAIN = "org/nutz/aop/InterceptorChain";
+
     int methodIndex;
 
     String myName;
@@ -49,7 +51,7 @@ class AopMethodAdapter extends NormalMethodAdapter implements Opcodes {
         Label l2 = new Label();
         mv.visitTryCatchBlock(l0, l1, l2, "java/lang/Throwable");
         mv.visitLabel(l0);
-        mv.visitTypeInsn(NEW, "org/nutz/aop/InterceptorChain");
+        mv.visitTypeInsn(NEW, ORG_NUTZ_AOP_INTERCEPTOR_CHAIN);
         mv.visitInsn(DUP);
         visitX(methodIndex);
         mv.visitVarInsn(ALOAD, 0);
@@ -61,11 +63,11 @@ class AopMethodAdapter extends NormalMethodAdapter implements Opcodes {
         mv.visitInsn(AALOAD);
         loadArgsAsArray();
         mv.visitMethodInsn(    INVOKESPECIAL,
-                            "org/nutz/aop/InterceptorChain",
+                            ORG_NUTZ_AOP_INTERCEPTOR_CHAIN,
                             "<init>",
                             "(ILjava/lang/Object;Ljava/lang/reflect/Method;Ljava/util/List;[Ljava/lang/Object;)V");
         mv.visitMethodInsn(    INVOKEVIRTUAL,
-                            "org/nutz/aop/InterceptorChain",
+                            ORG_NUTZ_AOP_INTERCEPTOR_CHAIN,
                             "doChain",
                             "()Lorg/nutz/aop/InterceptorChain;");
 
@@ -74,7 +76,7 @@ class AopMethodAdapter extends NormalMethodAdapter implements Opcodes {
                 mv.visitInsn(POP);
             } else {
                 mv.visitMethodInsn(    INVOKEVIRTUAL,
-                                    "org/nutz/aop/InterceptorChain",
+                                    ORG_NUTZ_AOP_INTERCEPTOR_CHAIN,
                                     "getReturn",
                                     "()Ljava/lang/Object;");
                 AsmHelper.checkCast(returnType,mv);
@@ -88,8 +90,6 @@ class AopMethodAdapter extends NormalMethodAdapter implements Opcodes {
         mv.visitLabel(l2);
         mv.visitVarInsn(ASTORE, 3);
         mv.visitVarInsn(ALOAD, 3);
-        // mv.visitMethodInsn(INVOKESTATIC, "org/nutz/lang/Lang", "wrapThrow",
-        // "(Ljava/lang/Throwable;)Ljava/lang/RuntimeException;");
         mv.visitInsn(ATHROW);
         mv.visitLabel(l3);
         mv.visitInsn(RETURN);
