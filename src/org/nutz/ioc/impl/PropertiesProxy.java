@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -343,7 +343,7 @@ public class PropertiesProxy extends MultiLineProperties {
     }
 
     public Map<String, String> toMap() {
-        return new HashMap<String, String>(this);
+        return new LinkedHashMap<String, String>(this);
     }
     
     public String get(String key) {
