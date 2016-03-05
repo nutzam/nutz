@@ -7,6 +7,8 @@ package org.nutz.aop;
  */
 public interface ClassAgent {
 
+    String CLASSNAME_SUFFIX = "$$NUTZAOP";
+
     /**
      * 定义一个新的类对象
      * 
@@ -28,6 +30,4 @@ public interface ClassAgent {
      * @return 添加完成后的ClassAgent
      */
     ClassAgent addInterceptor(MethodMatcher matcher, MethodInterceptor inte);
-
-    String CLASSNAME_SUFFIX = "$$NUTZAOP";
 }

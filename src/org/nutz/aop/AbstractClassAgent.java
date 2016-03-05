@@ -49,7 +49,7 @@ public abstract class AbstractClassAgent implements ClassAgent {
         Class<T> newClass = try2Load(newName, klass.getClassLoader());
         if (newClass != null)
             return newClass;
-        if (checkClass(klass) == false)
+        if (!checkClass(klass))
             return klass;
         Pair2[] pair2s = findMatchedMethod(klass);
         if (pair2s.length == 0)
@@ -75,7 +75,7 @@ public abstract class AbstractClassAgent implements ClassAgent {
                 continue;
             cList.add(constructor);
         }
-        if (cList.size() == 0)
+        if (cList.isEmpty())
             throw Lang.makeThrow("No non-private constructor founded,unable to create sub-class!");
         return cList.toArray(new Constructor[cList.size()]);
     }
@@ -83,8 +83,8 @@ public abstract class AbstractClassAgent implements ClassAgent {
     protected <T> boolean checkClass(Class<T> klass) {
         if (klass == null)
             return false;
-        String klass_name = klass.getName();
-        if (klass_name.endsWith(CLASSNAME_SUFFIX))
+        String klassName = klass.getName();
+        if (klassName.endsWith(CLASSNAME_SUFFIX))
             return false;
         if (klass.isInterface()
             || klass.isArray()
@@ -93,9 +93,9 @@ public abstract class AbstractClassAgent implements ClassAgent {
             || klass.isMemberClass()
             || klass.isAnnotation()
             || klass.isAnonymousClass())
-            throw Lang.makeThrow("%s is NOT a Top-Class!Creation FAIL!", klass_name);
+            throw Lang.makeThrow("%s is NOT a Top-Class!Creation FAIL!", klassName);
         if (Modifier.isFinal(klass.getModifiers()) || Modifier.isAbstract(klass.getModifiers()))
-            throw Lang.makeThrow("%s is final or abstract!Creation FAIL!", klass_name);
+            throw Lang.makeThrow("%s is final or abstract!Creation FAIL!", klassName);
         return true;
     }
 
@@ -124,29 +124,46 @@ public abstract class AbstractClassAgent implements ClassAgent {
             for (Pair p : pairs)
                 if (p.matcher.match(m))
                     mls.add(p.listener);
-            if (mls.size() > 0)
+            if (!mls.isEmpty())
                 p2.add(new Pair2(m, mls));
         }
         return p2.toArray(new Pair2[p2.size()]);
     }
 
     protected static class Pair {
+        MethodMatcher matcher;
+        MethodInterceptor listener;
+
         Pair(MethodMatcher matcher, MethodInterceptor listener) {
             this.matcher = matcher;
             this.listener = listener;
         }
-
-        MethodMatcher matcher;
-        MethodInterceptor listener;
     }
 
     protected static class Pair2 {
-        Pair2(Method method, ArrayList<MethodInterceptor> listeners) {
+        private Method method;
+        private List<MethodInterceptor> listeners;
+
+        Pair2(Method method, List<MethodInterceptor> listeners) {
             this.method = method;
             this.listeners = listeners;
         }
 
-        public Method method;
-        public ArrayList<MethodInterceptor> listeners;
+        public Method getMethod() {
+            return method;
+        }
+
+        public void setMethod(Method method) {
+            this.method = method;
+        }
+
+        public List<MethodInterceptor> getListeners() {
+            return listeners;
+        }
+
+        public void setListeners(List<MethodInterceptor> listeners) {
+            this.listeners = listeners;
+        }
+        
     }
 }

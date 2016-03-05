@@ -15,6 +15,7 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.sql.SqlContext;
 import org.nutz.dao.sql.SqlType;
+import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.blob.SimpleBlob;
 import org.nutz.dao.util.blob.SimpleClob;
 import org.nutz.lang.Strings;
@@ -28,7 +29,7 @@ public abstract class NutStatement implements DaoStatement {
     private SqlType sqlType;
     
     private boolean forceExecQuery;
-
+    
     public NutStatement() {
         this.context = new SqlContext();
     }
@@ -179,54 +180,63 @@ public abstract class NutStatement implements DaoStatement {
     public String toString() {
         String sql = this.toPreparedStatement();
         StringBuilder sb = new StringBuilder(sql);
-
         // 准备打印参数表
         Object[][] mtrx = this.getParamMatrix();
+        SqlFormat format = Daos.getSqlFormat().clone();
         if (null != mtrx && mtrx.length > 0 && mtrx[0].length > 0) {
-            // 计算每列最大宽度，以及获取列参数的内容
-            int[] maxes = new int[mtrx[0].length];
-            String[][] sss = new String[mtrx.length][mtrx[0].length];
-            for (int row = 0; row < mtrx.length; row++)
-                for (int col = 0; col < mtrx[0].length; col++) {
-                    String s = param2String(mtrx[row][col]);
-                    maxes[col] = Math.max(maxes[col], s.length());
-                    sss[row][col] = s;
-                }
-            // 输出表头
-            sb.append("\n    |");
-            for (int i = 0; i < mtrx[0].length; i++) {
-                sb.append(' ');
-                sb.append(Strings.alignRight("" + (i + 1), maxes[i], ' '));
-                sb.append(" |");
-            }
-            // 输出分隔线
-            sb.append("\n    |");
-            for (int i = 0; i < mtrx[0].length; i++) {
-                sb.append('-');
-                sb.append(Strings.dup('-', maxes[i]));
-                sb.append("-|");
-            }
-
-            // 输出内容到字符串缓冲区
-            // XXX 只输出50行
-            int maxRow = mtrx.length > 10 ? 10 : mtrx.length;
-            for (int row = 0; row < maxRow; row++) {
+            if (format.isPrintParam()) {
+                // 计算每列最大宽度，以及获取列参数的内容
+                int[] maxes = new int[mtrx[0].length];
+                String[][] sss = new String[mtrx.length][mtrx[0].length];
+                for (int row = 0; row < mtrx.length; row++)
+                    for (int col = 0; col < mtrx[0].length; col++) {
+                        String s = param2String(mtrx[row][col]);
+                        maxes[col] = Math.max(maxes[col], s.length());
+                        if (format.getParamLengthLimit() > 0 && maxes[col] > format.getParamLengthLimit())
+                            maxes[col] = format.getParamLengthLimit();
+                        sss[row][col] = s;
+                    }
+                // 输出表头
                 sb.append("\n    |");
-                for (int col = 0; col < mtrx[0].length; col++) {
+                for (int i = 0; i < mtrx[0].length; i++) {
                     sb.append(' ');
-                    sb.append(Strings.alignLeft(sss[row][col], maxes[col], ' '));
+                    sb.append(Strings.alignRight("" + (i + 1), maxes[i], ' '));
                     sb.append(" |");
                 }
+                // 输出分隔线
+                sb.append("\n    |");
+                for (int i = 0; i < mtrx[0].length; i++) {
+                    sb.append('-');
+                    sb.append(Strings.dup('-', maxes[i]));
+                    sb.append("-|");
+                }
+
+                // 输出内容到字符串缓冲区
+                int maxRow = mtrx.length > format.getParamRowLimit() ? format.getParamRowLimit() : mtrx.length;
+                for (int row = 0; row < maxRow; row++) {
+                    sb.append("\n    |");
+                    for (int col = 0; col < mtrx[0].length; col++) {
+                        sb.append(' ');
+                        sb.append(Strings.cutLeft(sss[row][col], maxes[col], ' '));
+                        sb.append(" |");
+                    }
+                }
+
+                if (maxRow != mtrx.length)
+                    sb.append("\n -- Only display first " + maxRow + " lines , don't show the remaining record(count=" + mtrx.length + ")");
+            } else {
+                // 打印一下影响总行数
+                sb.append("\n -- " + mtrx.length + " lines effected -- ");
+                if (!format.isPrintExample())
+                    sb.append(" set printExample=true if you wanna print executed sql");
             }
-
-            if (maxRow != mtrx.length)
-                sb.append("\n -- Only display first 10 lines , don't show the remaining record(count="+mtrx.length+")");
-            // 输出可执行的 SQL 语句, TODO 格式非常不好看!!如果要复制SQL,很麻烦!!!
-            sb.append("\n  For example:> \"");
-            sb.append(toExampleStatement(mtrx, sql));
-            sb.append('"');
+            if (format.isPrintExample()) {
+                // 输出可执行的 SQL 语句, TODO 格式非常不好看!!如果要复制SQL,很麻烦!!!
+                sb.append("\n  For example:> \"");
+                sb.append(toExampleStatement(mtrx, sql));
+                sb.append('"');
+            }
         }
-
         return sb.toString();
     }
 
@@ -330,4 +340,5 @@ public abstract class NutStatement implements DaoStatement {
     public String forPrint() {
         return super.toString();
     }
+    
 }

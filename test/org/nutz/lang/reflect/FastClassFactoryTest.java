@@ -28,7 +28,7 @@ public class FastClassFactoryTest extends Assert {
 
     @Test
     public void testInvokeObjectMethodObjectArray() throws InvocationTargetException {
-        DefaultClassDefiner.DEBUG_DIR = "/nutz_fastclass/";
+        DefaultClassDefiner.debugDir = "/nutz_fastclass/";
         FastClass fc = FastClassFactory.get(Pet.class);
         //net.sf.cglib.reflect.FastClass fc2 = net.sf.cglib.reflect.FastClass.create(Pet.class);
         Mirror<Pet> mirror = Mirror.me(Pet.class);
