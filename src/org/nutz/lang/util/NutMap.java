@@ -369,4 +369,10 @@ public class NutMap extends LinkedHashMap<String, Object>implements NutBean {
         }
         return this;
     }
+    
+    public NutMap setnx(String key, Object val) {
+    	if (!containsKey(key))
+    		setv(key, val);
+    	return this;
+    }
 }
