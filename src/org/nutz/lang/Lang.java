@@ -2593,7 +2593,12 @@ public abstract class Lang {
     }
     
     public static StringBuilder execOutput(String cmd, Charset charset) throws IOException {
-        Process p = Runtime.getRuntime().exec(cmd.split(" "));
+        return execOutput(cmd.split(" "), charset);
+    }
+    
+    public static StringBuilder execOutput(String[] cmd, Charset charset) throws IOException {
+        Process p = Runtime.getRuntime().exec(cmd);
+        p.getOutputStream().close();
         InputStreamReader r = new InputStreamReader(p.getInputStream(), charset);
         StringBuilder sb = new StringBuilder();
         char[] buf = new char[1024];
