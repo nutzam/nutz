@@ -48,6 +48,7 @@ import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.lang.random.R;
 import org.nutz.lang.segment.CharSegment;
 import org.nutz.lang.util.Callback2;
 import org.nutz.log.Log;
@@ -354,10 +355,12 @@ public abstract class Daos {
      * 查询某sql的结果条数
      */
     public static long queryCount(Dao dao, String sql) {
+    	String tmpTable = "as _nutz_tmp";
+    	if (!dao.meta().isOracle())
+    		tmpTable += "_" + R.UU32();
         Sql sql2 = Sqls.fetchInt("select count(1) from ("
                                  + sql
-                                 + ") as _nutz_tmp_"
-                                 + System.currentTimeMillis());
+                                 + ")" + tmpTable);
         dao.execute(sql2);
         return sql2.getInt();
     }

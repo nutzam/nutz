@@ -677,4 +677,11 @@ public class SimpleDaoTest extends DaoCase {
     	assertTrue(pet.getId() > 0);
     	dao.insert(Pet.create(1000), true, true, true);
     }
+    
+
+    @Test
+    public void test_daos_queryCount() {
+    	String str = "select * from t_pet";
+    	Daos.queryCount(dao, str);
+    }
 }
