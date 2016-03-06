@@ -112,8 +112,8 @@ public class JsonRenderImpl implements JsonRender {
                     map2Json((Map) obj);
                 }
                 // 集合
-                else if (obj instanceof Collection) {
-                    coll2Json((Collection) obj);
+                else if (obj instanceof Iterable) {
+                    coll2Json((Iterable) obj);
                 }
                 // 数组
                 else if (obj.getClass().isArray()) {
@@ -396,7 +396,7 @@ public class JsonRenderImpl implements JsonRender {
         writer.append(']');
     }
 
-    private void coll2Json(Collection iterable) throws IOException {
+    private void coll2Json(Iterable iterable) throws IOException {
         writer.append('[');
         for (Iterator<?> it = iterable.iterator(); it.hasNext();) {
             render(it.next());
