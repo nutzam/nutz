@@ -53,13 +53,13 @@ public class HttpTest {
 //        //assertTrue(response2.getContent("GBK").indexOf("考试吧") > 0);
 //    }
 
-    @Test(expected = HttpException.class)
-    public void testTimeout() {
-        Response response = Http.get("www.baidu.com", 10 * 1000);
-        assertTrue(response.getStatus() == 200);
-        // 抛出超时异常
-        Http.get("www.sina.com.cn", 1);
-    }
+//    @Test(expected = HttpException.class)
+//    public void testTimeout() {
+//        Response response = Http.get("www.baidu.com", 10 * 1000);
+//        assertTrue(response.getStatus() == 200);
+//        // 抛出超时异常
+//        Http.get("www.sina.com.cn", 1);
+//    }
 
     @Test
     public void test_https() {
