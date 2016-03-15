@@ -15,8 +15,8 @@ import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.impl.AdaptorErrorContext;
 
 /**
- * 假设，整个输入输入流，是一个 JSON 字符串
- * 
+ * 假设，整个获得的输入流，是一个 JSON 字符串
+ *
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  */
