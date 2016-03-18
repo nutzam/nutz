@@ -14,14 +14,22 @@ import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 
+/**
+ * 如果数据已经是byte[],请使用javax.sql.rowset.serial.SerialBlob
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public class SimpleBlob implements Blob, Serializable {
 
     private static final long serialVersionUID = 4192412466410263969L;
     
-    private File file;
+    protected File file;
 
     public SimpleBlob() {}
     
+    /**
+     * 如果数据已经是byte[],请使用javax.sql.rowset.serial.SerialBlob
+     */
     public SimpleBlob(File f) {
         this.file = f;
     }
@@ -81,5 +89,9 @@ public class SimpleBlob implements Blob, Serializable {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException{
         file = Jdbcs.getFilePool().createFile(".blob");
         Files.write(file, in);
+    }
+    
+    public void setFile(File file) {
+        this.file = file;
     }
 }

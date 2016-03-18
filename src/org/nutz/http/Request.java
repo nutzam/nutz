@@ -135,25 +135,28 @@ public class Request {
         }
     }
 
-    public void setInputStream(InputStream inputStream) {
+    public Request setInputStream(InputStream inputStream) {
         this.inputStream = inputStream;
+        return this;
     }
 
     public byte[] getData() {
         return data;
     }
 
-    public void setData(byte[] data) {
+    public Request setData(byte[] data) {
         this.data = data;
+        return this;
     }
 
-    public void setData(String data) {
+    public Request setData(String data) {
         try {
             this.data = data.getBytes(Encoding.UTF8);
         }
         catch (UnsupportedEncodingException e) {
             // 不可能
         }
+        return this;
     }
 
     private Request setParams(Map<String, Object> params) {
