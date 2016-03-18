@@ -22,7 +22,6 @@ abstract class TmplDynamicEle<T> implements TmplEle {
         this.dft = dft_str;
     }
 
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("${").append(key);
         if (null != _type) {
@@ -38,7 +37,6 @@ abstract class TmplDynamicEle<T> implements TmplEle {
         return sb.append('}').toString();
     }
 
-    @Override
     public void join(StringBuilder sb, NutBean context, boolean showKey) {
         Object val = Mapl.cell(context, key);
         if (null == val && null != dft) {
