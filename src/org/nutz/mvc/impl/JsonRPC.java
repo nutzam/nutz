@@ -3,17 +3,25 @@ package org.nutz.mvc.impl;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.nutz.http.Request;
+import org.nutz.http.Sender;
+import org.nutz.http.Request.METHOD;
+import org.nutz.http.Response;
 import org.nutz.json.Json;
 import org.nutz.lang.Each;
 import org.nutz.lang.Invoking;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
+import org.nutz.lang.random.R;
 import org.nutz.lang.util.NutMap;
 
 /**
@@ -36,6 +44,9 @@ public class JsonRPC {
     public static final int ServerError = -32000;
     public static final String Version = "2.0";
 
+    /**
+     * 服务端
+     */
     public static NutMap invoke(final Object obj, Reader r) {
         final NutMap resp = new NutMap();
         resp.setv("jsonrpc", Version);
@@ -54,7 +65,7 @@ public class JsonRPC {
             Lang.each(req, new Each<Object>() {
                 public void invoke(int index, Object ele, int length) {
                     if (ele instanceof Map) {
-                        results.add(_invoke(obj, new NutMap((Map<String, Object>) ele)));
+                        results.add(JsonRPC.invoke(obj, new NutMap((Map<String, Object>) ele)));
                     } else {
                         NutMap _resp = new NutMap();
                         _resp.setv("jsonrpc", Version).setv("error", error(InvalidRequest, "Invalid Request", "not map or list"));
@@ -64,13 +75,13 @@ public class JsonRPC {
             });
             return resp.setv("result", results);
         } else if (req instanceof Map) { // 单一调用
-            return _invoke(obj, new NutMap((Map<String, Object>) req));
+            return invoke(obj, new NutMap((Map<String, Object>) req));
         } else { // 传的是什么鸟,拒绝
             return resp.setv("error", error(InvalidRequest, "Invalid Request", "not map or list"));
         }
     }
 
-    public static NutMap _invoke(Object obj, NutMap req) {
+    public static NutMap invoke(Object obj, NutMap req) {
         NutMap resp = new NutMap();
         String version = req.getString("jsonrpc", Version);
         String id = req.getString("id");
@@ -108,5 +119,35 @@ public class JsonRPC {
         PrintWriter writer = new PrintWriter(sw);
         e.printStackTrace(writer);
         return sw.toString();
+    }
+
+    /**
+     * 客户端. 用于生成一个代理接口的实例,透明访问json-rpc服务
+     * @param klass 需要代理的接口
+     * @param endpoint jsonrpc URL入口
+     * @param namespace 命名空间,非json-rpc标准,扩展用,不需要就传null
+     * @param timeout 超时设置,若永不超时,设置为-1
+     * @return 代理实例
+     */
+    public static <T> T mapper(Class<T> klass, final String endpoint, final String namespace, final int timeout) {
+        return (T)Proxy.newProxyInstance(klass.getClassLoader(), new Class<?>[]{klass}, new InvocationHandler() {
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                NutMap jreq = new NutMap();
+                jreq.setv("jsonrpc", "2.0").setv("id", R.UU32()).setv("method", method.getName());
+                if (!Strings.isBlank(namespace)) {
+                    jreq.put("namespace", namespace);
+                }
+                jreq.setv("params", args);
+                Request req = Request.create(endpoint, METHOD.POST);
+                req.setData(Json.toJson(jreq));
+                Response resp = Sender.create(req).setTimeout(timeout).send();
+                if (resp.isOK()) {
+                    if (method.getReturnType() == Void.class)
+                        return null;
+                    return Json.fromJson(method.getGenericReturnType(), resp.getReader());
+                }
+                throw new RuntimeException("resp code="+resp.getStatus());
+            }
+        });
     }
 }
