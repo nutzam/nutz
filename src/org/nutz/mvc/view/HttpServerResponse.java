@@ -20,7 +20,7 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
 public class HttpServerResponse implements Cloneable {
-	
+
     private static final Log log = Logs.get();
 
     private int statusCode;
@@ -65,18 +65,10 @@ public class HttpServerResponse implements Cloneable {
                     statusText = Http.getStatusText(statusCode);
 
                 // 读取头部信息
-                boolean lastIsBlank = false;
                 pos++;
                 int end;
                 while ((end = str.indexOf('\n', pos)) > pos) {
                     String line = str.substring(pos, end);
-                    lastIsBlank = Strings.isBlank(line);
-                    if (lastIsBlank) {
-                        pos = end + 1;
-                        break;
-                    } else {
-                        lastIsBlank = true;
-                    }
                     // 拆分一下行
                     int p2 = line.indexOf(':');
                     String key = Strings.trim(line.substring(0, p2));
@@ -86,6 +78,9 @@ public class HttpServerResponse implements Cloneable {
                     // 指向下一行
                     pos = end + 1;
                 }
+
+                // 头部一定读取结束了，向下跳一行
+                pos++;
 
                 // 读取剩余作为 body
                 if (pos < str.length()) {
@@ -157,10 +152,10 @@ public class HttpServerResponse implements Cloneable {
 
     public void render(HttpServletResponse resp) {
         resp.setStatus(statusCode);
-        
+
         // 标记是否需要sendError
         boolean flag = statusCode >= 400;
-        
+
         if (null != header && header.size() > 0) {
             for (Map.Entry<String, String> en : header.entrySet()) {
                 resp.setHeader(en.getKey(), en.getValue());
@@ -180,12 +175,13 @@ public class HttpServerResponse implements Cloneable {
             Streams.writeAndClose(out, body);
             flag = false;
         }
-        
-        if (flag){
+
+        if (flag) {
             try {
                 resp.sendError(statusCode);
-            } catch (IOException e) {
-                log.debugf("sendError(%d) failed -- %s",statusCode, e.getMessage());
+            }
+            catch (IOException e) {
+                log.debugf("sendError(%d) failed -- %s", statusCode, e.getMessage());
             }
         }
     }
