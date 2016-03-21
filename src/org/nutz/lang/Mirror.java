@@ -883,6 +883,8 @@ public class Mirror<T> {
         if (!klass.isPrimitive()) {
             if (this.isPrimitiveNumber() || this.is(Boolean.class) || this.is(Character.class))
                 return klass;
+            if (Number.class.isAssignableFrom(klass))
+                return klass;
             throw Lang.makeThrow("Class '%s' should be a primitive class", klass.getName());
         }
         // TODO 用散列能快一点

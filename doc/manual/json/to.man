@@ -49,7 +49,7 @@ JsonFormat格式控制
 	Json.toJson(pet, JsonFormat.full());    // 全部输出模式 -- 换行,不忽略null值
 	Json.toJson(pet, JsonFormat.nice());    // 一般模式 -- 换行,但忽略null值
 	Json.toJson(pet, JsonFormat.forLook()); // 为了打印出来容易看，把名字去掉引号
-	Json.toJson(pet, JsonFormat.tiny());    // 不换行,不忽略空值
+	Json.toJson(pet, JsonFormat.tidy());    // 不换行,不忽略空值
 	}}}
 	
 ------------------------------------------------------

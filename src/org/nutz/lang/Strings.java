@@ -343,6 +343,43 @@ public class Strings {
         return cs.subSequence(l, r + 1).toString();
     }
 
+    public static String trimLeft(CharSequence cs) {
+        if (null == cs)
+            return null;
+        int length = cs.length();
+        if (length == 0)
+            return cs.toString();
+        int l = 0;
+        for (; l < length; l++) {
+            if (!Character.isWhitespace(cs.charAt(l)))
+                break;
+        }
+        if ((length - 1) == l)
+            return "";
+        if (l > 0)
+            return cs.subSequence(l, length).toString();
+        return cs.toString();
+    }
+
+    public static String trimRight(CharSequence cs) {
+        if (null == cs)
+            return null;
+        int length = cs.length();
+        if (length == 0)
+            return cs.toString();
+        int last = length - 1;
+        int r = last;
+        for (; r > 0; r--) {
+            if (!Character.isWhitespace(cs.charAt(r)))
+                break;
+        }
+        if (0 == r)
+            return "";
+        if (r == last)
+            return cs.toString();
+        return cs.subSequence(0, r + 1).toString();
+    }
+
     /**
      * 将给定字符串，变成 "xxx...xxx" 形式的字符串
      * 
@@ -1152,15 +1189,14 @@ public class Strings {
         // 返回拆分后的数组
         return list.toArray(new String[list.size()]);
     }
-    
+
     public static String safeToString(Object obj, String dft) {
         try {
             if (obj == null)
                 return "null";
             return obj.toString();
         }
-        catch (Exception e) {
-        }
+        catch (Exception e) {}
         if (dft != null)
             return dft;
         return String.format("/*%s(toString FAILED)*/", obj.getClass().getName());
