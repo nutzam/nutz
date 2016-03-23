@@ -20,80 +20,84 @@ import org.nutz.lang.random.R;
 
 public class FilePostSender extends PostSender {
 
-    public static final String SEPARATOR = "\r\n";
+	public static final String SEPARATOR = "\r\n";
 
-    public FilePostSender(Request request) {
-        super(request);
-    }
+	public FilePostSender(Request request) {
+		super(request);
+	}
 
-    @Override
-    public Response send() throws HttpException {
-        try {
-            String boundary = "---------------------------[Nutz]aabbcc"+R.UU32();
-            openConnection();
-            setupRequestHeader();
-            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-            setupDoInputOutputFlag();
-            Map<String, Object> params = request.getParams();
-            if (null != params && params.size() > 0) {
-                final DataOutputStream outs = new DataOutputStream(conn.getOutputStream());
-                for (Entry<String, ?> entry : params.entrySet()) {
-                    outs.writeBytes("--" + boundary + SEPARATOR);
-                    final String key = entry.getKey();
-                    Object val = entry.getValue();
-                    if (val == null)
-                        val = "";
-                    Lang.each(val, new Each<Object>() {
-                        public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop, LoopException {
+	public static FilePostSender create(Request request) {
+		return new FilePostSender(request);
+	}
 
-                            File f = null;
-                            if (ele instanceof File)
-                                f = (File) ele;
-                            try {
-                                if (f != null && f.exists() && f.length() > 0) {
-                                    outs.writeBytes("Content-Disposition:    form-data;    name=\""
-                                                    + key
-                                                    + "\";    filename=\"");
-                                    outs.write(f.getName().getBytes(request.getEnc()));
-                                    outs.writeBytes("\"" + SEPARATOR);
-                                    outs.writeBytes("Content-Type:   application/octet-stream"
-                                                    + SEPARATOR
-                                                    + SEPARATOR);
-                                    InputStream is = null;
-                                    try {
-                                        is = Streams.fileIn(f);
-                                        Streams.write(outs, is);
-                                        outs.writeBytes(SEPARATOR);
-                                    }
-                                    finally {
-                                        Streams.safeClose(is);
-                                    }
-                                } else {
-                                    outs.writeBytes("Content-Disposition:    form-data;    name=\""
-                                                    + key
-                                                    + "\""
-                                                    + SEPARATOR
-                                                    + SEPARATOR);
-                                    outs.write(String.valueOf(ele).getBytes(request.getEnc()));
-                                    outs.writeBytes(SEPARATOR);
-                                }
-                            }
-                            catch (Exception e) {
-                                throw Lang.wrapThrow(e);
-                            }
-                        }
-                    });
-                }
-                outs.writeBytes("--" + boundary + "--" + SEPARATOR);
-                Streams.safeFlush(outs);
-                Streams.safeClose(outs);
-            }
+	@Override
+	public Response send() throws HttpException {
+		try {
+			String boundary = "---------------------------[Nutz]aabbcc" + R.UU32();
+			openConnection();
+			setupRequestHeader();
+			conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+			setupDoInputOutputFlag();
+			Map<String, Object> params = request.getParams();
+			if (null != params && params.size() > 0) {
+				final DataOutputStream outs = new DataOutputStream(conn.getOutputStream());
+				for (Entry<String, ?> entry : params.entrySet()) {
+					outs.writeBytes("--" + boundary + SEPARATOR);
+					final String key = entry.getKey();
+					Object val = entry.getValue();
+					if (val == null)
+						val = "";
+					Lang.each(val, new Each<Object>() {
+						@Override
+						public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop, LoopException {
 
-            return createResponse(getResponseHeader());
+							File f = null;
+							if (ele instanceof File)
+								f = (File) ele;
+							try {
+								if (f != null && f.exists() && f.length() > 0) {
+									outs.writeBytes("Content-Disposition:    form-data;    name=\""
+											+ key
+											+ "\";    filename=\"");
+									outs.write(f.getName().getBytes(request.getEnc()));
+									outs.writeBytes("\"" + SEPARATOR);
+									outs.writeBytes("Content-Type:   application/octet-stream"
+											+ SEPARATOR
+											+ SEPARATOR);
+									InputStream is = null;
+									try {
+										is = Streams.fileIn(f);
+										Streams.write(outs, is);
+										outs.writeBytes(SEPARATOR);
+									}
+									finally {
+										Streams.safeClose(is);
+									}
+								} else {
+									outs.writeBytes("Content-Disposition:    form-data;    name=\""
+											+ key
+											+ "\""
+											+ SEPARATOR
+											+ SEPARATOR);
+									outs.write(String.valueOf(ele).getBytes(request.getEnc()));
+									outs.writeBytes(SEPARATOR);
+								}
+							}
+							catch (Exception e) {
+								throw Lang.wrapThrow(e);
+							}
+						}
+					});
+				}
+				outs.writeBytes("--" + boundary + "--" + SEPARATOR);
+				Streams.safeFlush(outs);
+				Streams.safeClose(outs);
+			}
 
-        }
-        catch (IOException e) {
-            throw new HttpException(request.getUrl().toString(), e);
-        }
-    }
+			return createResponse(getResponseHeader());
+
+		} catch (IOException e) {
+			throw new HttpException(request.getUrl().toString(), e);
+		}
+	}
 }
