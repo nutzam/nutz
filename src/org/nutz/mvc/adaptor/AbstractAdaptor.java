@@ -26,6 +26,7 @@ import org.nutz.mvc.Scope;
 import org.nutz.mvc.ViewModel;
 import org.nutz.mvc.adaptor.injector.AllAttrInjector;
 import org.nutz.mvc.adaptor.injector.AppAttrInjector;
+import org.nutz.mvc.adaptor.injector.ArrayInjector;
 import org.nutz.mvc.adaptor.injector.CookieInjector;
 import org.nutz.mvc.adaptor.injector.HttpInputStreamInjector;
 import org.nutz.mvc.adaptor.injector.HttpReaderInjector;
@@ -304,11 +305,22 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
     protected ParamInjector paramNameInject(Method method, int index) {
     	if (!Lang.isAndroid) {
     		List<String> names = MethodParamNamesScaner.getParamNames(method);
-            if (names != null)
+            if (names != null) {
+                String name = names.get(index);
+                Class<?> type = method.getParameterTypes()[index];
+                if (type.isArray()) {
+                    return new ArrayInjector(name,
+                                             null,
+                                             null,
+                                             null,
+                                             null,
+                                             true);
+                }
                 return new NameInjector(names.get(index),
                                         null,
                                         method.getParameterTypes()[index],
                                         null, null);
+            }
             else if (log.isInfoEnabled())
                 log.infof("Complie without debug info? can't deduce param name. fail back to PathArgInjector!! index=%d > %s",
                           index,
