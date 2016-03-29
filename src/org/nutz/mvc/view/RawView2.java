@@ -10,31 +10,41 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.lang.Streams;
+import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
 public class RawView2 extends RawView {
-	
-	private static final Log log = Logs.get();
-	
-	protected DataInputStream in;
-	
-	protected int maxLen;
-	
-	protected RawView2(){}
 
-	public RawView2(String contentType, InputStream in, int maxLen) {
-		super(contentType);
-		this.in = new DataInputStream(in);
-		this.maxLen = maxLen;
-	}
+    private static final Log log = Logs.get();
 
-	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj) throws Throwable {
-		try {
+    protected DataInputStream in;
+
+    protected int maxLen;
+
+    protected String CONTENT_DISPOSITION;
+
+    protected RawView2() {}
+
+    public RawView2(String contentType, InputStream in, int maxLen) {
+        super(contentType);
+        this.in = new DataInputStream(in);
+        this.maxLen = maxLen;
+    }
+
+    public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
+            throws Throwable {
+        try {
             if (resp.getContentType() == null)
                 resp.setContentType(contentType);
             resp.addHeader("Connection", "close");
             String rangeStr = req.getHeader("Range");
+
+            if (!resp.containsHeader("Content-Disposition")
+                && !Strings.isBlank(CONTENT_DISPOSITION)) {
+                resp.setHeader("Content-Disposition", CONTENT_DISPOSITION);
+            }
+
             if (rangeStr == null) {
                 resp.setContentLength(maxLen);
                 Streams.writeAndClose(resp.getOutputStream(), in);
@@ -72,5 +82,5 @@ public class RawView2 extends RawView {
         finally {
             Streams.safeClose(in);
         }
-	}
+    }
 }

@@ -36,6 +36,7 @@ import javax.imageio.stream.ImageOutputStream;
 
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Streams;
 import org.nutz.repo.Base64;
 
 /**
@@ -575,6 +576,21 @@ public class Images {
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);
+        }
+    }
+
+    /**
+     * @see #write(RenderedImage, String, OutputStream)
+     */
+    public static void writeAndClose(RenderedImage im, String imFormat, OutputStream out) {
+        try {
+            ImageIO.write(im, imFormat, out);
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+        finally {
+            Streams.safeClose(out);
         }
     }
 
