@@ -97,6 +97,7 @@ public class EntityHolder {
         final NutEntity<T> en = new NutEntity(map.getClass());
         en.setTableName(tableName);
         en.setViewName(tableName);
+        boolean check = false;
         for (Entry<String, ?> entry : map.entrySet()) {
             String key = entry.getKey();
             // 是实体补充描述吗？
@@ -145,15 +146,20 @@ public class EntityHolder {
             ef.setEjecting(new EjectFromMap(entry.getKey()));
 
             en.addMappingField(ef);
+            
+
+            if (!check)
+                check = mirror.isEnum();
         }
         en.checkCompositeFields(null);
 
         // 最后在数据库中验证一下实体各个字段
-        support.run(new ConnCallback() {
-            public void invoke(Connection conn) throws Exception {
-                support.expert.setupEntityField(conn, en);
-            }
-        });
+        if (check)
+            support.run(new ConnCallback() {
+                public void invoke(Connection conn) throws Exception {
+                    support.expert.setupEntityField(conn, en);
+                }
+            });
 
         // 搞定返回
         return en;
