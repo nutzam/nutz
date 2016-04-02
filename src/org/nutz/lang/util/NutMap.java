@@ -14,7 +14,6 @@ import java.util.Set;
 import org.nutz.castor.Castors;
 import org.nutz.lang.Each;
 import org.nutz.lang.Lang;
-import org.nutz.lang.ObjectFactory;
 import org.nutz.lang.Strings;
 import org.nutz.lang.born.Borning;
 
