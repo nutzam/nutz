@@ -195,4 +195,7 @@ public class MockHttpServletResponse extends HttpServletResponseWrapper {
         return headers.get(key);
     }
 
+    public boolean isCommitted() {
+        return false;
+    }
 }
