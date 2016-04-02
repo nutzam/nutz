@@ -126,7 +126,7 @@ DaoUp.me().close();
 
 也可以将repositories配置放入$HOME/.m2/settings.xml中
 
-或者直接去[快照库下载](https://oss.sonatype.org/content/repositories/snapshots/org/nutz/nutz/1.r.55-SNAPSHOT/)
+或者直接去[快照库下载](https://oss.sonatype.org/content/repositories/snapshots/org/nutz/nutz/1.r.56-SNAPSHOT/)
 
 
 ## Sponsorship
