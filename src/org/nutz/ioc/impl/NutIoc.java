@@ -326,7 +326,7 @@ public class NutIoc implements Ioc2 {
 				IocObject iobj = loader.load(createLoading(), name);
 				if (iobj != null && iobj.getType() != null && klass.isAssignableFrom(iobj.getType()))
 					names.add(name);
-			} catch (ObjectLoadException e) {
+			} catch (Exception e) {
 			}
 		}
     	IocContext cntx;
