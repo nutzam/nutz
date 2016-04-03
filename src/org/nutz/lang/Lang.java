@@ -63,6 +63,8 @@ import org.nutz.lang.util.SimpleContext;
  * @author bonyfish(mc02cxj@gmail.com)
  */
 public abstract class Lang {
+    
+    public static int HASH_BUFF_SIZE = 16*1024;
 
     public static ComboException comboThrow(Throwable... es) {
         ComboException ce = new ComboException();
@@ -2289,7 +2291,7 @@ public abstract class Lang {
         try {
             MessageDigest md = MessageDigest.getInstance(algorithm);
 
-            byte[] bs = new byte[1024];
+            byte[] bs = new byte[HASH_BUFF_SIZE];
             int len = 0;
             while ((len = ins.read(bs)) != -1) {
                 md.update(bs, 0, len);
@@ -2593,7 +2595,7 @@ public abstract class Lang {
     }
     
     public static StringBuilder execOutput(String cmd, Charset charset) throws IOException {
-        return execOutput(cmd.split(" "), charset);
+        return execOutput(Strings.splitIgnoreBlank(cmd, " "), charset);
     }
     
     public static StringBuilder execOutput(String[] cmd, Charset charset) throws IOException {

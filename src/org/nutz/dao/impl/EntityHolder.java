@@ -97,6 +97,7 @@ public class EntityHolder {
         final NutEntity<T> en = new NutEntity(map.getClass());
         en.setTableName(tableName);
         en.setViewName(tableName);
+        boolean check = false;
         for (Entry<String, ?> entry : map.entrySet()) {
             String key = entry.getKey();
             // 是实体补充描述吗？
@@ -116,6 +117,8 @@ public class EntityHolder {
 
             if (key.startsWith("+")) {
                 ef.setAsAutoIncreasement();
+                if (mirror != null && mirror.isIntLike())
+                    ef.setAsId();
                 key = key.substring(1);
             }
             if (key.startsWith("!")) {
@@ -139,19 +142,24 @@ public class EntityHolder {
             ef.setAdaptor(support.expert.getAdaptor(ef));
             if (mirror != null)
                 ef.setType(mirror.getType());
-            ef.setInjecting(new InjectToMap(key));
-            ef.setEjecting(new EjectFromMap(key));
+            ef.setInjecting(new InjectToMap(key)); // 这里比较纠结,回设的时候应该用什么呢?
+            ef.setEjecting(new EjectFromMap(entry.getKey()));
 
             en.addMappingField(ef);
+            
+
+            if (!check)
+                check = mirror.isEnum();
         }
         en.checkCompositeFields(null);
 
         // 最后在数据库中验证一下实体各个字段
-        support.run(new ConnCallback() {
-            public void invoke(Connection conn) throws Exception {
-                support.expert.setupEntityField(conn, en);
-            }
-        });
+        if (check)
+            support.run(new ConnCallback() {
+                public void invoke(Connection conn) throws Exception {
+                    support.expert.setupEntityField(conn, en);
+                }
+            });
 
         // 搞定返回
         return en;

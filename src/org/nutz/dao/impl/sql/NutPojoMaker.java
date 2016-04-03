@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.Map;
 
 import org.nutz.dao.DaoException;
 import org.nutz.dao.entity.Entity;
@@ -101,7 +103,11 @@ public class NutPojoMaker implements PojoMaker {
     	
     	public Object invoke(Connection conn, ResultSet rs, final Pojo pojo, Statement stmt) throws SQLException {
 			final ResultSet _rs = stmt.getGeneratedKeys();
-			Lang.each(pojo.getOperatingObject(), new Each<Object>() {
+			Object obj = pojo.getOperatingObject();
+			if (obj instanceof Map) {
+			    obj = Arrays.asList(obj);
+			}
+			Lang.each(obj, new Each<Object>() {
 				public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop, LoopException {
 					try {
 						if (!_rs.next())

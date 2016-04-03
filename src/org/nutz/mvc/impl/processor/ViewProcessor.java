@@ -43,6 +43,11 @@ public class ViewProcessor extends AbstractProcessor {
     public void process(ActionContext ac) throws Throwable {
         Object re = ac.getMethodReturn();
         Object err = ac.getError();
+        if (ac.getResponse().isCommitted()) {
+            log.info("Response is committed, skip mvc view render");
+            doNext(ac);
+            return;
+        }
         if (re != null && re instanceof View) {
             if (re instanceof ViewWrapper)
                 putRequestAttribute(ac.getRequest(), ((ViewWrapper)re).getData());

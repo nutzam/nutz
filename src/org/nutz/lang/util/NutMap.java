@@ -15,6 +15,7 @@ import org.nutz.castor.Castors;
 import org.nutz.lang.Each;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.lang.born.Borning;
 
 /**
  * 对于 LinkedHashMap 的一个友好封装
@@ -46,6 +47,11 @@ public class NutMap extends LinkedHashMap<String, Object>implements NutBean {
     public NutMap(String json) {
         super();
         this.putAll(Lang.map(json));
+    }
+    
+    public NutMap(String key, Object value) {
+        super();
+        put(key, value);
     }
 
     /**
@@ -370,9 +376,31 @@ public class NutMap extends LinkedHashMap<String, Object>implements NutBean {
         return this;
     }
     
+    /**
+     * 与JDK8+的 putIfAbsent(key, val)一致, 当且仅当值不存在时设置进去,但与putIfAbsent返回值有不一样
+     * @param key 键
+     * @param val 值
+     * @return 当前的NutMap实例
+     */
     public NutMap setnx(String key, Object val) {
     	if (!containsKey(key))
     		setv(key, val);
     	return this;
+    }
+    
+    /**
+     * 获取对应的值,若不存在,用factory创建一个,然后设置进去,返回之
+     * @param key 键
+     * @param factory 若不存在的话用于生成实例
+     * @return 已存在的值或新的值
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getOrBorn(String key, Borning<T> factory) {
+        T t = (T)get(key);
+        if (t == null) {
+            t = factory.born(key);
+            put(key, t);
+        }
+        return t;
     }
 }
