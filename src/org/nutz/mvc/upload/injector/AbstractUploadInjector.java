@@ -27,6 +27,8 @@ public abstract class AbstractUploadInjector implements ParamInjector {
         if (obj instanceof TempFile) {
             return (TempFile) obj;
         }
+        else if (obj instanceof String)
+            return null;
         // 如果是列表，则取第一项
         else {
             List<?> list = (List<?>) obj;
