@@ -7,6 +7,7 @@ import java.lang.reflect.Array;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.nutz.castor.Castors;
@@ -111,7 +112,13 @@ public abstract class NutStatement implements DaoStatement {
     // TODO 是不是太暴力了涅~~~ --> 不是一般的暴力!!
     @SuppressWarnings("unchecked")
     public <T> List<T> getList(Class<T> classOfT) {
-        return (List<T>) getResult();// TODO 考虑先遍历转换一次
+        Object re = getResult();
+        if (re == null)
+            return null;
+        if (re.getClass().isArray()) {
+            return Arrays.asList((T[])re);
+        }
+        return (List<T>) re;// TODO 考虑先遍历转换一次
     }
 
     public <T> T getObject(Class<T> classOfT) {
