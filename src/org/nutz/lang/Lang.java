@@ -865,12 +865,12 @@ public abstract class Lang {
      *            采用集合中元素的哪个一个字段为键。
      * @return Map 对象
      */
-    public static <T extends Map<Object, Object>> Map<?, ?> collection2map(Class<T> mapClass,
+    public static <T extends Map<Object, Object>> T collection2map(Class<T> mapClass,
                                                                            Collection<?> coll,
                                                                            String keyFieldName) {
         if (null == coll)
             return null;
-        Map<Object, Object> map = createMap(mapClass);
+        T map = createMap(mapClass);
         if (coll.size() > 0) {
             Iterator<?> it = coll.iterator();
             Object obj = it.next();
@@ -883,7 +883,7 @@ public abstract class Lang {
                 map.put(key, obj);
             }
         }
-        return map;
+        return (T)map;
     }
 
     /**
@@ -975,12 +975,12 @@ public abstract class Lang {
      *            采用集合中元素的哪个一个字段为键。
      * @return Map 对象
      */
-    public static <T extends Map<Object, Object>> Map<?, ?> array2map(Class<T> mapClass,
+    public static <T extends Map<Object, Object>> T array2map(Class<T> mapClass,
                                                                       Object array,
                                                                       String keyFieldName) {
         if (null == array)
             return null;
-        Map<Object, Object> map = createMap(mapClass);
+        T map = createMap(mapClass);
         int len = Array.getLength(array);
         if (len > 0) {
             Object obj = Array.get(array, 0);
@@ -994,13 +994,14 @@ public abstract class Lang {
         return map;
     }
 
-    private static <T extends Map<Object, Object>> Map<Object, Object> createMap(Class<T> mapClass) {
-        Map<Object, Object> map;
+    @SuppressWarnings("unchecked")
+    private static <T extends Map<Object, Object>> T createMap(Class<T> mapClass) {
+        T map;
         try {
             map = mapClass.newInstance();
         }
         catch (Exception e) {
-            map = new HashMap<Object, Object>();
+            map = (T) new HashMap<Object, Object>();
         }
         if (!mapClass.isAssignableFrom(map.getClass())) {
             throw Lang.makeThrow("Fail to create map [%s]", mapClass.getName());
