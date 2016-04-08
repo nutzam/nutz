@@ -685,7 +685,7 @@ public abstract class Daos {
     }
 
     public static void migration(Dao dao, final Class<?> klass, final boolean add, final boolean del) {
-        migration(dao, klass, add, del, true, null);
+        migration(dao, klass, add, del, false, null);
     }
 
     public static void migration(Dao dao,
@@ -693,7 +693,7 @@ public abstract class Daos {
                                  final boolean add,
                                  final boolean del,
                                  Object obj) {
-        migration(dao, klass, add, del, true, obj);
+        migration(dao, klass, add, del, false, obj);
     }
 
     /**
