@@ -865,25 +865,26 @@ public abstract class Lang {
      *            采用集合中元素的哪个一个字段为键。
      * @return Map 对象
      */
-    public static <T extends Map<Object, Object>> Map<?, ?> collection2map(Class<T> mapClass,
+    @SuppressWarnings("unchecked")
+    public static <T extends Map<K, V>,K,V> T collection2map(Class<T> mapClass,
                                                                            Collection<?> coll,
                                                                            String keyFieldName) {
         if (null == coll)
             return null;
-        Map<Object, Object> map = createMap(mapClass);
+        Map<K, V> map = createMap(mapClass);
         if (coll.size() > 0) {
             Iterator<?> it = coll.iterator();
-            Object obj = it.next();
+            V obj = (V) it.next();
             Mirror<?> mirror = Mirror.me(obj.getClass());
-            Object key = mirror.getValue(obj, keyFieldName);
+            K key = (K) mirror.getValue(obj, keyFieldName);
             map.put(key, obj);
             for (; it.hasNext();) {
-                obj = it.next();
-                key = mirror.getValue(obj, keyFieldName);
+                obj = (V) it.next();
+                key = (K) mirror.getValue(obj, keyFieldName);
                 map.put(key, obj);
             }
         }
-        return map;
+        return (T) map;
     }
 
     /**
@@ -975,37 +976,39 @@ public abstract class Lang {
      *            采用集合中元素的哪个一个字段为键。
      * @return Map 对象
      */
-    public static <T extends Map<Object, Object>> Map<?, ?> array2map(Class<T> mapClass,
+    @SuppressWarnings("unchecked")
+    public static <T extends Map<K,V>,K,V> T array2map(Class<T> mapClass,
                                                                       Object array,
                                                                       String keyFieldName) {
         if (null == array)
             return null;
-        Map<Object, Object> map = createMap(mapClass);
+        Map<K,V> map = createMap(mapClass);
         int len = Array.getLength(array);
         if (len > 0) {
-            Object obj = Array.get(array, 0);
+            V obj = (V) Array.get(array, 0);
             Mirror<?> mirror = Mirror.me(obj.getClass());
             for (int i = 0; i < len; i++) {
-                obj = Array.get(array, i);
-                Object key = mirror.getValue(obj, keyFieldName);
+                obj = (V) Array.get(array, i);
+                K key = (K) mirror.getValue(obj, keyFieldName);
                 map.put(key, obj);
             }
         }
-        return map;
+        return (T) map;
     }
 
-    private static <T extends Map<Object, Object>> Map<Object, Object> createMap(Class<T> mapClass) {
-        Map<Object, Object> map;
+    @SuppressWarnings("unchecked")
+    private static <T extends Map<K, V>,K,V> T createMap(Class<T> mapClass) {
+        Map<K,V> map;
         try {
             map = mapClass.newInstance();
         }
         catch (Exception e) {
-            map = new HashMap<Object, Object>();
+            map = new HashMap<K,V>();
         }
         if (!mapClass.isAssignableFrom(map.getClass())) {
             throw Lang.makeThrow("Fail to create map [%s]", mapClass.getName());
         }
-        return map;
+        return (T) map;
     }
 
     /**
