@@ -169,8 +169,11 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     }
 
     public SqlExpressionGroup or(SqlExpression exp) {
-    	if (exp == null)
-    		throw new NullPointerException("exp is null!");
+        if (exp == null) {
+            if (log.isTraceEnabled())
+                log.trace("ignore null SqlExpression");
+            return this;
+        }
         if (!exps.isEmpty())
             _add(new Static("OR"));
         return _add(exp);

@@ -483,9 +483,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      * @see Cnd#and(String, String, Object)
      */
     public Cnd andEX(String name, String op, Object value) {
-        if (_ex(value))
-            return this;
-        return and(Cnd.exp(name, op, value));
+        return and(Cnd.expEX(name, op, value));
     }
     
     /**
@@ -493,9 +491,13 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      * @see Cnd#or(String, String, Object)
      */
     public Cnd orEX(String name, String op, Object value) {
+        return or(Cnd.expEX(name, op, value));
+    }
+    
+    protected static SqlExpression expEX(String name, String op, Object value) {
         if (_ex(value))
-            return this;
-        return or(Cnd.exp(name, op, value));
+            return null;
+        return Cnd.exp(name, op, value);
     }
 
     @SuppressWarnings("rawtypes")
