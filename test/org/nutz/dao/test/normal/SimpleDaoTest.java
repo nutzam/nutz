@@ -684,4 +684,22 @@ public class SimpleDaoTest extends DaoCase {
     	String str = "select * from t_pet";
     	Daos.queryCount(dao, str);
     }
+
+
+    @Test
+    public void test_cnd_andEX_orEX() {
+        String emtryStr = "";
+        Object[] ids = new Object[0];
+        List<String> names = new ArrayList<String>();
+
+        Cnd cnd = Cnd.NEW();
+
+        cnd.andEX("name", "=", emtryStr); // 空字符串,所以该条件不生效
+        cnd.andEX("name", "=", "wendal");
+        cnd.orEX("id", "in", ids);
+        cnd.orEX("id", ">", 1);
+        cnd.andEX("names", "in", names);
+
+        assertEquals("WHERE name='wendal' OR id>1", cnd.toString().trim());
+    }
 }
