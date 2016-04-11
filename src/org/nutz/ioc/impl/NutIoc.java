@@ -14,7 +14,6 @@ import org.nutz.ioc.IocException;
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.IocLoading;
 import org.nutz.ioc.IocMaking;
-import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.ObjectMaker;
 import org.nutz.ioc.ObjectProxy;
 import org.nutz.ioc.ValueProxyMaker;
@@ -24,7 +23,6 @@ import org.nutz.ioc.aop.impl.DefaultMirrorFactory;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.ioc.loader.combo.ComboIocLoader;
 import org.nutz.ioc.meta.IocObject;
-import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.Times;
@@ -347,11 +345,32 @@ public class NutIoc implements Ioc2 {
     }
     
     public <K> K getByType(Class<K> klass, IocContext context) {
-    	String[] names = getNamesByType(klass, context);
-    	if (names == null || names.length == 0)
-    		throw new IocException("No such ioc bean by type="+klass.getName());
-    	if (names.length != 1) 
-    		throw new IocException("More than one ioc bean by type=" + klass + "," + Json.toJson(names));
-    	return get(klass, names[0]);
+        String _name = null;
+        IocContext cntx;
+        if (null == context || context == this.context)
+            cntx = this.context;
+        else
+            cntx = new ComboContext(context, this.context);
+        for (String name : cntx.names()) {
+            ObjectProxy op = cntx.fetch(name);
+            if (op.getObj() != null && klass.isAssignableFrom(op.getObj().getClass())) {
+                _name = name;
+                break;
+            }
+        }
+        if (_name != null)
+            return get(klass, _name, context);
+        for (String name:getNames()) {
+            try {
+                IocObject iobj = loader.load(createLoading(), name);
+                if (iobj != null && iobj.getType() != null && klass.isAssignableFrom(iobj.getType()))
+                    _name = name;
+            } catch (Exception e) {
+                continue;
+            }
+            if (_name != null)
+                return get(klass, name, context);
+        }
+        throw new IocException("none ioc bean match class="+klass.getName());
     }
 }
