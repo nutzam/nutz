@@ -70,7 +70,7 @@ public class MathsTest {
 
     @Test
     public void test_permutation_nums() throws Exception {
-        String[] slist = Maths.permutation('1', '2', '3');
+        String[] slist = Maths.permutation(new char[]{'1', '2', '3'});
         assertTrue(slist.length == 6);
         assertFalse(hasSameString(slist));
         assertTrue(hasString("123", slist));
