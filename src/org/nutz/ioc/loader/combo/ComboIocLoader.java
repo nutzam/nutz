@@ -169,7 +169,7 @@ public class ComboIocLoader implements IocLoader {
     /**
      * 类别名
      */
-    private static Map<String, Class<? extends IocLoader>> loaders = new HashMap<String, Class<? extends IocLoader>>();
+    protected static Map<String, Class<? extends IocLoader>> loaders = new HashMap<String, Class<? extends IocLoader>>();
 
     // TODO 这个方法好好整理一下 ...
     public String toString() {
