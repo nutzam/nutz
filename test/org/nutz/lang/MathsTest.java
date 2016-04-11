@@ -2,6 +2,7 @@ package org.nutz.lang;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.nutz.lang.Maths.bit;
 import static org.nutz.lang.Maths.isMask;
@@ -58,13 +59,13 @@ public class MathsTest {
     @Test
     public void test_permutation_length_is_zero() throws Exception {
         String[] slist = Maths.permutation(0, '1', '2', '3');
-        assertTrue(slist == null);
+        assertNull(slist);
     }
 
     @Test
     public void test_permutation_length_is_out() throws Exception {
         String[] slist = Maths.permutation(4, '1', '2', '3');
-        assertTrue(slist == null);
+        assertNull(slist);
     }
 
     @Test
