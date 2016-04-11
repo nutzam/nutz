@@ -1,5 +1,8 @@
 package org.nutz.dao;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.nutz.lang.Strings;
@@ -306,4 +309,12 @@ public class FieldMatcher {
         this.ignoreBlankStr = ignoreBlankStr;
     }
 
+    public static FieldMatcher simple(String ...fields) {
+        final Set<String> m = new HashSet<String>(Arrays.asList(fields));
+        return new FieldMatcher() {
+            public boolean match(String str) {
+                return m.contains(str);
+            }
+        };
+    }
 }
