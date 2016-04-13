@@ -1,4 +1,4 @@
-package org.nutz.dao.test.normal.psql;
+package org.nutz.dao.test.normal.mysql;
 
 import org.nutz.dao.entity.annotation.Id;
 

@@ -1,4 +1,4 @@
-package org.nutz.dao.impl.jdbc.psql;
+package org.nutz.dao.impl.jdbc.mysql;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,13 +10,14 @@ import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 
 /**
- * 为 PostgreSQL 数据库封装对 Json 类型的支持
+ * 为 MySQL 数据库封装对 Json 类型的支持
  * <p/>
  * 数据库里面的 Json 类型的值自动为 String 类型。
  * <p/>
  * 注意，必要的时候需要给 POJO 添加<b>带一个参数的静态工厂方法</b>或者<b>带一个参数的构造函数</b>，<br>
  * 显示的使用 java.sql.ResultSet 来创建该 POJO，不然会出现无法映射的错误。
  * <p/>
+ *
  * <pre>
  * public class Pet {
  *
@@ -31,7 +32,7 @@ import org.nutz.json.JsonFormat;
  *     &#64;Id
  *     private int id;
  *
- *     &#64;ColDefine(customType = "json", type = ColType.PSQL_JSON)
+ *     &#64;ColDefine(customType = "json", type = ColType.MYSQL_JSON)
  *     private NutMap data;
  *
  *     // ... 省略后面代码，包括字段声明以及 getter 和 setter
@@ -48,7 +49,7 @@ import org.nutz.json.JsonFormat;
  *     &#64;Id
  *     private int id;
  *
- *     &#64;ColDefine(customType = "json", type = ColType.PSQL_JSON)
+ *     &#64;ColDefine(customType = "json", type = ColType.MYSQL_JSON)
  *     private Information info;
  *
  *     // ... 省略后面代码，包括字段声明以及 getter 和 setter
@@ -56,7 +57,7 @@ import org.nutz.json.JsonFormat;
  * </pre>
  *
  */
-public class PsqlJsonAdaptor implements ValueAdaptor {
+public class MysqlJsonAdaptor implements ValueAdaptor {
 
     public Object get(ResultSet rs, String colName) throws SQLException {
         return rs.getObject(colName);
@@ -66,7 +67,7 @@ public class PsqlJsonAdaptor implements ValueAdaptor {
         if (null == obj) {
             stat.setNull(index, Types.NULL);
         } else {
-            stat.setObject(index, Json.toJson(obj, JsonFormat.tidy()), Types.OTHER);
+            stat.setObject(index, Json.toJson(obj, JsonFormat.tidy()), Types.VARCHAR);
         }
     }
 }

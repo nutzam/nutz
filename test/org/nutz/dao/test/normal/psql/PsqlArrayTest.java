@@ -40,7 +40,7 @@ public class PsqlArrayTest extends DaoCase {
         assertEquals(Integer.valueOf(2500), updateStudent.getPayByQuarter()[2]);
         assertEquals("09", updateStudent.getSchedule()[2]);
 
-        dao.delete(StudentJson.class, insertId);
-        assertNull(dao.fetch(StudentJson.class, insertId));
+        dao.delete(StudentArray.class, insertId);
+        assertNull(dao.fetch(StudentArray.class, insertId));
     }
 }

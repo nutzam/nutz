@@ -1,4 +1,4 @@
-package org.nutz.dao.test.normal.psql;
+package org.nutz.dao.test.normal.mysql;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,7 +9,7 @@ import org.nutz.dao.entity.annotation.Table;
 import org.nutz.json.Json;
 import org.nutz.lang.util.NutMap;
 
-@Table("t_psql_student_json")
+@Table("t_mysql_student_json")
 public class StudentJson extends Student {
 
     public StudentJson() {}
@@ -20,10 +20,10 @@ public class StudentJson extends Student {
         this.studentResult = Json.fromJson(StudentResult.class, rs.getString("studentResult"));
     }
 
-    @ColDefine(customType = "json", type = ColType.PSQL_JSON)
+    @ColDefine(customType = "json", type = ColType.MYSQL_JSON)
     private NutMap data;
 
-    @ColDefine(customType = "json", type = ColType.PSQL_JSON)
+    @ColDefine(customType = "json", type = ColType.MYSQL_JSON)
     private StudentResult studentResult;
 
     public NutMap getData() {
