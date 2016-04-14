@@ -2,7 +2,6 @@ package org.nutz.ioc.val;
 
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.Ioc2;
-import org.nutz.ioc.IocException;
 import org.nutz.ioc.IocMaking;
 import org.nutz.ioc.ValueProxy;
 
