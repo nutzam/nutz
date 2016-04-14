@@ -27,17 +27,6 @@ public class ReferTypeValue implements ValueProxy {
 				return ((Ioc2)ioc).get(type, name, ing.getContext());
 			return ioc.get(type, name);
 		}
-		String[] names;
-		if (ioc instanceof Ioc2)
-			names = ((Ioc2)ioc).getNamesByType(type, ing.getContext());
-		else
-			names = ioc.getNamesByType(type);
-		if (names == null || names.length == 0) {
-			throw new IocException("can't found such type by name=[%s] or type=[%s]", name, type);
-		}
-		if (names.length > 1) {
-			throw new IocException("more than one bean for type=[%s], names=%s", type, names);
-		}
 		if (ioc instanceof Ioc2)
 			return ((Ioc2)ioc).getByType(type, ing.getContext());
 		else

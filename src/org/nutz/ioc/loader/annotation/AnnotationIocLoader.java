@@ -87,11 +87,11 @@ public class AnnotationIocLoader implements IocLoader {
 
             // 重名了, 需要用户用@IocBean(name="xxxx") 区分一下
             if (map.containsKey(beanName))
-                throw Lang.makeThrow(IocException.class,
-                                     "Duplicate beanName=%s, by %s !!  Have been define by %s !!",
+                throw new IocException(beanName, 
+                                       "Duplicate beanName=%s, by %s !!  Have been define by %s !!",
                                      beanName,
-                                     classZ,
-                                     map.get(beanName).getType());
+                                     classZ.getName(),
+                                     map.get(beanName).getType().getName());
 
             IocObject iocObject = new IocObject();
             iocObject.setType(classZ);
@@ -175,7 +175,7 @@ public class AnnotationIocLoader implements IocLoader {
                     IocField iocField = new IocField();
                     iocField.setName(Strings.lowerFirst(methodName.substring(3)));
                     if (fieldList.contains(iocField.getName()))
-                        throw duplicateField(classZ, iocField.getName());
+                        throw duplicateField(beanName, classZ, iocField.getName());
                     IocValue iocValue;
                     if (Strings.isBlank(inject.value())) {
                         iocValue = new IocValue();
@@ -193,7 +193,7 @@ public class AnnotationIocLoader implements IocLoader {
             if (flds != null && flds.length > 0) {
                 for (String fieldInfo : flds) {
                     if (fieldList.contains(fieldInfo))
-                        throw duplicateField(classZ, fieldInfo);
+                        throw duplicateField(beanName, classZ, fieldInfo);
                     IocField iocField = new IocField();
                     if (fieldInfo.contains(":")) { // dao:jndi:dataSource/jdbc形式
                         String[] datas = fieldInfo.split(":", 2);
@@ -252,8 +252,8 @@ public class AnnotationIocLoader implements IocLoader {
         throw new ObjectLoadException("Object '" + name + "' without define! Pls check your ioc configure");
     }
 
-    private static final IocException duplicateField(Class<?> classZ, String name) {
-        return Lang.makeThrow(IocException.class,
+    private static final IocException duplicateField(String beanName, Class<?> classZ, String name) {
+        return new IocException(beanName,
                               "Duplicate filed defined! Class=%s,FileName=%s",
                               classZ,
                               name);

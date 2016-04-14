@@ -95,7 +95,7 @@ public class ObjectMakerImpl implements ObjectMaker {
                     if (hasNullArg) {
                         Method m = (Method) Lang.first(mi.findMethods(ss[1],args.length));
                         if (m == null)
-                            throw new IocException("Factory method not found --> ", iobj.getFactory());
+                            throw new IocException(ing.getObjectName(), "Factory method not found --> ", iobj.getFactory());
                         dw.setBorning(new MethodCastingBorning<Object>(m));
                     } else {
                         Method m = mi.findMethod(ss[1], args);
@@ -138,13 +138,14 @@ public class ObjectMakerImpl implements ObjectMaker {
             dw.onCreate(obj);
 
         }
+        catch (IocException e) {
+            ((IocException)e).addBeanNames(ing.getObjectName());
+            throw e;
+        }
         // 当异常发生，从 context 里移除 ObjectProxy
         catch (Throwable e) {
             ing.getContext().remove(iobj.getScope(), ing.getObjectName());
-            String msg = e.getMessage();
-            if (msg != null && msg.length() > 16*1024)
-                throw new IocException(e);
-            throw new IocException(e, "FAIL to create Ioc Bean name=[%s]", ing.getObjectName());
+            throw new IocException(ing.getObjectName(), e, "FAIL to create Ioc Bean name=[%s]", ing.getObjectName());
         }
 
         // 返回
