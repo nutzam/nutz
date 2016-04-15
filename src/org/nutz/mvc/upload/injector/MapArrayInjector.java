@@ -23,6 +23,8 @@ public class MapArrayInjector implements ParamInjector {
     private String name;
 
     public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
+        if (refer == null)
+            return null;
         Object obj = ((Map<?, ?>) refer).get(name);
         if (obj == null)
             return null;

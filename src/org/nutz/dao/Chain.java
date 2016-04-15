@@ -10,6 +10,7 @@ import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.util.Daos;
 import org.nutz.json.Json;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.Strings;
 import org.nutz.lang.util.Callback2;
 
 /**
@@ -33,8 +34,7 @@ public abstract class Chain {
      * @return 链头
      */
     public static Chain make(String name, Object value) {
-        DefaultChain chain = new DefaultChain(name, value);
-        return chain;
+        return new DefaultChain(name, value);
     }
 
     /**
@@ -197,8 +197,14 @@ public abstract class Chain {
                 if (null != fm && !fm.match(name))
                     continue;
                 Object v = en.getValue();
-                if (null != fm && null == v && fm.isIgnoreNull())
-                    continue;
+                if (null != fm ) {
+                    if (null == v) {
+                        if (fm.isIgnoreNull())
+                            continue;
+                    } else if (fm.isIgnoreBlankStr() && v instanceof String && Strings.isBlank((String)v)) {
+                        continue;
+                    }
+                }
                 if (c == null) {
                     c = Chain.make(name, v);
                 } else {
@@ -215,8 +221,12 @@ public abstract class Chain {
                 if (null != fm && !fm.match(f.getName()))
                     continue;
                 Object v = mirror.getValue(obj, f.getName());
-                if (null != fm && null == v && fm.isIgnoreNull())
+                if (null == v) {
+                    if (fm.isIgnoreNull())
+                        continue;
+                } else if (fm != null && fm.isIgnoreBlankStr() && v instanceof String && Strings.isBlank((String)v)) {
                     continue;
+                }
                 if (c == null) {
                     c = Chain.make(f.getName(), v);
                 } else {
@@ -282,7 +292,7 @@ public abstract class Chain {
         return chain;
     }
     
-    private static class DefaultChain extends Chain {
+    public static class DefaultChain extends Chain {
         private Entry head;
         private Entry current;
         private Entry tail;
@@ -344,7 +354,9 @@ public abstract class Chain {
         public boolean isSpecial() {
             Entry entry = head;
             do {
-                if(entry.special) return true;
+                if(entry.special) {
+                    return true;
+                }
             } while ((entry = entry.next) != null);
             return false;
         }
@@ -380,17 +392,17 @@ public abstract class Chain {
             }
             return re;
         }
-        
-        private static class Entry {
-            protected String name;
-            Object value;
-            ValueAdaptor adaptor;
-            boolean special;
-            Entry next;
-            public Entry(String name, Object value) {
-                this.name = name;
-                this.value = value;
-            }
+    }
+    
+    public static class Entry {
+        protected String name;
+        Object value;
+        ValueAdaptor adaptor;
+        boolean special;
+        Entry next;
+        public Entry(String name, Object value) {
+            this.name = name;
+            this.value = value;
         }
     }
 }

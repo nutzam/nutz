@@ -349,13 +349,17 @@ public class AnnotationEntityMaker implements EntityMaker {
         // 字段的 Java 名称
         ef.setName(info.name);
         ef.setType(info.fieldType);
-
+        String columnName = "";
         // 字段的数据库名
-        if (null == info.annColumn || Strings.isBlank(info.annColumn.value()))
-            ef.setColumnName(info.name);
-        else
-            ef.setColumnName(info.annColumn.value());
-
+        if (null == info.annColumn || Strings.isBlank(info.annColumn.value())){
+            columnName = info.name;
+        }else{
+            columnName = info.annColumn.value();
+        }
+        if(null != info.annColumn && info.annColumn.hump()){
+            columnName = Strings.lowerWord(columnName, '_');
+        }
+        ef.setColumnName(columnName);
         // 字段的注释
         boolean hasColumnComment = null != info.columnComment;
         ef.setHasColumnComment(hasColumnComment);
@@ -452,7 +456,10 @@ public class AnnotationEntityMaker implements EntityMaker {
         }
 
         // 字段值的适配器
-        ef.setAdaptor(expert.getAdaptor(ef));
+        if (null == info.annDefine || null == info.annDefine.adaptor() || info.annDefine.adaptor().isInterface())
+            ef.setAdaptor(expert.getAdaptor(ef));
+        else
+            ef.setAdaptor(Mirror.me(info.annDefine.adaptor()).born());
 
         // 输入输出
         ef.setInjecting(info.injecting);
@@ -478,11 +485,8 @@ public class AnnotationEntityMaker implements EntityMaker {
             }
             // '@Id' : 的自动后续获取
             else if (null != info.annId && info.annId.auto()) {
-                if (expert != null && !expert.isSupportAutoIncrement()) {
-                	//仅提醒,因为如果有触发器的话,还是可以插入的
-                    log.debug("Database don't support auto-increment. If insert fail, pls add trigger in database or using @Prev in Pojo");
-                }
-                en.addAfterInsertMacro(expert.fetchPojoId(en, en.getField(info.name)));
+            	if (!expert.isSupportAutoIncrement())
+            		en.addAfterInsertMacro(expert.fetchPojoId(en, en.getField(info.name)));
             }
         }
     }

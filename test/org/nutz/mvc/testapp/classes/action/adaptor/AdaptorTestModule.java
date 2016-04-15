@@ -6,8 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.nutz.ioc.annotation.InjectName;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.lang.Lang;
@@ -22,6 +20,8 @@ import org.nutz.mvc.annotation.POST;
 import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.impl.AdaptorErrorContext;
 import org.nutz.mvc.testapp.BaseWebappTest;
+
+import junit.framework.TestCase;
 
 @InjectName
 @IocBean
@@ -99,5 +99,11 @@ public class AdaptorTestModule extends BaseWebappTest {
     @Ok("raw")
     public boolean err_ctx(@Param("..")Object obj, AdaptorErrorContext ctx) {
         return ctx == null;
+    }
+    
+    //@GET
+    @At("/sqldate")
+    public String test_sql_date(@Param("checkDate")java.sql.Date checkDate){
+    	return checkDate.toString();
     }
 }

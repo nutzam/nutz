@@ -13,7 +13,7 @@ public class CallbackTest extends DaoCase {
 
     @Test
     public void test_fetchBooleanCallback() {
-        if (dao.meta().isOracle())
+        if (dao.meta().isOracle() || dao.meta().isSqlServer())
             return;
         pojos.initPet();
         dao.insert(Pet.create(4));

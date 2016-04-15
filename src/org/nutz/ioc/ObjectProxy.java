@@ -81,4 +81,7 @@ public class ObjectProxy {
             depose.trigger(obj);
     }
 
+    public Object getObj() {
+		return obj;
+	}
 }

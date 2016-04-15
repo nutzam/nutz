@@ -22,7 +22,7 @@
 --------------------------------------------------------------------------------------------------------
 一个简单的例子
 	在这个例子中，你需要一 POJO，以及一个 JSON 配置文件。
-	例子的源代码，你可以访问 [http://nutzdemo.googlecode.com]  获取
+	例子的源代码，你可以访问 [http://nutzbook.wendal.net Nutzbook]  获取
 	
 	POJO 源代码
 		{{{
@@ -114,6 +114,7 @@
 				Ioc ioc = new NutIoc(new JsonLoader("nutz/demo/ioc/pet/pets.js"));
 				Pet pet = ioc.get(Pet.class, "xiaobai");
 				System.out.printf("%s - [%s]\n", pet.getName(), pet.getBirthday().getTimeZone().getID());
+				ioc.depose(); // 关闭ioc容器.
 			}
 
 		}

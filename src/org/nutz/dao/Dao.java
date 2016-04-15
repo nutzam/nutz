@@ -350,6 +350,10 @@ public interface Dao {
                        String regex,
                        Chain chain,
                        Condition cnd);
+    
+    <T> List<T> query(Class<T> classOfT, Condition cnd, Pager pager, FieldMatcher matcher);
+    
+    <T> List<T> query(Class<T> classOfT, Condition cnd, Pager pager, String regex);
 
     /**
      * 查询一组对象。你可以为这次查询设定条件，并且只获取一部分对象（翻页）
@@ -934,4 +938,6 @@ public interface Dao {
     Sql execute(Sql sql);
     
     void setExpert(Object obj) throws Exception;
+    
+    <T> T insert(T t, boolean ignoreNull, boolean ignoreZero, boolean ignoreBlankStr);
 }

@@ -27,5 +27,6 @@ public class JsonAopConfigrationTest {
         assertTrue(mi.getTime() == 1);
         pet2.sing();
         assertTrue(mi.getTime() == 2);
+    	ioc.depose();
     }
 }

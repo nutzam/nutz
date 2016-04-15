@@ -1,11 +1,10 @@
 package org.nutz.mvc.view;
 
-import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nutz.lang.Lang;
 import org.nutz.mvc.View;
 
 /**
@@ -23,6 +22,10 @@ public class HttpStatusView implements View {
     // public static final View HTTP_400 = new HttpStatusView(400);
     public static final View HTTP_500 = new HttpStatusView(500);
     public static final View HTTP_502 = new HttpStatusView(502);
+
+    public static HttpStatusException makeThrow(int status, String body) {
+        return new HttpStatusException(status, body);
+    }
 
     /**
      * 这个异常用于，在某个入口函数,如果你声明了 `@Fail("http:500")` 但是你真正的返回值想根据运行时决定。 <br>
@@ -55,29 +58,61 @@ public class HttpStatusView implements View {
 
     }
 
-    private int statusCode;
+    private HttpServerResponse info;
 
-    public HttpStatusView(int statusCode) {
-        this.statusCode = statusCode;
+    public HttpStatusView(HttpServerResponse info) {
+        this.info = info;
     }
 
-    public void render(HttpServletRequest req,
-                       HttpServletResponse resp,
-                       Object obj) {
-        int code = this.statusCode;
-        if (obj != null && obj instanceof HttpStatusException) {
-            code = ((HttpStatusException) obj).getStatus();
+    public HttpStatusView(int statusCode) {
+        info = new HttpServerResponse();
+        info.updateCode(statusCode, null);
+    }
+
+    public HttpStatusView(Map<?, ?> map) {
+        this(200);
+        info.update(map);
+    }
+
+    public HttpStatusView setBody(String body) {
+        info.updateBody(body);
+        return this;
+    }
+
+    public void render(HttpServletRequest req, HttpServletResponse resp, Object obj) {
+        HttpServerResponse info = this.info.clone();
+
+        if (null != obj) {
+            // 指明了动态的 code
+            if (obj instanceof HttpStatusException) {
+                HttpStatusException hse = ((HttpStatusException) obj);
+                info.updateCode(hse.getStatus(), null);
+                info.updateBody(hse.getMessage());
+            }
+            // 指明了 Header
+            else if (obj instanceof Map<?, ?>) {
+                info.update((Map<?, ?>) obj);
+            }
+            // 字符串 ...
+            else if (obj instanceof CharSequence) {
+                info.updateBy(obj.toString());
+            }
         }
 
-        if (code >= 400)
-            try {
-                resp.sendError(code);
-            }
-            catch (IOException e) {
-                throw Lang.wrapThrow(e);
-            }
-        else
-            resp.setStatus(code);
+        // 执行渲染
+        info.render(resp);
+
+        // if (code >= 400){
+        // try {
+        // resp.sendError(code);
+        // }
+        // catch (IOException e) {
+        // throw Lang.wrapThrow(e);
+        // }
+        // }
+        // else
+        // resp.setStatus(code);
+
     }
 
 }

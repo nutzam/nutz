@@ -9,8 +9,6 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.nutz.Nutz;
-import org.nutz.http.Request.METHOD;
-import org.nutz.json.Json;
 
 public class HttpTest {
 
@@ -55,13 +53,13 @@ public class HttpTest {
 //        //assertTrue(response2.getContent("GBK").indexOf("考试吧") > 0);
 //    }
 
-    @Test(expected = HttpException.class)
-    public void testTimeout() {
-        Response response = Http.get("www.baidu.com", 10 * 1000);
-        assertTrue(response.getStatus() == 200);
-        // 抛出超时异常
-        Http.get("www.baidu.com", 1);
-    }
+//    @Test(expected = HttpException.class)
+//    public void testTimeout() {
+//        Response response = Http.get("www.baidu.com", 10 * 1000);
+//        assertTrue(response.getStatus() == 200);
+//        // 抛出超时异常
+//        Http.get("www.sina.com.cn", 1);
+//    }
 
     @Test
     public void test_https() {
@@ -78,21 +76,21 @@ public class HttpTest {
     	assertEquals("0xKhTmLbOuNdArY-5DA6CD94-6D26-4C89-9F8D-09307F3A6F97", boundary);
     }
     
-    @Test
-    public void test_yeelink() {
-        //String key = "f7bd63b34b30303a11a36f6fd7628ef4";
-        String device_id = "12825";
-        String sensor_id = "20872";
-        Map<String, Object> data = new HashMap<String, Object>();
-        data.put("value", 31.3);
-        String url = String.format("http://api.yeelink.net/v1.1/device/%s/sensor/%s/datapoints", device_id, sensor_id);
-        System.out.println("URL="+url);
-        Request req = Request.create(url, METHOD.POST);
-        req.setData(Json.toJson(data));
-        //req.getHeader().set("U-ApiKey", key);
-        Response resp = Sender.create(req).send();
-        System.out.println(resp.getStatus());
-    }
+//    @Test
+//    public void test_yeelink() {
+//        //String key = "f7bd63b34b30303a11a36f6fd7628ef4";
+//        String device_id = "12825";
+//        String sensor_id = "20872";
+//        Map<String, Object> data = new HashMap<String, Object>();
+//        data.put("value", 31.3);
+//        String url = String.format("http://api.yeelink.net/v1.1/device/%s/sensor/%s/datapoints", device_id, sensor_id);
+//        System.out.println("URL="+url);
+//        Request req = Request.create(url, METHOD.POST);
+//        req.setData(Json.toJson(data));
+//        //req.getHeader().set("U-ApiKey", key);
+//        Response resp = Sender.create(req).send();
+//        System.out.println(resp.getStatus());
+//    }
     
     @Test
     public void test_12306() throws NoSuchAlgorithmException, KeyManagementException {
@@ -115,19 +113,20 @@ public class HttpTest {
 //        System.out.println(response.getContent());
 //    }
     
-    @Test
-    public void test_cookie() {
-        Cookie cookie = new Cookie();
-        cookie.setDebug(true);
-        Request req = Request.get("http://115.28.27.32:8090/nutzbook/user/login");
-        Response resp = Sender.create(req).setInterceptor(cookie).send();
-        String expected = cookie.toString();
-        System.out.println(resp.getStatus());
-        System.out.println(Json.toJson(cookie));
-        resp = Sender.create(req).setInterceptor(cookie).send();
-        System.out.println(Json.toJson(cookie)); // 第二次应该没有新的cookie
-        assertEquals(expected, cookie.toString()); // 所以两次toString的结果是一样的, 即同一个session
-    }
+//    @Test
+//    public void test_cookie() {
+//        Http.disableJvmHttpsCheck();
+//        Cookie cookie = new Cookie();
+//        cookie.setDebug(true);
+//        Request req = Request.get("https://nutz.cn/user/login");
+//        Response resp = Sender.create(req).setInterceptor(cookie).send();
+//        String expected = cookie.toString();
+//        System.out.println(resp.getStatus());
+//        System.out.println(Json.toJson(cookie));
+//        resp = Sender.create(req).setInterceptor(cookie).send();
+//        System.out.println(Json.toJson(cookie)); // 第二次应该没有新的cookie
+//        assertEquals(expected, cookie.toString()); // 所以两次toString的结果是一样的, 即同一个session
+//    }
     
 //    @Test
 //    public void test_ys7() {

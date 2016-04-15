@@ -16,7 +16,6 @@ import org.nutz.ioc.Ioc;
 import org.nutz.ioc.IocContext;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
-import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 import org.nutz.mvc.config.AtMap;
@@ -352,6 +351,9 @@ public abstract class Mvcs {
      *            Servlet 执行的上下文
      */
     public static void setServletContext(ServletContext servletContext) {
+        if (servletContext == null) {
+            Mvcs.servletContext.remove();
+        }
         if (def_servletContext == null)
             def_servletContext = servletContext;
         Mvcs.servletContext.set(servletContext);
@@ -446,7 +448,7 @@ public abstract class Mvcs {
     public static Context resetALL() {
         Context context = reqt();
         NAME.set(null);
-        ctx().reqThreadLocal.set(Lang.context());
+        ctx().removeReqCtx();
         return context;
     }
 
@@ -468,15 +470,12 @@ public abstract class Mvcs {
     }
     
     public static Context reqt() {
-        Context _reqt = ctx().reqThreadLocal.get();
-        if (_reqt == null) {
-            _reqt = Lang.context();
-            ctx().reqThreadLocal.set(_reqt);
-        }
-        return _reqt;
+        return ctx().reqCtx();
     }
 
     /** 在入口方法调用时,是否禁用1.b.51新加入的FastClass功能, 默认禁用 */
     // PS: 如果这个修改导致异常,请报issue,并将这个变量设置为true
     public static boolean disableFastClassInvoker = true;
+    
+    public static boolean DISPLAY_METHOD_LINENUMBER = true;
 }

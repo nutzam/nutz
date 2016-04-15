@@ -31,5 +31,6 @@ public class PlugsTest {
         PluginManager<Log> manager = new IocPluginManager<Log>(ioc, "pluB","pluA","pluC");
         assertNotNull(manager.get());
         assertTrue(manager.get() instanceof SystemLogAdapter);
+    	ioc.depose();
     }
 }

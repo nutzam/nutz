@@ -5,13 +5,16 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.nutz.json.Json;
+import org.nutz.lang.ContinueLoop;
+import org.nutz.lang.Each;
 import org.nutz.lang.Encoding;
+import org.nutz.lang.ExitLoop;
 import org.nutz.lang.Lang;
-import org.nutz.lang.Strings;
+import org.nutz.lang.LoopException;
 
 public class Request {
 
@@ -69,7 +72,7 @@ public class Request {
     private byte[] data;
     private URL cacheUrl;
     private InputStream inputStream;
-    private String enc;
+    private String enc = Encoding.UTF8;
 
     public URL getUrl() {
         if (cacheUrl != null) {
@@ -95,14 +98,23 @@ public class Request {
     }
 
     public String getURLEncodedParams() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         if (params != null) {
-            for (Iterator<String> it = params.keySet().iterator(); it.hasNext();) {
-                String key = it.next();
-                sb.append(Http.encode(key, this.enc)).append('=').append(Http.encode(params.get(key)));
-                if (it.hasNext())
-                    sb.append('&');
+            for (Entry<String, Object> en : params.entrySet()) {
+                final String key = en.getKey();
+                Object val = en.getValue();
+                if (val == null)
+                    val = "";
+                Lang.each(val, new Each<Object>() {
+                    public void invoke(int index, Object ele, int length)throws ExitLoop, ContinueLoop, LoopException {
+                        sb.append(Http.encode(key, enc))
+                        .append('=')
+                        .append(Http.encode(ele, enc)).append('&');
+                    }
+                });
             }
+            if (sb.length() > 0)
+                sb.setLength(sb.length() - 1);
         }
         return sb.toString();
     }
@@ -112,38 +124,39 @@ public class Request {
             return inputStream;
         } else {
             if (null == data) {
-                if (enc != null)
-                    try {
-                        return new ByteArrayInputStream(getURLEncodedParams().getBytes(enc));
-                    }
-                    catch (UnsupportedEncodingException e) {
-                        throw Lang.wrapThrow(e);
-                    }
-                return new ByteArrayInputStream(Strings.getBytesUTF8(getURLEncodedParams()));
+                try {
+                    return new ByteArrayInputStream(getURLEncodedParams().getBytes(enc));
+                }
+                catch (UnsupportedEncodingException e) {
+                    throw Lang.wrapThrow(e);
+                }
             }
             return new ByteArrayInputStream(data);
         }
     }
 
-    public void setInputStream(InputStream inputStream) {
+    public Request setInputStream(InputStream inputStream) {
         this.inputStream = inputStream;
+        return this;
     }
 
     public byte[] getData() {
         return data;
     }
 
-    public void setData(byte[] data) {
+    public Request setData(byte[] data) {
         this.data = data;
+        return this;
     }
 
-    public void setData(String data) {
+    public Request setData(String data) {
         try {
             this.data = data.getBytes(Encoding.UTF8);
         }
         catch (UnsupportedEncodingException e) {
             // 不可能
         }
+        return this;
     }
 
     private Request setParams(Map<String, Object> params) {
@@ -171,13 +184,13 @@ public class Request {
     public boolean isPost() {
         return METHOD.POST == method;
     }
-    
+
     public boolean isDelete() {
-    	return METHOD.DELETE == method;
+        return METHOD.DELETE == method;
     }
-    
+
     public boolean isPut() {
-    	return METHOD.PUT == method;
+        return METHOD.PUT == method;
     }
 
     public Request setMethod(METHOD method) {
@@ -210,7 +223,12 @@ public class Request {
      * 设置发送内容的编码,仅对String或者Map<String,Object>类型的data有效
      */
     public Request setEnc(String reqEnc) {
-        this.enc = reqEnc;
+        if (reqEnc != null)
+            this.enc = reqEnc;
         return this;
+    }
+
+    public String getEnc() {
+        return enc;
     }
 }

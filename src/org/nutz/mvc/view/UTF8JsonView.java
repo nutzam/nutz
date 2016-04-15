@@ -49,6 +49,10 @@ public class UTF8JsonView implements View {
     public UTF8JsonView(JsonFormat format) {
         this.format = format;
     }
+    
+    public UTF8JsonView() {
+    	this.format = new JsonFormat();
+	}
 
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
             throws IOException {
@@ -60,14 +64,15 @@ public class UTF8JsonView implements View {
                 resp.setContentType(CT);
         Writer writer = resp.getWriter();
         if (jsonp)
-            writer.write(req.getParameter(jsonpParam == null ? "jsonp" : jsonpParam) + "(");
-        Mvcs.write(resp, writer, null == obj ? data : obj, format);
+            writer.write(req.getParameter(jsonpParam == null ? "callback" : jsonpParam) + "(");
+        Mvcs.write(resp, writer, null == obj ? data : obj, format.clone());
         if (jsonp)
-            writer.write(req.getParameter(");"));
+            writer.write(");");
     }
 
     public static final View NICE = new UTF8JsonView(JsonFormat.nice());
     public static final View COMPACT = new UTF8JsonView(JsonFormat.compact());
     public static final View FULL = new UTF8JsonView(JsonFormat.full());
     public static final View FORLOOK = new UTF8JsonView(JsonFormat.forLook());
+    public static final View JSONP = new UTF8JsonView(JsonFormat.compact()).setJsonp(true);
 }

@@ -2,16 +2,20 @@ package org.nutz.lang.util;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.nutz.castor.Castors;
 import org.nutz.lang.Each;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.lang.born.Borning;
 
 /**
  * 对于 LinkedHashMap 的一个友好封装
@@ -21,7 +25,7 @@ import org.nutz.lang.Strings;
  * @author zozoh(zozohtnt@gmail.com)
  */
 @SuppressWarnings("serial")
-public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
+public class NutMap extends LinkedHashMap<String, Object>implements NutBean {
 
     public static NutMap WRAP(Map<String, Object> map) {
         if (null == map)
@@ -43,6 +47,11 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
     public NutMap(String json) {
         super();
         this.putAll(Lang.map(json));
+    }
+    
+    public NutMap(String key, Object value) {
+        super();
+        put(key, value);
     }
 
     /**
@@ -71,6 +80,78 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
 
     public boolean has(String key) {
         return null != get(key);
+    }
+
+    @Override
+    public boolean containsValue(Object value) {
+        if (null == _map)
+            return super.containsValue(value);
+        return super.containsValue(value) || _map.containsValue(value);
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        if (null == _map)
+            return super.containsKey(key);
+        return super.containsKey(key) || _map.containsKey(key);
+    }
+
+    public Set<String> keySet() {
+        if (null == _map)
+            return super.keySet();
+        HashSet<String> keys = new HashSet<String>();
+        keys.addAll(super.keySet());
+        keys.addAll(_map.keySet());
+        return keys;
+    }
+
+    public Collection<Object> values() {
+        if (null == _map)
+            return super.values();
+        List<Object> vals = new LinkedList<Object>();
+        vals.addAll(super.values());
+        vals.addAll(_map.values());
+        return vals;
+    }
+
+    public Set<Entry<String, Object>> entrySet() {
+        if (null == _map)
+            return super.entrySet();
+        HashSet<Entry<String, Object>> vals = new HashSet<Entry<String, Object>>();
+        vals.addAll(_map.entrySet());
+        vals.addAll(super.entrySet());
+        return vals;
+    }
+
+    public void clear() {
+        super.clear();
+        if (null != _map)
+            _map.clear();
+    }
+
+    private NutMap _map;
+
+    public NutMap attach(NutMap map) {
+        _map = map;
+        return this;
+    }
+
+    public NutMap detach() {
+        NutMap re = _map;
+        _map = null;
+        return re;
+    }
+
+    @Override
+    public Object get(Object key) {
+        if (_map == null)
+            return super.get(key);
+
+        if (super.containsKey(key)) {
+            return super.get(key);
+        }
+
+        return _map.get(key);
     }
 
     public Object get(String key, Object dft) {
@@ -180,19 +261,15 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         return null == v ? dft : Castors.me().castTo(v, classOfT);
     }
 
-    /**
-     * 将一个字段转换成列表。因为返回的是容器，所以本函数永远不会返回 null
-     * 
-     * @param <T>
-     * @param key
-     * @param eleType
-     * @return 列表对象，如果字段不存在或者为空，则返回一个空列表
-     */
-    @SuppressWarnings("unchecked")
     public <T> List<T> getList(String key, final Class<T> eleType) {
+        return getList(key, eleType, new ArrayList<T>());
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> List<T> getList(String key, final Class<T> eleType, List<T> dft) {
         Object v = get(key);
         if (null == v)
-            return new ArrayList<T>();
+            return dft;
 
         if (v instanceof CharSequence) {
             return Lang.list(Castors.me().castTo(v, eleType));
@@ -210,19 +287,17 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
 
     }
 
-    /**
-     * 将一个字段转换成数组。因为返回的是容器，所以本函数永远不会返回 null
-     * 
-     * @param <T>
-     * @param key
-     * @param eleType
-     * @return 数组对象，如果字段不存在或者为空，则返回一个空数组
-     */
     @SuppressWarnings("unchecked")
-    public <T> T[] getArray(String key, final Class<T> eleType) {
+    @Override
+    public <T> T[] getArray(String key, Class<T> eleType) {
+        return getArray(key, eleType, (T[]) Array.newInstance(eleType, 0));
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T[] getArray(String key, final Class<T> eleType, T[] dft) {
         Object v = get(key);
         if (null == v)
-            return (T[]) Array.newInstance(eleType, 0);
+            return dft;
 
         if (v instanceof CharSequence) {
             return Lang.array(Castors.me().castTo(v, eleType));
@@ -285,4 +360,47 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         return this;
     }
 
+    public NutMap setMap(Map<?, ?> map, boolean ignoreNullValue) {
+        for (Map.Entry<?, ?> en : map.entrySet()) {
+            Object key = en.getKey();
+            Object val = en.getValue();
+
+            if (null == key)
+                continue;
+
+            if (null == val && ignoreNullValue)
+                continue;
+
+            this.put(key.toString(), val);
+        }
+        return this;
+    }
+    
+    /**
+     * 与JDK8+的 putIfAbsent(key, val)一致, 当且仅当值不存在时设置进去,但与putIfAbsent返回值有不一样
+     * @param key 键
+     * @param val 值
+     * @return 当前的NutMap实例
+     */
+    public NutMap setnx(String key, Object val) {
+    	if (!containsKey(key))
+    		setv(key, val);
+    	return this;
+    }
+    
+    /**
+     * 获取对应的值,若不存在,用factory创建一个,然后设置进去,返回之
+     * @param key 键
+     * @param factory 若不存在的话用于生成实例
+     * @return 已存在的值或新的值
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getOrBorn(String key, Borning<T> factory) {
+        T t = (T)get(key);
+        if (t == null) {
+            t = factory.born(key);
+            put(key, t);
+        }
+        return t;
+    }
 }

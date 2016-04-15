@@ -8,7 +8,9 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.Before;
@@ -534,5 +536,15 @@ public class El2Test {
         
         re = El.eval("urlencode('中文', 'gb2312')").toString();
         assertEquals(URLEncoder.encode("中文", Encoding.GB2312), re);
+    }
+    
+    @Test
+    public void test_map_get() {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("wendal", "http://wendal.net");
+        List<String> list = new ArrayList<String>();
+        list.add("abc");
+        assertEquals("http://wendal.net", El.eval(Lang.context().set("ctx", map), "ctx['wendal']"));
+        assertEquals("abc", El.eval(Lang.context().set("list", list), "list[0]"));
     }
 }

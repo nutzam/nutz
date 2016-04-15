@@ -6,41 +6,21 @@
 	
 	一个 Mvc 框架可以通过 Ioc 接口同一个 Ioc 容器挂接，挂接的方法很简单： 在主模块上声明 @IocBy
 	{{{
-	@IocBy(type=JsonIocProvider.class, args={"/conf/core.js", "/conf/pet.js"})
+	@IocBy(type=ComboIocProvider.class, args={"*js", "ioc/",
+										   "*anno", "net.wendal.nutzbook",
+										   "*async",
+										   "*tx"
+										   })
 	public class MainModule {
 		...
 	}}}
-	Nutz.Mvc  内置了 JsonIocProvider 类，帮助你同标准 NutIoc 容器挂接。下面是这个类的全部源代码：
-	{{{
-	public class JsonIocProvider implements IocProvider {
-		public Ioc create(ServletConfig config, String[] args) {
-			return new NutIoc(new JsonLoader(args), new ScopeContext("app"), "app");
-		}
-	}
-	}}}
-	极其简单，对吗？ 其中，@IocBy 的 "args" 属性的值将会直接传入 IocProvider 的 create 函数。
------------------------------------------------------------------------------------------------------------------------
-JSON 配置的自动扫描
-
-	通常你的应用会有不只一个 ioc 配置文件，如果一个一个的写出来非常麻烦。所以，如果你指定的是一个目录：
-	{{{
-	@IocBy(type=JsonIocProvider.class, args={"myioc"})
-	public class MainModule {
-		...
-	}}}
-	如上例，那么， Nutz 内置的 JsonLoader 会自动寻找 myioc 的目录（除了 CLASSPATH 下的目录，也可以是个绝对目录）
-	目录内的所有 *.js 或者 *.json 文件都会被自动加载
 	
-	并且，你也可以混合目录和文件，比如：
-	{{{
-	@IocBy(type=JsonIocProvider.class, args={"myioc", "abc/single.js"})
-	public class MainModule {
-		...
-	}}}
-	目录 "myioc" 下所有的 *.js 和 *.json 文件都会被加载，并且也会加载 "abc/single.js"
+	推荐使用ComboIocProvider,组合使用各种IocLoader. 详细用法请参考[../ioc/loader_combo.man Ioc复合加载器]
 
 -----------------------------------------------------------------------------------------------------------------------
 由 Ioc 容器管理子模块
+	
+	如果声明了@IocBean,那么 @InjectName是不需要的,且无效的!!
 	
 	通过 @IocBy 为整个应用声明了 Ioc 容器，那么如何使用呢。 实际上，你的每一个模块都可以来自容器，只要
 	你在模块上声明 @InjectName。 当然，在主模块声明这个注解是没有意义的。
@@ -58,81 +38,12 @@ JSON 配置的自动扫描
 -----------------------------------------------------------------------------------------------------------------------
 在容器对象里获得 ServletContext
 
-	ServletContext! 是的，有些时候你需要它。比如你打算作一个 Freemarker 的工厂。总之 Java 世界的奇奇怪怪的框架和插件们
-	或多或少的都可能会依赖这个接口。如果你正在读这段文字，你说不定也正好需要这个接口。
+	别注入了,直接拿
 
-	在 Nutz.Mvc 中，你可以很容易在入口函数里拿到 ServletContext，是的，你只要直接在入口函数的参数里声明 ServletContext
-	类型的参数就是了，Nutz.Mvc 会老老实实的为你填充这个参数，同理你也能拿到 HttpSession, HttpServletRequest, 
-	HttpServletResponse。但是在 Ioc 容器里，你希望你的对象也能得到这个参数，这个要求很过分吗？不当然不过分，在 1.a.33
-	之后的版本，Nutz.Mvc 在启动的时候，会为你的 Ioc 容器增加一个新的自定义值，在容器里，你可以：
-	{{{<JSON>
-	...
-	fields : {
-	    servletContext : {app:'$servlet'}
-	}
-	...
-	}}}
-	你就能为你这个对象的 servletContext 字段注入 ServletContext 的实例。当然，如果你想获得 ServletContext 中的属性，你
-	完全可以：
-	{{{<JSON>
-	...
-	fields : {
-	    servletContext : {app:'myObjName'}
-	}
-	...
-	}}}
-	那么，你在 servletContext 里的属性也会被一并注入
-	
-	当然，你的 Ioc 容器，必须实现了 Ioc2 这个接口，默认的 NutIoc 就是实现这个接口的。
-
-
------------------------------------------------------------------------------------------------------------------------
-容器管理对象的生命周期范围(不建议使用)
-
-	不建议使用, 入口类应该做成线程安全的,不含与具体请相关的属性
-	
-	如果你使用的是 Nutz.Ioc 标准容器，或者你的 Ioc 容器实现了 Ioc2 接口，那么你的模块类的生命周期是可以定制的。
-	以 Nutz 的 Json 配置语法为例，你可以为你的对象增加属性：
 	{{{
-	{
-		petModule : {
-			type : "com.my.PetModule",
-			scope : "session"
-		}
-	}
+	Mvcs.getServletContext();
 	}}}
-	那么，你的 petModule 对象将只会存在 session里，当 session 停止后，会被 NutSessionListener 注销。当然，你需要在
-	web.xml 中声明这个会话监听器。
-
-	对于 Nutz.Mvc，它支持如下的生命周期范围
-	 * app
-	 * session
-	 * request
------------------------------------------------------------------------------------------------------------------------
-需要注意的问题
 	
-	如果你让你的 Mvc 框架同 Ioc 容器一起工作 （通常你都会这样），请注意，有可能会有这样的问题 (Issue 105)：
-	
-	你的模块的 @InjectName 或者 Ioc 配置文件里的对象的名称，如果同 request 或者 session 里属性名称重复，有可能会被覆盖，
-	尤其是 @InjectName。Nutz.Mvc 的工作机制导致这个现象发生：
-
-	即，当服务器收到一个请求后，Nutz 会构建两个对象：
-	 # RequestIocContext
-	 # SessionIocContext
-	并且将其合并为一个 ComboContext 传入 Ioc 容器。（当然，如果你的 Ioc 容器不是 Nutz 内置，而是自己实现的，并且你的容器
-	没有实现 Ioc2 接口，这个问题不会发生）在调用相应模块的入口函数时，Nutz 首先将模块对象从 Ioc 容器中取出，取出的顺序
-	是：
-	 # RequestIocContext
-	 # SessionIocContext
-	 # Ioc 容器内置的 Context -- ScopeContext -- scope: 'app'
-	
-	如果你的模块声明了注解 @InjectName("ABC") -- 事实上，你通常都会声明这个注解。但是不幸的（或者幸运的）是，你的 request
-	或者 session 对象，在某一次操作中，被你设置了 "ABC" 属性，
-	那么下次调用是，Ioc 容器会说：“ABC? 原来在 request 已经有了哦，那就不用我缓存里的了。”
-
-	这个特性给予应用程序极大的灵活性，如果愿意，你完全可以在一个session里保存一个数据源，然后在session注销时关闭这个数据源。
-	当然，你的 Ioc 配置，一定要把引用到这个数据源的对象 singleton 都设为 false，或者将他们的 scope 都设成 session 或者 request
-
 -----------------------------------------------------------------------------------------------------------------------
 自定 Ioc 容器
 	

@@ -71,6 +71,7 @@ public class NutLoading implements Loading {
             if (config.getServletContext().getMajorVersion() > 2
                 || config.getServletContext().getMinorVersion() > 4)
                 log.debugf(" - ContextPath     : %s", config.getServletContext().getContextPath());
+            log.debugf(" - context.tempdir : %s", config.getAttribute("javax.servlet.context.tempdir"));
         }
         /*
          * 准备返回值
@@ -190,10 +191,11 @@ public class NutLoading implements Loading {
             ActionInfo moduleInfo = Loadings.createInfo(module).mergeWith(mainInfo);
             for (Method method : module.getMethods()) {
                 /*
-                 * public 并且声明了 @At 的函数，才是入口函数
+                 * public 并且声明了 @At 的当前模块函数，且非继承函数，非Bridge函数，才是入口函数
                  */
-                if (!Modifier.isPublic(method.getModifiers())
-                    || !method.isAnnotationPresent(At.class))
+                if (!Modifier.isPublic(method.getModifiers()) || method.isBridge()
+                    || Mirror.getAnnotationDeep(method, At.class) == null
+                    || method.getDeclaringClass() != module)
                     continue;
                 // 增加到映射中
                 ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);
@@ -216,6 +218,10 @@ public class NutLoading implements Loading {
         } else {
             log.infof("Found %d module methods", atMethods);
         }
+        
+        config.setUrlMapping(mapping);
+        config.setActionChainMaker(maker);
+        config.setViewMakers(makers);
 
         return mapping;
     }
@@ -285,6 +291,10 @@ public class NutLoading implements Loading {
                     setup.init(config);
                 }
             }
+        } else if (Setup.class.isAssignableFrom(mainModule)) { // MainModule自己就实现了Setup接口呢?
+        	Setup setup = (Setup)Mirror.me(mainModule).born();
+        	config.setAttributeIgnoreNull(Setup.class.getName(), setup);
+        	setup.init(config);
         }
     }
 
@@ -352,7 +362,7 @@ public class NutLoading implements Loading {
         if (log.isDebugEnabled()) {
             StringBuilder sb = new StringBuilder();
             for (ViewMaker maker : makers) {
-                sb.append(maker.getClass().getSimpleName()).append(",");
+                sb.append(maker.getClass().getSimpleName()).append(".class,");
             }
             sb.setLength(sb.length() - 1);
             log.debugf("@Views(%s)", sb);

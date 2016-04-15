@@ -17,6 +17,7 @@ import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.resource.Scans;
 
 /**
  * <p>
@@ -66,7 +67,7 @@ public class NutMvcListener implements ServletContextListener, IocProvider {
 
     public void contextInitialized(ServletContextEvent event) {
         sc = event.getServletContext();
-
+        Scans.me().init(sc);
         findConfig();
         initIoc();
 
@@ -102,8 +103,8 @@ public class NutMvcListener implements ServletContextListener, IocProvider {
         } else {
             pp = new PropertiesProxy(in);
             Streams.safeClose(in);
-            this.pp = pp;
         }
+        this.pp = pp;
     }
 
     /**

@@ -15,17 +15,12 @@ import org.nutz.ioc.meta.IocEventSet;
 import org.nutz.ioc.meta.IocField;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.ioc.meta.IocValue;
-import org.nutz.json.Json;
 import org.nutz.lang.Each;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
 
 public class IocLoading {
-
-    private static final Log log = Logs.get();
 
     private Set<String> supportedTypes;
 
@@ -47,10 +42,10 @@ public class IocLoading {
                 ifld.setValue(object2value(en.getValue()));
                 iobj.addField(ifld);
             }
-            if (log.isWarnEnabled()) // TODO 移除这种兼容性
-                log.warn("Using *Declared* ioc-define (without type or events)!!! Pls use Standard Ioc-Define!!"
-                            + " Bean will define as:\n"
-                            + Json.toJson(iobj));
+//            if (log.isWarnEnabled()) // TODO 移除这种兼容性
+//                log.warn("Using *Declared* ioc-define (without type or events)!!! Pls use Standard Ioc-Define!!"
+//                            + " Bean will define as:\n"
+//                            + Json.toJson(iobj));
         } else {
             Object v = map.get("type");
             // type

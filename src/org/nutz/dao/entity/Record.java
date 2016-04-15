@@ -26,7 +26,7 @@ import org.nutz.log.Logs;
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  */
-public class Record implements Map<String, Object>, java.io.Serializable {
+public class Record implements Map<String, Object>, java.io.Serializable, Cloneable {
 
     /**
      * @author mawenming at Jan 11, 2011 2:20:09 PM
@@ -43,11 +43,6 @@ public class Record implements Map<String, Object>, java.io.Serializable {
     public static void __you_own_risk_changeDefaultIntNumber(int i) {
     	DEFAULT_INT = i;
     	log.info("!!!!!!!!!!!! NOW !! org.nutz.dao.entity.Record.DEFAULT_INT = " + i);
-    	log.info("!!!!!!!!!!!! NOW !! org.nutz.dao.entity.Record.DEFAULT_INT = " + i);
-    	log.warn("!!!!!!!!!!!! NOW !! org.nutz.dao.entity.Record.DEFAULT_INT = " + i);
-    	log.warn("!!!!!!!!!!!! NOW !! org.nutz.dao.entity.Record.DEFAULT_INT = " + i);
-    	log.error("!!!!!!!!!!!! NOW !! org.nutz.dao.entity.Record.DEFAULT_INT = " + i);
-    	log.error("!!!!!!!!!!!! NOW !! org.nutz.dao.entity.Record.DEFAULT_INT = " + i);
     }
 
     /**
@@ -58,40 +53,46 @@ public class Record implements Map<String, Object>, java.io.Serializable {
      * @return 记录对象
      */
     public static Record create(ResultSet rs) {
-    	String name = null;
-    	int i = 0;
+    	Record re = new Record();
+    	create(re, rs, null);
+    	return re;
+    }
+    
+    public static void create(Map<String, Object> re, ResultSet rs, ResultSetMetaData meta) {
+        String name = null;
+        int i = 0;
         try {
-            Record re = new Record();
-            ResultSetMetaData meta = rs.getMetaData();
+            if (meta == null)
+                meta = rs.getMetaData();
             int count = meta.getColumnCount();
             for (i = 1; i <= count; i++) {
                 name = meta.getColumnLabel(i);
                 switch (meta.getColumnType(i)) {
                 case Types.TIMESTAMP: {
-                    re.set(name, rs.getTimestamp(i));
+                    re.put(name, rs.getTimestamp(i));
                     break;
                 }
                 case Types.DATE: {// ORACLE的DATE类型包含时间,如果用默认的只有日期没有时间 from
                                     // cqyunqin
-                    re.set(name, rs.getTimestamp(i));
+                    re.put(name, rs.getTimestamp(i));
                     break;
                 }
                 case Types.CLOB: {
-                    re.set(name, rs.getString(i));
+                    re.put(name, rs.getString(i));
                     break;
                 }
                 default:
-                    re.set(name, rs.getObject(i));
+                    re.put(name, rs.getObject(i));
                     break;
                 }
-                re.setSqlType(name, meta.getColumnType(i));
+                if (re instanceof Record)
+                    ((Record)re).setSqlType(name, meta.getColumnType(i));
             }
-            return re;
         }
         catch (SQLException e) {
-        	if (name != null) {
-        		throw new DaoException(String.format("Column Name=%s, index=%d", name, i), e);
-        	}
+            if (name != null) {
+                throw new DaoException(String.format("Column Name=%s, index=%d", name, i), e);
+            }
             throw new DaoException(e);
         }
     }
@@ -395,5 +396,12 @@ public class Record implements Map<String, Object>, java.io.Serializable {
      */
     protected void setSqlType(String name, int value) {
         sqlTypeMap.put(name.toLowerCase(), value);
+    }
+    
+    public Record clone() {
+        Record re = new Record();
+        re.putAll(this);
+        re.sqlTypeMap.putAll(this.sqlTypeMap);
+        return re;
     }
 }

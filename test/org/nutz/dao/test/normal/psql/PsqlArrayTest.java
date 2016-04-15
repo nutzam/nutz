@@ -11,11 +11,15 @@ import org.nutz.lang.Lang;
 public class PsqlArrayTest extends DaoCase {
     @Override
     protected void before() {
+        if (!dao.meta().isPostgresql())
+            return;
         dao.create(StudentArray.class, true);
     }
 
     @Test
     public void crud() {
+        if (!dao.meta().isPostgresql())
+            return;
         StudentArray student = new StudentArray();
         Integer[] payByQuarter = {1000, 1300, 1500, 1200};
         String[] schedule = new String[]{"02", "05", "08", "11"};
@@ -36,7 +40,7 @@ public class PsqlArrayTest extends DaoCase {
         assertEquals(Integer.valueOf(2500), updateStudent.getPayByQuarter()[2]);
         assertEquals("09", updateStudent.getSchedule()[2]);
 
-        dao.delete(StudentJson.class, insertId);
-        assertNull(dao.fetch(StudentJson.class, insertId));
+        dao.delete(StudentArray.class, insertId);
+        assertNull(dao.fetch(StudentArray.class, insertId));
     }
 }

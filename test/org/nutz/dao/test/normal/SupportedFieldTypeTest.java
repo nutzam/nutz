@@ -142,7 +142,7 @@ public class SupportedFieldTypeTest extends DaoCase {
     public void check_update_sqlTimestamp() {
         EntityTypes exp = new EntityTypes();
         exp.name = "T";
-        Timestamp tm = new Timestamp(System.currentTimeMillis());
+        Timestamp tm = new Timestamp(System.currentTimeMillis()/1000*1000);
         exp.sqlDT = tm;
         dao.insert(exp);
         exp = dao.fetch(EntityTypes.class, "T");

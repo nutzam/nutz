@@ -286,8 +286,7 @@ public abstract class Xmls {
      * @return 一个子元素的列表
      */
     public static List<Element> children(Element ele, String regex) {
-        final List<Element> list = new ArrayList<Element>(ele.getChildNodes()
-                                                             .getLength());
+        final List<Element> list = new ArrayList<Element>(ele.getChildNodes().getLength());
         eachChildren(ele, regex, new Each<Element>() {
             public void invoke(int index, Element cld, int length) {
                 list.add(cld);
@@ -318,9 +317,7 @@ public abstract class Xmls {
      * @param callback
      *            回调
      */
-    public static void eachChildren(Element ele,
-                                    String regex,
-                                    final Each<Element> callback) {
+    public static void eachChildren(Element ele, String regex, final Each<Element> callback) {
         Xmls.eachChildren(ele, regex, callback, 0);
     }
 
@@ -428,8 +425,7 @@ public abstract class Xmls {
         NamedNodeMap nodeMap = ele.getAttributes();
         Map<String, String> attrs = new HashMap<String, String>(nodeMap.getLength());
         for (int i = 0; i < nodeMap.getLength(); i++) {
-            attrs.put(nodeMap.item(i).getNodeName(), nodeMap.item(i)
-                                                            .getNodeValue());
+            attrs.put(nodeMap.item(i).getNodeName(), nodeMap.item(i).getNodeValue());
         }
         return attrs;
     }
@@ -493,4 +489,55 @@ public abstract class Xmls {
         });
         return map;
     }
+
+    /**
+     * 将一个下面格式的 XML:
+     * 
+     * <pre>
+     * &lt;xml&gt;
+     * &lt;key1&gt;value1&lt;/key1&gt;
+     * &lt;key2&gt;value2&lt;/key2&gt;
+     * &lt;/xml&gt;
+     * </pre>
+     * 
+     * 转换成一个 Map
+     * 
+     * @param xml
+     *            XML 字符串
+     * 
+     * @return Map
+     */
+    public static NutMap xmlToMap(String xml) {
+        return Xmls.asMap(Xmls.xml(Lang.ins(xml)).getDocumentElement());
+    }
+
+    /**
+     * 将一个 Map 转换成 XML 类似:
+     * 
+     * <pre>
+     * &lt;xml&gt;
+     * &lt;key1&gt;value1&lt;/key1&gt;
+     * &lt;key2&gt;value2&lt;/key2&gt;
+     * &lt;/xml&gt;
+     * </pre>
+     * 
+     * @param map
+     *            Map
+     * @return XML 字符串
+     */
+    public static String mapToXml(Map<String, Object> map) {
+        StringBuilder sb = new StringBuilder("<xml>");
+        for (Map.Entry<String, Object> en : map.entrySet()) {
+            String key = en.getKey();
+            Object val = en.getValue();
+            if (null == val)
+                continue;
+            sb.append("\n<").append(key).append('>');
+            sb.append(val.toString());
+            sb.append("</").append(key).append('>');
+        }
+        sb.append("\n</xml>");
+        return sb.toString();
+    }
+
 }

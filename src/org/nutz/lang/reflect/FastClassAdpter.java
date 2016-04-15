@@ -32,6 +32,11 @@ public class FastClassAdpter implements Opcodes {
 	public void createInvokeMethod() {
 		mv.visitCode();
 		for (int i = 0; i < methodNames.length; i++) {
+            // start of fuck linenumber
+            Label tmp = new Label();
+            mv.visitLabel(tmp);
+            mv.visitLineNumber(1, tmp);
+            // end of Linenumber
 			mv.visitVarInsn(ILOAD, 2);
 			visitX(i);
 			Label l0 = new Label();
@@ -196,7 +201,7 @@ public class FastClassAdpter implements Opcodes {
 			return;
 		}
 		if (returnType.equals(Type.getType(Object.class))) {
-			;
+			
 		} else {
 			if (returnType.getOpcode(IRETURN) != ARETURN) {
 				checkCast2();

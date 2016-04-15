@@ -514,16 +514,13 @@ public class JsonTest {
         assertEquals(p.getFather().getBirthday(), p2.getFather().getBirthday());
         assertEquals(p.getCompany().getName(), p2.getCompany().getName());
         assertEquals(p.getCompany().getCreator().getName(), p2.getCompany().getCreator().getName());
-        assertEquals(p.getCompany().getCreator().getRealname(), p2.getCompany()
-                                                                  .getCreator()
-                                                                  .getRealname());
+        assertEquals(p.getCompany().getCreator().getRealname(),
+                     p2.getCompany().getCreator().getRealname());
         assertEquals(p.getCompany().getCreator().getAge(), p2.getCompany().getCreator().getAge());
-        assertEquals(p.getCompany().getCreator().getFather(), p2.getCompany()
-                                                                .getCreator()
-                                                                .getFather());
-        assertEquals(p.getCompany().getCreator().getBirthday(), p2.getCompany()
-                                                                  .getCreator()
-                                                                  .getBirthday());
+        assertEquals(p.getCompany().getCreator().getFather(),
+                     p2.getCompany().getCreator().getFather());
+        assertEquals(p.getCompany().getCreator().getBirthday(),
+                     p2.getCompany().getCreator().getBirthday());
     }
 
     @Test
@@ -879,8 +876,9 @@ public class JsonTest {
                      Json.toJson(new JQ(100, -255, -1), JsonFormat.compact().setQuoteName(false)));
         assertEquals("{temp:15.0}",
                      Json.toJson(new JQ(150, 15.0, -1), JsonFormat.compact().setQuoteName(false)));
-        assertEquals("{hz:100.5}", Json.toJson(new JQ(150, -255, 100.5f),
-                                               JsonFormat.compact().setQuoteName(false)));
+        assertEquals("{hz:100.5}",
+                     Json.toJson(new JQ(150, -255, 100.5f),
+                                 JsonFormat.compact().setQuoteName(false)));
     }
 
     @Test
@@ -912,15 +910,27 @@ public class JsonTest {
         System.out.println(Json.toJson(map, JsonFormat.compact().setDateFormat("yyyy-MM-dd")));
         String str = "[{dongdong:{age:80}}]";
         System.out.println(Json.fromJson(str));
-        List<Map<String, Pet>> list = (List<Map<String, Pet>>)Json.fromJson(NutType.list(NutType.map(String.class, Pet.class)), str/*其他源也可以*/);
+        List<Map<String, Pet>> list = (List<Map<String, Pet>>) Json.fromJson(NutType.list(NutType.map(String.class,
+                                                                                                      Pet.class)),
+                                                                             str/* 其他源也可以 */);
         System.out.println(list);
         assertEquals(80, list.get(0).get("dongdong").getAge());
     }
-    
+
     @Test
     public void test_self_toString_toJson() {
         Msg msg = new Msg("200", "ok");
         System.out.println(Json.toJson(msg));
         System.out.println(msg);
+    }
+
+    @Test
+    public void test_number_formt_tojson() {
+        NumBean num = new NumBean();
+        num.setNum1(1);
+        String a = "{\n" + "   \"num1\" :\"01.00\",\n" + "   \"num2\" :\"02.00\"\n" + "}";
+        String str = Json.toJson(num);
+        assertEquals(a, str);
+        System.out.println(str);
     }
 }

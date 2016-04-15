@@ -17,6 +17,7 @@ import org.nutz.castor.castor.String2Array;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Times;
 import org.nutz.lang.meta.Email;
+import org.nutz.lang.util.NutMap;
 
 import static org.junit.Assert.*;
 
@@ -32,6 +33,24 @@ public class CastorTest {
             this.msg = msg;
             this.date = date;
         }
+    }
+
+    @Test
+    public void test_cast_to_boolean() {
+        Castors c = Castors.me();
+        assertFalse(c.castTo(Boolean.FALSE, Boolean.class));
+        assertFalse(c.castTo(false, Boolean.class));
+        assertFalse(c.castTo(Boolean.FALSE, boolean.class));
+        assertFalse(c.castTo(false, boolean.class));
+    }
+
+    @Test
+    public void test_string_2_nutmap() {
+        Castors c = Castors.me();
+
+        NutMap map = c.castTo("{x:100}", NutMap.class);
+        assertEquals(1, map.size());
+        assertEquals(100, map.getInt("x"));
     }
 
     @Test

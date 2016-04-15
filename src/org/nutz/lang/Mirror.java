@@ -114,7 +114,7 @@ public class Mirror<T> {
      */
     public static <T> Mirror<T> me(Class<T> classOfT) {
         return null == classOfT ? null
-                               : new Mirror<T>(classOfT).setTypeExtractor(defaultTypeExtractor);
+                                : new Mirror<T>(classOfT).setTypeExtractor(defaultTypeExtractor);
     }
 
     /**
@@ -143,8 +143,8 @@ public class Mirror<T> {
      */
     public static <T> Mirror<T> me(Class<T> classOfT, TypeExtractor typeExtractor) {
         return null == classOfT ? null
-                               : new Mirror<T>(classOfT).setTypeExtractor(typeExtractor == null ? defaultTypeExtractor
-                                                                                               : typeExtractor);
+                                : new Mirror<T>(classOfT).setTypeExtractor(typeExtractor == null ? defaultTypeExtractor
+                                                                                                 : typeExtractor);
     }
 
     /**
@@ -305,7 +305,8 @@ public class Mirror<T> {
             getter = method;
             // 寻找 setter
             try {
-                setter = method.getDeclaringClass().getMethod("set" + Strings.upperFirst(name),
+                setter = method.getDeclaringClass().getMethod("set"
+                                                              + Strings.upperFirst(name),
                                                               method.getReturnType());
             }
             catch (Exception e) {}
@@ -319,7 +320,8 @@ public class Mirror<T> {
             getter = method;
             // 寻找 setter
             try {
-                setter = method.getDeclaringClass().getMethod("set" + Strings.upperFirst(name),
+                setter = method.getDeclaringClass().getMethod("set"
+                                                              + Strings.upperFirst(name),
                                                               method.getReturnType());
             }
             catch (Exception e) {}
@@ -362,8 +364,9 @@ public class Mirror<T> {
                                         Callback3<String, Method, Method> callback) {
         evalGetterSetter(method, callback, new Callback<Method>() {
             public void invoke(Method method) {
-                throw Lang.makeThrow(errmsgFormat, method.getName(), method.getDeclaringClass()
-                                                                           .getName());
+                throw Lang.makeThrow(errmsgFormat,
+                                     method.getName(),
+                                     method.getDeclaringClass().getName());
             }
         });
     }
@@ -531,7 +534,10 @@ public class Mirror<T> {
         return _getFields(false, true, noFinal, true);
     }
 
-    private Field[] _getFields(boolean noStatic, boolean noMember, boolean noFinal, boolean noInner) {
+    private Field[] _getFields(boolean noStatic,
+                               boolean noMember,
+                               boolean noFinal,
+                               boolean noInner) {
         Class<?> cc = klass;
         Map<String, Field> map = new LinkedHashMap<String, Field>();
         while (null != cc && cc != Object.class) {
@@ -729,7 +735,8 @@ public class Mirror<T> {
      *            值
      * @throws FailToSetValueException
      */
-    public void setValue(Object obj, String fieldName, Object value) throws FailToSetValueException {
+    public void setValue(Object obj, String fieldName, Object value)
+            throws FailToSetValueException {
         if (null == value) {
             try {
                 setValue(obj, this.getField(fieldName), null);
@@ -755,7 +762,8 @@ public class Mirror<T> {
     private static RuntimeException makeGetValueException(Class<?> type, String name, Throwable e) {
         return new FailToGetValueException(String.format("Fail to get value for [%s]->[%s]",
                                                          type.getName(),
-                                                         name), e);
+                                                         name),
+                                           e);
     }
 
     /**
@@ -790,6 +798,7 @@ public class Mirror<T> {
      * @throws FailToGetValueException
      *             既没发现 getter，又没有字段
      */
+    @SuppressWarnings("rawtypes")
     public Object getValue(Object obj, String name) throws FailToGetValueException {
         try {
             return this.getGetter(name).invoke(obj);
@@ -799,8 +808,20 @@ public class Mirror<T> {
                 return getValue(obj, getField(name));
             }
             catch (NoSuchFieldException e1) {
-                if (obj != null && obj.getClass().isArray() && "length".equals(name)) {
-                    return Lang.length(obj);
+                if (obj != null) {
+                    if (obj.getClass().isArray() && "length".equals(name)) {
+                        return Lang.length(obj);
+                    }
+                    if (obj instanceof Map) {
+                        return ((Map)obj).get(name);
+                    }
+                    if (obj instanceof List) {
+                        try {
+                            return ((List)obj).get(Integer.parseInt(name));
+                        }
+                        catch (Exception e2) {
+                        }
+                    }
                 }
                 throw makeGetValueException(obj == null ? getType() : obj.getClass(), name, e);
             }
@@ -861,6 +882,8 @@ public class Mirror<T> {
     public Class<?> getWrapperClass() {
         if (!klass.isPrimitive()) {
             if (this.isPrimitiveNumber() || this.is(Boolean.class) || this.is(Character.class))
+                return klass;
+            if (Number.class.isAssignableFrom(klass))
                 return klass;
             throw Lang.makeThrow("Class '%s' should be a primitive class", klass.getName());
         }
@@ -967,7 +990,8 @@ public class Mirror<T> {
         return bc.doBorn();
     }
 
-    private static boolean doMatchMethodParamsType(Class<?>[] paramTypes, Class<?>[] methodArgTypes) {
+    private static boolean doMatchMethodParamsType(Class<?>[] paramTypes,
+                                                   Class<?>[] methodArgTypes) {
         if (paramTypes.length == 0 && methodArgTypes.length == 0)
             return true;
         if (paramTypes.length == methodArgTypes.length) {
@@ -1331,7 +1355,12 @@ public class Mirror<T> {
      * @return 当前对象是否简单的数值，比如字符串，布尔，字符，数字，日期时间等
      */
     public boolean isSimple() {
-        return isStringLike() || isBoolean() || isChar() || isNumber() || isDateTimeLike();
+        return isStringLike()
+               || isBoolean()
+               || isChar()
+               || isNumber()
+               || isDateTimeLike()
+               || isEnum();
     }
 
     /**
@@ -1538,9 +1567,7 @@ public class Mirror<T> {
      */
     public boolean isNumber() {
         return Number.class.isAssignableFrom(klass)
-               || klass.isPrimitive()
-               && !is(boolean.class)
-               && !is(char.class);
+               || klass.isPrimitive() && !is(boolean.class) && !is(char.class);
     }
 
     /**
@@ -1686,8 +1713,7 @@ public class Mirror<T> {
         for (Class<?> pt : parameterTypes)
             sb.append(getTypeDescriptor(pt));
         sb.append(')');
-        String s = sb.toString();
-        return s;
+        return sb.toString();
     }
 
     /**
@@ -1765,6 +1791,7 @@ public class Mirror<T> {
     }
 
     private static final Map<Class<?>, Class<?>> TypeMapping2 = new HashMap<Class<?>, Class<?>>();
+
     static {
 
         TypeMapping2.put(Short.class, short.class);
@@ -1793,4 +1820,79 @@ public class Mirror<T> {
         }
         return false;
     }
+
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static <T extends Annotation> T getAnnotationDeep(Method method, Class<T> annotationClass) {
+        T t = method.getAnnotation(annotationClass);
+        if (t != null)
+            return t;
+        Class klass = method.getDeclaringClass().getSuperclass();
+        while (klass != null && klass != Object.class) {
+            try {
+                for (Method m : klass.getMethods()) {
+                    if (m.getName().equals(method.getName())) {
+                        Class[] mParameters = m.getParameterTypes();
+                        Class[] methodParameters = method.getParameterTypes();
+                        if (mParameters.length != methodParameters.length)
+                            continue;
+                        boolean match = true;
+                        for (int i = 0; i < mParameters.length; i++) {
+                            if (!mParameters[i].isAssignableFrom(methodParameters[i])) {
+                                match = false;
+                                break;
+                            }
+                        }
+                        if (match) {
+                            t = m.getAnnotation(annotationClass);
+                            if (t != null)
+                                return t;
+                        }
+                    }
+                }
+            }
+            catch (Exception e) {
+                break;
+            }
+            klass = klass.getSuperclass();
+        }
+        for (Class klass2 : method.getDeclaringClass().getInterfaces()) {
+            try {
+                Method tmp = klass2.getMethod(method.getName(), method.getParameterTypes());
+                t = tmp.getAnnotation(annotationClass);
+                if (t != null)
+                    return t;
+            }
+            catch (Exception e) {}
+        }
+        return null;
+    }
+
+    public static <T extends Annotation> T getAnnotationDeep(Class<?> type, Class<T> annotationClass) {
+        T t = type.getAnnotation(annotationClass);
+        if (t != null)
+            return t;
+        Class<?> klass = type.getSuperclass();
+        while (klass != null && klass != Object.class) {
+            try {
+                t = klass.getAnnotation(annotationClass);
+                if (t != null)
+                    return t;
+            }
+            catch (Exception e) {
+                break;
+            }
+            klass = klass.getSuperclass();
+        }
+        for (Class<?> klass2 : type.getInterfaces()) {
+            try {
+                t = klass2.getAnnotation(annotationClass);
+                if (t != null)
+                    return t;
+            }
+            catch (Exception e) {}
+        }
+        return null;
+    }
+
 }

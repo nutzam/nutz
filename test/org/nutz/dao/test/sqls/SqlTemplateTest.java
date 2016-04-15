@@ -87,7 +87,7 @@ public class SqlTemplateTest extends DaoCase {
     public void testQueryForObjectClassOfT() {
         pojos.initPet();
         Pet pet = Pet.create("papa");
-        Timestamp createTime = new Timestamp(System.currentTimeMillis());
+        Timestamp createTime = new Timestamp(System.currentTimeMillis()/1000*1000);
         pet.setBirthday(createTime);
 
         dao.insert(pet);

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -22,6 +23,7 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityMaker;
 import org.nutz.dao.entity.LinkField;
 import org.nutz.dao.entity.LinkVisitor;
+import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.impl.link.DoClearLinkVisitor;
 import org.nutz.dao.impl.link.DoClearRelationByHostFieldLinkVisitor;
@@ -136,11 +138,23 @@ public class NutDao extends DaoSupport implements Dao {
         final EntityOperator opt = _optBy(Lang.first(obj));
         if (null == opt)
             return null;
-        Lang.each(obj, false, new Each<Object>() {
-            public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
-                opt.addInsert(opt.entity, ele);
-            }
-        });
+        int size = Lang.length(obj);
+        if (size < 1)
+        	return obj;
+    	Object first = Lang.first(obj);
+    	opt.addInsert(opt.entity, first);
+        if (size > 1) {
+        	if (opt.getPojoListSize() == 1) {
+        		// 单一操作,可以转为批量插入
+        		return fastInsert(obj);
+        	}
+        	Lang.each(obj, false, new Each<Object>() {
+        		public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
+        			if (i != 0)
+        				opt.addInsert(opt.entity, ele);
+        		}
+        	});
+        }
         opt.exec();
         return obj;
     }
@@ -465,6 +479,7 @@ public class NutDao extends DaoSupport implements Dao {
         expert.formatQuery(pojo);
         pojo.setAfter(_pojo_eachEntity);
         pojo.getContext().attr(Each.class.getName(), callback);
+        pojo.getContext().attr("dao-cache-skip", "true");
         _exec(pojo);
         return pojo.getInt();
     }
@@ -496,6 +511,7 @@ public class NutDao extends DaoSupport implements Dao {
         expert.formatQuery(pojo);
         pojo.setAfter(_pojo_eachRecord);
         pojo.getContext().attr(Each.class.getName(), callback);
+        pojo.getContext().attr("dao-cache-skip", "true");
         _exec(pojo);
         return pojo.getInt();
     }
@@ -966,5 +982,55 @@ public class NutDao extends DaoSupport implements Dao {
         if (sql != null)
             execute(new Sql[]{sql});
         return sql;
+    }
+    
+    public <T> T insert(final T t, boolean ignoreNull, boolean ignoreZero, boolean ignoreBlankStr) {
+    	Object obj = Lang.first(t);
+    	Entity<?> en = getEntity(obj.getClass());
+    	List<String> names = new ArrayList<String>();
+    	for (MappingField mf : en.getMappingFields()) {
+    		Object tmp = mf.getValue(obj);
+			if (ignoreNull && tmp == null) {
+				continue;
+			}
+			if (ignoreZero && (tmp == null || (tmp instanceof Number && ((Number)tmp).intValue() == 0))) {
+				continue;
+			}
+			if (ignoreBlankStr && (tmp instanceof CharSequence && Strings.isBlank((CharSequence)tmp)))
+				continue;
+			names.add(mf.getName());
+		}
+    	FieldFilter ff = FieldFilter.create(obj.getClass(), "^("+Strings.join("|", names.toArray())+")$");
+    	Molecule<T> m = new Molecule<T>() {
+    		public void run() {
+    			insert(t);
+    			setObj(t);
+    		}
+		};
+		return ff.run(m);
+    }
+    
+    public <T> List<T> query(final Class<T> classOfT, final Condition cnd, final Pager pager, FieldMatcher matcher) {
+        if (matcher == null)
+            return query(classOfT, cnd, pager);
+        FieldFilter ff = FieldFilter.create(classOfT, matcher);
+        Molecule<List<T>> m = new Molecule<List<T>>() {
+            public void run() {
+                setObj(query(classOfT, cnd, pager));
+            }
+        };
+        return ff.run(m);
+    }
+    
+    public <T> List<T> query(final Class<T> classOfT, final Condition cnd, final Pager pager, String regex) {
+        if (regex == null)
+            return query(classOfT, cnd, pager);
+        FieldFilter ff = FieldFilter.create(classOfT, FieldMatcher.make(regex, null, false));
+        Molecule<List<T>> m = new Molecule<List<T>>() {
+            public void run() {
+                setObj(query(classOfT, cnd, pager));
+            }
+        };
+        return ff.run(m);
     }
 }

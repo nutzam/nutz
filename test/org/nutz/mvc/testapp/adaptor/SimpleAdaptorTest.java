@@ -90,4 +90,11 @@ public class SimpleAdaptorTest extends BaseWebappTest {
         assertEquals(200, resp.getStatus());
         assertEquals("false", resp.getContent());
     }
+    
+//    @Test
+//    public void test_sql_date() {
+//    	resp = post("/adaptor/sqldate", "checkDate=2016-01-29");
+//        assertEquals(200, resp.getStatus());
+//        assertEquals("2016-01-29", resp.getContent());
+//    }
 }

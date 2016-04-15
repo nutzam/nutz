@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.sql.SQLException;
 
 import org.junit.Test;
+import org.nutz.dao.Cnd;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.BinObject;
 import org.nutz.dao.test.meta.TheGoods;
@@ -88,8 +89,11 @@ public class BinaryDaoTest extends DaoCase {
         Files.write(f, "中文");
         bin.setMyClob(new SimpleClob(f));
         dao.insert(bin);
-        
+        Lang.quiteSleep(5000);
+        System.out.println(dao.fetch("bin_object", Cnd.NEW()));
         bin = dao.fetch(BinObject.class);
+        assertNotNull(bin);
+        assertNotNull(bin.getMyClob());
         String str = Lang.readAll(bin.getMyClob().getCharacterStream());
         assertEquals("中文", str);
     }

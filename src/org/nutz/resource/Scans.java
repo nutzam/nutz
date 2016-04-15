@@ -49,7 +49,7 @@ public class Scans {
      * 调用一次就可以了
      */
     @SuppressWarnings("unchecked")
-    public Scans init(ServletContext sc) {
+	public Scans init(ServletContext sc) {
         // 获取classes文件夹的路径
         String classesPath = sc.getRealPath("/WEB-INF/classes/");
         if (classesPath != null) {
@@ -166,25 +166,24 @@ public class Scans {
      * @return 资源列表
      */
     public List<NutResource> scan(String src, String regex) {
+        if (src.isEmpty())
+            throw new RuntimeException("emtry src is NOT allow");
+        if ("/".equals(src))
+            throw new RuntimeException("root path is NOT allow");
         List<NutResource> list = new ArrayList<NutResource>();
         Pattern pattern = regex == null ? null : Pattern.compile(regex);
         // 先看看是不是文件系统上一个具体的文件
         if (src.startsWith("~/"))
             src = Disks.normalize(src);
         File srcFile = new File(src);
-        if (src.startsWith("/") || srcFile.exists()) {
-            if (srcFile.exists()) {
-                if (srcFile.isDirectory()) {
-                    Disks.visitFile(srcFile,
-                                    new ResourceFileVisitor(list, src),
-                                    new ResourceFileFilter(pattern));
-                } else {
-                    list.add(new FileResource(src, srcFile));
-                }
+        if (srcFile.exists()) {
+            if (srcFile.isDirectory()) {
+                Disks.visitFile(srcFile,
+                                new ResourceFileVisitor(list, src),
+                                new ResourceFileFilter(pattern));
+            } else {
+                list.add(new FileResource(src, srcFile));
             }
-            else
-                scan(src.substring(1), regex);
-            //虽然已经找到一些了, 但还是扫描一些吧,这样才全!!
         }
         for (ResourceLocation location : locations) {
             location.scan(src, pattern, list);
@@ -350,7 +349,7 @@ public class Scans {
      * @return 类对象列表
      */
     private static List<Class<?>> rs2class(String pkg, List<NutResource> list) {
-        Set<Class<?>> re = new HashSet<Class<?>>(list.size());
+        Set<Class<?>> re = new LinkedHashSet<Class<?>>(list.size());
         if (!list.isEmpty()) {
             for (NutResource nr : list) {
                 if (!nr.getName().endsWith(".class") || nr.getName().endsWith("package-info.class")) {
@@ -379,7 +378,7 @@ public class Scans {
                 }
                 catch (Throwable e) {
                     if (log.isInfoEnabled())
-                        log.info("Resource can't map to Class, Resource " + nr.getName(), e);
+                        log.info("Resource can't map to Class, Resource " + nr.getName());
                 }
                 finally {
                     Streams.safeClose(in);

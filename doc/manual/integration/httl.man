@@ -1,9 +1,11 @@
-#title: 集成HTTL
+#title: 集成HTTL(废弃)
 #index:0,1
 #author:wendal(wendal1985@gmail.com)
 
 ---------------------------------------------------------------------
 HTTL官网信息
+
+	不建议使用,因为作者已经停止更新
 
 	官网地址 http://httl.github.io/zh/
 	

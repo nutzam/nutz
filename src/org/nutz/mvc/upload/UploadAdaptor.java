@@ -14,14 +14,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.adaptor.PairAdaptor;
 import org.nutz.mvc.adaptor.ParamInjector;
+import org.nutz.mvc.adaptor.injector.ObjectNavlPairInjector;
 import org.nutz.mvc.annotation.Param;
-import org.nutz.mvc.upload.injector.FileInjector;
-import org.nutz.mvc.upload.injector.FileMetaInjector;
 import org.nutz.mvc.upload.injector.InputStreamInjector;
 import org.nutz.mvc.upload.injector.MapListInjector;
 import org.nutz.mvc.upload.injector.MapSelfInjector;
@@ -59,6 +59,8 @@ import org.nutz.mvc.upload.injector.TempFileInjector;
  * @author wendal(wendal1985@gmail.com)
  * 
  * @see org.nutz.mvc.annotation.Param
+ * 
+ * @since 1.r.55开始使用与servlet 3.0+一致的Part接口,原方法标记为弃用.
  */
 public class UploadAdaptor extends PairAdaptor {
     private static final Log log = Logs.get();
@@ -118,7 +120,8 @@ public class UploadAdaptor extends PairAdaptor {
     	return super.adapt(sc, req, resp, pathArgs);
     }
 
-    protected ParamInjector evalInjectorBy(Type type, Param param) {
+    @SuppressWarnings("deprecation")
+	protected ParamInjector evalInjectorBy(Type type, Param param) {
         // TODO 这里的实现感觉很丑, 感觉可以直接用type进行验证与传递
         // TODO 这里将Type的影响局限在了 github issue #30 中提到的局部范围
         Class<?> clazz = Lang.getTypeClass(type);
@@ -139,10 +142,10 @@ public class UploadAdaptor extends PairAdaptor {
 
         // File
         if (File.class.isAssignableFrom(clazz))
-            return new FileInjector(paramName);
+            return new org.nutz.mvc.upload.injector.FileInjector(paramName);
         // FileMeta
         if (FieldMeta.class.isAssignableFrom(clazz))
-            return new FileMetaInjector(paramName);
+            return new org.nutz.mvc.upload.injector.FileMetaInjector(paramName);
         // TempFile
         if (TempFile.class.isAssignableFrom(clazz))
             return new TempFileInjector(paramName);
@@ -153,8 +156,11 @@ public class UploadAdaptor extends PairAdaptor {
         if (Reader.class.isAssignableFrom(clazz))
             return new ReaderInjector(paramName);
         // List
-        if (List.class.isAssignableFrom(clazz))
+        if (List.class.isAssignableFrom(clazz)) {
+            if (!Strings.isBlank(paramName) && paramName.startsWith("::"))
+                return new ObjectNavlPairInjector(paramName.substring(2), type);
             return new MapListInjector(paramName);
+        }
         if (TempFile[].class.isAssignableFrom(clazz)) {
             return new TempFileArrayInjector(paramName);
         }

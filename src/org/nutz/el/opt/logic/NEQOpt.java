@@ -14,6 +14,8 @@ public class NEQOpt extends TwoTernary{
     public Object calculate() {
         Object lval = calculateItem(this.left);
         Object rval = calculateItem(this.right);
+        if (lval == null || rval == null)
+            return false;
         if(lval == rval){
             return false;
         }

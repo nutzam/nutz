@@ -5,7 +5,7 @@ import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -30,7 +30,7 @@ import org.nutz.lang.Strings;
 /**
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
- * 
+ * @author 有心猴(belialofking@163.com)
  */
 @SuppressWarnings({"rawtypes"})
 public class JsonRenderImpl implements JsonRender {
@@ -112,8 +112,8 @@ public class JsonRenderImpl implements JsonRender {
                     map2Json((Map) obj);
                 }
                 // 集合
-                else if (obj instanceof Collection) {
-                    coll2Json((Collection) obj);
+                else if (obj instanceof Iterable) {
+                    coll2Json((Iterable) obj);
                 }
                 // 数组
                 else if (obj.getClass().isArray()) {
@@ -254,12 +254,14 @@ public class JsonRenderImpl implements JsonRender {
             String name = jef.getName();
             try {
                 Object value = jef.getValue(obj);
+
                 // 判断是否应该被忽略
                 if (!this.isIgnore(name, value)) {
+                    Mirror mirror = null;
                     // 以前曾经输出过 ...
                     if (null != value) {
                         // zozoh: 循环引用的默认行为，应该为 null，以便和其他语言交换数据
-                        Mirror mirror = Mirror.me(value);
+                        mirror = Mirror.me(value);
                         if (mirror.isPojo()) {
                             if (memo.contains(value))
                                 value = null;
@@ -288,8 +290,10 @@ public class JsonRenderImpl implements JsonRender {
                         else {
                             value = value2string(jef, value);
                         }
-                    } else if (jef.hasDateFormat() && null != value && value instanceof Date) {
-                        value = jef.getDateFormat().format((Date)value);
+                    } else if (jef.hasDataFormat() && null != value && value instanceof Date) {
+                        value = jef.getDataFormat().format((Date)value);
+                    } else if (jef.hasDataFormat() && null != value && mirror.isNumber()) {
+                        value = jef.getDataFormat().format(value);
                     }
 
                     // 加入输出列表 ...
@@ -360,8 +364,17 @@ public class JsonRenderImpl implements JsonRender {
                         else
                         	writer.write(u.toUpperCase());
                     }
-                    else
-                        writer.append(c);
+                    else {
+                        if (c < ' ' || (c >= '\u0080' && c < '\u00a0')
+                                || (c >= '\u2000' && c < '\u2100')) {
+                            writer.write("\\u");
+                            String hhhh = Integer.toHexString(c);
+                            writer.write("0000", 0, 4 - hhhh.length());
+                            writer.write(hhhh);
+                        } else {
+                            writer.append(c);
+                        }
+                    }
                 }
             }
             writer.append(format.getSeparator());
@@ -383,7 +396,7 @@ public class JsonRenderImpl implements JsonRender {
         writer.append(']');
     }
 
-    private void coll2Json(Collection iterable) throws IOException {
+    private void coll2Json(Iterable iterable) throws IOException {
         writer.append('[');
         for (Iterator<?> it = iterable.iterator(); it.hasNext();) {
             render(it.next());
@@ -397,14 +410,18 @@ public class JsonRenderImpl implements JsonRender {
     }
 
     protected String value2string(JsonEntityField jef, Object value) {
-        if (value instanceof Date) {
-            SimpleDateFormat df = jef.getDateFormat();
-            if (df == null) {
+        
+        Format df = jef.getDataFormat();
+        if (df == null) {
+            Mirror mirror = Mirror.me(value);
+            if (value instanceof Date) {
                 df = format.getDateFormat();
+            }else if (mirror.isNumber()) {
+                df = format.getNumberFormat();
             }
-            if (df != null) {
-                return df.format((Date)value);
-            }
+        }
+        if (df != null) {
+            return df.format(value);
         }
         return value.toString();
     }

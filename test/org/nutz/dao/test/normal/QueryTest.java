@@ -247,6 +247,11 @@ public class QueryTest extends DaoCase {
         Record re = dao.fetch("t_pet", Cnd.where("name", "=", "pet3"));
         if (dao.meta().isOracle())
         	re.remove("rn");
+        if (dao.meta().isSqlServer()) {
+            re.remove("__rn__");
+            re.remove("__tc__");
+        }
+        System.out.println(re.keySet());
         Pet pet = re.toPojo(Pet.class);
         assertEquals(7, re.getColumnCount());
         assertEquals(4, pet.getId());

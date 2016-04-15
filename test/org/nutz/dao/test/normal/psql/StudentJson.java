@@ -5,9 +5,11 @@ import java.sql.SQLException;
 
 import org.nutz.dao.entity.annotation.ColDefine;
 import org.nutz.dao.entity.annotation.ColType;
+import org.nutz.dao.entity.annotation.Table;
 import org.nutz.json.Json;
 import org.nutz.lang.util.NutMap;
 
+@Table("t_psql_student_json")
 public class StudentJson extends Student {
 
     public StudentJson() {}

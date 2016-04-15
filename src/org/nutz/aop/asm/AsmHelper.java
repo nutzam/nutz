@@ -6,32 +6,35 @@ import org.nutz.repo.org.objectweb.asm.Type;
 
 final class AsmHelper implements Opcodes{
 
+    private static final String ORG_NUTZ_AOP_ASM_HELPER = "org/nutz/aop/asm/Helper";
+    private static final String VALUE_OF = "valueOf";
+
     static boolean packagePrivateData(Type type, MethodVisitor mv) {
         if (type.equals(Type.BOOLEAN_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
                                 "java/lang/Boolean",
-                                "valueOf",
+                                VALUE_OF,
                                 "(Z)Ljava/lang/Boolean;");
         } else if (type.equals(Type.BYTE_TYPE)) {
-            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;");
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Byte", VALUE_OF, "(B)Ljava/lang/Byte;");
         } else if (type.equals(Type.CHAR_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
                                 "java/lang/Character",
-                                "valueOf",
+                                VALUE_OF,
                                 "(C)Ljava/lang/Character;");
         } else if (type.equals(Type.SHORT_TYPE)) {
-            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;");
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Short", VALUE_OF, "(S)Ljava/lang/Short;");
         } else if (type.equals(Type.INT_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
                                 "java/lang/Integer",
-                                "valueOf",
+                                VALUE_OF,
                                 "(I)Ljava/lang/Integer;");
         } else if (type.equals(Type.LONG_TYPE)) {
-            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;");
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Long", VALUE_OF, "(J)Ljava/lang/Long;");
         } else if (type.equals(Type.FLOAT_TYPE)) {
-            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;");
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Float", VALUE_OF, "(F)Ljava/lang/Float;");
         } else if (type.equals(Type.DOUBLE_TYPE)) {
-            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Double", VALUE_OF, "(D)Ljava/lang/Double;");
         } else {
             return false;
         }
@@ -41,43 +44,43 @@ final class AsmHelper implements Opcodes{
     static void unpackagePrivateData(Type type, MethodVisitor mv) {
         if (type.equals(Type.BOOLEAN_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
-                                "org/nutz/aop/asm/Helper",
-                                "valueOf",
+                                ORG_NUTZ_AOP_ASM_HELPER,
+                                VALUE_OF,
                                 "(Ljava/lang/Boolean;)Z");
         } else if (type.equals(Type.BYTE_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
-                                "org/nutz/aop/asm/Helper",
-                                "valueOf",
+                                ORG_NUTZ_AOP_ASM_HELPER,
+                                VALUE_OF,
                                 "(Ljava/lang/Byte;)B");
         } else if (type.equals(Type.CHAR_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
-                                "org/nutz/aop/asm/Helper",
-                                "valueOf",
+                                ORG_NUTZ_AOP_ASM_HELPER,
+                                VALUE_OF,
                                 "(Ljava/lang/Character;)C");
         } else if (type.equals(Type.SHORT_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
-                                "org/nutz/aop/asm/Helper",
-                                "valueOf",
+                                ORG_NUTZ_AOP_ASM_HELPER,
+                                VALUE_OF,
                                 "(Ljava/lang/Short;)S");
         } else if (type.equals(Type.INT_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
-                                "org/nutz/aop/asm/Helper",
-                                "valueOf",
+                                ORG_NUTZ_AOP_ASM_HELPER,
+                                VALUE_OF,
                                 "(Ljava/lang/Integer;)I");
         } else if (type.equals(Type.LONG_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
-                                "org/nutz/aop/asm/Helper",
-                                "valueOf",
+                                ORG_NUTZ_AOP_ASM_HELPER,
+                                VALUE_OF,
                                 "(Ljava/lang/Long;)J");
         } else if (type.equals(Type.FLOAT_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
-                                "org/nutz/aop/asm/Helper",
-                                "valueOf",
+                                ORG_NUTZ_AOP_ASM_HELPER,
+                                VALUE_OF,
                                 "(Ljava/lang/Float;)F");
         } else if (type.equals(Type.DOUBLE_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
-                                "org/nutz/aop/asm/Helper",
-                                "valueOf",
+                                ORG_NUTZ_AOP_ASM_HELPER,
+                                VALUE_OF,
                                 "(Ljava/lang/Double;)D");
         }
     }

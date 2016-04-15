@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,16 +66,25 @@ public abstract class Times {
      * 将一个时间字符串，转换成一个一天中的绝对秒数
      * 
      * @param ts
-     *            时间字符串，符合格式 "HH:mm:ss"
+     *            时间字符串，符合格式 "HH:mm:ss" 或者 "HH:mm"
      * @return 一天中的绝对秒数
      */
     public static int T(String ts) {
         String[] tss = Strings.splitIgnoreBlank(ts, ":");
-        if (null != tss && tss.length == 3) {
-            int hh = Integer.parseInt(tss[0]);
-            int mm = Integer.parseInt(tss[1]);
-            int ss = Integer.parseInt(tss[2]);
-            return hh * 3600 + mm * 60 + ss;
+        if (null != tss) {
+            // 仅仅到分钟
+            if (tss.length == 2) {
+                int hh = Integer.parseInt(tss[0]);
+                int mm = Integer.parseInt(tss[1]);
+                return hh * 3600 + mm * 60;
+            }
+            // 到秒
+            if (tss.length == 3) {
+                int hh = Integer.parseInt(tss[0]);
+                int mm = Integer.parseInt(tss[1]);
+                int ss = Integer.parseInt(tss[2]);
+                return hh * 3600 + mm * 60 + ss;
+            }
         }
         throw Lang.makeThrow("Wrong format of time string '%s'", ts);
     }
@@ -472,6 +482,20 @@ public abstract class Times {
                + ":"
                + Strings.alignRight(ss[2], 2, '0');
     }
+    
+    /**
+     * 将一个秒数（天中），转换成一个格式为 HH:mm 的字符串（精确到分钟）
+     * 
+     * @param sec
+     *            秒数
+     * @return 格式为 HH:mm:ss 的字符串
+     */
+    public static String sTmin(int sec) {
+        int[] ss = T(sec);
+        return Strings.alignRight(ss[0], 2, '0')
+               + ":"
+               + Strings.alignRight(ss[1], 2, '0');
+    }
 
     /**
      * 以本周为基础获得某一周的时间范围
@@ -649,7 +673,7 @@ public abstract class Times {
      * @return 格式化后的字符串
      */
     public static String format(String fmt, Date d) {
-        return new SimpleDateFormat(fmt).format(d);
+        return new SimpleDateFormat(fmt, Locale.ENGLISH).format(d);
     }
 
     /**
@@ -821,13 +845,13 @@ public abstract class Times {
                    + (useEnglish ? TIME_H_EN : TIME_H_CN)
                    + _fromMillis(mi - h * T_1H, useEnglish);
         }
-        if (mi >= T_1D) {
-            int d = (int) (mi / T_1D);
-            return d
+        //if (mi >= T_1D) {
+        int d = (int) (mi / T_1D);
+        return d
                    + (useEnglish ? TIME_D_EN : TIME_D_CN)
                    + _fromMillis(mi - d * T_1D, useEnglish);
-        }
+        //}
         // WTF ?
-        throw Lang.impossible();
+        //throw Lang.impossible();
     }
 }

@@ -3,6 +3,7 @@ package org.nutz.mvc.view;
 import org.nutz.ioc.Ioc;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.mvc.View;
 import org.nutz.mvc.ViewMaker;
@@ -34,7 +35,7 @@ public class DefaultViewMaker implements ViewMaker {
 
         if (VIEW_JSON.equals(type) || VIEW_JSONP.equals(type))
             if (Strings.isBlank(value))
-                return UTF8JsonView.COMPACT;
+                return VIEW_JSONP.equals(type) ? UTF8JsonView.JSONP : UTF8JsonView.COMPACT;
             else {
                 // 除高级的json format定义之外,也支持简单的缩写
                 if (value.charAt(0) == '{')
@@ -63,7 +64,13 @@ public class DefaultViewMaker implements ViewMaker {
         if (VIEW_IOC.equals(type))
             return ioc.get(View.class, value);
         if (VIEW_HTTP.equals(type)) {
-            return new HttpStatusView(Integer.parseInt(Strings.sBlank(value, "500")));
+            String val = Strings.sBlank(value, "500");
+            try {
+                return new HttpStatusView(Integer.parseInt(val));
+            }
+            catch (NumberFormatException e) {
+                return new HttpStatusView(Lang.map(val));
+            }
         }
         if (VIEW_RAW.equals(type))
             return new RawView(value);

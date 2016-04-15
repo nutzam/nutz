@@ -1,5 +1,8 @@
 package org.nutz.dao;
 
+import java.lang.reflect.Array;
+import java.util.Collection;
+
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.jdbc.ValueAdaptor;
@@ -473,5 +476,35 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         if (re)
             return Cnd.where(exps);
         return null;
+    }
+    
+    /**
+     * 若value为null/空白字符串/空集合/空数组,则本条件不添加.
+     * @see Cnd#and(String, String, Object)
+     */
+    public Cnd andEX(String name, String op, Object value) {
+        return and(Cnd.expEX(name, op, value));
+    }
+    
+    /**
+     * 若value为null/空白字符串/空集合/空数组,则本条件不添加.
+     * @see Cnd#or(String, String, Object)
+     */
+    public Cnd orEX(String name, String op, Object value) {
+        return or(Cnd.expEX(name, op, value));
+    }
+    
+    protected static SqlExpression expEX(String name, String op, Object value) {
+        if (_ex(value))
+            return null;
+        return Cnd.exp(name, op, value);
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static boolean _ex(Object value) {
+        return value == null
+                || (value instanceof CharSequence && Strings.isBlank((CharSequence)value))
+                || (value instanceof Collection && ((Collection)value).isEmpty())
+                || (value.getClass().isArray() && Array.getLength(value) == 0);
     }
 }

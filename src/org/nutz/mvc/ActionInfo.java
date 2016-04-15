@@ -6,6 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.nutz.lang.util.ClassMeta;
+import org.nutz.lang.util.ClassMetaReader;
+
 import java.util.Set;
 
 public class ActionInfo {
@@ -41,6 +45,12 @@ public class ActionInfo {
     private Method method;
     
     private boolean pathTop;
+    
+    private ClassMeta meta;
+    
+    private Integer lineNumber;
+    
+    private Object obj;//
 
     public ActionInfo() {
         httpMethods = new HashSet<String>();
@@ -57,6 +67,10 @@ public class ActionInfo {
                 }
             }
             paths = myPaths.toArray(new String[myPaths.size()]);
+        }
+        // 出现下面这种情况,是因为需要继承MainModule的@At
+        else if (paths == null && parent.paths != null && parent.paths.length > 0) {
+            paths = parent.paths;
         }
 
         if (null == pathMap) {
@@ -80,6 +94,16 @@ public class ActionInfo {
         injectName = null == injectName ? parent.injectName : injectName;
         moduleType = null == moduleType ? parent.moduleType : moduleType;
         chainName = null == chainName ? parent.chainName : chainName;
+        
+        // 继承元数据信息
+        if (this.method != null && this.meta == null && parent.meta != null && parent.meta.type != null){
+            if (parent.meta.type.equals(this.method.getDeclaringClass().getName())) {
+                String key = ClassMetaReader.getKey(this.method);
+                if (key != null)
+                    this.lineNumber = parent.meta.methodLines.get(key);
+            }
+        }
+        
         return this;
     }
 
@@ -218,6 +242,24 @@ public class ActionInfo {
     public boolean isPathTop() {
         return pathTop;
     }
+
+    public ClassMeta getMeta() {
+        return meta;
+    }
+
+    public void setMeta(ClassMeta meta) {
+        this.meta = meta;
+    }
     
+    public Integer getLineNumber() {
+        return lineNumber;
+    }
     
+    public void setModuleObj(Object obj) {
+		this.obj = obj;
+	}
+    
+    public Object getModuleObj() {
+    	return this.obj;
+    }
 }

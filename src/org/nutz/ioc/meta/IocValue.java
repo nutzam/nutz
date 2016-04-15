@@ -1,6 +1,14 @@
 package org.nutz.ioc.meta;
 
+import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.nutz.ioc.Iocs;
 import org.nutz.json.Json;
+import org.nutz.json.JsonFormat;
+import org.nutz.lang.Mirror;
+import org.nutz.lang.util.NutMap;
 
 /**
  * 描述了对象的一个值，这个值可以是构造函数的参数，也可以是一个字段的值。
@@ -33,16 +41,46 @@ public class IocValue {
     public static final String TYPE_NORMAL = "normal";
     public static final String TYPE_INNER = "inner";
     public static final String TYPE_REFER = "refer";
+    public static final String TYPE_REFER_TYPE = "refer_type";
     public static final String TYPE_ENV = "env";
     public static final String TYPE_SYS = "sys";
     public static final String TYPE_FILE = "file";
     public static final String TYPE_JAVA = "java";
     public static final String TYPE_JNDI = "jndi";
+    public static final String TYPE_EL = "el";
     public static final String TYPE_APP = "app";
+    
+    public static Set<String> types = new HashSet<String>();
+    static {
+        Mirror<IocValue> mirror = Mirror.me(IocValue.class);
+        for(Field field : IocValue.class.getFields()) {
+            if (field.getName().startsWith("TYPE_")) {
+                types.add(mirror.getValue(null, field).toString());
+            }
+        }
+    }
 
     private String type;
 
     private Object value;
+    
+    public IocValue() {}
+    
+    public IocValue(String key) {
+        if (key.contains(":")) {
+            IocValue tmp = Iocs.convert(key, false);
+            this.type = tmp.type;
+            this.value = tmp.value;
+        } else {
+            this.type = TYPE_NORMAL;
+            this.value = key;
+        }
+    }
+    
+    public IocValue(String type, Object val) {
+        this.type = type;
+        this.value = val;
+    }
 
     public String getType() {
         return type;
@@ -65,4 +103,14 @@ public class IocValue {
         return String.format("{%s:%s}", type, Json.toJson(value));
     }
 
+    public String toJson(JsonFormat jf) {
+        if (this.type == null || TYPE_NORMAL.equals(type))
+            return Json.toJson(this.value, jf);
+        if (TYPE_REFER_TYPE.equals(type) && value instanceof Field) {
+        	Field field = (Field)value;
+        	String val = field.getName() + "#" + field.getType().getName();
+        	return Json.toJson(new NutMap().addv(this.type, val), jf);
+        }
+        return Json.toJson(new NutMap().addv(this.type, this.value), jf);
+    }
 }

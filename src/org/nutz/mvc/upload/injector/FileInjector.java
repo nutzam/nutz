@@ -1,43 +1,28 @@
 package org.nutz.mvc.upload.injector;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nutz.mvc.adaptor.ParamInjector;
 import org.nutz.mvc.upload.TempFile;
 
-public class FileInjector implements ParamInjector {
+/**
+ * @since 1.r.55开始使用与servlet 3.0+一致的Part接口,原方法标记为弃用.
+ */
+@Deprecated
+public class FileInjector extends AbstractUploadInjector {
 
     public FileInjector(String name) {
-        this.name = name;
+        super(name);
     }
 
-    private String name;
-
-    @SuppressWarnings("unchecked")
     protected File getFile(Object refer) {
-        Object obj = ((Map<String, Object>) refer).get(name);
-        if (obj == null)
-            return null;
-
-        // Map 中只有可能有两种值， TempFile 或者 List<TempFile>
-        // 如果是单一对象直接返回
-        if (obj instanceof TempFile) {
-            return ((TempFile) obj).getFile();
-        }
-        // 如果是列表，则取第一项
-        else {
-            List<?> list = (List<?>) obj;
-            if (list.isEmpty())
-                return null;
-            else
-                return ((TempFile) list.get(0)).getFile();
-        }
+        TempFile tmp = getTempFile(refer, name);
+        if (tmp == null)
+        	return null;
+        return tmp.getFile();
     }
 
     public Object get(    ServletContext sc,

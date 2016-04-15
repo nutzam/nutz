@@ -73,7 +73,7 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
                 if (mf.isNotNull())
                     sb.append(" NOT NULL");
                 if (mf.hasDefaultValue())
-                    sb.append(" DEFAULT '").append(getDefaultValue(mf)).append('\'');
+                    addDefaultValue(sb, mf);
                 if (mf.isUnsigned()) // 有点暴力
                     sb.append(" Check ( ").append(mf.getColumnName()).append(" >= 0)");
             }
@@ -228,6 +228,14 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
     }
 
     public boolean isSupportAutoIncrement() {
+        return false;
+    }
+    
+    public boolean addColumnNeedColumn() {
+        return false;
+    }
+    
+    public boolean supportTimestampDefault() {
         return false;
     }
 }

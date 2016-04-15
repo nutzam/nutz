@@ -114,7 +114,7 @@ public abstract class Trans {
 
     /**
      * 是否在事务中
-     * @return 真,如果在事务中
+     * @return 真,如果在不事务中
      */
     public static boolean isTransactionNone() {
         Transaction t = trans.get();

@@ -44,5 +44,6 @@ public class RecurReferJsonIocTest {
         RB b = ioc.get(RB.class, "b");
         assertEquals("A", b.ra.nm);
         assertEquals("B", b.nm);
+    	ioc.depose();
     }
 }

@@ -1,7 +1,9 @@
 package org.nutz.mvc.upload;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.nutz.lang.Strings;
@@ -10,8 +12,39 @@ public class FieldMeta {
 
     public FieldMeta(String s) {
         map = new HashMap<String, String>();
-        String[] ss = Strings.splitIgnoreBlank(s, "[\n;]");
-        for (String pair : ss) {
+        List<String> list = new ArrayList<String>();
+        StringBuilder sb = new StringBuilder();
+        boolean needPairEnd = false;
+        for (Character c : s.toCharArray()) {
+            if (needPairEnd) {
+                if (c == '"') {
+                    needPairEnd = false;
+                    continue;
+                } else {
+                    sb.append(c);
+                    continue;
+                }
+            }
+            if (c == '"') {
+                needPairEnd = true;
+                continue;
+            }
+            if (c ==  ';' || c == '\n') {
+                if (sb.length() > 0) {
+                    list.add(sb.toString().trim());
+                }
+                sb.setLength(0);
+                continue;
+            } else {
+                sb.append(c);
+            }
+        }
+        if (sb.length() > 0) {
+            list.add(sb.toString().trim());
+        }
+        for (String pair : list) {
+            if (pair.isEmpty())
+                continue;
             String name = pair.split("[:=]")[0];
             String value = pair.replaceAll("^[^=:]*[=:]", "");
             map.put(Strings.trim(name), formatValue(value));

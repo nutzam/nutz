@@ -836,13 +836,15 @@ public class Files {
         if (!dir.exists())
             return false;
         File[] fs = dir.listFiles();
-        for (File f : fs) {
-            if (f.isFile())
-                Files.deleteFile(f);
-            else if (f.isDirectory())
-                Files.deleteDir(f);
+        if (fs != null) {
+            for (File f : fs) {
+                if (f.isFile())
+                    Files.deleteFile(f);
+                else if (f.isDirectory())
+                    Files.deleteDir(f);
+            }
         }
-        return false;
+        return true;
     }
 
     /**
@@ -1076,6 +1078,8 @@ public class Files {
      */
     public static void cleanAllFolderInSubFolderes(File dir, String name) throws IOException {
         File[] files = dir.listFiles();
+        if (files == null)
+        	return;
         for (File d : files) {
             if (d.isDirectory())
                 if (d.getName().equalsIgnoreCase(name))

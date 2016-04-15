@@ -58,7 +58,7 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
                 if (mf.isAutoIncreasement())
                     sb.append(" IDENTITY");
                 if (mf.hasDefaultValue())
-                    sb.append(" DEFAULT '").append(getDefaultValue(mf)).append('\'');
+                    addDefaultValue(sb, mf);
             }
             sb.append(',');
         }
@@ -194,5 +194,9 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
         Pojo autoInfo = new SqlFieldMacro(idField, autoSql);
         autoInfo.setEntity(en);
         return autoInfo;
+    }
+    
+    public boolean addColumnNeedColumn() {
+        return false;
     }
 }

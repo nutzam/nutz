@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.nutz.lang.Lang;
 import org.nutz.trans.Atom;
+import org.nutz.trans.Molecule;
 
 /**
  * 定制 POJO 的字段过滤配置。
@@ -292,4 +293,8 @@ public class FieldFilter {
         }
     }
 
+    public <T> T run(Molecule<T> m) {
+    	run((Atom)m);
+    	return m.getObj();
+    }
 }

@@ -95,7 +95,7 @@ public abstract class NutRunner implements Runnable {
      * @param me 本对象
      */
     @Deprecated
-    public void unreg(NutRunner me) {};
+    public void unreg(NutRunner me) {}
 
     /**
      * 开始之前,一般做一些准备工作,比如资源初始化等
@@ -105,7 +105,7 @@ public abstract class NutRunner implements Runnable {
      */
     public void beforeStart(NutRunner me) {
         reg(me);
-    };
+    }
 
     /**
      * 停止之后,一般是做一些资源回收

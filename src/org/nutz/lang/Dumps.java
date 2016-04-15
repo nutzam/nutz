@@ -44,6 +44,11 @@ public abstract class Dumps {
      */
     public static String matcherFound(Matcher m) {
         StringBuilder sb = new StringBuilder();
+        sb.append(String.format("%d/%d  Regin:%d/%d\n",
+                                m.start(),
+                                m.end(),
+                                m.regionStart(),
+                                m.regionEnd()));
         for (int i = 0; i <= m.groupCount(); i++)
             sb.append(String.format("%2d: %s\n", i, m.group(i)));
         return sb.toString();
@@ -59,20 +64,15 @@ public abstract class Dumps {
     public static String obj(Object obj) {
         if (null == obj)
             return "null";
-        StringBuilder sb = new StringBuilder(obj.getClass().getName()
-                                             + "\n\n[Fields:]");
+        StringBuilder sb = new StringBuilder(obj.getClass().getName() + "\n\n[Fields:]");
         Mirror<?> mirror = Mirror.me(obj.getClass());
         for (Field f : mirror.getType().getFields())
             if (Modifier.isPublic(f.getModifiers()))
                 try {
-                    sb.append(String.format("\n\t%10s : %s",
-                                            f.getName(),
-                                            f.get(obj)));
+                    sb.append(String.format("\n\t%10s : %s", f.getName(), f.get(obj)));
                 }
                 catch (Exception e1) {
-                    sb.append(String.format("\n\t%10s : %s",
-                                            f.getName(),
-                                            e1.getMessage()));
+                    sb.append(String.format("\n\t%10s : %s", f.getName(), e1.getMessage()));
                 }
         sb.append("\n\n[Methods:]");
         for (Method m : mirror.getType().getMethods())
@@ -80,14 +80,10 @@ public abstract class Dumps {
                 if (m.getName().startsWith("get"))
                     if (m.getParameterTypes().length == 0)
                         try {
-                            sb.append(String.format("\n\t%10s : %s",
-                                                    m.getName(),
-                                                    m.invoke(obj)));
+                            sb.append(String.format("\n\t%10s : %s", m.getName(), m.invoke(obj)));
                         }
                         catch (Exception e) {
-                            sb.append(String.format("\n\t%10s : %s",
-                                                    m.getName(),
-                                                    e.getMessage()));
+                            sb.append(String.format("\n\t%10s : %s", m.getName(), e.getMessage()));
                         }
         return sb.toString();
     }
@@ -111,9 +107,7 @@ public abstract class Dumps {
          * @param mode
          *            显示 HTTP 头信息的模式: MODE.ALL or MODE.HEADER_ONLY
          */
-        public static void http(HttpServletRequest req,
-                                OutputStream ops,
-                                MODE mode) {
+        public static void http(HttpServletRequest req, OutputStream ops, MODE mode) {
             InputStream ins;
             int b;
             try {
@@ -125,10 +119,7 @@ public abstract class Dumps {
                     Enumeration<?> ens = req.getHeaderNames();
                     while (ens.hasMoreElements()) {
                         String name = ens.nextElement().toString();
-                        sb.append(name)
-                          .append(": ")
-                          .append(req.getHeader(name))
-                          .append("\r\n");
+                        sb.append(name).append(": ").append(req.getHeader(name)).append("\r\n");
                     }
                     sb.append("\r\n");
                     ins = Lang.ins(sb);
@@ -163,8 +154,7 @@ public abstract class Dumps {
          */
         public static String http(HttpServletRequest req, MODE mode) {
             StringBuilder sb = new StringBuilder();
-            OutputStream ops = new StringOutputStream(sb,
-                                                      req.getCharacterEncoding());
+            OutputStream ops = new StringOutputStream(sb, req.getCharacterEncoding());
             http(req, ops, mode);
             return sb.toString();
         }

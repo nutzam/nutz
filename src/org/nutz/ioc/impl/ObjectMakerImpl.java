@@ -1,6 +1,8 @@
 package org.nutz.ioc.impl;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.nutz.ioc.IocEventTrigger;
 import org.nutz.ioc.IocException;
@@ -93,7 +95,7 @@ public class ObjectMakerImpl implements ObjectMaker {
                     if (hasNullArg) {
                         Method m = (Method) Lang.first(mi.findMethods(ss[1],args.length));
                         if (m == null)
-                            throw new IocException("Factory method not found --> ", iobj.getFactory());
+                            throw new IocException(ing.getObjectName(), "Factory method not found --> ", iobj.getFactory());
                         dw.setBorning(new MethodCastingBorning<Object>(m));
                     } else {
                         Method m = mi.findMethod(ss[1], args);
@@ -114,9 +116,10 @@ public class ObjectMakerImpl implements ObjectMaker {
             }
 
             // 获得每个字段的注入方式
-            FieldInjector[] fields = new FieldInjector[iobj.getFields().length];
+            List<IocField> _fields = new ArrayList<IocField>(iobj.getFields().values());
+            FieldInjector[] fields = new FieldInjector[_fields.size()];
             for (int i = 0; i < fields.length; i++) {
-                IocField ifld = iobj.getFields()[i];
+                IocField ifld = _fields.get(i);
                 try {
                     ValueProxy vp = ing.makeValue(ifld.getValue());
                     fields[i] = FieldInjector.create(mirror, ifld.getName(), vp, ifld.isOptional());
@@ -135,10 +138,15 @@ public class ObjectMakerImpl implements ObjectMaker {
             dw.onCreate(obj);
 
         }
+        catch (IocException e) {
+            ing.getContext().remove(iobj.getScope(), ing.getObjectName());
+            ((IocException)e).addBeanNames(ing.getObjectName());
+            throw e;
+        }
         // 当异常发生，从 context 里移除 ObjectProxy
         catch (Throwable e) {
             ing.getContext().remove(iobj.getScope(), ing.getObjectName());
-            throw new IocException(e, "FAIL to create Ioc Bean name=[%s] \nbeacase [%s]", ing.getObjectName(), e.getMessage());
+            throw new IocException(ing.getObjectName(), e, "FAIL to create Ioc Bean name=[%s]", ing.getObjectName());
         }
 
         // 返回

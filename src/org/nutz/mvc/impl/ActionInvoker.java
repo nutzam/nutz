@@ -80,8 +80,10 @@ public class ActionInvoker {
         else if (null != defaultChain) {
             return defaultChain;
         }
+        if (chainMap.size() != 0 && log.isDebugEnabled()) {
+            log.debugf("Path=[%s] available methods%s but request [%s], using the wrong http method?", ac.getPath(), chainMap.keySet(), httpMethod);
+        }
         // 否则将认为不能处理
         return null;
     }
-
 }

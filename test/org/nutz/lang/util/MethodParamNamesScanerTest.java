@@ -11,7 +11,7 @@ public class MethodParamNamesScanerTest {
     public void testGetParamNames() throws Throwable {
         List<Class<?>> list = Scans.me().scanPackage("org.nutz");
         for (Class<?> klass : list) {
-            MethodParamNamesScaner.getParamNames(klass) ;
+            ClassMetaReader.getParamNames(klass) ;
         }
     }
 

@@ -6,7 +6,9 @@ import java.sql.SQLException;
 import org.nutz.dao.entity.annotation.ColDefine;
 import org.nutz.dao.entity.annotation.ColType;
 import org.nutz.dao.entity.annotation.Column;
+import org.nutz.dao.entity.annotation.Table;
 
+@Table("t_psql_student_array")
 public class StudentArray extends Student {
 
     public StudentArray() {}

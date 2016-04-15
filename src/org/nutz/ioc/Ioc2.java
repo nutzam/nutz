@@ -38,4 +38,8 @@ public interface Ioc2 extends Ioc {
      * @see org.nutz.ioc.ValueProxyMaker
      */
     void addValueProxyMaker(ValueProxyMaker vpm);
+    
+    String[] getNamesByType(Class<?> klass, IocContext context);
+    
+    <T> T getByType(Class<T> type, IocContext context);
 }

@@ -1,5 +1,6 @@
 package org.nutz.mvc.impl;
 
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -18,6 +19,8 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.segment.Segments;
+import org.nutz.lang.util.ClassMeta;
+import org.nutz.lang.util.ClassMetaReader;
 import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -25,6 +28,7 @@ import org.nutz.mvc.ActionFilter;
 import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.HttpAdaptor;
 import org.nutz.mvc.ModuleScanner;
+import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.ObjectInfo;
 import org.nutz.mvc.annotation.AdaptBy;
@@ -49,35 +53,46 @@ public abstract class Loadings {
 
     public static ActionInfo createInfo(Class<?> type) {
         ActionInfo ai = new ActionInfo();
-        evalEncoding(ai, type.getAnnotation(Encoding.class));
-        evalHttpAdaptor(ai, type.getAnnotation(AdaptBy.class));
-        evalActionFilters(ai, type.getAnnotation(Filters.class));
-        evalPathMap(ai, type.getAnnotation(PathMap.class));
-        evalOk(ai, type.getAnnotation(Ok.class));
-        evalFail(ai, type.getAnnotation(Fail.class));
-        evalAt(ai, type.getAnnotation(At.class), type.getSimpleName());
-        evalActionChainMaker(ai, type.getAnnotation(Chain.class));
+        evalEncoding(ai, Mirror.getAnnotationDeep(type, Encoding.class));
+        evalHttpAdaptor(ai, Mirror.getAnnotationDeep(type, AdaptBy.class));
+        evalActionFilters(ai, Mirror.getAnnotationDeep(type, Filters.class));
+        evalPathMap(ai, Mirror.getAnnotationDeep(type, PathMap.class));
+        evalOk(ai, Mirror.getAnnotationDeep(type, Ok.class));
+        evalFail(ai, Mirror.getAnnotationDeep(type, Fail.class));
+        evalAt(ai, Mirror.getAnnotationDeep(type, At.class), type.getSimpleName());
+        evalActionChainMaker(ai, Mirror.getAnnotationDeep(type, Chain.class));
         evalModule(ai, type);
+        if (Mvcs.DISPLAY_METHOD_LINENUMBER) {
+            InputStream ins = type.getClassLoader().getResourceAsStream(type.getName().replace(".", "/") + ".class");
+            if (ins != null) {
+                try {
+                    ClassMeta meta = ClassMetaReader.build(ins);
+                    ai.setMeta(meta);
+                }
+                catch (Exception e) {
+                }
+            }
+        }
         return ai;
     }
 
     public static ActionInfo createInfo(Method method) {
         ActionInfo ai = new ActionInfo();
-        evalEncoding(ai, method.getAnnotation(Encoding.class));
-        evalHttpAdaptor(ai, method.getAnnotation(AdaptBy.class));
-        evalActionFilters(ai, method.getAnnotation(Filters.class));
-        evalOk(ai, method.getAnnotation(Ok.class));
-        evalFail(ai, method.getAnnotation(Fail.class));
-        evalAt(ai, method.getAnnotation(At.class), method.getName());
-        evalActionChainMaker(ai, method.getAnnotation(Chain.class));
-        evalHttpMethod(ai, method, method.getAnnotation(At.class));
+        evalEncoding(ai, Mirror.getAnnotationDeep(method, Encoding.class));
+        evalHttpAdaptor(ai, Mirror.getAnnotationDeep(method, AdaptBy.class));
+        evalActionFilters(ai, Mirror.getAnnotationDeep(method, Filters.class));
+        evalOk(ai, Mirror.getAnnotationDeep(method, Ok.class));
+        evalFail(ai, Mirror.getAnnotationDeep(method, Fail.class));
+        evalAt(ai, Mirror.getAnnotationDeep(method, At.class), method.getName());
+        evalActionChainMaker(ai, Mirror.getAnnotationDeep(method, Chain.class));
+        evalHttpMethod(ai, method, Mirror.getAnnotationDeep(method, At.class));
         ai.setMethod(method);
         return ai;
     }
 
     public static Set<Class<?>> scanModules(Ioc ioc, Class<?> mainModule) {
         Modules ann = mainModule.getAnnotation(Modules.class);
-        boolean scan = null == ann ? false : ann.scanPackage();
+        boolean scan = null == ann ? true : ann.scanPackage();
         // 准备扫描列表
         Set<Class<?>> forScans = new HashSet<Class<?>>();
 
@@ -189,13 +204,13 @@ public abstract class Loadings {
     }
 
     public static void evalHttpMethod(ActionInfo ai, Method method, At at) {
-        if (method.getAnnotation(GET.class) != null)
+        if (Mirror.getAnnotationDeep(method, GET.class) != null)
             ai.getHttpMethods().add("GET");
-        if (method.getAnnotation(POST.class) != null)
+        if (Mirror.getAnnotationDeep(method, POST.class) != null)
             ai.getHttpMethods().add("POST");
-        if (method.getAnnotation(PUT.class) != null)
+        if (Mirror.getAnnotationDeep(method, PUT.class) != null)
             ai.getHttpMethods().add("PUT");
-        if (method.getAnnotation(DELETE.class) != null)
+        if (Mirror.getAnnotationDeep(method, DELETE.class) != null)
             ai.getHttpMethods().add("DELETE");
         for (String m : at.methods()) {
             ai.getHttpMethods().add(m.toUpperCase());
@@ -246,8 +261,8 @@ public abstract class Loadings {
         ai.setModuleType(type);
         String beanName = null;
         // 按照5.10.3章节的说明，优先使用IocBean.name的注解声明bean的名字 Modify By QinerG@gmai.com
-        InjectName innm = type.getAnnotation(InjectName.class);
-        IocBean iocBean = type.getAnnotation(IocBean.class);
+        InjectName innm = Mirror.getAnnotationDeep(type,InjectName.class);
+        IocBean iocBean = Mirror.getAnnotationDeep(type,IocBean.class);
         if (innm == null && iocBean == null) // TODO 再考虑考虑
             return;
         if (iocBean != null) {
@@ -314,9 +329,8 @@ public abstract class Loadings {
             || Modifier.isInterface(classModify))
             return false;
         for (Method method : classZ.getMethods())
-            if (method.isAnnotationPresent(At.class))
+            if (Mirror.getAnnotationDeep(method, At.class) != null)
                 return true;
         return false;
     }
-
 }

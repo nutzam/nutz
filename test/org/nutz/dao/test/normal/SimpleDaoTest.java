@@ -6,7 +6,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,10 +32,14 @@ import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.Record;
+import org.nutz.dao.impl.DaoExecutor;
 import org.nutz.dao.impl.NutDao;
+import org.nutz.dao.impl.SimpleDataSource;
+import org.nutz.dao.impl.sql.NutStatement;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
+import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.A;
@@ -40,6 +48,7 @@ import org.nutz.dao.test.meta.DynamicTable;
 import org.nutz.dao.test.meta.Master;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.PetObj;
+import org.nutz.dao.test.meta.PojoWithNull;
 import org.nutz.dao.test.meta.SimplePOJO;
 import org.nutz.dao.test.meta.UseBlobClob;
 import org.nutz.dao.test.meta.issue396.Issue396Master;
@@ -53,7 +62,10 @@ import org.nutz.dao.util.blob.SimpleClob;
 import org.nutz.json.Json;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Stopwatch;
 import org.nutz.lang.random.R;
+import org.nutz.trans.Atom;
+import org.nutz.trans.Trans;
 
 public class SimpleDaoTest extends DaoCase {
 
@@ -65,7 +77,7 @@ public class SimpleDaoTest extends DaoCase {
         for (int i = 0; i < len; i++) {
             Pet pet = Pet.create("pet" + i);
             pet.setNickName("alias_" + i);
-            pet.setPrice((float)(R.random(30, 100) / Math.PI));
+            pet.setPrice((float) (R.random(30, 100) / Math.PI));
             dao.insert(pet);
         }
     }
@@ -106,7 +118,7 @@ public class SimpleDaoTest extends DaoCase {
     public void test_simple_fetch_record() {
         Pet pet = Pet.create("abc");
         long now = System.currentTimeMillis();
-        pet.setBirthday(Castors.me().castTo(now, Timestamp.class));
+        pet.setBirthday(Castors.me().castTo(now/1000*1000, Timestamp.class));
         dao.insert(pet);
 
         List<Record> pets = dao.query("t_pet", null, null);
@@ -172,7 +184,8 @@ public class SimpleDaoTest extends DaoCase {
     public void test_count_by_condition() {
         insertRecords(4);
         assertEquals(4, dao.count(Pet.class));
-        assertEquals(2, dao.count(Pet.class, Cnd.wrap("name IN ('pet2','pet3') ORDER BY name ASC")));
+        assertEquals(2,
+                     dao.count(Pet.class, Cnd.wrap("name IN ('pet2','pet3') ORDER BY name ASC")));
     }
 
     @Test
@@ -372,12 +385,15 @@ public class SimpleDaoTest extends DaoCase {
 
     @Test
     public void test_insert_with_id() {
+        if (dao.meta().isSqlServer())
+            return;
         dao.clear(Pet.class);
         Pet pet = Pet.create("zzz");
         pet.setId(9090); // 主动设置id
-        Dao dao = Daos.ext(this.dao, FieldFilter.create(Pet.class,
-                                                        FieldMatcher.make(null, null, true)
-                                                                    .setIgnoreId(false)));
+        Dao dao = Daos.ext(this.dao,
+                           FieldFilter.create(Pet.class,
+                                              FieldMatcher.make(null, null, true)
+                                                          .setIgnoreId(false)));
         dao.fastInsert(pet);
         pet = dao.fetch(Pet.class); // 只有一条记录
         assertEquals(9090, pet.getId());
@@ -446,7 +462,7 @@ public class SimpleDaoTest extends DaoCase {
         }
 
     }
-    
+
     @Test
     public void test_varchar_BigDecimal() {
         dao.create(XPlace.class, true);
@@ -454,31 +470,31 @@ public class SimpleDaoTest extends DaoCase {
         place.setLat(new BigDecimal("12.3222"));
         place.setLng(new BigDecimal("29.02333"));
         dao.insert(place);
-        
+
         place = dao.fetch(XPlace.class);
         assertEquals("12.3222", place.getLat().toString());
         assertEquals("29.02333", place.getLng().toString());
-        
+
         System.out.println(Json.toJson(place));
     }
-    
+
     @Test
     public void test_xxx() {
-        Sql task_sql= Sqls.create("SELECT * FROM act_ru_task WHERE CATEGORY_=@category AND ( ASSIGNEE_=@userId  $assignee ) ORDER BY create_time_ desc");
-        task_sql.params().set("category",1);
+        Sql task_sql = Sqls.create("SELECT * FROM act_ru_task WHERE CATEGORY_=@category AND ( ASSIGNEE_=@userId  $assignee ) ORDER BY create_time_ desc");
+        task_sql.params().set("category", 1);
         task_sql.params().set("userId", 2);
         task_sql.vars().set("assignee", "and name != 'hi'");
 
         System.out.println(task_sql.toPreparedStatement());
         System.out.println(task_sql.forPrint());
-        System.out.println(">>"+task_sql);
+        System.out.println(">>" + task_sql);
     }
-    
+
     @Test
     public void test_issue_918() {
-        dao.create(Region.class, true); 
+        dao.create(Region.class, true);
     }
-    
+
     @Test
     public void test_issue_928() {
         dao.create(BeanWithSet.class, true);
@@ -487,20 +503,20 @@ public class SimpleDaoTest extends DaoCase {
         Long UID = 1234455656L;
         uids.add(UID);
         s.setUids(uids);
-        
+
         Set<String> names = new HashSet<String>();
         names.add("wendal");
         s.setNames(names);
         System.out.println(names);
-        
+
         dao.insert(s);
-        
+
         BeanWithSet out = dao.fetch(BeanWithSet.class);
         assertEquals(Long.class, out.getUids().iterator().next().getClass());
         assertEquals(UID, out.getUids().iterator().next());
-        
+
     }
-    
+
     @Test
     public void test_query_2() {
         dao.insert(Pet.create(100));
@@ -508,5 +524,182 @@ public class SimpleDaoTest extends DaoCase {
         for (Pet pet : list) {
             assertNotNull(pet.getName());
         }
+    }
+
+    @Test
+    public void test_get_sql() throws Throwable {
+        NutDao dao = new NutDao(ioc.get(javax.sql.DataSource.class));
+        final List<String> sqls = new ArrayList<String>();
+        final Method m = NutStatement.class.getDeclaredMethod("toStatement",
+                                                              Object[][].class,
+                                                              String.class);
+        m.setAccessible(true);
+        dao.setExecutor(new DaoExecutor() {
+            public void exec(Connection conn, DaoStatement st) {
+                String psql = st.toPreparedStatement();
+                sqls.add(psql);
+                // 如果需要带数据的, 因为nutz并不生成和执行带数据的sql,所以需要通过
+                // st.toPreparedStatement() 与 参数矩阵 st.getParamMatrix() 综合生成
+                // 这里调用非公开api中的toStatement
+                // 事实上根据参数矩阵(getParamMatrix)和Sql语句(toPreparedStatement)就能逐一替换生成
+                try {
+                    String ssql = (String) m.invoke(st, st.getParamMatrix(), psql);
+                    sqls.add(ssql);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        dao.insert(Pet.create("hi"));
+        for (String sql : sqls) {
+            System.out.println(sql);
+        }
+    }
+
+    /**
+     * 插入时忽略空值
+     */
+    @Test
+    public void test_daos_ext_insert_without_null() {
+        dao.create(PojoWithNull.class, true);
+        final PojoWithNull p = new PojoWithNull();
+        p.setName("hi");
+        p.setNickname("wendal");
+        // dao.insert(p.getClass(), Chain.from(p, FieldMatcher.make(null, null,
+        // true)));
+        // Daos.ext(dao, FieldFilter.create(p.getClass(), true)).insert(p);
+
+        dao.insert(p, FieldFilter.create(p.getClass(), true));
+    }
+
+    // @Test
+    // public void test_map_blob() throws FileNotFoundException {
+    // if (dao.exists("t_test_map_blob")) {
+    // dao.drop("t_test_map_blob");
+    // Lang.quiteSleep(1000);
+    // }
+    // dao.execute(Sqls.create("create table t_test_map_blob(id
+    // VARCHAR(60),filecontent blob)"));
+    //
+    // NutMap map = new NutMap().setv(".table", "t_test_map_blob");
+    // map.put("id", R.UU32());
+    // map.put("filecontent", new
+    // FileInputStream("W:\\usb3.0_intel_1.0.10.255_w7.zip"));
+    //
+    // dao.insert(map);
+    //
+    // Record re = dao.fetch("t_test_map_blob", Cnd.NEW());
+    // assertNotNull(re);
+    // System.out.println(re.get("filecontent").getClass());
+    // System.out.println(new String((byte[])re.get("filecontent")));
+    //
+    //// assertEquals("你好", new String((byte[])re.get("filecontent")));
+    // }
+    
+    //@Test
+    public void test_fastinsert_speed() {
+        SimpleDataSource ds = new SimpleDataSource();
+        ds.setJdbcUrl("jdbc:mysql://localhost/nutztest");
+        ds.setUsername("root");
+        ds.setPassword("root");
+        dao = new NutDao(ds);
+        // 删表重建
+        dao.create(Pet.class, true);
+        Lang.sleep(1000);
+        
+        Stopwatch sw = Stopwatch.begin();
+        // 生成10*2000个对象
+        List<List<Pet>> list = new ArrayList<List<Pet>>();
+        for (int i = 0; i < 10; i++) {
+            List<Pet> pets = new ArrayList<Pet>();
+            for (int j = 0; j < 2000; j++) {
+                Pet pet = Pet.create(R.UU32());
+                pets.add(pet);
+            }
+            list.add(pets);
+        }
+        sw.stop();
+        
+        System.out.println("生成对象的耗时: " + sw);
+        
+        
+        for (final List<Pet> tmp : list) {
+            sw = Stopwatch.begin();
+            Trans.exec(new Atom() {
+                public void run() {
+                    dao.fastInsert(tmp);
+                }
+            });
+            
+            sw.stop();
+            
+            System.out.println("fastInsert插入2000个对象的耗时" + sw);
+        }
+        
+        dao.create(Pet.class, false);
+        for (int i = 0; i < 10; i++) {
+            try {
+                final int  t = i;
+                Connection conn = ds.getConnection();
+                conn.setAutoCommit(false);
+                sw = Stopwatch.begin();
+                System.out.println(System.currentTimeMillis());
+                PreparedStatement ps = conn.prepareStatement("INSERT INTO t_pet(name,alias) VALUES(?,?)");
+                System.out.println(System.currentTimeMillis());
+                for (int j = 0; j < 2000; j++) {
+                    ps.setString(1, "pet_"+t+"_" + j);
+                    ps.setString(2, "");
+//                    ps.setInt(3, 30);
+//                    ps.setInt(4, 0);
+//                    ps.setDate(5, null);
+//                    ps.setFloat(6, 0);
+                    ps.addBatch();
+                }
+                System.out.println(System.currentTimeMillis());
+                ps.executeBatch();
+                conn.commit();
+                sw.stop();
+                System.out.println(sw);
+                ps.close();
+                conn.close();
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    @Test
+    public void test_insert_ignore_null() {
+    	Pet pet = Pet.create(R.UU32());
+    	dao.insert(pet, true, true, true);
+    	assertTrue(pet.getId() > 0);
+    	dao.insert(Pet.create(1000), true, true, true);
+    }
+    
+
+    @Test
+    public void test_daos_queryCount() {
+    	String str = "select * from t_pet";
+    	Daos.queryCount(dao, str);
+    }
+
+
+    @Test
+    public void test_cnd_andEX_orEX() {
+        String emtryStr = "";
+        Object[] ids = new Object[0];
+        List<String> names = new ArrayList<String>();
+
+        Cnd cnd = Cnd.NEW();
+
+        cnd.andEX("name", "=", emtryStr); // 空字符串,所以该条件不生效
+        cnd.andEX("name", "=", "wendal");
+        cnd.orEX("id", "in", ids);
+        cnd.orEX("id", ">", 1);
+        cnd.andEX("names", "in", names);
+
+        assertEquals("WHERE name='wendal' OR id>1", cnd.toString().trim());
     }
 }

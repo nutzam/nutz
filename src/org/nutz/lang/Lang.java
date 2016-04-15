@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringReader;
@@ -14,10 +15,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -60,6 +63,8 @@ import org.nutz.lang.util.SimpleContext;
  * @author bonyfish(mc02cxj@gmail.com)
  */
 public abstract class Lang {
+    
+    public static int HASH_BUFF_SIZE = 16*1024;
 
     public static ComboException comboThrow(Throwable... es) {
         ComboException ce = new ComboException();
@@ -654,6 +659,35 @@ public abstract class Lang {
     }
 
     /**
+     * 清除数组中的特定值
+     * 
+     * @param objs
+     *            数组
+     * @param val
+     *            值，可以是 null，如果是对象，则会用 equals 来比较
+     * @return 新的数组实例
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] without(T[] objs, T val) {
+        if (null == objs || objs.length == 0) {
+            return objs;
+        }
+        List<T> list = new ArrayList<T>(objs.length);
+        Class<?> eleType = null;
+        for (T obj : objs) {
+            if (obj == val || (null != obj && null != val && obj.equals(val)))
+                continue;
+            if (null == eleType)
+                eleType = obj.getClass();
+            list.add(obj);
+        }
+        if (list.isEmpty()) {
+            return (T[]) new Object[0];
+        }
+        return list.toArray((T[]) Array.newInstance(eleType, list.size()));
+    }
+
+    /**
      * 将一个长整型数组转换成字符串
      * <p>
      * 每个元素之间，都会用一个给定的字符分隔
@@ -831,12 +865,12 @@ public abstract class Lang {
      *            采用集合中元素的哪个一个字段为键。
      * @return Map 对象
      */
-    public static <T extends Map<Object, Object>> Map<?, ?> collection2map(Class<T> mapClass,
+    public static <T extends Map<Object, Object>> T collection2map(Class<T> mapClass,
                                                                            Collection<?> coll,
                                                                            String keyFieldName) {
         if (null == coll)
             return null;
-        Map<Object, Object> map = createMap(mapClass);
+        T map = createMap(mapClass);
         if (coll.size() > 0) {
             Iterator<?> it = coll.iterator();
             Object obj = it.next();
@@ -849,7 +883,7 @@ public abstract class Lang {
                 map.put(key, obj);
             }
         }
-        return map;
+        return (T)map;
     }
 
     /**
@@ -941,12 +975,12 @@ public abstract class Lang {
      *            采用集合中元素的哪个一个字段为键。
      * @return Map 对象
      */
-    public static <T extends Map<Object, Object>> Map<?, ?> array2map(Class<T> mapClass,
+    public static <T extends Map<Object, Object>> T array2map(Class<T> mapClass,
                                                                       Object array,
                                                                       String keyFieldName) {
         if (null == array)
             return null;
-        Map<Object, Object> map = createMap(mapClass);
+        T map = createMap(mapClass);
         int len = Array.getLength(array);
         if (len > 0) {
             Object obj = Array.get(array, 0);
@@ -960,13 +994,14 @@ public abstract class Lang {
         return map;
     }
 
-    private static <T extends Map<Object, Object>> Map<Object, Object> createMap(Class<T> mapClass) {
-        Map<Object, Object> map;
+    @SuppressWarnings("unchecked")
+    private static <T extends Map<Object, Object>> T createMap(Class<T> mapClass) {
+        T map;
         try {
             map = mapClass.newInstance();
         }
         catch (Exception e) {
-            map = new HashMap<Object, Object>();
+            map = (T) new HashMap<Object, Object>();
         }
         if (!mapClass.isAssignableFrom(map.getClass())) {
             throw Lang.makeThrow("Fail to create map [%s]", mapClass.getName());
@@ -1073,7 +1108,8 @@ public abstract class Lang {
      * @throws FailToCastObjectException
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static <T> T map2Object(Map<?, ?> src, Class<T> toType) throws FailToCastObjectException {
+    public static <T> T map2Object(Map<?, ?> src, Class<T> toType)
+            throws FailToCastObjectException {
         if (null == toType)
             throw new FailToCastObjectException("target type is Null");
         // 类型相同
@@ -1188,9 +1224,58 @@ public abstract class Lang {
     public static NutMap map(String str) {
         if (null == str)
             return null;
+        str = Strings.trim(str);
         if ((str.length() > 0 && str.charAt(0) == '{') && str.endsWith("}"))
             return Json.fromJson(NutMap.class, str);
         return Json.fromJson(NutMap.class, "{" + str + "}");
+    }
+
+    /**
+     * 将一个 Map 所有的键都按照回调进行修改
+     * 
+     * 本函数遇到数组或者集合，会自动处理每个元素
+     * 
+     * @param obj
+     *            要转换的 Map 或者 集合或者数组
+     * 
+     * @param mkc
+     *            键值修改的回调
+     * @param recur
+     *            遇到 Map 是否递归
+     * 
+     * @see MapKeyConvertor
+     */
+    @SuppressWarnings("unchecked")
+    public static void convertMapKey(Object obj, MapKeyConvertor mkc, boolean recur) {
+        // Map
+        if (obj instanceof Map<?, ?>) {
+            Map<String, Object> map = (Map<String, Object>) obj;
+            NutMap map2 = new NutMap();
+            for (Map.Entry<String, Object> en : map.entrySet()) {
+                String key = en.getKey();
+                Object val = en.getValue();
+
+                if (recur)
+                    convertMapKey(val, mkc, recur);
+
+                String newKey = mkc.convertKey(key);
+                map2.put(newKey, val);
+            }
+            map.clear();
+            map.putAll(map2);
+        }
+        // Collection
+        else if (obj instanceof Collection<?>) {
+            for (Object ele : (Collection<?>) obj) {
+                convertMapKey(ele, mkc, recur);
+            }
+        }
+        // Array
+        else if (obj.getClass().isArray()) {
+            for (Object ele : (Object[]) obj) {
+                convertMapKey(ele, mkc, recur);
+            }
+        }
     }
 
     /**
@@ -1623,7 +1708,7 @@ public abstract class Lang {
     @SuppressWarnings("unchecked")
     private static <T extends Map<String, Object>> void obj2map(Object obj,
                                                                 T map,
-                                                                Map<Object, Object> memo) {
+                                                                final Map<Object, Object> memo) {
         // 已经转换过了，不要递归转换
         if (null == obj || memo.containsKey(obj))
             return;
@@ -1632,7 +1717,7 @@ public abstract class Lang {
         // Fix issue #497
         // 如果是 Map，就直接 putAll 一下咯
         if (obj instanceof Map<?, ?>) {
-            map.putAll((Map<? extends String, ? extends Object>) obj);
+            map.putAll(__change_map_to_nutmap((Map<String, Object>) obj, memo));
             return;
         }
 
@@ -1642,20 +1727,34 @@ public abstract class Lang {
         for (Field fld : flds) {
             Object v = mirror.getValue(obj, fld);
             if (null == v) {
-                map.put(fld.getName(), null);
                 continue;
             }
-            Mirror<?> mr = Mirror.me(fld.getType());
-            if (mr.isNumber()
-                || mr.isBoolean()
-                || mr.isChar()
-                || mr.isStringLike()
-                || mr.isEnum()
-                || mr.isDateTimeLike()) {
+            Mirror<?> mr = Mirror.me(v);
+            // 普通值
+            if (mr.isSimple()) {
                 map.put(fld.getName(), v);
-            } else if (memo.containsKey(v)) {
+            }
+            // 已经输出过了
+            else if (memo.containsKey(v)) {
                 map.put(fld.getName(), null);
-            } else {
+            }
+            // 数组或者集合
+            else if (mr.isColl()) {
+                final List<Object> list = new ArrayList<Object>(Lang.length(v));
+                Lang.each(v, new Each<Object>() {
+                    public void invoke(int index, Object ele, int length) {
+                        __join_ele_to_list_as_map(list, ele, memo);
+                    }
+                });
+                map.put(fld.getName(), list);
+            }
+            // Map
+            else if (mr.isMap()) {
+                NutMap map2 = __change_map_to_nutmap((Map<String, Object>) v, memo);
+                map.put(fld.getName(), map2);
+            }
+            // 看来要递归
+            else {
                 T sub;
                 try {
                     sub = (T) map.getClass().newInstance();
@@ -1666,6 +1765,93 @@ public abstract class Lang {
                 obj2map(v, sub, memo);
                 map.put(fld.getName(), sub);
             }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static NutMap __change_map_to_nutmap(Map<String, Object> map,
+                                                 final Map<Object, Object> memo) {
+        NutMap re = new NutMap();
+        for (Map.Entry<String, Object> en : map.entrySet()) {
+            Object v = en.getValue();
+            if (null == v)
+                continue;
+            Mirror<?> mr = Mirror.me(v);
+            // 普通值
+            if (mr.isSimple()) {
+                re.put(en.getKey(), v);
+            }
+            // 已经输出过了
+            else if (memo.containsKey(v)) {
+                continue;
+            }
+            // 数组或者集合
+            else if (mr.isColl()) {
+                final List<Object> list2 = new ArrayList<Object>(Lang.length(v));
+                Lang.each(v, new Each<Object>() {
+                    public void invoke(int index, Object ele, int length) {
+                        __join_ele_to_list_as_map(list2, ele, memo);
+                    }
+                });
+                re.put(en.getKey(), list2);
+            }
+            // Map
+            else if (mr.isMap()) {
+                NutMap map2 = __change_map_to_nutmap((Map<String, Object>) v, memo);
+                re.put(en.getKey(), map2);
+            }
+            // 看来要递归
+            else {
+                NutMap map2 = obj2nutmap(v);
+                re.put(en.getKey(), map2);
+            }
+        }
+        return re;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void __join_ele_to_list_as_map(List<Object> list,
+                                                  Object o,
+                                                  final Map<Object, Object> memo) {
+        if (null == o) {
+            return;
+        }
+
+        // 如果是 Map，就直接 putAll 一下咯
+        if (o instanceof Map<?, ?>) {
+            NutMap map2 = __change_map_to_nutmap((Map<String, Object>) o, memo);
+            list.add(map2);
+            return;
+        }
+
+        Mirror<?> mr = Mirror.me(o);
+        // 普通值
+        if (mr.isSimple()) {
+            list.add(o);
+        }
+        // 已经输出过了
+        else if (memo.containsKey(o)) {
+            list.add(null);
+        }
+        // 数组或者集合
+        else if (mr.isColl()) {
+            final List<Object> list2 = new ArrayList<Object>(Lang.length(o));
+            Lang.each(o, new Each<Object>() {
+                public void invoke(int index, Object ele, int length) {
+                    __join_ele_to_list_as_map(list2, ele, memo);
+                }
+            });
+            list.add(list2);
+        }
+        // Map
+        else if (mr.isMap()) {
+            NutMap map2 = __change_map_to_nutmap((Map<String, Object>) o, memo);
+            list.add(map2);
+        }
+        // 看来要递归
+        else {
+            NutMap map = obj2nutmap(o);
+            list.add(map);
         }
     }
 
@@ -2106,7 +2292,7 @@ public abstract class Lang {
         try {
             MessageDigest md = MessageDigest.getInstance(algorithm);
 
-            byte[] bs = new byte[1024];
+            byte[] bs = new byte[HASH_BUFF_SIZE];
             int len = 0;
             while ((len = ins.read(bs)) != -1) {
                 md.update(bs, 0, len);
@@ -2180,6 +2366,7 @@ public abstract class Lang {
 
     /** 当前运行的 Java 虚拟机是否是在安卓环境 */
     public static final boolean isAndroid;
+
     static {
         boolean flag = false;
         try {
@@ -2332,15 +2519,32 @@ public abstract class Lang {
      * @return
      */
     public static String getIP(HttpServletRequest request) {
-        String ip = request.getHeader("x-forwarded-for");
+        String ip = request.getHeader("X-Forwarded-For");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
+            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getHeader("Proxy-Client-IP");
+            }
+            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getHeader("WL-Proxy-Client-IP");
+            }
+            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getHeader("HTTP_CLIENT_IP");
+            }
+            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+            }
+            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getRemoteAddr();
+            }
+        } else if (ip.length() > 15) {
+            String[] ips = ip.split(",");
+            for (int index = 0; index < ips.length; index++) {
+                String strIp = ips[index];
+                if (!("unknown".equalsIgnoreCase(strIp))) {
+                    ip = strIp;
+                    break;
+                }
+            }
         }
         return ip;
     }
@@ -2354,5 +2558,60 @@ public abstract class Lang {
             cp = cp.substring("file:".length());
         }
         return cp;
+    }
+    
+    public static <T> T copyProperties(Object origin, T target) {
+    	return copyProperties(origin, target, null, null, false, true);
+    }
+    
+    public static <T> T copyProperties(Object origin, T target, String active, String lock, boolean ignoreNull, boolean ignoreStatic) {
+    	if (origin == null)
+    		throw new IllegalArgumentException("origin is null");
+    	if (target == null)
+    		throw new IllegalArgumentException("target is null");
+    	Pattern at = active == null ? null : Pattern.compile(active);
+    	Pattern lo = lock == null ? null : Pattern.compile(lock);
+    	Mirror<Object> originMirror = Mirror.me(origin);
+    	Mirror<T> targetMirror = Mirror.me(target);
+    	Field[] fields = targetMirror.getFields();
+    	for (Field field : originMirror.getFields()) {
+    		String name = field.getName();
+    		if (at != null && !at.matcher(name).find())
+    			continue;
+    		if (lock != null && lo.matcher(name).find())
+    			continue;
+    		if (ignoreStatic && Modifier.isStatic(field.getModifiers()))
+    			continue;
+			Object val = originMirror.getValue(origin, field);
+			if (ignoreNull && val == null)
+				continue;
+			for (Field _field : fields) {
+				if (_field.getName().equals(field.getName())) {
+					targetMirror.setValue(target, _field, val);
+				}
+			}
+			// TODO 支持getter/setter比对
+		}
+    	return target;
+    }
+    
+    public static StringBuilder execOutput(String cmd, Charset charset) throws IOException {
+        return execOutput(Strings.splitIgnoreBlank(cmd, " "), charset);
+    }
+    
+    public static StringBuilder execOutput(String[] cmd, Charset charset) throws IOException {
+        Process p = Runtime.getRuntime().exec(cmd);
+        p.getOutputStream().close();
+        InputStreamReader r = new InputStreamReader(p.getInputStream(), charset);
+        StringBuilder sb = new StringBuilder();
+        char[] buf = new char[1024];
+        while (true) {
+            int len = r.read(buf);
+            if (len < 0)
+                break;
+            if (len > 0)
+                sb.append(buf, 0, len);
+        }
+        return sb;
     }
 }

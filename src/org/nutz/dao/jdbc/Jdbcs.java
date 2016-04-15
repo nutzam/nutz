@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Clob;
@@ -23,6 +24,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Calendar;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
 
@@ -54,6 +57,8 @@ public abstract class Jdbcs {
     private static final Log log = Logs.get();
 
     private static final JdbcExpertConfigFile conf;
+    
+    public static Map<String, ValueAdaptor> customValueAdaptorMap = new ConcurrentHashMap<String, ValueAdaptor>();
 
     /*
      * 根据配置文件获取 experts 的列表
@@ -95,7 +100,7 @@ public abstract class Jdbcs {
      * @see org.nutz.dao.jdbc.Jdbcs#getExpert(String, String)
      */
     public static JdbcExpert getExpert(DataSource ds) {
-    	log.info("Get Connection from DataSource for JdbcExpert");
+    	log.info("Get Connection from DataSource for JdbcExpert, if I lock at here, check your database server and configure");
         Connection conn = null;
         try {
             conn = Trans.getConnectionAuto(ds);
@@ -168,8 +173,23 @@ public abstract class Jdbcs {
             return Adaptor.asNull;
         return getAdaptor(Mirror.me(obj));
     }
+    
+    /**
+     * 注册一个自定义ValueAdaptor,若adaptor为null,则取消注册
+     * @param className 类名
+     * @param adaptor 值适配器实例,若为null,则取消注册
+     * @return 原有的值适配器
+     */
+    public static ValueAdaptor register(String className, ValueAdaptor adaptor) {
+        if (adaptor == null)
+            return customValueAdaptorMap.remove(className);
+        return customValueAdaptorMap.put(className, adaptor);
+    }
 
     public static ValueAdaptor getAdaptor(Mirror<?> mirror) {
+        ValueAdaptor custom = customValueAdaptorMap.get(mirror.getType().getName());
+        if (custom != null)
+            return custom;
         // String and char
         if (mirror.isStringLike())
             return Jdbcs.Adaptor.asString;
@@ -249,7 +269,7 @@ public abstract class Jdbcs {
 
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 stat.setNull(i, Types.NULL);
-            };
+            }
 
         };
 
@@ -853,6 +873,10 @@ public abstract class Jdbcs {
         return conf.getPool();
     }
     
+    public static void setFilePool(FilePool pool) {
+        conf.setPool(pool);
+    }
+    
     public static void setCharacterStream(int index, Object obj, PreparedStatement stat) throws SQLException {
         try {
             File f = Jdbcs.getFilePool().createFile(".dat");
@@ -868,8 +892,10 @@ public abstract class Jdbcs {
     }
 }
 
-class ReadOnceInputStream extends FilterInputStream {
+class ReadOnceInputStream extends FilterInputStream implements Serializable {
 	
+	private static final long serialVersionUID = -2601685798106193691L;
+
 	private File f;
 	
 	public boolean readed;
@@ -903,5 +929,12 @@ class ReadOnceInputStream extends FilterInputStream {
 		f.delete();
 		super.finalize();
 	}
-	
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+        Streams.writeAndClose(out, new FileInputStream(f));
+    }
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException{
+        f = Jdbcs.getFilePool().createFile(".dat");
+        Files.write(f, in);
+    }
 }

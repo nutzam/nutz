@@ -2,7 +2,9 @@ package org.nutz.dao.impl;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 
 import javax.sql.DataSource;
 
@@ -25,6 +27,7 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
+import org.nutz.trans.Transaction;
 
 /**
  * Dao 接口实现类的一些基础环境
@@ -74,6 +77,8 @@ public class DaoSupport {
      * SQL 管理接口实现类
      */
     private SqlManager sqlManager;
+    
+    protected int autoTransLevel = Connection.TRANSACTION_READ_COMMITTED;
 
     public DaoSupport() {
         this.runner = new NutDaoRunner();
@@ -116,6 +121,9 @@ public class DaoSupport {
      */
     public void setRunner(DaoRunner runner) {
         this.runner = runner;
+        if (runner instanceof NutDaoRunner) {
+        	((NutDaoRunner)runner).setMeta(meta);
+        }
     }
 
     /**
@@ -126,6 +134,10 @@ public class DaoSupport {
      */
     public void setExecutor(DaoExecutor executor) {
         this.executor = executor;
+        if (executor instanceof NutDaoExecutor) {
+        	((NutDaoExecutor)executor).setMeta(meta);
+        	((NutDaoExecutor)executor).setExpert(expert);
+        }
     }
 
     /**
@@ -163,7 +175,7 @@ public class DaoSupport {
         pojoMaker = new NutPojoMaker(expert);
 
         meta = new DatabaseMeta();
-        runner.run(dataSource, new ConnCallback() {
+        run(new ConnCallback() {
             public void invoke(Connection conn) throws Exception {
                 DatabaseMetaData dmd = conn.getMetaData();
                 meta.setProductName(dmd.getDatabaseProductName());
@@ -176,11 +188,35 @@ public class DaoSupport {
                     log.warn("Auto-select fetch size to Integer.MIN_VALUE, enable for ResultSet Streaming");
                     SqlContext.DEFAULT_FETCH_SIZE = Integer.MIN_VALUE;
                 }
-                if (meta.isMySql()) {
+                if (log.isDebugEnabled() && meta.isMySql()) {
                     String sql = "SHOW VARIABLES LIKE 'character_set%'";
-                    ResultSet rs = conn.createStatement().executeQuery(sql);
+                    Statement stmt = conn.createStatement();
+                    ResultSet rs = stmt.executeQuery(sql);
                     while (rs.next())
                         log.debugf("Mysql : %s=%s", rs.getString(1), rs.getString(2));
+                    rs.close();
+                    // 打印当前数据库名称
+                    String dbName = "";
+                    rs = stmt.executeQuery("SELECT DATABASE()");
+                    if (rs.next()) {
+                    	dbName = rs.getString(1);
+                    	log.debug("Mysql : database=" + dbName);
+                    }
+                    rs.close();
+                    // 打印当前连接用户及主机名
+                    rs = stmt.executeQuery("SELECT USER()");
+                    if (rs.next())
+                    	log.debug("Mysql : user=" + rs.getString(1));
+                    rs.close();
+                    stmt.close();
+                    // 列出所有MyISAM引擎的表,这些表不支持事务
+                    PreparedStatement pstmt = conn.prepareStatement("SELECT TABLE_NAME FROM information_schema.TABLES where TABLE_SCHEMA = ? and engine = 'MyISAM'");
+                    pstmt.setString(1, dbName);
+                    rs = pstmt.executeQuery();
+                    if (rs.next())
+                    	log.debug("Mysql : '"+rs.getString(1) + "' engine=MyISAM");
+                    rs.close();
+                    pstmt.close();
                 }
             }
         });
@@ -189,6 +225,8 @@ public class DaoSupport {
 
         holder = new EntityHolder(this);
         holder.maker = createEntityMaker();
+        setRunner(runner);
+        setExecutor(executor);
     }
 
     public void execute(final Sql... sqls) {
@@ -215,13 +253,27 @@ public class DaoSupport {
         DaoExec callback = new DaoExec(sts);
 
         // 如果强制没有事务或者都是 SELECT，没必要启动事务
-        if (sts.length == 1 || isAllSelect || Trans.isTransactionNone()) {
-            runner.run(dataSource, callback);
+        boolean useTrans = false;
+        switch (meta.getType()) {
+        case PSQL:
+            useTrans = true;
+            break;
+        case SQLITE:
+            Transaction t = Trans.get();
+            useTrans = (t != null && (t.getLevel() == Connection.TRANSACTION_SERIALIZABLE
+                                   || t.getLevel() == Connection.TRANSACTION_READ_UNCOMMITTED));
+            break;
+        default:
+            useTrans = !(Trans.isTransactionNone() && (sts.length==1 || isAllSelect));
+            break;
+        }
+        if (!useTrans) {
+            run(callback);
         }
         // 否则启动事务
         // wendal: 还是很有必要的!!尤其是解决insert的@Prev/@Next不在同一个链接的问题
         else {
-            Trans.exec(callback);
+            Trans.exec(autoTransLevel, callback);
         }
 
         // 搞定，返回结果 ^_^
@@ -251,7 +303,7 @@ public class DaoSupport {
         }
 
         public void run() {
-            runner.run(dataSource, this);
+            DaoSupport.this.run(this);
         }
 
         public void invoke(Connection conn) throws Exception {
@@ -270,4 +322,8 @@ public class DaoSupport {
     public PojoMaker pojoMaker() {
 		return pojoMaker;
 	}
+    
+    public void setAutoTransLevel(int autoTransLevel) {
+        this.autoTransLevel = autoTransLevel;
+    }
 }

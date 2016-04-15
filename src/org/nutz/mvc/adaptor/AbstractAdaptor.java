@@ -26,6 +26,8 @@ import org.nutz.mvc.Scope;
 import org.nutz.mvc.ViewModel;
 import org.nutz.mvc.adaptor.injector.AllAttrInjector;
 import org.nutz.mvc.adaptor.injector.AppAttrInjector;
+import org.nutz.mvc.adaptor.injector.ArrayInjector;
+import org.nutz.mvc.adaptor.injector.CookieInjector;
 import org.nutz.mvc.adaptor.injector.HttpInputStreamInjector;
 import org.nutz.mvc.adaptor.injector.HttpReaderInjector;
 import org.nutz.mvc.adaptor.injector.IocInjector;
@@ -41,6 +43,7 @@ import org.nutz.mvc.adaptor.injector.SessionAttrInjector;
 import org.nutz.mvc.adaptor.injector.SessionInjector;
 import org.nutz.mvc.adaptor.injector.ViewModelInjector;
 import org.nutz.mvc.annotation.Attr;
+import org.nutz.mvc.annotation.Cookie;
 import org.nutz.mvc.annotation.IocObj;
 import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.annotation.ReqHeader;
@@ -79,6 +82,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
             Attr attr = null;
             IocObj iocObj = null;
             ReqHeader reqHeader = null;
+            Cookie cookie = null;
 
             // find @Param & @Attr & @IocObj in current annotations
             for (int x = 0; x < anns.length; x++)
@@ -94,6 +98,8 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
                 } else if (anns[x] instanceof ReqHeader) {
                     reqHeader = (ReqHeader) anns[x];
                     break;
+                } else if (anns[x] instanceof Cookie) {
+                	cookie = (Cookie) anns[x];
                 }
             // If has @Attr
             if (null != attr) {
@@ -111,6 +117,10 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
             if (null != reqHeader) {
                 injs[i] = new ReqHeaderInjector(reqHeader.value(), argTypes[i]);
                 continue;
+            }
+            if (null != cookie) {
+            	injs[i] = new CookieInjector(cookie.value(), argTypes[i]);
+            	continue;
             }
 
             // And eval as default suport types
@@ -295,11 +305,22 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
     protected ParamInjector paramNameInject(Method method, int index) {
     	if (!Lang.isAndroid) {
     		List<String> names = MethodParamNamesScaner.getParamNames(method);
-            if (names != null)
+            if (names != null) {
+                String name = names.get(index);
+                Class<?> type = method.getParameterTypes()[index];
+                if (type.isArray()) {
+                    return new ArrayInjector(name,
+                                             null,
+                                             null,
+                                             null,
+                                             null,
+                                             true);
+                }
                 return new NameInjector(names.get(index),
                                         null,
                                         method.getParameterTypes()[index],
                                         null, null);
+            }
             else if (log.isInfoEnabled())
                 log.infof("Complie without debug info? can't deduce param name. fail back to PathArgInjector!! index=%d > %s",
                           index,

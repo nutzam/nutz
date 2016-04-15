@@ -14,11 +14,15 @@ public class PsqlJsonTest extends DaoCase {
 
     @Override
     protected void before() {
+        if (!dao.meta().isPostgresql())
+            return;
         dao.create(StudentJson.class, true);
     }
 
     @Test
     public void crud() {
+        if (!dao.meta().isPostgresql())
+            return;
         NutMap data = NutMap.NEW().setv("name", "Alpha").setv("age", 20).setv("addr", "Beijing");
         StudentResult alphaResult = new StudentResult();
         alphaResult.setMathematics("A");

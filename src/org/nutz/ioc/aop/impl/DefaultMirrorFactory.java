@@ -76,18 +76,18 @@ public class DefaultMirrorFactory implements MirrorFactory {
         List<InterceptorPair> interceptorPairs = new ArrayList<InterceptorPair>();
         for (AopConfigration cnf : list) {
             List<InterceptorPair> tmp = cnf.getInterceptorPairList(ioc, type);
-            if (tmp != null)
+            if (tmp != null && tmp.size() > 0)
                 interceptorPairs.addAll(tmp);
         }
         if (interceptorPairs.isEmpty()) {
             if (log.isDebugEnabled())
-                log.debugf("%s without AOP", type);
+                log.debugf("Load %s without AOP", type);
             return Mirror.me(type);
         }
 
         int mod = type.getModifiers();
         if (Modifier.isFinal(mod) || Modifier.isAbstract(mod)) {
-            log.info("%s configure to use aop, but it is final/abstract, skip it");
+            log.infof("[%s] configure to use AOP, but it is final/abstract, skip it", type.getName());
             return Mirror.me(type);
         }
 

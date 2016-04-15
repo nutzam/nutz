@@ -58,4 +58,7 @@ public interface Ioc {
      */
     void depose();
 
+    String[] getNamesByType(Class<?> klass);
+    
+    <K> K getByType(Class<K> klass);
 }

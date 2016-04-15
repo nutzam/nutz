@@ -76,10 +76,8 @@ public abstract class Disks {
      * @return 相对于基础路径对象的相对路径
      */
     public static String getRelativePath(String base, String path) {
-        String[] bb = Strings.splitIgnoreBlank(getCanonicalPath(base),
-                                               "[\\\\/]");
-        String[] ff = Strings.splitIgnoreBlank(getCanonicalPath(path),
-                                               "[\\\\/]");
+        String[] bb = Strings.splitIgnoreBlank(getCanonicalPath(base), "[\\\\/]");
+        String[] ff = Strings.splitIgnoreBlank(getCanonicalPath(path), "[\\\\/]");
         int len = Math.min(bb.length, ff.length);
         int pos = 0;
         for (; pos < len; pos++)
@@ -93,10 +91,48 @@ public abstract class Disks {
         if (base.endsWith("/"))
             dir = 0;
 
-        StringBuilder sb = new StringBuilder(Strings.dup("../", bb.length
-                                                                - pos
-                                                                - dir));
+        StringBuilder sb = new StringBuilder(Strings.dup("../", bb.length - pos - dir));
         return sb.append(Lang.concat(pos, ff.length - pos, '/', ff)).toString();
+    }
+
+    /**
+     * 获取两个路径从头部开始计算的交集
+     * 
+     * @param ph0
+     *            路径1
+     * @param ph1
+     *            路径2
+     * @param dft
+     *            如果两个路径完全没有相交，那么返回什么
+     * @return 两个路径的交集
+     */
+    public static String getIntersectPath(String ph0, String ph1, String dft) {
+        // 木可能有交集
+        if (null == ph0 || null == ph1)
+            return dft;
+
+        String[] ss0 = Strings.splitIgnoreBlank(ph0, "[\\\\/]");
+        String[] ss1 = Strings.splitIgnoreBlank(ph1, "[\\\\/]");
+
+        int pos = 0;
+        int len = Math.min(ss0.length, ss1.length);
+        for (; pos < len; pos++) {
+            if (!ss0[pos].equals(ss1[pos]))
+                break;
+        }
+
+        // 木有交集
+        if (pos == 0)
+            return dft;
+
+        // 得到
+        String re = Lang.concat(0, pos, "/", ss0).toString();
+
+        // 需要补全后面的 "/" 吗
+        if (ph0.endsWith("/") && ph1.endsWith("/"))
+            return re + "/";
+
+        return re;
     }
 
     /**
@@ -116,10 +152,10 @@ public abstract class Disks {
                 if (paths.size() > 0)
                     paths.removeLast();
                 continue;
-            } if (".".equals(s)) {
-            	// pass
             }
-            else {
+            if (".".equals(s)) {
+                // pass
+            } else {
                 paths.add(s);
             }
         }
@@ -152,9 +188,7 @@ public abstract class Disks {
      * @return 绝对路径
      */
     public static String absolute(String path) {
-        return absolute(path,
-                        ClassTools.getClassLoader(),
-                        Encoding.defaultEncoding());
+        return absolute(path, ClassTools.getClassLoader(), Encoding.defaultEncoding());
     }
 
     /**
@@ -168,9 +202,7 @@ public abstract class Disks {
      *            路径编码方式
      * @return 绝对路径
      */
-    public static String absolute(String path,
-                                  ClassLoader klassLoader,
-                                  String enc) {
+    public static String absolute(String path, ClassLoader klassLoader, String enc) {
         path = normalize(path, enc);
         if (Strings.isEmpty(path))
             return null;
@@ -181,9 +213,7 @@ public abstract class Disks {
             try {
                 url = klassLoader.getResource(path);
                 if (null == url)
-                    url = Thread.currentThread()
-                                .getContextClassLoader()
-                                .getResource(path);
+                    url = Thread.currentThread().getContextClassLoader().getResource(path);
                 if (null == url)
                     url = ClassLoader.getSystemResource(path);
             }

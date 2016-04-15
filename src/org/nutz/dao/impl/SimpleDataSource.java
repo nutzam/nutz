@@ -1,14 +1,10 @@
 package org.nutz.dao.impl;
 
 import java.io.PrintWriter;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
@@ -20,7 +16,7 @@ import org.nutz.log.Logs;
 /**
  * 这是一个神奇的DataSource!!你甚至不需要设置driverClassName!!
  * <p>把用户名,密码,jdbcURL设置一下,这个类就能用了!!
- * <p>当然，你在你的 CLASSPATH 下要放置响应的数据库驱动 jar 包
+ * <p>当然，你在你的 CLASSPATH 下要放置相应的数据库驱动 jar 包
  * 
  * @author wendal(wendal1985@gmail.com)
  */
@@ -33,28 +29,20 @@ public class SimpleDataSource implements DataSource {
     protected String driverClassName;
     protected String jdbcUrl;
     
-    protected AtomicLong active = new AtomicLong();
-    
     public SimpleDataSource() {
-		log.warn("SimpleDataSource is use for Test/Attempt, NOT Using in Production environment!");
 		log.warn("SimpleDataSource is NOT a Connection Pool, So it is slow but safe for debug/study");
 	}
     
+    /**
+     * 这是唯一会被NutDao调用的方法
+     */
     public Connection getConnection() throws SQLException {
         Connection conn;
         if (username != null)
             conn = DriverManager.getConnection(jdbcUrl, username, password);
         else
             conn = DriverManager.getConnection(jdbcUrl);
-        active.incrementAndGet();
-        final Connection _conn = conn;
-        return (Connection) Proxy.newProxyInstance(conn.getClass().getClassLoader(), new Class[]{Connection.class}, new InvocationHandler() {
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                if (method.getName().equals("close") && method.getParameterTypes().length == 0)
-                    active.decrementAndGet();
-                return method.invoke(_conn, args);
-            }
-        });
+        return conn;
     }
     
     public void close() {}
@@ -132,9 +120,5 @@ public class SimpleDataSource implements DataSource {
         sds.setPassword(props.getProperty("password"));
         sds.setUsername(props.getProperty("username"));
         return sds;
-    }
-    
-    public long getActiveCount() {
-        return active.get();
     }
 }
