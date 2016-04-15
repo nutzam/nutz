@@ -139,6 +139,7 @@ public class ObjectMakerImpl implements ObjectMaker {
 
         }
         catch (IocException e) {
+            ing.getContext().remove(iobj.getScope(), ing.getObjectName());
             ((IocException)e).addBeanNames(ing.getObjectName());
             throw e;
         }
