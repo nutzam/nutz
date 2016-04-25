@@ -83,6 +83,7 @@
 	随便建立一个有 main 函数的类，在 main 函数里这么写：
 
 	{{{<java>
+	//实际使用的话必须单例或使用DaoUp类(推荐),如果是Mvc中使用, 请使用注入,或Mvcs.ctx().getDefaultIoc().get(Dao.class)获取
 	Dao dao = new NutDao(dataSource);
 	Person p = new Person();
 	p.setName("ABC");

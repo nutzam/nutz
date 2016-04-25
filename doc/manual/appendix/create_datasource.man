@@ -208,13 +208,13 @@ Proxool(严重不推荐)
 
 	Java代码的方式:
 		{{{<java>
-		//创建dataSource,以DBCP为例, 代码仅供演示,实际使用的话必须单例
+		//创建dataSource,以DBCP为例, 代码仅供演示,实际使用的话必须单例或使用DaoUp类(推荐)
 		DataSource ds = new BasicDataSource();
 		ds.setDriverClassName("org.postgresql.Driver");
 		ds.setUrl("jdbc:postgresql://localhost:5432/mydatabase");
 		ds.setUsername("demo");
 		ds.setPassword("123456");
-		Dao dao = new NutDao(ds);
+		Dao dao = new NutDao(ds);//实际使用的话必须单例或使用DaoUp类(推荐)
 		
 		dao.create(User.class, true);
 		dao.insert(User.create("wendal","123456"));
