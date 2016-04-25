@@ -356,7 +356,9 @@ public abstract class Daos {
      */
     public static long queryCount(Dao dao, String sql) {
     	String tmpTable = "as _nutz_tmp";
-    	if (!dao.meta().isOracle())
+    	if (dao.meta().isDB2())
+    	    tmpTable = "as nutz_tmp_" + R.UU32();
+    	else if (!dao.meta().isOracle())
     		tmpTable += "_" + R.UU32();
         Sql sql2 = Sqls.fetchInt("select count(1) from ("
                                  + sql
