@@ -34,18 +34,19 @@ public class CrossOriginFilter implements ActionFilter {
     }
 
     public View match(ActionContext ac) {
+        HttpServletResponse resp = ac.getResponse();
+        if (!Strings.isBlank(origin))
+            resp.addHeader("Access-Control-Allow-Origin", origin);
+        if (!Strings.isBlank(methods))
+            resp.addHeader("Access-Control-Allow-Methods", methods);
+        if (!Strings.isBlank(headers))
+            resp.addHeader("Access-Control-Allow-Headers", headers);
+        if (!Strings.isBlank(credentials))
+            resp.addHeader("Access-Control-Allow-Credentials", credentials);
+        
         if ("OPTIONS".equals(ac.getRequest().getMethod())) {
             if (log.isDebugEnabled())
                 log.debugf("Feedback -- [%s] [%s] [%s] [%s]", origin, methods, headers, credentials);
-            HttpServletResponse resp = ac.getResponse();
-            if (!Strings.isBlank(origin))
-                resp.addHeader("Access-Control-Allow-Origin", origin);
-            if (!Strings.isBlank(methods))
-                resp.addHeader("Access-Control-Allow-Methods", methods);
-            if (!Strings.isBlank(headers))
-                resp.addHeader("Access-Control-Allow-Headers", headers);
-            if (!Strings.isBlank(credentials))
-                resp.addHeader("Access-Control-Allow-Credentials", credentials);
             return new VoidView();
         }
         return null;
