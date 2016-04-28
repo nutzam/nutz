@@ -279,4 +279,32 @@ public abstract class Trans {
             }
         }
     }
+    
+    /**
+     * 强制清理事务上下文
+     * @param rollbackOrCommit 检测到未闭合的事务时回滚还是提交，true为回滚，false为提交。
+     */
+    public static void clear(boolean rollbackOrCommit) {
+        Integer c = Trans.count.get();
+        if (c == null)
+            return;
+        if (c > 0) {
+            for (int i = 0; i < c; i++) {
+                try {
+                    if (rollbackOrCommit)
+                        Trans.rollback();
+                    else
+                        Trans.commit();
+                    Trans.close();
+                }
+                catch (Exception e) {
+                }
+            }
+        }
+        Trans.count.set(null);
+        Transaction t = get();
+        if (t != null)
+            t.close();
+        Trans.trans.set(null);
+    }
 }
