@@ -25,6 +25,7 @@ import org.nutz.ioc.loader.combo.ComboIocLoader;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.lang.Strings;
 import org.nutz.lang.Times;
+import org.nutz.lang.util.LifeCycle;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.repo.LevenshteinDistance;
@@ -111,6 +112,13 @@ public class NutIoc implements Ioc2 {
             this.mirrors = new DefaultMirrorFactory(this);
         else
             this.mirrors = mirrors;
+        if (this.mirrors instanceof LifeCycle)
+            try {
+                ((LifeCycle)this.mirrors).init();
+            }
+            catch (Exception e) {
+                throw new IocException("_aop_", "aop configure error", e);
+            }
         log.info("... NutIoc init complete");
     }
 

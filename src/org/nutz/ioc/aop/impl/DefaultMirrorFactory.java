@@ -17,6 +17,7 @@ import org.nutz.ioc.aop.config.InterceptorPair;
 import org.nutz.ioc.aop.config.impl.AnnotationAopConfigration;
 import org.nutz.ioc.aop.config.impl.ComboAopConfigration;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.util.AbstractLifeCycle;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -26,7 +27,7 @@ import org.nutz.log.Logs;
  * @author zozoh(zozohtnt@gmail.com)
  * @author Wendal(wendal1985@gmail.com)
  */
-public class DefaultMirrorFactory implements MirrorFactory {
+public class DefaultMirrorFactory extends AbstractLifeCycle implements MirrorFactory {
 
     private static final Log log = Logs.get();
 
@@ -37,6 +38,8 @@ public class DefaultMirrorFactory implements MirrorFactory {
     private List<AopConfigration> list;
 
     private static final Object lock = new Object();
+    
+    public ThreadLocal<Object> L = new ThreadLocal<Object>();
 
     public DefaultMirrorFactory(Ioc ioc) {
         this.ioc = ioc;
@@ -50,29 +53,12 @@ public class DefaultMirrorFactory implements MirrorFactory {
             || Modifier.isAbstract(type.getModifiers())) {
             return Mirror.me(type);
         }
-
-        if (list == null) {
-            List<AopConfigration> tmp = new ArrayList<AopConfigration>();
-            boolean flag = true;
-            String[] names = ioc.getNames();
-            Arrays.sort(names);
-            for (String beanName : names) {
-                if (!beanName.startsWith(AopConfigration.IOCNAME))
-                    continue;
-                AopConfigration cnf = ioc.get(AopConfigration.class, beanName);
-                tmp.add(cnf);
-                if (cnf instanceof AnnotationAopConfigration)
-                    flag = false;
-                if (cnf instanceof ComboAopConfigration) {
-                    if (((ComboAopConfigration) cnf).hasAnnotationAop()) {
-                        flag = false;
-                    }
-                }
-            }
-            if (flag)
-                tmp.add(new AnnotationAopConfigration());
-            list = tmp;
+        if (L.get() != null) {
+            log.info("skip aop check , type="+type.getName());
+            return Mirror.me(type);
         }
+        if (list == null)
+            init();
         List<InterceptorPair> interceptorPairs = new ArrayList<InterceptorPair>();
         for (AopConfigration cnf : list) {
             List<InterceptorPair> tmp = cnf.getInterceptorPairList(ioc, type);
@@ -107,5 +93,37 @@ public class DefaultMirrorFactory implements MirrorFactory {
     public void setAopConfigration(AopConfigration aopConfigration) {
         this.list = new ArrayList<AopConfigration>();
         this.list.add(aopConfigration);
+    }
+    
+    public void init() {
+        if (this.ioc == null)
+            return;
+        if (this.list != null)
+            return;
+        ArrayList<AopConfigration> list = new ArrayList<AopConfigration>();
+        try {
+            L.set(Integer.TYPE);
+            boolean flag = true;
+            String[] names = ioc.getNames();
+            Arrays.sort(names);
+            for (String beanName : names) {
+                if (!beanName.startsWith(AopConfigration.IOCNAME))
+                    continue;
+                AopConfigration cnf = ioc.get(AopConfigration.class, beanName);
+                list.add(cnf);
+                if (cnf instanceof AnnotationAopConfigration)
+                    flag = false;
+                if (cnf instanceof ComboAopConfigration) {
+                    if (((ComboAopConfigration) cnf).hasAnnotationAop()) {
+                        flag = false;
+                    }
+                }
+            }
+            if (flag)
+                list.add(new AnnotationAopConfigration());
+            this.list = list;
+        } finally {
+            L.set(null);
+        }
     }
 }

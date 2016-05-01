@@ -6,7 +6,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({JsonAopConfigrationTest.class,
-              XmlAopConfigrationTest.class})
+              XmlAopConfigrationTest.class,
+              SimpleAopConfigureTest.class})
 public class AllAopConfigration {
 
 }
