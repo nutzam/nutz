@@ -17,7 +17,13 @@ public class TmplTest {
 
     @Test
     public void test_dynamic_dft() {
-        assertEquals("ABC", Tmpl.exec("A${b?x}C", Lang.map("x:'B'}")));
+        assertEquals("ABC", Tmpl.exec("A${b?@x}C", Lang.map("x:'B'}")));
+    }
+
+    @Test
+    public void test_empty_dft() {
+        assertEquals("AC", Tmpl.exec("A${b?}C", Lang.map("x:'B'}")));
+        assertEquals("ABC", Tmpl.exec("A${b?}C", Lang.map("b:'B'}")));
     }
 
     @Test
