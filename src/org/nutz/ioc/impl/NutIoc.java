@@ -25,6 +25,7 @@ import org.nutz.ioc.loader.combo.ComboIocLoader;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.lang.Strings;
 import org.nutz.lang.Times;
+import org.nutz.lang.util.AbstractLifeCycle;
 import org.nutz.lang.util.LifeCycle;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -112,13 +113,6 @@ public class NutIoc implements Ioc2 {
             this.mirrors = new DefaultMirrorFactory(this);
         else
             this.mirrors = mirrors;
-        if (this.mirrors instanceof LifeCycle)
-            try {
-                ((LifeCycle)this.mirrors).init();
-            }
-            catch (Exception e) {
-                throw new IocException("_aop_", "aop configure error", e);
-            }
         log.info("... NutIoc init complete");
     }
 
@@ -156,6 +150,13 @@ public class NutIoc implements Ioc2 {
     public <T> T get(Class<T> type, String name, IocContext context) throws IocException {
         if (log.isDebugEnabled())
             log.debugf("Get '%s'<%s>", name, type == null ? "" : type);
+        try {
+            if (this.mirrors instanceof LifeCycle)
+                ((LifeCycle)this.mirrors).init();
+        }
+        catch (Exception e) {
+            throw new IocException("_mirror_factory_init", "Mirror Factory init fail", e);
+        }
 
         // 创建对象创建时
         IocMaking ing = makeIocMaking(context, name);

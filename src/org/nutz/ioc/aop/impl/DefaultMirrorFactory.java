@@ -100,6 +100,8 @@ public class DefaultMirrorFactory extends AbstractLifeCycle implements MirrorFac
             return;
         if (this.list != null)
             return;
+        if (L.get() != null)
+            return;
         ArrayList<AopConfigration> list = new ArrayList<AopConfigration>();
         try {
             L.set(Integer.TYPE);
