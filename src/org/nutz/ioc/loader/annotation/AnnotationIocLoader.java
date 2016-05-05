@@ -37,6 +37,8 @@ public class AnnotationIocLoader implements IocLoader {
     private static final Log log = Logs.get();
 
     private HashMap<String, IocObject> map = new HashMap<String, IocObject>();
+    
+    protected String[] packages;
 
     public AnnotationIocLoader(String... packages) {
         for (String packageZ : packages) {
@@ -53,6 +55,7 @@ public class AnnotationIocLoader implements IocLoader {
             log.warn("NONE Annotation-Class found!! Check your ioc configure!! packages="
                      + Arrays.toString(packages));
         }
+        this.packages = packages;
     }
 
     protected void addClass(Class<?> classZ) {
@@ -260,5 +263,9 @@ public class AnnotationIocLoader implements IocLoader {
 
     public String toString() {
         return "/*AnnotationIocLoader*/\n" + Json.toJson(map);
+    }
+    
+    public String[] getPackages() {
+        return packages;
     }
 }

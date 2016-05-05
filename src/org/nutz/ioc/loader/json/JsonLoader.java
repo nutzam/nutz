@@ -69,4 +69,8 @@ public class JsonLoader extends MapLoader {
     		return super.toString();
     	return "/*" + getClass().getSimpleName() + Arrays.toString(paths) + "*/\n" + Json.toJson(map);
     }
+    
+    public String[] getPaths() {
+        return paths;
+    }
 }
