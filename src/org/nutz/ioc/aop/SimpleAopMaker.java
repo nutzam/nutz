@@ -19,6 +19,7 @@ import org.nutz.ioc.meta.IocEventSet;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.AbstractLifeCycle;
 
 /**
  * 简化Aop扩展:<p/>
@@ -29,7 +30,7 @@ import org.nutz.lang.Strings;
  *
  * @param <T> 注解类,记得声明@Retention(RetentionPolicy.RUNTIME)哦
  */
-public abstract class SimpleAopMaker<T extends Annotation> implements IocLoader, AopConfigration {
+public abstract class SimpleAopMaker<T extends Annotation> extends AbstractLifeCycle implements IocLoader, AopConfigration {
 
 	protected Class<T> annoClass;
 
@@ -108,8 +109,4 @@ public abstract class SimpleAopMaker<T extends Annotation> implements IocLoader,
 	public boolean has(String name) {
 		return ("$aop_"+_name()).equals(name);
 	}
-	
-	public void init() throws Exception {}
-	public void fetch() throws Exception {}
-	public void depose() throws Exception{}
 }
