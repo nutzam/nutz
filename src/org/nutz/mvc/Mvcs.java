@@ -476,6 +476,8 @@ public abstract class Mvcs {
     /** 在入口方法调用时,是否禁用1.b.51新加入的FastClass功能, 默认禁用 */
     // PS: 如果这个修改导致异常,请报issue,并将这个变量设置为true
     public static boolean disableFastClassInvoker = true;
-    
+    // 实现显示行号, 如果禁用, 轻微加速启动
     public static boolean DISPLAY_METHOD_LINENUMBER = true;
+    // 如果一个Resp已经commit过了,那么是否跳过渲染呢
+    public static boolean SKIP_COMMITTED = true;
 }
