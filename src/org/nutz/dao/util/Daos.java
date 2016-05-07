@@ -978,7 +978,7 @@ public abstract class Daos {
      *            是否允许添加
      * @param del
      *            是否允许删除
-     * @param 是否检查索引
+     * @param checkIndex 是否检查索引
      */
     public static void migration(Dao dao,
                                  String packageName,

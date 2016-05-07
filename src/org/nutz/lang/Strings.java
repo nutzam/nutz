@@ -1001,8 +1001,8 @@ public class Strings {
      *            要拼接的数组
      * @return 拼接好的字符串
      */
-    public static <T> String join(String sp, T... args) {
-        return Lang.concat(sp, args).toString();
+    public static <T> String join(String sp, T... array) {
+        return Lang.concat(sp, array).toString();
     }
 
     /**
@@ -1051,7 +1051,7 @@ public class Strings {
      *            原字符串
      * @param newCharset
      *            指定的新编码集
-     * @return
+     * @return 新字符集编码的字符串
      */
     public static String changeCharset(CharSequence cs, Charset newCharset) {
         if (cs != null) {

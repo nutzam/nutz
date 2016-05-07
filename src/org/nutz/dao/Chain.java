@@ -142,7 +142,7 @@ public abstract class Chain {
     
     /** 
      * 当前结点是不是特殊结点
-     * @return
+     * @return 是不是特殊结点
      */
     public abstract boolean special();
     

@@ -139,10 +139,10 @@ public class NutFilter implements Filter {
     
     /**
      * 过滤请求. 过滤顺序(ignorePtn,exclusionsSuffix,exclusionsPrefix,exclusionPaths)
-     * @param matchUrl
-     * @return
-     * @throws IOException
-     * @throws ServletException
+     * @param matchUrl 待匹配URL
+     * @return 需要排除则返回true
+     * @throws IOException 不太可能抛出
+     * @throws ServletException 不太可能抛出
      */
     protected boolean isExclusion(String matchUrl) throws IOException, ServletException {
     	if (ignorePtn != null && ignorePtn.matcher(matchUrl).find()) {

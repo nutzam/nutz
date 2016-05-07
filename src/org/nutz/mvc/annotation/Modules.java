@@ -37,9 +37,9 @@ public @interface Modules {
     /**
      * 支持你实现一个模块加载器，然后
      * 
-     * <pre>
+     * <code>
      * @Modules(by={"ioc:myLoader", "com.my.app.MyModuleLoader"})
-     * </pre>
+     * </code>
      * 
      * @return 用哪些动态加载器加载模块
      */

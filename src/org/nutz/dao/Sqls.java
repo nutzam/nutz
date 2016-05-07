@@ -344,7 +344,7 @@ public abstract class Sqls {
         }
         /**
          * 与records()类似,但区分大小写
-         * @return
+         * @return List<Map>回调
          */
         public SqlCallback maps() {
         	return QueryMapCallback.me;

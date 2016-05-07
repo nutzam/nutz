@@ -25,7 +25,6 @@ import org.nutz.ioc.loader.combo.ComboIocLoader;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.lang.Strings;
 import org.nutz.lang.Times;
-import org.nutz.lang.util.AbstractLifeCycle;
 import org.nutz.lang.util.LifeCycle;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;

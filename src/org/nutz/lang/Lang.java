@@ -820,7 +820,7 @@ public abstract class Lang {
      * 
      * @param c
      *            分隔符
-     * @param coll
+     * @param it
      *            集合
      * @return 拼合后的字符串
      */
@@ -2476,7 +2476,7 @@ public abstract class Lang {
      *            正则表达式 仅包含哪些key(如果有前缀要求,则已经移除了前缀)
      * @param exclude
      *            正则表达式 排除哪些key(如果有前缀要求,则已经移除了前缀)
-     * @param map
+     * @param keyMap
      *            映射map, 原始key--目标key (如果有前缀要求,则已经移除了前缀)
      * @return 经过过滤的map,与原始map不是同一个对象
      */
@@ -2515,8 +2515,8 @@ public abstract class Lang {
     /**
      * 获得访问者的IP地址, 反向代理过的也可以获得
      * 
-     * @param request
-     * @return
+     * @param request 请求的req对象
+     * @return 来源ip
      */
     public static String getIP(HttpServletRequest request) {
         String ip = request.getHeader("X-Forwarded-For");

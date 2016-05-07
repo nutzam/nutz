@@ -37,7 +37,7 @@ public class QueryResult implements Serializable {
 
     /**
      * 获取结果集
-     * @return
+     * @return 结果集
      */
     public List<?> getList() {
         return list;

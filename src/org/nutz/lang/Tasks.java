@@ -1,7 +1,6 @@
 package org.nutz.lang;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,8 +9,8 @@ import java.util.TimerTask;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import org.nutz.lang.util.CronSequenceGenerator;
 
+import org.nutz.lang.util.CronSequenceGenerator;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -149,7 +148,7 @@ public abstract class Tasks {
     /**
      * 在符合条件的时间点启动任务
      * @param task 具体待执行的任务
-     * @param startTime 运行的时间点
+     * @param expression 运行的时间点
      */
     public static void scheduleAtFixedTime(final Runnable task, String expression) {
         TimeSchedule timeSchedule = new TimeSchedule(task,expression);
@@ -159,7 +158,7 @@ public abstract class Tasks {
 
     /**
      * 调整线程池大小
-     * @param threadPoolSize
+     * @param threadPoolSize 线程池大小
      */
     public static void resizeThreadPool(int threadPoolSize) {
         taskScheduler.setCorePoolSize(threadPoolSize);
@@ -215,19 +214,6 @@ public abstract class Tasks {
             return 10;
         }
     }
-    public static void main(String[] args) {
-        Tasks.scheduleAtFixedTime(new Runnable(){
-            @Override
-            public void run() {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss E");  
-                Date date = new Date();
-                System.out.println(format.format(date));  
-                System.out.println("this task test");
-                System.out.println("===============");
-            }
-        }, "0/5 * * * * *");
-    }
-
 }
 class TimeSchedule implements Runnable{
     private final Runnable task;

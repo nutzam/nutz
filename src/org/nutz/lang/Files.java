@@ -865,7 +865,7 @@ public class Files {
      *            目标文件
      * @param count
      *            要 copy 的字节数，0 表示什么都不 copy， -1 表示 copy 全部数据
-     * @return
+     * @return 是否成功
      * @throws IOException
      */
     public static boolean copyFile(File src, File target, long count) throws IOException {
