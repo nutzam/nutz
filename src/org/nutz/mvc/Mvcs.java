@@ -479,5 +479,5 @@ public abstract class Mvcs {
     // 实现显示行号, 如果禁用, 轻微加速启动
     public static boolean DISPLAY_METHOD_LINENUMBER = true;
     // 如果一个Resp已经commit过了,那么是否跳过渲染呢
-    public static boolean SKIP_COMMITTED = true;
+    public static boolean SKIP_COMMITTED = false;
 }
