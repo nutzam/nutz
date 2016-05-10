@@ -38,10 +38,10 @@ POJO 之苦
 	
 	{{{
 	// 根据主键获取
-	Record re = dao.fetch("t_pet", Cnd.where("id","=",2);
+	Record re = dao.fetch("t_pet", Cnd.where("id","=",2));
 	
 	// 根据名字获取
-	re = dao.fetch("t_pet", Cnd.where("name","=","XiaoBai");
+	re = dao.fetch("t_pet", Cnd.where("name","=","XiaoBai"));
 	
 	// 打印名字
 	System.out.println(re.getString("name"));
@@ -75,7 +75,7 @@ POJO 之苦
 插入
 	
 	{{{
-	dao.insert("t_pet", Chain.make("name","XiaoBai").add("birthday", new Timestampe(System.currentTimeMillis()));
+	dao.insert("t_pet", Chain.make("name","XiaoBai").add("birthday", new Timestampe(System.currentTimeMillis())));
 	}}}
 	它会执行 SQL
 	{{{
@@ -108,7 +108,7 @@ POJO 之苦
 删除
 
 	{{{
-	dao.clear("t_pet", Cnd.where("id", "=" ,2);
+	dao.clear("t_pet", Cnd.where("id", "=" ,2));
 	}}}
 	它会执行 SQL
 	{{{
