@@ -1,0 +1,43 @@
+#title: 1.r.56 发行注记
+#index:0,1
+#author:wendal(wendal1985@gmail.com)
+--------------------------------------------------------------------------------------------------------
+1.r.56 [鄱阳湖黄丫头] 发行注记(20160507)
+    
+  最近有人上网了,用浏览器XX一下,然后就YY,最后就ZZZ了... 无数小恶串成大恶的结果. 然并卵,继续写代码去吧
+  
+  这个版本是一个Bugfix版本,只有极少的新特性, 若正在使用1.r.55 可无缝升级.
+  
+  问题修复:
+    * @Inject根据类型注入有致命的bug.
+    * 继承SimpleAopMaker的类如果是个Ioc Bean,所引用的对象会创建多次.
+    * DB2下Daos.queryCount生成的语句不对.
+    
+  新特性:
+ 
+    * Cnd类新增andEX和orEX方法
+    
+      {{{
+      // 以前
+      Cnd cnd = Cnd.where("age", "<", 25);
+      if (!Strings.isBlank(city)) {
+          cnd.and("city", "=", city);
+      }
+      //现在
+      Cnd cnd = Cnd.where("age", "<", 25);
+      cnd.andEX("city", "=", city);
+      }}}
+
+  关于命名
+
+    * [http://nutz.cn/yvr/t/rlq8pik42cit0rkasmbepalnm9 申请一个nutz版本冠名鄱阳湖黄丫头]
+
+
+  详细列表:
+  
+    * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.56 issue@github] 不再详细列出
+
+
+欢迎访问[http://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
+    
+[https://nutz.cn Nutz社区]已经累计了1200+的问答帖子,平均首次回复时间少于1小时哦,白天基本上秒回!
