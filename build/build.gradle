@@ -2,7 +2,7 @@ import org.gradle.api.file.FileCollection;
 
 apply plugin: 'java'
 apply plugin: 'eclipse-wtp'
-version = '1.b.52-SNAPSHOT'
+version = '1.r.57-SNAPSHOT'
 
 
 sourceCompatibility = 1.6
