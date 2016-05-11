@@ -238,4 +238,8 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
     public boolean supportTimestampDefault() {
         return false;
     }
+    
+    public String getKeywordWrapChar() {
+        return "\"";
+    }
 }
