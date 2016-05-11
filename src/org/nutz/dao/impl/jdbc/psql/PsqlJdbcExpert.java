@@ -87,7 +87,7 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
             sb.append(String.format("CONSTRAINT %s_pkey PRIMARY KEY (",
                                     en.getTableName().replace('.', '_').replace('"', '_')));
             for (MappingField pk : pks) {
-                sb.append(pk.getColumnName()).append(',');
+                sb.append(pk.getColumnNameInSql()).append(',');
             }
             sb.setCharAt(sb.length() - 1, ')');
             sb.append("\n ");

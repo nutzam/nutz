@@ -392,7 +392,7 @@ public abstract class Daos {
                 mf = en.getField(head.name());
             String colName = head.name();
             if (mf != null)
-                colName = mf.getColumnName();
+                colName = mf.getColumnNameInSql();
             sql.append(colName).append("=");
             if (head.special()) {
                 if (head.value() != null && head.value() instanceof String) {
@@ -469,7 +469,7 @@ public abstract class Daos {
             if (en != null) {
                 mf = en.getField(colName);
                 if (mf != null)
-                    colName = mf.getColumnName();
+                    colName = mf.getColumnNameInSql();
             }
             sql.append(colName);
 
@@ -899,7 +899,7 @@ public abstract class Daos {
             for (EntityField field : index.getFields()) {
                 if (field instanceof MappingField) {
                     MappingField mf = (MappingField) field;
-                    sb.append(mf.getColumnName()).append(',');
+                    sb.append(mf.getColumnNameInSql()).append(',');
                 } else {
                     throw Lang.makeThrow(DaoException.class,
                                          "%s %s is NOT a mapping field, can't use as index field!!",

@@ -65,7 +65,7 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
             sb.append(makePksName(en));
             sb.append(" PRIMARY KEY (");
             for (MappingField mf : en.getPks()) {
-                sb.append(mf.getColumnName()).append(",");
+                sb.append(mf.getColumnNameInSql()).append(",");
             }
             sb.setCharAt(sb.length() - 1, ')');
             dao.execute(Sqls.create(sb.toString()));

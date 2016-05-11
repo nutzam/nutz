@@ -72,7 +72,7 @@ public class SQLiteJdbcExpert extends MysqlJdbcExpert {
             sb.append('\n');
             sb.append("constraint pk_").append(en.getTableName()).append(" PRIMARY KEY (");
             for (MappingField pk : pks) {
-                sb.append(pk.getColumnName()).append(',');
+                sb.append(pk.getColumnNameInSql()).append(',');
             }
             sb.setCharAt(sb.length() - 1, ')');
             sb.append("\n ");
