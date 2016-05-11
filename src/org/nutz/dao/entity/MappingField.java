@@ -51,6 +51,8 @@ public interface MappingField extends EntityField {
 	 * @return 数据库中的字段名
 	 */
 	String getColumnName();
+	
+	String getColumnNameInSql();
 
 	/**
 	 * @return 数据库中字段的注释

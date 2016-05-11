@@ -60,7 +60,7 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         for (MappingField mf : en.getMappingFields()) {
             if (mf.isReadonly())
                 continue;
-            sb.append('\n').append(mf.getColumnName());
+            sb.append('\n').append(mf.getColumnNameInSql());
             sb.append(' ').append(evalFieldType(mf));
             // 非主键的 @Name，应该加入唯一性约束
             if (mf.isName() && en.getPkType() != PkType.NAME) {
@@ -171,7 +171,7 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
             return mf.getCustomDbType();
         switch (mf.getColumnType()) {
         case BOOLEAN:
-            return "char(1) check (" + mf.getColumnName() + " in(0,1))";
+            return "char(1) check (" + mf.getColumnNameInSql() + " in(0,1))";
         case TEXT:
             return "CLOB";
         case VARCHAR:

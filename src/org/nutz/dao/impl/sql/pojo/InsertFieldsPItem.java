@@ -13,7 +13,7 @@ public class InsertFieldsPItem extends NoParamsPItem {
 
         sb.append('(');
         for (MappingField mf : mfs)
-            sb.append(mf.getColumnName()).append(',');
+            sb.append(mf.getColumnNameInSql()).append(',');
 
         sb.setCharAt(sb.length() - 1, ')');
         sb.append(' ');

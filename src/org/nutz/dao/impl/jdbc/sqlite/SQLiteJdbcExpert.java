@@ -40,7 +40,7 @@ public class SQLiteJdbcExpert extends MysqlJdbcExpert {
         for (MappingField mf : en.getMappingFields()) {
             if (mf.isReadonly())
                 continue;
-            sb.append('\n').append(mf.getColumnName());
+            sb.append('\n').append(mf.getColumnNameInSql());
             // Sqlite的整数型主键,一般都是自增的,必须定义为(PRIMARY KEY
             // AUTOINCREMENT),但这样就无法定义多主键!!
             if (mf.isId() && en.getPkType() == PkType.ID) {

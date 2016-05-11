@@ -49,6 +49,7 @@ import org.nutz.dao.impl.entity.macro.SqlFieldMacro;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.sql.Pojo;
+import org.nutz.dao.util.Daos;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
@@ -465,6 +466,19 @@ public class AnnotationEntityMaker implements EntityMaker {
         ef.setInjecting(info.injecting);
         ef.setEjecting(info.ejecting);
 
+        // 强制大小?
+        if (Daos.FORCE_UPPER_COLUMN_NAME)
+            ef.setColumnName(ef.getColumnName().toUpperCase());
+        // 字段名称是不是关键字呢?
+        if (Daos.FORCE_WRAP_COLUMN_NAME) {
+            if (!ef.getColumnName().startsWith("'"))
+                ef.setColumnNameInSql('`'+ef.getColumnName()+'`');
+        } 
+        else if (Daos.CHECK_COLUMN_NAME_KEYWORD) {
+            if (expert.getKeywords().contains(ef.getColumnName().toUpperCase())) {
+                ef.setColumnNameInSql('`'+ef.getColumnName()+'`');
+            }
+        }
     }
 
     private void _evalFieldMacro(Entity<?> en, List<MappingInfo> infos) {

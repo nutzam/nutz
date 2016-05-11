@@ -56,7 +56,7 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
         for (MappingField mf : en.getMappingFields()) {
             if (mf.isReadonly())
                 continue;
-            sb.append('\n').append(mf.getColumnName());
+            sb.append('\n').append(mf.getColumnNameInSql());
             // 自增主键特殊形式关键字
             if (mf.isId() && mf.isAutoIncreasement()) {
                 sb.append(" SERIAL");

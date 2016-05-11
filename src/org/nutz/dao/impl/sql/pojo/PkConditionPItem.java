@@ -22,9 +22,9 @@ public class PkConditionPItem extends AbstractPItem {
     public void joinSql(Entity<?> en, StringBuilder sb) {
         sb.append(" WHERE ");
         Iterator<MappingField> it = _en(en).getCompositePKFields().iterator();
-        sb.append(it.next().getColumnName()).append("=?");
+        sb.append(it.next().getColumnNameInSql()).append("=?");
         while (it.hasNext()) {
-            sb.append(" AND ").append(it.next().getColumnName()).append("=?");
+            sb.append(" AND ").append(it.next().getColumnNameInSql()).append("=?");
         }
         sb.append(' ');
     }

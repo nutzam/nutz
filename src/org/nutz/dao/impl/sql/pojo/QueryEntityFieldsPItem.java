@@ -20,7 +20,7 @@ public class QueryEntityFieldsPItem extends NoParamsPItem {
 
             for (MappingField ef : efs) {
                 if (fm.match(ef.getName()))
-                    sb.append(ef.getColumnName()).append(',');
+                    sb.append(ef.getColumnNameInSql()).append(',');
             }
 
             if (sb.length() == old)
