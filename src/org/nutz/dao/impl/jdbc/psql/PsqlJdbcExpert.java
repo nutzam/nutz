@@ -166,4 +166,8 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
             return super.getAdaptor(ef);
         }
     }
+    
+    public String getKeywordWrapChar() {
+        return "\"";
+    }
 }

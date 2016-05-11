@@ -398,4 +398,8 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
     public Set<String> getKeywords() {
         return keywords;
     }
+    
+    public String getKeywordWrapChar() {
+        return "`";
+    }
 }
