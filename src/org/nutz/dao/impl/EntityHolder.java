@@ -148,7 +148,7 @@ public class EntityHolder {
             en.addMappingField(ef);
             
 
-            if (!check)
+            if (mirror != null && !check)
                 check = mirror.isEnum();
         }
         en.checkCompositeFields(null);
