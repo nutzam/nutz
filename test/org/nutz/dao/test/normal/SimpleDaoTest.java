@@ -702,4 +702,10 @@ public class SimpleDaoTest extends DaoCase {
 
         assertEquals("WHERE name='wendal' OR id>1", cnd.toString().trim());
     }
+    
+    @Test
+    public void test_insert_chain_with_null() {
+        dao.create(Pet.class, true);
+        dao.insert("t_pet", Chain.make("name", "wendal").add("alias", null));
+    }
 }
