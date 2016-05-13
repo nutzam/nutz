@@ -277,4 +277,6 @@ public interface Entity<T> {
     String getColumnComent(String columnName);
 
     boolean isComplete();
+    
+    T born(ResultSet rs);
 }

@@ -511,4 +511,10 @@ public class NutEntity<T> implements Entity<T> {
     public void setComplete(boolean complete) {
         this.complete = complete;
     }
+    
+    public T born(ResultSet rs) {
+        if (null != bornByRS)
+            return bornByRS.born(rs);
+        return bornByDefault.born(EMTRY_ARG);
+    }
 }
