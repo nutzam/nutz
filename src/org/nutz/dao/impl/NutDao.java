@@ -706,7 +706,7 @@ public class NutDao extends DaoSupport implements Dao {
 
     public int getMaxId(Class<?> classOfT) {
         Entity<?> en = holder.getEntity(classOfT);
-        return func(en.getViewName(), "MAX", en.getIdField().getColumnName());
+        return func(en.getViewName(), "MAX", en.getIdField().getColumnNameInSql());
     }
 
     public int func(Class<?> classOfT, String funcName, String fieldName) {
@@ -720,7 +720,7 @@ public class NutDao extends DaoSupport implements Dao {
     public int func(Class<?> classOfT, String funcName, String colName, Condition cnd) {
         Entity<?> en = holder.getEntity(classOfT);
         if (null != en.getField(colName))
-            colName = en.getField(colName).getColumnName();
+            colName = en.getField(colName).getColumnNameInSql();
         DaoStatement pojo = pojoMaker.makeFunc(en.getViewName(), funcName, colName)
                                      .append(Pojos.Items.cnd(cnd))
                                      .setAfter(_pojo_fetchInt)
@@ -748,7 +748,7 @@ public class NutDao extends DaoSupport implements Dao {
     public Object func2(Class<?> classOfT, String func2Name, String colName, Condition cnd) {
         Entity<?> en = holder.getEntity(classOfT);
         if (null != en.getField(colName))
-            colName = en.getField(colName).getColumnName();
+            colName = en.getField(colName).getColumnNameInSql();
         DaoStatement pojo = pojoMaker.makeFunc(en.getViewName(), func2Name, colName)
                                      .append(Pojos.Items.cnd(cnd))
                                      .setAfter(_pojo_fetchObject)

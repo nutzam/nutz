@@ -375,7 +375,7 @@ public abstract class Chain {
                 while (current != null) {
                     MappingField ef = entity.getField(current.name);
                     if (null != ef) {
-                        current.name = ef.getColumnName();
+                        current.name = ef.getColumnNameInSql();
                     }
                     current = current.next;
                 }

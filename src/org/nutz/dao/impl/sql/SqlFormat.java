@@ -15,7 +15,7 @@ public class SqlFormat implements Cloneable{
     /**
      * 打印1行参数 + Example SQL
      */
-    public static SqlFormat lite = new SqlFormat(true, 1, 0, false);
+    public static SqlFormat lite = new SqlFormat(true, 1, -1, true);
 
     /**
      * 只打印Example SQL

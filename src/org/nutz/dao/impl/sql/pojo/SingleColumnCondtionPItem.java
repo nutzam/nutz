@@ -23,7 +23,7 @@ public class SingleColumnCondtionPItem extends AbstractPItem {
     public SingleColumnCondtionPItem(MappingField mf, Object def) {
         this.mf = mf;
         this.va = mf.getAdaptor();
-        this.colName = mf.getColumnName();
+        this.colName = mf.getColumnNameInSql();
         this.colType = mf.getTypeClass();
         this.def = def;
     }

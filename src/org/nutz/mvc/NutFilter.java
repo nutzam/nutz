@@ -166,6 +166,8 @@ public class NutFilter implements Filter {
 
     public void doFilter(final ServletRequest req, final ServletResponse resp, final FilterChain chain)
             throws IOException, ServletException {
+        if (!Mvcs.DISABLE_X_POWERED_BY)
+            ((HttpServletResponse)resp).setHeader("X-Powered-By", Mvcs.X_POWERED_BY);
     	ServletContext prCtx = Mvcs.getServletContext();
     	Mvcs.setServletContext(sc);
     	if (proxyFilter != null) {

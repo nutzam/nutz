@@ -44,7 +44,7 @@ public class InsertByChainPItem extends AbstractPItem {
 
     public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
         for (int i = 0; i < names.length; i++)
-            adaptors[off++] = en.getColumn(_colname(en, i)).getAdaptor();
+            adaptors[off++] = _adaptor(en, i);
         return off;
     }
 
@@ -62,6 +62,13 @@ public class InsertByChainPItem extends AbstractPItem {
     	MappingField field = en.getField(names[index]);
     	if (field == null)
     		throw new IllegalArgumentException(String.format("Class %s didn't have field named (%s)", en.getType(), names[index]));
-        return field.getColumnName();
+        return field.getColumnNameInSql();
+    }
+    
+    private ValueAdaptor _adaptor(Entity<?> en, int index) {
+        MappingField field = en.getField(names[index]);
+        if (field == null)
+            throw new IllegalArgumentException(String.format("Class %s didn't have field named (%s)", en.getType(), names[index]));
+        return field.getAdaptor();
     }
 }

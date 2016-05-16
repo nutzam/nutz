@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.nutz.dao.Dao;
 import org.nutz.dao.DaoException;
@@ -50,6 +51,8 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
     private static String DEFAULT_COMMENT_TABLE = "comment on table $table is '$tableComment'";
 
     private static String DEFAULT_COMMENT_COLUMN = "comment on column $table.$column is '$columnComment'";
+    
+    protected Set<String> keywords;
 
     /**
      * 提供给子类使用的配置文件对象
@@ -280,7 +283,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
             for (EntityField field : index.getFields()) {
                 if (field instanceof MappingField) {
                     MappingField mf = (MappingField) field;
-                    sb.append(mf.getColumnName()).append(',');
+                    sb.append(mf.getColumnNameInSql()).append(',');
                 } else {
                     throw Lang.makeThrow(DaoException.class,
                                          "%s %s is NOT a mapping field, can't use as index field!!",
@@ -386,5 +389,17 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 
     public boolean supportTimestampDefault() {
         return true;
+    }
+    
+    public void setKeywords(Set<String> keywords) {
+        this.keywords = keywords;
+    }
+    
+    public Set<String> getKeywords() {
+        return keywords;
+    }
+    
+    public String getKeywordWrapChar() {
+        return "`";
     }
 }

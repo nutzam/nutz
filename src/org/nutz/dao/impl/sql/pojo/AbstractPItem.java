@@ -43,7 +43,7 @@ public abstract class AbstractPItem implements PItem {
         if (null != en) {
             MappingField mf = en.getField(name);
             if (null != mf)
-                return mf.getColumnName();
+                return mf.getColumnNameInSql();
         }
         return name;
     }
