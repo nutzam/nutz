@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.nutz.Nutz;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.IocContext;
 import org.nutz.json.Json;
@@ -480,4 +481,8 @@ public abstract class Mvcs {
     public static boolean DISPLAY_METHOD_LINENUMBER = true;
     // 如果一个Resp已经commit过了,那么是否跳过渲染呢
     public static boolean SKIP_COMMITTED = false;
+    
+    public static boolean DISABLE_X_POWERED_BY = false;
+    
+    public static String X_POWERED_BY = "nutz/"+Nutz.version()+" <nutzam.com>";
 }
