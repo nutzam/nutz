@@ -56,7 +56,7 @@ public class NutServlet extends HttpServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         if (!Mvcs.DISABLE_X_POWERED_BY)
-            resp.addHeader("X-Powered-By", Mvcs.X_POWERED_BY);
+            resp.setHeader("X-Powered-By", Mvcs.X_POWERED_BY);
     	String markKey = "nutz_ctx_mark";
         Integer mark = (Integer) req.getAttribute(markKey);
     	if (mark != null) {
