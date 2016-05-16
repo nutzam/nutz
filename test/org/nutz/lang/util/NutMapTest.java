@@ -1,12 +1,24 @@
 package org.nutz.lang.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
 import org.junit.Test;
+import org.nutz.lang.Lang;
 
 public class NutMapTest {
+
+    @Test
+    public void test_match_0() {
+        assertTrue(Lang.map("a:'23',x:100").match(Lang.map("a:'23',x:100,y:48")));
+        assertTrue(Lang.map("a:'23',x:100").match(Lang.map("a:['a','23','b'],x:100,y:48")));
+        assertTrue(Lang.map("{}").match(Lang.map("a:['a','23','b'],x:100,y:48")));
+
+        assertFalse(Lang.map("a:'20',x:100").match(Lang.map("a:'23',x:100,y:48")));
+        assertFalse(Lang.map("a:'23',x:101").match(Lang.map("a:['a','23','b'],x:100,y:48")));
+    }
+
     @Test
     public void test_add_element_with_same_key() {
         NutMap nutMap = new NutMap();
@@ -24,4 +36,5 @@ public class NutMapTest {
         assertEquals(123, nutMap.getInt("a"));
         assertEquals("123", nutMap.getString("b"));
     }
+
 }
