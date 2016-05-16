@@ -224,18 +224,13 @@ public abstract class NutStatement implements DaoStatement {
                     sb.append("\n    |");
                     for (int col = 0; col < mtrx[0].length; col++) {
                         sb.append(' ');
-                        sb.append(Strings.cutLeft(sss[row][col], maxes[col], ' '));
+                        sb.append(sss[row][col].length() > maxes[col] ? Strings.brief(sss[row][col], maxes[col] - 5) : Strings.alignLeft(sss[row][col], maxes[col], ' '));
                         sb.append(" |");
                     }
                 }
 
                 if (maxRow != mtrx.length)
                     sb.append("\n -- Only display first " + maxRow + " lines , don't show the remaining record(count=" + mtrx.length + ")");
-            } else {
-                // 打印一下影响总行数
-                sb.append("\n -- " + mtrx.length + " lines effected -- ");
-                if (!format.isPrintExample())
-                    sb.append(" set printExample=true if you wanna print executed sql");
             }
             if (format.isPrintExample()) {
                 // 输出可执行的 SQL 语句, TODO 格式非常不好看!!如果要复制SQL,很麻烦!!!
