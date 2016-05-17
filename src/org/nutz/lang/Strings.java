@@ -1143,6 +1143,8 @@ public class Strings {
             // 如果是转义字符
             else if (c == '\\') {
                 i++;
+                if (keepQuote)
+                    sb.append(c);
                 if (i < cs.length) {
                     c = cs[i];
                     sb.append(c);
