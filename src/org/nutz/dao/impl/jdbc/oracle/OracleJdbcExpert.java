@@ -239,7 +239,9 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         return false;
     }
     
-    public String getKeywordWrapChar() {
-        return "\"";
+    public String wrapKeywork(String columnName, boolean force) {
+        if (force || keywords.contains(columnName.toUpperCase()))
+            return "\"" + columnName + "\"";
+        return null;
     }
 }

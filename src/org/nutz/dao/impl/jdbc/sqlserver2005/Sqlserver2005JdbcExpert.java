@@ -199,4 +199,10 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
     public boolean addColumnNeedColumn() {
         return false;
     }
+    
+    public String wrapKeywork(String columnName, boolean force) {
+        if (force || keywords.contains(columnName.toUpperCase()))
+            return "[" + columnName + "]";
+        return null;
+    }
 }
