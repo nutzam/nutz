@@ -226,6 +226,7 @@ public class FastUploading implements Uploading {
         finally {
             br.close();
         }
+        info.current = info.sum;
         if (log.isDebugEnabled())
             log.debugf("...Done %s bytes readed", br.readed());
         /**
