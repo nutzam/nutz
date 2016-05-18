@@ -34,8 +34,8 @@ public class StringsTest {
     public void test_by_eacape() {
         String[] list = Strings.split("a\\nb | a\\ b", true, '|');
         assertEquals(2, list.length);
-        assertEquals("anb ", list[0]);
-        assertEquals(" a b", list[1]);
+        assertEquals("a\\nb ", list[0]);
+        assertEquals(" a\\ b", list[1]);
     }
 
     @Test
