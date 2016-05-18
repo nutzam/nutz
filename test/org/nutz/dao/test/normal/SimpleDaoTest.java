@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -707,5 +708,12 @@ public class SimpleDaoTest extends DaoCase {
     public void test_insert_chain_with_null() {
         dao.create(Pet.class, true);
         dao.insert("t_pet", Chain.make("name", "wendal").add("alias", null));
+    }
+    
+    @Test
+    public void test_cnd_emtry_in() {
+        assertEquals(" WHERE  1 != 1 ", Cnd.where("name", "in", Collections.EMPTY_LIST).toString());
+        assertEquals(" WHERE  1 != 1 ", Cnd.where("name", "in", new String[0]).toString());
+        assertEquals(" WHERE  1 != 1 ", Cnd.where("id", "in", new int[]{}).toString());
     }
 }
