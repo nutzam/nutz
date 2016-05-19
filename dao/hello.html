@@ -103,7 +103,8 @@
 <h1><a name="创建_main_函数"></a>创建 main 函数</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>随便建立一个有 main 函数的类，在 main 函数里这么写：</p>
-<pre>Dao dao = new NutDao(dataSource);
+<pre><span class="zdoc_code_cmt">//实际使用的话必须单例或使用DaoUp类(推荐),如果是Mvc中使用, 请使用注入,或Mvcs.ctx().getDefaultIoc().get(Dao.class)获取
+</span>Dao dao = new NutDao(dataSource);
 Person p = new Person();
 p.setName("ABC");
 p.setAge(20);

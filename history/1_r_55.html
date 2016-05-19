@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>1.r.55 发行注记</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">1.r.55 发行注记</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#主要内容:">主要内容:</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#兼容性">兼容性</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#性能变化">性能变化</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#详细列表:">详细列表:</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<p>1.r.55 <a href="羊驼炒鸭梨">羊驼炒鸭梨</a> 发行注记(20160218)</p>
+<p>上个月的寒潮,真的够"鸡冻"的,连广州也下"雪"了,春节期间也是各种"红包来了!!"</p>
+<p>上一版本没有起名字,激起民愤,作为吃货的我,鸭梨很大很大...</p>
+<p>距54版两个月,这次更新新增了几个功能,详情请查阅文档或社区的帖子</p>
+<p>理论上,在源码级别完全兼容1.r.54,除了"兼容性变化"列出的几个接口,应该没多少人会实现它们.</p>
+<p>另外,值得一提的是NutzCN社区的ios客户端也上线了("這輩孓の倖福"做的原生app),及Nutz社区的服务器("淡蓝"赞助)也迁移到香港.</p>
+<p>最后,套用eclipse的一句话"Because you can't fix it if you don't know it's broken." 欢迎发帖提issue ^_^</p>
+<div class="hr"><b></b></div>
+<p>新功能/问题修复</p>
+<h1><a name="主要内容:"></a>主要内容: </h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>add: 异步注解@Async</li>
+<li>add: 改进自增主键的获取,并自动识别可批量插入的insert操作</li>
+<li>add: 更智能的@Inject -- 自动按类型注入</li>
+<li>add: dao.insert可忽略空值和零值</li>
+<li>add: 方法上的Mvc注解支持继承,但方法参数上的注解是不会继承的.</li>
+<li>add: PropertiesIocLoader,用properties文件简易定义ioc bean</li>
+<li>add: SimpleAopMaker,自定义Aop注解变成非常简单</li>
+<li>add: @EL再加一个默认方法'by' 代理调用任意类的任意public方法</li>
+<li>add: 入口方法支持@Cookie注解</li>
+<li>update: 继续优化NutDao的事务处理机制</li>
+<li>fix: Daos.migration在oracle下,如果新增TimeStamp类型的字段会报错</li>
+<li>fix: db2/sqlite/sqlserver 2008自动建表会失败的bug</li>
+<li>fix: UU32FilePool的文件夹分隔符错误</li>
+</ul>
+<h1><a name="兼容性"></a>兼容性</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>DaoStatement.onAfter和PojoCallback.invoke添加了Statement参数</li>
+<li>Ioc/Ioc2接口添加了getNamesByType和getByType方法</li>
+<li>JdbcExpert接口添加了addColumnNeedColumn和supportTimestampDefault方法</li>
+</ul>
+<h1><a name="性能变化"></a>性能变化</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>dao.fastInsert轻微下降,但支持获取自增主键的值了(Oracle数据库除外)</li>
+<li>dao.insert提高10%+(Oracle数据库除外)</li>
+</ul>
+<h1><a name="详细列表:"></a>详细列表:</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li><a href="https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.55">issue@github</a> 不再详细列出</li>
+</ul>
+<p>欢迎访问<a href="http://nutzam.com">官网</a> 及 <a href="https://nutz.cn">Nutz社区</a>,以获取更多信息</p>
+<p><a href="https://nutz.cn">Nutz社区</a>已经累计了800+的问答帖子,平均首次回复时间少于1小时哦</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

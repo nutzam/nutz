@@ -31,6 +31,9 @@
 <li>
 <div><span class="num">4</span><a href="#工厂方法">工厂方法</a></div>
 </li>
+<li>
+<div><span class="num">5</span><a href="#默认的scope是app,_与ioc容器共存亡_可选的还有request和session,_已经很少很少使用,且仅限于子模块类及其依赖的对象">默认的scope是app, 与ioc容器共存亡. 可选的还有request和session, 已经很少很少使用,且仅限于子模块类及其依赖的对象.</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="鸭子法则"></a>鸭子法则</h1>
@@ -128,6 +131,11 @@ System.out.println(pet.getFriend().getName());
 </span>	}
 </pre>
 <p>其中的beanCacheFactory是另外一个ioc bean的名称</p>
+<p>生命周期范围</p>
+<div class="hr"><b></b></div>
+<h1><a name="默认的scope是app,_与ioc容器共存亡_可选的还有request和session,_已经很少很少使用,且仅限于子模块类及其依赖的对象"></a>默认的scope是app, 与ioc容器共存亡. 可选的还有request和session, 已经很少很少使用,且仅限于子模块类及其依赖的对象.</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>一般情况下,不需要也不应该设置scope的值.</p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>

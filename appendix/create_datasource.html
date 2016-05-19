@@ -322,14 +322,14 @@
 <p>推荐使用org.nutz.dao.util.DaoUp类,非Mvc环境下的全生命周期Dao工具.下面描述的是纯手工创建的代码.</p>
 <h2><a name="Java代码的方式:"></a>Java代码的方式:</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre><span class="zdoc_code_cmt">//创建dataSource,以DBCP为例, 代码仅供演示,实际使用的话必须单例
+<pre><span class="zdoc_code_cmt">//创建dataSource,以DBCP为例, 代码仅供演示,实际使用的话必须单例或使用DaoUp类(推荐)
 </span>DataSource ds = new BasicDataSource();
 ds.setDriverClassName("org.postgresql.Driver");
 ds.setUrl("jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase");
 </span>ds.setUsername("demo");
 ds.setPassword("123456");
-Dao dao = new NutDao(ds);
-
+Dao dao = new NutDao(ds);<span class="zdoc_code_cmt">//实际使用的话必须单例或使用DaoUp类(推荐)
+</span>
 dao.create(User.class, true);
 dao.insert(User.create("wendal","123456"));
 
