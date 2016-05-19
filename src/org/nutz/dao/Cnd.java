@@ -391,7 +391,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * 分组
-     * @param java属性/数据库字段名称
+     * @param names java属性或数据库字段名称
      */
     public GroupBy groupBy(String... names) {
         cri.groupBy(names);
@@ -400,7 +400,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * 分组中的having条件
-     * @param 条件语句
+     * @param cnd 条件语句
      */
     public GroupBy having(Condition cnd) {
         cri.having(cnd);

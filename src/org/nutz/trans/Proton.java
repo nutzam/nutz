@@ -17,7 +17,7 @@ public abstract class Proton<T> implements Atom {
 
     /**
      * exec方法的返回值
-     * @return
+     * @return 方法返回值
      */
     public T get() {
         return obj;
@@ -32,7 +32,7 @@ public abstract class Proton<T> implements Atom {
 
     /**
      * 需要子类实现的逻辑
-     * @return
+     * @return 方法返回值
      */
     protected abstract T exec();
 

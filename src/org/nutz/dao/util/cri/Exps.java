@@ -86,8 +86,12 @@ public abstract class Exps {
         else if ("IN".equals(op) || "NOT IN".equals(op)) {
             Class<?> type = value.getClass();
             SqlExpression re;
+            int len = Lang.length(value);
+            if (len < 1) { // 如果空数组/空集合,则返回 @sinec 1.r.57
+                re = new Static("1 != 1");
+            }
             // 数组
-            if (type.isArray()) {
+            else if (type.isArray()) {
                 re = _evalRange((Mirror<?>) Mirror.me(type.getComponentType()), name, value);
             }
             // 集合

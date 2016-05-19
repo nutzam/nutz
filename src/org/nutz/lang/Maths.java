@@ -14,8 +14,8 @@ public abstract class Maths {
     /**
      * 返回最大的一个
      * 
-     * @param nums
-     * @return
+     * @param nums 需要比较的数组
+     * @return 最大值
      */
     public static int max(int... nums) {
         return takeOne(new CompareSomeThing() {
@@ -28,8 +28,8 @@ public abstract class Maths {
     /**
      * 返回最小的一个
      * 
-     * @param nums
-     * @return
+     * @param nums 需要比较的数组
+     * @return 最小值
      */
     public static int min(int... nums) {
         return takeOne(new CompareSomeThing() {
@@ -120,8 +120,8 @@ public abstract class Maths {
     /**
      * 获得字符数组的全排列
      * 
-     * @param arr
-     * @return
+     * @param arr 字符数组
+     * @return 全排列
      */
     public static String[] permutation(char... arr) {
         return permutation(arr.length, arr);
@@ -130,8 +130,8 @@ public abstract class Maths {
     /**
      * 按照指定长度, 获得字符数组的全排列
      * 
-     * @param arr
-     * @return
+     * @param arr 字符数组
+     * @return 全排列
      */
     public static String[] permutation(int length, char... arr) {
         if (arr == null || arr.length == 0 || length <= 0 || length > arr.length) {

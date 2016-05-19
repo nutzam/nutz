@@ -53,7 +53,7 @@ public @interface ColDefine {
 
 	/**
 	 * 自定义数据库字段类型, 例如写  customType="image" 等, 然后<b>请务必再设置type属性!!</b>
-	 * @return
+	 * @return 自定义数据类型,可以任意合法的类型声明,仅用于建表
 	 */
 	String customType() default "";
 
@@ -68,7 +68,7 @@ public @interface ColDefine {
 	boolean update() default true;
 	
 	/**
-	 * 自定义ValueAdaptor
+	 * 自定义ValueAdaptor,定制一切类型的jdbc赋值或取值逻辑
 	 */
 
 	Class<? extends ValueAdaptor> adaptor() default ValueAdaptor.class;

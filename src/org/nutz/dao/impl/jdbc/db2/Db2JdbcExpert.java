@@ -31,7 +31,7 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
         for (MappingField mf : en.getMappingFields()) {
             if (mf.isReadonly())
                 continue;
-            sb.append('\n').append(mf.getColumnName());
+            sb.append('\n').append(mf.getColumnNameInSql());
             sb.append(' ').append(evalFieldType(mf));
             // 非主键的 @Name，应该加入唯一性约束
             if (mf.isName() && en.getPkType() != PkType.NAME) {
@@ -65,7 +65,7 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
             sb.append(makePksName(en));
             sb.append(" PRIMARY KEY (");
             for (MappingField mf : en.getPks()) {
-                sb.append(mf.getColumnName()).append(",");
+                sb.append(mf.getColumnNameInSql()).append(",");
             }
             sb.setCharAt(sb.length() - 1, ')');
             dao.execute(Sqls.create(sb.toString()));

@@ -363,7 +363,7 @@ public interface Dao {
      * @param cnd
      *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序
      * @param pager
-     *            翻页信息。如果为 null，则一次全部返回
+     *            翻页信息。如果为 null，则一次全部返回. 不会使用cnd中的pager!!!
      * @return 对象列表
      */
     <T> List<T> query(Class<T> classOfT, Condition cnd, Pager pager);
@@ -667,7 +667,7 @@ public interface Dao {
      * 根据一个正则表达式，获取对象所有的关联字段
      * 
      * @param obj
-     *            数据对象,不可以是Class啊!!!传对象啊!!!
+     *            数据对象,不可以是Class啊!!!传对象或集合啊!!!
      * @param regex
      *            正则表达式，描述了什么样的关联字段将被关注。如果为 null，则表示全部的关联字段都会被查询
      * @return 更新后的数据对象本身
@@ -684,12 +684,12 @@ public interface Dao {
      * <b>严重提醒,当使用Condition进行数据过滤排序时,应当使regex只匹配特定的映射字段</b>
      * 
      * @param obj
-     *            数据对象
+     *            数据对象,可以是普通对象或集合,但不是类
      * @param regex
      *            正则表达式，描述了什么样的关联字段将被关注。如果为 null，则表示全部的关联字段都会被查询
      * @param cnd
      *            关联字段的过滤(排序,条件语句,分页等)
-     * @return
+     * @return  传入的数据对象
      */
     <T> T fetchLinks(T obj, String regex, Condition cnd);
 

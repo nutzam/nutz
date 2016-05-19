@@ -16,6 +16,8 @@ import org.nutz.log.Logs;
 public class NutMappingField extends AbstractEntityField implements MappingField {
 
 	private String columnName;
+	
+	private String columnNameInSql;
 
 	private ColType columnType;
 
@@ -250,4 +252,13 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 		this.update = update;
 	}
 
+	public String getColumnNameInSql() {
+	    if (columnNameInSql != null)
+	        return columnNameInSql;
+	    return columnName;
+	}
+	
+	public void setColumnNameInSql(String columnNameInSql) {
+        this.columnNameInSql = columnNameInSql;
+    }
 }

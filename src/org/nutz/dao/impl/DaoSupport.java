@@ -5,6 +5,8 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -22,6 +24,7 @@ import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.sql.PojoMaker;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlContext;
+import org.nutz.dao.util.Daos;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -175,6 +178,7 @@ public class DaoSupport {
         pojoMaker = new NutPojoMaker(expert);
 
         meta = new DatabaseMeta();
+        final Set<String> keywords = new HashSet<String>(Daos.sql2003Keywords());
         run(new ConnCallback() {
             public void invoke(Connection conn) throws Exception {
                 DatabaseMetaData dmd = conn.getMetaData();
@@ -187,6 +191,12 @@ public class DaoSupport {
                 if (dmd.getDriverName().contains("mariadb") || dmd.getDriverName().contains("sqlite")) {
                     log.warn("Auto-select fetch size to Integer.MIN_VALUE, enable for ResultSet Streaming");
                     SqlContext.DEFAULT_FETCH_SIZE = Integer.MIN_VALUE;
+                }
+                String tmp = dmd.getSQLKeywords();
+                if (tmp != null) {
+                    for (String keyword : tmp.split(",")) {
+                        keywords.add(keyword.toUpperCase());
+                    }
                 }
                 if (log.isDebugEnabled() && meta.isMySql()) {
                     String sql = "SHOW VARIABLES LIKE 'character_set%'";
@@ -222,6 +232,7 @@ public class DaoSupport {
         });
         if (log.isDebugEnabled())
             log.debug("Database info --> " + meta);
+        expert.setKeywords(keywords);
 
         holder = new EntityHolder(this);
         holder.maker = createEntityMaker();

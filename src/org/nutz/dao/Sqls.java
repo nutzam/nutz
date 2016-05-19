@@ -1,6 +1,7 @@
 package org.nutz.dao;
 
 import org.nutz.castor.Castors;
+import org.nutz.dao.entity.Entity;
 import org.nutz.dao.impl.sql.NutSql;
 import org.nutz.dao.impl.sql.ValueEscaper;
 import org.nutz.dao.impl.sql.callback.*;
@@ -344,10 +345,25 @@ public abstract class Sqls {
         }
         /**
          * 与records()类似,但区分大小写
-         * @return
+         * @return List<Map>回调
          */
         public SqlCallback maps() {
         	return QueryMapCallback.me;
+        }
+        
+        /**
+         * 按Entity<?>的顺序生成一个Object[]数组, 数组末尾会附加一个Record对象
+         * @return 返回值是new Object[]{objA, objB, objC, Record} 其中record中包含剩余的列
+         */
+        public SqlCallback fetchMultiEntity(Entity<?> ...entites) {
+            return new FetchMultiEntitySqlCallback(entites);
+        }
+        
+        /**
+         * return List版的fetchMultiEntity
+         */
+        public SqlCallback queryMultiEntity(Entity<?> ...entites) {
+            return new QueryMultiEntitySqlCallback(entites);
         }
     }
 

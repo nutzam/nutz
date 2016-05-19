@@ -2,6 +2,7 @@ package org.nutz.dao.jdbc;
 
 import java.sql.Connection;
 import java.util.Map;
+import java.util.Set;
 
 import org.nutz.dao.Dao;
 import org.nutz.dao.entity.Entity;
@@ -100,4 +101,8 @@ public interface JdbcExpert {
     boolean addColumnNeedColumn();
     
     boolean supportTimestampDefault();
+    
+    void setKeywords(Set<String> keywords);
+    
+    String wrapKeywork(String columnName, boolean force);
 }

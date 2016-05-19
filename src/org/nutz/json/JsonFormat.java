@@ -133,10 +133,6 @@ public class JsonFormat implements Cloneable {
      * 数字格式
      */
     private NumberFormat numberFormat;
-    /**
-     * null字符串转为空字符串
-     */
-    private boolean null2EmtryString;
 
     /**
      * 判断该字段是否是指定输出方式中的字段

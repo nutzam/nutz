@@ -28,7 +28,7 @@ public class UpdateFieldsPItem extends InsertValuesPItem {
 
         sb.append(" SET ");
         for (MappingField mf : mfs)
-            sb.append(mf.getColumnName()).append("=?,");
+            sb.append(mf.getColumnNameInSql()).append("=?,");
 
         sb.setCharAt(sb.length() - 1, ' ');
     }

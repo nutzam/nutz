@@ -10,10 +10,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.nutz.castor.Castors;
 import org.nutz.lang.Each;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.born.Borning;
 
@@ -48,7 +50,7 @@ public class NutMap extends LinkedHashMap<String, Object>implements NutBean {
         super();
         this.putAll(Lang.map(json));
     }
-    
+
     public NutMap(String key, Object value) {
         super();
         put(key, value);
@@ -375,32 +377,179 @@ public class NutMap extends LinkedHashMap<String, Object>implements NutBean {
         }
         return this;
     }
-    
+
+    // 与一个给定的 Map 融合，如果有子 Map 递归
+    @SuppressWarnings("unchecked")
+    public NutMap mergeWith(Map<String, Object> map) {
+        for (Map.Entry<String, Object> en : map.entrySet()) {
+            String key = en.getKey();
+            Object val = en.getValue();
+
+            if (null == key || null == val)
+                continue;
+
+            Object myVal = this.get(key);
+
+            // 如果两边都是 Map ，则融合
+            if (null != myVal && myVal instanceof Map && val instanceof Map) {
+                Map<String, Object> m0 = (Map<String, Object>) myVal;
+                Map<String, Object> m1 = (Map<String, Object>) val;
+                NutMap m2 = NutMap.WRAP(m0).mergeWith(m1);
+                // 搞出了新 Map，设置一下
+                if (m2 != m0)
+                    this.put(key, m2);
+            }
+            // 否则直接替换
+            else {
+                this.put(key.toString(), val);
+            }
+        }
+
+        return this;
+    }
+
     /**
      * 与JDK8+的 putIfAbsent(key, val)一致, 当且仅当值不存在时设置进去,但与putIfAbsent返回值有不一样
-     * @param key 键
-     * @param val 值
+     * 
+     * @param key
+     *            键
+     * @param val
+     *            值
      * @return 当前的NutMap实例
      */
     public NutMap setnx(String key, Object val) {
-    	if (!containsKey(key))
-    		setv(key, val);
-    	return this;
+        if (!containsKey(key))
+            setv(key, val);
+        return this;
     }
-    
+
     /**
      * 获取对应的值,若不存在,用factory创建一个,然后设置进去,返回之
-     * @param key 键
-     * @param factory 若不存在的话用于生成实例
+     * 
+     * @param key
+     *            键
+     * @param factory
+     *            若不存在的话用于生成实例
      * @return 已存在的值或新的值
      */
     @SuppressWarnings("unchecked")
     public <T> T getOrBorn(String key, Borning<T> factory) {
-        T t = (T)get(key);
+        T t = (T) get(key);
         if (t == null) {
             t = factory.born(key);
             put(key, t);
         }
         return t;
+    }
+
+    /**
+     * 将自身作为一个条件，看看给定的 Map 是否全部满足这个条件
+     * <p>
+     * 注意，字符串型的值有下列意义
+     * <ul>
+     * <li>"^xxxxx" : 正则表达式
+     * <li>"" : 相当于 Blank
+     * </ul>
+     * 
+     * @param map
+     *            给定的 Map
+     * @return 是否匹配
+     */
+    public boolean match(Map<String, Object> map) {
+        // 空 map 一定是不匹配的
+        if (null == map)
+            return false;
+
+        // 本 Map 如果没值，表示全匹配
+        if (this.size() == 0)
+            return true;
+
+        // 逐个匹配键
+        for (Map.Entry<String, Object> en : this.entrySet()) {
+            String key = en.getKey();
+            Object mtc = en.getValue();
+
+            // null 表示对方不能包括这个键
+            if (null == mtc) {
+                if (map.containsKey(key))
+                    return false;
+            }
+            // 其他的值，匹配一下
+            else {
+                Object val = map.get(key);
+                if (!__match_val(mtc, val)) {
+                    return false;
+                }
+            }
+        }
+        // 都检查过了 ...
+        return true;
+    }
+
+    private boolean __match_val(final Object mtc, Object val) {
+        Mirror<?> mi = Mirror.me(mtc);
+
+        // 如果为 null，则只有空串能匹配
+        if (null == val) {
+            return mi.isStringLike() && Strings.isEmpty(mtc.toString());
+        }
+
+        // 字符串的话
+        Pattern regex = mi.is(Pattern.class) ? (Pattern) mtc : null;
+        if (mi.isStringLike()) {
+
+            final String s = mtc.toString();
+            if (s.startsWith("^")) {
+                regex = Pattern.compile(s);
+            }
+            // 不是正则表达式，那么精确匹配字符串
+            else {
+                final boolean[] re = new boolean[1];
+                Lang.each(val, new Each<Object>() {
+                    public void invoke(int index, Object ele, int length) {
+                        if (null != ele && ele.equals(s)) {
+                            re[0] = true;
+                            Lang.Break();
+                        }
+                    }
+                });
+                return re[0];
+            }
+        }
+
+        // 正则表达式
+        if (null != regex) {
+            final boolean[] re = new boolean[1];
+            final Pattern REG = regex;
+            Lang.each(val, new Each<Object>() {
+                public void invoke(int index, Object ele, int length) {
+                    if (null != ele && REG.matcher(ele.toString()).matches()) {
+                        re[0] = true;
+                        Lang.Break();
+                    }
+                }
+            });
+            return re[0];
+        }
+
+        // 简单类型的比较
+        if (mi.isSimple()) {
+            final boolean[] re = new boolean[1];
+            Lang.each(val, new Each<Object>() {
+                public void invoke(int index, Object ele, int length) {
+                    if (null != ele && ele.equals(mtc)) {
+                        re[0] = true;
+                        Lang.Break();
+                    }
+                }
+            });
+            return re[0];
+        }
+        // 范围的话...
+        else if (mi.is(Region.class)) {
+            throw Lang.noImplement();
+        }
+        // 其他的统统为不匹配
+        return false;
     }
 }

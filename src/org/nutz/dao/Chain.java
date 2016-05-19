@@ -142,7 +142,7 @@ public abstract class Chain {
     
     /** 
      * 当前结点是不是特殊结点
-     * @return
+     * @return 是不是特殊结点
      */
     public abstract boolean special();
     
@@ -375,7 +375,7 @@ public abstract class Chain {
                 while (current != null) {
                     MappingField ef = entity.getField(current.name);
                     if (null != ef) {
-                        current.name = ef.getColumnName();
+                        current.name = ef.getColumnNameInSql();
                     }
                     current = current.next;
                 }

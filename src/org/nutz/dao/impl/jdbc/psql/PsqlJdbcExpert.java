@@ -56,7 +56,7 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
         for (MappingField mf : en.getMappingFields()) {
             if (mf.isReadonly())
                 continue;
-            sb.append('\n').append(mf.getColumnName());
+            sb.append('\n').append(mf.getColumnNameInSql());
             // 自增主键特殊形式关键字
             if (mf.isId() && mf.isAutoIncreasement()) {
                 sb.append(" SERIAL");
@@ -87,7 +87,7 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
             sb.append(String.format("CONSTRAINT %s_pkey PRIMARY KEY (",
                                     en.getTableName().replace('.', '_').replace('"', '_')));
             for (MappingField pk : pks) {
-                sb.append(pk.getColumnName()).append(',');
+                sb.append(pk.getColumnNameInSql()).append(',');
             }
             sb.setCharAt(sb.length() - 1, ')');
             sb.append("\n ");
@@ -165,5 +165,11 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
         } else {
             return super.getAdaptor(ef);
         }
+    }
+    
+    public String wrapKeywork(String columnName, boolean force) {
+        if (force || keywords.contains(columnName.toUpperCase()))
+            return "\"" + columnName + "\"";
+        return null;
     }
 }

@@ -178,11 +178,6 @@ public class FileSqlManager implements SqlManager {
         return null;
     }
 
-    /**
-     * 
-     * @param regex
-     * @return
-     */
     @Deprecated
     public FileSqlManager setRegex(String regex) {
         log.warn("SqlManager regex is Deprecated!! it will be ignore!!");

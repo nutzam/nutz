@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Type;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -14,16 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Lang;
-import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.adaptor.PairAdaptor;
 import org.nutz.mvc.adaptor.ParamInjector;
-import org.nutz.mvc.adaptor.injector.ObjectNavlPairInjector;
 import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.upload.injector.InputStreamInjector;
-import org.nutz.mvc.upload.injector.MapListInjector;
 import org.nutz.mvc.upload.injector.MapSelfInjector;
 import org.nutz.mvc.upload.injector.ReaderInjector;
 import org.nutz.mvc.upload.injector.TempFileArrayInjector;
@@ -156,11 +152,11 @@ public class UploadAdaptor extends PairAdaptor {
         if (Reader.class.isAssignableFrom(clazz))
             return new ReaderInjector(paramName);
         // List
-        if (List.class.isAssignableFrom(clazz)) {
-            if (!Strings.isBlank(paramName) && paramName.startsWith("::"))
-                return new ObjectNavlPairInjector(paramName.substring(2), type);
-            return new MapListInjector(paramName);
-        }
+        //if (List.class.isAssignableFrom(clazz)) {
+        //    if (!Strings.isBlank(paramName) && paramName.startsWith("::"))
+        //        return new ObjectNavlPairInjector(paramName.substring(2), type);
+        //    return new MapListInjector(paramName);
+        //}
         if (TempFile[].class.isAssignableFrom(clazz)) {
             return new TempFileArrayInjector(paramName);
         }
