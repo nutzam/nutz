@@ -1049,6 +1049,9 @@ public abstract class Daos {
         for (String keyword : k.split(",")) {
             keywords.add(keyword);
         }
+        keywords.remove("VALUE");
+        keywords.remove("SQL");
+        keywords.remove("YEAR");
         return keywords;
     }
     
