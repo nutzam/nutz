@@ -193,7 +193,7 @@ public class BufferRing {
      */
     public long load() throws IOException {
         if (item.isStreamEnd)
-            return 0;
+            return readed;
         RingItem ri = item;
         while (!ri.isLoaded) {
             ri.load(ins);

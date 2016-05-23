@@ -363,7 +363,7 @@ public interface Dao {
      * @param cnd
      *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序
      * @param pager
-     *            翻页信息。如果为 null，则一次全部返回
+     *            翻页信息。如果为 null，则一次全部返回. 不会使用cnd中的pager!!!
      * @return 对象列表
      */
     <T> List<T> query(Class<T> classOfT, Condition cnd, Pager pager);

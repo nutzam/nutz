@@ -469,16 +469,11 @@ public class AnnotationEntityMaker implements EntityMaker {
         // 强制大小?
         if (Daos.FORCE_UPPER_COLUMN_NAME)
             ef.setColumnName(ef.getColumnName().toUpperCase());
-        // 字段名称是不是关键字呢?
-        String w = expert.getKeywordWrapChar();
         if (Daos.FORCE_WRAP_COLUMN_NAME) {
-            if (!ef.getColumnName().startsWith(w))
-                ef.setColumnNameInSql(w+ef.getColumnName()+w);
+            ef.setColumnNameInSql(expert.wrapKeywork(columnName, true));
         } 
         else if (Daos.CHECK_COLUMN_NAME_KEYWORD) {
-            if (expert.getKeywords().contains(ef.getColumnName().toUpperCase())) {
-                ef.setColumnNameInSql(w+ef.getColumnName()+w);
-            }
+            ef.setColumnNameInSql(expert.wrapKeywork(columnName, false));
         }
     }
 

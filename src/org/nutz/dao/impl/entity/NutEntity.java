@@ -198,7 +198,7 @@ public class NutEntity<T> implements Entity<T> {
             }
             catch (Throwable e) {
                 // pls report issues
-                log.debugf("create FastClass for type=%, but it is ok: %s", type, e.getMessage());
+                log.debugf("create FastClass for type=%s, but it is ok: %s", type, e.getMessage(), e);
             }
         }
         catch (Exception e) {}

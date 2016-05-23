@@ -104,7 +104,5 @@ public interface JdbcExpert {
     
     void setKeywords(Set<String> keywords);
     
-    Set<String> getKeywords();
-    
-    String getKeywordWrapChar();
+    String wrapKeywork(String columnName, boolean force);
 }

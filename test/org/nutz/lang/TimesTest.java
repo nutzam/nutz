@@ -87,4 +87,20 @@ public class TimesTest {
         assertEquals(1000, Times.toMillis("1000"));
     }
 
+    @Test
+    public void test_end_in_month() throws Exception {
+        String s0430 = "2016-04-30 00:00:00";
+        Date d0430 = Times.D(s0430);
+        String s0430_2 = Times.sDT(d0430);
+        assertEquals(s0430, s0430_2);
+    }
+
+    @Test
+    public void test_start_in_month() throws Exception {
+        String s0501 = "2016-05-01 00:00:00";
+        Date d0501 = Times.D(s0501);
+        String s0501_2 = Times.sDT(d0501);
+        assertEquals(s0501, s0501_2);
+    }
+
 }

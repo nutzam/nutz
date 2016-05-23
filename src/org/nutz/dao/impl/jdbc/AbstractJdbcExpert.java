@@ -399,7 +399,9 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         return keywords;
     }
     
-    public String getKeywordWrapChar() {
-        return "`";
+    public String wrapKeywork(String columnName, boolean force) {
+        if (force || keywords.contains(columnName.toUpperCase()))
+            return "`" + columnName + "`";
+        return null;
     }
 }
