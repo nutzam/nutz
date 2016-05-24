@@ -67,7 +67,10 @@ public abstract class Uploads {
      *            请求对象
      */
     public static void removeInfo(HttpServletRequest req) {
-        req.removeAttribute(UploadInfo.SESSION_NAME);
+      HttpSession sess = req.getSession(false);
+      if (null != sess) {
+          sess.removeAttribute(UploadInfo.SESSION_NAME);
+      }
     }
 
 }
