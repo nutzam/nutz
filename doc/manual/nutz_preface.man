@@ -87,29 +87,16 @@ Nutz 的未来
 --------------------------------------------------------------------------------------------------------
 你完全可以让这个项目变得更加美好
 
-	 * [http://xiaofeng.javaeye.com/blog/549410 不编写代码，你可以能为这个项目做很多事情] @[http://xiaofeng.javaeye.com hilliate]
+	 * 上 [http://www.nutz.cn/ Nutz社区论坛] 发帖讨论
+	 * [http://xiaofeng.iteye.com/blog/549410 不编写代码，你可以能为这个项目做很多事情] @[http://xiaofeng.iteye.com hilliate]
 	 * 你可以随时 [https://github.com/nutzam/nutz/issues/new 提交你发现的问题]
 	 * 任何人 用 任何方式 => 指出 Nutz 的缺陷，都是被欢迎的
 	 * 如果你想成为 Nutz Committers 中的一员，请 [committer/be_committer.man 阅读这里]
 --------------------------------------------------------------------------------------------------------
 我使用的时候如果出现问题怎么办？
 
-	 # 加入 [http://groups.google.at/group/nutzam 讨论区]，讨论组一般总是有人在线，你的问题会很快得到响应
-	 # 加入 {*GTalk 聊天群} -- 感谢 {*Van} {#999999;/ 添加帐号 nutzam@chatterous.com 为好友，然后发送 `@join` 指令}
-         * 或者访问 [http://www.chatterous.com/nutzam/]
-	 # 还有新浪微群
-		 # [http://q.t.sina.com.cn/128323 Nutz 在微笑]
-	 # 还有豆瓣小组
-		 # [http://www.douban.com/group/339199/ Nutz 的微笑]
+	 # 上 [http://www.nutz.cn/ Nutz社区论坛]，有问必答，秒回复
+	 # 到 [https://github.com/nutzam/nutz/issues github] 上报告 issue
 	 # 或者加入 QQ 群
 		 * [http://qun.qq.com/air/#58444676 Nutz & XBlink （58444676 超级群）] -- 感谢 {*E-Hunter} 的支持  
 		 * [http://qun.qq.com/#jointhegroup/gid/68428921 Nutz ② 群 （68428921）超级群] -- 感谢 {*c.A} 的支持  
-	 
-	 考虑到，现在这个特殊时期，[https://groups.google.com/group/nutzam 讨论区] 即使用 https 也会不时被墙。
-	 所以你还可以给[http://code.google.com/p/nutz/people/list 项目成员]直接发信
-	 * 一般情况下，你的问题都会得到答复
-	 * 但是你必须知道，这是个开源项目，每个 Contributor 和 Committer 没有义务回答问题
-	 * 所以，最好你能翻墙
-		
-	 
-	 
