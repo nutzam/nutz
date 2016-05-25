@@ -78,7 +78,7 @@ public class DefaultValueProxyMaker implements ValueProxyMaker {
         else if (IocValue.TYPE_REFER_TYPE.equals(type)) {
         	if (value instanceof CharSequence) {
         		String[] tmp = value.toString().split("#");
-        		return new ReferTypeValue(tmp[0], Lang.forName(tmp[0], Object.class));
+        		return new ReferTypeValue(tmp[0], Lang.forName(tmp[1], Object.class));
         	} else if (value instanceof Field) {
         		return new ReferTypeValue(((Field)value).getName(), ((Field)value).getType());
         	}
