@@ -219,6 +219,7 @@ public class NutMap extends LinkedHashMap<String, Object>implements NutBean {
             v = ((List) v).iterator().next();
         }
         // by wendal : 这还有必要castTo么?
+        // zozoh: 当然有啦，比如日期对象，要变成字符串的话 ... 
         return Castors.me().castTo(v, String.class);
     }
 
