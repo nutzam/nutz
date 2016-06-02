@@ -46,7 +46,7 @@ Mvc中使用Json
 	详细配置, 后面的就是JsonFormat的json形式而已,与JsonFormat的属性一一对应
 	
 	{{{
-	@Ok("json:{ignoreNull=true, locked:'password|salt'}")
+	@Ok("json:{ignoreNull:true, locked:'password|salt'}")
 	
 	// 翻译为Java代码的话
 	
@@ -56,7 +56,7 @@ Mvc中使用Json
 示例配置 -- 忽略password和salt属性,且缩进为一个空格
 
 	{{{
-	@Ok("json:{indentBy=' ', locked:'password|salt'}")
+	@Ok("json:{indentBy:' ', locked:'password|salt'}")
 	}}}
 	
 示例配置2 -- 设置日期格式为yyyyMMdd
