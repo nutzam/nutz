@@ -547,4 +547,26 @@ public class El2Test {
         assertEquals("http://wendal.net", El.eval(Lang.context().set("ctx", map), "ctx['wendal']"));
         assertEquals("abc", El.eval(Lang.context().set("list", list), "list[0]"));
     }
+    
+
+    @Test
+    public void test_el() {
+        El el = new El("'hi,'+name");
+        Context ctx = Lang.context();
+        ctx.set("name", "wendal");
+        assertEquals("hi,wendal", el.eval(ctx));
+    }
+    
+    @Test
+    public void test_el2() throws Exception {
+        El el = new El("sayhi(name)");
+        Context ctx = Lang.context();
+        ctx.set("name", "wendal");
+        ctx.set("sayhi", getClass().getMethod("sayhi", String.class));
+        assertEquals("hi,wendal", el.eval(ctx));
+    }
+    
+    public static String sayhi(String name) {
+        return "hi,"+name;
+    }
 }

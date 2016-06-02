@@ -64,7 +64,7 @@ public class NutConf {
 
     public static void load(String... paths) {
         me().loadResource(paths);
-        CustomMake.init();
+        CustomMake.me().init();
     }
 
     /**

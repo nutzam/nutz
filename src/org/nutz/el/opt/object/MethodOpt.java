@@ -1,10 +1,13 @@
 package org.nutz.el.opt.object;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
+import org.nutz.el.ElException;
 import org.nutz.el.Operator;
+import org.nutz.el.obj.MethodObj;
 import org.nutz.el.opt.RunMethod;
 import org.nutz.el.opt.TwoTernary;
 import org.nutz.el.opt.custom.CustomMake;
@@ -47,7 +50,22 @@ public class MethodOpt extends TwoTernary {
     
     private RunMethod fetchMethod(){
         if(!(left instanceof AccessOpt)){
-            return CustomMake.make(left.toString());
+            if (left instanceof MethodObj) {
+                final Object val = ((MethodObj)left).fetchVal();
+                if (val != null) {
+                    if (val instanceof Method) {
+                        return new CustomMake.StaticMethodRunMethod((Method)val);
+                    } else if (val instanceof RunMethod) {
+                        return (RunMethod)val;
+                    } else {
+                        throw new ElException("must be Method or RunMethod, key="+left);
+                    }
+                }
+            }
+            RunMethod run = CustomMake.me().make(left.toString());
+            if (run == null)
+                throw new ElException("no such key="+left);
+            return run;
         }
         return (AccessOpt) left;
     }
