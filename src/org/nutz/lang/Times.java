@@ -105,6 +105,8 @@ public abstract class Times {
                                                      + "(\\d{1,}))?)?"
                                                      + "(([+-])(\\d{1,2})(:\\d{1,2})?)?"
                                                      + "$");
+    
+    private static Pattern _P_TIME_LONG = Pattern.compile("^[0-9]+(L)?$");
 
     /**
      * 根据默认时区计算时间字符串的绝对毫秒数
@@ -197,6 +199,10 @@ public abstract class Times {
             catch (ParseException e) {
                 throw Lang.wrapThrow(e);
             }
+        } else if (_P_TIME_LONG.matcher(ds).find()) {
+            if (ds.endsWith("L"))
+                ds.substring(0, ds.length() -1);
+            return Long.parseLong(ds);
         }
         throw Lang.makeThrow("Unexpect date format '%s'", ds);
     }
