@@ -18,6 +18,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.sql.DataSource;
+
 import org.junit.Test;
 import org.nutz.Nutz;
 import org.nutz.castor.Castors;
@@ -715,5 +717,16 @@ public class SimpleDaoTest extends DaoCase {
         assertEquals(" WHERE  1 != 1 ", Cnd.where("name", "in", Collections.EMPTY_LIST).toString());
         assertEquals(" WHERE  1 != 1 ", Cnd.where("name", "in", new String[0]).toString());
         assertEquals(" WHERE  1 != 1 ", Cnd.where("id", "in", new int[]{}).toString());
+    }
+    
+    @Test
+    public void new_nutdao_inside_trans() {
+        // 这纯粹是重现bug的代码,不要学
+        final DataSource ds = ioc.get(DataSource.class);
+        Trans.exec(new Atom() {
+            public void run() {
+                new NutDao(ds);
+            }
+        });
     }
 }

@@ -32,7 +32,7 @@ public class NutDaoRunner implements DaoRunner {
             Savepoint sp = null;
             try {
                 conn = t.getConnection(dataSource);
-                if (meta.isPostgresql()) {
+                if (meta != null && meta.isPostgresql()) {
                     sp = conn.setSavepoint();
                 }
                 callback.invoke(conn);
