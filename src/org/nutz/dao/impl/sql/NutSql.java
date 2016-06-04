@@ -56,7 +56,7 @@ public class NutSql extends NutStatement implements Sql {
 
     public void setSourceSql(String sql) {
         this.sourceSql = sql;
-        SqlLiteral literal = new SqlLiteral().valueOf(sql);
+        SqlLiteral literal = literal();
         this.varIndex = literal.getVarIndexes();
         this.paramIndex = literal.getParamIndexes();
         if (getSqlType() == null)
@@ -347,7 +347,10 @@ public class NutSql extends NutStatement implements Sql {
         }
     }
     
-    SqlLiteral literal() {
+    /**
+     * 若需要定制参数字符和变量字符,覆盖本方法,通过SqlLiteral的构造方法指定之
+     */
+    protected SqlLiteral literal() {
         return new SqlLiteral().valueOf(sourceSql);
     }
     

@@ -8,7 +8,7 @@ import org.nutz.lang.Strings;
  * @author zozoh
  * @author wendal(wendal1985@gmail.com)
  */
-class SqlLiteral implements Cloneable {
+public class SqlLiteral implements Cloneable {
 
     WorkingStack stack;
 
@@ -19,6 +19,18 @@ class SqlLiteral implements Cloneable {
     private String source;
 
     private SqlType type;
+    
+    private char paramChar;
+    
+    private char varChar;
+
+    public SqlLiteral() {
+        this('@', '$');
+    }
+    public SqlLiteral(char paramChar, char varChar) {
+        this.paramChar = paramChar;
+        this.varChar = varChar;
+    }
 
     private void reset() {
         stack = new WorkingStack();
@@ -60,12 +72,11 @@ class SqlLiteral implements Cloneable {
         StringBuilder sb;
         for (int i = 0; i < cs.length; i++) {
             char c = cs[i];
-            switch (c) {
-            case '@':
-                if (cs[i + 1] == '@') {
+            if (c == paramChar) {
+                if (cs[i + 1] == c) {
                     stack.push(c);
                     i++;
-                    break;
+                    continue;
                 }
                 sb = new StringBuilder();
                 i = readTokenName(cs, i, sb);
@@ -77,12 +88,12 @@ class SqlLiteral implements Cloneable {
                     // paramIndexes.add(name, stack.markToken());
                     // statementIndexes.add(name, statementIndex++);
                 }
-                break;
-            case '$':
-                if (cs[i + 1] == '$') {
+            }
+            else if (c == varChar) {
+                if (cs[i + 1] == varChar) {
                     stack.push(c);
                     i++;
-                    break;
+                    continue;
                 }
                 sb = new StringBuilder();
                 i = readTokenName(cs, i, sb);
@@ -93,8 +104,8 @@ class SqlLiteral implements Cloneable {
                     // varIndexes.add(sb.toString(), stack.markToken());
                     varIndexes.add(sb.toString(), stack.markToken());
                 }
-                break;
-            default:
+            }
+            else {
                 stack.push(c);
             }
         }
@@ -156,7 +167,7 @@ class SqlLiteral implements Cloneable {
 
     @Override
     public SqlLiteral clone() {
-        return new SqlLiteral().valueOf(source);
+        return new SqlLiteral(paramChar, varChar).valueOf(source);
     }
 
     public String toString() {
