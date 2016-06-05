@@ -659,4 +659,17 @@ public abstract class Streams {
         }
         return line;
     }
+    
+    public static long writeAndClose(OutputStream ops, InputStream ins, int buf) {
+        try {
+            return write(ops, ins, buf);
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+        finally {
+            safeClose(ops);
+            safeClose(ins);
+        }
+    }
 }
