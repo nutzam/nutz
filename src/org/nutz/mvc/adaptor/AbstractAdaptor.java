@@ -311,7 +311,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
                 if (type.isArray()) {
                     return new ArrayInjector(name,
                                              null,
-                                             null,
+                                             type,
                                              null,
                                              null,
                                              true);
