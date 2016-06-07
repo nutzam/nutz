@@ -106,4 +106,10 @@ public class AdaptorTestModule extends BaseWebappTest {
     public String test_sql_date(@Param("checkDate")java.sql.Date checkDate){
     	return checkDate.toString();
     }
+    
+    
+    @At("/param_without_param")
+    public void test_param_without_param(String[] uids) {
+        
+    }
 }
