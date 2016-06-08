@@ -1055,7 +1055,7 @@ public abstract class Daos {
         return keywords;
     }
     
-    public static boolean CHECK_COLUMN_NAME_KEYWORD = true;
+    public static boolean CHECK_COLUMN_NAME_KEYWORD = false;
     public static boolean FORCE_WRAP_COLUMN_NAME = false;
     public static boolean FORCE_UPPER_COLUMN_NAME = false;
 }
