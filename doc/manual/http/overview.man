@@ -97,3 +97,27 @@
 		String url = "https://kyfw.12306.cn/otn/leftTicket/queryT?leftTicketDTO.train_date=2015-01-12&leftTicketDTO.from_station=UXP&leftTicketDTO.to_station=SJP&purpose_codes=ADULT";
         Http.get(url);
 	}}}
+	
+------------------------------------------------------------------------
+异步执行
+
+	基本流程
+	
+	{{{
+		// 初始化线程池, 只需要执行一次
+		Sender.setup(null); 
+		
+		// 传入回调,可以是null,如果你不在意结果的话.
+		Sender.create(req).send(new Callback<Response>() {
+			public void invoke(Response resp) {
+				// 对resp进行xxoo
+			}
+		});
+		
+		
+		// 程序结束前, shutdown之. 注意,是整个程序关闭前,不是方法执行之后.
+		Sender.shutdown();
+		
+	}}}
+	
+	

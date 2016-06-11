@@ -12,6 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
@@ -19,6 +23,7 @@ import java.util.zip.InflaterInputStream;
 import org.nutz.http.sender.GetSender;
 import org.nutz.http.sender.PostSender;
 import org.nutz.lang.stream.NullInputStream;
+import org.nutz.lang.util.Callback;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -27,7 +32,7 @@ import org.nutz.log.Logs;
  * @author wendal(wendal1985@gmail.com)
  * 
  */
-public abstract class Sender {
+public abstract class Sender implements Callable<Response> {
 
     /**
      * 默认连接超时, 30秒
@@ -66,6 +71,8 @@ public abstract class Sender {
     protected HttpURLConnection conn;
     
     protected HttpReqRespInterceptor interceptor;
+    
+    protected Callback<Response> callback;
 
     protected Sender(Request request) {
         this.request = request;
@@ -205,5 +212,47 @@ public abstract class Sender {
     public Sender setInterceptor(HttpReqRespInterceptor interceptor) {
         this.interceptor = interceptor;
         return this;
+    }
+    
+    public Sender setCallback(Callback<Response> callback) {
+        this.callback = callback;
+        return this;
+    }
+    
+    public Response call() throws Exception {
+        Response resp = send();
+        if (callback != null)
+            callback.invoke(resp);
+        return resp;
+    }
+    
+    public Future<Response> send(Callback<Response> callback) throws HttpException {
+        if (es == null)
+            throw new IllegalStateException("Sender ExecutorService is null, Call setup first");
+        this.callback = callback;
+        return es.submit(this);
+    }
+    
+    protected static ExecutorService es;
+    
+    public static ExecutorService setup(ExecutorService es) {
+        if (es != null)
+            return es;
+        if (es == null)
+            es = Executors.newFixedThreadPool(64);
+        Sender.es = es;
+        return es;
+    }
+    
+    public static List<Runnable> shutdown() {
+        ExecutorService _es = es;
+        es = null;
+        if (_es == null)
+            return null;
+        return _es.shutdownNow();
+    }
+    
+    public static ExecutorService getExecutorService() {
+        return es;
     }
 }
