@@ -115,4 +115,13 @@ public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy, 
     public String toString() {
         return toSql(null);
     }
+    
+    public OrderBy orderBy(String name, String dir) {
+        if ("asc".equalsIgnoreCase(dir)) {
+            this.asc(name);
+        } else {
+            this.desc(name);
+        }
+        return this;
+    }
 }
