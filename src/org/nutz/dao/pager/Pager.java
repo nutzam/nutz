@@ -9,7 +9,7 @@ import org.nutz.log.Logs;
 public class Pager implements PageInfo, Serializable {
 
     private static final long serialVersionUID = 8848523495013555357L;
-    
+
     private static final Log log = Logs.get();
 
     /**
@@ -58,8 +58,8 @@ public class Pager implements PageInfo, Serializable {
     }
 
     public Pager setPageNumber(int pn) {
-    	if (1 > pn && log.isInfoEnabled())
-    		log.infof("PageNumber shall start at 1 ,but input is %d, that mean pager is disable", pn);
+        if (1 > pn && log.isInfoEnabled())
+            log.infof("PageNumber shall start at 1, but input is %d, that mean pager is disable", pn);
         pageNumber = pn;
         return this;
     }
@@ -98,4 +98,11 @@ public class Pager implements PageInfo, Serializable {
         return pageNumber == pageCount;
     }
 
+    public boolean hasNext() {
+        return !isLast();
+    }
+
+    public boolean hasPrevious() {
+        return !isFirst();
+    }
 }

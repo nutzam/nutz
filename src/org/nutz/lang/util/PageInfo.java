@@ -51,4 +51,13 @@ public interface PageInfo {
      */
     boolean isLast();
 
+    /**
+     * @return 是否存在下一页
+     */
+    boolean hasNext();
+
+    /**
+     * @return 是否存在上一页
+     */
+    boolean hasPrevious();
 }
