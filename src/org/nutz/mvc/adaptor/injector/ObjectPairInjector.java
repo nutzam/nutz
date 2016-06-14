@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
+import org.nutz.lang.born.Borning;
 import org.nutz.lang.inject.Injecting;
 import org.nutz.mvc.adaptor.ParamConvertor;
 import org.nutz.mvc.adaptor.ParamExtractor;
@@ -29,10 +30,12 @@ public class ObjectPairInjector implements ParamInjector {
     protected Mirror<?> mirror;
     protected Field[] fields;
     protected ParamConvertor[] converters;
+    protected Borning<?> borning;
 
     public ObjectPairInjector(String prefix, Type type) {
         prefix = Strings.isBlank(prefix) ? "" : Strings.trim(prefix);
         this.mirror = Mirror.me(type);
+        this.borning = mirror.getBorning();
         fields = mirror.getFields();
         this.injs = new Injecting[fields.length];
         this.names = new String[fields.length];
@@ -54,7 +57,7 @@ public class ObjectPairInjector implements ParamInjector {
                       HttpServletResponse resp,
                       Object refer) {
         ParamExtractor pe = Params.makeParamExtractor(req, refer);
-        Object obj = mirror.born();
+        Object obj = borning.born();
         for (int i = 0; i < injs.length; i++) {
             Object param = converters[i].convert(pe.extractor(names[i]));
             if (null != param)
