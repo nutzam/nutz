@@ -22,6 +22,7 @@ import org.nutz.mvc.annotation.POST;
 import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.impl.AdaptorErrorContext;
 import org.nutz.mvc.testapp.BaseWebappTest;
+import org.nutz.mvc.testapp.classes.bean.Issue1069;
 
 import junit.framework.TestCase;
 
@@ -114,5 +115,11 @@ public class AdaptorTestModule extends BaseWebappTest {
     @Ok("json:compact")
     public Object test_param_without_param(String uid, String[] uids, HttpServletRequest req) {
         return uids;
+    }
+    
+    @At("/issue1069")
+    @Ok("raw")
+    public Object test_issue1069(@Param("..")Issue1069 issue1069) {
+        return issue1069.getShowAdd();
     }
 }

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.nutz.lang.Mirror;
 import org.nutz.mvc.adaptor.convertor.ArrayParamConvertor;
+import org.nutz.mvc.adaptor.convertor.BooleanParamConvertor;
 import org.nutz.mvc.adaptor.convertor.DateParamConvertor;
 import org.nutz.mvc.adaptor.convertor.StringParamConvertor;
 import org.nutz.mvc.adaptor.extractor.BaseParamExtractor;
@@ -30,6 +31,9 @@ public abstract class Params {
         Mirror<?> mirror = Mirror.me(type);
         if (mirror.isDateTimeLike()) {
             return new DateParamConvertor(type, datefmt);
+        }
+        if (mirror.isBoolean()) {
+            return new BooleanParamConvertor();
         }
 
         return new StringParamConvertor();
