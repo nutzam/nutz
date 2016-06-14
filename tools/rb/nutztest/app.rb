@@ -4,6 +4,7 @@ require "sinatra"
 require "sinatra/namespace"
 require "sinatra/reloader" if development?
 require "sinatra/json"
+require "json"
 
 get '/' do
   "Hello, here is nutz test server."
@@ -166,6 +167,18 @@ namespace '/nutztest' do
 
     post "/err_ctx" do
       request.body.string.empty? ? "true" : (request.body.string == "{}").to_s
+    end
+
+    post "/sqldate" do
+      params[:checkDate]
+    end
+
+    get "/param_without_param" do
+      params[:uids].split(",").to_json if params[:uids]
+    end
+
+    post "/issue1069" do
+      params[:showAdd] || ""
     end
   end
 
