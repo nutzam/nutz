@@ -92,7 +92,7 @@ public abstract class Mvcs {
      */
     public static String getLocalizationKey() {
         HttpSession sess = getHttpSession(false);
-        return null == sess ? null : (String) sess.getAttribute(LOCALE_KEY);
+        return null == sess ? getDefaultLocalizationKey() : (String) sess.getAttribute(LOCALE_KEY);
     }
 
     /**
