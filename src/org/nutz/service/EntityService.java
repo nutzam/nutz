@@ -106,7 +106,7 @@ public abstract class EntityService<T> extends Service {
     public Class<T> getEntityClass() {
         return mirror.getType();
     }
-   
+
     /**
      * 批量删除
      * 
