@@ -106,7 +106,7 @@ public abstract class EntityService<T> extends Service {
     public Class<T> getEntityClass() {
         return mirror.getType();
     }
-
+   
     /**
      * 批量删除
      * 
@@ -346,7 +346,7 @@ public abstract class EntityService<T> extends Service {
     public List<T> query(final Class<T> classOfT, final Condition cnd, final Pager pager, String regex) {
         return dao().query(getEntityClass(), cnd, pager, regex);
     }
-
+    
     public T insert(T obj){
         return dao().insert(obj);
     }
