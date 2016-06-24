@@ -6,6 +6,7 @@ import java.util.List;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Condition;
 import org.nutz.dao.Dao;
+import org.nutz.dao.FieldFilter;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.pager.Pager;
