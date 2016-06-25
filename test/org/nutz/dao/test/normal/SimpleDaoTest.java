@@ -54,6 +54,7 @@ import org.nutz.dao.test.meta.PetObj;
 import org.nutz.dao.test.meta.PojoWithNull;
 import org.nutz.dao.test.meta.SimplePOJO;
 import org.nutz.dao.test.meta.UseBlobClob;
+import org.nutz.dao.test.meta.issue1074.PojoSql;
 import org.nutz.dao.test.meta.issue396.Issue396Master;
 import org.nutz.dao.test.meta.issue726.Issue726;
 import org.nutz.dao.test.meta.issue901.XPlace;
@@ -728,5 +729,15 @@ public class SimpleDaoTest extends DaoCase {
                 new NutDao(ds);
             }
         });
+    }
+    
+    @Test
+    public void test_pojo_sql_params() {
+        dao.create(PojoSql.class, false);
+        PojoSql pojo = new PojoSql();
+        pojo.setName(R.UU32());
+        dao.insert(pojo);
+        
+        assertEquals(pojo.getName(), pojo.getNickname());
     }
 }
