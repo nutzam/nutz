@@ -121,7 +121,7 @@ public class SupportedFieldTypeTest extends DaoCase {
 
     @Test
     public void insert_timestamp_field() {
-        Timestamp tm = new Timestamp(System.currentTimeMillis());
+        Timestamp tm = new Timestamp(System.currentTimeMillis()/1000*1000);
         dao.insert(EntityTypes.class, Chain.make("name", "ABC").add("sqlDT", tm));
         EntityTypes et = dao.fetch(EntityTypes.class);
         if (dao.meta().isPostgresql())
