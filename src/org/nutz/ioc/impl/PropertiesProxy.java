@@ -70,6 +70,9 @@ public class PropertiesProxy extends MultiLineProperties {
         catch (IOException e) {
             throw Lang.wrapThrow(e);
         }
+        finally {
+            Streams.safeClose(in);
+        }
     }
 
     /**
@@ -84,6 +87,9 @@ public class PropertiesProxy extends MultiLineProperties {
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);
+        }
+        finally {
+            Streams.safeClose(r);
         }
     }
 
