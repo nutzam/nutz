@@ -20,6 +20,8 @@ public class SqlFieldMacro extends NutPojo {
     private Sql sql;
 
     private MappingField entityField;
+    
+    private boolean shallDuplicate;
 
     private SqlFieldMacro() {
         super();
@@ -31,6 +33,7 @@ public class SqlFieldMacro extends NutPojo {
         this.sql = Sqls.create(str);
         this.setSqlType(this.sql.getSqlType());
         this.setEntity(field.getEntity());
+        shallDuplicate = sql.varIndex().size() > 0 || sql.paramIndex().size() > 0;
     }
 
     @Override
@@ -71,11 +74,11 @@ public class SqlFieldMacro extends NutPojo {
     }
 
     public Object[][] getParamMatrix() {
-        return sql.getParamMatrix();
+        return _parseSQL().getParamMatrix();
     }
 
     public String toPreparedStatement() {
-        return _parseSQL(sql.duplicate()).toPreparedStatement();
+        return _parseSQL().toPreparedStatement();
     }
 
     @Override
@@ -85,10 +88,14 @@ public class SqlFieldMacro extends NutPojo {
         re.entityField = entityField;
         re.setSqlType(sql.getSqlType());
         re.setEntity(entityField.getEntity());
+        re.shallDuplicate = shallDuplicate;
         return re;
     }
 
-    private Sql _parseSQL(Sql sql) {
+    private Sql _parseSQL() {
+        if (!shallDuplicate)
+            return sql;
+        Sql sql = this.sql.duplicate();
         for (String name : sql.varIndex().names()) {
             if ("view".equals(name))
                 sql.vars().set("view", getEntity().getViewName());
