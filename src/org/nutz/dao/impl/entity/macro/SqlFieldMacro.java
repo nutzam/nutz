@@ -22,8 +22,6 @@ public class SqlFieldMacro extends NutPojo {
     private MappingField entityField;
     
     private boolean shallDuplicate;
-    
-    protected String prepareSql;
 
     private SqlFieldMacro() {
         super();
@@ -80,9 +78,7 @@ public class SqlFieldMacro extends NutPojo {
     }
 
     public String toPreparedStatement() {
-        if (prepareSql == null)
-            prepareSql = sql.toPreparedStatement();
-        return prepareSql;
+        return sql.toPreparedStatement();
     }
 
     @Override
