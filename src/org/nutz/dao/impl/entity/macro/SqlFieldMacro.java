@@ -78,7 +78,7 @@ public class SqlFieldMacro extends NutPojo {
     }
 
     public String toPreparedStatement() {
-        return sql.toPreparedStatement();
+        return _parseSQL().toPreparedStatement();
     }
 
     @Override
