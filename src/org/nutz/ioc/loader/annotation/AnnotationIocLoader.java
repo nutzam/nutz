@@ -3,10 +3,10 @@ package org.nutz.ioc.loader.annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.nutz.castor.Castors;
 import org.nutz.ioc.IocException;
@@ -122,7 +122,7 @@ public class AnnotationIocLoader implements IocLoader {
                 eventSet.setFetch(iocBean.fetch().trim().intern());
 
             // 处理字段(以@Inject方式,位于字段)
-            List<String> fieldList = new ArrayList<String>();
+            Set<String> fieldSet = new HashSet<String>();
             Mirror<?> mirror = Mirror.me(classZ);
             Field[] fields = mirror.getFields(Inject.class);
             for (Field field : fields) {
@@ -142,7 +142,7 @@ public class AnnotationIocLoader implements IocLoader {
                 iocField.setValue(iocValue);
                 iocField.setOptional(inject.optional());
                 iocObject.addField(iocField);
-                fieldList.add(iocField.getName());
+                fieldSet.add(iocField.getName());
             }
             // 处理字段(以@Inject方式,位于set方法)
             Method[] methods;
@@ -176,7 +176,7 @@ public class AnnotationIocLoader implements IocLoader {
                     && method.getParameterTypes().length == 1) {
                     IocField iocField = new IocField();
                     iocField.setName(Strings.lowerFirst(methodName.substring(3)));
-                    if (fieldList.contains(iocField.getName()))
+                    if (fieldSet.contains(iocField.getName()))
                         throw duplicateField(beanName, classZ, iocField.getName());
                     IocValue iocValue;
                     if (Strings.isBlank(inject.value())) {
@@ -187,14 +187,14 @@ public class AnnotationIocLoader implements IocLoader {
                         iocValue = Iocs.convert(inject.value(), true);
                     iocField.setValue(iocValue);
                     iocObject.addField(iocField);
-                    fieldList.add(iocField.getName());
+                    fieldSet.add(iocField.getName());
                 }
             }
             // 处理字段(以@IocBean.field方式)
             String[] flds = iocBean.fields();
             if (flds != null && flds.length > 0) {
                 for (String fieldInfo : flds) {
-                    if (fieldList.contains(fieldInfo))
+                    if (fieldSet.contains(fieldInfo))
                         throw duplicateField(beanName, classZ, fieldInfo);
                     IocField iocField = new IocField();
                     if (fieldInfo.contains(":")) { // dao:jndi:dataSource/jdbc形式
@@ -212,7 +212,7 @@ public class AnnotationIocLoader implements IocLoader {
                         iocField.setValue(iocValue);
                         iocObject.addField(iocField);
                     }
-                    fieldList.add(iocField.getName());
+                    fieldSet.add(iocField.getName());
                 }
             }
 
