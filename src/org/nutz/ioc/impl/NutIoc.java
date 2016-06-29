@@ -154,7 +154,7 @@ public class NutIoc implements Ioc2 {
                 ((LifeCycle)this.mirrors).init();
         }
         catch (Exception e) {
-            throw new IocException("_mirror_factory_init", "Mirror Factory init fail", e);
+            throw new IocException("_mirror_factory_init", e, "Mirror Factory init fail");
         }
 
         // 创建对象创建时
