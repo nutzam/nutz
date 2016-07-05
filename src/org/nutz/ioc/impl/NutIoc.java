@@ -37,7 +37,7 @@ import org.nutz.repo.LevenshteinDistance;
  */
 public class NutIoc implements Ioc2 {
 
-    private static final Object lock_get = new Object();
+    protected final Object lock_get = new Object();
 
     private static final Log log = Logs.get();
 
