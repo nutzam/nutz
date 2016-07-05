@@ -204,15 +204,7 @@ public class PropertiesProxy extends MultiLineProperties {
     }
 
     public List<String> getList(String key) {
-        List<String> re = new ArrayList<String>();
-        String keyVal = get(key);
-        if (Strings.isNotBlank(keyVal)) {
-            String[] vlist = Strings.splitIgnoreBlank(keyVal, "\n");
-            for (String v : vlist) {
-                re.add(v);
-            }
-        }
-        return re;
+        return getList(key,"\n");
     }
 
     public List<String> getList(String key,String separatorChar) {
