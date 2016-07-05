@@ -404,4 +404,8 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
             return "`" + columnName + "`";
         return null;
     }
+    
+    public boolean isSupportGeneratedKeys() {
+        return true;
+    }
 }

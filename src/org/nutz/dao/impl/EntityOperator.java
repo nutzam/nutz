@@ -156,7 +156,7 @@ public class EntityOperator {
         if (null == en)
             return null;
 
-        int len = Lang.length(obj);
+        int len = Map.class.isAssignableFrom(obj.getClass()) ? 1 : Lang.length(obj);
         List<Pojo> re = new ArrayList<Pojo>(len);
         if (len > 0) {
             if (len == 1) {

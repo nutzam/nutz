@@ -96,6 +96,8 @@ public interface JdbcExpert {
     
     boolean isSupportAutoIncrement();
     
+    boolean isSupportGeneratedKeys();
+    
     String evalFieldType(MappingField mf);
     
     boolean addColumnNeedColumn();
