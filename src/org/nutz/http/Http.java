@@ -269,7 +269,35 @@ public class Http {
         };
     }
 
+    /*
+    * please use setSocketProxy method
+    */
+    @Deprecated
     public static void setSocktProxy(String host, int port) {
+        final Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(host, port));
+        proxySwitcher = new ProxySwitcher() {
+            public Proxy getProxy(URL url) {
+                return proxy;
+            }
+
+            public Proxy getProxy(Request req) {
+                if ("close".equals(req.getHeader().get("NoProxy")))
+                    return null;
+                String url = req.getUrl().toString();
+                if (url.startsWith("http")
+                        && url.contains("://")
+                        && url.length() > "https://".length()) {
+                    url = url.substring(url.indexOf("://"));
+                    if (url.startsWith("127.0.0") || url.startsWith("localhost"))
+                        return null;
+                }
+                req.getHeader().set("Connection", "close");
+                return getProxy(req.getUrl());
+            }
+        };
+    }
+
+    public static void setSocketProxy(String host, int port) {
         final Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(host, port));
         proxySwitcher = new ProxySwitcher() {
             public Proxy getProxy(URL url) {
