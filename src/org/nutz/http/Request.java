@@ -165,7 +165,7 @@ public class Request {
     }
 
     public Request setUrl(String url) {
-        if (url != null && url.indexOf("://") < 0)
+        if (url != null && !url.contains("://"))
             // 默认采用http协议
             this.url = "http://" + url;
         else

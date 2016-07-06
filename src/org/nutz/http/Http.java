@@ -269,7 +269,7 @@ public class Http {
         };
     }
 
-    public static void setSocktProxy(String host, int port) {
+    public static void setSocketProxy(String host, int port) {
         final Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(host, port));
         proxySwitcher = new ProxySwitcher() {
             public Proxy getProxy(URL url) {
