@@ -91,8 +91,7 @@ public abstract class Mvcs {
      * @return 当前会话的本地字符串集合的键值；如果当前 HTTP 会话不存在，则返回 null
      */
     public static String getLocalizationKey() {
-        HttpSession sess = getHttpSession(false);
-        return null == sess ? getDefaultLocalizationKey() : (String) sess.getAttribute(LOCALE_KEY);
+        return (String) getSessionAttrSafe(LOCALE_KEY);
     }
 
     /**
@@ -485,4 +484,24 @@ public abstract class Mvcs {
     public static boolean DISABLE_X_POWERED_BY = false;
     
     public static String X_POWERED_BY = "nutz/"+Nutz.version()+" <nutzam.com>";
+    
+    public static Object getSessionAttrSafe(String key) {
+        try {
+            HttpSession session = getHttpSession(false);
+            return session != null ? session.getAttribute(key) : null;
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
+    
+    public static void setSessionAttrSafe(String key, Object val, boolean sessionCreate) {
+        try {
+            HttpSession session = getHttpSession(sessionCreate);
+            if (session != null)
+                session.setAttribute(key, val);
+        }
+        catch (Exception e) {
+        }
+    }
 }
