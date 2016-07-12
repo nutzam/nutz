@@ -66,7 +66,7 @@ public abstract class Sender implements Callable<Response> {
 
     protected Request request;
 
-    protected int timeout;
+    private int timeout;
 
     protected HttpURLConnection conn;
     

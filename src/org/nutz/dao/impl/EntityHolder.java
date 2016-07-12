@@ -144,6 +144,10 @@ public class EntityHolder {
                 ef.setType(mirror.getType());
             ef.setInjecting(new InjectToMap(key)); // 这里比较纠结,回设的时候应该用什么呢?
             ef.setEjecting(new EjectFromMap(entry.getKey()));
+            
+            if (ef.isAutoIncreasement() && ef.isId() && support.expert.isSupportAutoIncrement() && !support.expert.isSupportGeneratedKeys()) {
+                en.addAfterInsertMacro(support.expert.fetchPojoId(en, ef));
+            }
 
             en.addMappingField(ef);
             

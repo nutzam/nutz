@@ -37,7 +37,7 @@ import org.nutz.repo.LevenshteinDistance;
  */
 public class NutIoc implements Ioc2 {
 
-    private static final Object lock_get = new Object();
+    protected final Object lock_get = new Object();
 
     private static final Log log = Logs.get();
 
@@ -154,7 +154,7 @@ public class NutIoc implements Ioc2 {
                 ((LifeCycle)this.mirrors).init();
         }
         catch (Exception e) {
-            throw new IocException("_mirror_factory_init", "Mirror Factory init fail", e);
+            throw new IocException("_mirror_factory_init", e, "Mirror Factory init fail");
         }
 
         // 创建对象创建时

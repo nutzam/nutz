@@ -375,4 +375,50 @@ Nutz.Dao SQL 文件的格式
 	
 	若自动分页失败(例如生成的sql错误),那只能自行分页了.
 
-	
+------------------------------------------------------------------------------------------------
+SQL内的数据库特殊注释
+
+    注释不可用单独一行.例如下面的例子,让SELECT与注释同一行,即可避免被当成sql的key进行处理.
+
+	{{{SQL
+	/* user.create */
+
+    /*+ALL+_ROWS*/ SELECT  
+    EMP_NO,EMP_NAM,DAT_IN 
+    FROM BSEMPMS 
+    WHERE EMP_NO=’SCOTT’
+	}}}
+
+------------------------------------------------------------------------------------------------
+安全性
+
+    基本原则,不允许把不可信数据(例如从网页表单获取的参数值)直接拼入SQL
+    
+    
+    
+    错误示例
+    {{{JAVA
+    
+    @At("/query")
+    public List<User> query(String city) {
+        Sql sql = Sqls.queryEntity("select * from t_user where city='" + city + "'"); // 随便就被注入了
+        sql.setEntity(dao.getEntity(User.class));
+        dao.execute(sql);
+        return sql.getList(User.class);
+    }
+    }}}
+    
+    正确用法
+    {{{JAVA
+    
+    @At("/query")
+    public List<User> query(String city) {
+        Sql sql = Sqls.queryEntity("select * from t_user where city=@city");//参数化
+        sql.setEntity(dao.getEntity(User.class));
+        sql.params().set("city", city);
+        dao.execute(sql);
+        return sql.getList(User.class);
+    }
+    }}}
+    
+    若需要拼入,那么请使用Sqls.escapeXXXXX系列方法,针对性地移除特殊字符,保障安全!!

@@ -43,8 +43,10 @@ public class NutPojoMaker implements PojoMaker {
         if (expert.isSupportAutoIncrement()) {
         	MappingField mf = en.getIdField();
         	if (mf != null && mf.isAutoIncreasement()) {
-        		pojo.setAfter(new GeneratedKeys());
-        		pojo.getContext().attr("RETURN_GENERATED_KEYS", true);
+        	    if (expert.isSupportGeneratedKeys()) {
+                    pojo.setAfter(new GeneratedKeys());
+                    pojo.getContext().attr("RETURN_GENERATED_KEYS", true);
+        	    }
         	}
         }
         return pojo;

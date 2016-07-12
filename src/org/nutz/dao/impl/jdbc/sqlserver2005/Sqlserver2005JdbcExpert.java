@@ -205,4 +205,8 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
             return "[" + columnName + "]";
         return null;
     }
+    
+    public boolean isSupportGeneratedKeys() {
+        return false;
+    }
 }

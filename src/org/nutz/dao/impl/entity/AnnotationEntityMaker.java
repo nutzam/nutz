@@ -495,7 +495,7 @@ public class AnnotationEntityMaker implements EntityMaker {
             }
             // '@Id' : 的自动后续获取
             else if (null != info.annId && info.annId.auto()) {
-            	if (!expert.isSupportAutoIncrement())
+            	if (!expert.isSupportAutoIncrement() || !expert.isSupportGeneratedKeys())
             		en.addAfterInsertMacro(expert.fetchPojoId(en, en.getField(info.name)));
             }
         }
