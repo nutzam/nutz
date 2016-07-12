@@ -59,6 +59,18 @@ public abstract class Nums {
     }
 
     /**
+     * @param nbs
+     *            一组数字
+     * @return 数字之和
+     */
+    public static int sum(int... nbs) {
+        int re = 0;
+        for (int nb : nbs)
+            re += nb;
+        return re;
+    }
+
+    /**
      * 一个数的字面量的进制和值
      */
     public static class Radix {
