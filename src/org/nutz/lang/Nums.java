@@ -1,5 +1,6 @@
 package org.nutz.lang;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -8,6 +9,54 @@ import java.util.regex.Pattern;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public abstract class Nums {
+
+    /**
+     * 计算尺寸
+     * 
+     * @param v
+     *            要计算的尺寸值的类型可以是
+     *            <ul>
+     *            <li>500 - 整数，直接返回
+     *            <li>.12 - 浮点，相当于一个百分比，可以大于 1.0
+     *            <li>"12%" - 百分比，相当于 .12
+     *            </ul>
+     * @param base
+     *            百分比的基数
+     * 
+     * @return 根据基数计算后的数值
+     */
+    public static double dimension(String v, double base) {
+        // 试试整型
+        try {
+            Integer nb = Integer.valueOf(v);
+            return nb.intValue();
+        }
+        catch (NumberFormatException e) {}
+
+        // 试试浮点
+        try {
+            Double nb = Double.valueOf(v);
+            return nb.doubleValue() * base;
+        }
+        catch (NumberFormatException e) {}
+
+        // 百分比
+        Pattern p = Pattern.compile("^([0-9.]{1,})%$");
+        Matcher m = p.matcher(v);
+        if (m.find()) {
+            Double nb = Double.valueOf(m.group(1));
+            return (nb.doubleValue() / 100) * base;
+        }
+        // 靠不知道是啥
+        throw Lang.makeThrow("fail to dimension : " + v);
+    }
+
+    /**
+     * @see #dimension(String, double)
+     */
+    public static int dimension(String v, int base) {
+        return (int) (dimension(v, (double) base));
+    }
 
     /**
      * 一个数的字面量的进制和值
@@ -22,6 +71,13 @@ public abstract class Nums {
         public String val;
     }
 
+    /**
+     * @param str
+     *            数字的字符串
+     * @return 字符串的进制
+     * 
+     * @see org.nutz.lang.Nums.Radix
+     */
     public static Radix evalRadix(String str) {
         if (str.startsWith("0x"))
             return new Radix(str.substring(2), 16);
