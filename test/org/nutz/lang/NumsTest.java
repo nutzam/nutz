@@ -7,6 +7,14 @@ import org.junit.Test;
 public class NumsTest {
 
     @Test
+    public void test_dimension() {
+        assertEquals(99, Nums.dimension("99", 100));
+        assertEquals(99, Nums.dimension("99%", 100));
+        assertTrue(123.9 == Nums.dimension("123.9%", 100.0));
+        assertTrue(123.9 == Nums.dimension("1.239", 100.0));
+    }
+
+    @Test
     public void testIsin() {
         assertTrue(Nums.isin(Nums.array(2, 8, 9), 8));
         assertFalse(Nums.isin(Nums.array(2, 8, 9), 12));
