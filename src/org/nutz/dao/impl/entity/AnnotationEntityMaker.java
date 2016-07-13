@@ -561,7 +561,7 @@ public class AnnotationEntityMaker implements EntityMaker {
         }
     }
 
-    protected <T> NutEntity<T> _createNutEntity(Class<T> type) {
+    private <T> NutEntity<T> _createNutEntity(Class<T> type) {
         return new NutEntity<T>(type);
     }
 }
