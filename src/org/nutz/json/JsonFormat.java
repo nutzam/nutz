@@ -361,7 +361,11 @@ public class JsonFormat implements Cloneable {
     public JsonFormat setDateFormat(String df) {
         if (df == null) {
             this.dateFormat = null;
-        } else {
+        }
+        else if (DATEFORMAT_TIMESTAMP.equals(df)) {
+            this.dateFormat = new TimeStampDateFormat();
+        }
+        else {
             this.dateFormat = new SimpleDateFormat(df);
         }
         return this;
@@ -431,4 +435,6 @@ public class JsonFormat implements Cloneable {
         jf.numberFormat = this.numberFormat;
         return jf;
     }
+    
+    public static String DATEFORMAT_TIMESTAMP = "timestamp";
 }
