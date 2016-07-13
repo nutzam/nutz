@@ -33,13 +33,12 @@ public class ObjectProxy {
      * 销毁时触发器。如果有静态对象被销毁，触发
      */
     private IocEventTrigger<Object> depose;
-    
-    public ObjectProxy() {
-	}
-    
+
+    public ObjectProxy() {}
+
     public ObjectProxy(Object obj) {
-    	this.obj = obj;
-	}
+        this.obj = obj;
+    }
 
     public ObjectProxy setWeaver(ObjectWeaver weaver) {
         this.weaver = weaver;
@@ -62,17 +61,20 @@ public class ObjectProxy {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T get(Class<T> classOfT, IocMaking ing) {
+    public synchronized <T> T get(Class<T> classOfT, IocMaking ing) {
         Object re;
-        if (null != obj)
+        if (null != obj) {
             re = obj;
-        else if (null != weaver)
+        } else if (null != weaver) {
             re = weaver.onCreate(weaver.fill(ing, weaver.born(ing)));
-        else
+        } else {
             throw Lang.makeThrow("NullProxy for '%s'!", ing.getObjectName());
+        }
 
-        if (null != fetch)
+        if (null != fetch) {
             fetch.trigger(re);
+        }
+
         return (T) re;
     }
 
@@ -82,6 +84,6 @@ public class ObjectProxy {
     }
 
     public Object getObj() {
-		return obj;
-	}
+        return obj;
+    }
 }
