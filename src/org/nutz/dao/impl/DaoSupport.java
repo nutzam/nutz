@@ -241,7 +241,7 @@ public class DaoSupport {
         if(!isLazy)
         {
             holder = new EntityHolder(this);
-            holder.setMaker(createEntityMaker());
+            holder.maker = createEntityMaker();
         }
         setRunner(runner);
         setExecutor(executor);
