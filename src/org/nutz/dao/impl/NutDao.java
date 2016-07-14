@@ -109,7 +109,7 @@ public class NutDao extends DaoSupport implements Dao {
 
     public NutDao(DataSource dataSource) {
         this();
-        this.setDataSource(dataSource,false);
+        this.setDataSource(dataSource);
     }
 
     public NutDao(DataSource dataSource, SqlManager sqlManager) {
@@ -975,7 +975,7 @@ public class NutDao extends DaoSupport implements Dao {
         // 如果数据源比expert先设置,那么需要重新设置一次
         if (ds != null) {
             this.dataSource = null;
-            setDataSource(ds,false);
+            setDataSource(ds);
         }
     }
     
