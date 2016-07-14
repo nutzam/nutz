@@ -27,7 +27,7 @@ import org.nutz.lang.inject.InjectToMap;
 public class EntityHolder {
 
     // DaoSupport 会设置这个值
-    public EntityMaker maker;
+    private EntityMaker maker;
 
     private DaoSupport support;
 
@@ -36,6 +36,10 @@ public class EntityHolder {
     public EntityHolder(DaoSupport support) {
         this.support = support;
         this.map = new ConcurrentHashMap<Class<?>, Entity<?>>();
+    }
+
+    public void setMaker(EntityMaker maker) {
+        this.maker = maker;
     }
 
     public void set(Entity<?> en) {

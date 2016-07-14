@@ -109,7 +109,7 @@ public class NutDao extends DaoSupport implements Dao {
 
     public NutDao(DataSource dataSource) {
         this();
-        this.setDataSource(dataSource);
+        this.setDataSource(dataSource,false);
     }
 
     public NutDao(DataSource dataSource, SqlManager sqlManager) {
@@ -117,9 +117,10 @@ public class NutDao extends DaoSupport implements Dao {
         this.setSqlManager(sqlManager);
     }
 
+    @Deprecated
     public NutDao(DataSource dataSource, EntityMaker maker) {
         this(dataSource);
-        this.holder.maker = maker;
+        this.holder.setMaker(maker);
         maker.init(dataSource, expert, holder);
     }
 
@@ -974,7 +975,7 @@ public class NutDao extends DaoSupport implements Dao {
         // 如果数据源比expert先设置,那么需要重新设置一次
         if (ds != null) {
             this.dataSource = null;
-            setDataSource(ds);
+            setDataSource(ds,false);
         }
     }
     

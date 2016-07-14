@@ -168,7 +168,7 @@ public class DaoSupport {
      * @param ds
      *            数据源
      */
-    public void setDataSource(DataSource ds) {
+    public void setDataSource(DataSource ds,boolean isLazy) {
         if (null != dataSource)
             if (log.isWarnEnabled())
                 log.warn("Replaced a running dataSource!");
@@ -234,8 +234,11 @@ public class DaoSupport {
             log.debug("Database info --> " + meta);
         expert.setKeywords(keywords);
 
-        holder = new EntityHolder(this);
-        holder.maker = createEntityMaker();
+        if(!isLazy)
+        {
+            holder = new EntityHolder(this);
+            holder.setMaker(createEntityMaker());
+        }
         setRunner(runner);
         setExecutor(executor);
     }

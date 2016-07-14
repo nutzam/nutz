@@ -20,7 +20,7 @@ public class LazyNutDao extends NutDao {
 	private boolean cycle = false;
     
     public void setDataSource(DataSource ds) {
-        super.setDataSource(ds);
+        super.setDataSource(ds,true);
         this.holder = new EntityHolder(this) {
             @SuppressWarnings("unchecked")
             public <T> Entity<T> getEntity(Class<T> classOfT) {
@@ -29,9 +29,10 @@ public class LazyNutDao extends NutDao {
                 return super.getEntity(classOfT);
             }
         };
-        this.holder.maker = createEntityMaker();
+        this.holder.setMaker(createEntityMaker());
     }
 
+    @Override
     protected EntityMaker createEntityMaker() {
     	if (cycle)
     		return new LazyAnnotationEntityMaker(dataSource, expert, holder, this);
@@ -58,7 +59,7 @@ public class LazyNutDao extends NutDao {
     public void setCycle(boolean cycle) {
     	if (this.cycle != cycle) {
     		this.cycle = cycle;
-    		this.holder.maker = createEntityMaker();
+    		this.holder.setMaker(createEntityMaker());
     	}
 	}
 }
