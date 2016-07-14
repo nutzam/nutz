@@ -29,7 +29,7 @@ public class LazyNutDao extends NutDao {
                 return super.getEntity(classOfT);
             }
         };
-        this.holder.setMaker(createEntityMaker());
+        this.holder.maker = createEntityMaker();
     }
 
     @Override
@@ -59,7 +59,7 @@ public class LazyNutDao extends NutDao {
     public void setCycle(boolean cycle) {
     	if (this.cycle != cycle) {
     		this.cycle = cycle;
-    		this.holder.setMaker(createEntityMaker());
+    		this.holder.maker = createEntityMaker();
     	}
 	}
 }
