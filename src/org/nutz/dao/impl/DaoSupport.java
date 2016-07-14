@@ -168,6 +168,10 @@ public class DaoSupport {
      * @param ds
      *            数据源
      */
+    public void setDataSource(DataSource ds) {
+        setDataSource(ds,false);
+    }
+    
     public void setDataSource(DataSource ds,boolean isLazy) {
         if (null != dataSource)
             if (log.isWarnEnabled())
