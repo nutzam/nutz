@@ -117,10 +117,9 @@ public class NutDao extends DaoSupport implements Dao {
         this.setSqlManager(sqlManager);
     }
 
-    @Deprecated
     public NutDao(DataSource dataSource, EntityMaker maker) {
         this(dataSource);
-        this.holder.setMaker(maker);
+        this.holder.maker = maker;
         maker.init(dataSource, expert, holder);
     }
 
