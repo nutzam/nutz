@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.sql.DataSource;
 
@@ -739,5 +740,13 @@ public class SimpleDaoTest extends DaoCase {
         dao.insert(pojo);
         
         assertEquals(pojo.getName(), pojo.getNickname());
+    }
+    
+    @Test
+    public void test_record_treemap() {
+        TreeMap<Record, String> map = new TreeMap<Record, String>();
+        map.put(new Record(), "abc");
+        map.put(new Record(), "abc");
+        
     }
 }

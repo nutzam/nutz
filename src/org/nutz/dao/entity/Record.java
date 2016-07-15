@@ -26,7 +26,7 @@ import org.nutz.log.Logs;
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  */
-public class Record implements Map<String, Object>, java.io.Serializable, Cloneable {
+public class Record implements Map<String, Object>, java.io.Serializable, Cloneable, Comparable<Record> {
 
     /**
      * @author mawenming at Jan 11, 2011 2:20:09 PM
@@ -403,5 +403,13 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
         re.putAll(this);
         re.sqlTypeMap.putAll(this.sqlTypeMap);
         return re;
+    }
+
+    public int compareTo(Record re) {
+        if (re == null)
+            return 1;
+        if (re.size() == this.size())
+            return 0;
+        return re.size() > this.size() ? -1 : 1;
     }
 }
