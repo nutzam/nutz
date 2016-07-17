@@ -12,8 +12,6 @@ import org.nutz.ioc.aop.SimpleAopMaker;
 
 public class AsyncAopIocLoader extends SimpleAopMaker<Async>{
 	
-	protected int size;
-	
 	protected ExecutorService es;
 	
 	public AsyncAopIocLoader(){
@@ -21,8 +19,11 @@ public class AsyncAopIocLoader extends SimpleAopMaker<Async>{
 	}
 	
 	public AsyncAopIocLoader(int size) {
-		this.size = size;
-		es = Executors.newFixedThreadPool(size);
+		this(Executors.newFixedThreadPool(size));
+	}
+	
+	public AsyncAopIocLoader(ExecutorService es) {
+	    this.es = es;
 	}
 	
 	public List<? extends MethodInterceptor> makeIt(Async async, Method method, Ioc ioc) {
@@ -35,4 +36,8 @@ public class AsyncAopIocLoader extends SimpleAopMaker<Async>{
 		if (es != null)
 			es.shutdownNow();
 	}
+	
+	public ExecutorService getExecutorService() {
+        return es;
+    }
 }
