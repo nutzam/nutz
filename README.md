@@ -33,6 +33,10 @@
 
 现已通过 Oracle JDK 8、Oracle JDK 7、OpenJDK 7、OpenJDK 6下的 maven 测试，请查阅 [Travis CI地址](https://travis-ci.org/nutzam/nutz)、 [CircleCI地址](https://circleci.com/gh/nutzam/nutz)
 
+### Nutz生态系统(讨论稿)
+
+![nutz生态系统讨论稿截图](nutz_ecosystem.png)
+
 ## 基于注解配置
 
 MainModule主配置类
