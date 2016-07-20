@@ -1,47 +1,46 @@
-#title: 1.r.56 发行注记
+#title: 1.r.57 发行注记
 #index:0,1
 #author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
-1.r.56 [鄱阳湖黄丫头] 发行注记(20160507)
+1.r.57 [綦河北渡鱼] 发行注记(20160723)
     
-  最近有人上网了,用浏览器XX一下,然后就YY,最后就ZZZ了... 无数小恶串成大恶的结果. 然并卵,继续写代码去吧
+  来,干了这杯海水,这味道对了. 都是地球人,海水到处流,有啥好争的,快点把核聚变搞定啊!~~~~!
   
-  这个版本是一个Bugfix版本,只有极少的新特性, 若正在使用1.r.55 可无缝升级.
+  哦,报个bug都能被一锅端,乌鸦云朵消失了. 但雨还是继续下啊,感觉哪里不对啊.
   
-  问题修复:
-    * @Inject根据类型注入有致命的bug.
-    * 继承SimpleAopMaker的类如果是个Ioc Bean,所引用的对象会创建多次.
-    * DB2下Daos.queryCount生成的语句不对.
+  这次,新功能比bugfix多了,来来来,赶紧更新了. 对了, nutz@github已经突破1000个star,啊啊啊啊
+  
+---------------------------------------------------------------------------------------------------------
+  主要变化:
+  
+    * fix: @Inject在setter上标注有时候抛异常
+    * fix : Record没有实现Comparable接口
+    * fix: 入口方法中不带@Param的字符串数组参数,会抛异常
+    * fix: 在事务内新建NutDao实例的会抛出NPE
+    * fix: UploadInfo的终值是0,而非与sum相等
+    * fix: 1.r.56中的makeEntity方法在处理Map时有可能抛出NPE
+    * fix: SQLServer下批量插入带自增id的列表会报错
+    * add: 新增X-Powered-By,自豪地使用nutz
+    * add: 数据库关键字处理,默认关闭,可通过Daos类启用.
+    * add: Sqls.callback.fetchMultiEntity/queryMultiEntity 用于多表join操作的回调
+    * add: 自定义SQL的分割符可以自定义了
+    * add: org.nutz.http添加异步支持
+    * add: EL支持通过代码注册function
+    * add: @Async能自定义ExecutorService了
     
-  新特性:
- 
-    * Cnd类新增andEX和orEX方法
-    
-      {{{
-      // 以前
-      Cnd cnd = Cnd.where("age", "<", 25);
-      if (!Strings.isBlank(city)) {
-          cnd.and("city", "=", city);
-      }
-      //现在
-      Cnd cnd = Cnd.where("age", "<", 25);
-      cnd.andEX("city", "=", city);
-      }}}
-      
-  提交统计
-    
-     127 files changed, 839 insertions(+), 2622 deletions(-)
+  关联项目更新:
+  
+    * fix: daocache在DB2/SqlServer会报错啊
+    * update: 大鲨鱼写的[https://github.com/Wizzercn/NutzWk nutzwk]已经3.1.x了
+    * update: 阿健的[https://github.com/NLPchina/Jcoder Jcoder]已经发布第一版
+    * update: 單純願望[https://github.com/Kerbores/NUTZ-ONEKEY nutz-onekey]持续开发中
 
-  关于命名
-
-    * [http://nutz.cn/yvr/t/rlq8pik42cit0rkasmbepalnm9 申请一个nutz版本冠名鄱阳湖黄丫头]
-
-
+--------------------------------------------------------------------------------------------------------
   详细列表:
   
-    * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.56 issue@github] 不再详细列出
+    * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.57 issue@github] 不再详细列出
 
 
 欢迎访问[http://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
     
-[https://nutz.cn Nutz社区]已经累计了1200+的问答帖子,平均首次回复时间少于1小时哦,白天基本上秒回!
+[https://nutz.cn Nutz社区]已经累计了1500+的问答帖子, 7000+条回复, 平均首次回复时间少于1小时哦,白天基本上秒回!
