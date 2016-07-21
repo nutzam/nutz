@@ -45,7 +45,8 @@
 	                 "*anno", 
 	                 "com.myapp.module",
 	                 "com.myapp.service",
-	                 "*tx"
+	                 "*tx",
+	                 "*async"  // @Async注解,异步执行.
 			 }) 
 	}}}
 	如上面的例子，组合加载器，组合了3个 Ioc 加载器，一个是 JsonLoader，一个是
@@ -125,6 +126,18 @@
     async	   --> org.nutz.aop.interceptor.async.AsyncAopIocLoader #可以带一个线程池大小的参数
     props	   --> org.nutz.ioc.loader.properties.PropertiesIocLoader # 通过properties文件定义ioc bean
     properties --> org.nutz.ioc.loader.properties.PropertiesIocLoader
-    quartz 	   --> org.nutz.integration.quartz.QuartzIocLoader # 需要quartz插件,在nutzmore项目有
 	}}}
 	
+-----------------------------------------------------------------------------------------
+插件加载(基于Ioc或Aop的插件)
+
+    从1.r.57开始,符合以下命名规则的插件类名,都可以直接使用缩写.
+    
+    {{{
+    // 插件名称quartz, 那么对应以下类名
+    org.nutz.integration.quartz.QuartzIocLoader
+    org.nutz.integration.quartz.QuartzAopConfigure
+    org.nutz.plugin.quartz.QuartzIocLoader
+    org.nutz.plugin.quartz.QuartzAopConfigure
+    // 不保证先后顺序,所以不要同时出现2个.
+    }}}

@@ -308,10 +308,25 @@
         // 输出为  true
         }}}
 	
+--------------------------------------------------------------------------------
+通过代码注册自定义Function
 	
 	
+	{{{<JAVA>
 	
-	
+	@Test
+    public void test_el2() throws Exception {
+        El el = new El("sayhi(name)");
+        Context ctx = Lang.context();
+        ctx.set("name", "wendal");
+        ctx.set("sayhi", getClass().getMethod("sayhi", String.class));
+        assertEquals("hi,wendal", el.eval(ctx));
+    }
+    
+    public static String sayhi(String name) {
+        return "hi,"+name;
+    }
+	}}}
 	
 	
 	

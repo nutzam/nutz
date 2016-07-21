@@ -16,6 +16,10 @@
 	}}}
 	
 	推荐使用ComboIocProvider,组合使用各种IocLoader. 详细用法请参考[../ioc/loader_combo.man Ioc复合加载器]
+	
+	IocBy的默认type就是ComboIocProvider,可以不写.
+	
+	若anno没有参数,那么它将使用MainModule所在的package作为参数.
 
 -----------------------------------------------------------------------------------------------------------------------
 由 Ioc 容器管理子模块
