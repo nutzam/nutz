@@ -169,7 +169,7 @@ public abstract class Loadings {
             else {
                 if (isModule(type)) {
                     if (log.isDebugEnabled())
-                        log.debugf(" > add '%s'", type.getName());
+                        log.debugf(" > Found @At : '%s'", type.getName());
                     modules.add(type);
                 } else if (log.isTraceEnabled()) {
                     log.tracef(" > ignore '%s'", type.getName());
