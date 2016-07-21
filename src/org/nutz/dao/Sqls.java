@@ -352,7 +352,8 @@ public abstract class Sqls {
         }
         
         /**
-         * 按Entity<?>的顺序生成一个Object[]数组, 数组末尾会附加一个Record对象
+         * 按Entity<?>的顺序生成一个Object[]数组, 数组末尾会附加一个Record对象.
+         * <p/> <b>Oracle不可用!</b>
          * @return 返回值是new Object[]{objA, objB, objC, Record} 其中record中包含剩余的列
          */
         public SqlCallback fetchMultiEntity(Entity<?> ...entites) {
@@ -360,7 +361,8 @@ public abstract class Sqls {
         }
         
         /**
-         * return List版的fetchMultiEntity
+         * <b>Oracle不可用!</b>
+         * return List版的fetchMultiEntity 
          */
         public SqlCallback queryMultiEntity(Entity<?> ...entites) {
             return new QueryMultiEntitySqlCallback(entites);

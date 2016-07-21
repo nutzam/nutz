@@ -4,7 +4,7 @@
 --------------------------------------------------------------------------------------------------------
 1.r.57 [綦河北渡鱼] 发行注记(20160723)
     
-  来,干了这杯海水,这味道对了. 都是地球人,海水到处流,有啥好争的,快点把核聚变搞定啊!~~~~!
+  来,干了这杯海水. 都是地球人,海水到处流,有啥好争的,快点把核聚变搞定啊!~~~~!
   
   哦,报个bug都能被一锅端,乌鸦云朵消失了. 但雨还是继续下啊,感觉哪里不对啊.
   
@@ -22,16 +22,17 @@
     * fix: SQLServer下批量插入带自增id的列表会报错
     * add: 新增X-Powered-By,自豪地使用nutz
     * add: 数据库关键字处理,默认关闭,可通过Daos类启用.
-    * add: Sqls.callback.fetchMultiEntity/queryMultiEntity 用于多表join操作的回调
     * add: 自定义SQL的分割符可以自定义了
     * add: org.nutz.http添加异步支持
     * add: EL支持通过代码注册function
     * add: @Async能自定义ExecutorService了
+    * add: JsonFormat.dateFormat支持特殊格式timestamp,输出时间戳long值
+    * add: PropertiesProxy新增make方法,革新ioc js配置
     
   关联项目更新:
   
     * fix: daocache在DB2/SqlServer会报错啊
-    * update: 大鲨鱼写的[https://github.com/Wizzercn/NutzWk nutzwk]已经3.1.x了
+    * update: 大鲨鱼写的[https://github.com/Wizzercn/NutzWk nutzwk]已经3.2了
     * update: 阿健的[https://github.com/NLPchina/Jcoder Jcoder]已经发布第一版
     * update: 單純願望[https://github.com/Kerbores/NUTZ-ONEKEY nutz-onekey]持续开发中
 
