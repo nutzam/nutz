@@ -35,6 +35,9 @@ public class FileSqlManager implements SqlManager {
     protected String[] paths;
     
     protected boolean allowDuplicate = true;
+    
+    protected String pairBegin = "/*";
+    protected String pairEnd = "*/";
 
     public FileSqlManager(String... paths) {
         this.paths = paths;
@@ -71,8 +74,8 @@ public class FileSqlManager implements SqlManager {
                 String line = Streams.nextLineTrim(br);
                 if (line == null)
                     break;
-                if (line.startsWith("/*")) {
-                    if (key.length() > 0 && line.contains("*/") && !line.endsWith("*/")) {
+                if (line.startsWith(pairBegin)) {
+                    if (key.length() > 0 && line.contains(pairEnd) && !line.endsWith(pairEnd)) {
                         sb.append(line);
                         continue;
                     }
@@ -82,7 +85,7 @@ public class FileSqlManager implements SqlManager {
                     key.setLength(0);
                     sb.setLength(0);
                     
-                    if (line.endsWith("*/")) {
+                    if (line.endsWith(pairEnd)) {
                         if (line.length() > 4)
                             key.append(line.substring(2, line.length() - 2).trim());
                         continue;
@@ -92,7 +95,7 @@ public class FileSqlManager implements SqlManager {
                             line = Streams.nextLineTrim(br);
                             if (line == null)
                                 break OUT;
-                            if (line.endsWith("*/")) {
+                            if (line.endsWith(pairEnd)) {
                                 if (line.length() > 2)
                                     key.append(line.substring(0, line.length() - 2).trim());
                                 continue OUT;
