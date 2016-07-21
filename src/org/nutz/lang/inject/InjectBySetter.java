@@ -43,7 +43,7 @@ public class InjectBySetter implements Injecting {
                 log.info("Fail to value by setter", e);
             throw Lang.makeThrow(    "Fail to set '%s'[ %s ] by setter %s.'%s()' because [%s]: %s",
                                     value,
-                                    v,
+                                    v == null ? value : v,
                                     setter.getDeclaringClass().getName(),
                                     setter.getName(),
                                     Lang.unwrapThrow(e),
