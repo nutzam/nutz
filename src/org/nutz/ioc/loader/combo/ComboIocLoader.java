@@ -21,6 +21,7 @@ import org.nutz.ioc.meta.IocObject;
 import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -58,7 +59,6 @@ public class ComboIocLoader implements IocLoader {
      * @throws ClassNotFoundException
      *             如果*开头的参数所指代的类不存在
      */
-    @SuppressWarnings("unchecked")
     public ComboIocLoader(String... args) throws ClassNotFoundException {
         if (loaders.isEmpty()) {
             loaders.put("js", JsonLoader.class);
@@ -71,16 +71,6 @@ public class ComboIocLoader implements IocLoader {
             loaders.put("props", PropertiesIocLoader.class);
             loaders.put("properties", PropertiesIocLoader.class);
             loaders.put("async", AsyncAopIocLoader.class);
-            try {
-                loaders.put("cache",
-                            (Class<? extends IocLoader>) Lang.loadClass("org.nutz.jcache.NutCacheIocLoader"));
-            }
-            catch (ClassNotFoundException e) {}
-            try {
-                loaders.put("quartz",
-                            (Class<? extends IocLoader>) Lang.loadClass("org.nutz.integration.quartz.QuartzIocLoader"));
-            }
-            catch (ClassNotFoundException e) {}
         }
         ArrayList<String> argsList = null;
         String currentClassName = null;
@@ -113,8 +103,26 @@ public class ComboIocLoader implements IocLoader {
     @SuppressWarnings("unchecked")
     private void createIocLoader(String className, List<String> args) throws ClassNotFoundException {
         Class<? extends IocLoader> klass = loaders.get(className);
-        if (klass == null)
-            klass = (Class<? extends IocLoader>) Lang.loadClass(className);
+        if (klass == null) {
+            if (!className.contains(".")) {
+                Set<String> _names = new HashSet<String>();
+                String uccp = Strings.upperFirst(className);
+                _names.add(String.format("org.nutz.integration.%s.%sIocLoader", className, uccp));
+                _names.add(String.format("org.nutz.integration.%s.%sAopConfigure", className, uccp));
+                _names.add(String.format("org.nutz.plugin.%s.%sIocLoader", className, uccp));
+                _names.add(String.format("org.nutz.plugin.%s.%sAopConfigure", className, uccp));
+                // 寻找插件或集成类 @since 1.r.57
+                for (String _className : _names) {
+                    klass = (Class<? extends IocLoader>) Lang.loadClassQuite(_className);
+                    if (klass != null) {
+                        log.debug("found " + _className + " -- " + _className);
+                        break;
+                    }
+                }
+            }
+            if (klass == null)
+                klass = (Class<? extends IocLoader>) Lang.loadClass(className);
+        }
         iocLoaders.add((IocLoader) Mirror.me(klass).born(args.toArray(new Object[args.size()])));
     }
 
