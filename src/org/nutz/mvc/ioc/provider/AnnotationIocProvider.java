@@ -7,6 +7,11 @@ import org.nutz.ioc.loader.annotation.AnnotationIocLoader;
 import org.nutz.mvc.IocProvider;
 import org.nutz.mvc.NutConfig;
 
+
+/**
+ * 请使用ComboIocProvider
+ */
+@Deprecated
 public class AnnotationIocProvider implements IocProvider {
 
     public Ioc create(NutConfig config, String[] args) {

@@ -7,6 +7,10 @@ import org.nutz.ioc.loader.json.JsonLoader;
 import org.nutz.mvc.IocProvider;
 import org.nutz.mvc.NutConfig;
 
+/**
+ * 请使用ComboIocProvider
+ */
+@Deprecated
 public class JsonIocProvider implements IocProvider {
 
     public Ioc create(NutConfig config, String[] args) {

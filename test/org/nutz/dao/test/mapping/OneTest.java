@@ -3,7 +3,6 @@ package org.nutz.dao.test.mapping;
 import java.util.List;
 
 import org.junit.Test;
-
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Country;
@@ -129,8 +128,6 @@ public class OneTest extends DaoCase {
         assertEquals("ABC", c.getName());
     }
 
-
-    
     @Test
     public void test_insert_with_one_id() {
         dao.create(Issue889User.class, true);
