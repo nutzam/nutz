@@ -20,6 +20,7 @@
     * fix: UploadInfo的终值是0,而非与sum相等
     * fix: 1.r.56中的makeEntity方法在处理Map时有可能抛出NPE
     * fix: SQLServer下批量插入带自增id的列表会报错
+    * fix: 文件上传有可能出现命名重复
     * add: 新增X-Powered-By,自豪地使用nutz
     * add: 数据库关键字处理,默认关闭,可通过Daos类启用.
     * add: 自定义SQL的分割符可以自定义了

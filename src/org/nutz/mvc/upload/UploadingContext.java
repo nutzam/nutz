@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 
 import org.nutz.filepool.FilePool;
 import org.nutz.filepool.NutFilePool;
+import org.nutz.filepool.SynchronizedFilePool;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
@@ -33,7 +34,7 @@ public class UploadingContext {
     public UploadingContext(FilePool pool) {
         charset = Encoding.UTF8;
         bufferSize = 8192;
-        this.filePool = pool;
+        setFilePool(pool);
     }
 
     /**
@@ -87,6 +88,8 @@ public class UploadingContext {
     }
 
     public UploadingContext setFilePool(FilePool pool) {
+        if (!(pool instanceof SynchronizedFilePool))
+            pool = new SynchronizedFilePool(pool);
         this.filePool = pool;
         return this;
     }
@@ -152,5 +155,4 @@ public class UploadingContext {
             return true;
         return Pattern.matches(contentTypeFilter, contentType.toLowerCase());
     }
-
 }
