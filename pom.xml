@@ -5,7 +5,7 @@
 	<artifactId>nutz</artifactId>
 	<packaging>jar</packaging>
 	<name>Nutz</name>
-	<version>1.r.57</version>
+	<version>1.r.58-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -109,7 +109,7 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
-			<version>1.0.18</version>
+			<version>1.0.22</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
@@ -174,26 +174,6 @@
 				<configuration>
 					<additionalparam>-Xdoclint:none</additionalparam>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.5.201505241946</version>
-				<executions>
-					<execution>
-						<id>prepare-unit-tests</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>report</id>
-						<phase>test</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
