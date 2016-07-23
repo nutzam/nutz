@@ -1,5 +1,7 @@
 ### Nutz 
 
+<p align="center"><a href="https://nutz.cn" target="_blank"><img width="100" src="https://github.com/nutzam/nutz/raw/master/doc/ci/logo.png"></a></p>
+
 [![Build Status](https://travis-ci.org/nutzam/nutz.png?branch=master)](https://travis-ci.org/nutzam/nutz)
 [![Circle CI](https://circleci.com/gh/nutzam/nutz/tree/master.svg?style=svg)](https://circleci.com/gh/nutzam/nutz/tree/master)
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/4917/badge.svg)](https://scan.coverity.com/projects/4917/)
