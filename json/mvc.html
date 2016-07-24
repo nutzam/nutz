@@ -54,7 +54,7 @@
 @Ok("json:compact")
 </pre>
 <p>详细配置, 后面的就是JsonFormat的json形式而已,与JsonFormat的属性一一对应</p>
-<pre>@Ok("json:{ignoreNull=true, locked:'password|salt'}")
+<pre>@Ok("json:{ignoreNull:true, locked:'password|salt'}")
 
 <span class="zdoc_code_cmt">// 翻译为Java代码的话
 </span>
@@ -62,7 +62,7 @@ Json.toJson(obj, new JsonFormat().setIgnoreNull(true).setLocked("password|salt")
 </pre>
 <h1><a name="示例配置_--_忽略password和salt属性,且缩进为一个空格"></a>示例配置 -- 忽略password和salt属性,且缩进为一个空格</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>@Ok("json:{indentBy=' ', locked:'password|salt'}")
+<pre>@Ok("json:{indentBy:' ', locked:'password|salt'}")
 </pre>
 <h1><a name="示例配置2_--_设置日期格式为yyyyMMdd"></a>示例配置2 -- 设置日期格式为yyyyMMdd</h1>
 <div style="float:right;"><a href="#top">Top</a></div>

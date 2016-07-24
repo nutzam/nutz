@@ -74,6 +74,9 @@
 </li>
 </ul>
 </li>
+<li>
+<div><span class="num">7</span><a href="#通过代码注册自定义Function">通过代码注册自定义Function</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="为什么需要_EL_表达式引擎"></a>为什么需要 EL 表达式引擎</h1>
@@ -468,6 +471,23 @@ context.set("a",20);
 System.out.println(El.eval(context,"a&gt;10"));
 <span class="zdoc_code_cmt">// 输出为  true
 </span></pre>
+<div class="hr"><b></b></div>
+<h1><a name="通过代码注册自定义Function"></a>通过代码注册自定义Function</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>
+@Test
+public void test_el2() throws Exception {
+    El el = new El("sayhi(name)");
+    Context ctx = Lang.context();
+    ctx.set("name", "wendal");
+    ctx.set("sayhi", getClass().getMethod("sayhi", String.class));
+    assertEquals("hi,wendal", el.eval(ctx));
+}
+
+public static String sayhi(String name) {
+    return "hi,"+name;
+}
+</pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a><b>juqkai</b><a href="mailto:juqkai@gmail.com">&lt;juqkai@gmail.com&gt;</a></div>
 </body>

@@ -20,6 +20,9 @@
 <li>
 <div><span class="num">4</span><a href="#关于自签名的Https证书">关于自签名的Https证书</a></div>
 </li>
+<li>
+<div><span class="num">5</span><a href="#异步执行">异步执行</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="为什么有这个package"></a>为什么有这个package</h1>
@@ -93,6 +96,25 @@
 <pre>	Http.disableJvmHttpsCheck();
 	String url = "https:<span class="zdoc_code_cmt">//kyfw.12306.cn/otn/leftTicket/queryT?leftTicketDTO.train_date=2015-01-12&amp;leftTicketDTO.from_station=UXP&amp;leftTicketDTO.to_station=SJP&amp;purpose_codes=ADULT";
 </span>    Http.get(url);
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="异步执行"></a>异步执行</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>基本流程</p>
+<pre>	<span class="zdoc_code_cmt">// 初始化线程池, 只需要执行一次
+</span>	Sender.setup(null); 
+	
+	<span class="zdoc_code_cmt">// 传入回调,可以是null,如果你不在意结果的话.
+</span>	Sender.create(req).send(new Callback&lt;Response&gt;() {
+		public void invoke(Response resp) {
+			<span class="zdoc_code_cmt">// 对resp进行xxoo
+</span>		}
+	});
+	
+	
+	<span class="zdoc_code_cmt">// 程序结束前, shutdown之. 注意,是整个程序关闭前,不是方法执行之后.
+</span>	Sender.shutdown();
+	
 </pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>

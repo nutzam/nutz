@@ -70,6 +70,20 @@
 </li>
 </ul>
 </li>
+<li>
+<div><span class="num">7</span><a href="#SQL内的数据库特殊注释">SQL内的数据库特殊注释</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">8</span><a href="#安全性">安全性</a></div>
+<ul>
+<li>
+<div><span class="num">8.1</span><a href="#@At(/query)public_List_query(String_city)">@At("/query")public List query(String city)</a></div>
+</li>
+<li>
+<div><span class="num">8.2</span><a href="#@At(/query)public_List_query(String_city)">@At("/query")public List query(String city)</a></div>
+</li>
+</ul>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="NutzDao_自定义_SQL_的概述"></a>Nutz.Dao 自定义 SQL 的概述</h1>
@@ -400,6 +414,26 @@ return sql.getList(Pet.class);
 </pre>
 <p>提醒一下, 用于分页的sql对象,不可重复使用!!</p>
 <p>若自动分页失败(例如生成的sql错误),那只能自行分页了.</p>
+<div class="hr"><b></b></div>
+<h1><a name="SQL内的数据库特殊注释"></a>SQL内的数据库特殊注释</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>注释不可用单独一行.例如下面的例子,让SELECT与注释同一行,即可避免被当成sql的key进行处理.</p>
+<p>/*+ALL+_ROWS*/ SELECT  EMP_NO,EMP_NAM,DAT_IN FROM BSEMPMS WHERE EMP_NO=’SCOTT’}}}</p>
+<div class="hr"><b></b></div>
+<h1><a name="安全性"></a>安全性</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>基本原则,不允许把不可信数据(例如从网页表单获取的参数值)直接拼入SQL</p>
+<p>错误示例</p>
+<h2><a name="@At(/query)public_List_query(String_city)"></a>@At("/query")public List<img src="User"/> query(String city) </h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Sql sql = Sqls.queryEntity("select * from t_user where city='" + city + "'"); // 随便就被注入了sql.setEntity(dao.getEntity(User.class));dao.execute(sql);return sql.getList(User.class);</p>
+<p>}}}}</p>
+<p>正确用法</p>
+<h2><a name="@At(/query)public_List_query(String_city)"></a>@At("/query")public List<img src="User"/> query(String city) </h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Sql sql = Sqls.queryEntity("select * from t_user where city=@city");//参数化sql.setEntity(dao.getEntity(User.class));sql.params().set("city", city);dao.execute(sql);return sql.getList(User.class);</p>
+<p>}}}}</p>
+<p>若需要拼入,那么请使用Sqls.escapeXXXXX系列方法,针对性地移除特殊字符,保障安全!!</p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>

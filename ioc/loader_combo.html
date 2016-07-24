@@ -23,6 +23,9 @@
 <li>
 <div><span class="num">5</span><a href="#类名的简写">类名的简写</a></div>
 </li>
+<li>
+<div><span class="num">6</span><a href="#插件加载(基于Ioc或Aop的插件)">插件加载(基于Ioc或Aop的插件)</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="为什么需要复合加载器"></a>为什么需要复合加载器</h1>
@@ -50,8 +53,9 @@
                  "*anno", 
                  "com.myapp.module",
                  "com.myapp.service",
-                 "*tx"
-		 }) 
+                 "*tx",
+                 "*async"  <span class="zdoc_code_cmt">// @Async注解,异步执行.
+</span>		 }) 
 </pre>
 <p>如上面的例子，组合加载器，组合了3个 Ioc 加载器，一个是 JsonLoader，一个是AnnotationIocLoader, 一个是AOP事务的TransIocLoader(1.b.52新增)。 </p>
 <p>ComboIocLoader 的构造函数是个字符串形变参数组，所有的参数，如果以星号 "<span style="color:#0000AA;"><b> *</b></span>" 开头，则被认为是加载器的类型，后面的参数都作为这个加载器构造函数的参数，直到遇到下一个星号 "<span style="color:#0000AA;"><b> *</b></span>" 开头的参数。</p>
@@ -106,7 +110,17 @@ tx         --&gt; org.nutz.aop.interceptor.ioc.TransIocLoader  <span class="zdoc
 </span>async	   --&gt; org.nutz.aop.interceptor.async.AsyncAopIocLoader <span class="zdoc_code_cmt">#可以带一个线程池大小的参数
 </span>props	   --&gt; org.nutz.ioc.loader.properties.PropertiesIocLoader <span class="zdoc_code_cmt"># 通过properties文件定义ioc bean
 </span>properties --&gt; org.nutz.ioc.loader.properties.PropertiesIocLoader
-quartz 	   --&gt; org.nutz.integration.quartz.QuartzIocLoader <span class="zdoc_code_cmt"># 需要quartz插件,在nutzmore项目有
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="插件加载(基于Ioc或Aop的插件)"></a>插件加载(基于Ioc或Aop的插件)</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>从1.r.57开始,符合以下命名规则的插件类名,都可以直接使用缩写.</p>
+<pre><span class="zdoc_code_cmt">// 插件名称quartz, 那么对应以下类名
+</span>org.nutz.integration.quartz.QuartzIocLoader
+org.nutz.integration.quartz.QuartzAopConfigure
+org.nutz.plugin.quartz.QuartzIocLoader
+org.nutz.plugin.quartz.QuartzAopConfigure
+<span class="zdoc_code_cmt">// 不保证先后顺序,所以不要同时出现2个.
 </span></pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
