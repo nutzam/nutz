@@ -6,6 +6,7 @@ import java.util.List;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Condition;
 import org.nutz.dao.Dao;
+import org.nutz.dao.FieldFilter;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.pager.Pager;
@@ -338,91 +339,91 @@ public abstract class EntityService<T> extends Service {
         return dao().getObject(getEntityClass(), rs, fm, prefix);
     }
     
-//    public List<T> query(final Class<T> classOfT, final Condition cnd, final Pager pager, FieldMatcher matcher) {
-//        return dao().query(getEntityClass(), cnd, pager, matcher);
-//    }
-//    
-//    public List<T> query(final Class<T> classOfT, final Condition cnd, final Pager pager, String regex) {
-//        return dao().query(getEntityClass(), cnd, pager, regex);
-//    }
-//    
-//    public T insert(T obj){
-//        return dao().insert(obj);
-//    }
-//    
-//    public T fastInsert(T obj){
-//        return dao().fastInsert(obj);
-//    }
-//    
-//    public T insert(T obj, FieldFilter filter){
-//        return dao().insert(obj,filter);
-//    }
-//    
-//    public T insert(T t, boolean ignoreNull, boolean ignoreZero, boolean ignoreBlankStr){
-//        return dao().insert(t,ignoreNull,ignoreZero,ignoreBlankStr);
-//    }
-//    
-//    public T insertWith(T obj, String regex){
-//        return dao().insertWith(obj,regex);
-//    }
-//    
-//    public T insertLinks(T obj, String regex){
-//        return dao().insertLinks(obj,regex);
-//    }
-//    
-//    public T insertRelation(T obj, String regex){
-//        return dao().insertRelation(obj,regex);
-//    }
-//    
-//    public int update(T obj){
-//        return dao().update(obj);
-//    }
-//    
-//    public int update(T obj, String regex){
-//        return dao().update(obj,regex);
-//    }
-//    
-//    public int updateIgnoreNull(Object obj){
-//        return dao().updateIgnoreNull(obj);
-//    }
-//    
-//    public T updateWith(T obj, String regex){
-//        return dao().updateWith(obj,regex);
-//    }
-//    
-//    public T updateLinks(T obj, String regex){
-//        return dao().updateLinks(obj,regex);
-//    }
-//    
-//    public int delete(T obj){
-//        return dao().delete(obj);
-//    }
-//    
-//    public int deleteWith(T obj, String regex){
-//        return dao().deleteWith(obj,regex);
-//    }
-//    
-//    public int deleteLinks(T obj, String regex){
-//        return dao().deleteLinks(obj,regex);
-//    }
-//    
-//    public T fetch(T obj){
-//        return dao().fetch(obj);
-//    }
-//    
-//    public T fetchLinks(T obj, String regex){
-//        return dao().fetchLinks(obj,regex);
-//    }
-//    
-//    public T fetchLinks(T obj, String regex, Condition cnd){
-//        return dao().fetchLinks(obj,regex,cnd);
-//    }
-//    
-//    public T clearLinks(T obj, String regex){
-//        return dao().clearLinks(obj,regex);
-//    }
-//    
-//    public void setExpert(T obj) throws Exception{
-//         dao().setExpert(obj);
-//    }
+    public List<T> query(final Class<T> classOfT, final Condition cnd, final Pager pager, FieldMatcher matcher) {
+        return dao().query(getEntityClass(), cnd, pager, matcher);
+    }
+    
+    public List<T> query(final Class<T> classOfT, final Condition cnd, final Pager pager, String regex) {
+        return dao().query(getEntityClass(), cnd, pager, regex);
+    }
+    
+    public T insert(T obj){
+        return dao().insert(obj);
+    }
+    
+    public T fastInsert(T obj){
+        return dao().fastInsert(obj);
+    }
+    
+    public T insert(T obj, FieldFilter filter){
+        return dao().insert(obj,filter);
+    }
+    
+    public T insert(T t, boolean ignoreNull, boolean ignoreZero, boolean ignoreBlankStr){
+        return dao().insert(t,ignoreNull,ignoreZero,ignoreBlankStr);
+    }
+    
+    public T insertWith(T obj, String regex){
+        return dao().insertWith(obj,regex);
+    }
+    
+    public T insertLinks(T obj, String regex){
+        return dao().insertLinks(obj,regex);
+    }
+    
+    public T insertRelation(T obj, String regex){
+        return dao().insertRelation(obj,regex);
+    }
+    
+    public int update(T obj){
+        return dao().update(obj);
+    }
+    
+    public int update(T obj, String regex){
+        return dao().update(obj,regex);
+    }
+    
+    public int updateIgnoreNull(Object obj){
+        return dao().updateIgnoreNull(obj);
+    }
+    
+    public T updateWith(T obj, String regex){
+        return dao().updateWith(obj,regex);
+    }
+    
+    public T updateLinks(T obj, String regex){
+        return dao().updateLinks(obj,regex);
+    }
+    
+    public int delete(T obj){
+        return dao().delete(obj);
+    }
+    
+    public int deleteWith(T obj, String regex){
+        return dao().deleteWith(obj,regex);
+    }
+    
+    public int deleteLinks(T obj, String regex){
+        return dao().deleteLinks(obj,regex);
+    }
+    
+    public T fetch(T obj){
+        return dao().fetch(obj);
+    }
+    
+    public T fetchLinks(T obj, String regex){
+        return dao().fetchLinks(obj,regex);
+    }
+    
+    public T fetchLinks(T obj, String regex, Condition cnd){
+        return dao().fetchLinks(obj,regex,cnd);
+    }
+    
+    public T clearLinks(T obj, String regex){
+        return dao().clearLinks(obj,regex);
+    }
+    
+    public void setExpert(T obj) throws Exception{
+         dao().setExpert(obj);
+    }
 }
