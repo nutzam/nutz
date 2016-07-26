@@ -339,11 +339,11 @@ public abstract class EntityService<T> extends Service {
         return dao().getObject(getEntityClass(), rs, fm, prefix);
     }
     
-    public List<T> query(final Class<T> classOfT, final Condition cnd, final Pager pager, FieldMatcher matcher) {
+    public List<T> query(final Condition cnd, final Pager pager, FieldMatcher matcher) {
         return dao().query(getEntityClass(), cnd, pager, matcher);
     }
     
-    public List<T> query(final Class<T> classOfT, final Condition cnd, final Pager pager, String regex) {
+    public List<T> query(final Condition cnd, final Pager pager, String regex) {
         return dao().query(getEntityClass(), cnd, pager, regex);
     }
     
@@ -425,5 +425,9 @@ public abstract class EntityService<T> extends Service {
     
     public void setExpert(T obj) throws Exception{
          dao().setExpert(obj);
+    }
+    
+    public List<T> query() {
+        return dao().query(getEntityClass(),null);
     }
 }
