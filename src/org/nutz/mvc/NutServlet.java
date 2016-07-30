@@ -70,7 +70,7 @@ public class NutServlet extends HttpServlet {
         Context preContext = Mvcs.resetALL();
         try {
             if (sp != null)
-                req = sp.filter(req, resp, getServletContext());
+                req = sp.filter(req, resp, sc);
             Mvcs.set(selfName, req, resp);
             if (!handler.handle(req, resp))
                 resp.sendError(404);
