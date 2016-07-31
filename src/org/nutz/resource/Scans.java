@@ -433,6 +433,11 @@ public class Scans {
 
     private Set<ResourceLocation> locations = new HashSet<ResourceLocation>();
 
+    // 通过/META-INF/MANIFEST.MF等标记文件,获知所有jar文件的路径
+    String[] referPaths = new String[]{    "META-INF/MANIFEST.MF",
+                                        "log4j.properties",
+                                        ".nutz.resource.mark"};
+
     private Scans() {
         if (Lang.isAndroid) {
             if (log.isInfoEnabled())
@@ -443,11 +448,6 @@ public class Scans {
         locations.add(ResourceLocation.file(new File(".")));
         // 推测一下nutz自身所在的位置
         registerLocation(Nutz.class);
-
-        // 通过/META-INF/MANIFEST.MF等标记文件,获知所有jar文件的路径
-        String[] referPaths = new String[]{    "META-INF/MANIFEST.MF",
-                                            "log4j.properties",
-                                            ".nutz.resource.mark"};
         ClassLoader cloader = ClassTools.getClassLoader();
         for (String referPath : referPaths) {
             try {
@@ -455,10 +455,14 @@ public class Scans {
                 while (urls.hasMoreElements()) {
                     URL url = urls.nextElement();
                     String url_str = url.toString();
-                    if (url.toString().contains("jar!"))
-                        url = new URL(url_str.substring(0, url_str.length()
-                                                            - referPath.length()
-                                                            - 2));
+                    if (url.toString().contains("jar!")) {
+                        String tmp = url_str.substring(0, url_str.length()
+                                                       - referPath.length()
+                                                       - 2);
+                        if (tmp.startsWith("jar:file:/"))
+                            tmp.substring(4);
+                        url = new URL(tmp);
+                    }
                     else
                         url = new URL(url_str.substring(0, url_str.length() - referPath.length()));
                     registerLocation(url);
