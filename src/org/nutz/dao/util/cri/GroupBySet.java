@@ -3,10 +3,10 @@ package org.nutz.dao.util.cri;
 import org.nutz.dao.Condition;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.entity.Entity;
-import org.nutz.dao.impl.sql.pojo.NoParamsPItem;
+import org.nutz.dao.sql.GroupBy;
 import org.nutz.lang.Lang;
 
-public class GroupBySet extends NoParamsPItem {
+public class GroupBySet extends OrderBySet implements GroupBy {
 
 	private String[] names;
 	
@@ -18,8 +18,9 @@ public class GroupBySet extends NoParamsPItem {
 		this.names = names;
 	}
 	
-	public void having(Condition cnd) {
+	public GroupBy having(Condition cnd) {
 		having = cnd;
+		return this;
 	}
 	
 	public void joinSql(Entity<?> en, StringBuilder sb) {
@@ -41,5 +42,10 @@ public class GroupBySet extends NoParamsPItem {
 				sb.append(sql);
 			}
 		}
+	}
+	
+	public GroupBy groupBy(String ... names) {
+	    this.names = names;
+	    return this;
 	}
 }

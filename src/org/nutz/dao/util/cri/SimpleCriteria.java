@@ -124,4 +124,8 @@ public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy, 
         }
         return this;
     }
+    
+    public GroupBy getGroupBy() {
+        return groupBy;
+    }
 }

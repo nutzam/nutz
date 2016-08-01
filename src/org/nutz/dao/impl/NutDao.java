@@ -47,6 +47,7 @@ import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.DaoStatement;
+import org.nutz.dao.sql.GroupBy;
 import org.nutz.dao.sql.PItem;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.PojoCallback;
@@ -686,6 +687,9 @@ public class NutDao extends DaoSupport implements Dao {
             // 高级条件接口，直接得到 WHERE 子句
             if (cnd instanceof Criteria) {
                 pojo.append(((Criteria) cnd).where());
+                GroupBy gb = ((Criteria) cnd).getGroupBy();
+                if (gb != null)
+                    pojo.append(gb);
             }
             // 否则暴力获取 WHERE 子句
             else {

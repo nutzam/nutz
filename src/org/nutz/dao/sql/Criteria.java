@@ -16,4 +16,6 @@ public interface Criteria extends Condition, PItem {
     OrderBy getOrderBy();
 
     Pager getPager();
+    
+    GroupBy getGroupBy();
 }

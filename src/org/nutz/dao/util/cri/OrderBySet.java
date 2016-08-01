@@ -12,7 +12,7 @@ public class OrderBySet extends NoParamsPItem implements OrderBy {
 
     private List<OrderByItem> list;
 
-    OrderBySet() {
+    protected OrderBySet() {
         list = new ArrayList<OrderByItem>(3);
     }
 

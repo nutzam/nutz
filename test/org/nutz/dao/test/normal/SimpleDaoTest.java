@@ -64,6 +64,7 @@ import org.nutz.dao.test.meta.issue928.BeanWithSet;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.blob.SimpleBlob;
 import org.nutz.dao.util.blob.SimpleClob;
+import org.nutz.dao.util.cri.Static;
 import org.nutz.json.Json;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
@@ -748,5 +749,18 @@ public class SimpleDaoTest extends DaoCase {
         map.put(new Record(), "abc");
         map.put(new Record(), "abc");
         
+    }
+    
+    @Test
+    public void test_count_groupby() {
+        for (int i = 0; i < 10; i++) {
+            Pet pet = Pet.create(R.UU32());
+            pet.setAge(20+i/4);
+            dao.insert(pet);
+        }
+        Cnd cnd = Cnd.where("age", ">", 20);
+        cnd.groupBy("age");
+        assertEquals(10, dao.count(Pet.class, null));
+        assertEquals(4, dao.count(Pet.class, cnd));
     }
 }

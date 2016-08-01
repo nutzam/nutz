@@ -507,4 +507,8 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
                 || (value instanceof Collection && ((Collection)value).isEmpty())
                 || (value.getClass().isArray() && Array.getLength(value) == 0);
     }
+    
+    public GroupBy getGroupBy() {
+        return cri.getGroupBy();
+    }
 }
