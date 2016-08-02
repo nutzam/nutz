@@ -3,14 +3,10 @@ package org.nutz.ioc.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.nutz.ioc.Ioc2;
 import org.nutz.ioc.IocContext;
@@ -43,7 +39,7 @@ public class NutIoc implements Ioc2 {
 
     private static final Log log = Logs.get();
 
-    private Map<String, Lock> nameLock = new HashMap<String, Lock>();
+    private Object lock_get = new Object();
 
     private static final String DEF_SCOPE = "app";
 
@@ -171,11 +167,7 @@ public class NutIoc implements Ioc2 {
         // 如果未发现对象
         if (null == op) {
             // 线程同步
-            Lock lock = lock(name);
-
-            lock.lock();
-
-            try {
+            synchronized (lock_get) {
                 // 再次读取
                 op = cntx.fetch(name);
                 // 如果未发现对象
@@ -231,34 +223,16 @@ public class NutIoc implements Ioc2 {
                     }
                 }
             }
-            finally {
-                lock.unlock();
+        }
+
+        synchronized (lock_get) {
+            T re = op.get(type, ing);
+
+            if (!name.startsWith("$") && re instanceof IocLoader) {
+                loader.addLoader((IocLoader) re);
             }
+            return re;
         }
-
-        T re = op.get(type, ing);
-
-        if (!name.startsWith("$") && re instanceof IocLoader) {
-            loader.addLoader((IocLoader) re);
-        }
-
-        return re;
-    }
-
-    /**
-     * 根据name做不同的lock
-     * 
-     * @param name
-     *            ioc定义的name
-     * @return 一个锁子
-     */
-    protected synchronized Lock lock(String name) {
-        Lock lock = nameLock.get(name);
-        if (lock == null) {
-            lock = new ReentrantLock();
-            nameLock.put(name, lock);
-        }
-        return lock;
     }
 
     public <T> T get(Class<T> type, String name) {
