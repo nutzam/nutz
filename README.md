@@ -104,7 +104,7 @@ DaoUp.me().close();
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.r.57</version>
+			<version>1.r.57.r3</version>
 		</dependency>
 ```
 
