@@ -173,12 +173,22 @@ public class ObjectNaviNode {
             // fix issue #1109, 列表的key需要重排
             List list = new ArrayList();
             List<Integer> keys = new ArrayList<Integer>();
+            List<String> keys2 = new ArrayList<String>();
+            
             for (String key : child.keySet()) {
-                keys.add(Integer.parseInt(key));
+                try {
+                    keys.add(Integer.parseInt(key));
+                }
+                catch (NumberFormatException e) {
+                    keys2.add(key);
+                }
             }
             Collections.sort(keys);
             for(Integer index : keys){
                 list.add(child.get(index.toString()).get());
+            }
+            for(String key2 : keys2){
+                list.add(child.get(key2).get());
             }
             return list;
         }
