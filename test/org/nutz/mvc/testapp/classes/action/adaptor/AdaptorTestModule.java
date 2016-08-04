@@ -13,6 +13,7 @@ import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.mvc.adaptor.JsonAdaptor;
+import org.nutz.mvc.adaptor.PairAdaptor;
 import org.nutz.mvc.adaptor.meta.Pet;
 import org.nutz.mvc.annotation.AdaptBy;
 import org.nutz.mvc.annotation.At;
@@ -23,6 +24,7 @@ import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.impl.AdaptorErrorContext;
 import org.nutz.mvc.testapp.BaseWebappTest;
 import org.nutz.mvc.testapp.classes.bean.Issue1069;
+import org.nutz.mvc.testapp.classes.bean.Issue1109;
 
 import junit.framework.TestCase;
 
@@ -121,5 +123,12 @@ public class AdaptorTestModule extends BaseWebappTest {
     @Ok("raw")
     public Object test_issue1069(@Param("..")Issue1069 issue1069) {
         return issue1069.getShowAdd();
+    }
+    
+    @At("/issue1109")
+    @Ok("json")
+    @AdaptBy(type=PairAdaptor.class)
+    public Object issue1109(@Param("::issue")List<Issue1109> pojos) {
+        return pojos;
     }
 }

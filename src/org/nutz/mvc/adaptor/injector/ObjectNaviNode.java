@@ -1,6 +1,7 @@
 package org.nutz.mvc.adaptor.injector;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -169,9 +170,15 @@ public class ObjectNaviNode {
             return value == null ? null : value.length == 1 ? value[0] : value;
         }
         if(type == TYPE_LIST){
+            // fix issue #1109, 列表的key需要重排
             List list = new ArrayList();
-            for(String o : child.keySet()){
-                list.add(child.get(o).get());
+            List<Integer> keys = new ArrayList<Integer>();
+            for (String key : child.keySet()) {
+                keys.add(Integer.parseInt(key));
+            }
+            Collections.sort(keys);
+            for(Integer index : keys){
+                list.add(child.get(index.toString()).get());
             }
             return list;
         }
