@@ -2615,7 +2615,7 @@ public abstract class Lang {
         return sb;
     }
     
-    public static Class<?> loadClassQuite(String className) throws ClassNotFoundException {
+    public static Class<?> loadClassQuite(String className) {
         try {
             return loadClass(className);
         }
