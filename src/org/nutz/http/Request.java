@@ -73,6 +73,12 @@ public class Request {
     private URL cacheUrl;
     private InputStream inputStream;
     private String enc = Encoding.UTF8;
+    private boolean offEncode;
+
+    public Request offEncode(boolean off) {
+        this.offEncode = off;
+        return this;
+    }
 
     public URL getUrl() {
         if (cacheUrl != null) {
@@ -106,10 +112,16 @@ public class Request {
                 if (val == null)
                     val = "";
                 Lang.each(val, new Each<Object>() {
-                    public void invoke(int index, Object ele, int length)throws ExitLoop, ContinueLoop, LoopException {
-                        sb.append(Http.encode(key, enc))
-                        .append('=')
-                        .append(Http.encode(ele, enc)).append('&');
+                    public void invoke(int index, Object ele, int length)
+                            throws ExitLoop, ContinueLoop, LoopException {
+                        if (offEncode) {
+                            sb.append(key).append('=').append(ele).append('&');
+                        } else {
+                            sb.append(Http.encode(key, enc))
+                              .append('=')
+                              .append(Http.encode(ele, enc))
+                              .append('&');
+                        }
                     }
                 });
             }
