@@ -64,7 +64,6 @@ import org.nutz.dao.test.meta.issue928.BeanWithSet;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.blob.SimpleBlob;
 import org.nutz.dao.util.blob.SimpleClob;
-import org.nutz.dao.util.cri.Static;
 import org.nutz.json.Json;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
