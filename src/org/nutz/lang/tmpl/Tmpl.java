@@ -21,7 +21,7 @@ import org.nutz.lang.util.NutMap;
  * <li><b>double</b>: %f 格式化字符串
  * <li><b>boolean</b>: 否/是 格式化字符串
  * <li><b>date</b> : yyyyMMdd 格式化字符串
- * <li><b>string</b>: -无格式化-
+ * <li><b>string</b>: %s 格式化字符串
  * </ul>
  * <p/>
  * 如果没有声明类型，则当做 "string"
@@ -36,7 +36,7 @@ public class Tmpl {
     // + "([?] *(.*) *)?");
 
     private static final Pattern _P2 = Pattern.compile("([^<>?]+)"
-                                                       + "(<(int|long|boolean|float|double|date|string)( *: *([^>]*))?>)?"
+                                                       + "(<(int|long|boolean|float|double|date|string)?( *: *([^>]*))?>)?"
                                                        + "([?] *(.*) *)?");
 
     private Pattern _P;
@@ -174,6 +174,8 @@ public class Tmpl {
                 if (!m2.find())
                     throw Lang.makeThrow("Fail to parse tmpl key '%s'", m.group(1));
 
+                // System.out.println(Dumps.matcherFound(m2));
+
                 String key = m2.group(1);
                 String type = Strings.sNull(m2.group(3), "string");
                 String fmt = m2.group(5);
@@ -184,7 +186,7 @@ public class Tmpl {
 
                 // 创建元素
                 if ("string".equals(type)) {
-                    list.add(new TmplStringEle(key, dft));
+                    list.add(new TmplStringEle(key, fmt, dft));
                 }
                 // int
                 else if ("int".equals(type)) {

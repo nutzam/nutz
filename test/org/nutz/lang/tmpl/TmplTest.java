@@ -11,6 +11,12 @@ import org.nutz.lang.Times;
 public class TmplTest {
 
     @Test
+    public void test_string_format() {
+        assertEquals("AB   C", Tmpl.exec("A${b<:%-4s>?}C", Lang.map("b:'B'}")));
+        //assertEquals("AB   C", Tmpl.exec("A${b<string:%-4s>?}C", Lang.map("b:'B'}")));
+    }
+
+    @Test
     public void test_escape() {
         assertEquals("A${b}C", Tmpl.exec("A$${b}C", Lang.map("b:'BB'}")));
     }
