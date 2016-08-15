@@ -23,8 +23,10 @@ public class Response {
         detail = conn.getResponseMessage();
         this.header = Header.create(reHeader);
         String s = header.get("Set-Cookie");
-        if (null != s)
-            this.cookie = new Cookie(s);
+        if (null != s) {
+            this.cookie = new Cookie();
+            this.cookie.afterResponse(null, conn, null); // 解决多个Set-Cookie丢失的问题
+        }
     }
 
     private Header header;
@@ -73,13 +75,13 @@ public class Response {
     public String getEncodeType() {
         String contextType = header.get("Content-Type");
         if (null != contextType) {
-        	for (String tmp : contextType.split(";")) {
-        		if (tmp == null)
-        			continue;
-				tmp = tmp.trim();
-				if (tmp.startsWith("charset="))
-					return Strings.trim(tmp.substring(8)).trim();
-			}
+            for (String tmp : contextType.split(";")) {
+                if (tmp == null)
+                    continue;
+                tmp = tmp.trim();
+                if (tmp.startsWith("charset="))
+                    return Strings.trim(tmp.substring(8)).trim();
+            }
         }
         return null;
     }
