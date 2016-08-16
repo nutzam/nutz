@@ -171,7 +171,7 @@ public class Request {
         return this;
     }
 
-    private Request setParams(Map<String, Object> params) {
+    public Request setParams(Map<String, Object> params) {
         this.params = params;
         return this;
     }
