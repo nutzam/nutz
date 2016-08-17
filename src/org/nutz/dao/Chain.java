@@ -272,12 +272,15 @@ public abstract class Chain {
     //=============================================================
     
     /**
-     * 添加一个特殊节点, 如果value非空,则有3个情况:<p>
+     * 添加一个特殊节点, 如果value非空而且是String类型,则有3个情况:<p>
      * <li>+1 效果如age=age+1</li>
      * <li>-1 效果如count=count-1</li>
      * <li>支持的运算符有 + - *\/ % & ^ |
-     * <li>其他值, 则对value.toString(),效果如 time=todate("XXXXX")</li>
-     * 
+     * <li>其他值, 则对value.toString()</li>
+     * <p/>
+     * <code>Chain chain = Chain.makeSpecial("age", "+1");//输出的SQL会是 age=age+1</code>
+     * <p/>
+     * <code>Chain chain = Chain.makeSpecial("ct", "now()");//输出的SQL会是 ct=now(),但不建议用依赖特定数据库的now(),仅供演示.</code>
      * @since 1.b.44
      */
     public abstract Chain addSpecial(String name, Object value);
