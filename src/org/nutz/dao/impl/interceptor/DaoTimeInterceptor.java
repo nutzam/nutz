@@ -27,7 +27,7 @@ public class DaoTimeInterceptor implements DaoInterceptor {
             if (log.isDebugEnabled())
                 log.debugf("time=%sms, sql=%s",
                            sw.getDuration(),
-                           chain.getDaoStatement().toPreparedStatement());
+                           chain.getDaoStatement().toString());
         }
     }
 

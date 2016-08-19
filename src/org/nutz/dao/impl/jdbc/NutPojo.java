@@ -237,8 +237,4 @@ public class NutPojo extends NutStatement implements Pojo {
         }
         return _pmnum;
     }
-    
-    public String forPrint() {
-        return this.toString();
-    }
 }
