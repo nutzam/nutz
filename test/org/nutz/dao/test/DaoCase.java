@@ -17,7 +17,7 @@ public abstract class DaoCase {
     @Before
     public void setUp() {
         Trans.DEBUG = false;
-        ioc = Nutzs.getIoc("org/nutz/dao/test/meta/pojo.js");
+        ioc = Nutzs.getIoc("config/dao-test.js");
         dao = ioc.get(Dao.class, "dao");
         pojos = ioc.get(Pojos.class, "metas");
         before();

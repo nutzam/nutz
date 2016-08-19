@@ -149,7 +149,7 @@ public class NutDaoExecutor implements DaoExecutor {
 					}
 				// NOT support for this yet.  by wendal
 				//} else if (stmt.getUpdateCount() > -1) {
-				//	st.onAfter(conn, null);
+				//	st.onAfter(connection, null);
 				}
 				break;
 			}
@@ -188,8 +188,6 @@ public class NutDaoExecutor implements DaoExecutor {
             // 木有参数，直接运行
             if (null == paramMatrix || paramMatrix.length == 0
                     || paramMatrix[0].length == 0) {
-                if (log.isDebugEnabled())
-                    log.debug(st.forPrint());
                 stat = conn.createStatement(st.getContext()
                         .getResultSetType(), ResultSet.CONCUR_READ_ONLY);
                 if (lastRow > 0)
@@ -206,9 +204,6 @@ public class NutDaoExecutor implements DaoExecutor {
                     if (log.isWarnEnabled())
                         log.warnf("Drop last %d rows parameters for:\n%s",
                                 paramMatrix.length - 1, st);
-                } 
-                if (log.isDebugEnabled()) {
-                    log.debug(st);
                 }
 
                 // 准备运行语句
@@ -248,10 +243,6 @@ public class NutDaoExecutor implements DaoExecutor {
         boolean statIsClosed = false;
         String sql = st.toPreparedStatement();
         PreparedStatement pstat = null;
-
-        // 打印调试信息
-        if (log.isDebugEnabled())
-            log.debug(st);
 
         try {
             // 创建 SQL 语句
@@ -312,10 +303,6 @@ public class NutDaoExecutor implements DaoExecutor {
         Statement stat = null;
         String sql = st.toPreparedStatement();
 
-        // 打印调试信息
-        if (log.isDebugEnabled())
-            log.debug(sql);
-
         try {
             stat = conn.createStatement();
             stat.execute(sql);
@@ -344,4 +331,11 @@ public class NutDaoExecutor implements DaoExecutor {
     public void setExpert(JdbcExpert expert) {
 		this.expert = expert;
 	}
+    
+    // 写在这里完全是为了兼容老版本的log4j配置
+    public static void printSQL(DaoStatement sql) {
+        // 打印调试信息
+        if (log.isDebugEnabled())
+            log.debug(sql.forPrint());
+    }
 }
