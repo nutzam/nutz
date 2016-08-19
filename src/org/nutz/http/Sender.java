@@ -70,7 +70,7 @@ public abstract class Sender implements Callable<Response> {
 
     protected HttpURLConnection conn;
     
-    protected HttpReqRespInterceptor interceptor;
+    protected HttpReqRespInterceptor interceptor = new Cookie();
     
     protected Callback<Response> callback;
 
@@ -135,6 +135,7 @@ public abstract class Sender implements Callable<Response> {
     protected void setupDoInputOutputFlag() {
         conn.setDoInput(true);
         conn.setDoOutput(true);
+        conn.setInstanceFollowRedirects(false); //TODO 要改成可配置
         // conn.setUseCaches(false);
     }
 

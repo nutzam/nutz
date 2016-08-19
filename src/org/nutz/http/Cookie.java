@@ -44,11 +44,20 @@ public class Cookie implements HttpReqRespInterceptor {
     }
 
     public void parse(String str) {
+        if (debug)
+            log.debug("parse " + str);
         String[] ss = Strings.splitIgnoreBlank(str, ";");
         for (String s : ss) {
             Pair<String> p = Pair.create(Strings.trim(s));
-            if (p.getValueString() == null || "Path".equals(p.getName()))
+            if (p.getValueString() == null)
                 continue;
+            if ("Path".equals(p.getName()) || "Expires".equals(p.getName()))
+                continue;
+            if ("Max-Age".equals(p.getName())) {
+                int age = Integer.parseInt(p.getValue());
+                if (age == 0)
+                    return;
+            }
             String val = p.getValueString();
             if (debug)
                 log.debugf("add cookie [%s=%s]",  p.getName(), val);
@@ -76,7 +85,8 @@ public class Cookie implements HttpReqRespInterceptor {
         String c = toString();
         if (debug)
             log.debugf("add Cookie for req [%s]", c);
-        conn.addRequestProperty("Cookie", c);
+        if (!Strings.isBlank(c))
+            conn.addRequestProperty("Cookie", c);
     }
     
     public void afterResponse(Request request, HttpURLConnection conn, Response response) {
