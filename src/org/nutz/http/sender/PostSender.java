@@ -1,13 +1,16 @@
 package org.nutz.http.sender;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 
 import org.nutz.http.HttpException;
 import org.nutz.http.Request;
 import org.nutz.http.Response;
 import org.nutz.http.Sender;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 
 public class PostSender extends Sender {
@@ -29,7 +32,7 @@ public class PostSender extends Sender {
                 conn.addRequestProperty("Content-Length", "" + ins.available());
             setupDoInputOutputFlag();
             if (null != ins) {
-                OutputStream ops = Streams.buff(conn.getOutputStream());
+                OutputStream ops = Streams.buff(getOutputStream());
                 Streams.write(ops, ins);
                 Streams.safeClose(ins);
                 Streams.safeFlush(ops);
@@ -42,4 +45,20 @@ public class PostSender extends Sender {
         }
     }
 
+    @Override
+    public int getEstimationSize() throws IOException {
+        if (request.getInputStream() != null) {
+            return request.getInputStream().available();
+        } else {
+            if (null != request.getData()) {
+                return request.getData().length;
+            }
+            try {
+                return request.getURLEncodedParams().getBytes(request.getEnc()).length;
+            }
+            catch (UnsupportedEncodingException e) {
+                throw Lang.wrapThrow(e);
+            }
+        }
+    }
 }

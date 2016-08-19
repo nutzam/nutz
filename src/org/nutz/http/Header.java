@@ -90,4 +90,14 @@ public class Header {
             return defaultValue;
         return Integer.parseInt(value);
     }
+    
+    public Header asJsonContentType() {
+        set("Content-Type", "application/json");
+        return this;
+    }
+    
+    public Header asFormContentType() {
+        set("Content-Type", "application/x-www-form-urlencoded");
+        return this;
+    }
 }

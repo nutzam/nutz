@@ -143,6 +143,8 @@ public class Request {
                     throw Lang.wrapThrow(e);
                 }
             }
+            if (header.get("Content-Type") == null)
+                header.asFormContentType();
             return new ByteArrayInputStream(data);
         }
     }
