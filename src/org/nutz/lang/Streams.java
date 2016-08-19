@@ -5,6 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -304,9 +305,9 @@ public abstract class Streams {
      * @throws IOException
      */
     public static byte[] readBytes(InputStream ins) throws IOException {
-        byte[] bytes = new byte[ins.available()];
-        ins.read(bytes);
-        return bytes;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        write(out, ins);
+        return out.toByteArray();
     }
 
     /**
