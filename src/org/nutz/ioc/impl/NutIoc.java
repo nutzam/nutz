@@ -194,8 +194,8 @@ public class NutIoc implements Ioc2 {
                         }
 
                         // 修正对象类型
-                        if (null == iobj.getType() && Strings.isBlank(iobj.getFactory()))
-                            if (null == type)
+                        if (null == iobj.getType())
+                            if (null == type && Strings.isBlank(iobj.getFactory()))
                                 throw new IocException(name, "NULL TYPE object '%s'", name);
                             else
                                 iobj.setType(type);
