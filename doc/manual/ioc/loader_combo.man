@@ -38,16 +38,15 @@
 	复合加载器非常简单，似乎只花了 Wendal 同学不到 1 个小时的时间，因为它本身并不做任何
 	事情，它只是调用其他的加载器：
 	{{{<Java>
-	@IocBy(type=ComboIocLoader.class, args={
-	                 "*js",
-	                 "ioc/dao.js", 
-	                 "ioc/service.js", 
-	                 "*anno", 
-	                 "com.myapp.module",
-	                 "com.myapp.service",
-	                 "*tx",
-	                 "*async"  // @Async注解,异步执行.
-			 }) 
+	ComboIocLoader loader = new ComboIocLoader("*js",
+                                                   "ioc/dao.js",
+                                                   "ioc/service.js",
+                                                   "*anno",
+                                                   "com.myapp.module",
+                                                   "com.myapp.service",
+                                                   "*tx",
+                                                   // @Async注解,异步执行.
+                                                   "*async");
 	}}}
 	如上面的例子，组合加载器，组合了3个 Ioc 加载器，一个是 JsonLoader，一个是
 	AnnotationIocLoader, 一个是AOP事务的TransIocLoader(1.b.52新增)。 

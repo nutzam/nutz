@@ -134,7 +134,7 @@
     
     如果是这样，那么 @Inject 可以这样写:
     {{{
-    @Inject("java:$config.get('xxxxx')
+    @Inject("java:$config.get('xxxxx')")
     private String myXXXX;
     }}}
     
