@@ -1,8 +1,11 @@
 package org.nutz.lang;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +28,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -43,6 +47,10 @@ public abstract class Xmls {
     public static DocumentBuilder xmls() throws ParserConfigurationException {
         return DocumentBuilderFactory.newInstance().newDocumentBuilder();
     }
+    
+    public static Document xml(InputStream ins) {
+        return xml(ins, null);
+    }
 
     /**
      * 快捷的解析 XML 文件的帮助方法，它会主动关闭输入流
@@ -51,9 +59,11 @@ public abstract class Xmls {
      *            XML 文件输入流
      * @return Document 对象
      */
-    public static Document xml(InputStream ins) {
+    public static Document xml(InputStream ins, Charset charset) {
         try {
-            return xmls().parse(ins);
+            if (charset == null)
+                charset = Encoding.CHARSET_UTF8;
+            return xmls().parse(new InputSource(new InputStreamReader(ins, charset)));
         }
         catch (SAXException e) {
             throw Lang.wrapThrow(e);
@@ -69,6 +79,10 @@ public abstract class Xmls {
         }
     }
 
+    public static Document xml(File xmlFile) {
+        return xml(xmlFile, null);
+    }
+    
     /**
      * 快捷的解析 XML 文件的帮助方法
      * 
@@ -76,9 +90,11 @@ public abstract class Xmls {
      *            XML 文件
      * @return Document 对象
      */
-    public static Document xml(File xmlFile) {
+    public static Document xml(File xmlFile, Charset charset) {
+        InputStream ins = null;
         try {
-            return xmls().parse(xmlFile);
+            ins = new FileInputStream(xmlFile);
+            return xml(ins, charset);
         }
         catch (Exception e) {
             throw Lang.wrapThrow(e);

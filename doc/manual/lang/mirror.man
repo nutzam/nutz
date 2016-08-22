@@ -203,3 +203,8 @@
 			mirror.setValue(obj, "name", "XiaoBai");
 			}}}
 
+	获取静态字段
+		 * 取静态属性
+			{{{
+			Field[] fields = mirror.getStaticField(nofinalOrAll);
+			}}}

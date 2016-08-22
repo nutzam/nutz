@@ -43,6 +43,11 @@ public abstract class NutRunner implements Runnable {
     protected long interval;
 
     /**
+     * 报错以后睡眠时间
+     */
+    protected int sleepAfterError;
+
+    /**
      * 启动于
      */
     protected Date upAt;
@@ -54,12 +59,27 @@ public abstract class NutRunner implements Runnable {
 
     /**
      * 新建一个启动器
-     * @param rname 本启动器的名称
+     * 
+     * @param rname
+     *            本启动器的名称
      */
     public NutRunner(String rname) {
         this.rnm = rname;
         this.count = 0;
+        this.sleepAfterError = 30;
         this.lock = new NutLock();
+    }
+
+    /**
+     * 设置报错以后睡眠时间（单位秒）
+     * 
+     * @param sec
+     *            秒
+     * @return
+     */
+    public NutRunner setSleepAfterError(int sec) {
+        this.sleepAfterError = sec;
+        return this;
     }
 
     /**
@@ -85,14 +105,18 @@ public abstract class NutRunner implements Runnable {
 
     /**
      * 注册本对象到线程管理器,已废弃
-     * @param me 本对象
+     * 
+     * @param me
+     *            本对象
      */
     @Deprecated
     public void reg(NutRunner me) {}
 
     /**
      * 从线程管理器反注册,已废弃
-     * @param me 本对象
+     * 
+     * @param me
+     *            本对象
      */
     @Deprecated
     public void unreg(NutRunner me) {}
@@ -147,7 +171,7 @@ public abstract class NutRunner implements Runnable {
                 catch (Throwable e) {
                     log.warn(String.format("%s has some error", rnm), e);
                     try {
-                        lock.wait(30 * 1000);
+                        lock.wait(sleepAfterError * 1000);
                     }
                     catch (Throwable e1) {
                         log.warn(String.format("%s has some error again", rnm), e);
@@ -172,6 +196,7 @@ public abstract class NutRunner implements Runnable {
 
     /**
      * 是否正在等待运行
+     * 
      * @return true,如果正在等待
      */
     public boolean isWaiting() {
@@ -180,6 +205,7 @@ public abstract class NutRunner implements Runnable {
 
     /**
      * 是否正在执行用户代码
+     * 
      * @return true,如果正在exec方法内部
      */
     public boolean isRunning() {
@@ -188,6 +214,7 @@ public abstract class NutRunner implements Runnable {
 
     /**
      * 获取执行间隔
+     * 
      * @return 执行间隔
      */
     public long getInterval() {
@@ -196,6 +223,7 @@ public abstract class NutRunner implements Runnable {
 
     /**
      * 获取最后启动时间
+     * 
      * @return 最后启动时间
      */
     public Date getUpAt() {
@@ -204,6 +232,7 @@ public abstract class NutRunner implements Runnable {
 
     /**
      * 获取最后一次等待开始的时间
+     * 
      * @return 最后一次等待开始的时间
      */
     public Date getDownAt() {
@@ -212,6 +241,7 @@ public abstract class NutRunner implements Runnable {
 
     /**
      * 获取本启动器的名称
+     * 
      * @return 本启动器的名称
      */
     public String getName() {
@@ -220,6 +250,7 @@ public abstract class NutRunner implements Runnable {
 
     /**
      * 获取累计的启动次数
+     * 
      * @return 总启动次数
      */
     public int getCount() {
@@ -228,6 +259,7 @@ public abstract class NutRunner implements Runnable {
 
     /**
      * 获取线程NutLock锁
+     * 
      * @return 线程NutLock锁
      */
     public NutLock getLock() {
@@ -236,6 +268,7 @@ public abstract class NutRunner implements Runnable {
 
     /**
      * 获取所属线程是否存活
+     * 
      * @return 所属线程是否存活
      */
     public boolean isAlive() {
@@ -247,7 +280,9 @@ public abstract class NutRunner implements Runnable {
 
     /**
      * 强行关闭所属线程
-     * @param err 传给Thread.stop方法的对象
+     * 
+     * @param err
+     *            传给Thread.stop方法的对象
      */
     @SuppressWarnings("deprecation")
     public void stop(Throwable err) {

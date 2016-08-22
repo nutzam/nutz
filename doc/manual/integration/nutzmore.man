@@ -5,7 +5,7 @@
 ------------------------------------------------------------------------
 项目概述
 
-	官网及源码地址 https://github.com/nutzam/nutzmore
+	官网及源码地址 [https://github.com/nutzam/nutzmore nutzmore]
 	
 	为Nutz与其他框架的集成提供官方支持
 	

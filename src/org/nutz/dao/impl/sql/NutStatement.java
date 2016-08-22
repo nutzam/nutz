@@ -184,7 +184,7 @@ public abstract class NutStatement implements DaoStatement {
         return context.getUpdateCount();
     }
 
-    public String toString() {
+    public String forPrint() {
         String sql = this.toPreparedStatement();
         StringBuilder sb = new StringBuilder(sql);
         // 准备打印参数表
@@ -339,8 +339,7 @@ public abstract class NutStatement implements DaoStatement {
     	return forceExecQuery;
     }
 
-    public String forPrint() {
-        return super.toString();
+    public String toString() {
+        return toStatement(this.getParamMatrix(), this.toPreparedStatement());
     }
-    
 }

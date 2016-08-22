@@ -19,7 +19,7 @@
 	{
 		"对象名称" : {
 			type      : "对象类型",
-            parent    : "被继承的对象名称",
+			parent    : "被继承的对象名称",
 			events    : {
 				fetch : "触发器的类型或者函数名",
 				create : "触发器的类型或者函数名",
@@ -60,7 +60,7 @@
             parent    : 'bean',           
 
             // 不声明，默认为 true
-			singleton : true,
+            singleton : true,
 
             // 这里声明对象的三种事件。事件的处理函数可以是一个接口，也可以是自身的
             // 一个方法。
@@ -131,31 +131,31 @@
 	在 org.nutz.ioc.meta.IocObject 类中，你如果拿到它的源代码，或者是 JDoc，它描述了在容器中一个对象的全部
 	信息，你会发现它其实也简单：
 
-	{{{
-	public class IocObject {
+	{{{<Java>
+        public class IocObject {
 
         // 对象的 Java 类型
-		private Class<?> type;
+        private Class<?> type;
 
         // 声明对象是否为单例
-		private boolean singleton;
+        private boolean singleton;
 
         // 对象监听何种事件，对应有
         //  "fetch"   - 每次对象被 ioc.get 的时候，触发
         //  "create"  - 当且仅当对象被 new 的时候触发
         //  "depose"  - 当对象被容器销毁时触发
-		private IocEventSet events;
+        private IocEventSet events;
 
         // 对象构造函数的参数列表
-		private List<IocValue> args;
+        private List<IocValue> args;
 
         // 对象的字段
-		private List<IocField> fields;
+        private List<IocField> fields;
 
         // 对象的缓存范围，默认为 "app"
-		private String scope;
-		
-		// 省略所有的 getter 和 setter 函数
+        private String scope;
+
+        // 省略所有的 getter 和 setter 函数
 	}}}
 
 	事件集合 IocEventSet
@@ -199,7 +199,7 @@
 
 	你的 IocLoader 的实现类需要实现三个方法:
 
-	{{{
+	{{{<Java>
 	public interface IocLoader {
 
 		/**

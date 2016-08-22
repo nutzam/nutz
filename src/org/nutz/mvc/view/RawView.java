@@ -51,6 +51,7 @@ import org.nutz.mvc.View;
  * <li><b>stream</b> - 表示 <b>application/octet-stream</b>
  * <li><b>js</b> - 表示 <b>application/javascript</b>
  * <li><b>json</b> - 表示 <b>application/json</b>
+ * <li><b>pdf</b> -- 表示<b>application/pdf</b>
  * <li><b>jpeg</b> - 表示 <b>image/jpeg</b> 返回值是BufferedImage对象时自动转二进制流,质量为0.8f
  * <li><b>jpg</b> - 表示 <b>image/jpeg</b> 返回值是BufferedImage对象时自动转二进制流,质量为0.8f
  * <li><b>png</b> - 表示 <b>image/png</b> 返回值是BufferedImage对象时自动转二进制流

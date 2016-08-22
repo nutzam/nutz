@@ -143,6 +143,8 @@ public class Request {
                     throw Lang.wrapThrow(e);
                 }
             }
+            if (header.get("Content-Type") == null)
+                header.asFormContentType();
             return new ByteArrayInputStream(data);
         }
     }
@@ -171,7 +173,7 @@ public class Request {
         return this;
     }
 
-    private Request setParams(Map<String, Object> params) {
+    public Request setParams(Map<String, Object> params) {
         this.params = params;
         return this;
     }

@@ -59,6 +59,8 @@ public class BorningException extends RuntimeException {
         }
         if (null != e) {
             sb.append(" becasue:\n").append(getExceptionMessage(e));
+        } else {
+            sb.append(" becasue: No suitable Constructor or Factory Method!!");
         }
         return sb.toString();
     }

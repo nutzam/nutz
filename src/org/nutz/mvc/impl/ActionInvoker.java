@@ -71,6 +71,9 @@ public class ActionInvoker {
     public ActionChain getActionChain(ActionContext ac) {
         HttpServletRequest req = ac.getRequest();
         String httpMethod = Strings.sNull(req.getMethod(), "GET").toUpperCase();
+        if ("POST".equals(httpMethod) && req.getHeader("X-HTTP-Method-Override") != null) {
+            httpMethod = req.getHeader("X-HTTP-Method-Override").toUpperCase();
+        }
         ActionChain chain = chainMap.get(httpMethod);
         // 找到了特殊HTTP方法的处理动作链
         if (null != chain) {

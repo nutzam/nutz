@@ -1,6 +1,8 @@
 package org.nutz.http;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -20,6 +22,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
+import org.nutz.http.sender.FilePostSender;
 import org.nutz.http.sender.GetSender;
 import org.nutz.http.sender.PostSender;
 import org.nutz.lang.stream.NullInputStream;
@@ -50,18 +53,24 @@ public abstract class Sender implements Callable<Response> {
     }
 
     public static Sender create(String url, int timeout) {
-        return create(Request.get(url)).setTimeout(timeout);
+        return create(url).setTimeout(timeout);
     }
 
     public static Sender create(Request request) {
-        return request.isGet() || request.isDelete() ? new GetSender(request)
-                                                    : new PostSender(request);
+        if (request.isGet() || request.isDelete())
+            return new GetSender(request);
+        if (request.isPost() || request.isPut()) {
+            for (Object val : request.getParams().values()) {
+                if (val instanceof File || val instanceof File[]) {
+                    return new FilePostSender(request);
+                }
+            }
+        }
+        return new PostSender(request);
     }
 
     public static Sender create(Request request, int timeout) {
-        Sender sender = request.isGet() || request.isDelete() ? new GetSender(request)
-                                                             : new PostSender(request);
-        return sender.setTimeout(timeout);
+        return create(request).setTimeout(timeout);
     }
 
     protected Request request;
@@ -70,13 +79,17 @@ public abstract class Sender implements Callable<Response> {
 
     protected HttpURLConnection conn;
     
-    protected HttpReqRespInterceptor interceptor;
+    protected HttpReqRespInterceptor interceptor = new Cookie();
     
     protected Callback<Response> callback;
+    
+    protected boolean followRedirects = true;
 
     protected Sender(Request request) {
         this.request = request;
     }
+    
+    protected Callback<Integer> progressListener;
 
     public abstract Response send() throws HttpException;
 
@@ -135,7 +148,7 @@ public abstract class Sender implements Callable<Response> {
     protected void setupDoInputOutputFlag() {
         conn.setDoInput(true);
         conn.setDoOutput(true);
-        // conn.setUseCaches(false);
+        conn.setInstanceFollowRedirects(followRedirects);
     }
 
     protected void openConnection() throws IOException {
@@ -254,5 +267,33 @@ public abstract class Sender implements Callable<Response> {
     
     public static ExecutorService getExecutorService() {
         return es;
+    }
+    
+    public Sender setFollowRedirects(boolean followRedirects) {
+        this.followRedirects = followRedirects;
+        return this;
+    }
+    
+    protected OutputStream getOutputStream() throws IOException {
+        OutputStream out = conn.getOutputStream();
+        if (progressListener == null)
+            return out;
+        return new FilterOutputStream(out) {
+            int count;
+            public void write(byte[] b, int off, int len) throws IOException {
+                super.write(b, off, len);
+                count += len;
+                progressListener.invoke(count);
+            }
+        };
+    }
+    
+    public int getEstimationSize() throws IOException {
+        return 0;
+    }
+    
+    public Sender setProgressListener(Callback<Integer> progressListener) {
+        this.progressListener = progressListener;
+        return this;
     }
 }
