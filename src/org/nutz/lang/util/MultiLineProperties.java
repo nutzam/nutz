@@ -64,7 +64,23 @@ public class MultiLineProperties implements Map<String, String> {
             }
             if (c == '=') {
                 String name = s.substring(0, pos);
-                maps.put(Strings.trim(name), s.substring(pos + 1));
+                String value = s.substring(pos + 1);
+                if (value.endsWith("\\") && !value.endsWith("\\\\")) {
+                    StringBuilder sb = new StringBuilder(value.substring(0, value.length() - 1));
+                    while (null != (s = tr.readLine())) {
+                        if (Strings.isBlank(s))
+                            break;
+                        if (s.endsWith("\\") && !s.endsWith("\\\\")) {
+                            sb.append(s.substring(0, s.length() - 1));
+                        } else {
+                            sb.append(s);
+                            break;
+                        }
+                    }
+                    value = sb.toString();
+                }
+                // TODO 对value里面的\进行转义?
+                maps.put(Strings.trim(name), value);
             } else if (c == ':') {
                 String name = s.substring(0, pos);
                 StringBuffer sb = new StringBuffer();

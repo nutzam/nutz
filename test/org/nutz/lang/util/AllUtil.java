@@ -15,5 +15,6 @@ import org.junit.runners.Suite;
                      DisksTest.class,
                      ContextTest.class,
                      NutMapTest.class,
-                     RegionTest.class})
+                     RegionTest.class,
+                     MultiLinePropertiesTest.class})
 public class AllUtil {}
