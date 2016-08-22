@@ -13,7 +13,7 @@
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz-plugins-views</artifactId>
-			<version>1.b.52.preview</version>
+			<version>1.r.57</version>
 		</dependency>
 	}}}
 	

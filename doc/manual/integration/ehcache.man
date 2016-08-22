@@ -10,7 +10,7 @@
 -----------------------------------------------
 准备工作
 
-	下载ehcache http://ehcache.org/downloads/catalog
+	下载[http://ehcache.org/downloads/catalog ehcache]
 	
 你需要一个js文件
 --------------------------------------------------
