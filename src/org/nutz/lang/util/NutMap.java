@@ -27,7 +27,7 @@ import org.nutz.lang.born.Borning;
  * @author zozoh(zozohtnt@gmail.com)
  */
 @SuppressWarnings("serial")
-public class NutMap extends LinkedHashMap<String, Object>implements NutBean {
+public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
 
     public static NutMap WRAP(Map<String, Object> map) {
         if (null == map)
@@ -82,6 +82,56 @@ public class NutMap extends LinkedHashMap<String, Object>implements NutBean {
 
     public boolean has(String key) {
         return null != get(key);
+    }
+
+    /**
+     * 从 Map 里挑选一些键生成一个新的 Map
+     * 
+     * @param keys
+     *            键
+     * @return 新 Map
+     */
+    public NutMap pick(String... keys) {
+        NutMap re = new NutMap();
+        for (Map.Entry<String, Object> en : this.entrySet()) {
+            String key = en.getKey();
+            if (Lang.contains(keys, key)) {
+                re.put(key, en.getValue());
+            }
+        }
+        return re;
+    }
+
+    /**
+     * 从 Map 里将指定的键过滤，生成一个新的 Map
+     * 
+     * @param keys
+     *            键
+     * @return 新 Map
+     */
+    public NutMap omit(String... keys) {
+        NutMap re = new NutMap();
+        for (Map.Entry<String, Object> en : this.entrySet()) {
+            String key = en.getKey();
+            if (!Lang.contains(keys, key)) {
+                re.put(key, en.getValue());
+            }
+        }
+        return re;
+    }
+    
+    /**
+     * 如果一个键的值无效（has(key) 返回 false)，那么为其设置默认值
+     * 
+     * @param key 键
+     * @param dft 值
+     * @return 自身以便链式赋值
+     */
+    public NutMap putDefault(String key, Object dft){
+        if(!this.has(key)){
+            this.put(key, dft);
+        }
+        return this;
     }
 
     @Override
@@ -219,7 +269,7 @@ public class NutMap extends LinkedHashMap<String, Object>implements NutBean {
             v = ((List) v).iterator().next();
         }
         // by wendal : 这还有必要castTo么?
-        // zozoh: 当然有啦，比如日期对象，要变成字符串的话 ... 
+        // zozoh: 当然有啦，比如日期对象，要变成字符串的话 ...
         return Castors.me().castTo(v, String.class);
     }
 
