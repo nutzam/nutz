@@ -35,6 +35,7 @@
 		<doc path="pojo.man"/>
 		<doc path="record.man"/>
 		<doc path="annotations.man"/>
+		<doc path="interceptors.man"/>
 	</doc>
 	<doc path="ioc"	title="Ioc 手册">
 		<doc path="hello.man"/>
