@@ -556,4 +556,33 @@ public abstract class Xmls {
         return sb.toString();
     }
 
+    /**
+     * 从一个 XML 元素开始，根据一条 XPath 获取一组元素
+     * 
+     * @param ele
+     *            XML 元素
+     * @param xpath
+     *            要获取的元素的 XPath
+     * @return 元素列表
+     */
+    public static List<Element> getEles(Element ele, String xpath) {
+        XPathFactory factory = XPathFactory.newInstance();
+        XPath xp = factory.newXPath();
+        try {
+            XPathExpression expression = xp.compile(xpath);
+            NodeList nodes = (NodeList) expression.evaluate(ele, XPathConstants.NODESET);
+            List<Element> list = new ArrayList<Element>();
+            int len = nodes.getLength();
+            for (int i = 0; i < len; i++) {
+                Node node = nodes.item(i);
+                if (node instanceof Element) {
+                    list.add((Element)node);
+                }
+            }
+            return list;
+        }
+        catch (XPathExpressionException e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<returnsms> 
+  <statusbox id="1"> 
+    <mobile id="1-1">13701000041</mobile>  
+    <taskid>16031026</taskid>  
+    <status>20</status>  
+    <receivetime>2016/8/24 16:10:12</receivetime>  
+    <errorcode>S:6</errorcode>  
+    <extno/> 
+  </statusbox>  
+  <statusbox id="2"> 
+    <mobile id="2-1">18600321144</mobile>  
+    <taskid>16031026</taskid>  
+    <status>20</status>  
+    <receivetime>2016/8/24 16:10:12</receivetime>  
+    <errorcode>S:6</errorcode>  
+    <extno/> 
+  </statusbox> 
+</returnsms>
