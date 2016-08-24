@@ -59,7 +59,7 @@ import org.nutz.trans.Trans;
 
 /**
  * Dao 的帮助函数
- * 
+ *
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  * @author cqyunqin
@@ -71,7 +71,7 @@ public abstract class Daos {
 
     /**
      * 安全关闭Statement和ResultSet
-     * 
+     *
      * @param stat
      *            Statement实例,可以为null
      * @param rs
@@ -84,7 +84,7 @@ public abstract class Daos {
 
     /**
      * 安全关闭Statement
-     * 
+     *
      * @param stat
      *            Statement实例,可以为null
      */
@@ -98,7 +98,7 @@ public abstract class Daos {
 
     /**
      * 安全关闭=ResultSet
-     * 
+     *
      * @param rs
      *            ResultSet实例,可以为null
      */
@@ -112,7 +112,7 @@ public abstract class Daos {
 
     /**
      * 获取colName所在的行数
-     * 
+     *
      * @param meta
      *            从连接中取出的ResultSetMetaData
      * @param colName
@@ -135,7 +135,7 @@ public abstract class Daos {
 
     /**
      * 是不是数值字段
-     * 
+     *
      * @param meta
      *            从连接中取出的ResultSetMetaData
      * @param index
@@ -158,7 +158,7 @@ public abstract class Daos {
 
     /**
      * 填充记录总数
-     * 
+     *
      * @param pager
      *            分页对象,如果为null就不进行任何操作
      * @param dao
@@ -178,7 +178,7 @@ public abstract class Daos {
 
     /**
      * 填充记录总数
-     * 
+     *
      * @param pager
      *            分页对象,如果为null就不进行任何操作
      * @param dao
@@ -198,7 +198,7 @@ public abstract class Daos {
 
     /**
      * 根据sql查询特定的记录,并转化为指定的类对象
-     * 
+     *
      * @param dao
      *            Dao实例
      * @param klass
@@ -217,7 +217,7 @@ public abstract class Daos {
 
     /**
      * 执行sql和callback
-     * 
+     *
      * @param dao
      *            Dao实例
      * @param sql_str
@@ -234,7 +234,7 @@ public abstract class Daos {
 
     /**
      * 在同一个事务内查询对象及关联对象
-     * 
+     *
      * @param dao
      *            Dao实例
      * @param classOfT
@@ -355,23 +355,21 @@ public abstract class Daos {
      * 查询某sql的结果条数
      */
     public static long queryCount(Dao dao, String sql) {
-    	String tmpTable = "as _nutz_tmp";
-    	if (dao.meta().isDB2())
-    	    tmpTable = "as nutz_tmp_" + R.UU32();
+        String tmpTable = "as _nutz_tmp";
+        if (dao.meta().isDB2())
+            tmpTable = "as nutz_tmp_" + R.UU32();
         else if (dao.meta().isOracle())
             tmpTable = "";
         else
             tmpTable += "_" + R.UU32();
-        Sql sql2 = Sqls.fetchInt("select count(1) from ("
-                                 + sql
-                                 + ")" + tmpTable);
+        Sql sql2 = Sqls.fetchInt("select count(1) from (" + sql + ")" + tmpTable);
         dao.execute(sql2);
         return sql2.getInt();
     }
 
     /**
      * 执行一个特殊的Chain(事实上普通Chain也能执行,但不建议使用)
-     * 
+     *
      * @see org.nutz.dao.Chain#addSpecial(String, Object)
      */
     @SuppressWarnings({"rawtypes"})
@@ -451,7 +449,7 @@ public abstract class Daos {
 
     /**
      * 执行一个特殊的Chain(事实上普通Chain也能执行,但不建议使用)
-     * 
+     *
      * @see org.nutz.dao.Chain#addSpecial(String, Object)
      */
     @SuppressWarnings({"rawtypes"})
@@ -515,8 +513,9 @@ public abstract class Daos {
     }
 
     /**
-     * 为特定package下带@Table注解的类调用dao.create(XXX.class, force), 批量建表,优先建立带@ManyMany的表
-     * 
+     * 为特定package下带@Table注解的类调用dao.create(XXX.class, force),
+     * 批量建表,优先建立带@ManyMany的表
+     *
      * @param dao
      *            Dao实例
      * @param packageName
@@ -525,30 +524,30 @@ public abstract class Daos {
      *            如果表存在,是否先删后建
      */
     public static void createTablesInPackage(Dao dao, String packageName, boolean force) {
-    	List<Class<?>> list = new ArrayList<Class<?>>();
+        List<Class<?>> list = new ArrayList<Class<?>>();
         OUT: for (Class<?> klass : Scans.me().scanPackage(packageName)) {
             if (klass.getAnnotation(Table.class) != null) {
-            	Entity<?> en = dao.getEntity(klass);
-            	List<LinkField> tmp = en.getLinkFields(null);
-            	if (tmp != null && tmp.size() > 0) {
-            		for (LinkField lf : tmp) {
-            			if (lf instanceof ManyManyLinkField) {
-            				list.add(0, klass); // 优先建立带@ManyMany的表
-            				continue OUT;
-            			}
-					}
-            	}
+                Entity<?> en = dao.getEntity(klass);
+                List<LinkField> tmp = en.getLinkFields(null);
+                if (tmp != null && tmp.size() > 0) {
+                    for (LinkField lf : tmp) {
+                        if (lf instanceof ManyManyLinkField) {
+                            list.add(0, klass); // 优先建立带@ManyMany的表
+                            continue OUT;
+                        }
+                    }
+                }
                 list.add(klass);
             }
         }
-    	for (Class<?> klass : list) {
-			dao.create(klass, force);
-		}
+        for (Class<?> klass : list) {
+            dao.create(klass, force);
+        }
     }
 
     /**
      * 为特定package下带@Table注解的类调用dao.create(XXX.class, force), 批量建表
-     * 
+     *
      * @param dao
      *            Dao实例
      * @param oneClzInPackage
@@ -564,7 +563,7 @@ public abstract class Daos {
 
     /**
      * 创建一个带FieldFilter的Dao代理实例. 注意,为避免出错,生成的Dao对象不应该传递到其他方法去.
-     * 
+     *
      * @param dao
      *            原始的Dao实例
      * @param filter
@@ -577,7 +576,7 @@ public abstract class Daos {
 
     /**
      * 创建一个带TableName的Dao代理实例. 注意,为避免出错,生成的Dao对象不应该传递到其他方法去.
-     * 
+     *
      * @param dao
      *            原始的Dao实例
      * @param tableName
@@ -590,7 +589,7 @@ public abstract class Daos {
 
     /**
      * 同时进行字段过滤和动态表名封装
-     * 
+     *
      * @param dao
      *            Dao实例
      * @param filter
@@ -670,15 +669,17 @@ public abstract class Daos {
 
     /**
      * 为数据表自动增减字段
-     * 
+     *
      * @param dao
      *            Dao实例
      * @param klass
      *            映射Pojo
      * @param add
-     *            是否允许添加
+     *            是否允许添加字段
      * @param del
-     *            是否允许删除
+     *            是否允许删除字段
+     * @param checkIndex
+     *            是否检查索引
      */
     public static void migration(Dao dao,
                                  final Class<?> klass,
@@ -688,29 +689,60 @@ public abstract class Daos {
         migration(dao, klass, add, del, checkIndex, null);
     }
 
-    public static void migration(Dao dao, final Class<?> klass, final boolean add, final boolean del) {
-        migration(dao, klass, add, del, false, null);
-    }
-
-    public static void migration(Dao dao,
-                                 final Class<?> klass,
-                                 final boolean add,
-                                 final boolean del,
-                                 Object obj) {
-        migration(dao, klass, add, del, false, obj);
-    }
-
     /**
      * 为数据表自动增减字段
-     * 
+     *
      * @param dao
      *            Dao实例
      * @param klass
      *            映射Pojo
      * @param add
-     *            是否允许添加
+     *            是否允许添加字段
      * @param del
-     *            是否允许删除
+     *            是否允许删除字段
+     */
+    public static void migration(Dao dao,
+                                 final Class<?> klass,
+                                 final boolean add,
+                                 final boolean del) {
+        migration(dao, klass, add, del, false, null);
+    }
+
+    /**
+     * 为数据表自动增减字段
+     *
+     * @param dao
+     *            Dao实例
+     * @param klass
+     *            映射Pojo
+     * @param add
+     *            是否允许添加字段
+     * @param del
+     *            是否允许删除字段
+     * @param tableName
+     *            动态表名上下文
+     */
+    public static void migration(Dao dao,
+                                 final Class<?> klass,
+                                 final boolean add,
+                                 final boolean del,
+                                 Object tableName) {
+        migration(dao, klass, add, del, false, tableName);
+    }
+
+    /**
+     * 为数据表自动增减字段
+     *
+     * @param dao
+     *            Dao实例
+     * @param klass
+     *            映射Pojo
+     * @param add
+     *            是否允许添加字段
+     * @param del
+     *            是否允许删除字段
+     * @param checkIndex
+     *            是否检查索引
      * @param tableName
      *            动态表名上下文
      */
@@ -771,7 +803,8 @@ public abstract class Daos {
                             if (mf.isNotNull()) {
                                 sb.append(" NOT NULL");
                             }
-                            if (mf.getColumnType() == ColType.TIMESTAMP && expert.supportTimestampDefault()) {
+                            if (mf.getColumnType() == ColType.TIMESTAMP
+                                && expert.supportTimestampDefault()) {
                                 if (mf.hasDefaultValue()) {
                                     sb.append(" ")
                                       .append(mf.getDefaultValue(null).replaceAll("@", "@@"));
@@ -789,7 +822,7 @@ public abstract class Daos {
                             if (mf.hasColumnComment() && isCanComment) {
                                 sb.append(" COMMENT '").append(mf.getColumnComment()).append("'");
                             }
-                            //sb.append(';');
+                            // sb.append(';');
                             Sql sql = Sqls.create(sb.toString());
                             sqls.add(sql);
                         }
@@ -936,15 +969,17 @@ public abstract class Daos {
 
     /**
      * 为指定package及旗下package中带@Table注解的Pojo执行migration
-     * 
+     *
      * @param dao
      *            Dao实例
      * @param packageName
      *            指定的package名称
      * @param add
-     *            是否允许添加
+     *            是否允许添加字段
      * @param del
-     *            是否允许删除
+     *            是否允许删除字段
+     * @param checkIndex
+     *            是否检查索引
      * @param nameTable
      *            动态表名上下文
      */
@@ -961,6 +996,20 @@ public abstract class Daos {
         }
     }
 
+    /**
+     * 为指定package及旗下package中带@Table注解的Pojo执行migration
+     *
+     * @param dao
+     *            Dao实例
+     * @param packageName
+     *            指定的package名称
+     * @param add
+     *            是否允许添加字段
+     * @param del
+     *            是否允许删除字段
+     * @param nameTable
+     *            动态表名上下文
+     */
     public static void migration(Dao dao,
                                  String packageName,
                                  boolean add,
@@ -971,16 +1020,17 @@ public abstract class Daos {
 
     /**
      * 为指定package及旗下package中带@Table注解的Pojo执行migration
-     * 
+     *
      * @param dao
      *            Dao实例
      * @param packageName
      *            指定的package名称
      * @param add
-     *            是否允许添加
+     *            是否允许添加字段
      * @param del
-     *            是否允许删除
-     * @param checkIndex 是否检查索引
+     *            是否允许删除字段
+     * @param checkIndex
+     *            是否检查索引
      */
     public static void migration(Dao dao,
                                  String packageName,
@@ -994,16 +1044,31 @@ public abstract class Daos {
         }
     }
 
+    /**
+     * 为指定package及旗下package中带@Table注解的Pojo执行migration
+     *
+     * @param dao
+     *            Dao实例
+     * @param packageName
+     *            指定的package名称
+     * @param add
+     *            是否允许添加字段
+     * @param del
+     *            是否允许删除字段
+     */
     public static void migration(Dao dao, String packageName, boolean add, boolean del) {
         migration(dao, packageName, add, del, true);
     }
 
     /**
      * 检查分表中是否有字段变化 提示
-     * 
+     *
      * @param dao
+     *            Dao实例
      * @param tableName
+     *            动态表名上下文
      * @param clsType
+     *            映射Pojo
      */
     public static void checkTableColumn(Dao dao, Object tableName, final Class<?> clsType) {
         final NutDao d = (NutDao) dao;
@@ -1018,16 +1083,33 @@ public abstract class Daos {
 
     /**
      * 获取动态表的表名
+     *
+     * @param dao
+     *            Dao实例
+     * @param clsType
+     *            映射Pojo
+     * @param target
+     *            参考对象
      */
-    public static String getTableName(Dao dao, Class<?> klass, Object t) {
-        return getTableName(dao, dao.getEntity(klass), t);
+    public static String getTableName(Dao dao, Class<?> klass, Object target) {
+        return getTableName(dao, dao.getEntity(klass), target);
     }
 
-    public static String getTableName(Dao dao, final Entity<?> en, Object t) {
-        if (t == null)
+    /**
+     * 获取动态表的表名
+     *
+     * @param dao
+     *            Dao实例
+     * @param en
+     *            Pojo的数据库实体
+     * @param target
+     *            参考对象
+     */
+    public static String getTableName(Dao dao, final Entity<?> en, Object target) {
+        if (target == null)
             return en.getTableName();
         final String[] name = new String[1];
-        TableName.run(t, new Runnable() {
+        TableName.run(target, new Runnable() {
             public void run() {
                 name[0] = en.getTableName();
             }
@@ -1037,14 +1119,22 @@ public abstract class Daos {
 
     private static SqlFormat sqlFormat = SqlFormat.full;
 
+    /** 获取SQL打印格式 */
     public static SqlFormat getSqlFormat() {
         return sqlFormat;
     }
 
+    /**
+     * 设置SQL打印格式
+     *
+     * @param sqlFormat
+     *            SQL打印格式
+     */
     public static void setSqlFormat(SqlFormat sqlFormat) {
         Daos.sqlFormat = sqlFormat;
     }
 
+    /** 获取SQL2003关键字 */
     public static Set<String> sql2003Keywords() {
         Set<String> keywords = new HashSet<String>();
         String k = "ADD,ALL,ALLOCATE,ALTER,AND,ANY,ARE,ARRAY,AS,ASENSITIVE,ASYMMETRIC,AT,ATOMIC,AUTHORIZATION,BEGIN,BETWEEN,BIGINT,BINARY,BLOB,BOOLEAN,BOTH,BY,CALL,CALLED,CASCADED,CASE,CAST,CHAR,CHARACTER,CHECK,CLOB,CLOSE,COLLATE,COLUMN,COMMIT,CONDITION,CONNECT,CONSTRAINT,CONTINUE,CORRESPONDING,CREATE,CROSS,CUBE,CURRENT,CURRENT_DATE,CURRENT_DEFAULT_TRANSFORM_GROUP,CURRENT_PATH,CURRENT_ROLE,CURRENT_TIME,CURRENT_TIMESTAMP,CURRENT_TRANSFORM_GROUP_FOR_TYPE,CURRENT_USER,CURSOR,CYCLE,DATE,DAY,DEALLOCATE,DEC,DECIMAL,DECLARE,DEFAULT,DELETE,DEREF,DESCRIBE,DETERMINISTIC,DISCONNECT,DISTINCT,DO,DOUBLE,DROP,DYNAMIC,EACH,ELEMENT,ELSE,ELSEIF,END,ESCAPE,EXCEPT,EXEC,EXECUTE,EXISTS,EXIT,EXTERNAL,FALSE,FETCH,FILTER,FLOAT,FOR,FOREIGN,FREE,FROM,FULL,FUNCTION,GET,GLOBAL,GRANT,GROUP,GROUPING,HANDLER,HAVING,HOLD,HOUR,IDENTITY,IF,IMMEDIATE,IN,INDICATOR,INNER,INOUT,INPUT,INSENSITIVE,INSERT,INT,INTEGER,INTERSECT,INTERVAL,INTO,IS,ITERATE,JOIN,LANGUAGE,LARGE,LATERAL,LEADING,LEAVE,LEFT,LIKE,LOCAL,LOCALTIME,LOCALTIMESTAMP,LOOP,MATCH,MEMBER,MERGE,METHOD,MINUTE,MODIFIES,MODULE,MONTH,MULTISET,NATIONAL,NATURAL,NCHAR,NCLOB,NEW,NO,NONE,NOT,NULL,NUMERIC,OF,OLD,ON,ONLY,OPEN,OR,ORDER,OUT,OUTER,OUTPUT,OVER,OVERLAPS,PARAMETER,PARTITION,PRECISION,PREPARE,PROCEDURE,RANGE,READS,REAL,RECURSIVE,REF,REFERENCES,REFERENCING,RELEASE,REPEAT,RESIGNAL,RESULT,RETURN,RETURNS,REVOKE,RIGHT,ROLLBACK,ROLLUP,ROW,ROWS,SAVEPOINT,SCOPE,SCROLL,SEARCH,SECOND,SELECT,SENSITIVE,SESSION_USER,SET,SIGNAL,SIMILAR,SMALLINT,SOME,SPECIFIC,SPECIFICTYPE,SQL,SQLEXCEPTION,SQLSTATE,SQLWARNING,START,STATIC,SUBMULTISET,SYMMETRIC,SYSTEM,SYSTEM_USER,TABLE,TABLESAMPLE,THEN,TIME,TIMESTAMP,TIMEZONE_HOUR,TIMEZONE_MINUTE,TO,TRAILING,TRANSLATION,TREAT,TRIGGER,TRUE,UNDO,UNION,UNIQUE,UNKNOWN,UNNEST,UNTIL,UPDATE,USER,USING,VALUE,VALUES,VARCHAR,VARYING,WHEN,WHENEVER,WHERE,WHILE,WINDOW,WITH,WITHIN,WITHOUT,YEAR";
@@ -1056,9 +1146,13 @@ public abstract class Daos {
         keywords.remove("YEAR");
         return keywords;
     }
-    
+
+    /** 是否检查字段为数据库的关键字 */
     public static boolean CHECK_COLUMN_NAME_KEYWORD = false;
+
     public static boolean FORCE_WRAP_COLUMN_NAME = false;
+
+    /** 是否把字段名给变成大写 */
     public static boolean FORCE_UPPER_COLUMN_NAME = false;
 }
 
