@@ -46,4 +46,8 @@ public class ElFieldMacro extends NutPojo {
         return re;
     }
 
+    @Override
+    public String forPrint() {
+        return "// NOT SQL // ElFieldMacro=" + this.bin;
+    }
 }
