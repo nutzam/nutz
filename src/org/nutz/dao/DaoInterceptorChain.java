@@ -133,6 +133,7 @@ public class DaoInterceptorChain implements ConnCallback {
                     log.info("Found a null DaoStatement(SQL), ingore it ~~");
                 continue;
             }
+            current = 0;
             daoStatement = st;
             this.connection = conn;
             doChain();
