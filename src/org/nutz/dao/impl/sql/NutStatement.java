@@ -297,6 +297,8 @@ public abstract class NutStatement implements DaoStatement {
     protected String param2String(Object obj) {
         if (obj == null)
             return "NULL";
+        if (obj instanceof CharSequence)
+            return obj.toString();
         else {
             if (obj instanceof Blob) {
                 Blob blob = (Blob) obj;
