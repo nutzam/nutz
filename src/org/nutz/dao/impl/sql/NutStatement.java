@@ -302,23 +302,22 @@ public abstract class NutStatement implements DaoStatement {
                 Blob blob = (Blob) obj;
                 if (blob instanceof SimpleBlob) {
                     try {
-                        return "Blob(len=" + blob.length() + ")";
+                        return "*Blob(len=" + blob.length() + ")";
                     }
                     catch (SQLException e) {}// 不可能
                 }
-                return "Blob(hascode=" + blob.hashCode() + ")";
+                return "*Blob(hascode=" + blob.hashCode() + ")";
             } else if (obj instanceof Clob) {
                 Clob clob = (Clob) obj;
                 if (clob instanceof SimpleClob) {
                     try {
-                        return "Clob(len=" + clob.length() + ")";
+                        return "*Clob(len=" + clob.length() + ")";
                     }
                     catch (SQLException e) {}// 不可能
                 }
-                return "Clob(" + clob.hashCode() + ")";
+                return "*Clob(" + clob.hashCode() + ")";
             } else if (obj instanceof byte[] || obj instanceof char[]) {
-                if (Array.getLength(obj) > 10240)
-                    return "*BigData[len=" + Array.getLength(obj) + "]";
+                return "*"+(obj instanceof byte[] ? "byte" : "char" ) + "[len=" + Array.getLength(obj) + "]";
             } else if (obj instanceof InputStream) {
                 try {
                     obj = "*InputStream[len=" + ((InputStream) obj).available() + "]";
