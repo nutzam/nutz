@@ -249,8 +249,8 @@ public abstract class Sender implements Callable<Response> {
     protected static ExecutorService es;
     
     public static ExecutorService setup(ExecutorService es) {
-        if (es != null)
-            return es;
+        if (Sender.es != null)
+            shutdown();
         if (es == null)
             es = Executors.newFixedThreadPool(64);
         Sender.es = es;
