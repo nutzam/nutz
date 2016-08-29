@@ -243,39 +243,7 @@ public abstract class NutStatement implements DaoStatement {
     }
 
     protected String toExampleStatement(Object[][] mtrx, String sql) {
-        StringBuilder sb = new StringBuilder();
-        String[] ss = sql.split("[?]");
-        int i = 0;
-        if (mtrx.length > 0) {
-            for (; i < mtrx[0].length; i++) {
-                sb.append(ss[i]);
-                Object obj = mtrx[0][i];
-                if (obj != null) {
-                    if (obj instanceof Blob) {
-                        Blob blob = (Blob) obj;
-                        obj = "Blob(" + blob.hashCode() + ")";
-                    } else if (obj instanceof Clob) {
-                        Clob clob = (Clob) obj;
-                        obj = "Clob(" + clob.hashCode() + ")";
-                    } else if (obj instanceof byte[] || obj instanceof char[]) {
-                        if (Array.getLength(obj) > 10240)
-                            obj = "*BigData[len=" + Array.getLength(obj) + "]";
-                    } else if (obj instanceof InputStream) {
-                        try {
-                            obj = "*InputStream[len=" + ((InputStream) obj).available() + "]";
-                        }
-                        catch (IOException e) {}
-                    } else if (obj instanceof Reader) {
-                        obj = "*Reader@" + obj.hashCode();
-                    }
-                }
-                sb.append(Sqls.formatFieldValue(obj));
-            }
-        }
-        if (i < ss.length)
-            sb.append(ss[i]);
-
-        return sb.toString();
+        return toStatement(mtrx, sql);
     }
 
     protected String toStatement(Object[][] mtrx, String sql) {
@@ -285,16 +253,21 @@ public abstract class NutStatement implements DaoStatement {
         if (mtrx.length > 0) {
             for (; i < mtrx[0].length; i++) {
                 sb.append(ss[i]);
-                sb.append(Sqls.formatFieldValue(mtrx[0][i]));
+                Object obj = param2obj(mtrx[0][i]);
+                sb.append(Sqls.formatFieldValue(obj));
             }
         }
-        for (; i < ss.length; i++) {
+        for (; i < ss.length; i++)
         	sb.append(ss[i]);
-		}
         return sb.toString();
     }
-
+    
     protected String param2String(Object obj) {
+        obj = param2obj(obj);
+        return obj instanceof String ? (String)obj : Castors.me().castToString(obj);
+    }
+
+    protected Object param2obj(Object obj) {
         if (obj == null)
             return "NULL";
         if (obj instanceof CharSequence)
@@ -328,7 +301,7 @@ public abstract class NutStatement implements DaoStatement {
             } else if (obj instanceof Reader) {
                 obj = "*Reader@" + obj.hashCode();
             }
-            return Castors.me().castToString(obj); // TODO 太长的话,应该截取一部分
+            return obj;
         }
     }
 
