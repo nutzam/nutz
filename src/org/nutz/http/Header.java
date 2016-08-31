@@ -11,7 +11,7 @@ import org.nutz.json.JsonFormat;
 
 public class Header {
 
-    private Header() {
+    protected Header() {
         items = new HashMap<String, String>();
     }
 

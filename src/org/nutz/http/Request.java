@@ -217,6 +217,8 @@ public class Request {
     }
 
     public Request setHeader(Header header) {
+        if (header == null)
+            header = new Header();
         this.header = header;
         return this;
     }
