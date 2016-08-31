@@ -7,7 +7,6 @@ import java.lang.reflect.Array;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 
 import org.nutz.castor.Castors;
@@ -19,6 +18,7 @@ import org.nutz.dao.sql.SqlType;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.blob.SimpleBlob;
 import org.nutz.dao.util.blob.SimpleClob;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
 public abstract class NutStatement implements DaoStatement {
@@ -116,7 +116,7 @@ public abstract class NutStatement implements DaoStatement {
         if (re == null)
             return null;
         if (re.getClass().isArray()) {
-            return Arrays.asList((T[])re);
+            return Lang.array2list(re, classOfT);
         }
         return (List<T>) re;// TODO 考虑先遍历转换一次
     }
