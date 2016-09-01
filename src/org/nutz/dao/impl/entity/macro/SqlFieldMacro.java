@@ -46,13 +46,7 @@ public class SqlFieldMacro extends NutPojo {
                                         obj.getClass().getName(),
                                         entityField.toString());
 
-            // 填充占位符 ...
-            for (String name : sql.varIndex().names())
-                if (!name.equals("table") && !name.equals("view") && !name.equals("field"))
-                    sql.vars().set(name, en.getField(name).getValue(obj));
-            // 填充变量 ...
-            for (String name : sql.paramIndex().names())
-                sql.params().set(name, en.getField(name).getValue(obj));
+            prepareVarParam(sql);
         }
         return this;
     }
@@ -96,6 +90,11 @@ public class SqlFieldMacro extends NutPojo {
         if (!shallDuplicate)
             return sql;
         Sql sql = this.sql.duplicate();
+        prepareVarParam(sql);
+        return sql;
+    }
+
+    protected void prepareVarParam(Sql sql) {
         for (String name : sql.varIndex().names()) {
             if ("view".equals(name))
                 sql.vars().set("view", getEntity().getViewName());
@@ -108,10 +107,14 @@ public class SqlFieldMacro extends NutPojo {
         }
 
         for (String name : sql.paramIndex().names()) {
-            sql.params().set(name, getEntity().getField(name).getValue(getOperatingObject()));
+            if ("view".equals(name))
+                sql.params().set("view", getEntity().getViewName());
+            else if ("table".equals(name))
+                sql.params().set("table", getEntity().getTableName());
+            else if ("field".equals(name))
+                sql.params().set("field", entityField.getColumnName());
+            else
+                sql.params().set(name, getEntity().getField(name).getValue(getOperatingObject()));
         }
-
-        return sql;
     }
-
 }
