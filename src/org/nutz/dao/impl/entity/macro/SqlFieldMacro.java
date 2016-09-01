@@ -52,7 +52,7 @@ public class SqlFieldMacro extends NutPojo {
     }
 
     public void onAfter(Connection conn, ResultSet rs, Statement stmt) throws SQLException {
-        if (rs.next()) {
+        if (rs != null && rs.next()) {
             String colName = rs.getMetaData().getColumnName(1);
             Object obj = entityField.getAdaptor().get(rs, colName);
             entityField.setValue(this.getOperatingObject(), obj);
