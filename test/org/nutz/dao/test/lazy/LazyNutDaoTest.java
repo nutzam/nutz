@@ -8,6 +8,7 @@ import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.json.Json;
 
+@SuppressWarnings("deprecation")
 public class LazyNutDaoTest extends DaoCase {
 
     @Override

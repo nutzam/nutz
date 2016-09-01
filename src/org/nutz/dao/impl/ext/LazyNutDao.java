@@ -15,6 +15,7 @@ import org.nutz.dao.impl.NutDao;
  * @author wendal(wendal1985@gmail.com)
  *
  */
+@Deprecated
 public class LazyNutDao extends NutDao {
 	
 	private boolean cycle = false;
