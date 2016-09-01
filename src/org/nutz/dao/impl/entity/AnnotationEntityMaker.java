@@ -377,10 +377,6 @@ public class AnnotationEntityMaker implements EntityMaker {
         if (null != info.annId) {
             ef.setAsId();
             if (info.annId.auto()) {
-                if (info.annPrev != null) {
-                    // XXX 兼容性改变 1.b.51
-                    log.infof("field %s mark as @Id(auto=true) and @Prev", info.name);
-                }
                 ef.setAsAutoIncreasement();
             }
         }
@@ -481,9 +477,13 @@ public class AnnotationEntityMaker implements EntityMaker {
         for (MappingInfo info : infos) {
             // '@Prev' : 预设值
             if (null != info.annPrev) {
-                en.addBeforeInsertMacro(__macro(en.getField(info.name),
+                boolean flag = en.addBeforeInsertMacro(__macro(en.getField(info.name),
                                                 _annToFieldMacroInfo(info.annPrev.els(),
                                                                      info.annPrev.value())));
+                if (flag && null != info.annId && info.annId.auto()) {
+                    log.debugf("Field(%s#%s) autoset as @Id(auto=false)", en.getType().getName(), info.name);
+                    ((NutMappingField)en.getField(info.name)).setAutoIncreasement(false);
+                }
             }
 
             // '@Next' : 后续获取
@@ -494,7 +494,7 @@ public class AnnotationEntityMaker implements EntityMaker {
                 continue;
             }
             // '@Id' : 的自动后续获取
-            else if (null != info.annId && info.annId.auto()) {
+            else if (null != info.annId && info.annId.auto() && en.getField(info.name).isAutoIncreasement()) {
             	if (!expert.isSupportAutoIncrement() || !expert.isSupportGeneratedKeys())
             		en.addAfterInsertMacro(expert.fetchPojoId(en, en.getField(info.name)));
             }

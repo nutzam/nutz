@@ -1,6 +1,7 @@
 package org.nutz.dao.test.normal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -342,7 +343,11 @@ public class SimpleDaoTest extends DaoCase {
     @Test
     public void test_issue_726() {
         dao.create(Issue726.class, true);
-        assertTrue(dao.getEntity(Issue726.class).getColumn("id").isAutoIncreasement());
+        boolean ai = dao.getEntity(Issue726.class).getColumn("id").isAutoIncreasement();
+        if (!dao.meta().isPostgresql())
+            assertTrue(ai);
+        else
+            assertFalse(ai);
     }
 
     @Test

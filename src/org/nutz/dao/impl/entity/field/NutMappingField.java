@@ -219,6 +219,10 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 	public void setAsAutoIncreasement() {
 		this.autoIncreasement = true;
 	}
+	
+	public void setAutoIncreasement(boolean autoIncreasement) {
+        this.autoIncreasement = autoIncreasement;
+    }
 
 	public String getColumnComment() {
 		return columnComment;
