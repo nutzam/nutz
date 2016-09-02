@@ -1,0 +1,49 @@
+#title: 调用存储过程
+#index:0,1
+-------------------------------------------------------------------------------------------------------------------------------
+概述
+
+	从1.r.58开始, 支持出参, 之前的版本仅支持入参.
+	
+	从实现方式上说, 是通过扩展自定义SQL的含义及上下文来实现
+-------------------------------------------------------------------------------------------------------------------------------
+仅含义入参的存储过程
+
+	
+	{{{<JAVA>
+        // 建表,删除老的存储过程.
+		dao.create(Pet.class, true);
+		dao.insert(Pet.create("wendal"));
+		dao.execute(Sqls.create("DROP PROCEDURE IF EXISTS proc_pet_fetch"));
+        // 新建存储过程
+		dao.execute(Sqls.create("CREATE PROCEDURE proc_pet_fetch(IN nm varchar(1024))\nBEGIN\n\tSELECT * FROM t_pet where name=nm;\nEND"));
+
+		// 像普通自定义SQL那样创建SQL对象.
+		Sql sql = Sqls.fetchEntity("CALL proc_pet_fetch(@nm)");
+		sql.setEntity(dao.getEntity(Pet.class));
+		sql.params().set("nm", "wendal"); //设置入参
+		dao.execute(sql);
+
+		Pet pet = sql.getObject(Pet.class);
+		assertNotNull(pet);
+		assertEquals("wendal", pet.getName());
+	}}}
+	
+------------------------------------------------------------------------------------------------------------------------------
+带出参的存储过程
+
+	{{{<JAVA>
+        // 新建存储过程
+        dao.execute(Sqls.create("CREATE PROCEDURE proc_pet_fetch(IN nm varchar(1024), OUT outId int)\nBEGIN\n\tselect id into outId from t_pet where name=nm;\nEND"));
+
+        // 像普通自定义SQL那样创建SQL对象.
+        Sql sql = Sqls.create("CALL proc_pet_fetch(@nm, @OUTid)");
+        sql.setEntity(dao.getEntity(Pet.class));
+        sql.params().set("nm", "wendal"); // 设置入参
+        sql.params().set("OUTid", Types.INTEGER);// 设置出参类型,注意,必须加OUT开头
+        dao.execute(sql);
+
+        Record re = sql.getOutParams();
+        assertNotNull(re);
+        assertEquals(pet.getId(), re.get("id"));
+	}}}
