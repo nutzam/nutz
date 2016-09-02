@@ -606,11 +606,10 @@ public class Base64 {
             StringBuilder sb = new StringBuilder(base64);
             sb.append(Strings.dup('=', 5 - base64.length() % 4 - 1));
             byte[] decode = Base64.decode(sb.toString().replace('-', '+').replace('_', '/'));
-            if (decode.length != 0 || decode == null) {
-                return new String(decode);
-            } else {
+            if (decode == null || decode.length == 0) {
                 return "";
             }
+            return new String(decode);
         }
     }
 }
