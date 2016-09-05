@@ -1,54 +1,7 @@
-#title: 1.r.57 发行注记
+#title: 1.r.58 发行注记(编写中)
 #index:0,1
 #author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
-1.r.57 {*綦河北渡鱼} 发行注记(20160723)
+1.r.58 {*名称待定} 发行注记(20160915预估)
     
-来,干了这杯海水. 都是地球人,海水到处流,有啥好争的,快点把核聚变搞定啊!~~~~!
-  
-哦,报个bug都能被一锅端,乌鸦云朵消失了. 但雨还是继续下啊,感觉哪里不对啊.
-  
-这次,新功能比bugfix多了,来来来,赶紧更新了. 对了, nutz@github已经突破1000个star,啊啊啊啊
-  
----------------------------------------------------------------------------------------------------------
-主要变化:
-  
-    * fix: @Inject在setter上标注有时候抛异常
-    * fix : Record没有实现Comparable接口
-    * fix: 入口方法中不带@Param的字符串数组参数,会抛异常
-    * fix: 在事务内新建NutDao实例的会抛出NPE
-    * fix: UploadInfo的终值是0,而非与sum相等
-    * fix: 1.r.56中的makeEntity方法在处理Map时有可能抛出NPE
-    * fix: SQLServer下批量插入带自增id的列表会报错
-    * fix: 文件上传有可能出现命名重复
-    * add: 新增X-Powered-By,自豪地使用nutz
-    * add: 数据库关键字处理,默认关闭,可通过Daos类启用.
-    * add: 自定义SQL的分割符可以自定义了
-    * add: org.nutz.http添加异步支持
-    * add: EL支持通过代码注册function
-    * add: @Async能自定义ExecutorService了
-    * add: JsonFormat.dateFormat支持特殊格式timestamp,输出时间戳long值
-    * add: PropertiesProxy新增make方法,革新ioc js配置
-    
-关联项目更新:
-  
-    * fix: daocache在DB2/SqlServer会报错啊
-    * update: 大鲨鱼写的[https://github.com/Wizzercn/NutzWk nutzwk]已经3.2了
-    * update: 阿健的[https://github.com/NLPchina/Jcoder Jcoder]已经发布第一版
-    * update: 單純願望[https://github.com/Kerbores/NUTZ-ONEKEY nutz-onekey]持续开发中
-
---------------------------------------------------------------------------------------------------------
-详细列表:
-  
-    * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.57 issue@github] 不再详细列出
-    
-
---------------------------------------------------------------------------------------------------------
-感受一下
-  
-  <imgs/nutz_ecosystem.png>
-
-
-欢迎访问[http://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
-    
-[https://nutz.cn Nutz社区]已经累计了1500+的问答帖子, 7000+条回复, 平均首次回复时间少于1小时哦,白天基本上秒回!
+待编写
