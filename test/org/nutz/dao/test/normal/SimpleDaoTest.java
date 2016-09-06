@@ -757,6 +757,9 @@ public class SimpleDaoTest extends DaoCase {
     
     @Test
     public void test_count_groupby() {
+        if (!dao.meta().isMySql())
+            return;
+        // MySQL/PgSQL/SqlServer 与 Oracle/H2的结果会不一样,奇葩啊
         for (int i = 0; i < 10; i++) {
             Pet pet = Pet.create(R.UU32());
             pet.setAge(20+i/4);
