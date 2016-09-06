@@ -489,4 +489,8 @@ public class Scans {
         if (log.isDebugEnabled())
             log.debug("Locations for Scans:\n" + locations);
     }
+    
+    public void clear() {
+        locations.clear();
+    }
 }
