@@ -43,7 +43,7 @@ public class WhaleAdaptor extends PairAdaptor {
 	public WhaleAdaptor(String path) {
         String appRoot = Mvcs.getServletContext().getRealPath("/");
         if (path.isEmpty()) {
-            path = "${app.root}WEB-INF/tmp/nutzupload2";
+            path = "${app.root}/WEB-INF/tmp/nutzupload2";
         }
         if (path.contains("${app.root}"))
             path = path.replace("${app.root}", appRoot);
