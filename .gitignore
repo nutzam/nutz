@@ -13,3 +13,6 @@
 /root
 /performance
 /.idea
+/build/.gradle
+/build/target/
+/build/gradle-app.setting
