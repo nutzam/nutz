@@ -73,7 +73,8 @@ public class SimpleDataSource implements DataSource {
                             "org.postgresql.Driver",
                             "net.sourceforge.jtds.jdbc.Driver",
                             "com.microsoft.sqlserver.jdbc.SQLServerDriver",
-                            "org.sqlite.JDBC"};
+                            "org.sqlite.JDBC",
+                            "com.mysql.jdbc.Driver"};
         for (String driverClassName : drivers) {
             try {
                 Lang.loadClass(driverClassName);
