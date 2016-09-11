@@ -598,7 +598,7 @@ public class Base64 {
          * 返回通过 URL Safe Base64 解码后的 URL 字符串。<br>
          * 如果传入的字符串不合法，将返回空字符串。
          *
-         * @param url URL Safe Base64 编码的 URL
+         * @param base64 URL Safe Base64 编码的 URL
          *
          * @return URL 字符串
          */

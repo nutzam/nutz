@@ -238,7 +238,7 @@ public abstract class R {
      * 
      * @param length
      *            指定长度
-     * @return
+     * @return 随机字符串
      */
     public static String captchaChar(int length) {
         return captchaChar(length, false);
@@ -251,7 +251,7 @@ public abstract class R {
      *            指定长度
      * @param caseSensitivity
      *            是否区分大小写
-     * @return
+     * @return 随机字符串
      */
     public static String captchaChar(int length, boolean caseSensitivity) {
         StringBuilder sb = new StringBuilder();
@@ -284,7 +284,7 @@ public abstract class R {
      * 
      * @param length
      *            指定长度
-     * @return
+     * @return 随机字符串
      */
     public static String captchaNumber(int length) {
         StringBuilder sb = new StringBuilder();

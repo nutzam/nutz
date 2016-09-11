@@ -1086,7 +1086,7 @@ public abstract class Daos {
      *
      * @param dao
      *            Dao实例
-     * @param clsType
+     * @param klass
      *            映射Pojo
      * @param target
      *            参考对象

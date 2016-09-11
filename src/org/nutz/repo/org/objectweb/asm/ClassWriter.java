@@ -52,17 +52,6 @@ public class ClassWriter implements ClassVisitor {
      */
     public static final int COMPUTE_MAXS = 1;
 
-    /**
-     * Flag to automatically compute the stack map frames of methods from
-     * scratch. If this flag is set, then the calls to the
-     * {@link MethodVisitor#visitFrame} method are ignored, and the stack map
-     * frames are recomputed from the methods bytecode. The arguments of the
-     * {@link MethodVisitor#visitMaxs visitMaxs} method are also ignored and
-     * recomputed from the bytecode. In other words, computeFrames implies
-     * computeMaxs.
-     *
-     * @see #ClassWriter(int)
-     */
     public static final int COMPUTE_FRAMES = 2;
 
     /**

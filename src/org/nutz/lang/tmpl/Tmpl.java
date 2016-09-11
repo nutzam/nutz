@@ -52,7 +52,7 @@ public class Tmpl {
      *            模板字符串
      * @return 解析好的模板对象
      *
-     * @see #parse(String, Pattern, int)
+     * @see #parse(String, Pattern, int, int)
      */
     public static Tmpl parse(String tmpl) {
         return new Tmpl(tmpl, null, -1, 0);
@@ -85,14 +85,14 @@ public class Tmpl {
     }
 
     /**
-     * @see #exec(String, Pattern, int, NutMap, boolean)
+     * @see #exec(String, Pattern, int, int, NutBean, boolean)
      */
     public static String exec(String tmpl, NutBean context) {
         return exec(tmpl, null, -1, 0, context, true);
     }
 
     /**
-     * @see #exec(String, Pattern, int, NutMap, boolean)
+     * @see #exec(String, Pattern, int, int, NutBean, boolean)
      */
     public static String exec(String tmpl, NutBean context, boolean showKey) {
         return exec(tmpl, null, -1, 0, context, showKey);
@@ -113,7 +113,7 @@ public class Tmpl {
      *            如果占位符不存在，也没有默认值，是否显示 KEY
      * @return 渲染结果
      * 
-     * @see #parse(String, Pattern, int)
+     * @see #parse(String, Pattern, int, int)
      */
     public static String exec(String tmpl,
                               Pattern ptn,

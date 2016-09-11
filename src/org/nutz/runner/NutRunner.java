@@ -75,7 +75,7 @@ public abstract class NutRunner implements Runnable {
      * 
      * @param sec
      *            秒
-     * @return
+     * @return 冷却时间
      */
     public NutRunner setSleepAfterError(int sec) {
         this.sleepAfterError = sec;

@@ -407,7 +407,7 @@ public class NutLoading implements Loading {
             if (sb.args() != null && sb.args().length == 1 && sb.args()[0].startsWith("ioc:"))
                 sp = config.getIoc().get(sb.value(), sb.args()[0].substring(4));
             else
-                sp = Mirror.me(sb.value()).born(sb.args());
+                sp = Mirror.me(sb.value()).born((Object[])sb.args());
             if (log.isInfoEnabled())
                 log.info("SessionBy --> " + sp);
             config.setSessionProvider(sp);

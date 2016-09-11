@@ -11,9 +11,7 @@ import org.nutz.lang.Files;
 
 /**
  * 封装上传文件的信息
- * <p/> 1.r.55开始使用与servlet 3.0+一致的Part接口,原方法标记为弃用.
- * <p/>
- * @see javax.servlet.http.Part
+ * <p> 1.r.55开始使用与servlet 3.0+一致的Part接口,原方法标记为弃用. </p>
  */
 public class TempFile {
 
@@ -35,7 +33,7 @@ public class TempFile {
 
     /**
      * 元数据
-     * @return
+     * @return 该文件的元数据
      */
     @Deprecated
     public FieldMeta getMeta() {
