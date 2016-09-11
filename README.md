@@ -134,6 +134,12 @@ DaoUp.me().close();
 
 或者直接去[快照库下载](https://oss.sonatype.org/content/repositories/snapshots/org/nutz/nutz/1.r.58-SNAPSHOT/)
 
+## Gradle 依赖
+
+```gradle
+compile(group: 'org.nutz', name: 'nutz', version:'1.r.57.r3')
+```
+
 ## Android下使用nutz时的注意事项
 
 * Dao基于JDBC API,所以无法工作
