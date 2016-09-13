@@ -49,7 +49,7 @@
      # {#FF00FF; /user/?/topic/?}
      # {#FF00FF; /user/?/topic/*}
      # {#FF00FF; /*}
-    关于 "路径参数" 的具体的解释，请参看 [http_adaptor.man 适配器] > [http_adaptor.man#路径参数 路径参数]
+    关于 "路径参数" 的具体的解释，请参看 [http_adaptor.man 适配器]
 
     在一个入口函数上，你可以标注一个或多个下面的注解:
      * {#888888;* `@GET`}
