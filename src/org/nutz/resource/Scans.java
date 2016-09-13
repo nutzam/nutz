@@ -16,6 +16,9 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -49,7 +52,7 @@ public class Scans {
      * 调用一次就可以了
      */
     @SuppressWarnings("unchecked")
-	public Scans init(ServletContext sc) {
+	public Scans init(final ServletContext sc) {
         // 获取classes文件夹的路径
         String classesPath = sc.getRealPath("/WEB-INF/classes/");
         if (classesPath != null) {
@@ -61,12 +64,17 @@ public class Scans {
 
         // 获取lib文件夹中的全部jar
         Set<String> jars = sc.getResourcePaths("/WEB-INF/lib/");
-        if (jars != null) // 这个文件夹不一定存在,尤其是Maven的WebApp项目
-            for (String path : jars) {
-                if (!path.toLowerCase().endsWith(".jar"))
-                    continue;
-                locations.add(ResourceLocation.jar(sc.getRealPath(path)));
+        if (jars != null) {// 这个文件夹不一定存在,尤其是Maven的WebApp项目
+            String[] _jars = jars.toArray(new String[jars.size()]);
+            if (!USE_CONCURRENCY || !addConcurrency(_jars, sc)) {
+                log.info("fallback to one by one Scans.init");
+                for (String path : jars) {
+                    if (!path.toLowerCase().endsWith(".jar"))
+                        continue;
+                    locations.add(ResourceLocation.jar(sc.getRealPath(path)));
+                }
             }
+        }
         else {
             if (log.isWarnEnabled())
                 log.warn("/WEB-INF/lib/ NOT found?!");
@@ -493,4 +501,34 @@ public class Scans {
     public void clear() {
         locations.clear();
     }
+    
+    public boolean addConcurrency(String[] _jars, final ServletContext sc) {
+        ExecutorService es = Executors.newFixedThreadPool(8);
+        final ResourceLocation[] list = new ResourceLocation[_jars.length];
+        for (int i = 0; i < list.length; i++) {
+            final String path = _jars[i];
+            if (path == null || !path.toLowerCase().endsWith(".jar"))
+                continue;
+            final int index = i;
+            es.submit(new Runnable() {
+                public void run() {
+                    list[index] = ResourceLocation.jar(sc.getRealPath(path));
+                }
+            });
+        }
+        es.shutdown();
+        try {
+            es.awaitTermination(5, TimeUnit.MINUTES);
+            for (ResourceLocation rel : list) {
+                if (rel != null)
+                    locations.add(rel);
+            }
+            return true;
+        }
+        catch (InterruptedException e) {
+            return false;
+        }
+    }
+    
+    public static boolean USE_CONCURRENCY = false;
 }
