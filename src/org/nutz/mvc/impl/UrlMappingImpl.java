@@ -115,8 +115,12 @@ public class UrlMappingImpl implements UrlMapping {
     	root.add(path, invoker);
     	map.put(path, invoker);
     }
-
+    
     protected void printActionMapping(ActionInfo ai) {
+        print(ai);
+    }
+
+    protected void print(ActionInfo ai) {
 
         /*
          * 打印基本调试信息
