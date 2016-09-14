@@ -66,7 +66,10 @@ public class Scans {
         Set<String> jars = sc.getResourcePaths("/WEB-INF/lib/");
         if (jars != null) {// 这个文件夹不一定存在,尤其是Maven的WebApp项目
             String[] _jars = jars.toArray(new String[jars.size()]);
-            if (!USE_CONCURRENCY || !addConcurrency(_jars, sc)) {
+            for (int i = 0; i < _jars.length; i++) {
+                _jars[i] = sc.getRealPath(_jars[i]);
+            }
+            if (!USE_CONCURRENCY || !addConcurrency(_jars)) {
                 log.info("fallback to one by one Scans.init");
                 for (String path : jars) {
                     if (!path.toLowerCase().endsWith(".jar"))
@@ -502,7 +505,7 @@ public class Scans {
         locations.clear();
     }
     
-    public boolean addConcurrency(String[] _jars, final ServletContext sc) {
+    public boolean addConcurrency(String[] _jars) {
         ExecutorService es = Executors.newFixedThreadPool(8);
         final ResourceLocation[] list = new ResourceLocation[_jars.length];
         for (int i = 0; i < list.length; i++) {
@@ -512,7 +515,7 @@ public class Scans {
             final int index = i;
             es.submit(new Runnable() {
                 public void run() {
-                    list[index] = ResourceLocation.jar(sc.getRealPath(path));
+                    list[index] = ResourceLocation.jar(path);
                 }
             });
         }
@@ -530,5 +533,5 @@ public class Scans {
         }
     }
     
-    public static boolean USE_CONCURRENCY = false;
+    public static boolean USE_CONCURRENCY = true;
 }
