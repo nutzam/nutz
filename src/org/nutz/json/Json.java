@@ -213,7 +213,7 @@ public class Json {
     public static void toJson(Writer writer, Object obj, JsonFormat format) {
         try {
             if (format == null)
-                format = JsonFormat.nice();
+                format = deft.clone();
             JsonRender jr;
             Class<? extends JsonRender> jrCls = getJsonRenderCls();
             if (jrCls == null)
@@ -412,5 +412,10 @@ public class Json {
         return (Map<String, T>) fromJson(NutType.mapStr(eleType), reader);
     }
 
-    // ==============================================================================
+    protected static JsonFormat deft = JsonFormat.nice();
+    public static void setDefaultJsonformat(JsonFormat defaultJf) {
+        if (defaultJf == null)
+            defaultJf = JsonFormat.nice();
+        Json.deft = defaultJf;
+    }
 }

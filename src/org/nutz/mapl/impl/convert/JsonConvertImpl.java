@@ -42,11 +42,12 @@ public class JsonConvertImpl implements MaplConvert {
         StringBuilder sb = new StringBuilder();
         Writer writer = new StringWriter(sb);
         try {
+            JsonRender jr;
             Class<? extends JsonRender> jrCls = getJsonRenderCls();
             if (jrCls == null)
-                jrCls = JsonRenderImpl.class;
-
-            JsonRender jr = Mirror.me(jrCls).born();
+                jr = new JsonRenderImpl();
+            else
+                jr = Mirror.me(jrCls).born();
             jr.setWriter(writer);
             jr.setFormat(format);
             jr.render(obj);

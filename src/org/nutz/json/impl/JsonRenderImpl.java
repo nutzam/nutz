@@ -42,6 +42,8 @@ public class JsonRenderImpl implements JsonRender {
     private Writer writer;
 
     private Set<Object> memo = new HashSet<Object>();
+    
+    private boolean compact;
 
     public JsonFormat getFormat() {
         return format;
@@ -49,6 +51,7 @@ public class JsonRenderImpl implements JsonRender {
 
     public void setFormat(JsonFormat format) {
         this.format = format;
+        this.compact = format.isCompact();
     }
 
     public Writer getWriter() {
@@ -132,12 +135,8 @@ public class JsonRenderImpl implements JsonRender {
     public JsonRenderImpl() {}
 
     public JsonRenderImpl(Writer writer, JsonFormat format) {
-        this.format = format;
         this.writer = writer;
-    }
-
-    private static boolean isCompact(JsonRenderImpl render) {
-        return render.format.isCompact();
+        setFormat(format);
     }
 
     private static final Pattern p = Pattern.compile("^[a-z_A-Z$]+[a-zA-Z_0-9$]*$");
@@ -150,13 +149,14 @@ public class JsonRenderImpl implements JsonRender {
     }
 
     private void appendPairBegin() throws IOException {
-        if (!isCompact(this))
-            writer.append(NL).append(Strings.dup(format.getIndentBy(),
-                                                 format.getIndent()));
+        if (!compact) {
+            writer.append(NL);
+            doIntent();
+        }
     }
 
     private void appendPairSep() throws IOException {
-        writer.append(!isCompact(this) ? " :" : ":");
+        writer.append(!compact ? ": " : ":");
     }
 
     protected void appendPair(boolean needPairEnd, String name, Object value)
@@ -185,9 +185,10 @@ public class JsonRenderImpl implements JsonRender {
     }
 
     private void appendBraceEnd() throws IOException {
-        if (!isCompact(this))
-            writer.append(NL).append(Strings.dup(format.getIndentBy(),
-                                                 format.getIndent()));
+        if (!compact) {
+            writer.append(NL);
+            doIntent();
+        }
         writer.append('}');
     }
 
@@ -316,12 +317,12 @@ public class JsonRenderImpl implements JsonRender {
     }
 
     private void decreaseFormatIndent() {
-        if (!isCompact(this))
+        if (!compact)
             format.decreaseIndent();
     }
 
     private void increaseFormatIndent() {
-        if (!isCompact(this))
+        if (!compact)
             format.increaseIndent();
     }
 
@@ -424,5 +425,11 @@ public class JsonRenderImpl implements JsonRender {
             return df.format(value);
         }
         return value.toString();
+    }
+    
+    protected void doIntent() throws IOException {
+        int idt = format.getIndent();
+        for (int i = 0; i < idt; i++)
+            writer.write(format.getIndentBy());
     }
 }
