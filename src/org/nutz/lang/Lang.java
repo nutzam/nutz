@@ -61,10 +61,39 @@ import org.nutz.lang.util.SimpleContext;
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  * @author bonyfish(mc02cxj@gmail.com)
+ * @author wizzer(wizzer.cn@gmail.com)
  */
 public abstract class Lang {
     
     public static int HASH_BUFF_SIZE = 16*1024;
+
+    private static final Pattern IPV4_PATTERN =
+            Pattern.compile(
+                    "^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$");
+
+    private static final Pattern IPV6_STD_PATTERN =
+            Pattern.compile(
+                    "^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$");
+
+    private static final Pattern IPV6_HEX_COMPRESSED_PATTERN =
+            Pattern.compile(
+                    "^((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)$");
+
+    public static boolean isIPv4Address(final String input) {
+        return IPV4_PATTERN.matcher(input).matches();
+    }
+
+    public static boolean isIPv6StdAddress(final String input) {
+        return IPV6_STD_PATTERN.matcher(input).matches();
+    }
+
+    public static boolean isIPv6HexCompressedAddress(final String input) {
+        return IPV6_HEX_COMPRESSED_PATTERN.matcher(input).matches();
+    }
+
+    public static boolean isIPv6Address(final String input) {
+        return isIPv6StdAddress(input) || isIPv6HexCompressedAddress(input);
+    }
 
     public static ComboException comboThrow(Throwable... es) {
         ComboException ce = new ComboException();
@@ -2546,7 +2575,10 @@ public abstract class Lang {
                 }
             }
         }
-        return ip;
+        if (isIPv4Address(ip) || isIPv6Address(ip)) {
+            return ip;
+        }
+        return "";
     }
 
     /**
