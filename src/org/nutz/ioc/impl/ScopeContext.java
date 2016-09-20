@@ -1,9 +1,12 @@
 package org.nutz.ioc.impl;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.nutz.ioc.IocContext;
 import org.nutz.ioc.ObjectProxy;
@@ -25,7 +28,7 @@ public class ScopeContext implements IocContext {
 
     public ScopeContext(String scope) {
         this.scope = scope;
-        objs = new HashMap<String, ObjectProxy>();
+        objs = new LinkedHashMap<String, ObjectProxy>();
     }
 
     private void checkBuffer() {
@@ -86,10 +89,11 @@ public class ScopeContext implements IocContext {
 
     public void clear() {
         checkBuffer();
-        for (Entry<String, ObjectProxy> en : objs.entrySet()) {
+        List<Entry<String, ObjectProxy>> list = new ArrayList<Entry<String, ObjectProxy>>(objs.entrySet());
+        Collections.reverse(list);
+        for (Entry<String, ObjectProxy> en : list) {
             if (log.isDebugEnabled())
                 log.debugf("Depose object '%s' ...", en.getKey());
-
             en.getValue().depose();
         }
         objs.clear();
