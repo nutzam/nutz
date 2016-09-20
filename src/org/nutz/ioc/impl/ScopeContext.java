@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.sql.DataSource;
+
 import org.nutz.ioc.IocContext;
 import org.nutz.ioc.ObjectProxy;
 import org.nutz.lang.Lang;
@@ -91,7 +93,22 @@ public class ScopeContext implements IocContext {
         checkBuffer();
         List<Entry<String, ObjectProxy>> list = new ArrayList<Entry<String, ObjectProxy>>(objs.entrySet());
         Collections.reverse(list);
+        List<Entry<String, ObjectProxy>> tmp = new ArrayList<Entry<String, ObjectProxy>>();
         for (Entry<String, ObjectProxy> en : list) {
+            try {
+                ObjectProxy op = en.getValue();
+                Object obj = op.getObj();
+                if (obj != null && obj instanceof DataSource) {
+                    tmp.add(en);
+                    continue;
+                }
+            } catch (Throwable e) {
+            }
+            if (log.isDebugEnabled())
+                log.debugf("Depose object '%s' ...", en.getKey());
+            en.getValue().depose();
+        }
+        for (Entry<String, ObjectProxy> en : tmp) {
             if (log.isDebugEnabled())
                 log.debugf("Depose object '%s' ...", en.getKey());
             en.getValue().depose();
