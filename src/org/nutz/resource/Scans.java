@@ -11,13 +11,17 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -43,8 +47,22 @@ import org.nutz.resource.impl.ResourceLocation;
  * 资源扫描的帮助函数集
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 public class Scans {
+
+    private static final String FLT_CLASS = "^.+[.]class$";
+
+    private static final Log log = Logs.get();
+
+    private static final Scans me = new Scans();
+
+    private Map<String, ResourceLocation> locations = new LinkedHashMap<String, ResourceLocation>();
+
+    // 通过/META-INF/MANIFEST.MF等标记文件,获知所有jar文件的路径
+    protected String[] referPaths = new String[]{    "META-INF/MANIFEST.MF",
+                                        "log4j.properties",
+                                        ".nutz.resource.mark"};
 
     /**
      * 在Web环境中使用Nutz的任何功能,都应该先调用这个方法,以初始化资源扫描器
@@ -56,7 +74,7 @@ public class Scans {
         // 获取classes文件夹的路径
         String classesPath = sc.getRealPath("/WEB-INF/classes/");
         if (classesPath != null) {
-            locations.add(ResourceLocation.file(new File(classesPath)));
+            addResourceLocation(ResourceLocation.file(new File(classesPath)));
         } else {
             if (log.isWarnEnabled())
                 log.warn("/WEB-INF/classes/ NOT found?!");
@@ -74,7 +92,7 @@ public class Scans {
                 for (String path : jars) {
                     if (!path.toLowerCase().endsWith(".jar"))
                         continue;
-                    locations.add(ResourceLocation.jar(sc.getRealPath(path)));
+                    addResourceLocation(ResourceLocation.jar(sc.getRealPath(path)));
                 }
             }
         }
@@ -133,7 +151,7 @@ public class Scans {
     public void registerLocation(URL url) {
         if (url == null)
             return;
-        locations.add(makeResourceLocation(url));
+        addResourceLocation(makeResourceLocation(url));
     }
 
     protected ResourceLocation makeResourceLocation(URL url) {
@@ -196,7 +214,7 @@ public class Scans {
                 list.add(new FileResource(src, srcFile));
             }
         }
-        for (ResourceLocation location : locations) {
+        for (ResourceLocation location : locations.values()) {
             location.scan(src, pattern, list);
         }
         // 如果啥都没找到,那么,用增强扫描
@@ -436,19 +454,6 @@ public class Scans {
         }
     }
 
-    private static final String FLT_CLASS = "^.+[.]class$";
-
-    private static final Log log = Logs.get();
-
-    private static final Scans me = new Scans();
-
-    private Set<ResourceLocation> locations = new HashSet<ResourceLocation>();
-
-    // 通过/META-INF/MANIFEST.MF等标记文件,获知所有jar文件的路径
-    String[] referPaths = new String[]{    "META-INF/MANIFEST.MF",
-                                        "log4j.properties",
-                                        ".nutz.resource.mark"};
-
     private Scans() {
         if (Lang.isAndroid) {
             if (log.isInfoEnabled())
@@ -456,7 +461,7 @@ public class Scans {
             return;
         }
         // 当前文件夹
-        locations.add(ResourceLocation.file(new File(".")));
+        addResourceLocation(ResourceLocation.file(new File(".")));
         // 推测一下nutz自身所在的位置
         registerLocation(Nutz.class);
         ClassLoader cloader = ClassTools.getClassLoader();
@@ -466,17 +471,8 @@ public class Scans {
                 while (urls.hasMoreElements()) {
                     URL url = urls.nextElement();
                     String url_str = url.toString();
-                    if (url.toString().contains("jar!")) {
-                        String tmp = url_str.substring(0, url_str.length()
-                                                       - referPath.length()
-                                                       - 2);
-                        if (tmp.startsWith("jar:file:/"))
-                            tmp.substring(4);
-                        url = new URL(tmp);
-                    }
-                    else
-                        url = new URL(url_str.substring(0, url_str.length() - referPath.length()));
-                    registerLocation(url);
+                    if (!url_str.contains("jar!"))
+                        registerLocation(new URL(url_str.substring(0, url_str.length() - referPath.length())));
                 }
             }
             catch (IOException e) {}
@@ -488,9 +484,9 @@ public class Scans {
             String[] paths = classpath.split(System.getProperties().getProperty("path.separator"));
             for (String pathZ : paths) {
                 if (pathZ.endsWith(".jar"))
-                    locations.add(ResourceLocation.jar(pathZ));
+                    addResourceLocation(ResourceLocation.jar(pathZ));
                 else
-                    locations.add(ResourceLocation.file(new File(pathZ)));
+                    addResourceLocation(ResourceLocation.file(new File(pathZ)));
             }
         }
         catch (Throwable e) {
@@ -498,39 +494,42 @@ public class Scans {
         }
 
         if (log.isDebugEnabled())
-            log.debug("Locations for Scans:\n" + locations);
-    }
-    
-    public void clear() {
-        locations.clear();
+            log.debug("Locations for Scans:\n" + locations.values());
     }
     
     public boolean addConcurrency(String[] _jars) {
         ExecutorService es = Executors.newFixedThreadPool(8);
-        final ResourceLocation[] list = new ResourceLocation[_jars.length];
-        for (int i = 0; i < list.length; i++) {
+        List<Future<ResourceLocation>> tmps = new ArrayList<Future<ResourceLocation>>(_jars.length);
+        for (int i = 0; i < _jars.length; i++) {
             final String path = _jars[i];
             if (path == null || !path.toLowerCase().endsWith(".jar"))
                 continue;
-            final int index = i;
-            es.submit(new Runnable() {
-                public void run() {
-                    list[index] = ResourceLocation.jar(path);
+            tmps.add(es.submit(new Callable<ResourceLocation>() {
+                public ResourceLocation call() {
+                    return ResourceLocation.jar(path);
                 }
-            });
+            }));
         }
         es.shutdown();
         try {
             es.awaitTermination(5, TimeUnit.MINUTES);
-            for (ResourceLocation rel : list) {
-                if (rel != null)
-                    locations.add(rel);
+            for (Future<ResourceLocation> f : tmps) {
+                try {
+                    if (f.get() != null)
+                        addResourceLocation(f.get());
+                }
+                catch (ExecutionException e) {
+                }
             }
             return true;
         }
         catch (InterruptedException e) {
             return false;
         }
+    }
+    
+    public void addResourceLocation(ResourceLocation loc) {
+        locations.put(loc.id(), loc);
     }
     
     public static boolean USE_CONCURRENCY = true;

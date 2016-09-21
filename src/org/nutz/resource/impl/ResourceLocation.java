@@ -18,6 +18,8 @@ import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
 
 public abstract class ResourceLocation {
+    
+    public abstract String id();
 
     public abstract void scan(String base, Pattern pattern, List<NutResource> list);
     
@@ -38,25 +40,45 @@ public abstract class ResourceLocation {
             return ErrorResourceLocation.make(jarPath);
         }
     }
-}
+    
+    public static String getJarPath(String jarPath) {
+        if (jarPath.startsWith("zip:"))
+            jarPath = jarPath.substring(4);
+        if (jarPath.startsWith("file:/")) {
+            jarPath = jarPath.substring("file:/".length());
+            if (!new File(jarPath).exists() && !jarPath.startsWith("/")) {
+                jarPath = "/" + jarPath;
+            }
+        }
+        try {
+            return new File(jarPath).getAbsoluteFile().getCanonicalPath();
+        }
+        catch (IOException e) {
+            return jarPath;
+        }
+    }
+    
 
-class FileSystemResourceLocation extends ResourceLocation {
     
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
         if (obj == null)
             return false;
-        if (!(obj instanceof FileSystemResourceLocation))
-            return false;
-        return root.equals(((FileSystemResourceLocation) obj).root);
+        if (obj instanceof ResourceLocation)
+            return ((ResourceLocation)obj).id().equals(this.id());
+        return false;
     }
     
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((root == null) ? 0 : root.hashCode());
-        return result;
+        return id().hashCode();
+    }
+}
+
+class FileSystemResourceLocation extends ResourceLocation {
+
+    public String id() {
+        return root.getAbsolutePath();
     }
     
     public void scan(final String base, final Pattern pattern, final List<NutResource> list) {
@@ -70,10 +92,10 @@ class FileSystemResourceLocation extends ResourceLocation {
     }
 
     public String toString() {
-        return "FileSystemResourceLocation [root=" + root + "]";
+        return "Dir[path=" + root + "]";
     }
 
-    File root;
+    private File root;
 
     public FileSystemResourceLocation(File root) throws IOException {
         if (root == null)
@@ -84,27 +106,8 @@ class FileSystemResourceLocation extends ResourceLocation {
 
 class JarResourceLocation extends ResourceLocation {
     
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        JarResourceLocation other = (JarResourceLocation) obj;
-        if (jarPath == null) {
-            if (other.jarPath != null)
-                return false;
-        } else if (!jarPath.equals(other.jarPath))
-            return false;
-        return true;
-    }
-    
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((jarPath == null) ? 0 : jarPath.hashCode());
-        return result;
+    public String id() {
+        return jarPath;
     }
 
     public void scan(String base, Pattern regex, List<NutResource> list) {
@@ -124,25 +127,17 @@ class JarResourceLocation extends ResourceLocation {
     }
     
     public String toString() {
-        return "JarResourceLocation [jarPath=" + jarPath + "]";
+        return "Jar[path=" + jarPath + "]";
     }
     
     private static final Log log = Logs.get();
 
     private List<String> names = new ArrayList<String>();
 
-    String jarPath;
+    private String jarPath;
 
     public JarResourceLocation(String jarPath) throws IOException {
-        if (jarPath.startsWith("zip:"))
-            jarPath = jarPath.substring(4);
-        if (jarPath.startsWith("file:/")) {
-            jarPath = jarPath.substring("file:/".length());
-            if (!new File(jarPath).exists() && !jarPath.startsWith("/")) {
-                jarPath = "/" + jarPath;
-            }
-        }
-        this.jarPath = new File(jarPath).getAbsoluteFile().getCanonicalPath();
+        this.jarPath = ResourceLocation.getJarPath(jarPath);
         ZipInputStream zis = null;
         try {
             zis = Scans.makeZipInputStream(jarPath);
