@@ -4,10 +4,10 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
@@ -72,6 +72,7 @@ public class NutLoading implements Loading {
                 || config.getServletContext().getMinorVersion() > 4)
                 log.debugf(" - ContextPath     : %s", config.getServletContext().getContextPath());
             log.debugf(" - context.tempdir : %s", config.getAttribute("javax.servlet.context.tempdir"));
+            log.debugf(" - MainModule      : %s", config.getMainModule().getName());
         }
         /*
          * 准备返回值

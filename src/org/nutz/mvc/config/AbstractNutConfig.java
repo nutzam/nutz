@@ -125,7 +125,6 @@ public abstract class AbstractNutConfig implements NutConfig {
             if (Strings.isBlank(name))
             	throw new NutConfigException("You need declare 'modules' parameter in your context configuration file or web.xml ! Only found -> " + getInitParameterNames());
             mainModule = Lang.loadClass(name);
-            log.debugf("MainModule: <%s>", mainModule.getName());
             return mainModule;
         }
         catch (NutConfigException e) {
