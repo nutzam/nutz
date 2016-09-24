@@ -22,7 +22,7 @@ import java.io.PushbackInputStream;
 import java.io.Reader;
 import java.io.Writer;
 
-import org.nutz.lang.stream.NullInputStream;
+import org.nutz.lang.stream.VoidInputStream;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
 
@@ -186,7 +186,7 @@ public abstract class Streams {
             return 0;
 
         char[] cbuf = new char[BUF_SIZE];
-        int len, count=0;
+        int len, count = 0;
         while (true) {
             len = reader.read(cbuf);
             if (len == -1)
@@ -578,7 +578,7 @@ public abstract class Streams {
     }
 
     public static InputStream nullInputStream() {
-        return new NullInputStream();
+        return new VoidInputStream();
     }
 
     public static InputStream wrap(byte[] bytes) {
@@ -665,7 +665,7 @@ public abstract class Streams {
         }
         return line;
     }
-    
+
     public static long writeAndClose(OutputStream ops, InputStream ins, int buf) {
         try {
             return write(ops, ins, buf);

@@ -25,7 +25,7 @@ import java.util.zip.InflaterInputStream;
 import org.nutz.http.sender.FilePostSender;
 import org.nutz.http.sender.GetSender;
 import org.nutz.http.sender.PostSender;
-import org.nutz.lang.stream.NullInputStream;
+import org.nutz.lang.stream.VoidInputStream;
 import org.nutz.lang.util.Callback;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -123,7 +123,7 @@ public abstract class Sender implements Callable<Response> {
                         rep.setStream(conn.getErrorStream());
                     }
                     catch (Exception e1) {
-                        rep.setStream(new NullInputStream());
+                        rep.setStream(new VoidInputStream());
                     }
                 }
             }
