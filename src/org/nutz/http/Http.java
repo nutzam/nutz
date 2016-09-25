@@ -14,7 +14,6 @@ import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
@@ -349,7 +348,7 @@ public class Http {
                 }
             }};
             sc.init(null, tmArr, new SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            SSLContext.setDefault(sc);
             return true;
         }
         catch (KeyManagementException e) {
@@ -357,6 +356,14 @@ public class Http {
         }
         catch (NoSuchAlgorithmException e) {
             return false;
+        }
+    }
+    
+    public static void resetSSLContext() {
+        try {
+            SSLContext.getDefault().init(null, null, new SecureRandom());
+        }
+        catch (Exception e) {
         }
     }
 }

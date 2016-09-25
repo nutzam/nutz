@@ -949,16 +949,6 @@ public class NutDao extends DaoSupport implements Dao {
     // ---------------------------------------------------------------
     // 专属于NutDao的一些帮助方法
 
-    /**
-     * 当本对象被GC的时候,打印之.
-     * <p/>
-     * 因为NutDao是线程安全的,用户反复创建NutDao的话,下面的方法将有提示作用
-     */
-    protected void finalize() throws Throwable {
-        log.debugf("%s[_selfId=%d] finalize", getClass().getSimpleName(), _selfId);
-        super.finalize();
-    }
-
     public void setExpert(Object obj) throws Exception {
         if (obj == null)
             throw new NullPointerException("expert MUST NOT NULL!!");
