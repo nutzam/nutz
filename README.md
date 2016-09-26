@@ -37,7 +37,7 @@
 
 ### Nutz生态系统(讨论稿)
 
-![nutz生态系统讨论稿截图](nutz_ecosystem.png)
+![nutz系统架构](nutz-graph.png)
 
 ## 基于注解配置
 
