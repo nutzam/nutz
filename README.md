@@ -104,7 +104,7 @@ DaoUp.me().close();
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.r.57.r3</version>
+			<version>1.r.58</version>
 		</dependency>
 ```
 
@@ -124,7 +124,7 @@ DaoUp.me().close();
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.r.58-SNAPSHOT</version>
+			<version>1.r.59-SNAPSHOT</version>
 		</dependency>
 		<!-- 其他依赖 -->
 	</dependencies>
@@ -132,12 +132,12 @@ DaoUp.me().close();
 
 也可以将repositories配置放入$HOME/.m2/settings.xml中
 
-或者直接去[快照库下载](https://oss.sonatype.org/content/repositories/snapshots/org/nutz/nutz/1.r.58-SNAPSHOT/)
+或者直接去[快照库下载](https://oss.sonatype.org/content/repositories/snapshots/org/nutz/nutz/1.r.59-SNAPSHOT/)
 
 ## Gradle 依赖
 
 ```gradle
-compile(group: 'org.nutz', name: 'nutz', version:'1.r.57.r3')
+compile(group: 'org.nutz', name: 'nutz', version:'1.r.58')
 ```
 
 ## Android下使用nutz时的注意事项
@@ -145,6 +145,10 @@ compile(group: 'org.nutz', name: 'nutz', version:'1.r.57.r3')
 * Dao基于JDBC API,所以无法工作
 * AOP在Android的类加载机制下无法使用
 * Scans及Ioc中类扫描机制,是不能工作的
+
+```gradle
+compile(group: 'org.nutz', name: 'nutz', version:'1.r.58', classifier:'android')
+```
 
 ### 混淆时需要加入的配置
 
