@@ -4,7 +4,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group = 'org.nutz'
-version = '1.r.58-rc1'
+version = '1.r.58'
 
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
@@ -130,10 +130,6 @@ test {
     }
 }
 
-signing {
-    required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
-    sign configurations.archives
-}
 
 def Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -142,4 +138,27 @@ if (isReleaseVersion) {
 	ext."signing.keyId"=properties["signing.keyId"]
 	ext."signing.password"=properties["signing.password"]
 	ext."signing.secretKeyRingFile"=properties["signing.secretKeyRingFile"]
+	ext."ossrhUsername"=properties["ossrhUsername"]
+	ext."ossrhPassword"=properties["ossrhPassword"]
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+            
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+        }
+    }
+}
+
+signing {
+    required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
 }

@@ -43,8 +43,9 @@
     * add: SfntTool插件,字体文件精简,用于PDF字体内嵌
     * update: views插件支持pdf view和velocity layout
     * update: sigar符合新版nutz插件的命名规则
-    * update: 大鲨鱼写的[https://github.com/Wizzercn/NutzWk nutzwk]已经3.3.7了
-    * update: 單純願望[https://github.com/Kerbores/NUTZ-ONEKEY nutz-onekey] 已经2.0了
+    * update: 大鲨鱼写的[https://github.com/Wizzercn/NutzWk nutzwk] 3.2.7
+    * update: 單純願望[https://github.com/Kerbores/NUTZ-ONEKEY nutz-onekey] 2.0
+    * update: 悟空[https://github.com/wukonggg/mz-g Gallery] 0.6.3
     
 
 --------------------------------------------------------------------------------------------------------
