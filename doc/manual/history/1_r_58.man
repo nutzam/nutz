@@ -1,0 +1,58 @@
+#title: 1.r.58 发行注记
+#index:0,1
+#author:wendal(wendal1985@gmail.com)
+--------------------------------------------------------------------------------------------------------
+1.r.58 {*龙井虾仁} 发行注记(20160926)
+    
+    本来要趁G20的喜庆气氛发布这个版本的,而且是nutz公开发布7周年,nutzcn社区上线1周年,但台风来了,被吹成了SB.
+    
+    月初,我(wendal)组织了一次长达4小时斗鱼直播(nutz.cn的内存泄漏排除),收看人数随着时间的推移正比例下降,
+    最终收入鱼丸0个和鱼翅0根,妥妥的稳定0收入.最终,在睡醒一觉之后,怒删几个依赖库,解决了.
+    随机调查了2名群众, 35%的群众表示,没有球没有肉,全是硬货太难啃,最终也没高潮,必须差评!!!
+    
+    另外,有小伙伴投诉说最近nutz刷版本很快啊,实不相瞒,当前的发布周期就是2-3个月,我觉得不算快枪手了.
+    
+    这次,我们集中力量完成了dao层的几个重要更新: [https://github.com/nutzam/nutz/issues/1116 读写分离],
+    [https://github.com/nutzam/nutz/issues/1117 拦截器机制],
+    [https://github.com/nutzam/nutz/issues/1119 支持存储过程的出参]. 欢迎查阅相关的issue及文档, 很期待您的反馈.
+    
+---------------------------------------------------------------------------------------------------------
+与1.r.57.r3的兼容性
+
+    这个版本的兼容性,主要是DaoRunner的实现类NutDaoRunner的变化导致的.
+    
+    * 判断是否开启自动事务,以前是NutDao负责,现在由NutDaoRunner负责 -- 如果自定义NutDaoRunner的话,改为复写其{_run}方法即可
+    * SQL日志的打印,现在由DaoLogInterceptor负责 -- 与daocache配合时的日志有变化,但是对功能没有任何影响. 详情看[issue1137 https://github.com/nutzam/nutz/issues/1137]
+
+---------------------------------------------------------------------------------------------------------
+主要变化:
+  
+    * add: [https://github.com/nutzam/nutz/issues/1116 Dao读写分离]
+    * add: [https://github.com/nutzam/nutz/issues/1117 Dao拦截器机制],
+    * add: [https://github.com/nutzam/nutz/issues/1119 支持存储过程的出参]
+    * add: [https://github.com/nutzam/nutz/issues/1121 支持vue-resource的X-HTTP-Method-Override]
+    * fix: [https://github.com/nutzam/nutz/issues/1134 SimpleDataSource不兼容Mysql6.0驱动]
+    * fix: [https://github.com/nutzam/nutz/issues/1114 Http轻客户端的Session维持]
+    * fix: [https://github.com/nutzam/nutz/issues/1109 Mvc前置表单列表的索引顺序不对]
+    
+关联项目更新:
+  
+    * add: daocache支持dao拦截器模式配置
+    * add: dubbo插件,兼容原生dubbo配置
+    * add: apidoc插件
+    * add: SfntTool插件,字体文件精简,用于PDF字体内嵌
+    * update: views插件支持pdf view和velocity layout
+    * update: sigar符合新版nutz插件的命名规则
+    * update: 大鲨鱼写的[https://github.com/Wizzercn/NutzWk nutzwk] 3.2.7
+    * update: 單純願望[https://github.com/Kerbores/NUTZ-ONEKEY nutz-onekey] 2.0
+    * update: 悟空[https://github.com/wukonggg/mz-g Gallery] 0.6.3
+    
+
+--------------------------------------------------------------------------------------------------------
+详细列表:
+  
+    * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.58 issue@github]
+
+欢迎访问[http://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
+    
+[https://nutz.cn Nutz社区]已经累计了2000+的问答帖子, 10000+条回复,注册人数近1千,首次回复时间少于1小时哦,白天基本上秒回!
