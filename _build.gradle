@@ -154,6 +154,39 @@ uploadArchives {
             snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
                 authentication(userName: ossrhUsername, password: ossrhPassword)
             }
+            pom.project {
+        		name 'Nutz'
+        		packaging 'jar'
+        		description 'Nutz, which is a collections of lightweight frameworks, each of them can be used independently'
+        		url 'https://nutz.cn'
+
+        		scm {
+          			connection 'scm:git:git://github.com/nutzam/nutz.git'
+          			developerConnection 'scm:git:git://github.com/nutzam/nutz.git'
+          			url 'git://github.com/nutzam/nutz.git'
+        		}
+
+        		licenses {
+          			license {
+            			name 'The Apache License, Version 2.0'
+            			url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+          			}
+        		}
+
+        		developers {
+          			developer {
+            			id 'zozoh'
+            			name 'zozoh'
+            			email 'zozohtnt@gmail.com'
+          			}
+          			developer {
+            			id 'wendal'
+            			name 'Wendal Chen'
+            			email 'wendal1985@gmail.com'
+            			url "http://wendal.net"
+          			}
+        		}
+        	}
         }
     }
 }
