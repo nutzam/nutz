@@ -46,16 +46,15 @@
 <h1><a name="复合加载器的使用方法"></a>复合加载器的使用方法</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>复合加载器非常简单，似乎只花了 Wendal 同学不到 1 个小时的时间，因为它本身并不做任何事情，它只是调用其他的加载器：</p>
-<pre>@IocBy(type=ComboIocLoader.class, args={
-                 "*js",
-                 "ioc/dao.js", 
-                 "ioc/service.js", 
-                 "*anno", 
-                 "com.myapp.module",
-                 "com.myapp.service",
-                 "*tx",
-                 "*async"  <span class="zdoc_code_cmt">// @Async注解,异步执行.
-</span>		 }) 
+<pre>ComboIocLoader loader = new ComboIocLoader("*js",
+                                               "ioc/dao.js",
+                                               "ioc/service.js",
+                                               "*anno",
+                                               "com.myapp.module",
+                                               "com.myapp.service",
+                                               "*tx",
+                                               <span class="zdoc_code_cmt">// @Async注解,异步执行.
+</span>                                               "*async");
 </pre>
 <p>如上面的例子，组合加载器，组合了3个 Ioc 加载器，一个是 JsonLoader，一个是AnnotationIocLoader, 一个是AOP事务的TransIocLoader(1.b.52新增)。 </p>
 <p>ComboIocLoader 的构造函数是个字符串形变参数组，所有的参数，如果以星号 "<span style="color:#0000AA;"><b> *</b></span>" 开头，则被认为是加载器的类型，后面的参数都作为这个加载器构造函数的参数，直到遇到下一个星号 "<span style="color:#0000AA;"><b> *</b></span>" 开头的参数。</p>

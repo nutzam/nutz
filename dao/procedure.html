@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>调用存储过程</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">调用存储过程</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#概述">概述</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#仅含义入参的存储过程">仅含义入参的存储过程</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#带出参的存储过程">带出参的存储过程</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="概述"></a>概述</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>从1.r.58开始, 支持出参, 之前的版本仅支持入参.</p>
+<p>从实现方式上说, 是通过扩展自定义SQL的含义及上下文来实现</p>
+<div class="hr"><b></b></div>
+<h1><a name="仅含义入参的存储过程"></a>仅含义入参的存储过程</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>    <span class="zdoc_code_cmt">// 建表,删除老的存储过程.
+</span>	dao.create(Pet.class, true);
+	dao.insert(Pet.create("wendal"));
+	dao.execute(Sqls.create("DROP PROCEDURE IF EXISTS proc_pet_fetch"));
+    <span class="zdoc_code_cmt">// 新建存储过程
+</span>	dao.execute(Sqls.create("CREATE PROCEDURE proc_pet_fetch(IN nm varchar(1024))\nBEGIN\n\tSELECT * FROM t_pet where name=nm;\nEND"));
+
+	<span class="zdoc_code_cmt">// 像普通自定义SQL那样创建SQL对象.
+</span>	Sql sql = Sqls.fetchEntity("CALL proc_pet_fetch(@nm)");
+	sql.setEntity(dao.getEntity(Pet.class));
+	sql.params().set("nm", "wendal"); <span class="zdoc_code_cmt">//设置入参
+</span>	dao.execute(sql);
+
+	Pet pet = sql.getObject(Pet.class);
+	assertNotNull(pet);
+	assertEquals("wendal", pet.getName());
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="带出参的存储过程"></a>带出参的存储过程</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>    <span class="zdoc_code_cmt">// 新建存储过程
+</span>    dao.execute(Sqls.create("CREATE PROCEDURE proc_pet_fetch(IN nm varchar(1024), OUT outId int)\nBEGIN\n\tselect id into outId from t_pet where name=nm;\nEND"));
+
+    <span class="zdoc_code_cmt">// 像普通自定义SQL那样创建SQL对象.
+</span>    Sql sql = Sqls.create("CALL proc_pet_fetch(@nm, @OUTid)");
+    sql.setEntity(dao.getEntity(Pet.class));
+    sql.params().set("nm", "wendal"); <span class="zdoc_code_cmt">// 设置入参
+</span>    sql.params().set("OUTid", Types.INTEGER);<span class="zdoc_code_cmt">// 设置出参类型,注意,必须加OUT开头
+</span>    dao.execute(sql);
+
+    Record re = sql.getOutParams();
+    assertNotNull(re);
+    assertEquals(pet.getId(), re.get("id"));
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

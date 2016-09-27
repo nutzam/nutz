@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>读写分离</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">读写分离</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#概述">概述</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#ioc_js形式的配置">ioc js形式的配置</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#读写分离的判据">读写分离的判据</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="概述"></a>概述</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>从1.r.58开始, 内置读写分离支持</p>
+<div class="hr"><b></b></div>
+<h1><a name="ioc_js形式的配置"></a>ioc js形式的配置</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>    dataSource : {
+    	<span class="zdoc_code_cmt">// master数据源
+</span>    },
+    slaveDataSource : {
+        <span class="zdoc_code_cmt">// slave数据源,负责读
+</span>    },
+	dao : {
+		type : "org.nutz.dao.impl.NutDao",
+		args : [{refer:"dataSource"}], <span class="zdoc_code_cmt">//引用主数据源
+</span>		fields : {
+			runner : {refer: "daoRunner"}
+		}
+	},
+	daoRunner : {
+		type : "org.nutz.dao.impl.sql.run.NutDaoRunner",
+		fields : {
+			slaveDataSource : {refer:"slaveDataSource"} <span class="zdoc_code_cmt">//引用slave数据源
+</span>		}
+	}
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="读写分离的判据"></a>读写分离的判据</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>不在事务模板内!!</li>
+<li>select语句</li>
+</ul>
+<p>继承NutDaoRunner覆盖selectDataSource方法,可以实现多个从库或分库分表.</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

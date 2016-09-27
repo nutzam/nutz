@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Dao拦截器</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Dao拦截器</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#为啥要实现Dao拦截器">为啥要实现Dao拦截器</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#内置的拦截器实现">内置的拦截器实现</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="为啥要实现Dao拦截器"></a>为啥要实现Dao拦截器</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>DaoRunner和DaoExecutor的定制成本较高,拦截器让NutDao更容易定制.</li>
+<li>之前的设计没法很好的实现事务分离(DaoSupport和NutDaoRunner均有事务相关的代码)</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="内置的拦截器实现"></a>内置的拦截器实现</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>log -- 输出SQL语句到日志,这是NutDao默认情况下唯一启用的拦截器</li>
+<li>time -- 打印sql执行耗时</li>
+</ul>
+<p>如何自定义</p>
+<div class="hr"><b></b></div>
+<p>需要实现的接口</p>
+<pre>public interface DaoInterceptor {
+    void filter(DaoInterceptorChain chain) throws DaoException;
+}
+<span class="zdoc_code_cmt">// DaoInterceptorChain 包含当前执行的全部信息,如Connection,DaoStatment等等
+</span></pre>
+<p>示例实现</p>
+<pre>public class MyDaoInterceptor {
+    public void filter(DaoInterceptorChain chain) throws DaoException {
+        DaoStatement st = chain.getDaoStatement();
+        if (st instanceof NutPojo) {
+            <span class="zdoc_code_cmt">// 如果是dao.insert(user)之类的操作,会进入这个分支
+</span>        } else if (st instanceof NutSql) {
+        	<span class="zdoc_code_cmt">// 如果是自定义SQL,会进入这个分支
+</span>        }
+        chain.doChain();<span class="zdoc_code_cmt">//继续下一个拦截器执行
+</span>    }
+}
+</pre>
+<p>在ioc中的配置,以dao.js为例</p>
+<pre>var ioc = {
+		dao : {
+			type : "org.nutz.dao.impl.NutDao",
+			args : [{refer:"dataSource"}],
+			fields : {
+				interceptors : [
+							"log", <span class="zdoc_code_cmt">// 默认的日志还需要的
+</span>							"time", <span class="zdoc_code_cmt">// 加个时间又如何呢?
+</span>							"net.demo.MyDaoInterceptor" <span class="zdoc_code_cmt">// 加入自己的,才合适
+</span>							]
+			}
+		}
+}
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

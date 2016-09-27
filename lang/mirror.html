@@ -72,6 +72,9 @@
 <li>
 <div><span class="num">5.9</span><a href="#设置字段值">设置字段值</a></div>
 </li>
+<li>
+<div><span class="num">5.10</span><a href="#获取静态字段">获取静态字段</a></div>
+</li>
 </ul>
 </li>
 </ul>
@@ -255,6 +258,14 @@ System.out.println(mirror.invoke(mc, "getInfo", "Hello~~~"));
 </li>
 <li>为对象的一个字段设置。优先调用 setter 方法。
 <pre>mirror.setValue(obj, "name", "XiaoBai");
+</pre>
+</li>
+</ul>
+<h2><a name="获取静态字段"></a>获取静态字段</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>取静态属性
+<pre>Field[] fields = mirror.getStaticField(nofinalOrAll);
 </pre>
 </li>
 </ul>

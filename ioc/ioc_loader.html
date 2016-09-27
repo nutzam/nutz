@@ -49,7 +49,7 @@
 <pre>{
 	"对象名称" : {
 		type      : "对象类型",
-        parent    : "被继承的对象名称",
+		parent    : "被继承的对象名称",
 		events    : {
 			fetch : "触发器的类型或者函数名",
 			create : "触发器的类型或者函数名",
@@ -87,7 +87,7 @@
 </span>        parent    : 'bean',           
 
         <span class="zdoc_code_cmt">// 不声明，默认为 true
-</span>		singleton : true,
+</span>        singleton : true,
 
         <span class="zdoc_code_cmt">// 这里声明对象的三种事件。事件的处理函数可以是一个接口，也可以是自身的
 </span>        <span class="zdoc_code_cmt">// 一个方法。
@@ -141,30 +141,30 @@
 <h1><a name="在_NutzIoc_定义一个对象的数据结构是怎样的？"></a>在 Nutz.Ioc 定义一个对象的数据结构是怎样的？</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>在 org.nutz.ioc.meta.IocObject 类中，你如果拿到它的源代码，或者是 JDoc，它描述了在容器中一个对象的全部信息，你会发现它其实也简单：</p>
-<pre>public class IocObject {
+<pre>    public class IocObject {
 
     <span class="zdoc_code_cmt">// 对象的 Java 类型
-</span>	private Class&lt;?&gt; type;
+</span>    private Class&lt;?&gt; type;
 
     <span class="zdoc_code_cmt">// 声明对象是否为单例
-</span>	private boolean singleton;
+</span>    private boolean singleton;
 
     <span class="zdoc_code_cmt">// 对象监听何种事件，对应有
 </span>    <span class="zdoc_code_cmt">//  "fetch"   - 每次对象被 ioc.get 的时候，触发
 </span>    <span class="zdoc_code_cmt">//  "create"  - 当且仅当对象被 new 的时候触发
 </span>    <span class="zdoc_code_cmt">//  "depose"  - 当对象被容器销毁时触发
-</span>	private IocEventSet events;
+</span>    private IocEventSet events;
 
     <span class="zdoc_code_cmt">// 对象构造函数的参数列表
-</span>	private List&lt;IocValue&gt; args;
+</span>    private List&lt;IocValue&gt; args;
 
     <span class="zdoc_code_cmt">// 对象的字段
-</span>	private List&lt;IocField&gt; fields;
+</span>    private List&lt;IocField&gt; fields;
 
     <span class="zdoc_code_cmt">// 对象的缓存范围，默认为 "app"
-</span>	private String scope;
-	
-	<span class="zdoc_code_cmt">// 省略所有的 getter 和 setter 函数
+</span>    private String scope;
+
+    <span class="zdoc_code_cmt">// 省略所有的 getter 和 setter 函数
 </span></pre>
 <h2><a name="事件集合_IocEventSet"></a>事件集合 IocEventSet</h2>
 <div style="float:right;"><a href="#top">Top</a></div>

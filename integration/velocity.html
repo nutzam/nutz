@@ -15,10 +15,13 @@
 <div><span class="num">2</span><a href="#修改MainModule类,添加引用">修改MainModule类,添加引用</a></div>
 </li>
 <li>
-<div><span class="num">3</span><a href="#用法及默认配置">用法及默认配置</a></div>
+<div><span class="num">3</span><a href="#添加velocityproperties">添加velocity.properties</a></div>
 </li>
 <li>
-<div><span class="num">4</span><a href="#可供参考的实例项目">可供参考的实例项目</a></div>
+<div><span class="num">4</span><a href="#用法及默认配置">用法及默认配置</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#可供参考的实例项目">可供参考的实例项目</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
@@ -29,7 +32,7 @@
 <pre>	&lt;dependency&gt;
 		&lt;groupId&gt;org.nutz&lt;/groupId&gt;
 		&lt;artifactId&gt;nutz-plugins-views&lt;/artifactId&gt;
-		&lt;version&gt;1.b.52.preview&lt;/version&gt;
+		&lt;version&gt;1.r.57&lt;/version&gt;
 	&lt;/dependency&gt;
 </pre>
 <div class="hr"><b></b></div>
@@ -38,6 +41,15 @@
 <pre>@Views(value={VelocityViewMaker.class})
 <span class="zdoc_code_cmt">// 其他配置,如IocBy等等
 </span>public class MainModule {}
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="添加velocityproperties"></a>添加velocity.properties</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>input.encoding=UTF-8
+output.encoding=UTF-8
+resource.loader=webapp
+webapp.resource.loader.class=org.apache.velocity.tools.view.WebappResourceLoader
+webapp.resource.loader.path=/
 </pre>
 <div class="hr"><b></b></div>
 <h1><a name="用法及默认配置"></a>用法及默认配置</h1>

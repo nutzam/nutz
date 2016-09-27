@@ -247,7 +247,11 @@ dao.fetchLinks(food, "pets");
 <p>清除 pets</p>
 <pre>dao.clearLinks(food, "pets");
 </pre>
-<p>清除同删除的区别在于，清除只会执行一条 SQL 删除 t_pet_food 的记录，但是 t_pet 和 t_food 表中的数据不会被删除而删除则不仅会清除 t_pet_food 里的记录，还会逐个调用 dao.delete 来删除对象。</p>
+<p>删除与清除的区别在于</p>
+<ul type="disc">
+<li>删除不仅会删掉 t_pet_food 里的记录，还会逐个调用 dao.delete 来删除 pet 对象。</li>
+<li>而清除只会执行一条 SQL 来删除 t_pet_food 中的记录（即中间表中的记录），但是 t_pet 和 t_food 表中的数据不会被删除。</li>
+</ul>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>
