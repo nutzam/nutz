@@ -194,7 +194,7 @@ public abstract class Sender implements Callable<Response> {
         }
         URL url = request.getUrl();
         String host = url.getHost();
-        if (!Lang.isIPv4Address(host)) {
+        if (url.getProtocol().equals("http") && !Lang.isIPv4Address(host)) {
             String ip = HttpDNS.getIp(host);
             if (ip != null) {
                 url = new URL(url.toString().replaceFirst(host, ip));
