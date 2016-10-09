@@ -1,0 +1,27 @@
+#title: HttpDNS集成
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+------------------------------------------------------------------------
+什么是HttpDNS
+
+	移动解析（HttpDNS）基于Http协议向腾讯云的DNS服务器发送域名解析请求，替代了基于DNS协议向
+	运营商Local DNS发起解析请求的传统方式，可以避免Local DNS造成的域名劫持和跨网访问问题，
+	解决移动互联网服务中域名解析异常带来的困扰。
+
+	换句话说,就是无视本地DNS服务器,直接从指定服务器获取DNS结果,从而避免了本地DNS配置错误和ISP劫持
+
+------------------------------------------------------------------------
+基本用法 -- 阿里DNS
+
+登录阿里云控制台中的云解析--HttpDNS
+
+AccountID从阿里云控制台的云解析DNS的HttpDNS获取AccountID,并添加所有需要解析的域名.
+
+然后使用下面的代码初始化:
+
+	{{{<JAVA>
+    AliDnsProvider provider = new AliDnsProvider(AccountID);
+    HttpDNS.setProvider(provider);
+	}}}
+
+执行完毕后, Http.get等请求,均会透过HttpDNS服务获取ip.

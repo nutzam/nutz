@@ -22,9 +22,11 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
+import org.nutz.http.dns.HttpDNS;
 import org.nutz.http.sender.FilePostSender;
 import org.nutz.http.sender.GetSender;
 import org.nutz.http.sender.PostSender;
+import org.nutz.lang.Lang;
 import org.nutz.lang.stream.VoidInputStream;
 import org.nutz.lang.util.Callback;
 import org.nutz.log.Log;
@@ -190,7 +192,20 @@ public abstract class Sender implements Callable<Response> {
                 log.info("Test proxy FAIl, fallback to direct connection", e);
             }
         }
-        conn = (HttpURLConnection) request.getUrl().openConnection();
+        URL url = request.getUrl();
+        String host = url.getHost();
+        if (!Lang.isIPv4Address(host)) {
+            String ip = HttpDNS.getIp(host);
+            if (ip != null) {
+                url = new URL(url.toString().replaceFirst(host, ip));
+            }
+        }
+        conn = (HttpURLConnection) url.openConnection();
+        if (!Lang.isIPv4Address(host)) {
+            if (url.getPort() > 0 && url.getPort() != 80)
+                host += ":" + url.getPort();
+            conn.addRequestProperty("Host", host);
+        }
         conn.setConnectTimeout(Default_Conn_Timeout);
         conn.setRequestMethod(request.getMethod().name());
         if (timeout > 0)
@@ -202,11 +217,6 @@ public abstract class Sender implements Callable<Response> {
     }
 
     protected void setupRequestHeader() {
-        URL url = request.getUrl();
-        String host = url.getHost();
-        if (url.getPort() > 0 && url.getPort() != 80)
-            host += ":" + url.getPort();
-        conn.setRequestProperty("Host", host);
         Header header = request.getHeader();
         if (null != header)
             for (Entry<String, String> entry : header.getAll())
