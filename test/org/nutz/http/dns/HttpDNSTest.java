@@ -18,6 +18,9 @@ public class HttpDNSTest {
         
         Response resp = Http.get("http://www.aliyun.com");
         assertTrue(resp.isOK());
+        
+        //Response resp = Http.get("http://www.aliyun.com");
+        //assertTrue(resp.isOK());
     }
 
 }
