@@ -28,7 +28,7 @@ public abstract class Tasks {
     /**
      * 立即启动，并以固定的频率来运行任务。后续任务的启动时间不受前次任务延时影响。
      * @param task 具体待执行的任务
-     * @param period 每次执行任务的间隔时间(单位秒)
+     * @param periodSeconds 每次执行任务的间隔时间(单位秒)
      */
     public static ScheduledFuture<?> scheduleAtFixedRate(Runnable task, long periodSeconds) {
         return scheduleAtFixedRate(task, 0, periodSeconds, TimeUnit.SECONDS);
@@ -41,8 +41,8 @@ public abstract class Tasks {
      * @param periodSeconds 每次执行任务的间隔时间(单位秒)
      * @param unit 时间单位
      */
-    public static ScheduledFuture<?> scheduleAtFixedRate(Runnable task, long initialDelay, long period, TimeUnit unit) {
-        return taskScheduler.scheduleAtFixedRate(task, initialDelay, period, unit);
+    public static ScheduledFuture<?> scheduleAtFixedRate(Runnable task, long initialDelay, long periodSeconds, TimeUnit unit) {
+        return taskScheduler.scheduleAtFixedRate(task, initialDelay, periodSeconds, unit);
     }
 
     /**
@@ -80,7 +80,7 @@ public abstract class Tasks {
     /**
      * 立即启动，两次任务间保持固定的时间间隔
      * @param task 具体待执行的任务
-     * @param period 两次任务的间隔时间(单位秒)
+     * @param periodSeconds 两次任务的间隔时间(单位秒)
      */
     public static ScheduledFuture<?> scheduleWithFixedDelay(Runnable task, long periodSeconds) {
         return scheduleWithFixedDelay(task, 0, periodSeconds, TimeUnit.SECONDS);
@@ -166,7 +166,7 @@ public abstract class Tasks {
 
     /**
      * 返回定时任务线程池，可做更高级的应用
-     * @return
+     * @return 当前的线程池
      */
     public static ScheduledThreadPoolExecutor getTaskScheduler() {
         return taskScheduler;

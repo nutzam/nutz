@@ -51,7 +51,7 @@ public class UTF8JsonView implements View {
     }
     
     public UTF8JsonView() {
-    	this.format = new JsonFormat();
+    	this.format = new JsonFormat(false);
 	}
 
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)

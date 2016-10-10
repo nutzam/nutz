@@ -48,8 +48,11 @@ var ioc = {
 		type :"org.nutz.dao.impl.NutDao",
 		args : [ {refer :"dataSource"}, {refer :"sqls"} ],
 		fields : {
-			interceptors : ["log", "time"]
+			interceptors : ["log", "time", {refer:"dao_sayhi"}]
 		}
+	},
+	dao_sayhi : {
+		type : "org.nutz.dao.impl.interceptor.SayHiDaoInterceptor"
 	},
 /*------------------------------------------------------------------*/
 // Sqls

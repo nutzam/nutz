@@ -19,7 +19,7 @@ import org.nutz.trans.Trans;
 import org.nutz.trans.Transaction;
 
 /**
- * 1.r.54开始移除auto-commit相关的代码
+ * 统管事务和拦截链
  * @author wendal
  *
  */

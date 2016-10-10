@@ -269,7 +269,7 @@ public abstract class Times {
     /**
      * 根据一个当天的绝对秒数，得到一个时间字符串，格式为 "HH:mm:ss"
      * 
-     * @param ms
+     * @param sec
      *            当天的绝对秒数
      * @return 时间字符串
      */
@@ -511,7 +511,7 @@ public abstract class Times {
      * 
      * @return 时间范围(毫秒级别)
      * 
-     * @see org.nutz.ztask.util.ZTasks#weeks(long, int, int)
+     * @see org.nutz.lang.Times#weeks(long, int, int)
      */
     public static Date[] week(int off) {
         return week(System.currentTimeMillis(), off);
@@ -527,7 +527,7 @@ public abstract class Times {
      * 
      * @return 时间范围(毫秒级别)
      * 
-     * @see org.nutz.ztask.util.ZTasks#weeks(long, int, int)
+     * @see org.nutz.lang.Times#weeks(long, int, int)
      */
     public static Date[] week(long base, int off) {
         return weeks(base, off, off);
@@ -543,7 +543,7 @@ public abstract class Times {
      * 
      * @return 时间范围(毫秒级别)
      * 
-     * @see org.nutz.ztask.util.ZTasks#weeks(long, int, int)
+     * @see org.nutz.lang.Times#weeks(long, int, int)
      */
     public static Date[] weeks(int offL, int offR) {
         return weeks(System.currentTimeMillis(), offL, offR);
@@ -617,7 +617,7 @@ public abstract class Times {
      * </pre>
      * 
      * @param d
-     * @return
+     * @return 日期字符串
      */
     public static String formatForRead(Date d) {
         long ms = System.currentTimeMillis() - d.getTime();
@@ -766,8 +766,8 @@ public abstract class Times {
      * 2m -> 120000 <br>
      * 3h -> 10800000 <br>
      * 
-     * @param tstr
-     * @return
+     * @param tstr 时间字符串
+     * @return 毫秒数
      */
     public static long toMillis(String tstr) {
         if (Strings.isBlank(tstr)) {

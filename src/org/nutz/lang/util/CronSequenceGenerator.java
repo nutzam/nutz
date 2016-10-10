@@ -34,8 +34,6 @@ import org.nutz.lang.Strings;
  *
  * @author Dave Syer
  * @author Juergen Hoeller
- * @since 3.0
- * @see CronTrigger
  */
 public class CronSequenceGenerator {
 

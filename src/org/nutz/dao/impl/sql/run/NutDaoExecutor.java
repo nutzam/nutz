@@ -2,21 +2,29 @@ package org.nutz.dao.impl.sql.run;
 
 import static java.lang.String.format;
 
+import java.io.Serializable;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.nutz.dao.DaoException;
 import org.nutz.dao.DatabaseMeta;
+import org.nutz.dao.entity.Record;
 import org.nutz.dao.impl.DaoExecutor;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.DaoStatement;
+import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlType;
+import org.nutz.dao.sql.VarIndex;
+import org.nutz.dao.sql.VarSet;
 import org.nutz.dao.util.Daos;
 import org.nutz.lang.Lang;
 import org.nutz.log.Log;
@@ -114,18 +122,62 @@ public class NutDaoExecutor implements DaoExecutor {
 		CallableStatement stmt = null;
 		ResultSet rs = null;
 		try {
-			stmt = conn.prepareCall(sql);
-			ValueAdaptor[] adaptors = st.getAdaptors();
+            stmt = conn.prepareCall(sql);
+            ValueAdaptor[] adaptors = st.getAdaptors();
+            HashMap<Integer, OutParam> outParams = new HashMap<Integer, OutParam>();
+            if (st instanceof Sql) {
+                VarIndex varIndex = ((Sql) st).paramIndex();
+                VarSet varSet = ((Sql) st).params();
+                for (int i = 0; i < varIndex.size(); i++) {
+                    String name = varIndex.getOrderName(i);
+                    if (name.startsWith("OUT") && varSet.get(name).getClass() == Integer.class) {
+                        Integer t = (Integer) varSet.get(name);
+                        outParams.put(i, new OutParam(name, t));
+                    }
+                }
+            }
 			// 创建语句并设置参数
-			if (paramMatrix != null && paramMatrix.length > 0) {
-				for (int i = 0; i < paramMatrix[0].length; i++) {
-			        adaptors[i].set((PreparedStatement) stmt,
-			                paramMatrix[0][i], i + 1);
-			    }
-			}
-			
+            if (paramMatrix != null && paramMatrix.length > 0) {
+                PreparedStatement pst = (PreparedStatement) stmt;
+                Object[] pm = paramMatrix[0];
+                for (int i = 0; i < pm.length; i++) {
+                    OutParam outParam = outParams.get(i);
+                    if (outParam == null)
+                        adaptors[i].set(pst, pm[i], i + 1);
+                    else
+                        stmt.registerOutParameter(i + 1, outParam.jdbcType);
+                }
+            }
+
 			stmt.execute();
-			
+
+            if (outParams.size() > 0) {
+                Record r = new Record();
+                for (Entry<Integer, OutParam> en : outParams.entrySet()) {
+                    OutParam outParam = en.getValue();
+                    int jdbcIndex = en.getKey() + 1;
+                    Object value;
+                    switch (outParam.jdbcType) {
+                    case Types.INTEGER:
+                        value = stmt.getInt(jdbcIndex);
+                        break;
+                    case Types.TIMESTAMP:
+                        value = stmt.getTimestamp(jdbcIndex);
+                        break;
+                    case Types.CLOB:
+                        value = stmt.getString(jdbcIndex);
+                        break;
+                    case Types.DATE:
+                        value = stmt.getDate(jdbcIndex);
+                        break;
+                    default:
+                        value = stmt.getObject(jdbcIndex);
+                        break;
+                    }
+                    r.set(outParam.name.substring(3), value);
+                }
+                st.getContext().attr("OUT", r);
+            }
 			//先尝试读取第一个,并调用一次回调
 			rs = stmt.getResultSet();
 			try {
@@ -147,9 +199,6 @@ public class NutDaoExecutor implements DaoExecutor {
 						if (rs != null)
 							rs.close();
 					}
-				// NOT support for this yet.  by wendal
-				//} else if (stmt.getUpdateCount() > -1) {
-				//	st.onAfter(connection, null);
 				}
 				break;
 			}
@@ -337,5 +386,17 @@ public class NutDaoExecutor implements DaoExecutor {
         // 打印调试信息
         if (log.isDebugEnabled())
             log.debug(sql.forPrint());
+    }
+    
+    static class OutParam implements Serializable {
+        private static final long serialVersionUID = 1L;
+        String name;
+        int jdbcType;
+        public OutParam() {}
+        public OutParam(String name, int jdbcType) {
+            super();
+            this.name = name;
+            this.jdbcType = jdbcType;
+        }
     }
 }

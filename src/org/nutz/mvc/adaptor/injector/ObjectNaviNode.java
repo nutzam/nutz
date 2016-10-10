@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * 对象路径节点转换.<br/>
- * 将URL中的字符串参数名转换成对结构, 然后通过 {@link Objs}转换成实体对象<br/>
+ * 将URL中的字符串参数名转换成对结构, 然后通过 {@link org.nutz.mapl.Mapl}转换成实体对象<br/>
  * URL规则:
  * <ul>
  *  <li>对象与属性之间使用"."做为连接符

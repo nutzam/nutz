@@ -598,7 +598,7 @@ public class Base64 {
          * 返回通过 URL Safe Base64 解码后的 URL 字符串。<br>
          * 如果传入的字符串不合法，将返回空字符串。
          *
-         * @param url URL Safe Base64 编码的 URL
+         * @param base64 URL Safe Base64 编码的 URL
          *
          * @return URL 字符串
          */
@@ -606,11 +606,10 @@ public class Base64 {
             StringBuilder sb = new StringBuilder(base64);
             sb.append(Strings.dup('=', 5 - base64.length() % 4 - 1));
             byte[] decode = Base64.decode(sb.toString().replace('-', '+').replace('_', '/'));
-            if (decode.length != 0 || decode == null) {
-                return new String(decode);
-            } else {
+            if (decode == null || decode.length == 0) {
                 return "";
             }
+            return new String(decode);
         }
     }
 }

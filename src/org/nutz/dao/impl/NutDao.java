@@ -687,6 +687,7 @@ public class NutDao extends DaoSupport implements Dao {
             // 高级条件接口，直接得到 WHERE 子句
             if (cnd instanceof Criteria) {
                 pojo.append(((Criteria) cnd).where());
+                // MySQL/PgSQL/SqlServer 与 Oracle/H2的结果会不一样,奇葩啊
                 GroupBy gb = ((Criteria) cnd).getGroupBy();
                 if (gb != null)
                     pojo.append(gb);
@@ -947,16 +948,6 @@ public class NutDao extends DaoSupport implements Dao {
 
     // ---------------------------------------------------------------
     // 专属于NutDao的一些帮助方法
-
-    /**
-     * 当本对象被GC的时候,打印之.
-     * <p/>
-     * 因为NutDao是线程安全的,用户反复创建NutDao的话,下面的方法将有提示作用
-     */
-    protected void finalize() throws Throwable {
-        log.debugf("%s[_selfId=%d] finalize", getClass().getSimpleName(), _selfId);
-        super.finalize();
-    }
 
     public void setExpert(Object obj) throws Exception {
         if (obj == null)

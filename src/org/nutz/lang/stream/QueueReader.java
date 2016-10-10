@@ -29,7 +29,7 @@ public class QueueReader extends Reader{
     /**
      * 读取一项数据
      * @param ends 结束符, 默认' ', '\r', '\n'
-     * @return
+     * @return 数据
      * @throws IOException
      */
     public String readItem(char ... ends) throws IOException{
@@ -54,7 +54,7 @@ public class QueueReader extends Reader{
     
     /**
      * 读取一行
-     * @return
+     * @return 一行数据
      * @throws IOException
      */
     public String readLine() throws IOException{
@@ -76,7 +76,7 @@ public class QueueReader extends Reader{
     
     /**
      * 读取头部字节, 并删除
-     * @return
+     * @return 头部字符
      * @throws IOException
      */
     public int poll() throws IOException{
@@ -102,7 +102,7 @@ public class QueueReader extends Reader{
     /**
      * 访问头部开始第几个字节, 不删除
      * @param index
-     * @return
+     * @return 头部的第N个字符
      * @throws IOException 
      */
     public int peek(int index) throws IOException{
@@ -114,7 +114,7 @@ public class QueueReader extends Reader{
     
     /**
      * 访问上次peekNext访问的下个位置的字节, 未访问过则访问索引0, poll, peek后归零, 不删除
-     * @return
+     * @return 下一个位置的字符
      * @throws IOException 
      */
     public int peekNext() throws IOException{
@@ -123,7 +123,7 @@ public class QueueReader extends Reader{
     
     /**
      * 访问头部字节, 不删除
-     * @return
+     * @return 头部字符
      * @throws IOException 
      */
     public int peek() throws IOException{
@@ -155,7 +155,7 @@ public class QueueReader extends Reader{
     
     /**
      * 是否结束
-     * @return
+     * @return true, 如果流已经结束
      */
     public boolean isEnd(){
         return end;
@@ -179,7 +179,7 @@ public class QueueReader extends Reader{
     /**
      * 是否以 start 开始
      * @param start
-     * @return
+     * @return true, 如果的确以指定字符串开始
      * @throws IOException
      */
     public boolean startWith(String start) throws IOException{

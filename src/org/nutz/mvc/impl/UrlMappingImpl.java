@@ -25,10 +25,17 @@ public class UrlMappingImpl implements UrlMapping {
     protected Map<String, ActionInvoker> map;// 这个对象有点多余,考虑换成AtMap吧!!
 
     protected MappingNode<ActionInvoker> root;
+    
+    protected String prefix;
 
     public UrlMappingImpl() {
         this.map = new HashMap<String, ActionInvoker>();
         this.root = new MappingNode<ActionInvoker>();
+    }
+    
+    public UrlMappingImpl(String prefix) {
+        this();
+        this.prefix = prefix;
     }
 
     public void add(ActionChainMaker maker, ActionInfo ai, NutConfig config) {
@@ -83,6 +90,8 @@ public class UrlMappingImpl implements UrlMapping {
     public ActionInvoker get(ActionContext ac) {
         RequestPath rp = Mvcs.getRequestPathObject(ac.getRequest());
         String path = rp.getPath();
+        if (prefix != null)
+            path = path.substring(prefix.length());
         ac.setSuffix(rp.getSuffix());
         ActionInvoker invoker = root.get(ac, path);
         if (invoker != null) {
@@ -106,8 +115,12 @@ public class UrlMappingImpl implements UrlMapping {
     	root.add(path, invoker);
     	map.put(path, invoker);
     }
-
+    
     protected void printActionMapping(ActionInfo ai) {
+        print(ai);
+    }
+
+    protected void print(ActionInfo ai) {
 
         /*
          * 打印基本调试信息

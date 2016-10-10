@@ -222,7 +222,7 @@ public abstract class Chain {
                     continue;
                 Object v = mirror.getValue(obj, f.getName());
                 if (null == v) {
-                    if (fm.isIgnoreNull())
+                    if (fm != null && fm.isIgnoreNull())
                         continue;
                 } else if (fm != null && fm.isIgnoreBlankStr() && v instanceof String && Strings.isBlank((String)v)) {
                     continue;

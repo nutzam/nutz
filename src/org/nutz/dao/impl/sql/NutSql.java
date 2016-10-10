@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.nutz.dao.Condition;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.Record;
 import org.nutz.dao.impl.sql.pojo.AbstractPItem;
 import org.nutz.dao.impl.sql.pojo.StaticPItem;
 import org.nutz.dao.jdbc.Jdbcs;
@@ -354,5 +355,9 @@ public class NutSql extends NutStatement implements Sql {
     public Sql setVar(String name, Object value) {
         vars().set(name, value);
         return this;
+    }
+    
+    public Record getOutParams() {
+        return getContext().attr(Record.class, "OUT");
     }
 }

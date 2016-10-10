@@ -2,7 +2,7 @@ import org.gradle.api.file.FileCollection;
 
 apply plugin: 'java'
 apply plugin: 'eclipse-wtp'
-version = '1.r.57-SNAPSHOT'
+version = '1.r.58-SNAPSHOT'
 
 
 sourceCompatibility = 1.6
@@ -11,8 +11,6 @@ targetCompatibility = 1.6
 defaultTasks 'build'
 buildDir = "target"
 repositories {
-    flatDir(dirs:"deps")
-    mavenLocal()
     mavenCentral()
 }
 sourceSets {
@@ -24,14 +22,14 @@ sourceSets {
         resources.srcDir "$projectDir/test-prop"
     }
 }
-tasks.withType(Compile) {  
+tasks.withType(JavaCompile) {  
     options.encoding = "UTF-8"  
 } 
 dependencies {
     compile "javax.servlet:servlet-api:2.5"
-    compile  "commons-logging:commons-logging:1.1"
     compile  "log4j:log4j:1.2.17"
-    compile "commons-dbcp:commons-dbcp:1.4"
+    testCompile  "commons-logging:commons-logging:1.1"
+    testCompile "commons-dbcp:commons-dbcp:1.4"
     testCompile  "com.h2database:h2:1.3.165"
     testCompile  "postgresql:postgresql:9.1-901-1.jdbc4"
     testCompile "junit:junit:4.8.1"
@@ -51,7 +49,7 @@ processTestResources {
 test {
 	include "org/nutz/TestAll*"
     jvmArgs "-Dfile.encoding=utf-8"
-	showStackTraces = true
+	//showStackTraces = true
 	testLogging {
         debug {
             events "started", "skipped", "failed"

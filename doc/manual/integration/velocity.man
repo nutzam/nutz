@@ -9,21 +9,32 @@
 	
 	maven项目的关联
 	
-	{{{
+	{{{<XML>
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz-plugins-views</artifactId>
-			<version>1.b.57</version>
+			<version>1.r.57</version>
 		</dependency>
 	}}}
 	
 ---------------------------------------------------------------------
 修改MainModule类,添加引用
 
-	{{{
+	{{{<JAVA>
 	@Views(value={VelocityViewMaker.class})
 	// 其他配置,如IocBy等等
 	public class MainModule {}
+	}}}
+
+---------------------------------------------------------------------
+添加velocity.properties
+
+	{{{
+	input.encoding=UTF-8
+	output.encoding=UTF-8
+	resource.loader=webapp
+	webapp.resource.loader.class=org.apache.velocity.tools.view.WebappResourceLoader
+	webapp.resource.loader.path=/
 	}}}
 
 ----------------------------------------------------------------------
@@ -31,13 +42,13 @@
 
 	入口方法示例
 	
-	{{{
+	{{{<JAVA>
 	@At("/")
 	@Ok("vm:tmpl.index") // 模板文件的路径为  /WEB-INF/tmpl/index.vm
 	public void index(){}
 	}}}
 	
-	{{{
+	{{{<JAVA>
 	@At("/user")
 	@Ok("vm:/tmpl/user/home") // 模板文件的路径为  /tmpl/user/home.vm
 	public void home(){}

@@ -22,7 +22,7 @@ import java.io.PushbackInputStream;
 import java.io.Reader;
 import java.io.Writer;
 
-import org.nutz.lang.stream.NullInputStream;
+import org.nutz.lang.stream.VoidInputStream;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
 
@@ -181,15 +181,20 @@ public abstract class Streams {
      *            输入流
      * @throws IOException
      */
-    public static void write(Writer writer, Reader reader) throws IOException {
+    public static long write(Writer writer, Reader reader) throws IOException {
         if (null == writer || null == reader)
-            return;
+            return 0;
 
         char[] cbuf = new char[BUF_SIZE];
-        int len;
-        while (-1 != (len = reader.read(cbuf))) {
+        int len, count = 0;
+        while (true) {
+            len = reader.read(cbuf);
+            if (len == -1)
+                break;
             writer.write(cbuf, 0, len);
+            count += len;
         }
+        return count;
     }
 
     /**
@@ -202,9 +207,9 @@ public abstract class Streams {
      * @param reader
      *            输入流
      */
-    public static void writeAndClose(Writer writer, Reader reader) {
+    public static long writeAndClose(Writer writer, Reader reader) {
         try {
-            write(writer, reader);
+            return write(writer, reader);
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);
@@ -573,7 +578,7 @@ public abstract class Streams {
     }
 
     public static InputStream nullInputStream() {
-        return new NullInputStream();
+        return new VoidInputStream();
     }
 
     public static InputStream wrap(byte[] bytes) {
@@ -660,7 +665,7 @@ public abstract class Streams {
         }
         return line;
     }
-    
+
     public static long writeAndClose(OutputStream ops, InputStream ins, int buf) {
         try {
             return write(ops, ins, buf);

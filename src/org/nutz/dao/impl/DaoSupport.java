@@ -5,9 +5,9 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -94,8 +94,7 @@ public class DaoSupport {
     public DaoSupport() {
         this.runner = new NutDaoRunner();
         this.executor = new NutDaoExecutor();
-        this._interceptors = new ArrayList<DaoInterceptor>();
-        this.addInterceptor("log");
+        this.setInterceptors(Lang.list((Object)"log"));
     }
 
     /**
@@ -295,36 +294,49 @@ public class DaoSupport {
     }
     
     public void setInterceptors(List<Object> interceptors) {
-        this._interceptors.clear();
+        List<DaoInterceptor> list = new LinkedList<DaoInterceptor>();
         for (Object it : interceptors) {
-            addInterceptor(it);
+            DaoInterceptor d = makeInterceptor(it);
+            if (d != null)
+                list.add(d);
+        }
+        this._interceptors = list;
+    }
+    
+    public void Interceptor(Object it) {
+        DaoInterceptor d = makeInterceptor(it);
+        if (d != null) {
+            List<DaoInterceptor> list = new LinkedList<DaoInterceptor>(this._interceptors);
+            list.add(d);
+            this._interceptors = list;
         }
     }
     
-    public void addInterceptor(Object it) {
+    public DaoInterceptor makeInterceptor(Object it) {
         if (it == null)
-            return;
+            return null;
         if (it instanceof String) {
             String itName = it.toString().trim();
             if ("log".equals(itName)) {
-                this._interceptors.add(new DaoLogInterceptor());
+                return new DaoLogInterceptor();
             }
             else if ("time".equals(itName)) {
-                this._interceptors.add(new DaoTimeInterceptor());
+                return new DaoTimeInterceptor();
             } 
             else if (itName.contains(".")) {
                 Class<?> klass = Lang.loadClassQuite(itName);
                 if (klass == null) {
                     log.warn("no such interceptor name="+itName);
                 } else {
-                    this._interceptors.add((DaoInterceptor) Mirror.me(klass).born());
+                    return (DaoInterceptor) Mirror.me(klass).born();
                 }
             } else {
                 log.info("unkown interceptor name="+itName);
             }
         }
         else if (it instanceof DaoInterceptor) {
-            this._interceptors.add((DaoInterceptor) it);
+            return (DaoInterceptor) it;
         }
+        return null;
     }
 }

@@ -2,6 +2,7 @@ package org.nutz.dao.sql;
 
 import org.nutz.dao.Condition;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.Record;
 import org.nutz.dao.jdbc.ValueAdaptor;
 
 /**
@@ -114,7 +115,9 @@ public interface Sql extends DaoStatement {
      */
     Sql duplicate();
 
-    public void setSourceSql(String sql) ;
+    void setSourceSql(String sql);
     
-    public String getSourceSql() ;
+    String getSourceSql();
+    
+    Record getOutParams();
 }

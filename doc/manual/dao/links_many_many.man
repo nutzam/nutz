@@ -268,6 +268,8 @@ NutDao 是如何连接关联表的
 	dao.clearLinks(food, "pets");
 	}}}
 	
-	清除同删除的区别在于，清除只会执行一条 SQL 删除 t_pet_food 的记录，但是 t_pet 和 t_food 表中的数据不会被删除
-	而删除则不仅会清除 t_pet_food 里的记录，还会逐个调用 dao.delete 来删除对象。
+	删除与清除的区别在于
+
+	 * 删除不仅会删掉 t_pet_food 里的记录，还会逐个调用 dao.delete 来删除 pet 对象。
+	 * 而清除只会执行一条 SQL 来删除 t_pet_food 中的记录（即中间表中的记录），但是 t_pet 和 t_food 表中的数据不会被删除。
 	

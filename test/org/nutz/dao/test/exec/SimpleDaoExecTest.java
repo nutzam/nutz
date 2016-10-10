@@ -2,8 +2,11 @@ package org.nutz.dao.test.exec;
 
 import static org.junit.Assert.*;
 
+import java.sql.Types;
+
 import org.junit.Test;
 import org.nutz.dao.Sqls;
+import org.nutz.dao.entity.Record;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Pet;
@@ -69,4 +72,26 @@ public class SimpleDaoExecTest extends DaoCase {
 		assertEquals("wendal", pet.getName());
 	}
 
+    @Test
+    public void test_exec_out() {
+        if (!dao.meta().isMySql())
+            return; // Only test for mysql now
+        dao.create(Pet.class, true);
+        dao.insert(Pet.create("wendal"));
+        Pet pet = dao.fetch(Pet.class, "wendal");
+        dao.execute(Sqls.create("DROP PROCEDURE IF EXISTS proc_pet_fetch"));
+
+        dao.execute(Sqls.create("CREATE PROCEDURE proc_pet_fetch(IN nm varchar(1024), OUT outId int)\nBEGIN\n\tselect id into outId from t_pet where name=nm;\nEND"));
+
+        // 像普通自定义SQL那样创建SQL对象.
+        Sql sql = Sqls.create("CALL proc_pet_fetch(@nm, @OUTid)");
+        sql.setEntity(dao.getEntity(Pet.class));
+        sql.params().set("nm", "wendal"); // 设置入参
+        sql.params().set("OUTid", Types.INTEGER);// 设置出参类型,注意,必须加OUT开头
+        dao.execute(sql);
+
+        Record re = sql.getOutParams();
+        assertNotNull(re);
+        assertEquals(pet.getId(), re.get("id"));
+    }
 }
