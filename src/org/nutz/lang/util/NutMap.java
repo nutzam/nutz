@@ -265,6 +265,8 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         Object v = get(key);
         if (v == null)
             return dft;
+        if (v instanceof CharSequence)
+            return v.toString();
         if (v instanceof List) {
             v = ((List) v).iterator().next();
         }
