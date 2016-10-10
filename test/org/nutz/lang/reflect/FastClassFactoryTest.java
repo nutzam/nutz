@@ -2,7 +2,6 @@ package org.nutz.lang.reflect;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,6 +16,8 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Stopwatch;
 import org.nutz.lang.born.Borning;
+
+import com.alibaba.druid.pool.DruidDataSource;
 
 public class FastClassFactoryTest extends Assert {
 
@@ -48,19 +49,19 @@ public class FastClassFactoryTest extends Assert {
         System.gc();
         Lang.quiteSleep(1000);
         System.gc();
-        
+
         Pet pet = null;
         Stopwatch sw = Stopwatch.begin();
         for (int i = 0; i < 1000000; i++) {
             pet = new Pet();
         }
-        
+
         sw.stop();
         System.out.println("Native New    :"+sw);
         System.gc();
         Lang.quiteSleep(1000);
         System.gc();
-        
+
 
         sw = Stopwatch.begin();
         for (int i = 0; i < 1000000; i++) {
@@ -72,7 +73,7 @@ public class FastClassFactoryTest extends Assert {
         System.gc();
         Lang.quiteSleep(1000);
         System.gc();
-        
+
 
         sw = Stopwatch.begin();
         for (int i = 0; i < 1000000; i++) {
@@ -84,7 +85,7 @@ public class FastClassFactoryTest extends Assert {
         System.gc();
         Lang.quiteSleep(1000);
         System.gc();
-        
+
         sw = Stopwatch.begin();
         for (int i = 0; i < 1000000; i++) {
             new Object();
@@ -95,25 +96,25 @@ public class FastClassFactoryTest extends Assert {
         System.gc();
         Lang.quiteSleep(1000);
         System.gc();
-        
+
 
 //        sw = Stopwatch.begin();
 //        for (int i = 0; i < 1000000; i++) {
 //            pet = (Pet) fc2.newInstance(new Class[]{String.class}, new Object[]{"wendal"});
 //        }
-//        
+//
 //        sw.stop();
 //        System.out.println("cglib born   :"+sw);
 //        Lang.quiteSleep(1000);
 //        System.gc();
-        
+
         System.out.println(pet.hashCode());
     }
-    
+
     @Test
     public void test_fastclass_for_datasource() {
         FastClassFactory.get(Dao.class);
-        FastClassFactory.get(BasicDataSource.class);
+        FastClassFactory.get(DruidDataSource.class);
         FastClass fc = FastClassFactory.get(DaoSupport.class);
         fc = FastClassFactory.get(NutDao.class);
         fc.invoke(new NutDao(), "execute", new Class[]{Sql.class}, new Object[]{null});

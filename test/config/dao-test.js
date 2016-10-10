@@ -1,6 +1,6 @@
 var ioc = {
 /*------------------------------------------------------------------*/
-		
+
 	config : {
 		type : "org.nutz.ioc.impl.PropertiesProxy",
 		fields : {
@@ -9,7 +9,7 @@ var ioc = {
 	},
 // Data source
 	dataSource : {
-		type :"org.apache.commons.dbcp.BasicDataSource",
+		type :"com.alibaba.druid.pool.DruidDataSource",
 		events : {
 			depose :"close"
 		},
@@ -28,7 +28,7 @@ var ioc = {
 			}
 		}
 	},
-	
+
 	/*
 	dataSource : {
         type : "com.jolbox.bonecp.BoneCPDataSource",
