@@ -4,7 +4,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group = 'org.nutz'
-version = '1.r.58'
+version = '1.r.58.r3'
 
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
@@ -134,13 +134,14 @@ test {
 def Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
-if (isReleaseVersion) {
+//if (isReleaseVersion) {
 	ext."signing.keyId"=properties["signing.keyId"]
 	ext."signing.password"=properties["signing.password"]
 	ext."signing.secretKeyRingFile"=properties["signing.secretKeyRingFile"]
 	ext."ossrhUsername"=properties["ossrhUsername"]
 	ext."ossrhPassword"=properties["ossrhPassword"]
-}
+//}
+
 
 uploadArchives {
     repositories {
@@ -194,4 +195,19 @@ uploadArchives {
 signing {
     required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
     sign configurations.archives
+}
+
+
+def installer = install.repositories.mavenInstaller
+def deployer = uploadArchives.repositories.mavenDeployer
+
+//[installer, deployer]*.pom*.whenConfigured {pom ->
+//    pom.dependencies.find {dep -> dep.groupId != '' }.provided = true
+//}
+
+deployer.pom.whenConfigured {pom ->
+    pom.dependencies.find {dep -> dep.scope == "compile"}.each {dep -> dep.scope = "provided"}
+}
+installer.pom.whenConfigured {pom ->
+    pom.dependencies.find {dep -> dep.scope == "compile"}.each {dep -> dep.scope = "provided"}
 }

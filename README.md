@@ -184,3 +184,6 @@ JetBrains IntelliJ IDEA
 
 http://www.jetbrains.com
 
+## 关于我们
+
+广州市文尔软件科技有限公司 -- 面向各种中国大陆各种备案/审查机制的企业实体.
