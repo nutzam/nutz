@@ -76,6 +76,7 @@
     	<doc path="rest.man"/>
 		<doc path="annotations.man"/>
 		<doc path="session.man"></doc>
+		<doc path="setupby.man"></doc>
 	</doc>
 	<doc path="json" title="Json 手册">
 		<doc path="base.man"/>

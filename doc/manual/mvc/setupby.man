@@ -1,0 +1,56 @@
+#title: 应用启动以及关闭时的额外处理
+#index:0,1
+#author: wendal(wendal1985@gmail.com)
+----------------------------------------------------------
+什么是@SetupBy
+
+	通常情况下,应用启动完成前,还需要初始化数据库,检查特定用户是否存在,启动后台线程.
+	再例如,程序关闭前,需要关闭索引服务等等.
+	
+----------------------------------------------------------
+如何使用@SetupBy
+
+	首先, 实现Setup接口.这个接口就2个方法,分别对应启动(init)和关闭(depose)
+	
+	{{{<JAVA>
+	public void init(NutConfig nc) {
+		Ioc ioc = nc.getIoc(); // 可以拿到Ioc容器
+		Dao dao = ioc.get(Dao.class); // 通过Ioc容器可以拿到你想要的ioc bean
+		
+		// 拿到Dao,自然就可以自动建表了
+		Daos.createTableInPackage(dao, "net.wendal.nutzbook.bean", false);
+		// 表结构变化了? migration一下
+		Daos.migration(dao, "net.wendal.nutzbook.bean", true, false);
+		
+		ServletContext sc = nc.getServletContext(); // 也可以拿到容器上下文,为所欲为
+		
+		ioc.get(BackupThread.class).start(); // 当然也可以取出线程对象,然后启动之
+	}
+	}}}
+
+	那关闭的时候呢?
+	
+	{{{<JAVA>
+	public void depose(NutConfig nc) {
+		Ioc ioc = nc.getIoc(); // 可以拿到Ioc容器
+		Dao dao = ioc.get(Dao.class);
+		
+		dao.insert(new SysLog("admin", "system shutdown")); // 添加系统日志,记录一下
+		ioc.get(IndexService.class).flush(); // 刷索引
+	}
+	}}}
+	
+	然后, 在MainModule中添加引用SetupBy
+	
+	{{{<JAVA>
+	@SetupBy(MainSetup.class)
+	@Modules(scanPackage=true) // 扫描当前package及子package下,带@At的public方法作为入口方法
+    @ChainBy(args="mvc/nutzbook-mvc-chain.js") // 自定义动作链
+    @Ok("json:full") // 定义全局默认@Ok
+    @Fail("jsp:jsp.500") // 定义全局默认@Fail
+    @Localization(value="msg/", defaultLocalizationKey="zh-CN") // 加载国际化
+    @Views({BeetlViewMaker2.class,FreemarkerViewMaker.class, PdfViewMaker.class}) // 加载各种额外的Mvc View
+    @SessionBy(ShiroSessionProvider.class) // 用Shiro Session替代容器Session
+    @UrlMappingBy(ApidocUrlMapping.class) // 自动生成文档
+	public class MainModule {}
+	}}}
