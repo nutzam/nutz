@@ -7,5 +7,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({    MvcBaseTest.class,
                         MvcErrorCatchTest.class,
                         MvcModuleInitTest.class,
-                        RestModuleTest.class})
+                        RestModuleTest.class,
+                        AtMapInitTest.class})
 public class AllInit {}
