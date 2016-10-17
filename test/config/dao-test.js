@@ -25,7 +25,8 @@ var ioc = {
 			},
 			password : {
 				java :"$config.get('password')"
-			}
+			},
+			maxWait : 15000
 		}
 	},
 
