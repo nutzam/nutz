@@ -1,11 +1,11 @@
 var ioc = {
 	dataSource : {
-            type : "org.apache.commons.dbcp.BasicDataSource",
+            type : "com.alibaba.druid.pool.DruidDataSource",
             events : {
                     depose : 'close'
             },
             fields : {
-                    driverClassName : 'org.h2.Driver',
+                    //driverClassName : 'org.h2.Driver',
                     url : 'jdbc:h2:mem:',
                     username : 'sa',
                     password : 'sa'
