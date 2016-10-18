@@ -2,7 +2,6 @@ sudo: false
 language: java
 script: mvn clean source:jar cobertura:cobertura package
 jdk:
-  - openjdk6
   - openjdk7
   - oraclejdk7
   - oraclejdk8
