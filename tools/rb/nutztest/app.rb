@@ -74,6 +74,10 @@ namespace '/nutztest' do
     get("/servlet_obj") do
       context_path
     end
+    
+    post("/httpmethods") do
+      "DELETE"
+    end
   end
 
   namespace "/aop" do
