@@ -1,5 +1,10 @@
 package org.nutz.dao.impl.jdbc.mysql;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import org.nutz.dao.DB;
@@ -16,12 +21,16 @@ import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Pojos;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public class MysqlJdbcExpert extends AbstractJdbcExpert {
 
     private static final String META_ENGINE = "mysql-engine";
 
     private static final String META_CHARSET = "mysql-charset";
+    
+    private static final Log log = Logs.get();
 
     public MysqlJdbcExpert(JdbcExpertConfigFile conf) {
         super(conf);
@@ -189,6 +198,47 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
             return new MysqlJsonAdaptor();
         } else {
             return super.getAdaptor(ef);
+        }
+    }
+    
+    @Override
+    public void checkDataSource(Connection conn) throws SQLException {
+        if (log.isDebugEnabled()) {
+            String sql = "SHOW VARIABLES LIKE 'character_set%'";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next())
+                log.debugf("Mysql : %s=%s", rs.getString(1), rs.getString(2));
+            rs.close();
+            // 打印binlog_format
+            sql = "SHOW VARIABLES LIKE 'binlog_format'";
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next())
+                log.debugf("Mysql : %s=%s", rs.getString(1), rs.getString(2));
+            rs.close();
+            // 打印当前数据库名称
+            String dbName = "";
+            rs = stmt.executeQuery("SELECT DATABASE()");
+            if (rs.next()) {
+                dbName = rs.getString(1);
+                log.debug("Mysql : database=" + dbName);
+            }
+            rs.close();
+            // 打印当前连接用户及主机名
+            rs = stmt.executeQuery("SELECT USER()");
+            if (rs.next())
+                log.debug("Mysql : user=" + rs.getString(1));
+            rs.close();
+            stmt.close();
+            // 列出所有MyISAM引擎的表,这些表不支持事务
+            PreparedStatement pstmt = conn.prepareStatement("SELECT TABLE_NAME FROM information_schema.TABLES where TABLE_SCHEMA = ? and engine = 'MyISAM'");
+            pstmt.setString(1, dbName);
+            rs = pstmt.executeQuery();
+            if (rs.next())
+                log.debug("Mysql : '"+rs.getString(1) + "' engine=MyISAM");
+            rs.close();
+            pstmt.close();
         }
     }
 }

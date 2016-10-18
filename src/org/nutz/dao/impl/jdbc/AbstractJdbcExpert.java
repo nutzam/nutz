@@ -3,6 +3,7 @@ package org.nutz.dao.impl.jdbc;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -408,4 +409,6 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
     public boolean isSupportGeneratedKeys() {
         return true;
     }
+    
+    public void checkDataSource(Connection conn) throws SQLException {}
 }

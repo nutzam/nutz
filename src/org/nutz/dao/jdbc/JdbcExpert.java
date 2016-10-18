@@ -1,6 +1,7 @@
 package org.nutz.dao.jdbc;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.Set;
 
@@ -107,4 +108,6 @@ public interface JdbcExpert {
     void setKeywords(Set<String> keywords);
     
     String wrapKeywork(String columnName, boolean force);
+    
+    void checkDataSource(Connection conn) throws SQLException ;
 }
