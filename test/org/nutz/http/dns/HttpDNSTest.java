@@ -12,11 +12,11 @@ public class HttpDNSTest {
     @Test
     public void testSetProvider() {
         
-        AliDnsProvider provider = new AliDnsProvider("100000");
+        AliDnsProvider provider = new AliDnsProvider("142444");
         HttpDNS.setProvider(provider);
-        assertNotNull(HttpDNS.getIp("www.aliyun.com"));
+        assertNotNull(HttpDNS.getIp("xplay.io"));
         
-        Response resp = Http.get("http://www.aliyun.com");
+        Response resp = Http.get("http://xplay.io");
         assertTrue(resp.isOK());
         
         //Response resp = Http.get("http://www.aliyun.com");

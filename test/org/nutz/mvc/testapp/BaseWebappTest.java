@@ -9,6 +9,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.After;
 import org.junit.Before;
+import org.nutz.http.Header;
 import org.nutz.http.Http;
 import org.nutz.http.Request;
 import org.nutz.http.Request.METHOD;
@@ -84,7 +85,9 @@ public abstract class BaseWebappTest {
     }
 
     public Response post(String path, Map<String, Object> params) {
-        resp = Sender.create(Request.create(getBaseURL() + path, METHOD.POST, params, null)).send();
+        Header header = Header.create();
+        header.set("Content-Type", "application/x-www-form-urlencoded");
+        resp = Sender.create(Request.create(getBaseURL() + path, METHOD.POST, params, header)).send();
         assertNotNull(resp);
         return resp;
     }
