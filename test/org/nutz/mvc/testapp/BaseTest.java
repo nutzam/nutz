@@ -3,6 +3,9 @@ package org.nutz.mvc.testapp;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.nutz.http.Response;
+import org.nutz.lang.util.NutMap;
+import org.nutz.mvc.Mvcs;
 
 public class BaseTest extends BaseWebappTest {
 
@@ -79,5 +82,14 @@ public class BaseTest extends BaseWebappTest {
         get("/aop/test1/result?name="+name);
         assertEquals(200, resp.getStatus());
         assertEquals("0", resp.getContent());
+    }
+    
+    @Test
+    public void test_http_method_override() {
+        Mvcs.ALLOW_HTTP_METHOD_OVERRIDE = true;
+        Response resp = post("/common/httpmethods", new NutMap("_method", "DELETE"));
+        assertEquals(200, resp.getStatus());
+        assertEquals("DELETE", resp.getContent());
+        Mvcs.ALLOW_HTTP_METHOD_OVERRIDE = false;
     }
 }

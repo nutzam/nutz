@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 import org.nutz.ioc.annotation.InjectName;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.mvc.annotation.At;
+import org.nutz.mvc.annotation.DELETE;
 import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.testapp.BaseWebappTest;
@@ -99,5 +100,12 @@ public class CommonTest extends BaseWebappTest {
         session.isNew();
         
         context.getAttributeNames();
+    }
+    
+    @At
+    @DELETE
+    @Ok("raw")
+    public String httpmethods() {
+        return "DELETE";
     }
 }
