@@ -241,4 +241,8 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
             pstmt.close();
         }
     }
+    
+    public boolean canCommentWhenAddIndex() {
+        return true;
+    }
 }

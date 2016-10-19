@@ -1,6 +1,7 @@
 package org.nutz.dao.impl.jdbc;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -168,7 +169,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         dao.execute(sqls.toArray(new Sql[sqls.size()]));
     }
 
-    protected void dropRelation(Dao dao, Entity<?> en) {
+    public void dropRelation(Dao dao, Entity<?> en) {
         final List<Sql> sqls = new ArrayList<Sql>(5);
         for (LinkField lf : en.visitManyMany(null, null, null)) {
             ManyManyLinkField mm = (ManyManyLinkField) lf;
@@ -268,34 +269,36 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 
     protected List<Sql> createIndexs(Entity<?> en) {
         List<Sql> sqls = new ArrayList<Sql>();
-        StringBuilder sb = new StringBuilder();
-        List<EntityIndex> indexs = en.getIndexes();
-        for (EntityIndex index : indexs) {
-            sb.setLength(0);
-            if (index.isUnique())
-                sb.append("Create UNIQUE Index ");
-            else
-                sb.append("Create Index ");
-            if (index.getName().contains("$"))
-                sb.append(TableName.render(new CharSegment(index.getName())));
-            else
-                sb.append(index.getName());
-            sb.append(" ON ").append(en.getTableName()).append("(");
-            for (EntityField field : index.getFields()) {
-                if (field instanceof MappingField) {
-                    MappingField mf = (MappingField) field;
-                    sb.append(mf.getColumnNameInSql()).append(',');
-                } else {
-                    throw Lang.makeThrow(DaoException.class,
-                                         "%s %s is NOT a mapping field, can't use as index field!!",
-                                         en.getClass(),
-                                         field.getName());
-                }
-            }
-            sb.setCharAt(sb.length() - 1, ')');
-            sqls.add(Sqls.create(sb.toString()));
+        for (EntityIndex index : en.getIndexes()) {
+            sqls.add(createIndexSql(en, index));
         }
         return sqls;
+    }
+    
+    public Sql createIndexSql(Entity<?> en, EntityIndex index) {
+        StringBuilder sb = new StringBuilder();
+        if (index.isUnique())
+            sb.append("Create UNIQUE Index ");
+        else
+            sb.append("Create Index ");
+        if (index.getName().contains("$"))
+            sb.append(TableName.render(new CharSegment(index.getName())));
+        else
+            sb.append(index.getName());
+        sb.append(" ON ").append(en.getTableName()).append("(");
+        for (EntityField field : index.getFields()) {
+            if (field instanceof MappingField) {
+                MappingField mf = (MappingField) field;
+                sb.append(mf.getColumnNameInSql()).append(',');
+            } else {
+                throw Lang.makeThrow(DaoException.class,
+                                     "%s %s is NOT a mapping field, can't use as index field!!",
+                                     en.getClass(),
+                                     field.getName());
+            }
+        }
+        sb.setCharAt(sb.length() - 1, ')');
+        return Sqls.create(sb.toString());
     }
 
     public void addComment(Dao dao, Entity<?> en) {
@@ -411,4 +414,57 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
     }
     
     public void checkDataSource(Connection conn) throws SQLException {}
+    
+    @Override
+    public Sql createAddColumnSql(Entity<?> en, MappingField mf) {
+        StringBuilder sb = new StringBuilder("ALTER TABLE ");
+        sb.append(en.getTableName()).append(" ADD ");
+        if (addColumnNeedColumn())
+            sb.append("COLUMN ");
+        sb.append(mf.getColumnName()).append(" ").append(evalFieldType(mf));
+        if (mf.isUnsigned()) {
+            sb.append(" UNSIGNED");
+        }
+        if (mf.isNotNull()) {
+            sb.append(" NOT NULL");
+        }
+        if (mf.getColumnType() == ColType.TIMESTAMP
+            && supportTimestampDefault()) {
+            if (mf.hasDefaultValue()) {
+                sb.append(" ")
+                  .append(mf.getDefaultValue(null).replaceAll("@", "@@"));
+            } else {
+                if (mf.isNotNull()) {
+                    sb.append(" DEFAULT 0");
+                } else {
+                    sb.append(" NULL DEFAULT NULL");
+                }
+            }
+        } else {
+            if (mf.hasDefaultValue())
+                addDefaultValue(sb, mf);
+        }
+        if (mf.hasColumnComment() && canCommentWhenAddIndex()) {
+            sb.append(" COMMENT '").append(mf.getColumnComment()).append("'");
+        }
+        // sb.append(';');
+        return Sqls.create(sb.toString());
+    }
+    
+    public boolean canCommentWhenAddIndex() {
+        return false;
+    }
+    
+    @Override
+    public List<String> getIndexNames(Entity<?> en, Connection conn) throws SQLException {
+        List<String> names = new ArrayList<String>();
+        String showIndexs = "show index from " + en.getTableName();
+        PreparedStatement ppstat = conn.prepareStatement(showIndexs);
+        ResultSet rest = ppstat.executeQuery();
+        while (rest.next()) {
+            String index = rest.getString(3);
+            names.add(index);
+        }
+        return names;
+    }
 }

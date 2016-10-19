@@ -2,6 +2,10 @@ package org.nutz.dao.impl.jdbc.oracle;
 
 import java.sql.Blob;
 import java.sql.Clob;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -243,5 +247,18 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         if (force || keywords.contains(columnName.toUpperCase()))
             return "\"" + columnName + "\"";
         return null;
+    }
+    
+    // https://docs.oracle.com/cd/B12037_01/server.101/b10755/statviews_1061.htm
+    public List<String> getIndexNames(Entity<?> en, Connection conn) throws SQLException {
+        List<String> names = new ArrayList<String>();
+        String showIndexs = "SELECT * FROM user_indexes WHERE table_name='" + en.getTableName()+"'";
+        PreparedStatement ppstat = conn.prepareStatement(showIndexs);
+        ResultSet rest = ppstat.executeQuery();
+        while (rest.next()) {
+            String index = rest.getString(2);
+            names.add(index);
+        }
+        return names;
     }
 }

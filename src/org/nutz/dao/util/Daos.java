@@ -30,15 +30,12 @@ import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
-import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.entity.EntityIndex;
 import org.nutz.dao.entity.LinkField;
 import org.nutz.dao.entity.MappingField;
-import org.nutz.dao.entity.annotation.ColType;
 import org.nutz.dao.entity.annotation.Table;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.impl.entity.field.ManyManyLinkField;
-import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
 import org.nutz.dao.impl.sql.SqlFormat;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.jdbc.Jdbcs;
@@ -49,7 +46,6 @@ import org.nutz.dao.sql.SqlCallback;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.random.R;
-import org.nutz.lang.segment.CharSegment;
 import org.nutz.lang.util.Callback2;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -638,6 +634,12 @@ public abstract class Daos {
         }
         boolean flag = false;
         for (MappingField mf : mfs) {
+            if (matcher == null) {
+                Object val = mf.getValue(obj);
+                callback.invoke(mf, val);
+                flag = true;
+                continue;
+            }
             if (matcher.isIgnoreId() && mf.isId())
                 continue;
             if (matcher.isIgnoreName() && mf.isName())
@@ -752,7 +754,7 @@ public abstract class Daos {
                                  final boolean del,
                                  final boolean checkIndex,
                                  final Object tableName) {
-        final AbstractJdbcExpert expert = (AbstractJdbcExpert) ((NutDao) dao).getJdbcExpert();
+        final JdbcExpert expert = dao.getJdbcExpert();
         if (tableName != null && Strings.isNotBlank(tableName.toString())) {
             dao = ext(dao, tableName);
         }
@@ -761,8 +763,6 @@ public abstract class Daos {
             return;
         final List<Sql> sqls = new ArrayList<Sql>();
         final Set<String> _indexs = new HashSet<String>();
-        final boolean sqlAddNeedColumn = expert.addColumnNeedColumn();
-        final boolean isCanComment = dao.meta().isMySql();
         dao.run(new ConnCallback() {
             public void invoke(Connection conn) throws Exception {
                 expert.setupEntityField(conn, en);
@@ -792,39 +792,7 @@ public abstract class Daos {
                             log.infof("add column[%s] to table[%s]",
                                       mf.getColumnName(),
                                       en.getTableName());
-                            StringBuilder sb = new StringBuilder("ALTER TABLE ");
-                            sb.append(en.getTableName()).append(" ADD ");
-                            if (sqlAddNeedColumn)
-                                sb.append("COLUMN ");
-                            sb.append(colName).append(" ").append(expert.evalFieldType(mf));
-                            if (mf.isUnsigned()) {
-                                sb.append(" UNSIGNED");
-                            }
-                            if (mf.isNotNull()) {
-                                sb.append(" NOT NULL");
-                            }
-                            if (mf.getColumnType() == ColType.TIMESTAMP
-                                && expert.supportTimestampDefault()) {
-                                if (mf.hasDefaultValue()) {
-                                    sb.append(" ")
-                                      .append(mf.getDefaultValue(null).replaceAll("@", "@@"));
-                                } else {
-                                    if (mf.isNotNull()) {
-                                        sb.append(" DEFAULT 0");
-                                    } else {
-                                        sb.append(" NULL DEFAULT NULL");
-                                    }
-                                }
-                            } else {
-                                if (mf.hasDefaultValue())
-                                    expert.addDefaultValue(sb, mf);
-                            }
-                            if (mf.hasColumnComment() && isCanComment) {
-                                sb.append(" COMMENT '").append(mf.getColumnComment()).append("'");
-                            }
-                            // sb.append(';');
-                            Sql sql = Sqls.create(sb.toString());
-                            sqls.add(sql);
+                            sqls.add(expert.createAddColumnSql(en, mf));
                         }
                     }
                     if (del) {
@@ -837,13 +805,7 @@ public abstract class Daos {
                         }
                     }
                     // show index from mytable;
-                    String showIndexs = "show index from " + en.getTableName();
-                    PreparedStatement ppstat = conn.prepareStatement(showIndexs);
-                    ResultSet rest = ppstat.executeQuery();
-                    while (rest.next()) {
-                        String index = rest.getString(3);
-                        _indexs.add(index);
-                    }
+                    _indexs.addAll(expert.getIndexNames(en, conn));
                 }
                 catch (SQLException e) {
                     if (log.isDebugEnabled())
@@ -874,7 +836,7 @@ public abstract class Daos {
             }
         }
         // 创建关联表
-        expert.createRelation(dao, en);
+        dao.getJdbcExpert().createRelation(dao, en);
     }
 
     static class UpdateIndexSql {
@@ -905,49 +867,13 @@ public abstract class Daos {
                                                Object t) {
         UpdateIndexSql uis = new UpdateIndexSql();
         List<Sql> sqls = new ArrayList<Sql>();
-        StringBuilder sb = new StringBuilder();
         List<String> delIndexs = new ArrayList<String>();
         List<EntityIndex> indexs = en.getIndexes();
         for (EntityIndex index : indexs) {
-            String indexName = index.getName();
-            if (indexName.contains("$")) {
-                final String name = index.getName();
-                final Molecule<String> m = new Molecule<String>() {
-                    public void run() {
-                        setObj(TableName.render(new CharSegment(name)));
-                    }
-                };
-                TableName.run(t, m);
-                indexName = m.getObj();
-            }
-            delIndexs.add(indexName);
-            if (indexsHis.contains(indexName)) {
-                continue;
-            }
-            sb.setLength(0);
-            if (index.isUnique())
-                sb.append("Create UNIQUE Index ");
-            else
-                sb.append("Create Index ");
-            sb.append(indexName);
-            sb.append(" ON ").append(getTableName(dao, en, t)).append("(");
-            for (EntityField field : index.getFields()) {
-                if (field instanceof MappingField) {
-                    MappingField mf = (MappingField) field;
-                    sb.append(mf.getColumnNameInSql()).append(',');
-                } else {
-                    throw Lang.makeThrow(DaoException.class,
-                                         "%s %s is NOT a mapping field, can't use as index field!!",
-                                         en.getClass(),
-                                         field.getName());
-                }
-            }
-            sb.setCharAt(sb.length() - 1, ')');
-            sqls.add(Sqls.create(sb.toString()));
+            sqls.add(dao.getJdbcExpert().createIndexSql(en, index));
         }
         if (!Lang.isEmpty(sqls)) {
             uis.setSqlsAdd(sqls.toArray(new Sql[0]));
-            // dao.execute();
         }
         Iterator<String> iterator = indexsHis.iterator();
         List<Sql> delSqls = new ArrayList<Sql>();
@@ -961,7 +887,6 @@ public abstract class Daos {
                                      index));
         }
         if (!Lang.isEmpty(delSqls)) {
-            // dao.execute();
             uis.setSqlsDel(Lang.collection2array(delSqls));
         }
         return uis;

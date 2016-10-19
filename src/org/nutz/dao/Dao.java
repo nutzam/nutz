@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Record;
+import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.PojoMaker;
 import org.nutz.dao.sql.Sql;
@@ -938,6 +939,8 @@ public interface Dao {
     Sql execute(Sql sql);
     
     void setExpert(Object obj) throws Exception;
+    
+    JdbcExpert getJdbcExpert();
     
     <T> T insert(T t, boolean ignoreNull, boolean ignoreZero, boolean ignoreBlankStr);
 }
