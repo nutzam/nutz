@@ -90,7 +90,7 @@
 ------------------------------------------------------------------------
 关于自签名的Https证书
 
-	关闭jvm的证书检查(全局的)
+	关闭jvm的证书检查(Nutz全局).
 	
 	{{{
 		Http.disableJvmHttpsCheck();
@@ -120,4 +120,11 @@
 		
 	}}}
 	
-	
+----------------------------------------------------------------------
+设置SSLSocketFactory
+
+	如铁道部网站的https证书是自签名的,然后不想全局关闭https检查,那么可以为Sender单独设置SSLSocketFactory
+
+	{{{<JAVA>
+	Sender.create(req).setSSLSocketFactory(Http.nopSSLSocketFactory()).send();
+	}}}

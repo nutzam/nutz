@@ -6,16 +6,14 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
@@ -328,6 +326,8 @@ public class Http {
     public static void setProxySwitcher(ProxySwitcher proxySwitcher) {
         Http.proxySwitcher = proxySwitcher;
     }
+    
+    protected static SSLSocketFactory sslSocketFactory;
 
     /**
      * 禁用JVM的https证书验证机制, 例如访问12306, 360 openapi之类的自签名证书
@@ -336,27 +336,32 @@ public class Http {
      */
     public static boolean disableJvmHttpsCheck() {
         try {
-            SSLContext sc = SSLContext.getInstance("SSL");
-            TrustManager[] tmArr = {new X509TrustManager() {
-                public void checkClientTrusted(X509Certificate[] paramArrayOfX509Certificate,
-                                               String paramString) throws CertificateException {}
-
-                public void checkServerTrusted(X509Certificate[] paramArrayOfX509Certificate,
-                                               String paramString) throws CertificateException {}
-
-                public X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-            }};
-            sc.init(null, tmArr, new SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-            return true;
+            setSSLSocketFactory(nopSSLSocketFactory());
         }
-        catch (KeyManagementException e) {
+        catch (Exception e) {
             return false;
         }
-        catch (NoSuchAlgorithmException e) {
-            return false;
-        }
+        return true;
+    }
+    
+    public static SSLSocketFactory nopSSLSocketFactory() throws Exception {
+        SSLContext sc = SSLContext.getInstance("SSL");
+        TrustManager[] tmArr = {new X509TrustManager() {
+            public void checkClientTrusted(X509Certificate[] paramArrayOfX509Certificate,
+                                           String paramString) throws CertificateException {}
+
+            public void checkServerTrusted(X509Certificate[] paramArrayOfX509Certificate,
+                                           String paramString) throws CertificateException {}
+
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+        }};
+        sc.init(null, tmArr, new SecureRandom());
+        return sc.getSocketFactory();
+    }
+    
+    public static void setSSLSocketFactory(SSLSocketFactory sslSocketFactory) {
+        Http.sslSocketFactory = sslSocketFactory;
     }
 }

@@ -22,6 +22,9 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocketFactory;
+
 import org.nutz.http.dns.HttpDNS;
 import org.nutz.http.sender.FilePostSender;
 import org.nutz.http.sender.GetSender;
@@ -86,6 +89,8 @@ public abstract class Sender implements Callable<Response> {
     protected Callback<Response> callback;
     
     protected boolean followRedirects = true;
+    
+    protected SSLSocketFactory sslSocketFactory;
 
     protected Sender(Request request) {
         this.request = request;
@@ -201,6 +206,12 @@ public abstract class Sender implements Callable<Response> {
             }
         }
         conn = (HttpURLConnection) url.openConnection();
+        if (conn instanceof HttpsURLConnection) {
+            if (sslSocketFactory != null)
+                ((HttpsURLConnection)conn).setSSLSocketFactory(sslSocketFactory);
+            else if (Http.sslSocketFactory != null)
+                ((HttpsURLConnection)conn).setSSLSocketFactory(Http.sslSocketFactory);
+        }
         if (!Lang.isIPv4Address(host)) {
             if (url.getPort() > 0 && url.getPort() != 80)
                 host += ":" + url.getPort();
@@ -305,5 +316,9 @@ public abstract class Sender implements Callable<Response> {
     public Sender setProgressListener(Callback<Integer> progressListener) {
         this.progressListener = progressListener;
         return this;
+    }
+    
+    public void setSSLSocketFactory(SSLSocketFactory sslSocketFactory) {
+        this.sslSocketFactory = sslSocketFactory;
     }
 }
