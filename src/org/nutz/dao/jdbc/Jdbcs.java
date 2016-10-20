@@ -49,7 +49,7 @@ import org.nutz.trans.Trans;
 
 /**
  * 提供一些与 JDBC 有关的帮助函数
- * 
+ *
  * @author zozoh(zozohtnt@gmail.com) TODO 合并到NutConfig
  */
 public abstract class Jdbcs {
@@ -57,7 +57,7 @@ public abstract class Jdbcs {
     private static final Log log = Logs.get();
 
     private static final JdbcExpertConfigFile conf;
-    
+
     public static Map<String, ValueAdaptor> customValueAdaptorMap = new ConcurrentHashMap<String, ValueAdaptor>();
 
     /*
@@ -73,7 +73,7 @@ public abstract class Jdbcs {
                 conf = Json.fromJson(JdbcExpertConfigFile.class, new InputStreamReader(Jdbcs.class.getResourceAsStream("nutz_jdbc_experts.js"))).init();
             } else
                 conf = Json.fromJson(JdbcExpertConfigFile.class,Streams.fileInr("nutz_jdbc_experts.js")).init();
-            
+
             for (String key : conf.getExperts().keySet()) {
                 // 检查一下正则表达式是否正确
                 // 在conf类中自行检查
@@ -92,15 +92,15 @@ public abstract class Jdbcs {
 
     /**
      * 针对一个数据源，返回其专属的 JdbcExpert
-     * 
+     *
      * @param ds
      *            数据源
      * @return 该数据库的特殊驱动封装类
-     * 
+     *
      * @see org.nutz.dao.jdbc.Jdbcs#getExpert(String, String)
      */
     public static JdbcExpert getExpert(DataSource ds) {
-    	log.info("Get Connection from DataSource for JdbcExpert, if I lock at here, check your database server and configure");
+        log.info("Get Connection from DataSource for JdbcExpert, if you look at here, check your database server and configure");
         Connection conn = null;
         try {
             conn = Trans.getConnectionAuto(ds);
@@ -123,7 +123,7 @@ public abstract class Jdbcs {
      * 映射的规则存放在 JSON 文件 "nutz_jdbc_experts.js" 中，你可以通过建立这个文件修改 Nutz 的默认映射规则
      * <p>
      * 比如下面的文件，将支持两种数据库
-     * 
+     *
      * <pre>
      * {
      *   experts : {
@@ -136,22 +136,22 @@ public abstract class Jdbcs {
      *   }
      * }
      * </pre>
-     * 
+     *
      * 本函数传入的两个参数将会被:
-     * 
+     *
      * <pre>
      * String.format(&quot;%s::NUTZ_JDBC::%s&quot;, productName, version);
      * </pre>
-     * 
+     *
      * 并被你声明的正则表达式(expert 段下的键值)依次匹配，如果匹配上了，就会用相应的类当作驱动封装类
-     * 
+     *
      * @param productName
      *            数据库产品名称
      * @param version
      *            数据库版本号
-     * 
+     *
      * @return 该数据库的特殊驱动封装类
-     * 
+     *
      * @see java.sql.Connection#getMetaData()
      * @see java.sql.DatabaseMetaData#getDatabaseProductName()
      */
@@ -173,7 +173,7 @@ public abstract class Jdbcs {
             return Adaptor.asNull;
         return getAdaptor(Mirror.me(obj));
     }
-    
+
     /**
      * 注册一个自定义ValueAdaptor,若adaptor为null,则取消注册
      * @param className 类名
@@ -722,7 +722,7 @@ public abstract class Jdbcs {
                 if (null == obj) {
                     stat.setNull(index, Types.BINARY);
                 } else {
-                	
+
                 	if (obj instanceof ByteArrayInputStream) {
                 		stat.setBinaryStream(index, (InputStream)obj, ((ByteArrayInputStream)obj).available());
                 	} else if (obj instanceof InputStream) {
@@ -769,7 +769,7 @@ public abstract class Jdbcs {
 
     /**
      * 根据字段现有的信息，尽可能猜测一下字段的数据库类型
-     * 
+     *
      * @param ef
      *            映射字段
      */
@@ -872,11 +872,11 @@ public abstract class Jdbcs {
     public static FilePool getFilePool() {
         return conf.getPool();
     }
-    
+
     public static void setFilePool(FilePool pool) {
         conf.setPool(pool);
     }
-    
+
     public static void setCharacterStream(int index, Object obj, PreparedStatement stat) throws SQLException {
         try {
             File f = Jdbcs.getFilePool().createFile(".dat");
@@ -893,38 +893,38 @@ public abstract class Jdbcs {
 }
 
 class ReadOnceInputStream extends FilterInputStream implements Serializable {
-	
+
 	private static final long serialVersionUID = -2601685798106193691L;
 
 	private File f;
-	
+
 	public boolean readed;
 
 	protected ReadOnceInputStream(File f) throws FileNotFoundException {
 		super(new FileInputStream(f));
 		this.f = f;
 	}
-	
+
 	public int read() throws IOException {
 		readed = true;
 		return super.read();
 	}
-	
+
 	public int read(byte[] b) throws IOException {
 		readed = true;
 		return super.read(b);
 	}
-	
+
 	public int read(byte[] b, int off, int len) throws IOException {
 		readed = true;
 		return super.read(b, off, len);
 	}
-	
+
 	public void close() throws IOException {
 		super.close();
 		f.delete();
 	}
-	
+
 	protected void finalize() throws Throwable {
 		f.delete();
 		super.finalize();
