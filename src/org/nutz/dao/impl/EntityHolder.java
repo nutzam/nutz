@@ -67,7 +67,6 @@ public class EntityHolder {
                 re = map.get(classOfT);
                 if (null == re) {
                     re = maker.make(classOfT);
-                    map.put(classOfT, re);
                 }
             }
         }
