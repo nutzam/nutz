@@ -136,13 +136,11 @@ public class NutDao extends DaoSupport implements Dao {
     }
 
     public <T> T insert(final T obj) {
-        final EntityOperator opt = _optBy(Lang.first(obj));
+        Object first = Lang.first(obj);
+        final EntityOperator opt = _optBy(first);
         if (null == opt)
             return null;
         int size = Lang.length(obj);
-        if (size < 1)
-        	return obj;
-    	Object first = Lang.first(obj);
     	opt.addInsert(opt.entity, first);
         if (size > 1) {
         	if (opt.getPojoListSize() == 1) {
