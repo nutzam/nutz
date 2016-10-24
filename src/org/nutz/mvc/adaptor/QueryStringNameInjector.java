@@ -41,21 +41,22 @@ public class QueryStringNameInjector extends NameInjector {
                 // 分析
                 String qs = req.getQueryString();
                 String[] ss = Strings.splitIgnoreBlank(qs, "[&]");
-                for (String s : ss) {
-                    Pair<String> p = Pair.create(s);
-                    String val = p.getValue();
-                    if (Strings.isBlank(val)) {
-                        qsMap.put(p.getName(), true);
-                    } else {
-                        try {
-                            val = URLDecoder.decode(val, Encoding.UTF8);
+                if (null != ss)
+                    for (String s : ss) {
+                        Pair<String> p = Pair.create(s);
+                        String val = p.getValue();
+                        if (Strings.isBlank(val)) {
+                            qsMap.put(p.getName(), true);
+                        } else {
+                            try {
+                                val = URLDecoder.decode(val, Encoding.UTF8);
+                            }
+                            catch (UnsupportedEncodingException e) {
+                                throw Lang.wrapThrow(e);
+                            }
+                            qsMap.put(p.getName(), val);
                         }
-                        catch (UnsupportedEncodingException e) {
-                            throw Lang.wrapThrow(e);
-                        }
-                        qsMap.put(p.getName(), val);
                     }
-                }
                 // 保存
                 req.setAttribute("_nutz_qs_map", qsMap);
             }
