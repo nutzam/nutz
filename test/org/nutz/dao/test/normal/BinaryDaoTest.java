@@ -89,7 +89,7 @@ public class BinaryDaoTest extends DaoCase {
         Files.write(f, "中文");
         bin.setMyClob(new SimpleClob(f));
         dao.insert(bin);
-        Lang.quiteSleep(5000);
+        Lang.quiteSleep(1000);
         System.out.println(dao.fetch("bin_object", Cnd.NEW()));
         bin = dao.fetch(BinObject.class);
         assertNotNull(bin);

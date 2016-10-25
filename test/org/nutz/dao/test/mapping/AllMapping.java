@@ -12,5 +12,6 @@ import org.junit.runners.Suite;
                         DynamicManyTest.class,
                         DynamicManyManyTest.class,
                         Issue338Test.class,
-                        RecordDaoTest.class})
+                        RecordDaoTest.class,
+                        Issue1155Test.class})
 public class AllMapping {}
