@@ -781,6 +781,7 @@ public class NutDao extends DaoSupport implements Dao {
             if (dropIfExists) {
                 expert.dropEntity(this, en);
             } else {
+                expert.createRelation(this, en);
                 return en;
             }
         }
