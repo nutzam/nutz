@@ -266,9 +266,13 @@ public class LogTimeProcessor extends AbstractProcessor {
 			list.add(new AdaptorProcessor()); // 处理@Adaptor
 			list.add(new MethodInvokeProcessor()); // 执行入口方法
 			list.add(new ViewProcessor()); // 对入口方法进行渲染@Ok
+			for (Processor p : list) {
+				p.init(config, ai);
+			}
 			
 			// 最后是专门负责兜底的异常处理器,这个处理器可以认为是全局异常处理器,对应@Fail
 			Processor error = new FailProcessor();
+			error.init(config, ai);
 			return new NutActionChain(list, error, ai);
 		}	
 	}
