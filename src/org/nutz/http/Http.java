@@ -17,6 +17,7 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.nutz.Nutz;
 import org.nutz.http.Request.METHOD;
 import org.nutz.http.sender.FilePostSender;
 import org.nutz.lang.Encoding;
@@ -363,5 +364,17 @@ public class Http {
     
     public static void setSSLSocketFactory(SSLSocketFactory sslSocketFactory) {
         Http.sslSocketFactory = sslSocketFactory;
+    }
+    
+    public static HashMap<String, String> DEFAULT_HEADERS = new HashMap<String, String>();
+    static {
+
+        DEFAULT_HEADERS.put("User-Agent", "Nutz.Robot " + Nutz.version());
+        DEFAULT_HEADERS.put("Accept-Encoding", "gzip,deflate");
+        DEFAULT_HEADERS.put("Accept", "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5");
+        DEFAULT_HEADERS.put("Accept-Language", "en-US,en,zh,zh-CN");
+        DEFAULT_HEADERS.put("Accept-Charset", "ISO-8859-1,*,utf-8");
+        DEFAULT_HEADERS.put("Connection", "keep-alive");
+        DEFAULT_HEADERS.put("Cache-Control", "max-age=0");
     }
 }
