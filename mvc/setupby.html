@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>应用启动以及关闭时的额外处理</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">应用启动以及关闭时的额外处理</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#什么是@SetupBy">什么是@SetupBy</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#如何使用@SetupBy">如何使用@SetupBy</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="什么是@SetupBy"></a>什么是@SetupBy</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>通常情况下,应用启动完成前,还需要初始化数据库,检查特定用户是否存在,启动后台线程.再例如,程序关闭前,需要关闭索引服务等等.</p>
+<div class="hr"><b></b></div>
+<h1><a name="如何使用@SetupBy"></a>如何使用@SetupBy</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>首先, 实现Setup接口.这个接口就2个方法,分别对应启动(init)和关闭(depose)</p>
+<pre>public void init(NutConfig nc) {
+	Ioc ioc = nc.getIoc(); <span class="zdoc_code_cmt">// 可以拿到Ioc容器
+</span>	Dao dao = ioc.get(Dao.class); <span class="zdoc_code_cmt">// 通过Ioc容器可以拿到你想要的ioc bean
+</span>	
+	<span class="zdoc_code_cmt">// 拿到Dao,自然就可以自动建表了
+</span>	Daos.createTableInPackage(dao, "net.wendal.nutzbook.bean", false);
+	<span class="zdoc_code_cmt">// 表结构变化了? migration一下
+</span>	Daos.migration(dao, "net.wendal.nutzbook.bean", true, false);
+	
+	ServletContext sc = nc.getServletContext(); <span class="zdoc_code_cmt">// 也可以拿到容器上下文,为所欲为
+</span>	
+	ioc.get(BackupThread.class).start(); <span class="zdoc_code_cmt">// 当然也可以取出线程对象,然后启动之
+</span>}
+</pre>
+<p>那关闭的时候呢?</p>
+<pre>public void depose(NutConfig nc) {
+	Ioc ioc = nc.getIoc(); <span class="zdoc_code_cmt">// 可以拿到Ioc容器
+</span>	Dao dao = ioc.get(Dao.class);
+	
+	dao.insert(new SysLog("admin", "system shutdown")); <span class="zdoc_code_cmt">// 添加系统日志,记录一下
+</span>	ioc.get(IndexService.class).flush(); <span class="zdoc_code_cmt">// 刷索引
+</span>}
+</pre>
+<p>然后, 在MainModule中添加引用SetupBy</p>
+<pre>@SetupBy(MainSetup.class)
+@Modules(scanPackage=true) <span class="zdoc_code_cmt">// 扫描当前package及子package下,带@At的public方法作为入口方法
+</span>@ChainBy(args="mvc/nutzbook-mvc-chain.js") <span class="zdoc_code_cmt">// 自定义动作链
+</span>@Ok("json:full") <span class="zdoc_code_cmt">// 定义全局默认@Ok
+</span>@Fail("jsp:jsp.500") <span class="zdoc_code_cmt">// 定义全局默认@Fail
+</span>@Localization(value="msg/", defaultLocalizationKey="zh-CN") <span class="zdoc_code_cmt">// 加载国际化
+</span>@Views({BeetlViewMaker2.class,FreemarkerViewMaker.class, PdfViewMaker.class}) <span class="zdoc_code_cmt">// 加载各种额外的Mvc View
+</span>@SessionBy(ShiroSessionProvider.class) <span class="zdoc_code_cmt">// 用Shiro Session替代容器Session
+</span>@UrlMappingBy(ApidocUrlMapping.class) <span class="zdoc_code_cmt">// 自动生成文档
+</span>public class MainModule {}
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

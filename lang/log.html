@@ -78,27 +78,14 @@
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>以 log4j 为例 （因为我就对这个熟），你需要：</p>
 <ul type="disc">
-<li>在你的项目里部署某一个 Log4j 的 jar 包，推荐 Log4j 1.2.12 或更新版本
-<ul type="circle">
-<li>Log4j 1.2.11及之前的版本不支持 Trace,自动转为使用Debug级别来记录.</li>
-</ul>
-</li>
-<li>在项目的 CLASSPATH 根目录部署 log4j.properties</li>
-<li>将 log4j.category.org.nutz 基本设成 DEBUG，你就能看到 Nutz 框架详细的 Log
+<li>在你的项目里部署一个 Log4j 1.2.17的 jar 包，推荐</li>
+<li>在项目的 CLASSPATH 根目录部署 log4j.properties
 <pre>log4j.rootLogger=DEBUG, A1
-log4j.category.org.nutz=DEBUG, A1
  
 log4j.appender.A1=org.apache.log4j.ConsoleAppender
 log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 log4j.appender.A1.layout.ConversionPattern=%d [%t] %-5p %c - %m%n
 </pre>
-</li>
-<li>你可以分别控制 Dao, Ioc 和 Mvc:
-<ul type="circle">
-<li>category.org.nutz.dao=DEBUG</li>
-<li>category.org.nutz.ioc=DEBUG</li>
-<li>category.org.nutz.mvc=DEBUG</li>
-</ul>
 </li>
 </ul>
 <div class="hr"><b></b></div>

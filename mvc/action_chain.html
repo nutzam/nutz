@@ -263,9 +263,13 @@ public void process(ActionContext ac) throws Throwable {
 </span>		list.add(new AdaptorProcessor()); <span class="zdoc_code_cmt">// 处理@Adaptor
 </span>		list.add(new MethodInvokeProcessor()); <span class="zdoc_code_cmt">// 执行入口方法
 </span>		list.add(new ViewProcessor()); <span class="zdoc_code_cmt">// 对入口方法进行渲染@Ok
-</span>		
+</span>		for (Processor p : list) {
+			p.init(config, ai);
+		}
+		
 		<span class="zdoc_code_cmt">// 最后是专门负责兜底的异常处理器,这个处理器可以认为是全局异常处理器,对应@Fail
 </span>		Processor error = new FailProcessor();
+		error.init(config, ai);
 		return new NutActionChain(list, error, ai);
 	}	
 }

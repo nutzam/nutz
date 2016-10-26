@@ -44,6 +44,9 @@
 </li>
 </ul>
 </li>
+<li>
+<div><span class="num">5</span><a href="#主键生成器">主键生成器</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="简要介绍"></a>简要介绍</h1>
@@ -159,6 +162,53 @@ public class Pet{
 <h2><a name="其他操作"></a>其他操作</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>至于 update, clear, insert 则和平常的对象一样。 不过 Update 的时候，你的 POJO 所有的复合主键字段需要被设上值，才能正确被更新。</p>
+<div class="hr"><b></b></div>
+<h1><a name="主键生成器"></a>主键生成器</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>通过@Prev的灵活使用,可以配置不同的主键生成策略,以满足各种场景</p>
+<p>数据库自增. Oracle环境下,通过dao.create创建的表会带seq和触发器</p>
+<pre>@Id
+private int id; 
+</pre>
+<p>Oracle的seq序列</p>
+<pre>@Id <span class="zdoc_code_cmt">// 1.r.58之前的版本需要设置为false
+</span>@Prev(@SQL(value="select xxx_seq.nextval from dual", db=DB.ORACLE))
+private int id; 
+</pre>
+<p>调用pojo自身的方法生成</p>
+<pre>@Id(auto=false)
+@Prev(els=@EL("$me.nextId()"))
+private int id;
+
+public int nextId() {
+	return System.currentTimeMillis();<span class="zdoc_code_cmt">//仅供演示!!!
+</span>} 
+</pre>
+<p>走UUID,实现类org.nutz.el.opt.custom.MakeUUID</p>
+<pre>@Name <span class="zdoc_code_cmt">//注意,字符串主键用@Name,与属性名称无关!!!
+</span>@Prev(els=@EL("uuid(32)")) <span class="zdoc_code_cmt">// 可以是 uuid() uuid(32)
+</span>private String id;
+</pre>
+<p>自定义生成器,注册到EL全局即可,是上述UUID的延伸</p>
+<pre><span class="zdoc_code_cmt">// 首先, 做一个类,实现RunMethod
+</span>public class MySuperIdGenerator implements RunMethod {
+
+    public Object run(List&lt;Object&gt; fetchParam) {
+        <span class="zdoc_code_cmt">// 用redis实现自增
+</span>        return jedis().incr(fetchParam.get(0).toString());
+    }
+
+    public String fetchSelf() {
+        return "ig";
+    }
+}
+<span class="zdoc_code_cmt">// 然后, 在MainSetup.init方法或dao操作之前执行一次注册.
+</span>CustomMake.me().register("ig", new MySuperIdGenerator()));
+
+@Id(auto=false)
+@Prev(els=@EL("ig('ig:t_user')"))
+private int id;
+</pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>

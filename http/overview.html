@@ -23,6 +23,9 @@
 <li>
 <div><span class="num">5</span><a href="#异步执行">异步执行</a></div>
 </li>
+<li>
+<div><span class="num">6</span><a href="#设置SSLSocketFactory">设置SSLSocketFactory</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="为什么有这个package"></a>为什么有这个package</h1>
@@ -92,7 +95,7 @@
 <div class="hr"><b></b></div>
 <h1><a name="关于自签名的Https证书"></a>关于自签名的Https证书</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>关闭jvm的证书检查(全局的)</p>
+<p>关闭jvm的证书检查(Nutz全局).</p>
 <pre>	Http.disableJvmHttpsCheck();
 	String url = "https:<span class="zdoc_code_cmt">//kyfw.12306.cn/otn/leftTicket/queryT?leftTicketDTO.train_date=2015-01-12&amp;leftTicketDTO.from_station=UXP&amp;leftTicketDTO.to_station=SJP&amp;purpose_codes=ADULT";
 </span>    Http.get(url);
@@ -115,6 +118,12 @@
 	<span class="zdoc_code_cmt">// 程序结束前, shutdown之. 注意,是整个程序关闭前,不是方法执行之后.
 </span>	Sender.shutdown();
 	
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="设置SSLSocketFactory"></a>设置SSLSocketFactory</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如铁道部网站的https证书是自签名的,然后不想全局关闭https检查,那么可以为Sender单独设置SSLSocketFactory</p>
+<pre>Sender.create(req).setSSLSocketFactory(Http.nopSSLSocketFactory()).send();
 </pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
