@@ -20,6 +20,7 @@ import org.nutz.dao.test.meta.Pet;
 import org.nutz.lang.born.Borning;
 import org.nutz.lang.meta.Email;
 import org.nutz.lang.meta.Issue392Bean;
+import org.nutz.lang.meta.IssueVarStringMethodC;
 import org.nutz.lang.reflect.ObjA;
 import org.nutz.lang.util.Callback;
 import org.nutz.lang.util.Callback3;
@@ -632,5 +633,15 @@ public class MirrorTest {
     public void testIssue392() {
         assertEquals(0, Mirror.me(Issue392Bean.class).born(new byte[]{}).getLen());
         assertEquals(6, Mirror.me(Issue392Bean.class).born(new byte[]{1, 2, 3, 4, 5, 6}).getLen());
+    }
+    
+    @Test
+    public void test_var_string_factory() throws NoSuchMethodException {
+        Mirror.me(IssueVarStringMethodC.class).born("wendal", "abc");
+        ArrayList<String> args = new ArrayList<String>();
+        args.add("wendal");
+        args.add("abc");
+        Mirror.me(IssueVarStringMethodC.class).born(args.toArray());
+        Mirror.me(IssueVarStringMethodC.class).findMethod("make", args.toArray(new String[0]));
     }
 }

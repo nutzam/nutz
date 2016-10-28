@@ -26,6 +26,9 @@ import org.nutz.lang.born.BornContext;
 import org.nutz.lang.born.Borning;
 import org.nutz.lang.born.BorningException;
 import org.nutz.lang.born.Borns;
+import org.nutz.lang.born.DynaMethodBorning;
+import org.nutz.lang.born.MethodBorning;
+import org.nutz.lang.born.MethodCastingBorning;
 import org.nutz.lang.eject.EjectByField;
 import org.nutz.lang.eject.EjectByGetter;
 import org.nutz.lang.eject.Ejecting;
@@ -1137,6 +1140,23 @@ public class Mirror<T> {
                 if (m.getName().equals(name))
                     if (doMatchMethodParamsType(paramTypes, m.getParameterTypes()))
                         return m;
+            }
+        }
+        // TODO 与Borns的代码有重叠
+        Method[] sms = getMethods();
+        OUT: for (Method m : sms) {
+            if (!m.getName().equals(name))
+                continue;
+            Class<?>[] pts = m.getParameterTypes();
+            if (pts.length == 1 && pts[0].isArray()) {
+                if (paramTypes.length == 0)
+                    return m;
+                Class<?> varParam = pts[0].getComponentType();
+                for (Class<?> klass : paramTypes) {
+                    if (!Castors.me().canCast(klass, varParam))
+                        continue OUT;
+                }
+                return m;
             }
         }
         throw new NoSuchMethodException(String.format("Fail to find Method %s->%s with params:\n%s",
