@@ -18,7 +18,7 @@ public class ManyLinkField extends AbstractLinkField  {
 
     public ManyLinkField(Entity<?> entity, EntityHolder holder, LinkInfo info) {
         super(entity, holder, info);
-        this.targetType = info.many.target();
+        this.targetType = guessTargetClass(info, info.many.target());
         this.mapKey = info.many.key();
 
         Entity<?> ta = this.getLinkedEntity();

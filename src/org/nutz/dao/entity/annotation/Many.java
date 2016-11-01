@@ -41,7 +41,7 @@ public @interface Many {
 	/**
 	 * 关联类
 	 */
-    Class<?> target();
+    Class<?> target() default Object.class;
 
     /**
      * target类的关联属性名

@@ -39,7 +39,7 @@ public class ManyManyLinkField extends AbstractLinkField {
 
     public ManyManyLinkField(Entity<?> host, EntityHolder holder, LinkInfo info) {
         super(host, holder, info);
-        this.targetType = info.manymany.target();
+        this.targetType = guessTargetClass(info, info.manymany.target());
         this.mapKey = info.manymany.key();
         this.relationTableName = EntityName.create(info.manymany.relation());
 

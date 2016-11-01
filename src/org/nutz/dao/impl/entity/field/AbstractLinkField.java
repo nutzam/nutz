@@ -88,4 +88,16 @@ public abstract class AbstractLinkField extends AbstractEntityField implements L
         return linkedField;
     }
 
+    protected Class<?> guessTargetClass(LinkInfo info, Class<?> klass) {
+        if (!klass.equals(Object.class))
+            return klass;
+        Mirror<?> mirror = Mirror.me(info.fieldType);
+        if (mirror.isCollection()) {
+            return (Class<?>) mirror.getGenericsType(0);
+        }
+        if (mirror.isMap()) {
+            return (Class<?>) mirror.getGenericsType(1);
+        }
+        return mirror.getType();
+    }
 }

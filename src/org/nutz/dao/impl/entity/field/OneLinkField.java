@@ -21,7 +21,7 @@ public class OneLinkField extends AbstractLinkField  {
 
     public OneLinkField(Entity<?> entity, EntityHolder holder, LinkInfo info) {
         super(entity, holder, info);
-        this.targetType = info.one.target();
+        this.targetType = guessTargetClass(info, info.one.target());
         // 宿主实体的字段
         hostField = entity.getField(info.one.field());
         if (null == hostField)

@@ -24,7 +24,7 @@ public @interface One {
 	/**
 	 * 关联类
 	 */
-    Class<?> target();
+    Class<?> target() default Object.class;
 
     /**
      * 关联属性名

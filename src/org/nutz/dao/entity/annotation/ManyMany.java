@@ -40,7 +40,7 @@ public @interface ManyMany {
     /**
      * 关联类
      */
-    Class<?> target();
+    Class<?> target() default Object.class;
 
     /**
      * 中间表的名称
