@@ -18,7 +18,9 @@
 	@Table("t_food")
 	public class Food extends Pojo {
 
-		@ManyMany(target = Pet.class, relation = "t_pet_food", from = "foodid", to = "petid")
+		@ManyMany(relation = "t_pet_food", from = "foodid", to = "petid")
+		// 1.r.59之前需要写target参数
+		// @ManyMany(target = Pet.class, relation = "t_pet_food", from = "foodid", to = "petid")
 		private List<Pet> pets;
 
 		public List<Pet> getPets() {
@@ -34,7 +36,7 @@
 	
 	在 Food 对象中必须存在一个 `List<Pet>` 类型的字段，你的多对多映射就需要配置在这个字段上。通过 {*@ManyMany} 注解告诉 Nutz.Dao
 	对象 Food 和 Pet 之间的关系，其中：
-	 * target 表示你要映射的对象类型
+	 * 1.r.59之前你需要使用 target 表示你要映射的对象类型
 	 * relation 为中间数据表的表名，它也支持[dynamic_table_name.man 动态表名]
 	 * from 是中间数据表的字段名，这个字段将储存主对象的主键（上例的 Food 的主键）
 	 * to  是中间数据表的字段名，这个字段将储存映射对象的主键（上例的 Pet 的主键）
@@ -86,10 +88,9 @@ NutDao 是如何连接关联表的
         public int id;
         @Name
         public String name;
-        @ManyMany(target=Food.class, 
-                  relation="t_pet_food", 
-                  from="pid", 
-                  to="fid")
+        @ManyMany(relation="t_pet_food", 
+                from="pid",
+                to="fid")
         public List<Food> foods;
     }
     }}}
@@ -118,10 +119,9 @@ NutDao 是如何连接关联表的
 
     {{{
     ...
-    @ManyMany(target=Food.class, 
-              relation="t_pet_food", 
-              from="pid:name", 
-              to="fid")
+    @ManyMany(relation="t_pet_food", 
+                from="pid:name", 
+                to="fid")
     public List<Food> foods;
     ...
     }}}
