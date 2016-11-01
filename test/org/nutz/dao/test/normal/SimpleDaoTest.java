@@ -57,6 +57,8 @@ import org.nutz.dao.test.meta.PojoWithNull;
 import org.nutz.dao.test.meta.SimplePOJO;
 import org.nutz.dao.test.meta.UseBlobClob;
 import org.nutz.dao.test.meta.issue1074.PojoSql;
+import org.nutz.dao.test.meta.issue1163.Issue1163Master;
+import org.nutz.dao.test.meta.issue1163.Issue1163Pet;
 import org.nutz.dao.test.meta.issue396.Issue396Master;
 import org.nutz.dao.test.meta.issue726.Issue726;
 import org.nutz.dao.test.meta.issue901.XPlace;
@@ -769,5 +771,27 @@ public class SimpleDaoTest extends DaoCase {
         cnd.groupBy("age");
         assertEquals(10, dao.count(Pet.class, null));
         assertEquals(4, dao.count(Pet.class, cnd));
+    }
+    
+    @Test
+    public void test_issue_1163() {
+        dao.create(Issue1163Master.class, true);
+        dao.create(Issue1163Pet.class, true);
+        
+        ArrayList<Issue1163Pet> pets = new ArrayList<Issue1163Pet>();
+        for (int i = 0; i < 3; i++) {
+            Issue1163Pet pet = new Issue1163Pet();
+            pet.setName("i"+i);
+            pets.add(pet);
+        }
+        Issue1163Pet gpet = new Issue1163Pet();
+        gpet.setName("zozoh");
+        
+        Issue1163Master master = new Issue1163Master();
+        master.setName("wendal");
+        master.setPets(pets);
+        master.setGpet(gpet);
+        
+        dao.insertWith(master, null);
     }
 }

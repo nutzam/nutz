@@ -1,11 +1,11 @@
-package org.nutz.dao.test.meta.issue9001;
+package org.nutz.dao.test.meta.issue1163;
 
 import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.Name;
 import org.nutz.dao.entity.annotation.Table;
 
 @Table("t_9001_pet")
-public class Issue9001Pet {
+public class Issue1163Pet {
 
     @Id
     private int id;

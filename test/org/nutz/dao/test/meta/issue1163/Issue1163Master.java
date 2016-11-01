@@ -1,4 +1,4 @@
-package org.nutz.dao.test.meta.issue9001;
+package org.nutz.dao.test.meta.issue1163;
 
 import java.util.ArrayList;
 
@@ -8,8 +8,8 @@ import org.nutz.dao.entity.annotation.Name;
 import org.nutz.dao.entity.annotation.One;
 import org.nutz.dao.entity.annotation.Table;
 
-@Table("t_9001_master")
-public class Issue9001Master {
+@Table("t_1163_master")
+public class Issue1163Master {
 
     @Id
     private int id;
@@ -19,10 +19,10 @@ public class Issue9001Master {
     private int gpet_id;
     
     @Many(field="master_id")
-    private ArrayList<Issue9001Pet> pets;
+    private ArrayList<Issue1163Pet> pets;
     
     @One(field="gpet_id")
-    private Issue9001Pet gpet;
+    private Issue1163Pet gpet;
     
     public int getId() {
         return id;
@@ -36,10 +36,10 @@ public class Issue9001Master {
     public void setName(String name) {
         this.name = name;
     }
-    public ArrayList<Issue9001Pet> getPets() {
+    public ArrayList<Issue1163Pet> getPets() {
         return pets;
     }
-    public void setPets(ArrayList<Issue9001Pet> pets) {
+    public void setPets(ArrayList<Issue1163Pet> pets) {
         this.pets = pets;
     }
     public int getGpet_id() {
@@ -48,10 +48,10 @@ public class Issue9001Master {
     public void setGpet_id(int gpet_id) {
         this.gpet_id = gpet_id;
     }
-    public Issue9001Pet getGpet() {
+    public Issue1163Pet getGpet() {
         return gpet;
     }
-    public void setGpet(Issue9001Pet gpet) {
+    public void setGpet(Issue1163Pet gpet) {
         this.gpet = gpet;
     }
     
