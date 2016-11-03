@@ -2426,8 +2426,13 @@ public abstract class Lang {
             arrays[it] = ah;
         }
     }
-
+    
+    @Deprecated
     public static String simpleMetodDesc(Method method) {
+        return simpleMethodDesc(method);
+    }
+
+    public static String simpleMethodDesc(Method method) {
         return String.format("%s.%s(...)",
                              method.getDeclaringClass().getSimpleName(),
                              method.getName());

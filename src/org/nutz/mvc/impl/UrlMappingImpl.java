@@ -140,12 +140,10 @@ public class UrlMappingImpl implements UrlMapping {
             Method method = ai.getMethod();
             String str;
             if (null != method)
-                str = String.format("%-30s : %-10s",
-                                    Lang.simpleMetodDesc(method),
-                                    method.getReturnType().getSimpleName());
+                str = genMethodDesc(ai);
             else
                 throw Lang.impossible();
-            log.debugf("%s >> %s | @Ok(%-5s) @Fail(%-5s) | by %d Filters | (I:%s/O:%s)",
+            log.debugf("%s >> %50s | @Ok(%-5s) @Fail(%-5s) | by %d Filters | (I:%s/O:%s)",
                        Strings.alignLeft(sb, 30, ' '),
                        str,
                        ai.getOkView(),
@@ -155,5 +153,23 @@ public class UrlMappingImpl implements UrlMapping {
                        ai.getInputEncoding(),
                        ai.getOutputEncoding());
         }
+    }
+    
+    protected String genMethodDesc(ActionInfo ai) {
+        Method method = ai.getMethod();
+        String prefix = "";
+        if (ai.getLineNumber() > 0) {
+            prefix = String.format("(%s.java:%d).%s",
+                                 method.getDeclaringClass().getSimpleName(),
+                                 ai.getLineNumber(),
+                                 method.getName());
+        } else {
+            prefix = String.format("%s.%s(...)",
+                                   method.getDeclaringClass().getSimpleName(),
+                                   method.getName());
+        }
+        return String.format("%-37s : %-10s", 
+                             prefix,
+                             method.getReturnType().getSimpleName());
     }
 }
