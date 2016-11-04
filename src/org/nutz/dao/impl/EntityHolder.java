@@ -1,8 +1,11 @@
 package org.nutz.dao.impl;
 
 import java.sql.Connection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.nutz.dao.ConnCallback;
@@ -200,6 +203,18 @@ public class EntityHolder {
     public boolean hasType(Class<?> typeName) {
         synchronized (map) {
             return map.containsKey(typeName);
+        }
+    }
+    
+    public void clear() {
+        map.clear();
+    }
+    
+    public void remove(String className) {
+        Set<Class<?>> keys = new HashSet<Class<?>>(map.keySet());
+        for (Class<?> klass : keys) {
+            if (klass.getName().equals(className))
+                map.remove(klass);
         }
     }
 }
