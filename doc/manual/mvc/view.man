@@ -19,6 +19,48 @@
 	本文 [#定制自己的视图] 一节
 
 ------------------------------------------------------------------------------------------
+快速入门:
+
+	{{{<JAVA>
+	// 重定向
+	@Ok(">>:/user/login.html") // 浏览器重定向到 /user/login.html
+	@Ok("->:/user/home.html") // forward,内部重定向到 /user/home.html
+	
+	// 跳转到jsp页面
+	@Ok("jsp:jsp.user.home") // 内部跳转到 /WEB-INF/jsp/user/home.jsp
+	@Ok("jsp:/user/login.jsp") // 内部跳转到 /user/login.jsp
+	
+	// 把入口方法返回值转为json字符串写入响应
+	@Ok("json")
+	@Ok("json:full")
+	@Ok("json:{locked:'password|salt'}")
+	
+	// 直接设置为一个http status
+	@Ok("http:200")
+	@Fail("http:500")
+	
+	// 任性返回任意文本
+	@Ok("raw")
+	// 返回图片对象,自动转为指定格式
+	@Ok("raw:png") // 返回值需要时BufferedImage
+	
+	// 文件下载, 入口方法返回值需要一个File对象
+	@Ok("raw:pdf")
+	
+	// 什么都不做,入口方法使用resp对象自行写响应
+	@Ok("void")
+	
+	// 根据返回值确定行为
+	@Ok("jsp:${obj == null ? 'jsp.user.login' : 'jsp.user.home'}")
+	// 根据入口方法返回值(String类型)来确定,可以是re视图之外的任意合法视图值
+	@Ok("re")
+	if (...)
+	    return ">>:/user/login.html";
+	else
+	    return "jsp:jsp.user.home";
+	}}}
+
+------------------------------------------------------------------------------------------
 入口函数返回值
 
 	前面提到的，视图（View）就是来处理入口函数的返回值的。 当然每个视图的实现类处理的方式
