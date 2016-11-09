@@ -882,6 +882,11 @@ public abstract class Daos {
             if (delIndexs.contains(index) || Lang.equals("PRIMARY", index)) {
                 continue;
             }
+            MappingField mf = en.getColumn(index);
+            if (mf != null) {
+                if (mf.isName())
+                    continue;
+            }
             delSqls.add(Sqls.createf("ALTER TABLE %s DROP INDEX %s",
                                      getTableName(dao, en, t),
                                      index));

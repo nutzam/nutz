@@ -59,6 +59,7 @@ import org.nutz.dao.test.meta.UseBlobClob;
 import org.nutz.dao.test.meta.issue1074.PojoSql;
 import org.nutz.dao.test.meta.issue1163.Issue1163Master;
 import org.nutz.dao.test.meta.issue1163.Issue1163Pet;
+import org.nutz.dao.test.meta.issue1166.Issue1166;
 import org.nutz.dao.test.meta.issue396.Issue396Master;
 import org.nutz.dao.test.meta.issue726.Issue726;
 import org.nutz.dao.test.meta.issue901.XPlace;
@@ -793,5 +794,16 @@ public class SimpleDaoTest extends DaoCase {
         master.setGpet(gpet);
         
         dao.insertWith(master, null);
+    }
+    
+    @Test(expected=DaoException.class)
+    public void test_issue_1166() {
+        dao.create(Issue1166.class, true);
+        Daos.migration(dao, Issue1166.class, true, true, true);
+        Issue1166 is = new Issue1166();
+        is.setName("wendal");
+        
+        dao.insert(is);
+        dao.insert(is);
     }
 }
