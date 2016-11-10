@@ -123,12 +123,7 @@ under the License.
     </server>
     -->
     
-	<server>
-            <id>sonatype-snapshots</id>
-            <username>${env.S_USER_ID}</username>
-            <password>${env.S_USER_PWD}</password>
-        </server>
-        <server>
+		<server>
             <id>nutzcn-snapshots</id>
             <username>${env.S_NUTZMAVEN_USER_ID}</username>
             <password>${env.S_NUTZMAVEN_USER_PWD}</password>

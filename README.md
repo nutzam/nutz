@@ -113,8 +113,8 @@ DaoUp.me().close();
 ```xml
 	<repositories>
 		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<id>nutzcn-snapshots</id>
+			<url>http://maven.nutz.cn/nexus/content/repositories/snapshots</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -132,7 +132,7 @@ DaoUp.me().close();
 
 也可以将repositories配置放入$HOME/.m2/settings.xml中
 
-或者直接去[快照库下载](https://oss.sonatype.org/content/repositories/snapshots/org/nutz/nutz/1.r.59-SNAPSHOT/)
+或者直接去[快照库下载](http://maven.nutz.cn/nexus/content/repositories/snapshots/org/nutz/nutz/1.r.59-SNAPSHOT/)
 
 ## Gradle 依赖
 
@@ -186,4 +186,4 @@ http://www.jetbrains.com
 
 ## 关于我们
 
-广州市文尔软件科技有限公司 -- 面向各种中国大陆各种备案/审查机制的企业实体.
+广州市文尔软件科技有限公司
