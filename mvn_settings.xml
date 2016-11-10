@@ -128,6 +128,11 @@ under the License.
             <username>${env.S_USER_ID}</username>
             <password>${env.S_USER_PWD}</password>
         </server>
+        <server>
+            <id>nutzcn-snapshots</id>
+            <username>${env.NUTZMAVEN_USER_ID}</username>
+            <password>${env.NUTZMAVEN_USER_PWD}</password>
+        </server>
 	
     <!-- Another sample, using keys to authenticate.
     <server>

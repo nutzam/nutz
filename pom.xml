@@ -186,9 +186,9 @@
 	</build>
 	<distributionManagement>
 		<snapshotRepository>
-			<id>sonatype-snapshots</id>
-			<name>Sonatype Nexus snapshot repository</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<id>nutzcn-snapshots</id>
+			<name>NutzCN snapshot repository</name>
+			<url>http://maven.nutz.cn/nexus/content/repositories/snapshots</url>
 		</snapshotRepository>
 
 		<repository>
