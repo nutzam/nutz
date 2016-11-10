@@ -72,6 +72,7 @@
     
     答案是：{#00F;*采用 java 型注入值}
     
+----------------------------------------------------------------------------
 用 Properties 举个例子
 
     就用上面的例子，如果我们需要暴露给运维人员一个 properties 文件任其修改：
@@ -86,7 +87,7 @@
     {{{
     var ioc = {
     	// 读取配置文件
-    	config : {
+    	conf : {
     		type : "org.nutz.ioc.impl.PropertiesProxy",
     		fields : {
     			paths : ["myapp.properties"]
@@ -99,10 +100,10 @@
     			depose :"close"
     		},
     		fields : {
-    			driverClassName : {java :"$config.get('db-driver')"},
-    			url             : {java :"$config.get('db-url')"},
-    			username        : {java :"$config.get('db-username')"},
-    			password        : {java :"$config.get('db-password')"},
+    			driverClassName : {java :"$conf.get('db-driver')"},
+    			url             : {java :"$conf.get('db-url')"},
+    			username        : {java :"$conf.get('db-username')"},
+    			password        : {java :"$conf.get('db-password')"},
     			initialSize     : 10,
     			maxActive       : 100,
     			testOnReturn    : true,
@@ -123,13 +124,62 @@
      # 那么根据配置 "myapp.properties" 会被 {*PropertiesProxy} 类加载
      # 通过 java 调用，你可以直接调用 {#080;*"config"} 对象的 get 方法
      # 这样，你就能将分散在各个 Ioc 文件中的值集中到一个 properties 文件里了
+     
+----------------------------------------------------------------------------
+使用PropertiesProxy实现更简洁的构造方式
 
+	dao.js
+	    {{{<JS>
+    var ioc = {
+    	// 读取配置文件
+    	conf : {
+    		type : "org.nutz.ioc.impl.PropertiesProxy",
+    		fields : {
+    			paths : ["custom/"]
+    		}
+    	},
+    	// 数据源
+	    dataSource : {
+	        factory : "$conf#make",
+	        args : ["com.alibaba.druid.pool.DruidDataSource", "db."],
+	        type : "com.alibaba.druid.pool.DruidDataSource",
+	        events : {
+	        	create : "init",
+	            depose : 'close'
+	        }
+	    },
+    	// Dao
+    	dao : {
+    		type :'org.nutz.dao.impl.NutDao',
+    		args : [ {refer :"dataSource"}]
+    	}
+    };
+    }}}
+    
+    custom/db.properties文件
+    
+    {{{
+    db.url=jdbc:mysql://127.0.0.1:3306/nutzbook
+	db.username=root
+	db.password=root
+	db.validationQuery=select 1
+	db.maxActive=50
+	db.testWhileIdle=true
+	db.filters=mergeStat
+	db.connectionProperties=druid.stat.slowSqlMillis=2000
+	db.defaultAutoCommit=true
+    }}}
+    
+    重点是 factory配置, 使用$conf的make方法,可以根据一个类和指定前缀,生成一个对象
+
+----------------------------------------------------------------------------
 关于XML
 
     如果你打算给你的运维人员看 XML 怎么办呢？抱歉，Nutz 木有给出内部支持，但是简单的要命，你需要：
      # 提供一个 XML 配置解析类，从xml读取内容，然后，提供 get 方法
      # 在 Ioc 配置的任何地方，你都可以用 java 调用的方式，调用 get 方法
 
+----------------------------------------------------------------------------
 我是用Annotation的Ioc
     
     如果是这样，那么 @Inject 可以这样写:

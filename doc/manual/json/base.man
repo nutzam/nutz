@@ -7,7 +7,7 @@
 
 	JSON的[http://json.org/json-zh.html 官方定义] : 一种轻量级的数据交换格式 
 	
-	基本形式如下
+	基本形式如下(严格的JSON格式并不允许注释,但Nutz.Json支持Java风格的注释)
 	
 	{{{
 	{

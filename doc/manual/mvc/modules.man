@@ -14,6 +14,7 @@
 	 * [#@SetupBy_-_应用启动以及关闭时的额外处理 @SetupBy - 应用启动以及关闭时的额外处理]
 	 * [#@Views_-_自定义的扩展视图 @Views - 自定义的扩展视图]
 	 * [#@Localization_-_应用的本地化字符串设定 @Localization - 应用的本地化字符串设定]
+	 * [session.md - 自定义Session实现]
 	 * [#入口函数 所有入口函数上支持的注解]
 		 * 声明在主模块模块的注解，将作为所有[#入口函数 入口函数]的默认配置
 		 * 在[#子模块 子模块]中的定义更为优先
@@ -30,7 +31,7 @@
 		
 		自动搜索子模块
 		{{{
-		@Modules(scanPackage = true)
+		@Modules(scanPackage = true) //1.r.58开始默认就是true
 		public class MainModule {
 			...
 		}}}

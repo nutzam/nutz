@@ -311,6 +311,7 @@
 --------------------------------------------------------------------------------
 通过代码注册自定义Function
 	
+	局部注册
 	
 	{{{<JAVA>
 	
@@ -329,7 +330,12 @@
 	}}}
 	
 	
+	全局注册
 	
+	{{{<JAVA>
+	// register任意一个实现了RunMethod接口的对象
+	CustomMake.me().register("ig", ioc.get(RedisIdGenerator.class));
+	}}}
 	
 	
 	
