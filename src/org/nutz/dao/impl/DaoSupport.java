@@ -191,24 +191,29 @@ public class DaoSupport {
         final Set<String> keywords = new HashSet<String>(Daos.sql2003Keywords());
         run(new ConnCallback() {
             public void invoke(Connection conn) throws Exception {
-                DatabaseMetaData dmd = conn.getMetaData();
-                meta.setProductName(dmd.getDatabaseProductName());
-                meta.setVersion(dmd.getDatabaseProductVersion());
-                log.debug("JDBC Driver --> " + dmd.getDriverVersion());
-                log.debug("JDBC Name   --> " + dmd.getDriverName());
-                if (!Strings.isBlank(dmd.getURL()))
-                    log.debug("JDBC URL    --> " + dmd.getURL());
-                if (dmd.getDriverName().contains("mariadb") || dmd.getDriverName().contains("sqlite")) {
-                    log.warn("Auto-select fetch size to Integer.MIN_VALUE, enable for ResultSet Streaming");
-                    SqlContext.DEFAULT_FETCH_SIZE = Integer.MIN_VALUE;
-                }
-                String tmp = dmd.getSQLKeywords();
-                if (tmp != null) {
-                    for (String keyword : tmp.split(",")) {
-                        keywords.add(keyword.toUpperCase());
+                try {
+                    DatabaseMetaData dmd = conn.getMetaData();
+                    meta.setProductName(dmd.getDatabaseProductName());
+                    meta.setVersion(dmd.getDatabaseProductVersion());
+                    log.debug("JDBC Driver --> " + dmd.getDriverVersion());
+                    log.debug("JDBC Name   --> " + dmd.getDriverName());
+                    if (!Strings.isBlank(dmd.getURL()))
+                        log.debug("JDBC URL    --> " + dmd.getURL());
+                    if (dmd.getDriverName().contains("mariadb") || dmd.getDriverName().contains("sqlite")) {
+                        log.warn("Auto-select fetch size to Integer.MIN_VALUE, enable for ResultSet Streaming");
+                        SqlContext.DEFAULT_FETCH_SIZE = Integer.MIN_VALUE;
                     }
+                    String tmp = dmd.getSQLKeywords();
+                    if (tmp != null) {
+                        for (String keyword : tmp.split(",")) {
+                            keywords.add(keyword.toUpperCase());
+                        }
+                    }
+                    expert.checkDataSource(conn);
                 }
-                expert.checkDataSource(conn);
+                catch (Exception e) {
+                    log.info("something wrong when checking DataSource", e);
+                }
             }
         });
         if (log.isDebugEnabled())
