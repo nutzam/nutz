@@ -38,4 +38,5 @@ public @interface Column {
      */
     boolean hump() default false;
 
+    boolean wrap() default false;
 }
