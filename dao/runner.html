@@ -97,6 +97,18 @@ public class SpringDaoRunner implements DaoRunner {
 <pre>dao.setRunner(new SpringDaoRunner());
 </pre>
 <p>修改 NutDao 的默认事务行为。 当然，如果你的 Dao 对像本身就是通过 Ioc 容器获得，我想你一定知道如何为你的对象设置一个属性，对吧。</p>
+<p>或Ioc JS配置如下</p>
+<pre>dao : {
+	type : "org.nutz.dao.impl.NutDao",
+	args : [{refer:"dataSource"}],
+	fields : {
+		runner : {refer:"springDaoRunner"}
+	}
+},
+springDaoRunner : {
+	type : "org.nutz.integration.spring.SpringDaoRunner"
+}
+</pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>

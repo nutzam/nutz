@@ -46,8 +46,10 @@
 <pre>@Table("t_food")
 public class Food extends Pojo {
 
-	@ManyMany(target = Pet.class, relation = "t_pet_food", from = "foodid", to = "petid")
-	private List&lt;Pet&gt; pets;
+	@ManyMany(relation = "t_pet_food", from = "foodid", to = "petid")
+	<span class="zdoc_code_cmt">// 1.r.59之前需要写target参数
+</span>	<span class="zdoc_code_cmt">// @ManyMany(target = Pet.class, relation = "t_pet_food", from = "foodid", to = "petid")
+</span>	private List&lt;Pet&gt; pets;
 
 	public List&lt;Pet&gt; getPets() {
 		return pets;
@@ -61,7 +63,7 @@ public class Food extends Pojo {
 </pre>
 <p>在 Food 对象中必须存在一个 List&lt;Pet&gt; 类型的字段，你的多对多映射就需要配置在这个字段上。通过 <b>@ManyMany</b> 注解告诉 Nutz.Dao对象 Food 和 Pet 之间的关系，其中：</p>
 <ul type="disc">
-<li>target 表示你要映射的对象类型</li>
+<li>1.r.59之前你需要使用 target 表示你要映射的对象类型</li>
 <li>relation 为中间数据表的表名，它也支持<a href="dynamic_table_name.html">动态表名</a></li>
 <li>from 是中间数据表的字段名，这个字段将储存主对象的主键（上例的 Food 的主键）</li>
 <li>to  是中间数据表的字段名，这个字段将储存映射对象的主键（上例的 Pet 的主键）</li>
@@ -116,10 +118,9 @@ public class Pet {
     public int id;
     @Name
     public String name;
-    @ManyMany(target=Food.class, 
-              relation="t_pet_food", 
-              from="pid", 
-              to="fid")
+    @ManyMany(relation="t_pet_food", 
+            from="pid",
+            to="fid")
     public List&lt;Food&gt; foods;
 }
 </pre>
@@ -135,10 +136,9 @@ public class Pet {
 <p>这个约定有点死板对吗？并且如果你用 VARCHAR 作为 pid 的数据表字段类型，但是你的 Pet 却声明了 @Id 注解，一样会错，因为 @Id 注解优先。</p>
 <p>读到这里，你一定感到很郁闷，因为你实在不想改变你的关联表，没关系，你可以下面一样声明你的 @ManyMany 注解</p>
 <pre>...
-@ManyMany(target=Food.class, 
-          relation="t_pet_food", 
-          from="pid:name", 
-          to="fid")
+@ManyMany(relation="t_pet_food", 
+            from="pid:name", 
+            to="fid")
 public List&lt;Food&gt; foods;
 ...
 </pre>

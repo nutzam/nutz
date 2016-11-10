@@ -11,16 +11,16 @@
 <p>Ioc 部分用到的 Java 注解比较少，具体请看下表</p>
 <table border="1" cellspacing="2" cellpadding="4">
 <tr>
-<td> @InjectName  </td>
-<td> 基本上废弃,优先级低于@IocBean.用来与 Mvc 容器的扩展点，声明了这个注解的模块，会被 Ioc 容器管理 </td>
-</tr>
-<tr>
 <td> @IocBean     </td>
 <td> AnnotationIocLoader 根据这个注解来判断哪些类应该被自己加载 </td>
 </tr>
 <tr>
 <td> @Inject      </td>
 <td> AnnotationIocLoader 根据这个注解来了解类中的字段，具体的注入方式 </td>
+</tr>
+<tr>
+<td> @InjectName  </td>
+<td> 基本上废弃,优先级低于@IocBean.用来与 Mvc 容器的扩展点，声明了这个注解的模块，会被 Ioc 容器管理 </td>
 </tr>
 </table>
 <p>关于 @InjectName基本上已经废弃. 更详细的描述，请参看 <a href="../mvc/with_ioc.html">同 Ioc 容器一起工作</a></p>

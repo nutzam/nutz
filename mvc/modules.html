@@ -66,6 +66,7 @@
 <li><a href="#@SetupBy_-_应用启动以及关闭时的额外处理">@SetupBy - 应用启动以及关闭时的额外处理</a></li>
 <li><a href="#@Views_-_自定义的扩展视图">@Views - 自定义的扩展视图</a></li>
 <li><a href="#@Localization_-_应用的本地化字符串设定">@Localization - 应用的本地化字符串设定</a></li>
+<li><a href="session.md">- 自定义Session实现</a></li>
 <li><a href="#入口函数">所有入口函数上支持的注解</a>
 <ul type="circle">
 <li>声明在主模块模块的注解，将作为所有<a href="#入口函数">入口函数</a>的默认配置</li>
@@ -82,8 +83,8 @@ public class MainModule {
 	...
 </pre>
 <p>自动搜索子模块</p>
-<pre>@Modules(scanPackage = true)
-public class MainModule {
+<pre>@Modules(scanPackage = true) <span class="zdoc_code_cmt">//1.r.58开始默认就是true
+</span>public class MainModule {
 	...
 </pre>
 <p>将自动搜索主模块所在的包（包括子包）下所有的类，如果有类包括了一个以上的<a href="#入口函数">入口函数</a>将被认为是模块类</p>

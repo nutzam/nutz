@@ -55,8 +55,10 @@
 <pre>@Table("t_master")
 public class Master extends Pojo {
 
-	@Many(target = Pet.class, field = "masterId")
-	private List&lt;Pet&gt; pets;
+	@Many(field = "masterId")
+	<span class="zdoc_code_cmt">// 1.r.59之前需要写target参数
+</span>	<span class="zdoc_code_cmt">// @Many(target = Pet.class, field = "masterId")
+</span>	private List&lt;Pet&gt; pets;
 
 	public List&lt;Pet&gt; getPets() {
 		return pets;
@@ -68,9 +70,9 @@ public class Master extends Pojo {
 
 }
 </pre>
-<p>在 Master 对象中必须存在一个 List&lt;Pet&gt; 类型的字段，你的一对多映射就需要配置在这个字段上。通过 <b>@Many</b> 注解告诉 Nutz.Dao 对象 Pet 和 Master 对象的关系，其中：</p>
+<p>在 Master 对象中必须存在一个 List&lt;Pet&gt; 类型的字段，你的一对多映射就需要配置在这个字段上。通过 <b>@Many</b> 注解告诉 Nutz.Dao对象 Pet 和 Master 对象的关系，其中：</p>
 <ul type="disc">
-<li>target 表示你要映射的对象类型</li>
+<li>1.r.59之前你需要使用 target 表示你要映射的对象类型</li>
 <li>field 表示你打算依靠<b>目标对象</b>的哪一个字段来映射本对象的主键</li>
 </ul>
 <p>因此：</p>
@@ -98,9 +100,9 @@ public class Master extends Pojo {
 <p>例如：</p>
 <pre>@Table("t_master")
 public class Master extends Pojo {
-	@Many(target = Pet.class, field = "masterId")
+	@Many(field = "masterId")
 	private Pet[] pets;
-	
+
 	<span class="zdoc_code_cmt">// ... 省略其余代码
 </span></pre>
 <p>当采用 fetchLinks 获取值的时候，会自动填充此数组</p>
@@ -110,9 +112,9 @@ public class Master extends Pojo {
 <p>如果采用 Map 类型， 我们还需要你为 @Many 注解多添加一个参数，通过这个参数, Nutz.Dao 才能知道采用目标 POJO 对象的哪一个字段来作为 Map　的键。</p>
 <pre>@Table("t_master")
 public class Master extends Pojo {
-	@Many(target = Pet.class, field = "masterId", key="name")
+	@Many(field = "masterId", key="name")
 	private Map&lt;String,Pet&gt; pets;
-	
+
 	<span class="zdoc_code_cmt">// ... 省略其余代码
 </span></pre>
 <p>其中：</p>
@@ -131,9 +133,9 @@ public class Master extends Pojo {
 <p>例如：</p>
 <pre>@Table("t_master")
 public class Master extends Pojo {
-	@Many(target = Pet.class, field = "masterId")
+	@Many(field = "masterId")
 	private Pet pet;
-	
+
 	<span class="zdoc_code_cmt">// ... 省略其余代码
 </span></pre>
 <p>则会从 Pet 对象的数据表中，选取<b>第一个</b> masterId 为当前对象主键值的 Pet 对象。至于什么是 “<b>第一</b>”不同的数据库有所不同。总之，就是 SQL 语句：</p>

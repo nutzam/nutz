@@ -474,6 +474,7 @@ System.out.println(El.eval(context,"a&gt;10"));
 <div class="hr"><b></b></div>
 <h1><a name="通过代码注册自定义Function"></a>通过代码注册自定义Function</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p>局部注册</p>
 <pre>
 @Test
 public void test_el2() throws Exception {
@@ -487,6 +488,10 @@ public void test_el2() throws Exception {
 public static String sayhi(String name) {
     return "hi,"+name;
 }
+</pre>
+<p>全局注册</p>
+<pre><span class="zdoc_code_cmt">// register任意一个实现了RunMethod接口的对象
+</span>CustomMake.me().register("ig", ioc.get(RedisIdGenerator.class));
 </pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a><b>juqkai</b><a href="mailto:juqkai@gmail.com">&lt;juqkai@gmail.com&gt;</a></div>
