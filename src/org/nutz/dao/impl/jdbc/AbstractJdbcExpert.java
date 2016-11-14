@@ -1,6 +1,5 @@
 package org.nutz.dao.impl.jdbc;
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -54,7 +53,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
     private static String DEFAULT_COMMENT_TABLE = "comment on table $table is '$tableComment'";
 
     private static String DEFAULT_COMMENT_COLUMN = "comment on column $table.$column is '$columnComment'";
-    
+
     protected Set<String> keywords;
 
     /**
@@ -164,7 +163,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         }
         dao.execute(sqls.toArray(new Sql[sqls.size()]));
     }
-    
+
     protected Sql createRelation(Dao dao, LinkField lf) {
         ManyManyLinkField mm = (ManyManyLinkField) lf;
         if (dao.exists(mm.getRelationName()))
@@ -281,7 +280,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         }
         return sqls;
     }
-    
+
     public Sql createIndexSql(Entity<?> en, EntityIndex index) {
         StringBuilder sb = new StringBuilder();
         if (index.isUnique())
@@ -319,8 +318,10 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         List<Sql> sqls = new ArrayList<Sql>();
         // 表注释
         if (en.hasTableComment()) {
-            Sql tableCommentSQL = Sqls.create(Strings.isBlank(commentTable) ? DEFAULT_COMMENT_TABLE : commentTable);
-            tableCommentSQL.vars().set("table", en.getTableName()).set("tableComment", en.getTableComment());
+            Sql tableCommentSQL = Sqls.create(Strings.isBlank(commentTable) ? DEFAULT_COMMENT_TABLE
+                                                                            : commentTable);
+            tableCommentSQL.vars().set("table", en.getTableName()).set("tableComment",
+                                                                       en.getTableComment());
             sqls.add(tableCommentSQL);
         }
         // 字段注释
@@ -401,27 +402,27 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
     public boolean supportTimestampDefault() {
         return true;
     }
-    
+
     public void setKeywords(Set<String> keywords) {
         this.keywords = keywords;
     }
-    
+
     public Set<String> getKeywords() {
         return keywords;
     }
-    
+
     public String wrapKeywork(String columnName, boolean force) {
         if (force || keywords.contains(columnName.toUpperCase()))
             return "`" + columnName + "`";
         return null;
     }
-    
+
     public boolean isSupportGeneratedKeys() {
         return true;
     }
-    
+
     public void checkDataSource(Connection conn) throws SQLException {}
-    
+
     @Override
     public Sql createAddColumnSql(Entity<?> en, MappingField mf) {
         StringBuilder sb = new StringBuilder("ALTER TABLE ");
@@ -435,11 +436,9 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         if (mf.isNotNull()) {
             sb.append(" NOT NULL");
         }
-        if (mf.getColumnType() == ColType.TIMESTAMP
-            && supportTimestampDefault()) {
+        if (mf.getColumnType() == ColType.TIMESTAMP && supportTimestampDefault()) {
             if (mf.hasDefaultValue()) {
-                sb.append(" ")
-                  .append(mf.getDefaultValue(null).replaceAll("@", "@@"));
+                sb.append(" ").append(mf.getDefaultValue(null).replaceAll("@", "@@"));
             } else {
                 if (mf.isNotNull()) {
                     sb.append(" DEFAULT 0");
@@ -457,11 +456,11 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         // sb.append(';');
         return Sqls.create(sb.toString());
     }
-    
+
     public boolean canCommentWhenAddIndex() {
         return false;
     }
-    
+
     @Override
     public List<String> getIndexNames(Entity<?> en, Connection conn) throws SQLException {
         List<String> names = new ArrayList<String>();

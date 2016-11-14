@@ -26,7 +26,7 @@ public class ViewProcessor extends AbstractProcessor {
     public void init(NutConfig config, ActionInfo ai) throws Throwable {
         //需要特别提醒一下使用jsonView,但方法的返回值是String的!!
         if("json".equals(ai.getOkView()) && String.class.equals(ai.getMethod().getReturnType())) {
-            log.warn("Not a good idea : Return String ,and using JsonView!! (Using @Ok(\"raw\") or return map/list/pojo)--> " + Lang.simpleMetodDesc(ai.getMethod()));
+            log.warn("Not a good idea : Return String ,and using JsonView!! (Using @Ok(\"raw\") or return map/list/pojo)--> " + Lang.simpleMethodDesc(ai.getMethod()));
         }
         view = evalView(config, ai, ai.getOkView());
 

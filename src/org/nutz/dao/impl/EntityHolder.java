@@ -2,7 +2,6 @@ package org.nutz.dao.impl;
 
 import java.sql.Connection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -146,13 +145,15 @@ public class EntityHolder {
                 ef.setType(mirror.getType());
             ef.setInjecting(new InjectToMap(key)); // 这里比较纠结,回设的时候应该用什么呢?
             ef.setEjecting(new EjectFromMap(entry.getKey()));
-            
-            if (ef.isAutoIncreasement() && ef.isId() && support.expert.isSupportAutoIncrement() && !support.expert.isSupportGeneratedKeys()) {
+
+            if (ef.isAutoIncreasement()
+                && ef.isId()
+                && support.expert.isSupportAutoIncrement()
+                && !support.expert.isSupportGeneratedKeys()) {
                 en.addAfterInsertMacro(support.expert.fetchPojoId(en, ef));
             }
 
             en.addMappingField(ef);
-            
 
             if (mirror != null && !check)
                 check = mirror.isEnum();
@@ -205,11 +206,11 @@ public class EntityHolder {
             return map.containsKey(typeName);
         }
     }
-    
+
     public void clear() {
         map.clear();
     }
-    
+
     public void remove(String className) {
         Set<Class<?>> keys = new HashSet<Class<?>>(map.keySet());
         for (Class<?> klass : keys) {
