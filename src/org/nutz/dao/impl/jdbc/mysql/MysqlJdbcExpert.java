@@ -11,6 +11,7 @@ import org.nutz.dao.DB;
 import org.nutz.dao.Dao;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.LinkField;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
 import org.nutz.dao.entity.annotation.ColType;
@@ -244,5 +245,24 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
     
     public boolean canCommentWhenAddIndex() {
         return true;
+    }
+    
+    protected Sql createRelation(Dao dao, LinkField lf) {
+        Sql sql = super.createRelation(dao, lf);
+        if (sql == null)
+            return null;
+        Entity<?> en = lf.getEntity();
+        StringBuilder sb = new StringBuilder(sql.getSourceSql());
+        // 设置特殊引擎
+        if (en.hasMeta(META_ENGINE)) {
+            sb.append(" ENGINE=" + en.getMeta(META_ENGINE));
+        }
+        // 默认采用 UTF-8 编码
+        if (en.hasMeta(META_CHARSET)) {
+            sb.append(" CHARSET=" + en.getMeta(META_CHARSET));
+        } else {
+            sb.append(" CHARSET=utf8");
+        }
+        return Sqls.create(sb.toString());
     }
 }

@@ -1,5 +1,6 @@
 package org.nutz.dao.impl.jdbc;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -157,16 +158,22 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
     public void createRelation(Dao dao, Entity<?> en) {
         final List<Sql> sqls = new ArrayList<Sql>(5);
         for (LinkField lf : en.visitManyMany(null, null, null)) {
-            ManyManyLinkField mm = (ManyManyLinkField) lf;
-            if (dao.exists(mm.getRelationName()))
-                continue;
-            String sql = "CREATE TABLE " + mm.getRelationName() + "(";
-            sql += mm.getFromColumnName() + " " + evalFieldType(mm.getHostField()) + ",";
-            sql += mm.getToColumnName() + " " + evalFieldType(mm.getLinkedField());
-            sql += ")";
-            sqls.add(Sqls.create(sql));
+            Sql sql = createRelation(dao, lf);
+            if (sql != null)
+                sqls.add(sql);
         }
         dao.execute(sqls.toArray(new Sql[sqls.size()]));
+    }
+    
+    protected Sql createRelation(Dao dao, LinkField lf) {
+        ManyManyLinkField mm = (ManyManyLinkField) lf;
+        if (dao.exists(mm.getRelationName()))
+            return null;
+        String sql = "CREATE TABLE " + mm.getRelationName() + "(" + "\n";
+        sql += mm.getFromColumnName() + " " + evalFieldType(mm.getHostField()) + "," + "\n";
+        sql += mm.getToColumnName() + " " + evalFieldType(mm.getLinkedField()) + "\n";
+        sql += ")";
+        return Sqls.create(sql);
     }
 
     public void dropRelation(Dao dao, Entity<?> en) {
