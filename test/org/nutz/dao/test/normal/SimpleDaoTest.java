@@ -60,6 +60,7 @@ import org.nutz.dao.test.meta.issue1074.PojoSql;
 import org.nutz.dao.test.meta.issue1163.Issue1163Master;
 import org.nutz.dao.test.meta.issue1163.Issue1163Pet;
 import org.nutz.dao.test.meta.issue1166.Issue1166;
+import org.nutz.dao.test.meta.issue1168.Issue1168;
 import org.nutz.dao.test.meta.issue396.Issue396Master;
 import org.nutz.dao.test.meta.issue726.Issue726;
 import org.nutz.dao.test.meta.issue901.XPlace;
@@ -805,5 +806,12 @@ public class SimpleDaoTest extends DaoCase {
         
         dao.insert(is);
         dao.insert(is);
+    }
+    
+    @Test
+    public void test_issue_9999() {
+        dao.create(Issue1168.class, true);
+        Issue1168 right = new Issue1168();
+        dao.insert(right);
     }
 }

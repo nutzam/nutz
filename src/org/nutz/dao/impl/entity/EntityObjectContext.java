@@ -30,7 +30,7 @@ public class EntityObjectContext extends AbstractContext {
 
     public Context set(String name, Object value) {
         MappingField field = en.getField(name);
-        if (field != null)
+        if (field != null && !("view".equals(name) || "field".equals(name)))
             field.setValue(obj, value);
         else
             ext.put(name, value);
