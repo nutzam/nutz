@@ -271,11 +271,7 @@ public abstract class Streams {
      */
     public static StringBuilder read(Reader reader) throws IOException {
         StringBuilder sb = new StringBuilder();
-        char[] cbuf = new char[BUF_SIZE];
-        int len;
-        while (-1 != (len = reader.read(cbuf))) {
-            sb.append(cbuf, 0, len);
-        }
+        read(reader, sb);
         return sb;
     }
 
@@ -292,6 +288,52 @@ public abstract class Streams {
     public static String readAndClose(Reader reader) {
         try {
             return read(reader).toString();
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+        finally {
+            safeClose(reader);
+        }
+    }
+
+    /**
+     * 从一个文本流中读取全部内容并写入缓冲
+     * <p>
+     * <b style=color:red>注意</b>，它并不会关闭输出流
+     * 
+     * @param reader
+     *            文本输出流
+     * @param sb
+     *            输出的文本缓冲
+     * @return 读取的字符数量
+     * @throws IOException
+     */
+    public static int read(Reader reader, StringBuilder sb) throws IOException {
+        char[] cbuf = new char[BUF_SIZE];
+        int count = 0;
+        int len;
+        while (-1 != (len = reader.read(cbuf))) {
+            sb.append(cbuf, 0, len);
+            count += len;
+        }
+        return count;
+    }
+
+    /**
+     * 从一个文本流中读取全部内容并写入缓冲
+     * <p>
+     * <b style=color:red>注意</b>，它会关闭输出流
+     * 
+     * @param reader
+     *            文本输出流
+     * @param sb
+     *            输出的文本缓冲
+     * @return 读取的字符数量
+     */
+    public static int readAndClose(InputStreamReader reader, StringBuilder sb) {
+        try {
+            return read(reader, sb);
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);

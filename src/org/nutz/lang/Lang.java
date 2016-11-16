@@ -64,20 +64,14 @@ import org.nutz.lang.util.SimpleContext;
  * @author wizzer(wizzer.cn@gmail.com)
  */
 public abstract class Lang {
-    
-    public static int HASH_BUFF_SIZE = 16*1024;
 
-    private static final Pattern IPV4_PATTERN =
-            Pattern.compile(
-                    "^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$");
+    public static int HASH_BUFF_SIZE = 16 * 1024;
 
-    private static final Pattern IPV6_STD_PATTERN =
-            Pattern.compile(
-                    "^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$");
+    private static final Pattern IPV4_PATTERN = Pattern.compile("^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)){3}$");
 
-    private static final Pattern IPV6_HEX_COMPRESSED_PATTERN =
-            Pattern.compile(
-                    "^((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)$");
+    private static final Pattern IPV6_STD_PATTERN = Pattern.compile("^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$");
+
+    private static final Pattern IPV6_HEX_COMPRESSED_PATTERN = Pattern.compile("^((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)::((?:[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4})*)?)$");
 
     public static boolean isIPv4Address(final String input) {
         return IPV4_PATTERN.matcher(input).matches();
@@ -895,8 +889,8 @@ public abstract class Lang {
      * @return Map 对象
      */
     public static <T extends Map<Object, Object>> T collection2map(Class<T> mapClass,
-                                                                           Collection<?> coll,
-                                                                           String keyFieldName) {
+                                                                   Collection<?> coll,
+                                                                   String keyFieldName) {
         if (null == coll)
             return null;
         T map = createMap(mapClass);
@@ -912,7 +906,7 @@ public abstract class Lang {
                 map.put(key, obj);
             }
         }
-        return (T)map;
+        return (T) map;
     }
 
     /**
@@ -1005,8 +999,8 @@ public abstract class Lang {
      * @return Map 对象
      */
     public static <T extends Map<Object, Object>> T array2map(Class<T> mapClass,
-                                                                      Object array,
-                                                                      String keyFieldName) {
+                                                              Object array,
+                                                              String keyFieldName) {
         if (null == array)
             return null;
         T map = createMap(mapClass);
@@ -2426,7 +2420,7 @@ public abstract class Lang {
             arrays[it] = ah;
         }
     }
-    
+
     @Deprecated
     public static String simpleMetodDesc(Method method) {
         return simpleMethodDesc(method);
@@ -2549,7 +2543,8 @@ public abstract class Lang {
     /**
      * 获得访问者的IP地址, 反向代理过的也可以获得
      * 
-     * @param request 请求的req对象
+     * @param request
+     *            请求的req对象
      * @return 来源ip
      */
     public static String getIP(HttpServletRequest request) {
@@ -2596,62 +2591,87 @@ public abstract class Lang {
         }
         return cp;
     }
-    
+
     public static <T> T copyProperties(Object origin, T target) {
-    	return copyProperties(origin, target, null, null, false, true);
+        return copyProperties(origin, target, null, null, false, true);
     }
-    
-    public static <T> T copyProperties(Object origin, T target, String active, String lock, boolean ignoreNull, boolean ignoreStatic) {
-    	if (origin == null)
-    		throw new IllegalArgumentException("origin is null");
-    	if (target == null)
-    		throw new IllegalArgumentException("target is null");
-    	Pattern at = active == null ? null : Pattern.compile(active);
-    	Pattern lo = lock == null ? null : Pattern.compile(lock);
-    	Mirror<Object> originMirror = Mirror.me(origin);
-    	Mirror<T> targetMirror = Mirror.me(target);
-    	Field[] fields = targetMirror.getFields();
-    	for (Field field : originMirror.getFields()) {
-    		String name = field.getName();
-    		if (at != null && !at.matcher(name).find())
-    			continue;
-    		if (lock != null && lo.matcher(name).find())
-    			continue;
-    		if (ignoreStatic && Modifier.isStatic(field.getModifiers()))
-    			continue;
-			Object val = originMirror.getValue(origin, field);
-			if (ignoreNull && val == null)
-				continue;
-			for (Field _field : fields) {
-				if (_field.getName().equals(field.getName())) {
-					targetMirror.setValue(target, _field, val);
-				}
-			}
-			// TODO 支持getter/setter比对
-		}
-    	return target;
+
+    public static <T> T copyProperties(Object origin,
+                                       T target,
+                                       String active,
+                                       String lock,
+                                       boolean ignoreNull,
+                                       boolean ignoreStatic) {
+        if (origin == null)
+            throw new IllegalArgumentException("origin is null");
+        if (target == null)
+            throw new IllegalArgumentException("target is null");
+        Pattern at = active == null ? null : Pattern.compile(active);
+        Pattern lo = lock == null ? null : Pattern.compile(lock);
+        Mirror<Object> originMirror = Mirror.me(origin);
+        Mirror<T> targetMirror = Mirror.me(target);
+        Field[] fields = targetMirror.getFields();
+        for (Field field : originMirror.getFields()) {
+            String name = field.getName();
+            if (at != null && !at.matcher(name).find())
+                continue;
+            if (lock != null && lo.matcher(name).find())
+                continue;
+            if (ignoreStatic && Modifier.isStatic(field.getModifiers()))
+                continue;
+            Object val = originMirror.getValue(origin, field);
+            if (ignoreNull && val == null)
+                continue;
+            for (Field _field : fields) {
+                if (_field.getName().equals(field.getName())) {
+                    targetMirror.setValue(target, _field, val);
+                }
+            }
+            // TODO 支持getter/setter比对
+        }
+        return target;
     }
-    
+
+    public static StringBuilder execOutput(String cmd) throws IOException {
+        return execOutput(Lang.array(cmd), Encoding.CHARSET_UTF8);
+    }
+
     public static StringBuilder execOutput(String cmd, Charset charset) throws IOException {
         return execOutput(Strings.splitIgnoreBlank(cmd, " "), charset);
     }
-    
+
+    public static StringBuilder execOutput(String cmd[]) throws IOException {
+        return execOutput(cmd, Encoding.CHARSET_UTF8);
+    }
+
     public static StringBuilder execOutput(String[] cmd, Charset charset) throws IOException {
         Process p = Runtime.getRuntime().exec(cmd);
         p.getOutputStream().close();
         InputStreamReader r = new InputStreamReader(p.getInputStream(), charset);
         StringBuilder sb = new StringBuilder();
-        char[] buf = new char[1024];
-        while (true) {
-            int len = r.read(buf);
-            if (len < 0)
-                break;
-            if (len > 0)
-                sb.append(buf, 0, len);
-        }
+        Streams.readAndClose(r, sb);
         return sb;
     }
-    
+
+    public static void exec(String cmd, StringBuilder out, StringBuilder err) throws IOException {
+        exec(Strings.splitIgnoreBlank(cmd, " "), Encoding.CHARSET_UTF8, out, err);
+    }
+
+    public static void exec(String[] cmd, StringBuilder out, StringBuilder err) throws IOException {
+        exec(cmd, Encoding.CHARSET_UTF8, out, err);
+    }
+
+    public static void exec(String[] cmd, Charset charset, StringBuilder out, StringBuilder err)
+            throws IOException {
+        Process p = Runtime.getRuntime().exec(cmd);
+        p.getOutputStream().close();
+        InputStreamReader sOut = new InputStreamReader(p.getInputStream(), charset);
+        Streams.readAndClose(sOut, out);
+
+        InputStreamReader sErr = new InputStreamReader(p.getErrorStream(), charset);
+        Streams.readAndClose(sErr, err);
+    }
+
     public static Class<?> loadClassQuite(String className) {
         try {
             return loadClass(className);
