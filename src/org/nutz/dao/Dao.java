@@ -429,7 +429,23 @@ public interface Dao {
      * @return 一共迭代的数量
      */
     <T> int each(Class<T> classOfT, Condition cnd, Pager pager, Each<T> callback);
-
+    
+    /**
+     * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
+     * 
+     * @param classOfT
+     *            对象类型
+     * @param cnd
+     *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序
+     * @param pager
+     *            翻页信息。如果为 null，则一次全部返回
+     * @param callback
+     *            处理回调
+     * @param cacheSkip
+     * 			  是否需要跳过缓存
+     * @return 一共迭代的数量
+     */
+    <T> int each(Class<T> classOfT, Condition cnd, Pager pager, Each<T> callback,boolean cacheSkip);
     /**
      * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
      * 
@@ -443,6 +459,20 @@ public interface Dao {
      */
     <T> int each(Class<T> classOfT, Condition cnd, Each<T> callback);
 
+    /**
+     * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
+     * 
+     * @param classOfT
+     *            对象类型
+     * @param cnd
+     *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序
+     * @param callback
+     *            处理回调
+     * @param cacheSkip
+     * 			  是否需要跳过缓存
+     * @return 一共迭代的数量
+     */
+    <T> int each(Class<T> classOfT, Condition cnd, Each<T> callback,boolean cacheSkip);
     /**
      * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
      * 
