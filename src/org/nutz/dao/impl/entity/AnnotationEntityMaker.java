@@ -420,7 +420,8 @@ public class AnnotationEntityMaker implements EntityMaker {
         // 字段更多定义
         if (null != info.annDefine) {
             // 类型
-            ef.setColumnType(info.annDefine.type());
+            if (info.annDefine.type() != ColType.AUTO)
+                ef.setColumnType(info.annDefine.type());
             // 宽度
             ef.setWidth(info.annDefine.width());
             if (ef.getWidth() == 0 && ef.getColumnType() == ColType.VARCHAR) {
@@ -448,7 +449,7 @@ public class AnnotationEntityMaker implements EntityMaker {
             ef.setUpdate(info.annDefine.update());
         }
         // 猜测字段类型
-        else {
+        if (ef.getColumnType() == null) {
             Jdbcs.guessEntityFieldColumnType(ef);
         }
 

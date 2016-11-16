@@ -482,11 +482,11 @@ public class NutDao extends DaoSupport implements Dao {
         _exec(pojo);
         return pojo.getInt();
     }
-
+    
     public <T> int each(Class<T> classOfT, Condition cnd, Each<T> callback) {
         return each(classOfT, cnd, Pojos.Items.pager(cnd), callback);
     }
-
+    
     public List<Record> query(String tableName, Condition cnd, Pager pager) {
         Pojo pojo = pojoMaker.makeQuery(tableName)
                              .addParamsBy("*")

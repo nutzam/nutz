@@ -75,5 +75,9 @@ public enum ColType {
     /**
      * JSON：MySQL 的 JSON 类型
      */
-    MYSQL_JSON
+    MYSQL_JSON,
+    /**
+     * 自动
+     */
+    AUTO
 }

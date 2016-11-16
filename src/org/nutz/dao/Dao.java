@@ -429,7 +429,7 @@ public interface Dao {
      * @return 一共迭代的数量
      */
     <T> int each(Class<T> classOfT, Condition cnd, Pager pager, Each<T> callback);
-
+    
     /**
      * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
      * 
@@ -442,7 +442,7 @@ public interface Dao {
      * @return 一共迭代的数量
      */
     <T> int each(Class<T> classOfT, Condition cnd, Each<T> callback);
-
+    
     /**
      * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
      * 

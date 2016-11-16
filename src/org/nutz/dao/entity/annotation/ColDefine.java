@@ -24,7 +24,7 @@ public @interface ColDefine {
 	 * 
 	 * @see org.nutz.dao.entity.annotation.ColType
 	 */
-	ColType type() default ColType.VARCHAR;
+	ColType type() default ColType.AUTO;
 
 	/**
 	 * 宽度/长度, 例如定义字符串长度为1024 就写  width=1024
