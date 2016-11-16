@@ -470,6 +470,10 @@ public class NutDao extends DaoSupport implements Dao {
     }
 
     public <T> int each(Class<T> classOfT, Condition cnd, Pager pager, Each<T> callback) {
+        return each(classOfT, cnd, pager, callback, true);
+    }
+
+    public <T> int each(Class<T> classOfT, Condition cnd, Pager pager, Each<T> callback,boolean cacheSkip) {
         Pojo pojo = pojoMaker.makeQuery(holder.getEntity(classOfT))
                              .append(Pojos.Items.cnd(cnd))
                              .addParamsBy("*")
@@ -478,15 +482,23 @@ public class NutDao extends DaoSupport implements Dao {
         expert.formatQuery(pojo);
         pojo.setAfter(_pojo_eachEntity);
         pojo.getContext().attr(Each.class.getName(), callback);
-        pojo.getContext().attr("dao-cache-skip", "true");
+        if(cacheSkip){
+        	pojo.getContext().attr("dao-cache-skip", "true");
+        }else{
+        	pojo.getContext().attr("dao-cache-skip", "false");
+        }
         _exec(pojo);
         return pojo.getInt();
     }
-
+    
     public <T> int each(Class<T> classOfT, Condition cnd, Each<T> callback) {
-        return each(classOfT, cnd, Pojos.Items.pager(cnd), callback);
+        return each(classOfT, cnd, Pojos.Items.pager(cnd), callback,true);
     }
-
+    
+    public <T> int each(Class<T> classOfT, Condition cnd, Each<T> callback,boolean cacheSkip) {
+        return each(classOfT, cnd, Pojos.Items.pager(cnd), callback,cacheSkip);
+    }
+    
     public List<Record> query(String tableName, Condition cnd, Pager pager) {
         Pojo pojo = pojoMaker.makeQuery(tableName)
                              .addParamsBy("*")
