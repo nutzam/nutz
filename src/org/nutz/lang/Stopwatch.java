@@ -13,6 +13,8 @@ public class Stopwatch {
 
     private long to;
 
+    private long lastStop;
+
     /**
      * 秒表开始计时，计时时间的最小单位是毫秒
      * 
@@ -77,6 +79,8 @@ public class Stopwatch {
      */
     public long start() {
         from = currentTime();
+        to = from;
+        lastStop = to;
         return from;
     }
 
@@ -85,22 +89,42 @@ public class Stopwatch {
     }
 
     /**
-     * 停止计时，并返回停止计时的时间，该时间最小单位由创建秒表时确定
+     * 记录停止时间，该时间最小单位由创建秒表时确定
      * 
-     * @return 停止计时的时间
+     * @return 自身以便链式赋值
      */
-    public long stop() {
+    public Stopwatch stop() {
+        lastStop = to;
         to = currentTime();
-        return to;
+        return this;
     }
 
     /**
-     * 返回计时结果
-     * 
-     * @return 计时结果
+     * @return 计时结果(ms)
      */
     public long getDuration() {
         return to - from;
+    }
+
+    /**
+     * @return 至上次 stop 的时长(ms)
+     */
+    public long getLastDuration() {
+        return to - lastStop;
+    }
+
+    /**
+     * @see #getDuration()
+     */
+    public long du() {
+        return to - from;
+    }
+
+    /**
+     * @see #getLastDuration()
+     */
+    public long l_du() {
+        return to - lastStop;
     }
 
     /**
