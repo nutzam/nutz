@@ -42,6 +42,7 @@ import org.nutz.log.Logs;
 import org.nutz.resource.impl.ErrorResourceLocation;
 import org.nutz.resource.impl.FileResource;
 import org.nutz.resource.impl.ResourceLocation;
+import org.nutz.resource.impl.SimpleResource;
 
 /**
  * 资源扫描的帮助函数集
@@ -241,6 +242,17 @@ public class Scans {
             catch (Throwable e) {
                 if (log.isDebugEnabled())
                     log.debug("Fail to run deep scan!", e);
+            }
+            // 依然是空?
+            if (list.isEmpty()) {
+                try {
+                    InputStream ins = getClass().getClassLoader().getResourceAsStream(src);
+                    if (ins != null) {
+                        list.add(new SimpleResource(src, src, ins));
+                    }
+                }
+                catch (Exception e) {
+                }
             }
         }
         ArrayList<NutResource> tmp = new ArrayList<NutResource>();
