@@ -79,6 +79,7 @@ public class TcpServer implements Runnable {
                 log.fatalf("Fail to accept %s @ %d , System.exit!", Thread.currentThread()
                                                                           .getName(), port);
                 System.exit(0);
+                return;
             }
 
             log.info("do listen ...");
