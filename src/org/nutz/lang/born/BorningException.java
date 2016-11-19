@@ -34,12 +34,12 @@ public class BorningException extends RuntimeException {
             sb.append("]");
         }
         if (null != e) {
-            sb.append(" becasue: ").append(getExceptionMessage(e));
+            sb.append(" because: ").append(getExceptionMessage(e));
         } else if (type != null){
             if (type.isInterface()) {
-                sb.append(" becasue: ").append(type.getName()).append("is interface!!");
+                sb.append(" because: ").append(type.getName()).append("is interface!!");
             } else if (Modifier.isAbstract(type.getModifiers())) {
-                sb.append(" becasue: ").append(type.getName()).append("is abstract class and can't found static factory method!");
+                sb.append(" because: ").append(type.getName()).append("is abstract class and can't found static factory method!");
             }
         }
         return sb.toString();
@@ -58,9 +58,9 @@ public class BorningException extends RuntimeException {
         	sb.append("\n by args: []");
         }
         if (null != e) {
-            sb.append(" becasue:\n").append(getExceptionMessage(e));
+            sb.append(" because:\n").append(getExceptionMessage(e));
         } else {
-            sb.append(" becasue: No suitable Constructor or Factory Method!!");
+            sb.append(" because: No suitable Constructor or Factory Method!!");
         }
         return sb.toString();
     }
