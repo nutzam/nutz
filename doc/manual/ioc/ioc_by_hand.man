@@ -1,0 +1,84 @@
+#title: 获取ioc对象的特殊场景
+#index:0,1
+#author:wendal(wendal1985@gmail.com)
+
+--------------------------------------------------------------------------------------------------------
+在Mvc环境下
+
+	方法1, 通过SetupBy,将Ioc容器放到一个public的静态属性, 推荐.
+
+	{{{<JAVA>
+	@SetupBy(MainSetup.class)
+	public class MainModule {}
+	
+	
+	public class MainSetup implements Setup {
+		public static Ioc ioc;
+		
+		public void init(NutConfig conf) {
+			MainSetup.ioc = conf.getIoc();
+		}
+	}
+	}}}
+	
+	方法2, 通过Mvcs类
+	
+	{{{<JAVA>
+	// NutFilter作用域内,通常是请求线程内
+	Ioc ioc = Mvcs.getIoc();
+	// 独立线程, 例如计划任务,定时任务的线程.
+	Ioc ioc = Mvcs.ctx().getDefaultIoc();
+	}}}
+
+--------------------------------------------------------------------------------------------------------
+非Mvc环境下
+
+	这种情况下, 一般是不需要Ioc容器的. 如果需要,那么Ioc容器是自行new的,所以需要下面 范式
+	
+	{{{<JAVA>
+	public class MyApp {
+		public static Ioc ioc;
+		
+		static {
+			ioc = new NutIoc(new ComboIocLoader("*anoo", ...));
+		}
+	}
+	}}}
+	
+--------------------------------------------------------------------------------------------------------
+单元测试时的Ioc
+
+	请使用nutz-plugins-mock插件
+	
+	首先,需要实现一个自定义的TestRunner
+	{{{
+	public class NutBookIocTestRunner extends NutTestRunner {
+
+    	public NutBookIocTestRunner(Class<?> klass) throws InitializationError {
+        	super(klass);
+    	}
+
+		// 若使用Nutz MVC, 覆盖getMainModule方法
+    	protected Class<?> getMainModule() {
+        	return MainModule.class;
+    	}
+    	
+    	// 非mvc环境下, 覆盖getIocArgs/createIocLoader/createIoc均可
+    	
+	}
+	}}}
+	
+	测试类, 其中的@RunWith(NutBookIocTestRunner.class)是关键哦,当然,@IocBean也是必须的
+	
+	{{{<JAVA>
+	@RunWith(NutBookIocTestRunner.class)
+	@IocBean
+	public class SimpleNutTest {
+		@Inject
+		protect Dao dao;
+		
+		public void test_dao_ok() {
+			assertNotNull(dao);
+		}
+	}
+	}}}
