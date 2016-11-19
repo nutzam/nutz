@@ -1,5 +1,9 @@
 package org.nutz.lang;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 /**
  * 秒表
  * 
@@ -13,7 +17,9 @@ public class Stopwatch {
 
     private long to;
 
-    private long lastStop;
+    private List<StopTag> tags;
+
+    private StopTag lastTag;
 
     /**
      * 秒表开始计时，计时时间的最小单位是毫秒
@@ -80,7 +86,6 @@ public class Stopwatch {
     public long start() {
         from = currentTime();
         to = from;
-        lastStop = to;
         return from;
     }
 
@@ -93,10 +98,9 @@ public class Stopwatch {
      * 
      * @return 自身以便链式赋值
      */
-    public Stopwatch stop() {
-        lastStop = to;
+    public long stop() {
         to = currentTime();
-        return this;
+        return to;
     }
 
     /**
@@ -107,24 +111,10 @@ public class Stopwatch {
     }
 
     /**
-     * @return 至上次 stop 的时长(ms)
-     */
-    public long getLastDuration() {
-        return to - lastStop;
-    }
-
-    /**
      * @see #getDuration()
      */
     public long du() {
         return to - from;
-    }
-
-    /**
-     * @see #getLastDuration()
-     */
-    public long l_du() {
-        return to - lastStop;
     }
 
     /**
@@ -152,11 +142,51 @@ public class Stopwatch {
      */
     @Override
     public String toString() {
-        return String.format("Total: %d%s : [%s]=>[%s]",
-                             this.getDuration(),
-                             (nano ? "ns" : "ms"),
-                             new java.sql.Timestamp(from).toString(),
-                             new java.sql.Timestamp(to).toString());
+        String prefix = String.format("Total: %d%s : [%s]=>[%s]",
+                                      this.getDuration(),
+                                      (nano ? "ns" : "ms"),
+                                      Times.sDTms(new Date(from)),
+                                      Times.sDTms(new Date(to)));
+        if (tags == null)
+            return prefix;
+        StringBuilder sb = new StringBuilder(prefix).append("\r\n");
+        for (int i = 0; i < tags.size(); i++) {
+            StopTag tag = tags.get(i);
+            sb.append(String.format("  -> %5s: %dms",
+                                    tag.name == null ? "TAG" + i : tag.name,
+                                    tag.du()));
+            if (i < tags.size() - 1)
+                sb.append("\r\n");
+        }
+        return sb.toString();
     }
 
+    public StopTag tag(String name) {
+        if (tags == null)
+            tags = new ArrayList<Stopwatch.StopTag>();
+        lastTag = new StopTag(name, System.currentTimeMillis(), lastTag);
+        tags.add(lastTag);
+        return lastTag;
+    }
+
+    public class StopTag {
+        public String name;
+        public long tm;
+        public StopTag pre;
+
+        public StopTag() {}
+
+        public StopTag(String name, long tm, StopTag pre) {
+            super();
+            this.name = name;
+            this.tm = tm;
+            this.pre = pre;
+        }
+
+        public long du() {
+            if (pre == null)
+                return tm - from;
+            return tm - pre.tm;
+        }
+    }
 }
