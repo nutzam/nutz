@@ -17,6 +17,3 @@
 		</exclusions>
 	</dependency>
 	}}}
-	
-Nutz使用Maven来构建的吗?
-	答案是肯定的,基本上没用ant来构建nutz核心库了

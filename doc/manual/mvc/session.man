@@ -60,5 +60,5 @@ Session机制是什么?
 --------------------------------------------------------------------------------------------
 哪里有现成的实现?
 
-	ztask项目,有一个基于mongo的实现
-	nutzmore项目,有ShiroSessionProvider,使用Shiro的Session代替原生session
+	* ztask项目,有一个基于mongo的实现
+	* nutzmore项目,有ShiroSessionProvider,使用Shiro的Session代替原生session

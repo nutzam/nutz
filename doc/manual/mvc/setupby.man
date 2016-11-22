@@ -44,13 +44,5 @@
 	
 	{{{<JAVA>
 	@SetupBy(MainSetup.class)
-	@Modules(scanPackage=true) // 扫描当前package及子package下,带@At的public方法作为入口方法
-    @ChainBy(args="mvc/nutzbook-mvc-chain.js") // 自定义动作链
-    @Ok("json:full") // 定义全局默认@Ok
-    @Fail("jsp:jsp.500") // 定义全局默认@Fail
-    @Localization(value="msg/", defaultLocalizationKey="zh-CN") // 加载国际化
-    @Views({BeetlViewMaker2.class,FreemarkerViewMaker.class, PdfViewMaker.class}) // 加载各种额外的Mvc View
-    @SessionBy(ShiroSessionProvider.class) // 用Shiro Session替代容器Session
-    @UrlMappingBy(ApidocUrlMapping.class) // 自动生成文档
 	public class MainModule {}
 	}}}
