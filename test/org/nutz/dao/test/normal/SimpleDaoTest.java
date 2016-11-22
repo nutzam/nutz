@@ -49,6 +49,7 @@ import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.A;
 import org.nutz.dao.test.meta.Abc;
+import org.nutz.dao.test.meta.ColDefineUser;
 import org.nutz.dao.test.meta.DynamicTable;
 import org.nutz.dao.test.meta.Master;
 import org.nutz.dao.test.meta.Pet;
@@ -809,9 +810,19 @@ public class SimpleDaoTest extends DaoCase {
     }
     
     @Test
-    public void test_issue_9999() {
+    public void test_issue_1168() {
         dao.create(Issue1168.class, true);
         Issue1168 right = new Issue1168();
         dao.insert(right);
+    }
+    
+    @Test
+    public void test_coldefine_len() {
+        dao.create(ColDefineUser.class, true);
+        ColDefineUser user = new ColDefineUser();
+        user.setName("admin");
+        user.setSalt(R.UU32());
+        user.setPassword(Lang.sha1("abc" + user.getSalt()));
+        dao.insert(user);
     }
 }
