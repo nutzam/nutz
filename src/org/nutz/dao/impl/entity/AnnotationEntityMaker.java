@@ -422,6 +422,8 @@ public class AnnotationEntityMaker implements EntityMaker {
             // 类型
             if (info.annDefine.type() != ColType.AUTO)
                 ef.setColumnType(info.annDefine.type());
+            else
+                Jdbcs.guessEntityFieldColumnType(ef);
             // 宽度
             ef.setWidth(info.annDefine.width());
             if (ef.getWidth() == 0 && ef.getColumnType() == ColType.VARCHAR) {
