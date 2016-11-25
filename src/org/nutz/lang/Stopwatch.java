@@ -169,6 +169,10 @@ public class Stopwatch {
         return lastTag;
     }
 
+    public StopTag tagf(String fmt, Object... args) {
+        return tag(String.format(fmt, args));
+    }
+
     public class StopTag {
         public String name;
         public long tm;
