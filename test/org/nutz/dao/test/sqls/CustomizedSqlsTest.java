@@ -15,6 +15,7 @@ import org.nutz.dao.Cnd;
 import org.nutz.dao.SqlNotFoundException;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
+import org.nutz.dao.entity.Record;
 import org.nutz.dao.impl.FileSqlManager;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.impl.sql.NutSql;
@@ -27,6 +28,7 @@ import org.nutz.dao.test.meta.Country;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.Platoon;
 import org.nutz.dao.test.meta.Tank;
+import org.nutz.dao.test.meta.issue1176.Issue1176;
 import org.nutz.trans.Atom;
 
 public class CustomizedSqlsTest extends DaoCase {
@@ -176,5 +178,26 @@ public class CustomizedSqlsTest extends DaoCase {
         assertEquals(npets.get(0).getId(), pets.get(0).getId());
         assertEquals(npets.get(1).getId(), pets.get(1).getId());
         Sqls.setSqlBorning(NutSql.class);
+    }
+    
+    @Test
+    public void test_issue_1176() {
+        dao.create(Issue1176.class, true);
+        
+        Sql s = Sqls.create("insert into t_issue_1176 (colA,colB) values (@colA,@colB)");
+
+        s.params().set("colA", "222222");
+        s.params().set("colB", null);
+        s.addBatch();
+                
+        s.params().set("colA", "1111111");
+        s.params().set("colB", "测试1111");
+        s.addBatch();
+                    
+        dao.execute(s);
+        
+        Issue1176 re = dao.fetch(Issue1176.class, Cnd.where("colA", "=", "1111111"));
+        assertNotNull(re);
+        assertEquals("测试1111", re.getColB());
     }
 }

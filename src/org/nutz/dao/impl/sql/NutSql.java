@@ -280,6 +280,13 @@ public class NutSql extends NutStatement implements Sql {
                 }
             }
             Object val = rows.get(0).get(name);
+            if (val == null && rows.size() > 1) {
+                for (VarSet vs : rows) {
+                    val = vs.get(name);
+                    if (val != null)
+                        break;
+                }
+            }
             if (val == null) {
                 adaptors[off] = Jdbcs.getAdaptorBy(null);
                 return off + 1;
