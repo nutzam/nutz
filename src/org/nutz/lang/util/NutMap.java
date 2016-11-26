@@ -84,6 +84,21 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         return null != get(key);
     }
 
+    public boolean is(String key, Object val) {
+        Object obj = this.get(key);
+        if (null == obj && null == val)
+            return true;
+        if (null == obj || null == val)
+            return false;
+        return obj.equals(val);
+    }
+
+    public NutMap duplicate() {
+        NutMap map = new NutMap();
+        map.putAll(this);
+        return map;
+    }
+
     /**
      * 从 Map 里挑选一些键生成一个新的 Map
      * 
@@ -92,6 +107,8 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
      * @return 新 Map
      */
     public NutMap pick(String... keys) {
+        if (keys.length == 0)
+            return this.duplicate();
         NutMap re = new NutMap();
         for (Map.Entry<String, Object> en : this.entrySet()) {
             String key = en.getKey();
@@ -99,6 +116,50 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
                 re.put(key, en.getValue());
             }
         }
+        return re;
+    }
+
+    /**
+     * 从 Map 里挑选一些键生成一个新的 Map
+     * 
+     * @param regex
+     *            匹配键的正则表达式，"!" 开头，表示取反
+     * @return 新 Map
+     */
+    public NutMap pickBy(String regex) {
+        if (Strings.isBlank(regex))
+            return this.duplicate();
+        boolean isNot = regex.startsWith("!");
+        Pattern p = Pattern.compile(isNot ? regex.substring(1) : regex);
+        return pickBy(p, isNot);
+    }
+
+    /**
+     * 从 Map 里挑选一些键生成一个新的 Map
+     * 
+     * @param p
+     *            匹配键的正则表达式
+     * @param isNot
+     *            true 表示被匹配上的会被忽略，false 表示被匹配上的才加入到返回的集合里
+     * @return 新 Map
+     */
+    public NutMap pickBy(Pattern p, boolean isNot) {
+        if (null == p) {
+            return isNot ? this.duplicate() : new NutMap();
+        }
+        NutMap re = new NutMap();
+        for (Map.Entry<String, Object> en : this.entrySet()) {
+            String key = en.getKey();
+            boolean matched = p.matcher(key).find();
+            if (matched) {
+                if (!isNot) {
+                    re.put(key, en.getValue());
+                }
+            } else if (isNot) {
+                re.put(key, en.getValue());
+            }
+        }
+
         return re;
     }
 
@@ -119,16 +180,18 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         }
         return re;
     }
-    
+
     /**
      * 如果一个键的值无效（has(key) 返回 false)，那么为其设置默认值
      * 
-     * @param key 键
-     * @param dft 值
+     * @param key
+     *            键
+     * @param dft
+     *            值
      * @return 自身以便链式赋值
      */
-    public NutMap putDefault(String key, Object dft){
-        if(!this.has(key)){
+    public NutMap putDefault(String key, Object dft) {
+        if (!this.has(key)) {
             this.put(key, dft);
         }
         return this;
