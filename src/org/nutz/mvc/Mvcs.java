@@ -485,8 +485,6 @@ public abstract class Mvcs {
     
     public static String X_POWERED_BY = "nutz/"+Nutz.version()+" <nutzam.com>";
     
-    public static boolean ALLOW_HTTP_METHOD_OVERRIDE = false;
-    
     public static Object getSessionAttrSafe(String key) {
         try {
             HttpSession session = getHttpSession(false);
