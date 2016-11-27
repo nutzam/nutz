@@ -1,7 +1,10 @@
 package org.nutz.mvc;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.URLDecoder;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +22,7 @@ import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
+import org.nutz.lang.util.NutMap;
 import org.nutz.mvc.config.AtMap;
 import org.nutz.mvc.impl.NutMessageMap;
 import org.nutz.mvc.ioc.SessionIocContext;
@@ -504,4 +508,34 @@ public abstract class Mvcs {
         catch (Exception e) {
         }
     }
+    
+    public static NutMap toParamMap(Reader r, String enc) throws IOException {
+        try {
+            NutMap map = new NutMap();
+            char[] buf = new char[1];
+            StringBuilder sb = new StringBuilder();
+            while (true) {
+                int len = r.read(buf);
+                if (len == 0)
+                    continue;
+                if (buf[0] == '&' || len < 0) {
+                    String[] tmp = sb.toString().split("=");
+                    if (tmp != null && tmp.length == 2) {
+                        map.put(URLDecoder.decode(tmp[0], enc), URLDecoder.decode(tmp[1], enc));
+                    }
+                    if (len < 0)
+                        break;
+                    sb.setLength(0);
+                } else {
+                    sb.append(buf[0]);
+                }
+            }
+            return map;
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new IOException(e);
+        }
+    }
+    
+    
 }

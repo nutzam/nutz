@@ -1,6 +1,8 @@
 package org.nutz.mvc;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.nio.charset.Charset;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -12,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.lang.util.NutMap;
 import org.nutz.mvc.config.FilterNutConfig;
 
 public class WhaleFilter implements Filter {
@@ -51,11 +54,15 @@ public class WhaleFilter implements Filter {
 
         // 处理隐藏HTTP METHOD, _method参数模式
         if (methodParam != null && "POST".equals(req.getMethod())) {
-            request = new HttpServletRequestWrapper(req) {
-                public String getMethod() {
-                    return getParameter(methodParam);
-                }
-            };
+            String qs = req.getQueryString();
+            if (qs != null && qs.contains("_method=")) {
+                final NutMap map = Mvcs.toParamMap(new StringReader(qs), inputEnc == null ? Charset.defaultCharset().name() : inputEnc);
+                request = new HttpServletRequestWrapper(req) {
+                    public String getMethod() {
+                        return map.getString(methodParam);
+                    }
+                };
+            }
         }
         // 处理 X-HTTP-Method-Override
         else if (allowHTTPMethodOverride && req.getHeader("X-HTTP-Method-Override") != null) {

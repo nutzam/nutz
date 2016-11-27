@@ -2,12 +2,16 @@ package org.nutz.mvc.testapp;
 
 import static org.junit.Assert.*;
 
+
 import org.junit.Test;
 import org.nutz.http.Response;
 import org.nutz.lang.util.NutMap;
-import org.nutz.mvc.Mvcs;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public class BaseTest extends BaseWebappTest {
+    
+    private static final Log log = Logs.get();
 
     @Test
     public void test_json_adaptor() {
@@ -86,10 +90,21 @@ public class BaseTest extends BaseWebappTest {
     
     @Test
     public void test_http_method_override() {
-        Mvcs.ALLOW_HTTP_METHOD_OVERRIDE = true;
-        Response resp = post("/common/httpmethods", new NutMap("_method", "DELETE"));
+        Response resp = post("/common/httpmethods?_method=DELETE", new NutMap("_method", "DELETE"));
         assertEquals(200, resp.getStatus());
         assertEquals("DELETE", resp.getContent());
-        Mvcs.ALLOW_HTTP_METHOD_OVERRIDE = false;
     }
+    
+//    @Test
+//    public void test_chinese() {
+//        NutMap params = new NutMap();
+//        params.put("text", "中文");
+//        post("/common/chinese", params);
+//
+//        Response resp = post("/common/chinese2", params);
+//        assertEquals(200, resp.getStatus());
+//        assertEquals("中文", resp.getContent());
+//        log.debug("hi");
+//    }
+    
 }
