@@ -135,6 +135,8 @@ public class Request {
         if (inputStream != null) {
             return inputStream;
         } else {
+            if (header.get("Content-Type") == null)
+                header.asFormContentType(enc);
             if (null == data) {
                 try {
                     return new ByteArrayInputStream(getURLEncodedParams().getBytes(enc));
@@ -143,8 +145,6 @@ public class Request {
                     throw Lang.wrapThrow(e);
                 }
             }
-            if (header.get("Content-Type") == null)
-                header.asFormContentType();
             return new ByteArrayInputStream(data);
         }
     }

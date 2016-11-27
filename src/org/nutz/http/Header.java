@@ -1,5 +1,6 @@
 package org.nutz.http;
 
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -86,12 +87,24 @@ public class Header {
     }
     
     public Header asJsonContentType() {
-        set("Content-Type", "application/json");
-        return this;
+        return this.asJsonContentType(null);
     }
     
     public Header asFormContentType() {
-        set("Content-Type", "application/x-www-form-urlencoded");
+        return this.asFormContentType(null);
+    }
+    
+    public Header asJsonContentType(String enc) {
+        if (enc == null)
+            enc = Charset.defaultCharset().name();
+        set("Content-Type", "application/json; charset="+enc.toUpperCase());
+        return this;
+    }
+    
+    public Header asFormContentType(String enc) {
+        if (enc == null)
+            enc = Charset.defaultCharset().name();
+        set("Content-Type", "application/x-www-form-urlencoded; charset="+enc.toUpperCase());
         return this;
     }
 }
