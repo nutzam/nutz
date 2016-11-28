@@ -1,5 +1,6 @@
 package org.nutz.mvc.view;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -102,7 +103,7 @@ public abstract class AbstractPathView implements View {
         }
         // 请求的参数表,需要兼容之前的p.参数, Fix issue 418
         Map<String, String> p = new HashMap<String, String>();
-        for (Object o : req.getParameterMap().keySet()) {
+        for (Object o : Lang.enum2collection(req.getParameterNames(), new ArrayList<String>())) {
             String key = (String) o;
             String value = req.getParameter(key);
             p.put(key, value);
