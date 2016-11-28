@@ -4,6 +4,23 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 	
 	<filter>
+		<filter-class>org.nutz.mvc.WhaleFilter</filter-class>
+		<filter-name>whale</filter-name>
+		<init-param>
+			<param-name>config</param-name>
+			<param-value>
+			http.hidden_method_param=_method
+			http.method_override=true
+			
+			</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>whale</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter>
         <filter-name>nutz</filter-name>
         <filter-class>org.nutz.mvc.NutFilter</filter-class>
 		<init-param>

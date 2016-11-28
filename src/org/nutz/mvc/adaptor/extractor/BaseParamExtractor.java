@@ -1,10 +1,12 @@
 package org.nutz.mvc.adaptor.extractor;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.nutz.lang.Lang;
 import org.nutz.mvc.adaptor.ParamExtractor;
 
 /**
@@ -30,7 +32,7 @@ public class BaseParamExtractor implements ParamExtractor {
     public Set<String> keys() {
         if (req == null)
             return new HashSet<String>();
-        return req.getParameterMap().keySet();
+        return Lang.enum2collection(req.getParameterNames(), new HashSet<String>());
     }
 
 }

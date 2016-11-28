@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.nutz.lang.Lang;
 import org.nutz.mvc.adaptor.ParamExtractor;
 
 /**
@@ -42,7 +43,7 @@ public class MapParamExtractor implements ParamExtractor {
         Set<String> ss = new HashSet<String>();
         ss.addAll(map.keySet());
         if (req != null)
-            ss.addAll(req.getParameterMap().keySet());
+            ss.addAll(Lang.enum2collection(req.getParameterNames(), new HashSet<String>()));
         return ss;
     }
 
