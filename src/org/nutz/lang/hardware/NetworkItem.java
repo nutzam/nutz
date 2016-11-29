@@ -11,6 +11,8 @@ public class NetworkItem {
     private int mtu;
     
     private int signal;
+    
+    private String display;
 
     public String getIpv4() {
         return ipv4;
@@ -51,4 +53,12 @@ public class NetworkItem {
 	public void setSignal(int signal) {
 		this.signal = signal;
 	}
+
+    public String getDisplay() {
+        return display;
+    }
+
+    public void setDisplay(String display) {
+        this.display = display;
+    }
 }
