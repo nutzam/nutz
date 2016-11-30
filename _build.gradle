@@ -4,7 +4,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group = 'org.nutz'
-version = '1.r.58.r3'
+version = '1.r.59'
 
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 

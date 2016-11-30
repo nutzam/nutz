@@ -109,6 +109,7 @@ public class WhaleFilter implements Filter {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -154,7 +155,22 @@ public class WhaleFilter implements Filter {
             }
         }
 
-        chain.doFilter(request, response);
+        try {
+            chain.doFilter(request, response);
+        } finally {
+            try {
+                List<TempFile> files = (List<TempFile>) req.getAttribute("_files");
+                if (files != null) {
+                    for (TempFile tf : files) {
+                        if (tf != null)
+                            tf.delete();
+                    }
+                }
+            }
+            catch (Exception e) {
+            }
+        }
+       
     }
 
     public void destroy() {}
