@@ -1,0 +1,63 @@
+#title: 1.r.59 发行注记
+#index:0,1
+#author:wendal(wendal1985@gmail.com)
+--------------------------------------------------------------------------------------------------------
+1.r.59 {*盐焗腰果} 发行注记(20161130)
+    
+    没错,写这段文档的时候我正在吃腰果,带海盐的.2个月的开发,19个issue,原本打算用Java Compiler API写点东西的,结果不了了之.
+    
+    这个版本是bugfix和新功能各占一半. 其中有几个bug挺蛋疼的,建议更新.
+
+---------------------------------------------------------------------------------------------------------
+主要变化:
+  
+    * add: [https://github.com/nutzam/nutz/issues/1144 HttpDNS的实现]
+    * fix: [https://github.com/nutzam/nutz/issues/1145 1.r.58的pom.xml强引用了servlet api和log4j]
+    * add: [https://github.com/nutzam/nutz/issues/1147 @Modules默认扫描package了]
+    * add: [https://github.com/nutzam/nutz/issues/1148 支持隐式HTTP方法]
+    * add: [https://github.com/nutzam/nutz/issues/1151 Http类支持自定义SSLSocketFactory]
+    * fix: [https://github.com/nutzam/nutz/issues/1156 dao.create没有建中间表]
+    * add: [https://github.com/nutzam/nutz/issues/1157 Http类支持自定义默认header]
+    * fix: [https://github.com/nutzam/nutz/issues/1160 Ioc工厂方法的唯一参数是变长参数的话会抛异常]
+    * add: [https://github.com/nutzam/nutz/issues/1163 关联关系的target类自动推导]
+    * fix: [https://github.com/nutzam/nutz/issues/1164 Sqls.callback.maps()应使用NutMap类型]
+    * fix: [https://github.com/nutzam/nutz/issues/1166 Dao.migration会删@Name的唯一性索引]
+    * fix: [https://github.com/nutzam/nutz/issues/1168 Pojo带view属性的时候@El会报错]
+    * fix: [https://github.com/nutzam/nutz/issues/1169 MySQL下建的关联表没有带编码信息]
+    * add: [https://github.com/nutzam/nutz/issues/1170 ColDefine的type默认值是个坑]
+    * fix: [https://github.com/nutzam/nutz/issues/1173 FileSqlManager在SpringBoot的onejar方式下不能工作]
+    * fix: [https://github.com/nutzam/nutz/issues/1176 自定义SQL首条数据带null会丢数据]
+    * add: [https://github.com/nutzam/nutz/issues/1177 Http类发送的content-type添加编码信息]
+
+--------------------------------------------------------------------------------------------------------
+部分新功能介绍
+
+	关联关系的target自动推导
+	{{{<JAVA>
+	// 以前
+	@Many(target = Pet.class, field = "masterId")
+    private List<Pet> pets;
+    
+    // 现在 (@One/@Many/@ManyMany均可省略target)
+    @Many(field = "masterId")
+    private List<Pet> pets;
+	}}}
+	
+	@Modules默认扫描package
+	{{{<JAVA>
+	// 以前
+	@Modules(scanPackage=true)
+	
+	// 现在
+	// 可以啥都不写,或者象征性写个空的
+	@Modules()
+	}}}
+
+--------------------------------------------------------------------------------------------------------
+详细列表:
+  
+    * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.59 issue@github]
+
+欢迎访问[http://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
+
+[https://nutz.cn Nutz社区]已经累计了2000+的问答帖子, 10000+条回复,注册人数过千,平均回复时间少于10分钟哦,白天基本上秒回!
