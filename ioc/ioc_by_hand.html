@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>获取ioc对象的特殊场景</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">获取ioc对象的特殊场景</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#在Mvc环境下">在Mvc环境下</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#非Mvc环境下">非Mvc环境下</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#单元测试时的Ioc">单元测试时的Ioc</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="在Mvc环境下"></a>在Mvc环境下</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>方法1, 通过SetupBy,将Ioc容器放到一个public的静态属性, 推荐.</p>
+<pre>@SetupBy(MainSetup.class)
+public class MainModule {}
+
+
+public class MainSetup implements Setup {
+	public static Ioc ioc;
+	
+	public void init(NutConfig conf) {
+		MainSetup.ioc = conf.getIoc();
+	}
+}
+</pre>
+<p>方法2, 通过Mvcs类</p>
+<pre><span class="zdoc_code_cmt">// NutFilter作用域内,通常是请求线程内
+</span>Ioc ioc = Mvcs.getIoc();
+<span class="zdoc_code_cmt">// 独立线程, 例如计划任务,定时任务的线程.
+</span>Ioc ioc = Mvcs.ctx().getDefaultIoc();
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="非Mvc环境下"></a>非Mvc环境下</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>这种情况下, 一般是不需要Ioc容器的. 如果需要,那么Ioc容器是自行new的,所以需要下面 范式</p>
+<pre>public class MyApp {
+	public static Ioc ioc;
+	
+	static {
+		ioc = new NutIoc(new ComboIocLoader("*anoo", ...));
+	}
+}
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="单元测试时的Ioc"></a>单元测试时的Ioc</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>请使用nutz-plugins-mock插件</p>
+<p>首先,需要实现一个自定义的TestRunner</p>
+<pre>public class NutBookIocTestRunner extends NutTestRunner {
+
+	public NutBookIocTestRunner(Class&lt;?&gt; klass) throws InitializationError {
+    	super(klass);
+	}
+
+	<span class="zdoc_code_cmt">// 若使用Nutz MVC, 覆盖getMainModule方法
+</span>	protected Class&lt;?&gt; getMainModule() {
+    	return MainModule.class;
+	}
+	
+	<span class="zdoc_code_cmt">// 非mvc环境下, 覆盖getIocArgs/createIocLoader/createIoc均可
+</span>	
+}
+</pre>
+<p>测试类, 其中的@RunWith(NutBookIocTestRunner.class)是关键哦,当然,@IocBean也是必须的</p>
+<pre>@RunWith(NutBookIocTestRunner.class)
+@IocBean
+public class SimpleNutTest {
+	@Inject
+	protect Dao dao;
+	
+	public void test_dao_ok() {
+		assertNotNull(dao);
+	}
+}
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

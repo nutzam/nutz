@@ -48,15 +48,7 @@
 </pre>
 <p>然后, 在MainModule中添加引用SetupBy</p>
 <pre>@SetupBy(MainSetup.class)
-@Modules(scanPackage=true) <span class="zdoc_code_cmt">// 扫描当前package及子package下,带@At的public方法作为入口方法
-</span>@ChainBy(args="mvc/nutzbook-mvc-chain.js") <span class="zdoc_code_cmt">// 自定义动作链
-</span>@Ok("json:full") <span class="zdoc_code_cmt">// 定义全局默认@Ok
-</span>@Fail("jsp:jsp.500") <span class="zdoc_code_cmt">// 定义全局默认@Fail
-</span>@Localization(value="msg/", defaultLocalizationKey="zh-CN") <span class="zdoc_code_cmt">// 加载国际化
-</span>@Views({BeetlViewMaker2.class,FreemarkerViewMaker.class, PdfViewMaker.class}) <span class="zdoc_code_cmt">// 加载各种额外的Mvc View
-</span>@SessionBy(ShiroSessionProvider.class) <span class="zdoc_code_cmt">// 用Shiro Session替代容器Session
-</span>@UrlMappingBy(ApidocUrlMapping.class) <span class="zdoc_code_cmt">// 自动生成文档
-</span>public class MainModule {}
+public class MainModule {}
 </pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
