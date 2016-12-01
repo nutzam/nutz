@@ -108,13 +108,31 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
      */
     public NutMap pick(String... keys) {
         if (keys.length == 0)
-            return this.duplicate();
+            return new NutMap();
         NutMap re = new NutMap();
         for (Map.Entry<String, Object> en : this.entrySet()) {
             String key = en.getKey();
             if (Lang.contains(keys, key)) {
                 re.put(key, en.getValue());
             }
+        }
+        return re;
+    }
+
+    /**
+     * 从 Map 里挑选一些键生成一个新的 Map，自己同时删除这些键
+     * 
+     * @param keys
+     *            键
+     * @return 新 Map
+     */
+    public NutMap pickAndRemove(String... keys) {
+        if (keys.length == 0)
+            return new NutMap();
+        NutMap re = new NutMap();
+        for (String key : keys) {
+            Object val = this.remove(key);
+            re.put(key, val);
         }
         return re;
     }
@@ -138,15 +156,18 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
      * 从 Map 里挑选一些键生成一个新的 Map
      * 
      * @param p
-     *            匹配键的正则表达式
+     *            匹配键的正则表达式，null 不会匹配任何一个键
      * @param isNot
      *            true 表示被匹配上的会被忽略，false 表示被匹配上的才加入到返回的集合里
      * @return 新 Map
      */
     public NutMap pickBy(Pattern p, boolean isNot) {
+        // 一定不匹配
         if (null == p) {
             return isNot ? this.duplicate() : new NutMap();
         }
+
+        // 挑选
         NutMap re = new NutMap();
         for (Map.Entry<String, Object> en : this.entrySet()) {
             String key = en.getKey();
@@ -160,6 +181,53 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
             }
         }
 
+        // 返回
+        return re;
+    }
+
+    /**
+     * 从 Map 里挑选一些键生成一个新的 Map，自己同时删除这些键
+     * 
+     * @param p
+     *            匹配键的正则表达式，null 不会匹配任何一个键
+     * @param isNot
+     *            true 表示被匹配上的会被忽略，false 表示被匹配上的才加入到返回的集合里
+     * @return 新 Map
+     */
+    public NutMap pickAndRemoveBy(Pattern p, boolean isNot) {
+        // 一定不匹配
+        if (null == p) {
+            if (isNot) {
+                NutMap re = this.duplicate();
+                this.clear();
+                return re;
+            } else {
+                return new NutMap();
+            }
+        }
+
+        // 挑选
+        NutMap re = new NutMap();
+        List<String> delKeys = new ArrayList<String>(this.size());
+        for (Map.Entry<String, Object> en : this.entrySet()) {
+            String key = en.getKey();
+            boolean matched = p.matcher(key).find();
+            if (matched) {
+                if (!isNot) {
+                    delKeys.add(key);
+                    re.put(key, en.getValue());
+                }
+            } else if (isNot) {
+                delKeys.add(key);
+                re.put(key, en.getValue());
+            }
+        }
+
+        // 删除 Key
+        for (String key : delKeys)
+            this.remove(key);
+
+        // 返回
         return re;
     }
 

@@ -76,6 +76,28 @@ public abstract class Disks {
      * @return 相对于基础路径对象的相对路径
      */
     public static String getRelativePath(String base, String path) {
+        return getRelativePath(base, path, "./");
+    }
+
+    /**
+     * 将两个路径比较，得出相对路径
+     * 
+     * @param base
+     *            基础路径，以 '/' 结束，表示目录
+     * @param path
+     *            相对文件路径，以 '/' 结束，表示目录
+     * @param equalPath
+     *            如果两个路径相等，返回什么，通常为 "./"。 你也可以用 "" 或者 "." 或者随便什么字符串来表示
+     * 
+     * @return 相对于基础路径对象的相对路径
+     */
+    public static String getRelativePath(String base, String path, String equalPath) {
+        // 如果两个路径相等
+        if (base.equals(path)) {
+            return equalPath;
+        }
+
+        // 开始判断
         String[] bb = Strings.splitIgnoreBlank(getCanonicalPath(base), "[\\\\/]");
         String[] ff = Strings.splitIgnoreBlank(getCanonicalPath(path), "[\\\\/]");
         int len = Math.min(bb.length, ff.length);
@@ -84,9 +106,12 @@ public abstract class Disks {
             if (!bb[pos].equals(ff[pos]))
                 break;
 
-        if (len == pos && bb.length == ff.length)
-            return "./";
+        // 证明路径是相等的
+        if (len == pos && bb.length == ff.length) {
+            return equalPath;
+        }
 
+        // 开始查找不同
         int dir = 1;
         if (base.endsWith("/"))
             dir = 0;
