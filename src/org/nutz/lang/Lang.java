@@ -1,11 +1,15 @@
 package org.nutz.lang;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringReader;
@@ -2677,6 +2681,31 @@ public abstract class Lang {
             return loadClass(className);
         }
         catch (ClassNotFoundException e) {
+            return null;
+        }
+    }
+    
+    public static byte[] toBytes(Object obj) {
+        try {
+            ByteArrayOutputStream bao = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(bao);
+            oos.writeObject(obj);
+            return bao.toByteArray();
+        }
+        catch (IOException e) {
+            return null;
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static <T> T fromBytes(byte[] buf, Class<T> klass) {
+        try {
+            return (T)new ObjectInputStream(new ByteArrayInputStream(buf)).readObject();
+        }
+        catch (ClassNotFoundException e) {
+            return null;
+        }
+        catch (IOException e) {
             return null;
         }
     }

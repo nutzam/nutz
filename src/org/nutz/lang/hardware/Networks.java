@@ -59,6 +59,7 @@ public class Networks {
                     }
                 }
                 netItem.setMtu(face.getMTU());
+                netItem.setDisplay(face.getDisplayName());
                 
                 if (netItem.getIpv4() == null && netItem.getMac() == null && netItem.getMtu() < 1)
                 	continue;

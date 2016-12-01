@@ -50,7 +50,7 @@ public final class Nutz {
      * 发布流水
      */
     public static int minorVersion() {
-        return 59;
+        return 60;
     }
 
     /**

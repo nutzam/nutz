@@ -4,7 +4,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group = 'org.nutz'
-version = '1.r.58.r3'
+version = '1.r.59'
 
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
@@ -206,8 +206,12 @@ def deployer = uploadArchives.repositories.mavenDeployer
 //}
 
 deployer.pom.whenConfigured {pom ->
+    pom.dependencies.find {dep -> dep.scope == "compile" || dep.version == "2.5" }.each {dep -> dep.scope = "provided"}
+    pom.dependencies.find {dep -> dep.scope == "compile"}.each{dep-> println dep.scope }
     pom.dependencies.find {dep -> dep.scope == "compile"}.each {dep -> dep.scope = "provided"}
+    pom.dependencies.find {dep -> dep.scope == "compile"}.each{dep-> println dep.scope }
 }
 installer.pom.whenConfigured {pom ->
-    pom.dependencies.find {dep -> dep.scope == "compile"}.each {dep -> dep.scope = "provided"}
+    pom.dependencies.find {dep -> dep.scope != "test" }.each {dep -> dep.scope = "provided"}
+    pom.dependencies.each{dep-> println dep.scope }
 }

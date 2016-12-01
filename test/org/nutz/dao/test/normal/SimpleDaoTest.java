@@ -62,6 +62,9 @@ import org.nutz.dao.test.meta.issue1163.Issue1163Master;
 import org.nutz.dao.test.meta.issue1163.Issue1163Pet;
 import org.nutz.dao.test.meta.issue1166.Issue1166;
 import org.nutz.dao.test.meta.issue1168.Issue1168;
+import org.nutz.dao.test.meta.issue1179.Issue1179;
+import org.nutz.dao.test.meta.issue1179.Issue1179Enum;
+import org.nutz.dao.test.meta.issue1179.Issue1179_2;
 import org.nutz.dao.test.meta.issue396.Issue396Master;
 import org.nutz.dao.test.meta.issue726.Issue726;
 import org.nutz.dao.test.meta.issue901.XPlace;
@@ -824,5 +827,16 @@ public class SimpleDaoTest extends DaoCase {
         user.setSalt(R.UU32());
         user.setPassword(Lang.sha1("abc" + user.getSalt()));
         dao.insert(user);
+    }
+    
+    
+    @Test
+    public void test_issue_1179() {
+        dao.create(Issue1179.class, true);
+        Issue1179 pojo = new Issue1179();
+        pojo.setName("https://nutz.cn/?" + R.UU32());
+        pojo.setSt(Issue1179Enum.GHI);
+        dao.insert(pojo);
+        dao.fetch(Issue1179.class);
     }
 }

@@ -276,7 +276,7 @@ public class DaoSupport {
         this._interceptors = list;
     }
     
-    public void Interceptor(Object it) {
+    public void addInterceptor(Object it) {
         DaoInterceptor d = makeInterceptor(it);
         if (d != null) {
             List<DaoInterceptor> list = new LinkedList<DaoInterceptor>(this._interceptors);
