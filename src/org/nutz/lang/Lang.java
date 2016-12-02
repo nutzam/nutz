@@ -1168,18 +1168,17 @@ public abstract class Lang {
         Mirror<T> mirror = Mirror.me(toType);
         T obj = mirror.born();
         for (Field field : mirror.getFields()) {
-            if (src.containsKey(field.getName()) || field.isAnnotationPresent(Column.class)) {
-                Object v = null;
-                if (field.isAnnotationPresent(Column.class)) {
-                    String cv = field.getAnnotation(Column.class).value();
-                    v = src.get(cv);
-                } else {
-                    v = src.get(field.getName());
-                }
+            Object v = null;
+            if (!Lang.isAndroid && field.isAnnotationPresent(Column.class)) {
+                String cv = field.getAnnotation(Column.class).value();
+                v = src.get(cv);
+            }
 
-                if (null == v)
-                    continue;
+            if (null == v && src.containsKey(field.getName())) {
+                v = src.get(field.getName());
+            }
 
+            if (null != v) {
                 Class<?> ft = field.getType();
                 Object vv = null;
                 // 集合
