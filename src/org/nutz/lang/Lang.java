@@ -49,6 +49,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
+import org.nutz.dao.entity.annotation.Column;
 import org.nutz.json.Json;
 import org.nutz.lang.stream.StringInputStream;
 import org.nutz.lang.stream.StringOutputStream;
@@ -61,7 +62,7 @@ import org.nutz.lang.util.SimpleContext;
 
 /**
  * 这些帮助函数让 Java 的某些常用功能变得更简单
- * 
+ *
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  * @author bonyfish(mc02cxj@gmail.com)
@@ -102,7 +103,7 @@ public abstract class Lang {
 
     /**
      * 生成一个未实现的运行时异常
-     * 
+     *
      * @return 一个未实现的运行时异常
      */
     public static RuntimeException noImplement() {
@@ -111,7 +112,7 @@ public abstract class Lang {
 
     /**
      * 生成一个不可能的运行时异常
-     * 
+     *
      * @return 一个不可能的运行时异常
      */
     public static RuntimeException impossible() {
@@ -120,7 +121,7 @@ public abstract class Lang {
 
     /**
      * 根据格式化字符串，生成运行时异常
-     * 
+     *
      * @param format
      *            格式
      * @param args
@@ -133,7 +134,7 @@ public abstract class Lang {
 
     /**
      * 根据格式化字符串，生成一个指定的异常。
-     * 
+     *
      * @param classOfT
      *            异常类型， 需要有一个字符串为参数的构造函数
      * @param format
@@ -150,7 +151,7 @@ public abstract class Lang {
 
     /**
      * 将抛出对象包裹成运行时异常，并增加自己的描述
-     * 
+     *
      * @param e
      *            抛出对象
      * @param fmt
@@ -167,7 +168,7 @@ public abstract class Lang {
      * 用运行时异常包裹抛出对象，如果抛出对象本身就是运行时异常，则直接返回。
      * <p>
      * 如果是 InvocationTargetException，那么将其剥离，只包裹其 TargetException
-     * 
+     *
      * @param e
      *            抛出对象
      * @return 运行时异常
@@ -182,7 +183,7 @@ public abstract class Lang {
 
     /**
      * 用一个指定可抛出类型来包裹一个抛出对象。这个指定的可抛出类型需要有一个构造函数 接受 Throwable 类型的对象
-     * 
+     *
      * @param e
      *            抛出对象
      * @param wrapper
@@ -226,7 +227,7 @@ public abstract class Lang {
      * <li>对数组，集合， Map 会深层比较
      * </ul>
      * 当然，如果你重写的 equals 方法会优先
-     * 
+     *
      * @param a0
      *            比较对象1
      * @param a1
@@ -309,7 +310,7 @@ public abstract class Lang {
 
     /**
      * 判断一个数组内是否包括某一个对象。 它的比较将通过 equals(Object,Object) 方法
-     * 
+     *
      * @param array
      *            数组
      * @param ele
@@ -328,7 +329,7 @@ public abstract class Lang {
 
     /**
      * 从一个文本输入流读取所有内容，并将该流关闭
-     * 
+     *
      * @param reader
      *            文本输入流
      * @return 输入流所有内容
@@ -358,7 +359,7 @@ public abstract class Lang {
 
     /**
      * 将一段字符串写入一个文本输出流，并将该流关闭
-     * 
+     *
      * @param writer
      *            文本输出流
      * @param str
@@ -379,7 +380,7 @@ public abstract class Lang {
 
     /**
      * 根据一段文本模拟出一个输入流对象
-     * 
+     *
      * @param cs
      *            文本
      * @return 输出流对象
@@ -390,7 +391,7 @@ public abstract class Lang {
 
     /**
      * 根据一段文本模拟出一个文本输入流对象
-     * 
+     *
      * @param cs
      *            文本
      * @return 文本输出流对象
@@ -401,7 +402,7 @@ public abstract class Lang {
 
     /**
      * 根据一个 StringBuilder 模拟一个文本输出流对象
-     * 
+     *
      * @param sb
      *            StringBuilder 对象
      * @return 文本输出流对象
@@ -412,7 +413,7 @@ public abstract class Lang {
 
     /**
      * 根据一个 StringBuilder 模拟一个输出流对象
-     * 
+     *
      * @param sb
      *            StringBuilder 对象
      * @return 输出流对象
@@ -423,11 +424,11 @@ public abstract class Lang {
 
     /**
      * 较方便的创建一个数组，比如：
-     * 
+     *
      * <pre>
      * String[] strs = Lang.array("A", "B", "A"); => ["A","B","A"]
      * </pre>
-     * 
+     *
      * @param eles
      *            可变参数
      * @return 数组对象
@@ -438,14 +439,14 @@ public abstract class Lang {
 
     /**
      * 较方便的创建一个没有重复的数组，比如：
-     * 
+     *
      * <pre>
      * String[] strs = Lang.arrayUniq("A","B","A");  => ["A","B"]
      * String[] strs = Lang.arrayUniq();  => null
      * </pre>
-     * 
+     *
      * 返回的顺序会遵循输入的顺序
-     * 
+     *
      * @param eles
      *            可变参数
      * @return 数组对象
@@ -479,7 +480,7 @@ public abstract class Lang {
      * <li>Map
      * <li>其他对象 : 一定不为空
      * </ul>
-     * 
+     *
      * @param obj
      *            任意对象
      * @return 是否为空
@@ -498,7 +499,7 @@ public abstract class Lang {
 
     /**
      * 判断一个数组是否是空数组
-     * 
+     *
      * @param ary
      *            数组
      * @return null 或者空数组都为 true 否则为 false
@@ -509,13 +510,13 @@ public abstract class Lang {
 
     /**
      * 较方便的创建一个列表，比如：
-     * 
+     *
      * <pre>
      * List&lt;Pet&gt; pets = Lang.list(pet1, pet2, pet3);
      * </pre>
-     * 
+     *
      * 注，这里的 List，是 ArrayList 的实例
-     * 
+     *
      * @param eles
      *            可变参数
      * @return 列表对象
@@ -529,7 +530,7 @@ public abstract class Lang {
 
     /**
      * 创建一个 Hash 集合
-     * 
+     *
      * @param eles
      *            可变参数
      * @return 集合对象
@@ -543,7 +544,7 @@ public abstract class Lang {
 
     /**
      * 将多个数组，合并成一个数组。如果这些数组为空，则返回 null
-     * 
+     *
      * @param arys
      *            数组对象
      * @return 合并后的数组对象
@@ -564,7 +565,7 @@ public abstract class Lang {
 
     /**
      * 将一个对象添加成为一个数组的第一个元素，从而生成一个新的数组
-     * 
+     *
      * @param e
      *            对象
      * @param eles
@@ -593,7 +594,7 @@ public abstract class Lang {
 
     /**
      * 将一个对象添加成为一个数组的最后一个元素，从而生成一个新的数组
-     * 
+     *
      * @param e
      *            对象
      * @param eles
@@ -624,7 +625,7 @@ public abstract class Lang {
      * 将一个数组转换成字符串
      * <p>
      * 所有的元素都被格式化字符串包裹。 这个格式话字符串只能有一个占位符， %s, %d 等，均可，请视你的数组内容而定
-     * 
+     *
      * @param fmt
      *            格式
      * @param objs
@@ -644,7 +645,7 @@ public abstract class Lang {
      * 所有的元素都被格式化字符串包裹。 这个格式话字符串只能有一个占位符， %s, %d 等，均可，请视你的数组内容而定
      * <p>
      * 每个元素之间，都会用一个给定的字符分隔
-     * 
+     *
      * @param ptn
      *            格式
      * @param c
@@ -666,7 +667,7 @@ public abstract class Lang {
      * 将一个数组转换成字符串
      * <p>
      * 每个元素之间，都会用一个给定的字符分隔
-     * 
+     *
      * @param c
      *            分隔符
      * @param objs
@@ -687,7 +688,7 @@ public abstract class Lang {
 
     /**
      * 清除数组中的特定值
-     * 
+     *
      * @param objs
      *            数组
      * @param val
@@ -718,7 +719,7 @@ public abstract class Lang {
      * 将一个长整型数组转换成字符串
      * <p>
      * 每个元素之间，都会用一个给定的字符分隔
-     * 
+     *
      * @param c
      *            分隔符
      * @param vals
@@ -741,7 +742,7 @@ public abstract class Lang {
      * 将一个整型数组转换成字符串
      * <p>
      * 每个元素之间，都会用一个给定的字符分隔
-     * 
+     *
      * @param c
      *            分隔符
      * @param vals
@@ -764,7 +765,7 @@ public abstract class Lang {
      * 将一个数组的部分元素转换成字符串
      * <p>
      * 每个元素之间，都会用一个给定的字符分隔
-     * 
+     *
      * @param offset
      *            开始元素的下标
      * @param len
@@ -791,7 +792,7 @@ public abstract class Lang {
 
     /**
      * 将一个数组所有元素拼合成一个字符串
-     * 
+     *
      * @param objs
      *            数组
      * @return 拼合后的字符串
@@ -805,7 +806,7 @@ public abstract class Lang {
 
     /**
      * 将一个数组部分元素拼合成一个字符串
-     * 
+     *
      * @param offset
      *            开始元素的下标
      * @param len
@@ -826,7 +827,7 @@ public abstract class Lang {
      * 将一个集合转换成字符串
      * <p>
      * 每个元素之间，都会用一个给定的字符分隔
-     * 
+     *
      * @param c
      *            分隔符
      * @param coll
@@ -844,7 +845,7 @@ public abstract class Lang {
      * 将一个迭代器转换成字符串
      * <p>
      * 每个元素之间，都会用一个给定的字符分隔
-     * 
+     *
      * @param c
      *            分隔符
      * @param it
@@ -863,7 +864,7 @@ public abstract class Lang {
 
     /**
      * 将一个或者多个数组填入一个集合。
-     * 
+     *
      * @param <C>
      *            集合类型
      * @param <T>
@@ -883,7 +884,7 @@ public abstract class Lang {
 
     /**
      * 将一个集合变成 Map。
-     * 
+     *
      * @param mapClass
      *            Map 的类型
      * @param coll
@@ -915,7 +916,7 @@ public abstract class Lang {
 
     /**
      * 将集合变成 ArrayList
-     * 
+     *
      * @param col
      *            集合对象
      * @return 列表对象
@@ -932,7 +933,7 @@ public abstract class Lang {
 
     /**
      * 将集合编程变成指定类型的列表
-     * 
+     *
      * @param col
      *            集合对象
      * @param eleType
@@ -950,7 +951,7 @@ public abstract class Lang {
 
     /**
      * 将集合变成数组，数组的类型为集合的第一个元素的类型。如果集合为空，则返回 null
-     * 
+     *
      * @param coll
      *            集合对象
      * @return 数组
@@ -968,7 +969,7 @@ public abstract class Lang {
 
     /**
      * 将集合变成指定类型的数组
-     * 
+     *
      * @param col
      *            集合对象
      * @param eleType
@@ -993,7 +994,7 @@ public abstract class Lang {
 
     /**
      * 将一个数组变成 Map
-     * 
+     *
      * @param mapClass
      *            Map 的类型
      * @param array
@@ -1038,11 +1039,11 @@ public abstract class Lang {
 
     /**
      * 将数组转换成一个列表。
-     * 
+     *
      * @param array
      *            原始数组
      * @return 新列表
-     * 
+     *
      * @see org.nutz.castor.Castors
      */
     public static <T> List<T> array2list(T[] array) {
@@ -1056,13 +1057,13 @@ public abstract class Lang {
 
     /**
      * 将数组转换成一个列表。将会采用 Castor 来深层转换数组元素
-     * 
+     *
      * @param array
      *            原始数组
      * @param eleType
      *            新列表的元素类型
      * @return 新列表
-     * 
+     *
      * @see org.nutz.castor.Castors
      */
     public static <T, E> List<E> array2list(Object array, Class<E> eleType) {
@@ -1079,14 +1080,14 @@ public abstract class Lang {
 
     /**
      * 将数组转换成另外一种类型的数组。将会采用 Castor 来深层转换数组元素
-     * 
+     *
      * @param array
      *            原始数组
      * @param eleType
      *            新数组的元素类型
      * @return 新数组
      * @throws FailToCastObjectException
-     * 
+     *
      * @see org.nutz.castor.Castors
      */
     public static Object array2array(Object array, Class<?> eleType)
@@ -1103,14 +1104,14 @@ public abstract class Lang {
 
     /**
      * 将数组转换成Object[] 数组。将会采用 Castor 来深层转换数组元素
-     * 
+     *
      * @param args
      *            原始数组
      * @param pts
      *            新数组的元素类型
      * @return 新数组
      * @throws FailToCastObjectException
-     * 
+     *
      * @see org.nutz.castor.Castors
      */
     public static <T> Object[] array2ObjectArray(T[] args, Class<?>[] pts)
@@ -1126,7 +1127,7 @@ public abstract class Lang {
 
     /**
      * 根据一个 Map，和给定的对象类型，创建一个新的 JAVA 对象
-     * 
+     *
      * @param src
      *            Map 对象
      * @param toType
@@ -1167,11 +1168,17 @@ public abstract class Lang {
         Mirror<T> mirror = Mirror.me(toType);
         T obj = mirror.born();
         for (Field field : mirror.getFields()) {
-            if (src.containsKey(field.getName())) {
-                Object v = src.get(field.getName());
-                if (null == v)
-                    continue;
+            Object v = null;
+            if (!Lang.isAndroid && field.isAnnotationPresent(Column.class)) {
+                String cv = field.getAnnotation(Column.class).value();
+                v = src.get(cv);
+            }
 
+            if (null == v && src.containsKey(field.getName())) {
+                v = src.get(field.getName());
+            }
+
+            if (null != v) {
                 Class<?> ft = field.getType();
                 Object vv = null;
                 // 集合
@@ -1243,7 +1250,7 @@ public abstract class Lang {
 
     /**
      * 根据一段字符串，生成一个 Map 对象。
-     * 
+     *
      * @param str
      *            参照 JSON 标准的字符串，但是可以没有前后的大括号
      * @return Map 对象
@@ -1259,17 +1266,17 @@ public abstract class Lang {
 
     /**
      * 将一个 Map 所有的键都按照回调进行修改
-     * 
+     *
      * 本函数遇到数组或者集合，会自动处理每个元素
-     * 
+     *
      * @param obj
      *            要转换的 Map 或者 集合或者数组
-     * 
+     *
      * @param mkc
      *            键值修改的回调
      * @param recur
      *            遇到 Map 是否递归
-     * 
+     *
      * @see MapKeyConvertor
      */
     @SuppressWarnings("unchecked")
@@ -1307,7 +1314,7 @@ public abstract class Lang {
 
     /**
      * 创建一个一个键的 Map 对象
-     * 
+     *
      * @param key
      *            键
      * @param v
@@ -1320,7 +1327,7 @@ public abstract class Lang {
 
     /**
      * 根据一个格式化字符串，生成 Map 对象
-     * 
+     *
      * @param fmt
      *            格式化字符串
      * @param args
@@ -1333,7 +1340,7 @@ public abstract class Lang {
 
     /**
      * 创建一个新的上下文对象
-     * 
+     *
      * @return 一个新创建的上下文对象
      */
     public static Context context() {
@@ -1342,10 +1349,10 @@ public abstract class Lang {
 
     /**
      * 根据一个 Map 包裹成一个上下文对象
-     * 
+     *
      * @param map
      *            Map 对象
-     * 
+     *
      * @return 一个新创建的上下文对象
      */
     public static Context context(Map<String, Object> map) {
@@ -1354,12 +1361,12 @@ public abstract class Lang {
 
     /**
      * 根据一段 JSON 字符串，生产一个新的上下文对象
-     * 
+     *
      * @param fmt
      *            JSON 字符串模板
      * @param args
      *            模板参数
-     * 
+     *
      * @return 一个新创建的上下文对象
      */
     public static Context contextf(String fmt, Object... args) {
@@ -1368,7 +1375,7 @@ public abstract class Lang {
 
     /**
      * 根据一段 JSON 字符串，生产一个新的上下文对象
-     * 
+     *
      * @return 一个新创建的上下文对象
      */
     public static Context context(String str) {
@@ -1377,7 +1384,7 @@ public abstract class Lang {
 
     /**
      * 根据一段字符串，生成一个List 对象。
-     * 
+     *
      * @param str
      *            参照 JSON 标准的字符串，但是可以没有前后的中括号
      * @return List 对象
@@ -1401,7 +1408,7 @@ public abstract class Lang {
      * <li>一般 Java 对象。 返回 1
      * </ul>
      * 如果你想让你的 Java 对象返回不是 1 ， 请在对象中声明 length() 函数
-     * 
+     *
      * @param obj
      * @return 对象长度
      */
@@ -1424,7 +1431,7 @@ public abstract class Lang {
 
     /**
      * 如果是数组或集合取得第一个对象。 否则返回自身
-     * 
+     *
      * @param obj
      *            任意对象
      * @return 第一个代表对象
@@ -1446,7 +1453,7 @@ public abstract class Lang {
 
     /**
      * 获取集合中的第一个元素，如果集合为空，返回 null
-     * 
+     *
      * @param coll
      *            集合
      * @return 第一个元素
@@ -1459,7 +1466,7 @@ public abstract class Lang {
 
     /**
      * 获得表中的第一个名值对
-     * 
+     *
      * @param map
      *            表
      * @return 第一个名值对
@@ -1492,7 +1499,7 @@ public abstract class Lang {
      * <li>Map
      * <li>单一元素
      * </ul>
-     * 
+     *
      * @param obj
      *            对象
      * @param callback
@@ -1510,7 +1517,7 @@ public abstract class Lang {
      * <li>Map
      * <li>单一元素
      * </ul>
-     * 
+     *
      * @param obj
      *            对象
      * @param loopMap
@@ -1608,7 +1615,7 @@ public abstract class Lang {
      * 安全的从一个数组获取一个元素，容忍 null 数组，以及支持负数的 index
      * <p>
      * 如果该下标越界，则返回 null
-     * 
+     *
      * @param <T>
      * @param array
      *            数组，如果为 null 则直接返回 null
@@ -1627,7 +1634,7 @@ public abstract class Lang {
 
     /**
      * 将一个抛出对象的异常堆栈，显示成一个字符串
-     * 
+     *
      * @param e
      *            抛出对象
      * @return 异常堆栈文本
@@ -1649,7 +1656,7 @@ public abstract class Lang {
      * <li>on | off
      * <li>true | false
      * </ul>
-     * 
+     *
      * @param s
      *            字符串
      * @return 布尔值
@@ -1667,7 +1674,7 @@ public abstract class Lang {
 
     /**
      * 帮你快速获得一个 DocumentBuilder，方便 XML 解析。
-     * 
+     *
      * @return 一个 DocumentBuilder 对象
      * @throws ParserConfigurationException
      */
@@ -1677,7 +1684,7 @@ public abstract class Lang {
 
     /**
      * 对Thread.sleep(long)的简单封装,不抛出任何异常
-     * 
+     *
      * @param millisecond
      *            休眠时间
      */
@@ -1698,7 +1705,7 @@ public abstract class Lang {
      * <li>78L - 长整数 Long</li>
      * <li>69 - 普通整数 Integer</li>
      * </ul>
-     * 
+     *
      * @param s
      *            参数
      * @return 数字对象
@@ -1884,7 +1891,7 @@ public abstract class Lang {
 
     /**
      * 将对象转换成 Map
-     * 
+     *
      * @param obj
      *            POJO 对象
      * @return Map 对象
@@ -1896,7 +1903,7 @@ public abstract class Lang {
 
     /**
      * 将对象转为 Nutz 的标准 Map 封装
-     * 
+     *
      * @param obj
      *            POJO du对象
      * @return NutMap 对象
@@ -1907,7 +1914,7 @@ public abstract class Lang {
 
     /**
      * 将对象转换成 Map
-     * 
+     *
      * @param <T>
      * @param obj
      *            POJO 对象
@@ -1928,7 +1935,7 @@ public abstract class Lang {
 
     /**
      * 返回一个集合对象的枚举对象。实际上就是对 Iterator 接口的一个封装
-     * 
+     *
      * @param col
      *            集合对象
      * @return 枚举对象
@@ -1948,7 +1955,7 @@ public abstract class Lang {
 
     /**
      * 将枚举对象，变成集合
-     * 
+     *
      * @param enums
      *            枚举对象
      * @param cols
@@ -1963,7 +1970,7 @@ public abstract class Lang {
 
     /**
      * 将字符数组强制转换成字节数组。如果字符为双字节编码，则会丢失信息
-     * 
+     *
      * @param cs
      *            字符数组
      * @return 字节数组
@@ -1977,7 +1984,7 @@ public abstract class Lang {
 
     /**
      * 将整数数组强制转换成字节数组。整数的高位将会被丢失
-     * 
+     *
      * @param is
      *            整数数组
      * @return 字节数组
@@ -1991,7 +1998,7 @@ public abstract class Lang {
 
     /**
      * 判断当前系统是否为Windows
-     * 
+     *
      * @return true 如果当前系统为Windows系统
      */
     public static boolean isWin() {
@@ -2006,7 +2013,7 @@ public abstract class Lang {
 
     /**
      * 使用当前线程的ClassLoader加载给定的类
-     * 
+     *
      * @param className
      *            类的全称
      * @return 给定的类
@@ -2024,7 +2031,7 @@ public abstract class Lang {
 
     /**
      * 当前运行的 Java 虚拟机是 JDK6 的话，则返回 true
-     * 
+     *
      * @return true 如果当前运行的 Java 虚拟机是 JDK6
      */
     public static boolean isJDK6() {
@@ -2048,7 +2055,7 @@ public abstract class Lang {
 
     /**
      * 获取基本类型的默认值
-     * 
+     *
      * @param pClass
      *            基本类型
      * @return 0/false,如果传入的pClass不是基本类型的类,则返回null
@@ -2075,7 +2082,7 @@ public abstract class Lang {
 
     /**
      * 当一个类使用<T,K>来定义泛型时,本方法返回类的一个字段的具体类型。
-     * 
+     *
      * @param me
      * @param field
      */
@@ -2085,7 +2092,7 @@ public abstract class Lang {
 
     /**
      * 当一个类使用<T, K> 来定义泛型时, 本方法返回类的一个方法所有参数的具体类型
-     * 
+     *
      * @param me
      * @param method
      */
@@ -2100,7 +2107,7 @@ public abstract class Lang {
 
     /**
      * 当一个类使用<T,K>来定义泛型时,本方法返回类的一个字段的具体类型。
-     * 
+     *
      * @param me
      * @param field
      */
@@ -2111,7 +2118,7 @@ public abstract class Lang {
 
     /**
      * 当一个类使用<T,K>来定义泛型时,本方法返回类的一个字段的具体类型。
-     * 
+     *
      * @param me
      * @param type
      */
@@ -2151,7 +2158,7 @@ public abstract class Lang {
 
     /**
      * 获取一个 Type 类型实际对应的Class
-     * 
+     *
      * @param type
      *            类型
      * @return 与Type类型实际对应的Class
@@ -2186,7 +2193,7 @@ public abstract class Lang {
 
     /**
      * 返回一个 Type 的泛型数组, 如果没有, 则直接返回null
-     * 
+     *
      * @param type
      *            类型
      * @return 一个 Type 的泛型数组, 如果没有, 则直接返回null
@@ -2201,7 +2208,7 @@ public abstract class Lang {
 
     /**
      * 强制从字符串转换成一个 Class，将 ClassNotFoundException 包裹成 RuntimeException
-     * 
+     *
      * @param <T>
      * @param name
      *            类名
@@ -2223,7 +2230,7 @@ public abstract class Lang {
 
     /**
      * 获取指定文件的 MD5 值
-     * 
+     *
      * @param f
      *            文件
      * @return 指定文件的 MD5 值
@@ -2235,7 +2242,7 @@ public abstract class Lang {
 
     /**
      * 获取指定输入流的 MD5 值
-     * 
+     *
      * @param ins
      *            输入流
      * @return 指定输入流的 MD5 值
@@ -2247,7 +2254,7 @@ public abstract class Lang {
 
     /**
      * 获取指定字符串的 MD5 值
-     * 
+     *
      * @param cs
      *            字符串
      * @return 指定字符串的 MD5 值
@@ -2259,7 +2266,7 @@ public abstract class Lang {
 
     /**
      * 获取指定文件的 SHA1 值
-     * 
+     *
      * @param f
      *            文件
      * @return 指定文件的 SHA1 值
@@ -2271,7 +2278,7 @@ public abstract class Lang {
 
     /**
      * 获取指定输入流的 SHA1 值
-     * 
+     *
      * @param ins
      *            输入流
      * @return 指定输入流的 SHA1 值
@@ -2283,7 +2290,7 @@ public abstract class Lang {
 
     /**
      * 获取指定字符串的 SHA1 值
-     * 
+     *
      * @param cs
      *            字符串
      * @return 指定字符串的 SHA1 值
@@ -2295,7 +2302,7 @@ public abstract class Lang {
 
     /**
      * 从数据文件计算出数字签名
-     * 
+     *
      * @param algorithm
      *            算法，比如 "SHA1" 或者 "MD5" 等
      * @param f
@@ -2308,7 +2315,7 @@ public abstract class Lang {
 
     /**
      * 从流计算出数字签名，计算完毕流会被关闭
-     * 
+     *
      * @param algorithm
      *            算法，比如 "SHA1" 或者 "MD5" 等
      * @param ins
@@ -2345,7 +2352,7 @@ public abstract class Lang {
 
     /**
      * 从字符串计算出数字签名
-     * 
+     *
      * @param algorithm
      *            算法，比如 "SHA1" 或者 "MD5" 等
      * @param cs
@@ -2358,7 +2365,7 @@ public abstract class Lang {
 
     /**
      * 从字节数组计算出数字签名
-     * 
+     *
      * @param algorithm
      *            算法，比如 "SHA1" 或者 "MD5" 等
      * @param bytes
@@ -2406,7 +2413,7 @@ public abstract class Lang {
 
     /**
      * 将指定的数组的内容倒序排序。注意，这会破坏原数组的内容
-     * 
+     *
      * @param arrays
      *            指定的数组
      */
@@ -2447,7 +2454,7 @@ public abstract class Lang {
 
     /**
      * 一个便利的方法，将当前线程睡眠一段时间
-     * 
+     *
      * @param ms
      *            要睡眠的时间 ms
      */
@@ -2462,7 +2469,7 @@ public abstract class Lang {
 
     /**
      * 一个便利的等待方法同步一个对象
-     * 
+     *
      * @param lock
      *            锁对象
      * @param ms
@@ -2482,7 +2489,7 @@ public abstract class Lang {
 
     /**
      * 通知对象的同步锁
-     * 
+     *
      * @param lock
      *            锁对象
      */
@@ -2499,7 +2506,7 @@ public abstract class Lang {
 
     /**
      * map对象浅过滤,返回值是一个新的map
-     * 
+     *
      * @param source
      *            原始的map对象
      * @param prefix
@@ -2546,7 +2553,7 @@ public abstract class Lang {
 
     /**
      * 获得访问者的IP地址, 反向代理过的也可以获得
-     * 
+     *
      * @param request
      *            请求的req对象
      * @return 来源ip
@@ -2684,7 +2691,7 @@ public abstract class Lang {
             return null;
         }
     }
-    
+
     public static byte[] toBytes(Object obj) {
         try {
             ByteArrayOutputStream bao = new ByteArrayOutputStream();
@@ -2696,7 +2703,7 @@ public abstract class Lang {
             return null;
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     public static <T> T fromBytes(byte[] buf, Class<T> klass) {
         try {
