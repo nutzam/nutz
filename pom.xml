@@ -1,17 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.nutz</groupId>
+	<groupId>com.yuro</groupId>
 	<artifactId>nutz</artifactId>
 	<packaging>jar</packaging>
 	<name>Nutz</name>
-	<version>1.r.60-SNAPSHOT</version>
+	<version>1.y.59.1-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	<description>Nutz, which is a collections of lightweight frameworks, each of them can be used independently</description>
+	<description>yuro branch</description>
 
-	<url>http://nutzam.com</url>
+
 	<issueManagement>
 		<system>Github Issue</system>
 		<url>http://github.com/nutzam/nutz/issues</url>
@@ -22,31 +22,6 @@
 			<url>http://apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
-	<developers>
-		<developer>
-			<id>zozoh</id>
-			<name>zozoh</name>
-			<email>zozohtnt@gmail.com</email>
-			<url>http://weibo.com/zozoh</url>
-		</developer>
-		<developer>
-			<id>wendal</id>
-			<name>Wendal Chen</name>
-			<email>wendal1985@gmail.com</email>
-			<url>http://wendal.net/</url>
-		</developer>
-		<developer>
-			<id>juqkai</id>
-			<name>Juqkai</name>
-			<email>Bird.Wyatt@gmail.com</email>
-			<url>https://github.com/juqkai</url>
-		</developer>
-	</developers>
-	<scm>
-		<connection>scm:git:git://github.com/nutzam/nutz.git</connection>
-		<developerConnection>scm:git:git://github.com/nutzam/nutz.git</developerConnection>
-		<url>git://github.com/nutzam/nutz.git</url>
-	</scm>
 
 	<repositories>
 	</repositories>
@@ -184,17 +159,15 @@
 			</plugin>
 		</plugins>
 	</build>
+	<!-- 配置部署的远程仓库 -->
 	<distributionManagement>
 		<snapshotRepository>
-			<id>nutzcn-snapshots</id>
-			<name>NutzCN snapshot repository</name>
-			<url>https://jfrog.nutz.cn/artifactory/snapshots</url>
+			<id>snapshots</id>
+			<url>http://yurochina.cn:81/nexus/content/repositories/snapshots</url>
 		</snapshotRepository>
-
 		<repository>
-			<id>sonatype-release-staging</id>
-			<name>Sonatype Nexus release repository</name>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+			<id>releases</id>
+			<url>http://yurochina.cn:81/nexus/content/repositories/releases</url>
 		</repository>
 	</distributionManagement>
 </project>

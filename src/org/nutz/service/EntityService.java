@@ -14,10 +14,12 @@ import org.nutz.lang.Each;
 import org.nutz.lang.Mirror;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.trans.Atom;
+import org.nutz.trans.Trans;
 
 /**
  * 实体Service抽象类. 属于辅助类. 任何方法被调用前,必须确保Dao实例已经传入
- * 
+ *
  * @author wendal(wendal1985@gmail.com)
  *
  * @param <T>
@@ -48,7 +50,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 新建并传入Dao实例
-     * 
+     *
      * @param dao
      *            Dao实例
      */
@@ -59,7 +61,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 新建并传入Dao实例,同时指定实体类型
-     * 
+     *
      * @param dao
      *            Dao实例
      * @param entityType
@@ -72,7 +74,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 获取实体类型的反射封装类实例
-     * 
+     *
      * @return 反射封装类实例
      */
     public Mirror<T> mirror() {
@@ -81,7 +83,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 设置新的实体类型, 极少调用
-     * 
+     *
      * @param classOfT
      */
     @SuppressWarnings("unchecked")
@@ -91,7 +93,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 获取实体的Entity
-     * 
+     *
      * @return 实体的Entity
      */
     public Entity<T> getEntity() {
@@ -100,7 +102,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 获取实体类型
-     * 
+     *
      * @return 实体类型
      */
     public Class<T> getEntityClass() {
@@ -109,7 +111,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 批量删除
-     * 
+     *
      * @param cnd
      *            条件
      * @return 删除的条数
@@ -120,7 +122,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 全表删除
-     * 
+     *
      * @return 删除的条数
      */
     public int clear() {
@@ -129,7 +131,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 根据条件分页查询
-     * 
+     *
      * @param cnd
      *            查询条件
      * @param pager
@@ -142,7 +144,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 遍历条件分页查询结果
-     * 
+     *
      * @param cnd
      *            查询条件
      * @param pager
@@ -157,7 +159,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 根据条件统计符合条件的记录数
-     * 
+     *
      * @param cnd
      *            查询条件
      * @return 记录数
@@ -168,7 +170,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 全表的总记录数
-     * 
+     *
      * @return 总记录数
      */
     public int count() {
@@ -177,7 +179,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 查出符合条件的第一条记录
-     * 
+     *
      * @param cnd
      *            查询条件
      * @return 实体,如不存在则为null
@@ -188,7 +190,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 复合主键专用
-     * 
+     *
      * @param pks
      *            键值
      * @return 对象 T
@@ -199,7 +201,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 复合主键专用
-     * 
+     *
      * @param pks
      *            键值
      * @return 对象 T
@@ -210,7 +212,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 批量更新
-     * 
+     *
      * @param chain
      *            设置值的键值对
      * @param cnd
@@ -222,7 +224,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 更新@ManyMany关联表中的数据
-     * 
+     *
      * @param regex
      *            关联字段的匹配正则表达式,如果为null则代表全部
      * @param chain
@@ -236,7 +238,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 根据复合主键删除记录
-     * 
+     *
      * @param pks
      *            复合主键,必须按@Pk的声明顺序传入
      * @return 删除的记录数
@@ -247,7 +249,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 根据一个实体的配置信息为其创建一张表
-     * 
+     *
      * @param dropIfExists
      *            如果表存在是否强制移除
      * @return 实体对象
@@ -259,7 +261,7 @@ public abstract class EntityService<T> extends Service {
     /**
      * 与 insert(String tableName, Chain chain) 一样，不过，数据表名，将取自 POJO 的数据表声明，请参看
      * '@Table' 注解的详细说明
-     * 
+     *
      * @param chain
      *            数据名值链
      */
@@ -269,7 +271,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 查询一组对象。你可以为这次查询设定条件
-     * 
+     *
      * @param cnd
      *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序<br>
      *            只有在调用这个函数的时候， cnd.limit 才会生效
@@ -281,7 +283,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
-     * 
+     *
      * @param cnd
      *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序
      * @param callback
@@ -294,7 +296,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 对某一个对象字段，进行计算。
-     * 
+     *
      * @param funcName
      *            计算函数名，请确保你的数据库是支持这个函数的
      * @param fieldName
@@ -307,7 +309,7 @@ public abstract class EntityService<T> extends Service {
 
     /**
      * 对某一个对象字段，进行计算。
-     * 
+     *
      * @param funcName
      *            计算函数名，请确保你的数据库是支持这个函数的
      * @param fieldName
@@ -324,7 +326,7 @@ public abstract class EntityService<T> extends Service {
      * 从一个 ResultSet 中获取一个对象。
      * <p>
      * 因为 Dao 接口可以知道一个 POJO 的映射细节，这个函数可以帮你节省一点体力。
-     * 
+     *
      * @param rs
      *            结果集
      * @param fm
@@ -334,99 +336,113 @@ public abstract class EntityService<T> extends Service {
     public T getObject(ResultSet rs, FieldMatcher fm) {
         return dao().getObject(getEntityClass(), rs, fm);
     }
-    
+
     public T getObject(ResultSet rs, FieldMatcher fm, String prefix) {
         return dao().getObject(getEntityClass(), rs, fm, prefix);
     }
-    
+
     public List<T> _query(final Condition cnd, final Pager pager, FieldMatcher matcher) {
         return dao().query(getEntityClass(), cnd, pager, matcher);
     }
-    
+
     public List<T> _query(final Condition cnd, final Pager pager, String regex) {
         return dao().query(getEntityClass(), cnd, pager, regex);
     }
-    
+
     public T _insert(T obj){
         return dao().insert(obj);
     }
-    
+
+    public int _insertList(final List<T> objs){
+        if(null == objs)
+            return 0;
+        Trans.exec(new Atom() {
+            @Override
+            public void run() {
+                for (int i = 0; i < objs.size(); i++) {
+                    dao().insert(objs.get(i));
+                }
+            }
+        });
+        return 1;
+    }
+
     public T _fastInsert(T obj){
         return dao().fastInsert(obj);
     }
-    
+
     public T _insert(T obj, FieldFilter filter){
         return dao().insert(obj,filter);
     }
-    
+
     public T _insert(T t, boolean ignoreNull, boolean ignoreZero, boolean ignoreBlankStr){
         return dao().insert(t,ignoreNull,ignoreZero,ignoreBlankStr);
     }
-    
+
     public T _insertWith(T obj, String regex){
         return dao().insertWith(obj,regex);
     }
-    
+
     public T _insertLinks(T obj, String regex){
         return dao().insertLinks(obj,regex);
     }
-    
+
     public T _insertRelation(T obj, String regex){
         return dao().insertRelation(obj,regex);
     }
-    
+
     public int _update(T obj){
         return dao().update(obj);
     }
-    
+
     public int _update(T obj, String regex){
         return dao().update(obj,regex);
     }
-    
+
     public int _updateIgnoreNull(Object obj){
         return dao().updateIgnoreNull(obj);
     }
-    
+
     public T _updateWith(T obj, String regex){
         return dao().updateWith(obj,regex);
     }
-    
+
     public T _updateLinks(T obj, String regex){
         return dao().updateLinks(obj,regex);
     }
-    
+
     public int _delete(T obj){
         return dao().delete(obj);
     }
-    
+
     public int _deleteWith(T obj, String regex){
         return dao().deleteWith(obj,regex);
     }
-    
+
     public int _deleteLinks(T obj, String regex){
         return dao().deleteLinks(obj,regex);
     }
-    
+
     public T _fetch(T obj){
         return dao().fetch(obj);
     }
-    
+
     public T _fetchLinks(T obj, String regex){
         return dao().fetchLinks(obj,regex);
     }
-    
+
     public T _fetchLinks(T obj, String regex, Condition cnd){
         return dao().fetchLinks(obj,regex,cnd);
     }
-    
+
     public T _clearLinks(T obj, String regex){
         return dao().clearLinks(obj,regex);
     }
-    
+
     public void setExpert(T obj) throws Exception{
-         dao().setExpert(obj);
+        dao().setExpert(obj);
     }
-    
+
     public List<T> query() {
         return dao().query(getEntityClass(),null);
     }
