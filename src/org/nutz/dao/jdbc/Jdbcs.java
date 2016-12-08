@@ -99,7 +99,7 @@ public abstract class Jdbcs {
      * @see org.nutz.dao.jdbc.Jdbcs#getExpert(String, String)
      */
     public static JdbcExpert getExpert(DataSource ds) {
-        log.info("Get Connection from DataSource for JdbcExpert, if you look at here, check your database server and configure");
+        log.info("Get Connection from DataSource for JdbcExpert, if you lock at here, check your database server and configure");
         Connection conn = null;
         try {
             conn = Trans.getConnectionAuto(ds);
