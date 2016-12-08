@@ -57,7 +57,23 @@ ul.zdoc_index_table{
 	margin:0px;
 	padding:8px;
 }
-
+  #backtotop {
+      background-color: #f5f5f5;
+      border: 1px solid #ccc;
+      border-right: 0;
+  }
+  #backtotop {
+  width: 24px;
+  color: gray;
+  padding: 12px 0px 12px 5px;
+  display: none;
+  position: fixed;
+  cursor: pointer;
+  text-align: center;
+  z-index: 20;
+  background-color: white;
+  border-radius: 12px 0px 0px 12px;
+}
 </style>
 <base target="arena">
 </head>
@@ -65,5 +81,34 @@ ul.zdoc_index_table{
 <body>
 <h1>Nutz 手册</h1>
 ${html}
+<div id='backtotop'>回到顶部</div>
+<script type="text/javascript">
+$(document).ready(function () {
+	  var $backtotop = $('#backtotop');
+	  var top = $(window).height() - $backtotop.height() - 200;
+
+	  function moveBacktotop() {
+	    $backtotop.css({ top: top, right: 0});
+	  }
+
+	  $backtotop.click(function () {
+	    $('html,body').animate({ scrollTop: 0 });
+	    return false;
+	  });
+	  $(window).scroll(function () {
+	    var windowHeight = $(window).scrollTop();
+	    if (windowHeight > 200) {
+	      $backtotop.fadeIn();
+	    } else {
+	      $backtotop.fadeOut();
+	    }
+	  });
+
+	  moveBacktotop();
+	  $(window).resize(moveBacktotop);
+
+	  $('.topic_content a,.reply_content a').attr('target', '_blank');
+	});
+</script>
 </body>
 </html>
