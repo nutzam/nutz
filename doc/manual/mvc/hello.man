@@ -6,9 +6,9 @@
 
 	这是一个简单的小例子，通过简单的几步，即可在 Eclipse 中搭建出一个 Nutz.Mvc
 	的运行环境，我假设你已经：
-	 # 有了 Eclipse J2EE 套件 -- Eclipse 3.5 以上版本
-	 # 安装了 Tomcat 6.0 及以上版本
-	 # 下载了 Nutz 的最新版本
+	 # 有了 Eclipse J2EE 套件 -- Eclipse 3.5 以上版本,推荐4.x系列
+	 # 安装了 Tomcat 6.0 及以上版本, 推荐8.x系列
+	 # 下载了 Nutz 的最新版本  http://downloads.nutzam.com/
 
 
 --------------------------------------------------------------------
@@ -45,14 +45,9 @@
 
 	将 Nutz.jar 加入 lib 目录中
 
-		本例子需要 Nutz-1.a.31 或者更高的版本，
-		不过你可以[../committer/git_project.man 自己编译一个最新版本]
+		本例子需要 Nutz-1.r.59 或者更高的版本
 
-		在 WebContent > WEB-INF > lib 文件夹下右键选择 New > File
-
-		<hello/link_nutz.png>
-
-		点击 'Finish' Eclipse 会将 nutz 的 jar 链到项目中
+		在 WebContent > WEB-INF > lib 把nutz-1.r.59.jar放进去.
 
 	创建主模块
 
@@ -85,6 +80,8 @@
 			<filter-mapping>
 				<filter-name>nutz</filter-name>
 				<url-pattern>/*</url-pattern>
+				<dispatcher>REQUEST</dispatcher>
+				<dispatcher>FORWARD</dispatcher>
 			</filter-mapping>
 		</web-app>
 		}}}
@@ -148,13 +145,11 @@
 
 		<hello/console.png>
 
-		如果你想打印更详细的日志，请参看 [../lang/log.man#让_Nutz_输出日志 让_Nutz_输出日志]
-
 	在浏览器中访问
 
 		<hello/ok.png>
 
-	这篇文章虽然不算短，但是实际上，你需要作的事情不多，不是吗？ ^_^
+	这篇文章虽然不算短，但是实际上，你需要做的事情不多，不是吗？ ^_^
 
 --------------------------------------------------------------------
 如何进阶

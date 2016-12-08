@@ -2,16 +2,24 @@
 <doc title="Nutz核心包" author="zozoh(zozohtnt@gmail.com)">
 	<doc path="nutz_preface.man"/>
 	<doc path="nutz_release_notes.man"/>
-	<doc path="committer"  title="关于源码">
-		<doc path="svn_project.man"/>
-		<doc path="git_project.man"/>
-		<doc path="compile.man"/>
-		<doc path="compile_with_maven.man"/>
-		<doc path="ant.man"/>
-		<doc path="packages.man"/>
-		<doc path="version_naming.man"/>
-		<doc path="coding.man"/>
-		<doc path="be_committer.man"/>
+	<doc path="mvc"	title="Mvc 手册">
+		<doc path="overview.man"/>
+		<doc path="hello.man"/>
+		<doc path="web_xml.man"/>
+		<doc path="modules.man"/>
+		<doc path="url_mapping.man"/>
+		<doc path="action_chain.man"/>
+		<doc path="http_adaptor.man"/>
+		<doc path="view.man"/>
+		<doc path="with_ioc.man"/>
+		<doc path="localization.man"/>
+		<doc path="action_filter.man"/>
+		<doc path="file_upload.man"/>
+		<doc path="module_of_request.man"/>
+		<doc path="rest.man"/>
+		<doc path="annotations.man"/>
+		<doc path="session.man"></doc>
+		<doc path="setupby.man"></doc>
 	</doc>
 	<doc path="dao" title="Dao 手册">
 		<doc path="hello.man"/>
@@ -60,25 +68,6 @@
 		<doc path="aop.man"/>
 		<doc path="aop_json.man"/>
 	</doc>
-	<doc path="mvc"	title="Mvc 手册">
-		<doc path="overview.man"/>
-		<doc path="hello.man"/>
-		<doc path="web_xml.man"/>
-		<doc path="modules.man"/>
-		<doc path="url_mapping.man"/>
-		<doc path="action_chain.man"/>
-		<doc path="http_adaptor.man"/>
-		<doc path="view.man"/>
-		<doc path="with_ioc.man"/>
-		<doc path="localization.man"/>
-		<doc path="action_filter.man"/>
-		<doc path="file_upload.man"/>
-		<doc path="module_of_request.man"/>
-    	<doc path="rest.man"/>
-		<doc path="annotations.man"/>
-		<doc path="session.man"></doc>
-		<doc path="setupby.man"></doc>
-	</doc>
 	<doc path="json" title="Json 手册">
 		<doc path="base.man"/>
 		<doc path="from.man"/>
@@ -119,6 +108,16 @@
 		<doc path="quartz.man"></doc>
 		<doc path="ehcache.man"></doc>
 		<doc path="daocache.man"></doc>
+	</doc>
+	<doc path="committer"  title="关于源码">
+		<doc path="git_project.man"/>
+		<doc path="compile.man"/>
+		<doc path="compile_with_maven.man"/>
+		<doc path="ant.man"/>
+		<doc path="packages.man"/>
+		<doc path="version_naming.man"/>
+		<doc path="coding.man"/>
+		<doc path="be_committer.man"/>
 	</doc>
 	<!--doc path="zmole" title="zMole">
 		<doc path="zmole_get_start.man"/>
