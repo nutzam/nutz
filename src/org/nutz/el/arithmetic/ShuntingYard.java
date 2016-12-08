@@ -41,7 +41,7 @@ public class ShuntingYard {
         }
         //遇到右括号
         if(current instanceof RBracketOpt){
-            while(!(opts.peek() instanceof LBracketOpt)){
+            while(!opts.isEmpty() && !(opts.peek() instanceof LBracketOpt)){
                 rpn.add(opts.poll());
             }
             opts.poll();

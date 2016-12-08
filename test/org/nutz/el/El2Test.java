@@ -569,4 +569,10 @@ public class El2Test {
     public static String sayhi(String name) {
         return "hi,"+name;
     }
+    
+    @Test(timeout=5000)
+    public void test_el_issue1185() {
+        Context context = Lang.context();
+        El.eval(context, "a.b)*0.30");
+    }
 }
