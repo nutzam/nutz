@@ -52,9 +52,9 @@
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>这是一个简单的小例子，通过简单的几步，即可在 Eclipse 中搭建出一个 Nutz.Mvc的运行环境，我假设你已经：</p>
 <ol type="1">
-<li>有了 Eclipse J2EE 套件 -- Eclipse 3.5 以上版本</li>
-<li>安装了 Tomcat 6.0 及以上版本</li>
-<li>下载了 Nutz 的最新版本</li>
+<li>有了 Eclipse J2EE 套件 -- Eclipse 3.5 以上版本,推荐4.x系列</li>
+<li>安装了 Tomcat 6.0 及以上版本, 推荐8.x系列</li>
+<li>下载了 Nutz 的最新版本  http://downloads.nutzam.com/</li>
 </ol>
 <div class="hr"><b></b></div>
 <h1><a name="详细步骤"></a>详细步骤</h1>
@@ -83,10 +83,8 @@
 <p>点击 'Finish' 按钮，在 Servers 视图应该出现一个 Tomcat 服务器，这个服务器下应该有一个项目 -- hellonutz</p>
 <h2><a name="将_Nutzjar_加入_lib_目录中"></a>将 Nutz.jar 加入 lib 目录中</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>本例子需要 Nutz-1.a.31 或者更高的版本，不过你可以<a href="../committer/git_project.html">自己编译一个最新版本</a></p>
-<p>在 WebContent &gt; WEB-INF &gt; lib 文件夹下右键选择 New &gt; File</p>
-<p><img src="hello/link_nutz.png"/></p>
-<p>点击 'Finish' Eclipse 会将 nutz 的 jar 链到项目中</p>
+<p>本例子需要 Nutz-1.r.59 或者更高的版本</p>
+<p>在 WebContent &gt; WEB-INF &gt; lib 把nutz-1.r.59.jar放进去.</p>
 <h2><a name="创建主模块"></a>创建主模块</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>在 src 目录上右键选择 New &gt; Class</p>
@@ -113,6 +111,8 @@
 	&lt;filter-mapping&gt;
 		&lt;filter-name&gt;nutz&lt;/filter-name&gt;
 		&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+		&lt;dispatcher&gt;REQUEST&lt;/dispatcher&gt;
+		&lt;dispatcher&gt;FORWARD&lt;/dispatcher&gt;
 	&lt;/filter-mapping&gt;
 &lt;/web-app&gt;
 </pre>
@@ -162,11 +162,10 @@ public class MainModule {
 <p><img src="hello/server_run.png"/></p>
 <p>控制台输出</p>
 <p><img src="hello/console.png"/></p>
-<p>如果你想打印更详细的日志，请参看 <a href="../lang/log.html#让_Nutz_输出日志">让_Nutz_输出日志</a></p>
 <h2><a name="在浏览器中访问"></a>在浏览器中访问</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p><img src="hello/ok.png"/></p>
-<p>这篇文章虽然不算短，但是实际上，你需要作的事情不多，不是吗？ ^_^</p>
+<p>这篇文章虽然不算短，但是实际上，你需要做的事情不多，不是吗？ ^_^</p>
 <div class="hr"><b></b></div>
 <h1><a name="如何进阶"></a>如何进阶</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
