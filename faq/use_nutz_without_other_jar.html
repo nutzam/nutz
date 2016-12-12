@@ -62,25 +62,84 @@
 <li>nutz.jar</li>
 </ul>
 </li>
-<li>推荐搭配,搭配最新的log4j
+<li>推荐搭配,搭配最新的 log4j
 <ul type="disc">
 <li>nutz.jar + log4j-1.2.17.jar</li>
 </ul>
+<pre>&lt;dependency&gt;
+	&lt;groupId&gt;org.nutz&lt;/groupId&gt;
+	&lt;artifactId&gt;nutz&lt;/artifactId&gt;
+	&lt;version&gt;${nutz.version}&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+	&lt;groupId&gt;log4j&lt;/groupId&gt;
+	&lt;artifactId&gt;log4j&lt;/artifactId&gt;
+	&lt;version&gt;1.2.17&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
 </li>
-<li>性能至上,使用Logback
+<li>性能至上,使用 Logback
 <ul type="disc">
-<li>nutz.jar + log4j-over-slf4j.jar + slf4j-api.jar + logback-core.jar + logback-classic.jar</li>
+<li>nutz.jar + log4j-over-slf4j.jar + logback-classic.jar</li>
 </ul>
+<pre>&lt;dependency&gt;
+	&lt;groupId&gt;org.nutz&lt;/groupId&gt;
+	&lt;artifactId&gt;nutz&lt;/artifactId&gt;
+	&lt;version&gt;${nutz.version}&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+	&lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+	&lt;artifactId&gt;log4j-over-slf4j&lt;/artifactId&gt;
+	&lt;version&gt;1.7.21&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+	&lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
+	&lt;artifactId&gt;logback-classic&lt;/artifactId&gt;
+	&lt;version&gt;1.1.8&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
 </li>
-<li>传统选择,使用JDK Loggging
+<li>传统选择,使用JDK Loggging(jul)
 <ul type="disc">
-<li>nutz.jar + log4j-over-slf4j.jar + slf4j-api.jar + slfj4-jdk.jar</li>
+<li>nutz.jar + log4j-over-slf4j.jar + slfj4-jdk14.jar</li>
 </ul>
+<pre>&lt;dependency&gt;
+	&lt;groupId&gt;org.nutz&lt;/groupId&gt;
+	&lt;artifactId&gt;nutz&lt;/artifactId&gt;
+	&lt;version&gt;${nutz.version}&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+	&lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+	&lt;artifactId&gt;log4j-over-slf4j&lt;/artifactId&gt;
+	&lt;version&gt;1.7.21&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+	&lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+	&lt;artifactId&gt;slf4j-jdk14&lt;/artifactId&gt;
+	&lt;version&gt;1.7.21&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
 </li>
-<li>另类之选,使用Apache Common Logging
+<li>另类之选,使用Apache Common Logging(jcl)
 <ul type="disc">
-<li>nutz.jar + log4j-over-slf4j.jar + slf4j-api.jar + slfj4-jcl.jar</li>
+<li>nutz.jar + log4j-over-slf4j.jar + slfj4-jcl.jar</li>
 </ul>
+<pre>&lt;dependency&gt;
+	&lt;groupId&gt;org.nutz&lt;/groupId&gt;
+	&lt;artifactId&gt;nutz&lt;/artifactId&gt;
+	&lt;version&gt;${nutz.version}&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+	&lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+	&lt;artifactId&gt;log4j-over-slf4j&lt;/artifactId&gt;
+	&lt;version&gt;1.7.21&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+	&lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+	&lt;artifactId&gt;slf4j-jcl&lt;/artifactId&gt;
+	&lt;version&gt;1.7.21&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
 </li>
 </ol>
 </div>
