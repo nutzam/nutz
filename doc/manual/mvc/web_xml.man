@@ -40,22 +40,12 @@
             </init-param>
             <init-param>
                 <param-name>ignore</param-name>
-                <param-value>^(.+[.])(jsp|png|gif|jpg|js|css|jspx|jpeg|html)$</param-value>
+                <param-value>^(.+[.])(jsp|png|gif|jpg|js|css|jspx|jpeg|swf|ico|map|html)$</param-value>
             </init-param>
         </filter>
     }}}
-
-    注意,如果你使用[view.man Forward视图],请这样写filter-mapping
-    {{{
-    <filter-mapping>
-        <filter-name>nutz</filter-name>
-        <url-pattern>/*</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
-        <dispatcher>FORWARD</dispatcher>
-    </filter-mapping>
-    }}}
   
-    更灵活的忽略模式(从1.b.51开始支持)
+    更灵活的忽略模式
     {{{<xml>
         <filter>
             <filter-name>nutz</filter-name>
@@ -75,78 +65,3 @@
         </filter>
     }}}
     
-
-比较传统的方式
-    {{{<xml>
-    <filter>
-        <filter-name>msgs</filter-name>
-        <filter-class>org.nutz.mvc.NutFilter</filter-class>
-        <init-param>
-            <param-name>skip-mode</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>msgs</filter-name>
-        <url-pattern>*.jsp</url-pattern>
-    </filter-mapping>
-
-    <servlet>
-        <servlet-name>nutz</servlet-name>
-            <servlet-class>org.nutz.mvc.NutServlet</servlet-class>
-            <init-param>
-                <param-name>modules</param-name>
-                <param-value>your.package.MainModule</param-value>
-            </init-param>
-            <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>nutz</servlet-name>
-        <url-pattern>*.nut</url-pattern>
-    </servlet-mapping>
-    }}}
-
-------------------------------------------------------------------------
-NutMvcListener -- Servlet上下文监听器
-
-	* 这个类在1.b.53添加,之前的版本可以简单拷贝源码来获取这个特性.仅需要注意一下IocBy里面写法哦.
-	* 将Ioc在其他部分框架之前加载,实现与其他框架集成Ioc
-	* 提供一个比Mvcs.getIoc()更换的方式获取Ioc容器
-	* 减少用户主动new NutIoc()的可能性
-	
-	{{{
-	<context-param>
-		<param-name>nutz-iocby</param-name>
-		<param-value>*js,ioc/,*anno,net.wendal.nutzbook,*tx,*org.nutz.integration.quartz.QuartzIocLoader</param-value>
-	</context-param>
-	<listener>
-		<listener-class>org.nutz.mvc.NutMvcListener</listener-class>
-	</listener>
-	}}}
-	
-	* 需要定义一个context-param, 名为nutz-iocby, 值为@IocBy中的参数, 完全就是MainModule中@IocBy中,当type=ComboIocProvider.class时参数
-	* 之所以选用ComboIocProvider的形式,因为发现这是最最常用的配置方式了,因为它能融合其他任意IocLoader配置
-	* 其二是listener咯,惯例写上本小节的猪脚org.nutz.mvc.NutMvcListener
-	* 请把这个类放在其他框架之前. 如果有log4j配置相关的Listener,则放在其之后.
-	* 另外,最最重要的是, 在MainModule中,@IocBy需要配置为以下代码
-	
-	{{{
-	@IocBy(type=NutMvcListener.class)
-	}}}
-	
-	* 没错,这个NutMvcListener同时也实现了IocProvider,所以可以作为@IocBy的类型参数
-	* 在需要使用这个"全局"监听器中的Ioc容器,仅需要如此调用
-	* 不用也不可以为@IocBy的args配置参数了,因为ioc配置已经被你写到web.xml了.
-	
-	{{{
-	Dao dao = NutMvcListener.ioc().get(Dao.class);
-	}}}
-	
-	* 事实上NutMvcListener支持从nutz.properties加载配置
-	* 所以你可以在src或者maven的resources目录下新增一个文件叫nutz.properties,内容是
-	
-	{{{
-	nutz-iocby=*js,ioc/,*anno,net.wendal.nutzbook,*tx,*org.nutz.integration.quartz.QuartzIocLoader
-	}}}
-	
-	* 推荐使用web.xml, 除非你喜欢用配置文件及需要部署时修改ioc(几乎不会发生吧?)
