@@ -22,7 +22,7 @@ public class Log4jLogAdapter implements LogAdapter, Plugin {
 
     public boolean canWork() {
         try {
-            Class.forName("org.apache.log4j.Logger", false, Log4jLogAdapter.class.getClassLoader());
+            org.apache.log4j.Logger.class.getName();
             return true;
         }
         catch (Throwable e) {}
