@@ -1,7 +1,6 @@
 package org.nutz.dao.util;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
@@ -46,6 +45,8 @@ import org.nutz.dao.sql.SqlCallback;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.random.R;
+import org.nutz.lang.reflect.FastClass;
+import org.nutz.lang.reflect.FastClassFactory;
 import org.nutz.lang.util.Callback2;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -1084,14 +1085,19 @@ public abstract class Daos {
 
     /** 是否把字段名给变成大写 */
     public static boolean FORCE_UPPER_COLUMN_NAME = false;
+    
+    public static int DEFAULT_VARCHAR_WIDTH = 128;
 }
 
 class ExtDaoInvocationHandler implements InvocationHandler {
+    static public FastClass fc;
 
     protected ExtDaoInvocationHandler(Dao dao, FieldFilter filter, Object tableName) {
         this.dao = dao;
         this.filter = filter;
         this.tableName = tableName;
+        if (fc == null)
+            fc = FastClassFactory.get(Dao.class);
     }
 
     public Dao dao;
@@ -1103,16 +1109,11 @@ class ExtDaoInvocationHandler implements InvocationHandler {
         final Molecule<Object> m = new Molecule<Object>() {
             public void run() {
                 try {
-                    setObj(method.invoke(dao, args));
+                    setObj(fc.invoke(dao, method, args));
+                    //setObj(method.invoke(dao, args));
                 }
-                catch (IllegalArgumentException e) {
+                catch (Exception e) {
                     throw Lang.wrapThrow(e);
-                }
-                catch (IllegalAccessException e) {
-                    throw Lang.wrapThrow(e);
-                }
-                catch (InvocationTargetException e) {
-                    throw Lang.wrapThrow(e.getTargetException());
                 }
             }
         };
