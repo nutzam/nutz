@@ -45,8 +45,6 @@ import org.nutz.dao.sql.SqlCallback;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.random.R;
-import org.nutz.lang.reflect.FastClass;
-import org.nutz.lang.reflect.FastClassFactory;
 import org.nutz.lang.util.Callback2;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -1090,14 +1088,11 @@ public abstract class Daos {
 }
 
 class ExtDaoInvocationHandler implements InvocationHandler {
-    static public FastClass fc;
 
     protected ExtDaoInvocationHandler(Dao dao, FieldFilter filter, Object tableName) {
         this.dao = dao;
         this.filter = filter;
         this.tableName = tableName;
-        if (fc == null)
-            fc = FastClassFactory.get(Dao.class);
     }
 
     public Dao dao;
@@ -1109,8 +1104,7 @@ class ExtDaoInvocationHandler implements InvocationHandler {
         final Molecule<Object> m = new Molecule<Object>() {
             public void run() {
                 try {
-                    setObj(fc.invoke(dao, method, args));
-                    //setObj(method.invoke(dao, args));
+                    setObj(method.invoke(dao, args));
                 }
                 catch (Exception e) {
                     throw Lang.wrapThrow(e);
