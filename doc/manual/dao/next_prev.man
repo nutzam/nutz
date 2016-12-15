@@ -99,7 +99,7 @@
 		private long id;
 	...
 	}}}
-	现在 Nutz.Dao 支持这些数据库:
+	现在 Nutz.Dao 支持这些数据库. 其他未能识别的数据库将当成MySQL:
 	{{{
 	public enum DB {
 		H2, DB2, PSQL, ORACLE, SQLSERVER, MYSQL, OTHER

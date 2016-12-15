@@ -129,7 +129,7 @@
 		
 		Json 视图的更多介绍请参看 [#JSON_视图]
 
-	根据返回值决定视图(1.b.53开始支持)
+	根据返回值决定
 	
 		声明如下内容
 		{{{
@@ -155,8 +155,8 @@
 
 	通过注解 
 		执行一个业务逻辑可能有两种结果
-		 # 成功
-		 # 失败
+		 # 成功,正常返回
+		 # 失败,特指入口方法抛出异常
 		在每个入口函数上，你都可声明这两个注解
 		 # @Ok
 		 # @Fail
@@ -194,296 +194,341 @@
 内置的视图
 	通过 {*org.nutz.mvc.view.DefaultViewMaker}， Nutz.Mvc 提供了一些内置视图， 你可以通过
 	@Ok 和 @Fail 注解声明在你的入口函数上
-	--------------------------------------------------------------------------------------
-	JSP 视图
-		视图的实现类为： {*org.nutz.mvc.view.JspView}
-
-		一般的使用形式：
-			{{{
-			@Ok("jsp:pet.detail")
-			}}}
-			将会使用 {*/WEB-INF/pet/detail.jsp} 来渲染 HTTP 输出流
-
-			你可以不声明视图的值：
-			{{{
-			@Ok("jsp")
-			}}}
-			那么会根据这个请求的地址来寻找 JSP 文件，比如请求：
-			{{{
-			/pet/detail.nut
-			}}}
-			将会使用 {*/WEB-INF/pet/detail.jsp} 来渲染 HTTP 输出流
-		
-		使用 JSTL
-			如果你使用 JSTL，你还可以
-			 * 通过 `${msg.xxxx}` 输出本地字符串，参看 [localization.man 本地化字符串更多的介绍]
-			 * 通过 `${base}` 输出当前应用的 ContextPath
-			 * 通过 `${obj.xxx}` 输出要渲染对象的某个属性值
-			 * 你需要知道，JSP 视图，会将要渲染的对象存入 request 对象的一个属性里，属性名为 "obj"
-		
-		JSP 文件的位置
-			有些人（比如我）喜欢把 JSP 文件统统放在 WEB-INF 目录里。但是更多人的习惯是将 JSP 
-			放在 WEB-INF 外面。
-			
-			 * 这个将对应 {#00A;*/WEB-INF/abc/bbc.jsp}
-				{{{
-				@Ok("jsp:abc.bbc")
-				}}}
-			 * 这个将对应 {#00A;*/abc/bbc.jsp}
-				{{{
-				@Ok("jsp:/abc/bbc")
-				}}}
-			 * 这个也将对应 {#00A;*/abc/bbc.jsp}
-				{{{
-				@Ok("jsp:/abc/bbc.jsp")
-				}}}
-		
-		本地化字符串
-			在 Nutz.Mvc 入口函数里使用的 JSP 文件可以使用 `${base}` 和 `${msg}` 来获取应用的 URL 前缀
-			以及本地字符串。
-			
-			如果你希望放在 WEB-INF 外面如果还希望使用本地化字符串，
-			那么你需要在 web.xml 额外声明一个 Fileter，
-			请参考 [localization.man 本地化字符串] {*使用过滤器}一节。
-	--------------------------------------------------------------------------------------
-	JSON 视图
-		视图的实现类为： {*org.nutz.mvc.view.UTF8JsonView}
-
-		一般的使用形式：
-		{{{
-		@Ok("json")
-		}}}
-		会将入口函数返回的对象转换成 JSON 字符串
-
-		你可以对这个 JSON 字符串的格式进行更多的控制：
-		{{{
-		@Ok("json:{quoteName:true, ignoreNull:true}")
-		}}}
-		视图的值就是： `"{quoteName:true, ignoreNull:true}"`，这个字符串会被转换成 JsonFormat 对象。
-		如果你想了解更多的 Json 转换的介绍哦，请参看 [overview.man Json 手册]
-		
-		格式控制支持4个常用模式的简写
-		{{{
-		@Ok("json:full")
-		@Ok("json:nice")
-		@Ok("json:forlook")
-		@Ok("json:compact")
-		}}}
-		
-		1.b.53 开始支持jsonp,默认取请求参数中的callback作为回调名称
-		{{{
-		@Ok("jsonp")
-		}}}
-		
-		
-	--------------------------------------------------------------------------------------
-	重定向视图
-		视图的实现类为： {*org.nutz.mvc.view.ServerRedirectView}
-		
-		一般的使用形式：
-		{{{
-		@Ok("redirect:/pet/list.nut")
-		或者
-		@Ok("redirect:/article/2009/10465.html")
-		}}}
-		它将按照给定的视图值，发送 HTTP 重定向命令到客户端
-		
-		给定参数
-		{{{
-		@Ok("redirect:/pet/detail.nut?pid=${obj.id}")
-		或者
-		@Ok("redirect:/article/2009/${articleId}.html")
-		}}}
-		视图会填充占位符号。填充的规则是：
-		 # 如果占位符名称以 "obj." 开头，则表示应该用入口函数的返回对象的某一个字段来填充
-			 * "obj.name" 表示对象的 "name" 字段
-		 # 如果占位符名称以 "p." 开头，，用 HTTP 参数表的值来填充
-			 * "p.abc" 就表示 HTTP 参数中的 "abc" 参数
-		 # 如果参数表没有值，则用空字符串来填充
-		
-		下面举几个例子：
-
-		用返回对象的字段填充：
-			{{{
-			@Ok("redirect:/pet/detail.nut?pid=${obj.id}")
-			入口函数返回： Pet 对象
-			则取 pet.getId() 填充 ${obj.id}
-			}}}
-
-		用 HTTP 参数填充
-			{{{
-			@Ok("redirect:/pet/detail.nut?pid=${id}")
-			从 HTTP 参数表取 "id"，填充
-			如果没有这个参数，入口函数返回什么，直接 toString() 以后填充
-			如果入口函数是 void 或者返回 null，则用空串填充
-			}}}
-		
-		另外一种写法
-			{{{
-			@Ok("redirect:/pet/detail.nut?pid=${id}")
-			//等价于
-			@Ok(">>:/pet/detail.nut?pid=${id}")
-			}}}
-	--------------------------------------------------------------------------------------
-	内部重定向视图
-		视图的实现类为： {*org.nutz.mvc.view.ForwardView}
-		
-		一般的使用形式：
-		{{{
-		@Ok("forward:/pet/list.nut")
-		//或者
-		@Ok("forward:/article/2009/10465.html")
-		同时也可以写成
-		@Ok("->:/article/2009/10465.html")
-		}}}
-		
-		当:后面不加值,或者不是以/开头的话,生成的路径将与Jsp视图类似,除了最后不加.jsp之外. 
-		其实Jsp视图只是Forward视图的子类而已
-			 * 这个将对应 {#00A;*/WEB-INF/abc/bbc}
-				{{{
-				@Ok("jsp:abc.bbc")
-				}}}
-			 * 这个将对应 {#00A;*/abc/bbc}
-				{{{
-				@Ok("jsp:/abc/bbc")
-				}}}
-			 * 这个将对应 {#00A;*/abc/bbc.jsp}
-				{{{
-				@Ok("jsp:/abc/bbc.jsp")
-				}}}
-		
-		它将按照给定的视图值，服务器内部重定向到指定的地址.
-	--------------------------------------------------------------------------------------
-	HTTP 返回码视图
-		视图的实现类为： {*org.nutz.mvc.view.HttpStatusView}
-
-		使用形式
-		{{{
-		@Ok("http:404")
-		}}}
-		返回 HTTP 404 错误码
-	--------------------------------------------------------------------------------------
-	空白视图
-		视图的实现类为： {*org.nutz.mvc.view.VoidView}
-
-		使用形式
-		{{{
-		@Ok("void")
-		}}}
-		对 HTTP 输出流不做任何处理,空实现.
-	--------------------------------------------------------------------------------------
-	从 Ioc 容器中获取的视图
-		
-		使用形式
-		{{{
-		@Ok("ioc:myView")
-		}}}
-		将从 Ioc 容器中获取 myView 对象。 它必须是一个 View，否则会发生转型错误。
-		通过这种形式，可以支持你可以在 Ioc 容器中定义自己的视图对象。
-	--------------------------------------------------------------------------------------
-	Raw视图
-		视图的实现类为： {*org.nutz.mvc.view.RawView}
-		
-		该视图将数据对象直接写入 HTTP 响应
-
-		
-
-		ContentType 支持几种缩写: 
-		 * xml - 表示 text/xml 
-		 * html - 表示 text/html 
-		 * htm - 表示 text/html 
-		 * stream - 表示 application/octet-stream 
-		 * 默认的({#AAA;即 '@Ok("raw")'} ) - 将采用 {#080;ContentType?=text/plain}
-		
-		使用方式
-		{{{
-		@Ok("raw")
-		}}}
-		将方法的返回值直接写入流，数据对象可以是如下类型:
-		|| null        || 什么都不做 ||
-		|| `byte[]`    || 按二进制方式写入HTTP响应流 ||
-		|| InputStream || 按二进制方式写入响应流，并关闭 InputStream? ||
-		|| `char[]`    || 按文本方式写入HTTP响应流 ||
-		|| Reader      || 按文本方式写入HTTP响应流，并关闭 Reader  ||
-		|| File		   || 文件下载 ||
-		|| BufferedImage|| 根据设置的Content-Type转为指定的图片格式 ||
-		|| 默认的      || 直接将对象 toString() 后按文本方式写入HTTP响应流 ||
-		
-		 
-		默认设置resp的ContentType为text/plain，当然,你可以设置ContentType的值
-		{{{
-		@Ok("raw:application/rtf")
-		}}}
-		同时，它也支持如下的缩写形式：
-		|| @Ok("raw:xml")    || 等价于@Ok("raw:text/xml");  ||
-		|| @Ok("raw:html")   || 等价于@Ok("raw:text/html"); ||
-		|| @Ok("raw:htm")    || 等价于@Ok("raw:text/html"); ||
-		|| @Ok("raw:stream") || 等价于@Ok("raw:application/octet-stream"); ||
-		|| @Ok("raw:json")   || 等价于@Ok("raw:application/x-javascript"); ||
-		|| @Ok("raw:js")     || 等价于@Ok("raw:application/x-javascript"); ||
-		|| @Ok("raw:jpg")     || 等价于@Ok("raw:image/jpeg"); ||
-		|| @Ok("raw:png")     || 等价于@Ok("raw:image/png"); ||
-		|| @Ok("raw:webp")     || 等价于@Ok("raw:image/webp"); ||
-		
-	RawView2
 	
-		视图的实现类为： {*org.nutz.mvc.view.RawView2}
-		
-		该视图用于已知长度的输入流进行断点续传,一般用户不会接触到.
-		
-	根据返回值决定视图
+--------------------------------------------------------------------------------------
+JSP 视图
+
+	视图的实现类为： {*org.nutz.mvc.view.JspView}
 	
-		视图的实现类为： {*org.nutz.mvc.view.ViewZone}
-		
-		该视图允许带一个默认视图,当方法返回值为null时调用
-		
-		一般形式, 默认视图为VoidView
-		
+	一般的使用形式：
 		{{{
-		@Ok("re")
+		@Ok("jsp:pet.detail")
+		}}}
+		将会使用 {*/WEB-INF/pet/detail.jsp} 来渲染 HTTP 输出流
+	
+		你可以不声明视图的值：
+		{{{
+		@Ok("jsp")
+		}}}
+		那么会根据这个请求的地址来寻找 JSP 文件，比如请求：
+		{{{
+		/pet/detail.nut
+		}}}
+		将会使用 {*/WEB-INF/pet/detail.jsp} 来渲染 HTTP 输出流
+	
+	使用 JSTL
+		如果你使用 JSTL，你还可以
+		 * 通过 `${msg.xxxx}` 输出本地字符串，参看 [localization.man 本地化字符串更多的介绍]
+		 * 通过 `${base}` 输出当前应用的 ContextPath
+		 * 通过 `${obj.xxx}` 输出要渲染对象的某个属性值
+		 * 你需要知道，JSP 视图，会将要渲染的对象存入 request 对象的一个属性里，属性名为 "obj"
+	
+	JSP 文件的位置
+		有些人（比如我）喜欢把 JSP 文件统统放在 WEB-INF 目录里。但是更多人的习惯是将 JSP 
+		放在 WEB-INF 外面。
+		
+		 * 这个将对应 {#00A;*/WEB-INF/abc/bbc.jsp}
+			{{{
+			@Ok("jsp:abc.bbc")
+			}}}
+		 * 这个将对应 {#00A;*/abc/bbc.jsp}
+			{{{
+			@Ok("jsp:/abc/bbc")
+			}}}
+		 * 这个也将对应 {#00A;*/abc/bbc.jsp}
+			{{{
+			@Ok("jsp:/abc/bbc.jsp")
+			}}}
+	
+	本地化字符串
+		在 Nutz.Mvc 入口函数里使用的 JSP 文件可以使用 `${base}` 和 `${msg}` 来获取应用的 URL 前缀
+		以及本地字符串。
+		
+		如果你希望放在 WEB-INF 外面如果还希望使用本地化字符串，
+		那么你需要在 web.xml 额外声明一个 Fileter，
+		请参考 [localization.man 本地化字符串] {*使用过滤器}一节。
+		
+--------------------------------------------------------------------------------------
+JSON 视图
+
+	视图的实现类为： {*org.nutz.mvc.view.UTF8JsonView}
+	
+	一般的使用形式：
+	{{{
+	@Ok("json")
+	}}}
+	会将入口函数返回的对象转换成 JSON 字符串
+	
+	你可以对这个 JSON 字符串的格式进行更多的控制：
+	{{{
+	@Ok("json:{quoteName:true, ignoreNull:true}")
+	}}}
+	视图的值就是： `"{quoteName:true, ignoreNull:true}"`，这个JSON字符串会被转换成 JsonFormat 对象。
+	如果你想了解更多的 Json 转换的介绍哦，请参看 [overview.man Json 手册]
+	
+	格式控制支持5个常用模式的简写,与JsonFormat的几个快捷方法一一对应
+	{{{<JAVA>
+	@Ok("json:full")
+	@Ok("json:nice")
+	@Ok("json:forlook")
+	@Ok("json:compact")
+	@Ok("json:tiny")
+	}}}
+	
+	忽略特定属性
+	{{{<JAVA>
+	// 忽略password和salt. locked的值是一个正则表达式
+	@Ok("json:{locked:'password|salt'}")
+	// 仅输出abc和def
+	@Ok("json:{actived:'abc|dbf'}")
+	}}}
+	
+	自动应用unicode
+	{{{<JAVA>
+	@Ok("json:{autoUnicode:true}")
+	// 还可以强制让unicode小写,某些变态的php需要这样
+	@Ok("json:{autoUnicode:true, unicodeLower:true}")
+	}}}
+	
+	支持jsonp,默认取请求参数中的callback作为回调名称
+	{{{
+	@Ok("jsonp")
+	}}}
+	
+	叠加配置. 因为本身就是json字符串,所以可以任意搭配
+	{{{<JAVA>
+	@Ok("json:{autoUnicode:true,locked:'password|salt'}")
+	}}}
+		
+		
+--------------------------------------------------------------------------------------
+重定向视图
+	视图的实现类为： {*org.nutz.mvc.view.ServerRedirectView}
+	
+	一般的使用形式：
+	{{{
+	@Ok("redirect:/pet/list.nut")
+	或者
+	@Ok("redirect:/article/2009/10465.html")
+	// redirect与>>完全等价
+	@Ok(">>:/article/2009/10465.html")
+	}}}
+	它将按照给定的视图值，发送 HTTP 重定向命令到客户端.
+	
+	
+--------------------------------------------------------------------------------------
+内部重定向视图
+	视图的实现类为： {*org.nutz.mvc.view.ForwardView}
+	
+	一般的使用形式：
+	{{{
+	@Ok("forward:/pet/list.nut")
+	//或者
+	@Ok("forward:/article/2009/10465.html")
+	同时也可以写成
+	@Ok("->:/article/2009/10465.html")
+	}}}
+	
+	当:后面不加值,或者不是以/开头的话,生成的路径将与Jsp视图类似,除了最后不加.jsp之外. 
+	其实Jsp视图只是Forward视图的子类而已
+		 * 这个将对应 {#00A;*/WEB-INF/abc/bbc}
+			{{{
+			@Ok("jsp:abc.bbc")
+			}}}
+		 * 这个将对应 {#00A;*/abc/bbc}
+			{{{
+			@Ok("jsp:/abc/bbc")
+			}}}
+		 * 这个将对应 {#00A;*/abc/bbc.jsp}
+			{{{
+			@Ok("jsp:/abc/bbc.jsp")
+			}}}
+	
+	它将按照给定的视图值，服务器内部重定向到指定的地址.
+--------------------------------------------------------------------------------------
+HTTP 返回码视图
+	视图的实现类为： {*org.nutz.mvc.view.HttpStatusView}
+
+	使用形式
+	{{{
+	// 返回 HTTP 404 错误码
+	@Ok("http:404")
+	// 返回 HTTP 500 错误码
+	@Ok("http:500")
+	}}}
+--------------------------------------------------------------------------------------
+空白视图
+	视图的实现类为： {*org.nutz.mvc.view.VoidView}
+
+	使用形式
+	{{{
+	@Ok("void")
+	}}}
+	对 HTTP 输出流不做任何处理,空实现.
+--------------------------------------------------------------------------------------
+从 Ioc 容器中获取的视图
+	
+	使用形式
+	{{{
+	@Ok("ioc:myView")
+	}}}
+	将从 Ioc 容器中获取 myView 对象。 它必须是一个 View，否则会发生转型错误。
+	通过这种形式，可以支持你可以在 Ioc 容器中定义自己的视图对象。
+--------------------------------------------------------------------------------------
+Raw视图
+	视图的实现类为： {*org.nutz.mvc.view.RawView}
+	
+	该视图将数据对象直接写入 HTTP 响应
+
+	
+
+	ContentType 支持几种缩写: 
+	 * xml - 表示 text/xml 
+	 * html - 表示 text/html 
+	 * htm - 表示 text/html 
+	 * stream - 表示 application/octet-stream 
+	 * 默认的({#AAA;即 '@Ok("raw")'} ) - 将采用 {#080;ContentType?=text/plain}
+	
+	使用方式
+	{{{
+	@Ok("raw")
+	}}}
+	将方法的返回值直接写入流，数据对象可以是如下类型:
+	|| null        || 什么都不做 ||
+	|| `byte[]`    || 按二进制方式写入HTTP响应流 ||
+	|| InputStream || 按二进制方式写入响应流，并关闭 InputStream? ||
+	|| `char[]`    || 按文本方式写入HTTP响应流 ||
+	|| Reader      || 按文本方式写入HTTP响应流，并关闭 Reader  ||
+	|| File		   || 文件下载 ||
+	|| BufferedImage|| 根据设置的Content-Type转为指定的图片格式 ||
+	|| 默认的      || 直接将对象 toString() 后按文本方式写入HTTP响应流 ||
+	
+	 
+	默认设置resp的ContentType为text/plain，当然,你可以设置ContentType的值
+	{{{
+	@Ok("raw:application/rtf")
+	}}}
+	同时，它也支持如下的缩写形式：
+	|| @Ok("raw:xml")    || 等价于@Ok("raw:text/xml");  ||
+	|| @Ok("raw:html")   || 等价于@Ok("raw:text/html"); ||
+	|| @Ok("raw:htm")    || 等价于@Ok("raw:text/html"); ||
+	|| @Ok("raw:stream") || 等价于@Ok("raw:application/octet-stream"); ||
+	|| @Ok("raw:json")   || 等价于@Ok("raw:application/x-javascript"); ||
+	|| @Ok("raw:js")     || 等价于@Ok("raw:application/x-javascript"); ||
+	|| @Ok("raw:jpg")     || 等价于@Ok("raw:image/jpeg"); ||
+	|| @Ok("raw:png")     || 等价于@Ok("raw:image/png"); ||
+	|| @Ok("raw:webp")     || 等价于@Ok("raw:image/webp"); ||
+	
+RawView2
+	
+	视图的实现类为： {*org.nutz.mvc.view.RawView2}
+	
+	该视图用于已知长度的输入流进行断点续传,一般用户不会接触到.
+	
+根据返回值决定视图
+	
+	视图的实现类为： {*org.nutz.mvc.view.ViewZone}
+	
+	该视图允许带一个默认视图,当方法返回值为null时调用
+	
+	一般形式, 默认视图为VoidView
+	
+	{{{
+	@Ok("re")
+	}}}
+	
+	一般形式2, 自定义默认视图, 可以是re视图以外的任意可用视图
+	
+	{{{
+	@Ok("re:jsp:/index")
+	}}}
+	
+	通过ViewModel进行视图传值. 因为其他视图的行为一般以方法的返回值作为视图渲染所需要的值,
+	而re视图的返回值用于决定最终使用的视图,所以需要额外的ViewModel传递值.
+	ViewModel是可选参数, 若不需要就可以不声明.
+	
+	{{{<JAVA>
+	@Ok("re:jsp:/index")
+	public String login(@Param("..")User user, ViewModel model) {
+	    // 检查登陆参数等等...
+	    
+	    if (ok) {
+	        return null; // 返回null, 则代表走默认视图 jsp:/index
+	    }
+	    // 登陆失败
+	    model.set("err-msg", "用户名或密码错误");
+	    return "jsp:/user/login";
+	}
+	}}}
+	
+	
+	注意, 入口的方法的ViewModel参数不可以重新赋值,否则无法传值.
+	
+	返回值所代表的视图,不需要与默认视图一致.
+	
+------------------------------------------------------------------------------------------
+视图参数填充
+
+	内置的视图,继承与AbstractPathView的, 均支持给定参数, 通过内置的nutz.el实现
+	
+	{{{<JAVA>
+	@Ok("redirect:/pet/detail.nut?pid=${obj.id}")
+	或者
+	@Ok("redirect:/article/2009/${p.articleId}.html")
+	}}}
+	视图会填充占位符号。填充的规则是：
+	 # 如果占位符名称以 "obj." 开头，则表示应该用入口函数的返回对象的某一个字段来填充
+		 * "obj.name" 表示对象的 "name" 字段
+	 # 如果占位符名称以 "p." 开头，，用 HTTP 参数表的值来填充
+		 * "p.abc" 就表示 HTTP 参数中的 "abc" 参数
+	 # 如果占位符名称以 "req_attr." 开头，，用 req 的attr的值来填充
+		 * "req_attr.abc" 就表示 req.getAttribute("abc")
+	 # 如果占位符名称以 "session_attr." 开头，，用 session 的attr的值来填充
+		 * "session_attr.abc" 就表示 session.getAttribute("abc")
+	 # 如果参数表没有值，则用空字符串来填充
+	
+	下面举几个例子：
+
+	用返回对象的字段填充：
+		{{{<JAVA>
+		@Ok(">>:/pet/detail.nut?pid=${obj.id}")
+		入口函数返回： Pet 对象
+		则取 pet.getId() 填充 ${obj.id}
+		}}}
+
+	用 HTTP 参数填充
+		{{{<JAVA>
+		@Ok(">>:/pet/detail.nut?pid=${p.id}")
+		从 HTTP 参数表取 "id"，填充
+		如果没有这个参数，入口函数返回什么，直接 toString() 以后填充
+		如果入口函数是 void 或者返回 null，则用空串填充
 		}}}
 		
-		一般形式2, 自定义默认视图, 可以是re视图以外的任意可用视图
-		
-		{{{
-		@Ok("re:jsp:/index")
-		}}}
-		
-		通过ViewModel进行视图传值. 因为其他视图的行为一般以方法的返回值作为视图渲染所需要的值,
-		而re视图的返回值用于决定最终使用的视图,所以需要额外的ViewModel传递值.
-		ViewModel是可选参数, 若不需要就可以不声明.
-		
-		{{{
-		@Ok("re:jsp:/index")
-		public String login(@Param("..")User user, ViewModel model) {
-		    // 检查登陆参数等等...
-		    
-		    if (ok) {
-		        return null; // 返回null, 则代表走默认视图 jsp:/index
-		    }
-		    // 登陆失败
-		    model.set("err-msg", "用户名或密码错误");
-		    return "jsp:/user/login";
-		}
-		}}}
-		
-		
-		注意, 入口的方法的ViewModel参数不可以重新赋值,否则无法传值.
-		
-		返回值所代表的视图,不需要与默认视图一致.
-		
+	根据不同的返回值进行填充,充分利用EL表达式的功能
+	
+	{{{<JAVA>
+	// 如果用户未登录,跳到登录页面(/login.jsp),否则进入用户个人主页(/WEB-INF/jsp/user/home.jsp)
+	@Ok("jsp:${obj == null ? '/login' : 'jsp.user.home'}")
+	public User home() {
+	       if (isLogined())
+	           return dao.fetch(User.class, uid);
+	       return null;
+	}
+	}}}
+	
+	
 ------------------------------------------------------------------------------------------
 定制自己的视图
 	
 	通过 @Ok("xxx:xxxx") 这种形式声明的视图非常简洁，易于理解。某些时候，你可能觉得 Nutz.Mvc 支持的视图
 	类型不够，你喜欢其他的视图模板引擎，比如 [http://freemarker.org/ FreeMarker]。因此你希望你的 @Ok 能
 	写成这样：
-	{{{
+	{{{<JAVA>
 	@Ok("freemaker:/pattern/pet/myTemplate")
 	}}}
 
 	又或者，你希望你的能想这样来输出 PDF 文件：
-	{{{
+	{{{<JAVA>
 	@Ok("pdf:/pdf/article")
 	}}}
 	
@@ -491,7 +536,7 @@
 	--------------------------------------------------------------------------------------
 	实现自己的视图
 		实现 org.nutz.mvc.View 接口，比如：
-		{{{
+		{{{<JAVA>
 		public class PdfView implements View{
 		    public void render(HttpServletRequest req, HttpServletResponse resp, Object obj){
 		        // TODO 实现代码 ...
@@ -502,7 +547,7 @@
 	--------------------------------------------------------------------------------------
 	实现自己的视图工厂
 		实现 org.nutz.mvc.ViewMaker 接口，比如：
-		{{{
+		{{{<JAVA>
 		public class PdfViewMaker implements ViewMaker{
 			public View make(Ioc ioc, String type, String value){
 				if("pdf".equalsIgnoreCase(type)){

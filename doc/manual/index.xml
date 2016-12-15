@@ -20,6 +20,7 @@
 		<doc path="annotations.man"/>
 		<doc path="session.man"></doc>
 		<doc path="setupby.man"></doc>
+		<doc path="cross_origin.man"></doc>
 	</doc>
 	<doc path="dao" title="Dao 手册">
 		<doc path="hello.man"/>

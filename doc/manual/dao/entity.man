@@ -56,6 +56,7 @@
          * 将对应到数据表的 "name" 字段 -- 默认用 field 的名字
          * 如果 @Column(hump = true) 则该 field 对应为数据表的蛇底式小写(snake_case)的字段
          * 如果 @Column("nm") 则对应到数据表的 "nm" 字段
+         * 如果 @Column(wrap = true) 则该 field 对应为数据表的关键字字段
          * @Name 表示这个字段是字符型注解，你可以 `Pet pet = dao.fetch(Pet.class,"abc");`
          * @Name(casesensitive=false) 表示依靠这个字段 fetch 时，忽略大小写
          * @ColDefine 是给出这个字段最精确的描述，比如上例就是 `VARCHAR(20)`
@@ -95,16 +96,7 @@ EntityMaker 接口
 ------------------------------------------------------------------------------------------
 动态实体
 
-    在 1.b.38 之前的版本，曾经记得有个朋友提出一个意见，他希望:
-    {{{
-    Map<String,Object> map = new HashMap<String,Object>();
-    map.put("name", "abc");
-    map.put("age", 18);
-    dao.update(map);    // 这个是不会有编译错误的
-    }}}
-    我记得当时我们的理由是：“搞不定呀，我们不知道表名呀””
-
-    现在，我们已经支持了这个特性:
+   无需Pojo类,直接操作数据库:
     {{{
     Map<String,Object> map = new HashMap<String,Object>();
     map.put(".table", "t_person");
@@ -136,9 +128,4 @@ EntityMaker 接口
 	// since 1.r.59
 	@Column(wrap=true)
 	String index;
-	}}}
-	
-	全局解决
-	{{{
-	Daos.CHECK_COLUMN_NAME_KEYWORD = true;
 	}}}

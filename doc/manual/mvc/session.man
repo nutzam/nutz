@@ -13,7 +13,7 @@ Session机制是什么?
 	Session有很多种, 例如:
 		
 		*容器本身提供的(tomcat/jetty/jboss/weblogic等都自带跨JVM的Session,功能强大但存放的对象必须实现Serializable
-		*自行实现的,针对性高,可控性高
+		*自行实现的,针对性高,可控性强
 		
 	如果是容器提供的Session机制,那么大部分情况下都是对应用透明的,所以nutz也没什么可以做的
 	
@@ -60,5 +60,4 @@ Session机制是什么?
 --------------------------------------------------------------------------------------------
 哪里有现成的实现?
 
-	* ztask项目,有一个基于mongo的实现
-	* nutzmore项目,有ShiroSessionProvider,使用Shiro的Session代替原生session
+	* [nutzmore项目 https://github.com/nutzam/nutzmore/tree/master/nutz-integration-shiro],有ShiroSessionProvider,使用Shiro的Session代替原生session

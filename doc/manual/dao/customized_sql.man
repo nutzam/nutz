@@ -28,6 +28,9 @@ Nutz.Dao 自定义 SQL 的概述
 		Sql sql = Sqls.create("DELETE FROM $table WHERE name=@name");
 		sql.vars().set("table","t_abc");
 		sql.params().set("name","Peter");
+		// 连写
+		sql.setVar("table","t_abc").setVar(...);
+		sql.setParam("name","Peter").setParam(...);
 		}}}
 		 * $table 将会被替换成 {#F0F;t_abc}
 		 * @name 将会被替换成 {#F0F;?}，用来创建 PreparedStatement

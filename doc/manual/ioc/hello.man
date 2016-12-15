@@ -169,12 +169,18 @@
 	
 	Json写法是
 	
-	{{{
+	{{{<JAVA>
 		{
+			// 根据静态方法构建对象
 			ssdb : {
 				type : "org.nutz.ssdbj4.spi.SSDB", // 接口或抽象类
 				args : ["127.0.0.1", 8888, 5000, null],
 				factory : "org.nutz.ssdbj4.SSDBs#pool" // 类名#方法名
+			},
+			// 用另外一个bean的实例方法构建对象
+			yyy : {
+				args : "abc",
+				factory : "$ssdb#batch" // $对象名称#方法名
 			}
 		}
 	}}}

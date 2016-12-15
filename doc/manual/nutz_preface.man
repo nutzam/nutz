@@ -41,11 +41,11 @@ Nutz 可以做什么？
 	 * Plugin -- 轻便的插件机制
 	 * Resource -- 资源扫描
 
-	 它所有的功能均不依赖第三方 jar 包
+	 它所有的功能均不强制依赖第三方 jar 包
 
 	 这就意味着：
 	  * 如果一个 Web 应用，你在 WEB-INF/lib 下只 需要放置一个 nutz.jar 就够了
-	  * 当然你要使用连接池，数据库驱动等功能，还需要自行添置 jar 包。
+	  * 当然你要使用连接池，数据库驱动, websocket等功能，还需要自行添置 jar 包。
 
 --------------------------------------------------------------------------------------------------------
 Nutz 为谁而设计？
@@ -98,5 +98,5 @@ Nutz 的未来
 	 # 上 [http://www.nutz.cn/ Nutz社区论坛]，有问必答，秒回复
 	 # 到 [https://github.com/nutzam/nutz/issues github] 上报告 issue
 	 # 或者加入 QQ 群
+		 * [http://qun.qq.com/#jointhegroup/gid/68428921 Nutz社区群（68428921）超级群] -- 感谢 {*c.A} 的支持  
 		 * [http://qun.qq.com/air/#58444676 Nutz & XBlink （58444676 超级群）] -- 感谢 {*E-Hunter} 的支持  
-		 * [http://qun.qq.com/#jointhegroup/gid/68428921 Nutz ② 群 （68428921）超级群] -- 感谢 {*c.A} 的支持  
