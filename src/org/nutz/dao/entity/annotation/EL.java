@@ -1,5 +1,7 @@
 package org.nutz.dao.entity.annotation;
 
+import java.lang.annotation.Documented;
+
 import org.nutz.dao.DB;
 
 /**
@@ -40,6 +42,7 @@ import org.nutz.dao.DB;
  * @see Next
  * @see org.nutz.el.El
  */
+@Documented
 public @interface EL {
 
     DB db() default DB.OTHER;
