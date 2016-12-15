@@ -49,17 +49,16 @@
 	</doc>
 	<doc path="ioc"	title="Ioc 手册">
 		<doc path="hello.man"/>
-		<doc path="inner_object.man"/>
-		<doc path="events.man"/>
 		<doc path="injecting.man"/>
+		<doc path="events.man"/>
 		<doc path="ioc_loader.man"/>
-		<doc path="scope.man"/>
-		<doc path="xml_ioc_loader.man"/>
 		<doc path="loader_annotation.man"/>
 		<doc path="loader_combo.man"/>
 		<doc path="ioc_annos.man"/>
-		<doc path="ioc_properties.man"/>
-		<doc path="ioc_by_hand.man"></doc>
+		<doc path="ioc_by_hand.man"/>
+		<doc path="scope.man"/>
+		<doc path="inner_object.man"/>
+		<doc path="xml_ioc_loader.man"/>
 	</doc>
 	<doc path="aop" title="Aop 手册">
 		<doc path="aop_mvc.man"/>
@@ -102,8 +101,6 @@
 		<doc path="freemarker.man"></doc>
 		<doc path="velocity.man"></doc>
 		<doc path="beetl.man"></doc>
-		<doc path="smarty4j.man"></doc>
-		<doc path="httl.man"></doc>
 		<doc path="shiro.man"></doc>
 		<doc path="quartz.man"></doc>
 		<doc path="ehcache.man"></doc>
@@ -162,7 +159,6 @@
 	<doc path="faq" title="FAQ">
 		<doc path="how_to_pronounce_nutz.man"/>
 		<doc path="use_nutz_without_other_jar.man"/>
-		<doc path="what_aop_can_do.man"/>
 		<doc path="jar_encoding.man"/>
 		<doc path="common_qa_1.man"/>
 	</doc>
