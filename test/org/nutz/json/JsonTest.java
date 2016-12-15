@@ -933,4 +933,10 @@ public class JsonTest {
         assertEquals(a, str);
         System.out.println(str);
     }
+    
+    @Test
+    public void test_date_formt() {
+        JsonFormat jf = Json.fromJson(JsonFormat.class, "{dateFormat:'yyyyMMhh'}");
+        System.out.println(Json.toJson(new NutMap("date", new Date()), jf));
+    }
 }
