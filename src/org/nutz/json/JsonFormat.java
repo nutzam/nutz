@@ -1,5 +1,6 @@
 package org.nutz.json;
 
+import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.regex.Pattern;
@@ -128,7 +129,7 @@ public class JsonFormat implements Cloneable {
     /**
      * 日期格式
      */
-    private SimpleDateFormat dateFormat;
+    private DateFormat dateFormat;
     /**
      * 数字格式
      */
@@ -378,7 +379,7 @@ public class JsonFormat implements Cloneable {
      *            日期格式
      * @return 该Json输出格式
      */
-    public JsonFormat setDateFormat(SimpleDateFormat df) {
+    public JsonFormat setDateFormat(DateFormat df) {
         this.dateFormat = df;
         return this;
     }
@@ -388,8 +389,8 @@ public class JsonFormat implements Cloneable {
      *
      * @return 日期格式
      */
-    public SimpleDateFormat getDateFormat() {
-        return dateFormat == null ? null : (SimpleDateFormat) dateFormat.clone();
+    public DateFormat getDateFormat() {
+        return dateFormat == null ? null : (DateFormat) dateFormat.clone();
     }
 
     /**
