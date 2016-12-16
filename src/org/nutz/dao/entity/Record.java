@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import org.nutz.castor.Castors;
 import org.nutz.dao.Chain;
@@ -28,11 +29,10 @@ import org.nutz.lang.util.NutMap;
  */
 public class Record implements Map<String, Object>, java.io.Serializable, Cloneable, Comparable<Record> {
 
-    /**
-     * @author mawenming at Jan 11, 2011 2:20:09 PM
-     */
-    private static final long serialVersionUID = 4614645901639942051L;
-
+    private static final long serialVersionUID = -7753504263747912181L;
+    
+    protected static Callable<Record> factory;
+    
     /**
      * 根据 ResultSet 创建一个记录对象
      * 
@@ -41,7 +41,7 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      * @return 记录对象
      */
     public static Record create(ResultSet rs) {
-    	Record re = new Record();
+    	Record re = create();
     	create(re, rs, null);
     	return re;
     }
@@ -397,7 +397,7 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
     }
     
     public Record clone() {
-        Record re = new Record();
+        Record re = create();
         re.putAll(this);
         return re;
     }
@@ -416,5 +416,20 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
         if (re.size() == this.size())
             return 0;
         return re.size() > this.size() ? -1 : 1;
+    }
+    
+    public static void setFactory(Callable<Record> factory) {
+        Record.factory = factory;
+    }
+    
+    public static Record create() {
+        if (factory != null)
+            try {
+                return factory.call();
+            }
+            catch (Exception e) {
+                throw Lang.wrapThrow(e);
+            }
+        return new Record();
     }
 }
