@@ -509,7 +509,7 @@ public class Strings {
     }
 
     /**
-     * 保证字符串为一固定长度。超过长度，切除左侧字符，否则左侧填补字符。
+     * 保证字符串为一固定长度。超过长度，切除右侧字符，否则右侧填补字符。
      * 
      * @param s
      *            字符串
@@ -529,9 +529,9 @@ public class Strings {
             return Strings.dup(c, width - len) + s;
         return s.substring(len - width, len);
     }
-
+    
     /**
-     * 保证字符串为一固定长度。超过长度，切除右侧字符，否则右侧填补字符。
+     * 保证字符串为一固定长度。超过长度，切除左侧字符，否则左侧填补字符。
      * 
      * @param s
      *            字符串
@@ -1200,9 +1200,9 @@ public class Strings {
     }
 
     public static String safeToString(Object obj, String dft) {
+        if (obj == null)
+            return "null";
         try {
-            if (obj == null)
-                return "null";
             return obj.toString();
         }
         catch (Exception e) {}
