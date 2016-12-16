@@ -5,9 +5,10 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,8 +18,7 @@ import org.nutz.dao.DaoException;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.lang.Lang;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
+import org.nutz.lang.util.NutMap;
 
 /**
  * 记录对象
@@ -32,18 +32,6 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      * @author mawenming at Jan 11, 2011 2:20:09 PM
      */
     private static final long serialVersionUID = 4614645901639942051L;
-    
-    private static final Log log = Logs.get();
-    
-    protected static int DEFAULT_INT = -1;
-
-    /** change as you own risk!!
-     * <p/> 除非你很清楚自己在干啥,否则不要碰这个值!!
-     * */
-    public static void __you_own_risk_changeDefaultIntNumber(int i) {
-    	DEFAULT_INT = i;
-    	log.info("!!!!!!!!!!!! NOW !! org.nutz.dao.entity.Record.DEFAULT_INT = " + i);
-    }
 
     /**
      * 根据 ResultSet 创建一个记录对象
@@ -85,8 +73,6 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
                     re.put(name, rs.getObject(i));
                     break;
                 }
-                if (re instanceof Record)
-                    ((Record)re).setSqlType(name, meta.getColumnType(i));
             }
         }
         catch (SQLException e) {
@@ -98,12 +84,11 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
     }
 
     private Map<String, Object> map;
-
-    private Map<String, Integer> sqlTypeMap;
+    private List<String> keys;
 
     public Record() {
         map = new LinkedHashMap<String, Object>();
-        sqlTypeMap = new HashMap<String, Integer>();
+        keys = new ArrayList<String>();
     }
 
     /**
@@ -117,6 +102,7 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      */
     public Record set(String name, Object value) {
         map.put(name.toLowerCase(), value);
+        keys.add(name);
         return this;
     }
 
@@ -128,6 +114,7 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      * @return 移除的字段值
      */
     public Object remove(String name) {
+        keys.remove(name);
         return map.remove(name.toLowerCase());
     }
 
@@ -159,14 +146,48 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      * @return 指定字段名的 int 值。如果该字段在记录中不存在，返回 -1；如果该字段的值不是 int 类型，返回 -1
      */
     public int getInt(String name) {
+        return getInt(name, -1);
+    }
+    
+    public int getInt(String name, int dft) {
         try {
             Object val = get(name);
             if (null == val)
-                return DEFAULT_INT;
+                return dft;
             return Castors.me().castTo(val, int.class);
         }
         catch (Exception e) {}
-        return DEFAULT_INT;
+        return dft;
+    }
+    
+    public long getLong(String name) {
+        return getLong(name, -1);
+    }
+    
+    public long getLong(String name, long dft) {
+        try {
+            Object val = get(name);
+            if (null == val)
+                return dft;
+            return Castors.me().castTo(val, long.class);
+        }
+        catch (Exception e) {}
+        return dft;
+    }
+    
+    public double getDouble(String name) {
+        return getDouble(name, -1);
+    }
+    
+    public double getDouble(String name, double dft) {
+        try {
+            Object val = get(name);
+            if (null == val)
+                return dft;
+            return Castors.me().castTo(val, double.class);
+        }
+        catch (Exception e) {}
+        return dft;
     }
 
     /**
@@ -245,6 +266,7 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      */
     public void clear() {
         map.clear();
+        keys.clear();
     }
 
     /**
@@ -327,12 +349,13 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      * @return 该字段之前所对应的值；如果之前该字段在该记录中不存在，则返回 null
      */
     public Object put(String name, Object value) {
+        keys.add(name);
         return map.put(name.toLowerCase(), value);
     }
 
     public void putAll(Map<? extends String, ? extends Object> out) {
         for (Entry<? extends String, ? extends Object> entry : out.entrySet())
-            map.put(entry.getKey().toLowerCase(), entry.getValue());
+            put(entry.getKey(), entry.getValue());
     }
 
     /**
@@ -372,37 +395,19 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
     public Chain toChain() {
         return Chain.from(map);
     }
-
-    // ===========================================
-
-    /**
-     * 返回该字段对应的数据库类型
-     * 
-     * @param name
-     *            字段名
-     * @return 该字段对应的数据库类型
-     */
-    public int getSqlType(String name) {
-        return sqlTypeMap.get(name.toLowerCase());
-    }
-
-    /**
-     * 设置该字段对应的数据库类型
-     * 
-     * @param name
-     *            字段名
-     * @param value
-     *            数据库类型
-     */
-    protected void setSqlType(String name, int value) {
-        sqlTypeMap.put(name.toLowerCase(), value);
-    }
     
     public Record clone() {
         Record re = new Record();
         re.putAll(this);
-        re.sqlTypeMap.putAll(this.sqlTypeMap);
         return re;
+    }
+    
+    public Map<String, Object> sensitive() {
+        NutMap map = new NutMap();
+        for (String key : keys) {
+            map.put(key, get(key));
+        }
+        return map;
     }
 
     public int compareTo(Record re) {
