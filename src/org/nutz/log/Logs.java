@@ -1,7 +1,9 @@
 package org.nutz.log;
 
 import org.nutz.lang.Lang;
+import org.nutz.log.impl.Log4jLogAdapter;
 import org.nutz.log.impl.NopLog;
+import org.nutz.log.impl.SystemLogAdapter;
 import org.nutz.plugin.SimplePluginManager;
 
 /**
@@ -73,10 +75,15 @@ public final class Logs {
                     packageName + "SystemLogAdapter").get();
         }
         catch (Throwable e) {
-            //这是不应该发生的,SystemLogAdapter应该永远返回true
-            //唯一的可能性是所请求的org.nutz.log.impl.SystemLogAdapter根本不存在
-            //例如改了package
-            e.printStackTrace();
+            try {
+                Log4jLogAdapter tmp = new Log4jLogAdapter();
+                if (tmp.canWork())
+                    adapter = tmp;
+                else
+                    adapter = new SystemLogAdapter();
+            } catch (Throwable _e) {
+                adapter = new SystemLogAdapter();
+            }
         }
     }
     

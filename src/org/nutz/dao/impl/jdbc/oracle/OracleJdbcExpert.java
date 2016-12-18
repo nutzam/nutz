@@ -15,6 +15,7 @@ import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
+import org.nutz.dao.entity.annotation.ColType;
 import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
 import org.nutz.dao.impl.jdbc.BlobValueAdaptor2;
 import org.nutz.dao.impl.jdbc.ClobValueAdapter2;
@@ -76,9 +77,9 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
                     sb.append(" primary key ");
                 if (mf.isNotNull())
                     sb.append(" NOT NULL");
-                if (mf.hasDefaultValue())
+                if (mf.hasDefaultValue() && mf.getColumnType() != ColType.BOOLEAN)
                     addDefaultValue(sb, mf);
-                if (mf.isUnsigned()) // 有点暴力
+                if (mf.isUnsigned() && mf.getColumnType() != ColType.BOOLEAN) // 有点暴力
                     sb.append(" Check ( ").append(mf.getColumnNameInSql()).append(" >= 0)");
             }
             sb.append(',');
@@ -175,6 +176,8 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
             return mf.getCustomDbType();
         switch (mf.getColumnType()) {
         case BOOLEAN:
+            if (mf.hasDefaultValue())
+                return "char(1) DEFAULT '"+getDefaultValue(mf)+"' check (" + mf.getColumnNameInSql() + " in(0,1))";
             return "char(1) check (" + mf.getColumnNameInSql() + " in(0,1))";
         case TEXT:
             return "CLOB";

@@ -52,7 +52,8 @@ var ioc = {
 				interceptors : [
 							"log", // 默认的日志还需要的
 							"time", // 加个时间又如何呢?
-							"net.demo.MyDaoInterceptor" // 加入自己的,才合适
+							"net.demo.MyDaoInterceptor", // 加入自己的,才合适
+							{refer:"superI"} // 引用另外一个bean作为拦截器
 							]
 			}
 		}

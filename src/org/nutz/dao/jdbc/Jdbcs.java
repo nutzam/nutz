@@ -34,6 +34,7 @@ import org.nutz.dao.entity.annotation.ColType;
 import org.nutz.dao.impl.entity.field.NutMappingField;
 import org.nutz.dao.impl.jdbc.BlobValueAdaptor;
 import org.nutz.dao.impl.jdbc.ClobValueAdaptor;
+import org.nutz.dao.util.Daos;
 import org.nutz.filepool.FilePool;
 import org.nutz.json.Json;
 import org.nutz.lang.Files;
@@ -99,7 +100,7 @@ public abstract class Jdbcs {
      * @see org.nutz.dao.jdbc.Jdbcs#getExpert(String, String)
      */
     public static JdbcExpert getExpert(DataSource ds) {
-        log.info("Get Connection from DataSource for JdbcExpert, if you look at here, check your database server and configure");
+        log.info("Get Connection from DataSource for JdbcExpert, if you lock at here, check your database server and configure");
         Connection conn = null;
         try {
             conn = Trans.getConnectionAuto(ds);
@@ -783,7 +784,7 @@ public abstract class Jdbcs {
         // 字符串
         else if (mirror.isStringLike() || mirror.is(Email.class)) {
             ef.setColumnType(ColType.VARCHAR);
-            ef.setWidth(50);
+            ef.setWidth(Daos.DEFAULT_VARCHAR_WIDTH);
         }
         // 长整型
         else if (mirror.isLong()) {
@@ -859,12 +860,13 @@ public abstract class Jdbcs {
          */
         else {
             if (log.isDebugEnabled())
-                log.debugf("take field '%s(%s)'(%s) as VARCHAR(50)",
+                log.debugf("take field '%s(%s)'(%s) as VARCHAR(%d)",
                            ef.getName(),
                            Lang.getTypeClass(ef.getType()).getName(),
-                           ef.getEntity().getType().getName());
+                           ef.getEntity().getType().getName(),
+                           Daos.DEFAULT_VARCHAR_WIDTH);
             ef.setColumnType(ColType.VARCHAR);
-            ef.setWidth(50);
+            ef.setWidth(Daos.DEFAULT_VARCHAR_WIDTH);
         }
     }
 

@@ -398,6 +398,8 @@ public interface Dao {
      * @see org.nutz.dao.Condition
      */
     List<Record> query(String tableName, Condition cnd, Pager pager);
+    
+    List<Record> query(String tableName, Condition cnd, Pager pager, String fields);
 
     /**
      * 查询出一组记录。
@@ -639,6 +641,15 @@ public interface Dao {
      * @return Record 对象
      */
     Record fetch(String tableName, Condition cnd);
+    
+    /**
+     * 
+     * @param tableName 表名
+     * @param cnd 条件
+     * @param fields 需要select的属性, 不可以是null!!!
+     * @return Record 对象
+     */
+    Record fetch(String tableName, Condition cnd, String fields);
 
     /**
      * 随便获取一个对象。某些时候，你的数据表永远只有一条记录，这个操作就很适合你

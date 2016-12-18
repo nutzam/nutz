@@ -107,7 +107,7 @@ public class UrlMappingImpl implements UrlMapping {
             }
         }
         if (log.isDebugEnabled())
-            log.debugf("Search mapping for path=%s : NOT Action match", path);
+            log.debugf("Search mapping for [%s] path=%s : NOT Action match", ac.getRequest().getMethod(), path);
         return null;
     }
     

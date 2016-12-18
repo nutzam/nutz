@@ -23,11 +23,40 @@
 搭配组合
 	# 最精简搭配,适合尝试阶段的新手,默认输出的就是Debug信息,完全无鸭梨!!
 		* nutz.jar
-	# 推荐搭配,搭配最新的log4j
+
+	# 推荐搭配,搭配最新的 log4j
 		* nutz.jar + log4j-1.2.17.jar
-	# 性能至上,使用Logback
-		* nutz.jar + log4j-over-slf4j.jar + slf4j-api.jar + logback-core.jar + logback-classic.jar
-	# 传统选择,使用JDK Loggging
-		* nutz.jar + log4j-over-slf4j.jar + slf4j-api.jar + slfj4-jdk.jar
-	# 另类之选,使用Apache Common Logging
-		* nutz.jar + log4j-over-slf4j.jar + slf4j-api.jar + slfj4-jcl.jar
+
+		{{{<xml>
+		<dependency>
+			<groupId>org.nutz</groupId>
+			<artifactId>nutz</artifactId>
+			<version>${nutz.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+		}}}
+
+	# 性能至上,使用 Logback
+		* nutz.jar + log4j-over-slf4j.jar + logback-classic.jar
+
+		{{{<xml>
+		<dependency>
+			<groupId>org.nutz</groupId>
+			<artifactId>nutz</artifactId>
+			<version>${nutz.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<version>1.7.21</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.1.8</version>
+		</dependency>
+		}}}

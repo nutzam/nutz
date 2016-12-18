@@ -26,28 +26,6 @@ Nutz 给你的快速实现
 	* 如果你的数据库字段被假设不会发生变化，用直接硬编码是个很好的选择
 	* 如果在开发期，你的数据库字段变化非常频繁，用 Cnd 工具类则是更好的选择
 
-	直接硬编码
-	
-		最简单直接的方法就是直接输出 WHERE 关键字后面的 SQL 代码了。比如查询一个 Person 对象
-		{{{<JAVA>
-		List<Person> crowd = dao.query(Person.class, Cnd.wrap("name LIKE 'J%' AND age>20"), null);
-		}}}
-
-		这句话，就会将所有名称以 J 开头，并且年龄超过20岁的人全部查询出来。参看 [hello.man Nutz.Dao 入门]
-		针对 Person 对象的描述，实际上，上面那句话执行的 SQL 代码为：
-		
-        {{{<SQL>
-		SELECT * FROM t_person WHERE name LIKE 'J%' AND age>20;
-		}}}
-		
-        当然你要是写
-		
-        {{{<JAVA>
-		Cnd.wrap("name LIKE 'J%' AND age>20 ORDER BY name ASC");
-		}}}
-		
-        就会按照 name 字段排序。
-
 	一个友好的工具类 -- Cnd
 	
 		有些情况，数据库中的字段同 Java 对象中的字段并不同名，
@@ -71,6 +49,20 @@ Nutz 给你的快速实现
 		这个条件将生成 SQL 
 		{{{<SQL>
 		WHERE (name LIKE 'P%' AND age>'20') OR (name LIKE 'S%' AND age<'30') ORDER BY name ASC
+		}}}
+
+	直接硬编码(不推荐)
+	
+		最暴力的方法就是直接输出 WHERE 关键字后面的 SQL 代码了。比如查询一个 Person 对象
+		{{{<JAVA>
+		List<Person> crowd = dao.query(Person.class, Cnd.wrap("name LIKE 'J%' AND age>20"), null);
+		}}}
+		
+		部分暴力,使用Static
+		
+		{{{<JAVA>
+		// 筛选年龄(age)小于20,现金(cash字段)多于负债(due字段)的XX
+		List<Pet> list = dao.query(Girl.class, Cnd.where("age", "<", 20).and(new Static("cash > due")));
 		}}}
 
 ------------------------------------------------------------------------------------------------------------

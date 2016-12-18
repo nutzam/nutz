@@ -10,7 +10,7 @@
     
     加上今天是个风和日丽的日子，Nutz.Mvc 重构完毕。架构这么灵活强大，
     那么我就把这个特性加上吧，呵呵。
-    
+
     注意, Nutz支持的是Restful风格的映射, 但并非一个Restful实现.
 
 --------------------------------------------------------------------------------------
@@ -40,6 +40,12 @@
     @At("/user/?")
     @DELETE
     public void deleteUser(int userId){
+        // TODO 这里是实现代码
+    }
+    
+    // 任意自选方法
+    @At(value="/user/?", method="fuck")
+    public void fuckUser(int userId){
         // TODO 这里是实现代码
     }
     }}}

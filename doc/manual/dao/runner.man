@@ -34,90 +34,16 @@ Dao 接口的默认实现 NutDao
     的希望控制这个接口，大家都在用 Nutz 的默认实现。
 
 --------------------------------------------------------------------------------------------------
-终极扩展点 - DaoRunner
-
-    如果你使用的是 Dao 接口的默认实现类 (org.nutz.dao.impl.NutDao)，你觉得任何事情都很满意，
-    但是就是单单事务这部分你很不喜欢。你很不喜欢[transaction.man 事务模板]的写法：
-
-    {{{<JAVA>
-    public void doSomething(final Pet pet){
-        Trans.exec(new Atom(){
-            public void runt(){
-                dao.update(pet);	
-                dao.update(pet.getMaster());
-            }
-        });
-    }
-    }}}
-
-    看看，这样写代码太多了。因此，你甚至开始怀念 Spring，它的声明式事务管理，可以让你的代码完全不用这么
-    繁琐。怎么办呢？
-
-    虽然 Nutz 也提供了声明式事务，但是你的项目是个老项目，一直在用 Spring，你所有的 CRUD 都是由 Spring
-    来管理的，但是你很想试试 Nutz.Dao，你可以做到吗？
-
-    我们提供了一个扩展点。通过修改这个接口，你可以为 Dao 的默认实现类 NutDao 彻底定制事务行为 
-    它就是 DaoRunner，它只有一个方法：
-    {{{<JAVA>
-    public interface DaoRunner {
-
-        public void run(DataSource dataSource, ConnCallback callback);
-
-    }
-    }}}
-    你可以根据自己的喜欢实现这个接口，然后
-    {{{
-    dao.setRuner(yourRuner);
-    }}}
-    当然，你可以通过 IOC 容器，将你的 runner 注入进 NutDao 对象中
-
---------------------------------------------------------------------------------------------------
 同 Spring 事务整合的例子
 
-    这个特性是在 1.a.27 之后，由[http://hzzdong.javaeye.com 知足常乐(hzzdong)] 在博客
-    《[http://hzzdong.javaeye.com/blog/656948 Nutz DAO与spring集成讨论]》提出的，我们因此得到了 Issue 162。
-    
-    在做了一点修改后，现在(1.a.28)，只要你提供一个这样的 DaoRunner
-    {{{<JAVA>
-    import org.springframework.jdbc.datasource.DataSourceUtils;
-
-    public class SpringDaoRunner implements DaoRunner {
-
-        public void run(DataSource dataSource, ConnCallback callback) {
-            Connection con = DataSourceUtils.getConnection(dataSource);  
-            try {  
-                callback.invoke(con);  
-            }
-            catch (Exception e) {  
-                if (e instanceof RuntimeException)  
-                    throw (RuntimeException) e;  
-                else  
-                    throw new RuntimeException(e);  
-            } finally {  
-                DataSourceUtils.releaseConnection(con, dataSource);
-            }  
-        }
-    }
+    {{{<XML>
+    <bean id="nutDao" class="org.nutz.dao.impl.NutDao">
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 如果要使用Trans,移除springDaoRunner -->
+        <property name="runner" ref="springDaoRunner"/>
+    </bean>
+    <bean id="springDaoRunner" class="org.nutz.integration.spring.SpringDaoRunner">
+    </bean>
     }}}
-
-    任何时候你可以通过:
-    {{{<JAVA>
-    dao.setRunner(new SpringDaoRunner());
-    }}}
-    修改 NutDao 的默认事务行为。 当然，如果你的 Dao 对像本身就是通过 Ioc 容器获得，我想你一定知道如何为
-    你的对象设置一个属性，对吧。
     
-    或Ioc JS配置如下
-    
-    {{{<JAVA>
-    dao : {
-    	type : "org.nutz.dao.impl.NutDao",
-    	args : [{refer:"dataSource"}],
-    	fields : {
-    		runner : {refer:"springDaoRunner"}
-    	}
-    },
-    springDaoRunner : {
-    	type : "org.nutz.integration.spring.SpringDaoRunner"
-    }
-    }}}
+    SpringDaoRunner类可以在[nutz-integration-spring https://github.com/nutzam/nutzmore/tree/master/nutz-integration-spring] 中找到

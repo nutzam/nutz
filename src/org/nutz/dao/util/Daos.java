@@ -1,7 +1,6 @@
 package org.nutz.dao.util;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
@@ -1084,6 +1083,8 @@ public abstract class Daos {
 
     /** 是否把字段名给变成大写 */
     public static boolean FORCE_UPPER_COLUMN_NAME = false;
+    
+    public static int DEFAULT_VARCHAR_WIDTH = 128;
 }
 
 class ExtDaoInvocationHandler implements InvocationHandler {
@@ -1105,14 +1106,8 @@ class ExtDaoInvocationHandler implements InvocationHandler {
                 try {
                     setObj(method.invoke(dao, args));
                 }
-                catch (IllegalArgumentException e) {
+                catch (Exception e) {
                     throw Lang.wrapThrow(e);
-                }
-                catch (IllegalAccessException e) {
-                    throw Lang.wrapThrow(e);
-                }
-                catch (InvocationTargetException e) {
-                    throw Lang.wrapThrow(e.getTargetException());
                 }
             }
         };

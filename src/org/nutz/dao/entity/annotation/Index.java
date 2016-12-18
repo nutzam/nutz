@@ -1,5 +1,7 @@
 package org.nutz.dao.entity.annotation;
 
+import java.lang.annotation.Documented;
+
 /**
  * 声明一个数据表的索引
  * 
@@ -7,6 +9,7 @@ package org.nutz.dao.entity.annotation;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
+@Documented
 public @interface Index {
 
     /**

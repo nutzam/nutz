@@ -427,7 +427,7 @@ public class AnnotationEntityMaker implements EntityMaker {
             // 宽度
             ef.setWidth(info.annDefine.width());
             if (ef.getWidth() == 0 && ef.getColumnType() == ColType.VARCHAR) {
-            	ef.setWidth(50);
+            	ef.setWidth(Daos.DEFAULT_VARCHAR_WIDTH);
             }
             // 精度
             ef.setPrecision(info.annDefine.precision());

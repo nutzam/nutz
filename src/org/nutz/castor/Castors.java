@@ -456,7 +456,7 @@ public class Castors {
         defaultCastorList.add(org.nutz.castor.castor.Timestamp2SqlDate.class);
         defaultCastorList.add(org.nutz.castor.castor.Timestamp2SqlTime.class);
         defaultCastorList.add(org.nutz.castor.castor.Timestamp2String.class);
-
+        defaultCastorList.add(org.nutz.castor.castor.String2DateFormat.class);
     }
 
     private static Castors one = new Castors();

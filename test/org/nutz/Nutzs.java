@@ -27,7 +27,7 @@ public class Nutzs {
 
     private static Properties pp;
 
-    private static void checkProperties() {
+    public static void checkProperties() {
         if (null == pp)
             loadProperties("nutz-test.properties");
     }
@@ -38,7 +38,7 @@ public class Nutzs {
             pp = new Properties();
             File f = Files.findFile(fileName);
             if(f == null)
-                throw new RuntimeException("nutz-test.properties Not FOUND!!!");
+                throw new RuntimeException("nutz-test.properties Not FOUND!!! tmpl.nutz-test.properties is a example.");
             is = Streams.fileIn(f);
             pp.load(is);
         }

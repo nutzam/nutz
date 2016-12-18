@@ -2,16 +2,25 @@
 <doc title="Nutz核心包" author="zozoh(zozohtnt@gmail.com)">
 	<doc path="nutz_preface.man"/>
 	<doc path="nutz_release_notes.man"/>
-	<doc path="committer"  title="关于源码">
-		<doc path="svn_project.man"/>
-		<doc path="git_project.man"/>
-		<doc path="compile.man"/>
-		<doc path="compile_with_maven.man"/>
-		<doc path="ant.man"/>
-		<doc path="packages.man"/>
-		<doc path="version_naming.man"/>
-		<doc path="coding.man"/>
-		<doc path="be_committer.man"/>
+	<doc path="mvc"	title="Mvc 手册">
+		<doc path="overview.man"/>
+		<doc path="hello.man"/>
+		<doc path="web_xml.man"/>
+		<doc path="modules.man"/>
+		<doc path="url_mapping.man"/>
+		<doc path="action_chain.man"/>
+		<doc path="http_adaptor.man"/>
+		<doc path="view.man"/>
+		<doc path="with_ioc.man"/>
+		<doc path="localization.man"/>
+		<doc path="action_filter.man"/>
+		<doc path="file_upload.man"/>
+		<doc path="module_of_request.man"/>
+		<doc path="rest.man"/>
+		<doc path="annotations.man"/>
+		<doc path="session.man"></doc>
+		<doc path="setupby.man"></doc>
+		<doc path="cross_origin.man"></doc>
 	</doc>
 	<doc path="dao" title="Dao 手册">
 		<doc path="hello.man"/>
@@ -41,17 +50,16 @@
 	</doc>
 	<doc path="ioc"	title="Ioc 手册">
 		<doc path="hello.man"/>
-		<doc path="inner_object.man"/>
-		<doc path="events.man"/>
 		<doc path="injecting.man"/>
+		<doc path="events.man"/>
 		<doc path="ioc_loader.man"/>
-		<doc path="scope.man"/>
-		<doc path="xml_ioc_loader.man"/>
 		<doc path="loader_annotation.man"/>
 		<doc path="loader_combo.man"/>
 		<doc path="ioc_annos.man"/>
-		<doc path="ioc_properties.man"/>
-		<doc path="ioc_by_hand.man"></doc>
+		<doc path="ioc_by_hand.man"/>
+		<doc path="scope.man"/>
+		<doc path="inner_object.man"/>
+		<doc path="xml_ioc_loader.man"/>
 	</doc>
 	<doc path="aop" title="Aop 手册">
 		<doc path="aop_mvc.man"/>
@@ -59,25 +67,6 @@
 		<doc path="aop_solution.man"/>
 		<doc path="aop.man"/>
 		<doc path="aop_json.man"/>
-	</doc>
-	<doc path="mvc"	title="Mvc 手册">
-		<doc path="overview.man"/>
-		<doc path="hello.man"/>
-		<doc path="web_xml.man"/>
-		<doc path="modules.man"/>
-		<doc path="url_mapping.man"/>
-		<doc path="action_chain.man"/>
-		<doc path="http_adaptor.man"/>
-		<doc path="view.man"/>
-		<doc path="with_ioc.man"/>
-		<doc path="localization.man"/>
-		<doc path="action_filter.man"/>
-		<doc path="file_upload.man"/>
-		<doc path="module_of_request.man"/>
-    	<doc path="rest.man"/>
-		<doc path="annotations.man"/>
-		<doc path="session.man"></doc>
-		<doc path="setupby.man"></doc>
 	</doc>
 	<doc path="json" title="Json 手册">
 		<doc path="base.man"/>
@@ -113,12 +102,20 @@
 		<doc path="freemarker.man"></doc>
 		<doc path="velocity.man"></doc>
 		<doc path="beetl.man"></doc>
-		<doc path="smarty4j.man"></doc>
-		<doc path="httl.man"></doc>
 		<doc path="shiro.man"></doc>
 		<doc path="quartz.man"></doc>
 		<doc path="ehcache.man"></doc>
 		<doc path="daocache.man"></doc>
+	</doc>
+	<doc path="committer"  title="关于源码">
+		<doc path="git_project.man"/>
+		<doc path="compile.man"/>
+		<doc path="compile_with_maven.man"/>
+		<doc path="ant.man"/>
+		<doc path="packages.man"/>
+		<doc path="version_naming.man"/>
+		<doc path="coding.man"/>
+		<doc path="be_committer.man"/>
 	</doc>
 	<!--doc path="zmole" title="zMole">
 		<doc path="zmole_get_start.man"/>
@@ -163,7 +160,6 @@
 	<doc path="faq" title="FAQ">
 		<doc path="how_to_pronounce_nutz.man"/>
 		<doc path="use_nutz_without_other_jar.man"/>
-		<doc path="what_aop_can_do.man"/>
 		<doc path="jar_encoding.man"/>
 		<doc path="common_qa_1.man"/>
 	</doc>

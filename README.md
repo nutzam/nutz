@@ -27,6 +27,7 @@
 *   在线文档
     *   [官网](http://nutzam.com/core/nutz_preface.html) 发布新版本时更新
     *   [GitHub Pages](http://nutzam.github.io/nutz/) 基本做到文档有变动就更新
+    *   [w3cschool上的文档](http://www.w3cschool.cn/nutz/) [由vincent109维护](https://github.com/vincent109)
 *   [视频+官方发布](http://downloads.nutzam.com/)
 *   [各种插件](http://github.com/nutzam/nutzmore)
 *   [好玩的Nutzbook](http://nutzbook.wendal.net) 引导式nutz入门书
