@@ -1,5 +1,8 @@
 package org.nutz.lang;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 
 public final class Encoding {
@@ -24,6 +27,24 @@ public final class Encoding {
 
     public static String defaultEncoding() {
         return Charset.defaultCharset().name();
+    }
+
+    public static String encodeURIComponent(String str) {
+        try {
+            return URLEncoder.encode(str, "UTF-8");
+        }
+        catch (UnsupportedEncodingException e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
+
+    public static String decodeURIComponent(String str) {
+        try {
+            return URLDecoder.decode(str, "UTF-8");
+        }
+        catch (UnsupportedEncodingException e) {
+            throw Lang.wrapThrow(e);
+        }
     }
 
 }
