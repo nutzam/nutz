@@ -562,9 +562,26 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         return this;
     }
 
-    // 与一个给定的 Map 融合，如果有子 Map 递归
-    @SuppressWarnings("unchecked")
+    /**
+     * 相当于 mergeWith(map, false)
+     * 
+     * @see #mergeWith(Map, boolean)
+     */
     public NutMap mergeWith(Map<String, Object> map) {
+        return this.mergeWith(map, false);
+    }
+
+    /**
+     * 与一个给定的 Map 融合，如果有子 Map 递归
+     * 
+     * @param map
+     *            要合并进来的 Map
+     * @param onlyAbsent
+     *            true 表示只有没有 key 才设置值
+     * @return 自身以便链式赋值
+     */
+    @SuppressWarnings("unchecked")
+    public NutMap mergeWith(Map<String, Object> map, boolean onlyAbsent) {
         for (Map.Entry<String, Object> en : map.entrySet()) {
             String key = en.getKey();
             Object val = en.getValue();
@@ -578,14 +595,18 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
             if (null != myVal && myVal instanceof Map && val instanceof Map) {
                 Map<String, Object> m0 = (Map<String, Object>) myVal;
                 Map<String, Object> m1 = (Map<String, Object>) val;
-                NutMap m2 = NutMap.WRAP(m0).mergeWith(m1);
+                NutMap m2 = NutMap.WRAP(m0).mergeWith(m1, onlyAbsent);
                 // 搞出了新 Map，设置一下
                 if (m2 != m0)
                     this.put(key, m2);
             }
+            // 只有没有的时候才设置
+            else if (onlyAbsent) {
+                this.setnx(key, val);
+            }
             // 否则直接替换
             else {
-                this.put(key.toString(), val);
+                this.put(key, val);
             }
         }
 
@@ -604,6 +625,24 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
     public NutMap setnx(String key, Object val) {
         if (!containsKey(key))
             setv(key, val);
+        return this;
+    }
+
+    /**
+     * 将一个集合与自己补充（相当于针对每个 key 调用 setnx)
+     * 
+     * @param map
+     *            集合
+     * @return 自身
+     * 
+     * @see #setnx(String, Object)
+     */
+    public NutMap setnxAll(Map<String, Object> map) {
+        if (null != map && map.size() > 0) {
+            for (Map.Entry<String, Object> en : map.entrySet()) {
+                this.setnx(en.getKey(), en.getValue());
+            }
+        }
         return this;
     }
 
