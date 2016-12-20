@@ -804,7 +804,8 @@ public abstract class Daos {
                         }
                     }
                     // show index from mytable;
-                    _indexs.addAll(expert.getIndexNames(en, conn));
+                    if (checkIndex)
+                        _indexs.addAll(expert.getIndexNames(en, conn));
                 }
                 catch (SQLException e) {
                     if (log.isDebugEnabled())

@@ -16,7 +16,7 @@ public class RecordDaoTest extends DaoCase {
             return;
         Dao dao = ioc.get(Dao.class);
         for (int i = 0; i < 10; i++) {
-            Record re = new Record();
+            Record re = Record.create();
             re.put("*name", "wendal"+R.UU32());
             re.put("+id", 0);
             re.put(".table", "t_pet");
