@@ -10,6 +10,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.nutz.json.entity.JsonEntity;
 import org.nutz.json.entity.JsonEntityField;
+import org.nutz.json.impl.JsonEntityFieldMakerImpl;
 import org.nutz.json.meta.JENObj;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -62,6 +63,7 @@ public class JsonEntityTest {
 
     @Test
     public void test_entity_field_maker() {
+        Json.clearEntityCache();
         JENObj obj = new JENObj();
         obj.setAge(100);
         obj.setName("name");
@@ -93,10 +95,12 @@ public class JsonEntityTest {
             }
         });
         String json = Json.toJson(obj, JsonFormat.compact());
-        assertTrue(json.contains("\"test_objId\":"));
-        assertTrue(json.contains("\"test_name\":"));
-        assertTrue(json.contains("\"test_age\":"));
-        assertTrue(json.contains("\"another_name\":"));
+        assertTrue(json.contains("\"test_objId\":9"));
+        assertTrue(json.contains("\"test_name\":\"name\""));
+        assertTrue(json.contains("\"test_age\":100"));
+        assertTrue(json.contains("\"another_name\":\"name\""));
+        Json.clearEntityCache();
+        Json.setDefaultFieldMaker(new JsonEntityFieldMakerImpl());
     }
 
 }
