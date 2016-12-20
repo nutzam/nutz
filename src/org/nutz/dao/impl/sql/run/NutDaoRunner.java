@@ -49,8 +49,19 @@ public class NutDaoRunner implements DaoRunner {
             case SQLITE:
                 // SQLITE仅支持2种事务级别
                 Transaction t = Trans.get();
-                useTrans = (t != null && (t.getLevel() == Connection.TRANSACTION_SERIALIZABLE
-                                       || t.getLevel() == Connection.TRANSACTION_READ_UNCOMMITTED));
+                if (t == null) {
+                    if (isAllSelect)
+                        useTrans = false;
+                    else {
+                        ((DaoInterceptorChain) callback).setAutoTransLevel(Connection.TRANSACTION_READ_UNCOMMITTED);
+                        useTrans = true;
+                    }
+                }
+                else if (t.getLevel() != Connection.TRANSACTION_SERIALIZABLE
+                                       && t.getLevel() != Connection.TRANSACTION_READ_UNCOMMITTED) {
+                    t.setLevel(Connection.TRANSACTION_READ_UNCOMMITTED);
+                    useTrans = true;
+                }
                 break;
             default:
                 useTrans = !(Trans.isTransactionNone() && (sts.length==1 || isAllSelect));

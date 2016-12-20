@@ -9,16 +9,19 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
 import org.nutz.dao.impl.entity.macro.SqlFieldMacro;
+import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
 import org.nutz.dao.impl.jdbc.mysql.MysqlJdbcExpert;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
+import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
+import org.nutz.dao.util.Pojos;
 
 /**
  * 
  * @author wendal
  */
-public class SQLiteJdbcExpert extends MysqlJdbcExpert {
+public class SQLiteJdbcExpert extends AbstractJdbcExpert {
 
     public SQLiteJdbcExpert(JdbcExpertConfigFile conf) {
         super(conf);
@@ -97,5 +100,24 @@ public class SQLiteJdbcExpert extends MysqlJdbcExpert {
         Pojo autoInfo = new SqlFieldMacro(idField, autoSql);
         autoInfo.setEntity(en);
         return autoInfo;
+    }
+
+    public void formatQuery(Pojo pojo) {
+        Pager pager = pojo.getContext().getPager();
+        // 需要进行分页
+        if (null != pager && pager.getPageNumber() > 0)
+            pojo.append(Pojos.Items.wrapf(" LIMIT %d, %d",
+                                          pager.getOffset(),
+                                          pager.getPageSize()));
+    }
+
+    public void formatQuery(Sql sql) {
+        Pager pager = sql.getContext().getPager();
+        // 需要进行分页
+        if (null != pager && pager.getPageNumber() > 0)
+            sql.setSourceSql(sql.getSourceSql()
+                             + String.format(" LIMIT %d, %d",
+                                             pager.getOffset(),
+                                             pager.getPageSize()));
     }
 }

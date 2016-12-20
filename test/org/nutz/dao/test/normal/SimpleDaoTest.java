@@ -388,6 +388,7 @@ public class SimpleDaoTest extends DaoCase {
 
     @Test
     public void test_fetchLinks() {
+        dao.create(Master.class, true);
         Master master = new Master();
         master.setName("wendal");
         Pet pet = Pet.create("asdfs");
@@ -464,7 +465,7 @@ public class SimpleDaoTest extends DaoCase {
                      + ")";
         dao.execute(Sqls.create(str));
 
-        Daos.migration(dao, Pet.class, true, true);
+        Daos.migration(dao, Pet.class, !dao.meta().isSQLite(), !dao.meta().isSQLite());
 
     }
 

@@ -128,6 +128,12 @@
 			<version>1.1</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.xerial</groupId>
+			<artifactId>sqlite-jdbc</artifactId>
+			<version>3.8.11.2</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

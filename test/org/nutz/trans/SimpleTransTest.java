@@ -87,7 +87,7 @@ public class SimpleTransTest extends DaoCase {
 
     @Test
     public void test_issue312() {
-        Trans.exec(new Atom(){
+        Trans.exec(Connection.TRANSACTION_SERIALIZABLE, new Atom(){
             public void run() {
                 final Connection[] conns = new Connection[2];
                 dao.run(new ConnCallback() {
