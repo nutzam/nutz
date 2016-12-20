@@ -72,15 +72,6 @@ public class JsonEntityField {
         return jef;
     }
 
-    public static JsonEntityField eval(String name, Type type, Ejecting ejecting, Injecting injecting) {
-        JsonEntityField jef = new JsonEntityField();
-        jef.genericType = type;
-        jef.name = name;
-        jef.ejecting = ejecting;
-        jef.injecting = injecting;
-        return jef;
-    }
-
     @SuppressWarnings({"deprecation", "rawtypes"})
     public static JsonEntityField eval(Mirror<?> mirror, Field fld) {
         if (fld == null) {

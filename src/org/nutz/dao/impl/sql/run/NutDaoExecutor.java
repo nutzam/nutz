@@ -152,7 +152,7 @@ public class NutDaoExecutor implements DaoExecutor {
 			stmt.execute();
 
             if (outParams.size() > 0) {
-                Record r = new Record();
+                Record r = Record.create();
                 for (Entry<Integer, OutParam> en : outParams.entrySet()) {
                     OutParam outParam = en.getValue();
                     int jdbcIndex = en.getKey() + 1;

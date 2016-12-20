@@ -2,8 +2,6 @@ package org.nutz.json;
 
 import static org.junit.Assert.*;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -14,8 +12,6 @@ import org.nutz.json.impl.JsonEntityFieldMakerImpl;
 import org.nutz.json.meta.JENObj;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
-import org.nutz.lang.Strings;
-import org.nutz.lang.inject.InjectBySetter;
 
 public class JsonEntityTest {
 
@@ -102,5 +98,4 @@ public class JsonEntityTest {
         Json.clearEntityCache();
         Json.setDefaultFieldMaker(new JsonEntityFieldMakerImpl());
     }
-
 }
