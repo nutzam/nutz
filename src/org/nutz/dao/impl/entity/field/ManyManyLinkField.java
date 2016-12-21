@@ -61,10 +61,22 @@ public class ManyManyLinkField extends AbstractLinkField {
         // 用户指定了 "from" 的 Java 字段名
         if (fromField != null) {
             hostField = host.getField(fromField);
+            if (hostField == null) {
+                // 指定了from的字段名,但找不到?!!!
+                throw Lang.makeThrow(    "@ManyMany(from='%s') is invalid, no such field!! Host class=%s",
+                                         fromField,
+                                         host.getType().getName());
+            }
         }
         // 用户指定了 "to" 的 Java 字段名
         if (null != toField) {
             linkedField = ta.getField(toField);
+            if (linkedField == null) {
+                // 指定了from的字段名,但找不到?!!!
+                throw Lang.makeThrow(    "@ManyMany(to='%s') is invalid, no such field!! Host class=%s",
+                                         toField,
+                                         host.getType().getName());
+            }
         }
 
         // 用户仅仅指定了 "from" 的 Java 字段
@@ -100,10 +112,17 @@ public class ManyManyLinkField extends AbstractLinkField {
 
         }
         // 最后再检查一下 ...
-        if (null == hostField || null == linkedField) {
-            throw Lang.makeThrow(    "Invalid @ManyMany in '%s'(%s): lack @Id or @Name",
-                                    getName(),
-                                    host.getType().getName());
+        if (null == hostField) {
+            throw Lang.makeThrow(    "@ManyMany at [%s#%s] is Invalid: lack @Id or @Name at class=%s",
+                                     host.getType().getName(),
+                                     getName(),
+                                     host.getType().getName());
+        }
+        if (null == linkedField) {
+            throw Lang.makeThrow(    "@ManyMany at [%s#%s] is Invalid: lack @Id or @Name at class=%s",
+                                     host.getType().getName(),
+                                     getName(),
+                                     target.getType().getName());
         }
 
     }
