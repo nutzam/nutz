@@ -10,25 +10,19 @@
 	# 首先，你必须安装 JDK 1.6 
 	# 其次，为了运行 Nutz.Dao，你必须要有一个数据库软件：
 		# Mysql,Postgresql, SQLServer, Oracle, DB2 , H2都可以。
-	# 建立一个普通的 Java 项目：
-		# 你可以采用任何自己觉得舒适的 IDE 环境，或者编辑器。
+	# 建立一个 Java 项目：
+		# 推荐使用Eclipse或Idea等IDE工具
 		# 你要将数据库的 JDBC Driver 和你喜欢的连接池加入项目的 classpath。
-	# 在数据库里建立一张你自己的数据表， 这里我们用 t_person 来举例：
-	
-	# 初学推荐看DaoUp类,及其文档DaoUpTest(在github源码中有)
-	# 如果你完全不知道神马情况,建议看[http://nutzbook.wendal.net nutzbook]
+	# NutDao并不依赖MVC环境及Ioc.
+	# 在Mvc环境下,通常使用Ioc管理NutDao的实例.
+	# NutDao是线程安全的,无需重复创建其实例.
 -----------------------------------------------------------------------------------------------------------------
 创建数据库
 
-	此处代码适用于PostgreSQL，如果你使用了不同的数据库，请自行修改相应建库语句：
-
-	{{{<sql>
-	CREATE TABLE t_person (
-	  id  SERIAL PRIMARY KEY,
-	  name  VARCHAR(50) NOT NULL UNIQUE,
-	  age INT
-	);
-	//对于最新版的Nutz,请直接使用dao.create(XXX.class, false)来完成建表
+	以mysql为例
+	
+	{{{
+	create database nutzdemo;
 	}}}
 
 -----------------------------------------------------------------------------------------------------------------
@@ -40,7 +34,7 @@
 	import org.nutz.dao.entity.annotation.*;
 
 	@Table("t_person")   // 声明了Person对象的数据表
-	public class Person { //无需继承任何Nutz的类
+	public class Person { // 不会强制要求继承某个类
 
 		@Id       // 表示该字段为一个自增长的Id,注意,是数据库表中自增!!
 		private int id;
@@ -51,45 +45,32 @@
 		@Column	  // 表示该对象属性可以映射到数据库里作为一个字段
 		private int age;
 
-		public int getId() {
-			return id;
-		}
-
-		public void setId(int id) {
-			this.id = id;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public int getAge() {
-			return age;
-		}
-
-		public void setAge(int age) {
-			this.age = age;
-		}
-
+		// 省略getter/setter
 	}
 	}}}
 -----------------------------------------------------------------------------------------------------------------
-创建 main 函数
-
-	随便建立一个有 main 函数的类，在 main 函数里这么写：
+创建一个方法
 
 	{{{<java>
-	//实际使用的话必须单例或使用DaoUp类(推荐),如果是Mvc中使用, 请使用注入,或Mvcs.ctx().getDefaultIoc().get(Dao.class)获取
+	// 创建一个数据源
+	SimpleDataSource dataSource = new SimpleDataSource();
+	dataSource.setJdbcUrl("jdbc:mysql://127.0.0.1/nutzdemo");
+	dataSource.setUsername("root");
+	dataSource.setPassword("root");
+	
+	// 创建一个NutDao实例,在真实项目中, NutDao通常由ioc托管, 使用注入的方式获得.
 	Dao dao = new NutDao(dataSource);
+	
+	// 创建表
+	dao.create(Person.class, false); // false的含义是,如果表已经存在,就不要删除重建了.
+	
 	Person p = new Person();
 	p.setName("ABC");
 	p.setAge(20);
 	dao.insert(p);
+	System.out.println(p.getId());
 	}}}
+	
 	 * 执行完毕后，在数据表中会多出一条记录。
 	 * 如果你{#F00;*不知道如何创建 Datasource}，请参看 附录：[../appendix/create_datasource.man 如何创建 Datasource]
 	 * 这个例子足够作为 Hello World 了， 祝你玩的开心  :) 
