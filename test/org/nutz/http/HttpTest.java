@@ -63,7 +63,7 @@ public class HttpTest {
 
     @Test
     public void test_https() {
-        Response response = Http.get("https://github.com");
+        Response response = Http.get("https://nutz.cn");
         assertTrue(response.getStatus() == 200);
     }
 
