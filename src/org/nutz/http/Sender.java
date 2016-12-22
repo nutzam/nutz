@@ -155,7 +155,6 @@ public abstract class Sender implements Callable<Response> {
     protected void setupDoInputOutputFlag() {
         conn.setDoInput(true);
         conn.setDoOutput(true);
-        conn.setInstanceFollowRedirects(followRedirects);
     }
 
     protected void openConnection() throws IOException {
@@ -183,6 +182,7 @@ public abstract class Sender implements Callable<Response> {
                     log.debug("connect via proxy : " + proxy + " for " + request.getUrl());
                     conn = (HttpURLConnection) request.getUrl().openConnection(proxy);
                     conn.setConnectTimeout(Default_Conn_Timeout);
+                    conn.setInstanceFollowRedirects(followRedirects);
                     if (timeout > 0)
                         conn.setReadTimeout(timeout);
                     else
@@ -223,6 +223,7 @@ public abstract class Sender implements Callable<Response> {
             conn.setReadTimeout(timeout);
         else
             conn.setReadTimeout(Default_Read_Timeout);
+        conn.setInstanceFollowRedirects(followRedirects);
         if (interceptor != null)
             this.interceptor.afterConnect(request, conn);
     }
