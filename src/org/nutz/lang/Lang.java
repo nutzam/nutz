@@ -2620,7 +2620,7 @@ public abstract class Lang {
             String name = field.getName();
             if (at != null && !at.matcher(name).find())
                 continue;
-            if (lock != null && lo.matcher(name).find())
+            if (lo != null && lo.matcher(name).find())
                 continue;
             if (ignoreStatic && Modifier.isStatic(field.getModifiers()))
                 continue;
