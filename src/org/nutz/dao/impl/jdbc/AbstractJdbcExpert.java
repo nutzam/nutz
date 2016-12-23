@@ -390,7 +390,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         if (!mf.hasDefaultValue())
             return;
         String dft = getDefaultValue(mf);
-        if (mf.getColumnType() == ColType.VARCHAR 
+        if (mf.getColumnType() == ColType.VARCHAR
                 || mf.getTypeMirror().isStringLike())
             sb.append(" DEFAULT '").append(dft).append('\'');
         else
@@ -431,7 +431,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         sb.append(en.getTableName()).append(" ADD ");
         if (addColumnNeedColumn())
             sb.append("COLUMN ");
-        sb.append(mf.getColumnName()).append(" ").append(evalFieldType(mf));
+        sb.append(mf.getColumnNameInSql()).append(" ").append(evalFieldType(mf));
         if (mf.isUnsigned()) {
             sb.append(" UNSIGNED");
         }

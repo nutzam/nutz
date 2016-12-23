@@ -1080,11 +1080,13 @@ public abstract class Daos {
     /** 是否检查字段为数据库的关键字 */
     public static boolean CHECK_COLUMN_NAME_KEYWORD = false;
 
+    /** 是否把字段名用字符包裹来进行关键字逃逸 */
     public static boolean FORCE_WRAP_COLUMN_NAME = false;
 
     /** 是否把字段名给变成大写 */
     public static boolean FORCE_UPPER_COLUMN_NAME = false;
-    
+
+    /** varchar 字段的默认字段长度 */
     public static int DEFAULT_VARCHAR_WIDTH = 128;
 }
 
