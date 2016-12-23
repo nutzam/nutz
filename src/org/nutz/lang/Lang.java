@@ -2015,7 +2015,12 @@ public abstract class Lang {
      * 原方法使用线程ClassLoader,各种问题,改回原版.
      */
     public static Class<?> loadClass(String className) throws ClassNotFoundException {
-        return Class.forName(className);
+        try {
+            return Thread.currentThread().getContextClassLoader().loadClass(className);
+        }
+        catch (Throwable e) {
+            return Class.forName(className);
+        }
     }
 
     /**
@@ -2615,7 +2620,7 @@ public abstract class Lang {
             String name = field.getName();
             if (at != null && !at.matcher(name).find())
                 continue;
-            if (lock != null && lo.matcher(name).find())
+            if (lo != null && lo.matcher(name).find())
                 continue;
             if (ignoreStatic && Modifier.isStatic(field.getModifiers()))
                 continue;

@@ -1,0 +1,111 @@
+#title: 编码与乱码
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+--------------------------------------------------------------------------------------------------------
+乱码的根源
+
+	源编码与目标编码的不一致. 而中文window系统默认编码GBK,害惨了多少程序员.
+	
+	要尽量减少出现乱码,我个人认为要做到5码合一, IDE(Eclipse/idea),页面(jsp/其他模板引擎),应用服务器(tomcat等),
+	源码(Java源码及周边文件),数据库编码.
+	
+--------------------------------------------------------------------------------------------------------
+将Eclipse设置为UTF-8
+
+	打开Eclipse安装目录下的eclipse.ini,在最末尾新增一行
+
+	{{{
+	-Dfile.encoding=UTF-8
+	}}}
+	
+	修改之后的,重启eclipse.
+	
+--------------------------------------------------------------------------------------------------------
+JSP页面编码
+
+	{{{
+	<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+	}}}
+	
+--------------------------------------------------------------------------------------------------------
+tomcat编码
+
+	打开 tomcat安装目录下的 bin\setenv.bat ,该文件通常不存在,新建之, 添加如下内容
+	
+	{{{
+	set JAVA_OPTS=-Dfile.encoding=UTF-8
+	}}}
+	
+	打开conf\server.conf, 在8080端口所属的Connector节点,添加URIEncoding,可解决大部分GET请求中文乱码的问题
+	
+	{{{
+	URIEncoding="UTF-8"
+	}}}
+	
+--------------------------------------------------------------------------------------------------------
+源码的编码
+	
+	通常情况下, 文件本身的编码,取决于新建文件时,IDE或Project的编码.
+	
+	另外一个隐藏的编码,是maven/ant编译java源文件时使用的编码
+	
+	maven的配置如下
+	
+	{{{
+	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	}}}
+	
+--------------------------------------------------------------------------------------------------------
+数据库编码
+	
+	通常来说,如果其他4码解决了,那大部分情况下是mysql会出现编码问题
+	
+	mysql有4个编码
+	
+	{{{
+	Server characterset:    utf8      // 服务器字节集
+    Db     characterset:    utf8      // 当前数据集字节集
+    Client characterset:    utf8      // 客户端字节集
+    Conn.  characterset:    utf8      // 当前连接的字节集
+	}}}
+	
+	修改my.ini的mysqld小节,设置服务器字符集,是最佳解决方式
+	
+	{{{
+	[mysqld]
+	character-set-server = utf8
+	}}}
+	
+	然而,对于现有系统,全局修改的风险比较大,所以,可以在客户端解决,即jdbcurl上做配置
+	
+	{{{
+	jdbc:mysql://127.0.0.1/nutzdemo?useUnicode=true&characterEncoding=UTF-8
+	}}}
+	
+--------------------------------------------------------------------------------------------------------
+Nutz的相关日志
+
+	nutz在启动时也会打印周围的编码信息,帮助排查.
+	
+	{{{
+21:22:23.235 INFO  (NutLoading.java:55) load - Nutz Version : 1.r.59 
+21:22:23.235 INFO  (NutLoading.java:56) load - Nutz.Mvc[nutz] is initializing ...
+21:22:23.235 DEBUG (NutLoading.java:60) load - Web Container Information:
+21:22:23.237 DEBUG (NutLoading.java:61) load -  - Default Charset : UTF-8
+21:22:23.237 DEBUG (NutLoading.java:62) load -  - Current . path  : D:\nutzbook\eclipse\.
+21:22:23.237 DEBUG (NutLoading.java:63) load -  - Java Version    : 1.8.0_112
+21:22:23.237 DEBUG (NutLoading.java:65) load -  - Timezone        : Asia/Shanghai
+21:22:23.238 DEBUG (NutLoading.java:66) load -  - OS              : Windows 7 amd64
+21:22:23.238 DEBUG (NutLoading.java:67) load -  - ServerInfo      : Apache Tomcat/9.0.0.M13
+21:22:23.238 DEBUG (NutLoading.java:68) load -  - Servlet API     : 4.0
+21:22:23.238 DEBUG (NutLoading.java:73) load -  - ContextPath     : /nutzbook
+21:22:25.134 DEBUG (DaoSupport.java:199) invoke - JDBC Name   --> MySQL Connector Java
+21:22:25.135 DEBUG (DaoSupport.java:201) invoke - JDBC URL    --> jdbc:mysql://127.0.0.1:3306/nutzbook
+21:22:25.145 DEBUG (MysqlJdbcExpert.java:212) checkDataSource - Mysql : character_set_client=utf8
+21:22:25.146 DEBUG (MysqlJdbcExpert.java:212) checkDataSource - Mysql : character_set_connection=utf8
+21:22:25.146 DEBUG (MysqlJdbcExpert.java:212) checkDataSource - Mysql : character_set_database=utf8
+21:22:25.146 DEBUG (MysqlJdbcExpert.java:212) checkDataSource - Mysql : character_set_filesystem=binary
+21:22:25.146 DEBUG (MysqlJdbcExpert.java:212) checkDataSource - Mysql : character_set_results=
+21:22:25.146 DEBUG (MysqlJdbcExpert.java:212) checkDataSource - Mysql : character_set_server=utf8
+21:22:25.147 DEBUG (MysqlJdbcExpert.java:212) checkDataSource - Mysql : character_set_system=utf8
+	}}}

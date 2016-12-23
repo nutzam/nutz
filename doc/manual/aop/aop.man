@@ -5,7 +5,7 @@
 单纯的AOP
 
 	创建一个拦截器类,在方法执行前后打印一句日志
-		{{{
+		{{{<JAVA>
         package aop;
         import org.nutz.aop.ClassAgent;
         import org.nutz.aop.ClassDefiner;

@@ -185,6 +185,7 @@ public class DaoSupport {
         dataSource = ds;
         if (expert == null)
             expert = Jdbcs.getExpert(ds);
+        log.debug("select expert : " + expert.getClass().getName());
         pojoMaker = new NutPojoMaker(expert);
 
         meta = new DatabaseMeta();

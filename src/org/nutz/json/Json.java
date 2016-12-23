@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.nutz.json.entity.JsonEntity;
+import org.nutz.json.impl.JsonEntityFieldMakerImpl;
 import org.nutz.json.impl.JsonRenderImpl;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
@@ -417,5 +418,14 @@ public class Json {
         if (defaultJf == null)
             defaultJf = JsonFormat.nice();
         Json.deft = defaultJf;
+    }
+
+    private static JsonEntityFieldMaker deftMaker = new JsonEntityFieldMakerImpl();
+    public static void setDefaultFieldMaker(JsonEntityFieldMaker fieldMaker) {
+        if (fieldMaker != null)
+            Json.deftMaker = fieldMaker;
+    }
+    public static JsonEntityFieldMaker getDefaultFieldMaker() {
+        return deftMaker;
     }
 }
