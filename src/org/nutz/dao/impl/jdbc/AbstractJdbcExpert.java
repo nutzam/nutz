@@ -431,12 +431,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         sb.append(en.getTableName()).append(" ADD ");
         if (addColumnNeedColumn())
             sb.append("COLUMN ");
-        if (Daos.FORCE_WRAP_COLUMN_NAME) {
-            sb.append(wrapKeywork(mf.getColumnName(), true));
-        } else {
-            sb.append(mf.getColumnName());
-        }
-        sb.append(" ").append(evalFieldType(mf));
+        sb.append(mf.getColumnNameInSql()).append(" ").append(evalFieldType(mf));
         if (mf.isUnsigned()) {
             sb.append(" UNSIGNED");
         }
