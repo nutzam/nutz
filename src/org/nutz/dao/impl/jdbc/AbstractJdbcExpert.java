@@ -389,10 +389,12 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
     public void addDefaultValue(StringBuilder sb, MappingField mf) {
         if (!mf.hasDefaultValue())
             return;
-        if (mf.getTypeMirror().isNumber() || mf.getTypeMirror().isDateTimeLike())
-            sb.append(" DEFAULT ").append(getDefaultValue(mf));
+        String dft = getDefaultValue(mf);
+        if (mf.getColumnType() == ColType.VARCHAR 
+                || mf.getTypeMirror().isStringLike())
+            sb.append(" DEFAULT '").append(dft).append('\'');
         else
-            sb.append(" DEFAULT '").append(getDefaultValue(mf)).append('\'');
+            sb.append(" DEFAULT ").append(dft);
     }
 
     public boolean addColumnNeedColumn() {
