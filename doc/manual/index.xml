@@ -115,7 +115,6 @@
 	</doc>
 	<doc path="committer"  title="关于源码">
 		<doc path="git_project.man"/>
-		<doc path="compile.man"/>
 		<doc path="compile_with_maven.man"/>
 		<doc path="ant.man"/>
 		<doc path="packages.man"/>
@@ -170,10 +169,7 @@
 		<doc path="common_qa_1.man"/>
 	</doc>
 	<doc path="appendix" title="附录">
-		<doc path="case.man"/>
 		<doc path="create_datasource.man"/>
-		<doc path="work_with_maven.man"></doc>
 		<doc path="resources.man"/>
-		<doc path="plugins.man"/>
 	</doc>
 </doc>

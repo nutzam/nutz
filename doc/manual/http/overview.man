@@ -16,7 +16,7 @@
 	GET请求
 	
 	{{{
-		Response response = Http.get("http://nutztest.herokuapp.com/");
+		Response response = Http.get("https://nutz.cn/");
         assertNotNull(response);
         assertNotNull(response.getContent());
         assertNotNull(response.getDetail());

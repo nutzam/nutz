@@ -1,9 +1,0 @@
-#title: 案例
-#author:zozoh(zozohtnt@gmail.com)
-#author:wendal(wendal1985@gmail.com)
-#index:0,1
---------------------------------------------------------------------------------------
-看用户提交的列表好了
-
-	[https://github.com/nutzam/nutz/issues/819 案例提交]
-	

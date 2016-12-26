@@ -1,8 +1,0 @@
-#title: 从 SVN 编译 - Eclipse
-#author:zozoh(zozohtnt@gmail.com)
-#author:wendal(wendal1985@gmail.com)
-#index:0,1
---------------------------------------------------------------------------------------------------------------------------
-遗留文档
-
-	这文档已经过时,因为Nutz的代码已经托管在github. 请使用[git_project.man 从 Git编译源码]

@@ -64,7 +64,10 @@ Sql 对象 -- org.nutz.dao.sql.Sql
          * fetchEntity
          * fetchInt
          * fetchString
+         * fetchRecord
          * queryEntity 
+         * queryRecord
+         * 其他等你发现
         方法来帮助你构建 Sql 对象。它们之间的区别在稍后会详细说明。
 		
 		通常的情况，你需要构建某些 {*动态} 的 SQL，所以我也允许你为你的 SQL 设置占位符，占位符分两种：
