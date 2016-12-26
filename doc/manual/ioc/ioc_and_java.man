@@ -1,0 +1,202 @@
+#title: ioc配置与Java代码的互相转换
+#index:0,1
+#author:wendal(wendal1985@gmail.com)
+
+---------------------------------------------------
+背景
+
+	无论是集成第三方jar,还是一些遗留系统,都可能涉及到如何把对象声明到ioc容器的问题.
+	
+	由于是第三方类,无法直接标注@IocBean等注解,所以需要ioc js之类的配置.
+	
+	然而, 如何把一段java代码,变成ioc配置,的确难住了很多人.
+	
+	变换的核心,就是如何灵活使用factory,配合type,args,fields,肯定能适配绝大部分的java代码.
+
+---------------------------------------------------
+简单例子
+
+	首先看一段Java代码
+	{{{<JAVA>
+	NutDao dao = new NutDao(dataSource);
+	}}}
+	
+	变换为dao.js里面的写法
+	
+	{{{<js>
+	dao : { // 相当于声明一个变量
+	    type : "org.nutz.dao.impl.NutDao", // 需要new的类
+	    args : [{refer:"dataSource"}] // 钩子方法参数,因为另外一个变量
+	}
+	}}}
+	
+	那么,通过setter赋值呢?
+	
+	{{{<JAVA>
+	NutDao dao = new NutDao();
+	dao.setDataSource(dataSource);
+	}}}
+	
+	变换为dao.js里面的写法
+	
+	{{{<js>
+	dao : { // 相当于声明一个变量
+	    type : "org.nutz.dao.impl.NutDao", // 需要new的类, new NutDao()
+	    fields : {
+	    	dataSource : {refer :"dataSource"} // dao.setDataSource(dataSource);
+	    }
+	}
+	}}}
+	
+	refer, 引用另外一个对象
+	
+---------------------------------------------------
+通过工厂方法的例子
+
+	java是这样写的
+	{{{<JAVA>
+	DataSource dataSource = MySuperDS.create("abc", "123456");
+	NutDao dao = new NutDao(dataSource);
+	}}}
+	
+	变换为dao.js里面的写法
+	
+	{{{<JS>
+	dataSource : { // 声明变量(就是ioc内的唯一识别名)
+		type : "javax.sql.DataSource", // 类型,1.r.58以上可以不写.
+		factory : "net.wendal.nutzbook.MySuperDS#create",// 选用MySuperDS.create方法
+		args : ["abc", "123456"] // 为工厂方法提供参数 ("abc", "123456")
+	},
+	dao : { // 相当于声明一个变量
+	    type : "org.nutz.dao.impl.NutDao", // 需要new的类, new NutDao()
+	    fields : {
+	    	dataSource : {refer :"dataSource"} // dao.setDataSource(dataSource);
+	    }
+	}
+	}}}
+	
+---------------------------------------------------
+用对象生成对象
+
+	这里,以nutz-integration-activiti的实现原理为例子.
+	
+	{{{<JAVA>
+	ProcessEngineConfiguration cfg = ProcessEngineConfiguration.createStandaloneProcessEngineConfiguration();
+    cfg.setDataSource(dataSource)
+    cfg.setDatabaseSchemaUpdate("true");
+    ProcessEngine processEngine = cfg.buildProcessEngine();
+    RepositoryService repositoryService = processEngine.getRepositoryService();
+	}}}
+	
+	首先,有3个对象, cfg, processEngine, repositoryService. 及一个已存在的对象dataSource
+	
+	{{{<JSON>
+	cfg : {
+		// TODO
+	},
+	processEngine : {
+		// TODO
+	},
+	repositoryService : {
+		// TODO
+	}
+	}}}
+	
+	然后,cfg是通过ProcessEngineConfiguration的工厂方法createStandaloneProcessEngineConfiguration产生的
+	
+	{{{<JSON>
+	cfg : {
+		factory : "org.activiti.engine.ProcessEngineConfiguration#createStandaloneProcessEngineConfiguration",
+		args : [] // 无参数,可以不写.
+	}	
+	}}}
+	
+	再然后, cfg需要设置两个属性,分别是dataSource和databaseSchemaUpdate
+	
+	{{{<JSON>
+	cfg : {
+		factory : "org.activiti.engine.ProcessEngineConfiguration#createStandaloneProcessEngineConfiguration",
+		args : [], // 无参数,可以不写.
+		fields : {
+			dataSource : {refer:"dataSource"},
+			databaseSchemaUpdate : "true"
+		}
+	}
+	}}}
+	
+	接下来,processEngine是通过cfg的buildProcessEngine生成的,所以就用到了对象生成对象的技巧
+	
+	{{{<JSON>
+	processEngine : {
+		factory : "$cfg#buildProcessEngine"
+	},
+	}}}
+	
+	同理, repositoryService是processEngine的getRepositoryService得到的
+	
+	{{{<JSON>
+	repositoryService : {
+		factory : "$processEngine#getRepositoryService"
+	}
+	}}}
+	
+	最后,全部放在一起的样子就是
+	
+	{{{<JSON>
+	cfg : {
+		factory : "org.activiti.engine.ProcessEngineConfiguration#createStandaloneProcessEngineConfiguration",
+		args : [], // 无参数,可以不写.
+		fields : {
+			dataSource : {refer:"dataSource"},
+			databaseSchemaUpdate : "true"
+		}
+	},
+	processEngine : {
+		factory : "$cfg#buildProcessEngine"
+	},
+	repositoryService : {
+		factory : "$processEngine#getRepositoryService"
+	}
+	}}}
+	
+	详细实现,请查阅[https://github.com/nutzam/nutzmore/blob/master/nutz-integration-activiti/ nutz-integration-activiti]的源码.
+
+---------------------------------------------------
+与properties配置文件一起工作
+
+	通常来说,我们会定义一个叫conf的配置主管,它将加载paths属性指定的路径下所有properties文件.
+	
+	{{{<JSON>		
+	conf : {
+			type : "org.nutz.ioc.impl.PropertiesProxy",
+			fields : {
+				paths : ["custom/"]
+			}
+		},
+	}}}
+	
+	之前的例子中的放在配置文件中,就可以这样引用
+	
+	{{{<JSON>
+	cfg : {
+		factory : "org.activiti.engine.ProcessEngineConfiguration#createStandaloneProcessEngineConfiguration",
+		fields : {
+			dataSource : {refer:"dataSource"},
+			// 从conf中取出key为activiti.databaseSchemaUpdate的值,如果不存在,则使用"true"
+			databaseSchemaUpdate : {java : "$conf.get('activiti.databaseSchemaUpdate', 'true')"}
+		}
+	}
+	}}}
+	
+	另外, PropertiesProxy类有个很好用的make方法,可根据配置文件中的特定前置生成对象
+	
+	{{{<JSON>
+	    dataSource : {
+	        factory : "$conf#make", // 对象生成对象哦, 调用的是 conf.make方法
+	        args : ["com.alibaba.druid.pool.DruidDataSource", "db."],
+	        events : {
+	        	create : "init",
+	            depose : 'close'
+	        }
+	    },
+	}}}
