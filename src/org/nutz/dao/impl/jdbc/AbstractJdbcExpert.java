@@ -239,12 +239,12 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         case PSQL_JSON:
         case MYSQL_JSON:
             return "JSON";
-        // TODO 这里不用加 default 么
-        }
-        throw Lang.makeThrow("Unsupport colType '%s' of field '%s' in '%s' ",
+        default:
+            throw Lang.makeThrow("Unsupport colType '%s' of field '%s' in '%s' ",
                              mf.getColumnType(),
                              mf.getName(),
                              mf.getEntity().getType().getName());
+        }
     }
 
     protected static List<DaoStatement> wrap(String... sqls) {
