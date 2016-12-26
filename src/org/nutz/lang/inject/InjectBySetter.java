@@ -1,5 +1,6 @@
 package org.nutz.lang.inject;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -38,10 +39,13 @@ public class InjectBySetter implements Injecting {
             }
             setter.invoke(obj, v);
         }
-        catch (Exception e) {
+        catch (Exception _e) {
+            Throwable e = _e;
+            if (e instanceof InvocationTargetException)
+                e = ((InvocationTargetException)e).getTargetException();
             if (log.isInfoEnabled())
                 log.info("Fail to value by setter", e);
-            throw Lang.makeThrow(    "Fail to set '%s'[ %s ] by setter %s.'%s()' because [%s]: %s",
+            throw Lang.wrapThrow(e, "Fail to set '%s'[ %s ] by setter %s.'%s()' because [%s]: %s",
                                     value,
                                     v == null ? value : v,
                                     setter.getDeclaringClass().getName(),
