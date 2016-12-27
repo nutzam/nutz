@@ -9,7 +9,7 @@ class TmplBooleanEle extends TmplDynamicEle<Boolean> {
 
     public TmplBooleanEle(String key, String fmt, String dft) {
         super("boolean", key, fmt, dft);
-        this.texts = Strings.splitIgnoreBlank(Strings.sNull(fmt, "true/false"), "\\/");
+        this.texts = Strings.splitIgnoreBlank(Strings.sNull(fmt, "false/true"), "\\/");
     }
 
     @Override
