@@ -27,6 +27,7 @@ import org.nutz.castor.Castors;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.ioc.meta.IocValue;
+import org.nutz.json.meta.Issue1199;
 import org.nutz.json.meta.JA;
 import org.nutz.json.meta.JB;
 import org.nutz.json.meta.JC;
@@ -938,5 +939,14 @@ public class JsonTest {
     public void test_date_formt() {
         JsonFormat jf = Json.fromJson(JsonFormat.class, "{dateFormat:'yyyyMMhh'}");
         System.out.println(Json.toJson(new NutMap("date", new Date()), jf));
+    }
+    
+    @Test
+    public void test_circule_map_pojo() {
+        NutMap map = new NutMap();
+        Issue1199 pojo = new Issue1199(map);
+        map.put("abc", pojo);
+        String j = Json.toJson(map);
+        System.out.println(j);
     }
 }

@@ -110,6 +110,11 @@ public class JsonRenderImpl implements JsonRender {
             }
             // 其他
             else {
+                if (memo.contains(obj)) {
+                    writer.write("null");
+                    return;
+                }
+                memo.add(obj);
                 // Map
                 if (obj instanceof Map) {
                     map2Json((Map) obj);
@@ -124,10 +129,9 @@ public class JsonRenderImpl implements JsonRender {
                 }
                 // 普通 Java 对象
                 else {
-                    memo.add(obj);
                     pojo2Json(obj);
-                    memo.remove(obj);
                 }
+                memo.remove(obj);
             }
         }
     }
@@ -293,7 +297,7 @@ public class JsonRenderImpl implements JsonRender {
                         }
                     } else if (jef.hasDataFormat() && null != value && value instanceof Date) {
                         value = jef.getDataFormat().format((Date)value);
-                    } else if (jef.hasDataFormat() && null != value && mirror.isNumber()) {
+                    } else if (jef.hasDataFormat() && null != value && (mirror != null && mirror.isNumber())) {
                         value = jef.getDataFormat().format(value);
                     }
 
