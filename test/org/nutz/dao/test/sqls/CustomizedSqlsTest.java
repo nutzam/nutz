@@ -15,7 +15,6 @@ import org.nutz.dao.Cnd;
 import org.nutz.dao.SqlNotFoundException;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
-import org.nutz.dao.entity.Record;
 import org.nutz.dao.impl.FileSqlManager;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.impl.sql.NutSql;

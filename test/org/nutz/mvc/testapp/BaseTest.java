@@ -6,12 +6,12 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.nutz.http.Response;
 import org.nutz.lang.util.NutMap;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
+//import org.nutz.log.Log;
+//import org.nutz.log.Logs;
 
 public class BaseTest extends BaseWebappTest {
     
-    private static final Log log = Logs.get();
+    //private static final Log log = Logs.get();
 
     @Test
     public void test_json_adaptor() {
