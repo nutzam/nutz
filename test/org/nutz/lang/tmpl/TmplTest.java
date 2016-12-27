@@ -13,7 +13,8 @@ public class TmplTest {
     @Test
     public void test_string_format() {
         assertEquals("AB   C", Tmpl.exec("A${b<:%-4s>?}C", Lang.map("b:'B'}")));
-        //assertEquals("AB   C", Tmpl.exec("A${b<string:%-4s>?}C", Lang.map("b:'B'}")));
+        // assertEquals("AB C", Tmpl.exec("A${b<string:%-4s>?}C",
+        // Lang.map("b:'B'}")));
     }
 
     @Test
@@ -77,6 +78,12 @@ public class TmplTest {
         assertEquals("是", Tmpl.exec("${v<boolean:否/是>}", Lang.map("v:true")));
         assertEquals("否", Tmpl.exec("${v<boolean:否/是>}", Lang.map("v:false")));
         assertEquals("否", Tmpl.exec("${v<boolean:否/是>?false}", null));
+
+        assertEquals("false", Tmpl.exec("${v<boolean>?false}", null));
+        assertEquals("true", Tmpl.exec("${v<boolean>?true}", Lang.map("{}")));
+        
+        assertEquals("false", Tmpl.exec("${v<boolean>}", null));
+        assertEquals("false", Tmpl.exec("${v<boolean>}", Lang.map("{}")));
     }
 
 }

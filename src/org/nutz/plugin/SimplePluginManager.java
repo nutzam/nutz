@@ -20,6 +20,7 @@ public class SimplePluginManager<T> implements PluginManager<T> {
                 loadPlugin(className);
     }
 
+    @SuppressWarnings("unchecked")
     public SimplePluginManager(Class<? extends T>... classNames) throws PluginException {
         if (classNames != null)
             for (Class<? extends T> pluginClass : classNames)

@@ -433,6 +433,7 @@ public abstract class Lang {
      *            可变参数
      * @return 数组对象
      */
+    @SuppressWarnings("unchecked")
     public static <T> T[] array(T... eles) {
         return eles;
     }
@@ -521,6 +522,7 @@ public abstract class Lang {
      *            可变参数
      * @return 列表对象
      */
+    @SuppressWarnings("unchecked")
     public static <T> ArrayList<T> list(T... eles) {
         ArrayList<T> list = new ArrayList<T>(eles.length);
         for (T ele : eles)
@@ -535,6 +537,7 @@ public abstract class Lang {
      *            可变参数
      * @return 集合对象
      */
+    @SuppressWarnings("unchecked")
     public static <T> Set<T> set(T... eles) {
         Set<T> set = new HashSet<T>();
         for (T ele : eles)
@@ -875,6 +878,7 @@ public abstract class Lang {
      *            数组 （数目可变）
      * @return 集合对象
      */
+    @SuppressWarnings("unchecked")
     public static <C extends Collection<T>, T> C fill(C coll, T[]... objss) {
         for (T[] objs : objss)
             for (T obj : objs)
@@ -2701,7 +2705,7 @@ public abstract class Lang {
     @SuppressWarnings("unchecked")
     public static <T> T fromBytes(byte[] buf, Class<T> klass) {
         try {
-            return (T)new ObjectInputStream(new ByteArrayInputStream(buf)).readObject();
+            return (T) new ObjectInputStream(new ByteArrayInputStream(buf)).readObject();
         }
         catch (ClassNotFoundException e) {
             return null;

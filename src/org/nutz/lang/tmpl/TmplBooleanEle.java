@@ -14,7 +14,10 @@ class TmplBooleanEle extends TmplDynamicEle<Boolean> {
 
     @Override
     protected String _val(Object val) {
-        boolean b = Castors.me().castTo(val, Boolean.class);
+        boolean b = false;
+        if (null != val) {
+            b = Castors.me().castTo(val, Boolean.class);
+        }
         return b ? texts[1] : texts[0];
     }
 

@@ -529,7 +529,7 @@ public class Strings {
             return Strings.dup(c, width - len) + s;
         return s.substring(len - width, len);
     }
-    
+
     /**
      * 保证字符串为一固定长度。超过长度，切除左侧字符，否则左侧填补字符。
      * 
@@ -1001,6 +1001,7 @@ public class Strings {
      *            要拼接的数组
      * @return 拼接好的字符串
      */
+    @SuppressWarnings("unchecked")
     public static <T> String join(String sp, T... array) {
         return Lang.concat(sp, array).toString();
     }

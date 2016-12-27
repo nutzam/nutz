@@ -1,5 +1,6 @@
 package org.nutz.mvc.adaptor.extractor;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -43,7 +44,8 @@ public class MapParamExtractor implements ParamExtractor {
         Set<String> ss = new HashSet<String>();
         ss.addAll(map.keySet());
         if (req != null)
-            ss.addAll(Lang.enum2collection(req.getParameterNames(), new HashSet<String>()));
+            ss.addAll((Collection<? extends String>) Lang.enum2collection(req.getParameterNames(),
+                                                                          new HashSet<String>()));
         return ss;
     }
 
