@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.io.Reader;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
@@ -1276,6 +1277,43 @@ public class Files {
         }
         finally {
             Streams.safeClose(br);
+        }
+    }
+    
+    public static int readRange(File f, int pos, byte[] buf, int at, int len) {
+        try {
+            if (f == null || !f.exists())
+                return 0;
+            long fsize = f.length();
+            if (pos > fsize)
+                return 0;
+            len = Math.min(len, buf.length - at);
+            if (pos + len > fsize) {
+                len = (int)(fsize - pos);
+            }
+            RandomAccessFile raf = new RandomAccessFile(f, "r");
+            raf.seek(pos);
+            raf.readFully(buf, at, len);
+            raf.close();
+            return len;
+        }
+        catch (IOException e) {
+            return -1;
+        }
+    }
+    
+    public static int writeRange(File f, int pos, byte[] buf, int at, int len) {
+        try {
+            if (f == null || !f.exists())
+                return 0;
+            RandomAccessFile raf = new RandomAccessFile(f, "rw");
+            raf.seek(pos);
+            raf.write(buf, at, len);
+            raf.close();
+            return len;
+        }
+        catch (IOException e) {
+            return -1;
         }
     }
 }
