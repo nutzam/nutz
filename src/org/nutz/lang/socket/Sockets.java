@@ -44,7 +44,7 @@ public abstract class Sockets {
         Socket socket = null;
         try {
             socket = new Socket();
-            socket.connect(InetSocketAddress.createUnresolved(host, port), timeout);
+            socket.connect(new InetSocketAddress(host, port), timeout);
             // 发送关闭命令
             OutputStream sOut = socket.getOutputStream();
             Streams.write(sOut, ins);
