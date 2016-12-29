@@ -65,9 +65,24 @@ Pojo集合或Map嵌套
 	
 	{{{
 	String str = "{dongdong:{age:80}}";
-	Map<String, Pet> pets = Map<String, Pet>Json.fromJsonAsMap(Pet.class, str/*其他源也可以*/);
+	Map<String, Pet> pets = Json.fromJsonAsMap(Pet.class, str/*其他源也可以*/);
 	
 	assertEquals(80, pets.get("dongdong").getAge());// Junit断言一下,肯定是80啦
 	}}}
 	
 	一通百通,哈哈,仔细琢磨一下吧
+	
+--------------------------------------------------------------------
+复杂泛型
+
+	{{{JAVA
+	String str = "{abc:{def:{age:1}}}";
+    Map<String, Map<String, Record>> map;
+    // 1.r.59及之前版本的做法
+    NutType t = NutType.mapStr(NutType.mapStr(Record.class));
+    map = (Map<String, Map<String, Record>>) Json.fromJson(type, str);
+    // 1.r.60可以这样写. 通构建一个PType的匿名内部类实现
+    map = Json.fromJson(new PType<Map<String, Map<String, Record>>>(){}, str);
+	}}}
+    
+    PType是NutType的子类,老版本可以直接拷贝其源码,实现类似的调用方法.

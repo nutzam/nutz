@@ -21,6 +21,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Streams;
 import org.nutz.lang.util.NutType;
+import org.nutz.lang.util.PType;
 import org.nutz.mapl.Mapl;
 
 public class Json {
@@ -92,6 +93,18 @@ public class Json {
     public static Object fromJson(Type type, CharSequence cs)
             throws JsonException {
         return fromJson(type, Lang.inr(cs));
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static <T> T fromJson(PType<T> type, Reader reader)
+            throws JsonException {
+        return (T) fromJson((Type)type, reader);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T fromJson(PType<T> type, CharSequence cs)
+            throws JsonException {
+        return (T)fromJson((Type)type, cs);
     }
 
     /**
