@@ -24,6 +24,7 @@ import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.nutz.castor.Castors;
+import org.nutz.dao.entity.Record;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.ioc.meta.IocValue;
@@ -45,6 +46,7 @@ import org.nutz.lang.stream.StringInputStream;
 import org.nutz.lang.stream.StringOutputStream;
 import org.nutz.lang.util.NutMap;
 import org.nutz.lang.util.NutType;
+import org.nutz.lang.util.PType;
 
 @SuppressWarnings({"unchecked"})
 public class JsonTest {
@@ -940,7 +942,7 @@ public class JsonTest {
         JsonFormat jf = Json.fromJson(JsonFormat.class, "{dateFormat:'yyyyMMhh'}");
         System.out.println(Json.toJson(new NutMap("date", new Date()), jf));
     }
-    
+
     @Test
     public void test_circule_map_pojo() {
         NutMap map = new NutMap();
@@ -948,5 +950,15 @@ public class JsonTest {
         map.put("abc", pojo);
         String j = Json.toJson(map);
         System.out.println(j);
+    }
+    
+    @Test
+    public void test_ptype_map() {
+        String str = "{abc:{def:{age:1}}}";
+        Map<String, Map<String, Record>> map = Json.fromJson(new PType<Map<String, Map<String, Record>>>(){}, str);
+        assertNotNull(map);
+        assertNotNull(map.get("abc"));
+        assertNotNull(map.get("abc").get("def"));
+        assertEquals(1, map.get("abc").get("def").getInt("age"));
     }
 }
