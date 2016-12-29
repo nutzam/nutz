@@ -155,6 +155,10 @@ public class Http {
     public static Response get(String url, int timeout) {
         return Sender.create(Request.get(url)).setTimeout(timeout).send();
     }
+    
+    public static Response get(String url, Header header, int timeout) {
+        return Sender.create(Request.get(url).setHeader(header)).setTimeout(timeout).send();
+    }
 
     /**
      * 访问一个URL,并设置超时及参数

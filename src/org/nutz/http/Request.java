@@ -247,4 +247,9 @@ public class Request {
     public String getEnc() {
         return enc;
     }
+    
+    public Request header(String key, String value) {
+        getHeader().set(key, value);
+        return this;
+    }
 }
