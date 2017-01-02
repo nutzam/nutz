@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Map;
 
@@ -171,12 +172,12 @@ public class UploadAdaptor extends PairAdaptor {
         try {
             if (!"POST".equals(request.getMethod()) && !"PUT".equals(request.getMethod())) {
                 String str = "Not POST or PUT, Wrong HTTP method! --> " + request.getMethod();
-                throw Lang.makeThrow(IllegalArgumentException.class, str);
+                throw new UploadException(str);
             }
             // 看看是不是传统的上传
             String contentType = request.getContentType();
             if (contentType == null) {
-                throw Lang.makeThrow(IllegalArgumentException.class, "Content-Type is NULL!!");
+                throw new UploadException("Content-Type is NULL!!");
             }
             if (contentType.contains("multipart/form-data")) { // 普通表单上传
                 if (log.isDebugEnabled())
@@ -195,8 +196,7 @@ public class UploadAdaptor extends PairAdaptor {
             if (contentType.contains("application/x-www-form-urlencoded")) {
                 log.warn("Using form upload ? You forgot this --> enctype='multipart/form-data' ?");
             }
-            throw Lang.makeThrow(IllegalArgumentException.class, "Unknow Content-Type : "
-                                                                 + contentType);
+            throw new UploadException("Unknow Content-Type : "+ contentType);
         }
         catch (UploadException e) {
             throw Lang.wrapThrow(e);
@@ -204,5 +204,14 @@ public class UploadAdaptor extends PairAdaptor {
         finally {
             Uploads.removeInfo(request);
         }
+    }
+    
+    @Override
+    public void init(Method method) {
+        if (this.method != null) {
+            // 如果ioc配置中设置为单例了,那应该提前报错!! 解决方法 singleton : false
+            throw new RuntimeException(new UploadException("Duplicate initialization is not allowed."));
+        }
+        super.init(method);
     }
 }
