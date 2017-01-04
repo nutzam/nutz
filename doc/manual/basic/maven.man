@@ -4,7 +4,7 @@
 ----------------------------------------------------------------------------------------------------
 Nutz核心jar
 
-	nutz及周边插件,均发布到maven中央库库,可以直接配置使用
+	nutz及周边插件,均已发布到maven中央库库,可以直接配置使用
 
 	{{{<XML>
 		<dependency>
@@ -42,7 +42,7 @@ Nutz核心jar
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.39</version>
+			<version>5.1.40</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
