@@ -64,7 +64,7 @@ public class JsonRenderImpl implements JsonRender {
 
     public void render(Object obj) throws IOException {
         if (null == obj) {
-            writer.write("null");
+            appendNull();
         } else if (obj instanceof JsonRender) {
             ((JsonRender) obj).render(null);
         } else if (obj instanceof Class) {
@@ -332,7 +332,7 @@ public class JsonRenderImpl implements JsonRender {
 
     private void string2Json(String s) throws IOException {
         if (null == s)
-            writer.append("null");
+            appendNull();
         else {
             char[] cs = s.toCharArray();
             writer.append(format.getSeparator());
@@ -435,5 +435,12 @@ public class JsonRenderImpl implements JsonRender {
         int idt = format.getIndent();
         for (int i = 0; i < idt; i++)
             writer.write(format.getIndentBy());
+    }
+    
+    protected void appendNull() throws IOException {
+        if (format.isNullAsEmtry())
+            writer.write("''");
+        else
+            writer.write("null");
     }
 }

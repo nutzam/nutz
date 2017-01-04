@@ -134,6 +134,11 @@ public class JsonFormat implements Cloneable {
      * 数字格式
      */
     private NumberFormat numberFormat;
+    
+    /**
+     * 遇到空值的时候写入字符串
+     */
+    private boolean nullAsEmtry;
 
     /**
      * 判断该字段是否是指定输出方式中的字段
@@ -438,4 +443,29 @@ public class JsonFormat implements Cloneable {
     }
     
     public static String DATEFORMAT_TIMESTAMP = "timestamp";
+
+    public Pattern getActived() {
+        return actived;
+    }
+
+    public void setActived(Pattern actived) {
+        this.actived = actived;
+    }
+
+    public Pattern getLocked() {
+        return locked;
+    }
+
+    public void setLocked(Pattern locked) {
+        this.locked = locked;
+    }
+
+    public boolean isNullAsEmtry() {
+        return nullAsEmtry;
+    }
+
+    public JsonFormat setNullAsEmtry(boolean nullAsEmtry) {
+        this.nullAsEmtry = nullAsEmtry;
+        return this;
+    }
 }

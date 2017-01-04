@@ -961,4 +961,11 @@ public class JsonTest {
         assertNotNull(map.get("abc").get("def"));
         assertEquals(1, map.get("abc").get("def").getInt("age"));
     }
+    
+    @Test
+    public void test_null_as_emtry_string() {
+        NutMap re = new NutMap("abc", null);
+        assertEquals("{abc:null}", Json.toJson(re, JsonFormat.compact().setIgnoreNull(false).setQuoteName(false)));
+        assertEquals("{abc:''}", Json.toJson(re, JsonFormat.compact().setIgnoreNull(false).setQuoteName(false).setNullAsEmtry(true)));
+    }
 }
