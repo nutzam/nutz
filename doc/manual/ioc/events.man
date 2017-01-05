@@ -25,7 +25,7 @@
 		这个函数必须为  public，并且不能有参数
 		
 		为 UserService 对象增加一个函数：
-			{{{
+			{{{<JAVA>
 			public void init() {
 				init_sysuser();
 				init_cmsuser();
@@ -35,7 +35,7 @@
 			}}}
 		
 		在 UserService 配置文件中增加新的对象
-			{{{
+			{{{<JAVA>
 			@IocBean(create="init")
 			public class UserService {
 			
@@ -43,11 +43,11 @@
 			}
 			}}}
 		调用代码,或第一次被取出时
-			{{{
+			{{{<JAVA>
 			ioc.get(UserService.class);
 			}}}
 		控制台输出
-			{{{
+			{{{<JAVA>
 			2016-12-15 DEBUG UserService(UserService.java:1024) : sysuer/cmsuser/roles init complete
 			}}}
 		
@@ -59,8 +59,8 @@ ioc json文件下的配置
 	xyz :{
 		type : "xxx.yyy.zzz.XYZ",
 		events : {
-			fetch  : ... , // 每次从ioc取出
 			create : ... , // 创建完成后,各种属性已经设置好
+			fetch  : ... , // 每次从ioc取出
 			depose : ...   // ioc容器销毁前,一般用于清理各种资源
 		}
 	}

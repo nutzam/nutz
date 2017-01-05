@@ -70,6 +70,7 @@
 	<doc path="aop" title="Aop 手册">
 		<doc path="aop_mvc.man"/>
 		<doc path="aop_trans.man"/>
+		<doc path="aop_async.man"/>
 		<doc path="aop_solution.man"/>
 		<doc path="aop.man"/>
 		<doc path="aop_json.man"/>

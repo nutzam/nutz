@@ -13,19 +13,19 @@
 
 	主模块的IocBy配置
 
-	{{{
+	{{{<JAVA>
 	@IocBy(args={
 				"*js", "ioc/", // 读取ioc/下的js/json配置文件 
 				"*anno", "net.wendal.nutzbook", // 扫描package下的ioc注解
-				"*tx", // 内置的事务拦截器
-				"*async", "48", // 异步执行注解
+				"*tx", // 启用内置的事务拦截器 例如: @Aop(TransAop.txREAD_COMMITTED)
+				"*async", "48", // 启用异步执行注解拦截器, 后面的48是线程池大小. 即注解@Async
 				"*net.wendal.nutzbook.aop.DemoAopLoader" // 自定义aop注解加载器
 		})
 	}}}
 
 	一个演示的入口类
 	
-	{{{
+	{{{<JAVA>
 	@At("/user")
 	@IocBean
 	public class UserAction {
@@ -58,7 +58,7 @@
 	
 	自定义SysLog的注解类
 	
-	{{{
+	{{{<JAVA>
 	@Retention(RetentionPolicy.RUNTIME) // 必须带这个,不然读取不到的
 	@Target({ElementType.METHOD}) // aop,一般指方法
 	@Documented // 记录到javadoc
@@ -68,7 +68,7 @@
 	
 	处理类
 	
-	{{{
+	{{{<JAVA>
 	package net.wendal.nutzbook.aop;
 	
 	public class DemoAopLoader extends SimpleAopMaker<SysLog> {

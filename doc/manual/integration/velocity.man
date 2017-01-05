@@ -5,9 +5,9 @@
 ---------------------------------------------------------------------
 将nutz-plugins-views加入到项目中
 
-	下载地址: http://repo1.maven.org/maven2/org/nutz/nutz-plugins-views/
+	下载地址: https://jfrog.nutz.cn/artifactory/jcenter/org/nutz/nutz-plugins-views/
 	
-	maven项目的关联
+	maven项目的关联,中央库有.
 	
 	{{{<XML>
 		<dependency>
