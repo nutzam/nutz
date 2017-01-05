@@ -8,13 +8,14 @@
 	
 	该加载器有一个可选参数,线程池大小,默认是32,详情可以查阅org.nutz.aop.interceptor.async.AsyncAopIocLoader
 	
-	{{{
+	{{{<JAVA>
 	@IocBy(
         args={"*json","ioc/",
               "*anno","net.wendal.nutzbook",
               "*async", "128" // 你只需要加上这一行,即可启用@Async注解. 128是线程池大小,可选
 		})
 	public class MainModule {}
+	}}}
 	
 --------------------------------------------------------------------------------------------------------
 用法
