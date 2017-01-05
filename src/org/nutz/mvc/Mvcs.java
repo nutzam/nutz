@@ -41,6 +41,17 @@ public abstract class Mvcs {
     public static final String MSG = "msg";
     public static final String LOCALE_KEY = "nutz_mvc_localization_key";
 
+    // PS: 如果这个修改导致异常,请报issue,并将这个变量设置为true
+    public static boolean disableFastClassInvoker = false;
+    // 实现显示行号, 如果禁用, 轻微加速启动
+    public static boolean DISPLAY_METHOD_LINENUMBER = true;
+    // 如果一个Resp已经commit过了,那么是否跳过渲染呢
+    public static boolean SKIP_COMMITTED = false;
+    
+    public static boolean DISABLE_X_POWERED_BY = false;
+    
+    public static String X_POWERED_BY = "nutz/"+Nutz.version()+" <nutzam.com>";
+
     // ====================================================================
 
     public static Map<String, Object> getLocaleMessage(String key) {
@@ -476,17 +487,6 @@ public abstract class Mvcs {
     public static Context reqt() {
         return ctx().reqCtx();
     }
-
-    // PS: 如果这个修改导致异常,请报issue,并将这个变量设置为true
-    public static boolean disableFastClassInvoker = false;
-    // 实现显示行号, 如果禁用, 轻微加速启动
-    public static boolean DISPLAY_METHOD_LINENUMBER = true;
-    // 如果一个Resp已经commit过了,那么是否跳过渲染呢
-    public static boolean SKIP_COMMITTED = false;
-    
-    public static boolean DISABLE_X_POWERED_BY = false;
-    
-    public static String X_POWERED_BY = "nutz/"+Nutz.version()+" <nutzam.com>";
     
     public static Object getSessionAttrSafe(String key) {
         try {
