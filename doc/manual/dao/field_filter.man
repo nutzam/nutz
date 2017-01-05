@@ -2,19 +2,33 @@
 #index:0,1
 ---------------------------------------------------------------------------------------------------
 为什么需要过滤字段
-	 某些时候，尤其是在更新对象的时候，用户希望忽略某些字段。
-     通过注解 [annotations.man Nutz.Dao 实体注解] {#A74;*@Readonly} 可以达到 这个目的。但是更多的时候，
-     对于 POJO 对象，只有在运行时，用户的程序才能决定哪些字段更新，哪些不更新。
-     {#A74;*@Readonly} 注解可就达不到这个 目的了。
-
-	 怎么办呢？ Nutz.Dao 提供了类似于 [dynamic_table_name.man 动态表名] 的解决办法。
-
+	 例如insert时需要忽略某个特定属性, update时只更新某些属性, 查询时需要跳过大字段等。
+	 
+	 FieldFilter/FieldMatcher提供细致的过滤选项,包括:
+	 
+	 * 黑名单(locked)
+	 * 白名单(actived)
+	 * 忽略空值(ignoreNull)
+	 * 忽略数值0(ignoreZero)
+	 * 忽略日期属性(ignoreDate)
+	 * 忽略空字符串(ignoreBlankStr)
+	 * 忽略数值型主键(ignoreId), 仅insert操作有效
+	 * 忽略字符型主键(ignoreName), 仅insert操作有效
+	 * 忽略复合主键(ignorePk), 仅insert操作有效
+	 
+	 FieldFilter是FieldMatcher的包装,相当于```Map<Class, FieldMatcher>```
+	 
+	 黑名单和白名单,均为正则表达式,匹配是Java属性名!!
+	 
+	 ignoreNull/ignoreZero/ignoreDate/ignoreBlankStr对insert(pet)无效,有多参数的insert替代.
+	 
 ---------------------------------------------------------------------------------------------------
-如何过滤字段的例子
-	如下代码，将只更新 Pet 的 id 和 name 字段：
-	{{{
+如何过滤字段
+	如下代码，将只更新 Pet 的 id 和 name 属性：
+	{{{<JAVA>
 	// 第二个参数是正则表达式
-	FieldFilter.create(Pet.class, "^id|name$").run(new Atom() {
+	FieldFilter ff = FieldFilter.create(Pet.class, "^id|name$");
+	ff.run(new Atom() {
 		public void run() {
 			Pet pet = dao.fetch(Pet.class, 24);
 			pet.setName("ABC");
@@ -22,6 +36,21 @@
 			dao.update(pet);
 		}
 	});
+	// 或者
+	Daos.ext(dao, ff).update(pet);
+	}}}
+	
+	以下代码, 将只查询id和name属性
+	
+	{{{<JAVA>
+	FieldFilter ff = FieldFilter.create(Pet.class, "^id|name$");
+	Pet pet = ff.run(new Molecule() {
+		public void run() {
+			setObj(dao.fetch(Pet.class, "ABC"));
+		}
+	});
+	// 或者用Daos.ext
+	Pet pet = Daos.ext(dao, ff).fetch(Pet.class, "ABC");
 	}}}
 
 ---------------------------------------------------------------------------------------------------
@@ -75,7 +104,8 @@
      * 如果我想忽略所有之为空的字段怎么办呢？
      * 如果我想同时为多个实体设置字段过滤怎么办呢？
 
-    忽略少数字段
+---------------------------------------------------------------------------------------------------
+忽略少数字段
         {{{
         FieldFilter.locked(Pet.class, "^last|age$").run(new Atom(){
             public void run(){
@@ -84,7 +114,8 @@
         });
         }}}
 
-    忽略空值
+---------------------------------------------------------------------------------------------------
+忽略空值
         {{{
         FieldFilter.create(Pet.class, true).run(new Atom(){
             public void run(){
@@ -93,7 +124,8 @@
         });
         }}}
 
-    保留几个字段且忽略空值
+---------------------------------------------------------------------------------------------------
+保留几个字段且忽略空值
         {{{
         FieldFilter.create(Pet.class,"^id|name|age|last$", true).run(new Atom(){
             public void run(){
@@ -102,7 +134,8 @@
         });
         }}}
 
-    忽略少数字段且忽略空值
+---------------------------------------------------------------------------------------------------
+忽略少数字段且忽略空值
         {{{
         FieldFilter.create(Pet.class, null, "^age|last$", true).run(new Atom(){
             public void run(){
@@ -111,7 +144,8 @@
         });
         }}}
 
-    为多个实体设置字段过滤
+---------------------------------------------------------------------------------------------------
+为多个实体设置字段过滤
         {{{
         FieldFilter.create(Pet.class, true)
                    .set(Master.class, "^id|name$")
@@ -121,6 +155,18 @@
             }
         });
         }}}
+        
+---------------------------------------------------------------------------------------------------
+使用FieldMatcher创建复杂规则
+
+	{{{<JAVA>
+	FieldMatcher fm = FieldMatcher.make(actived, locked, ignoreNull, 
+                                    ignoreZero, ignoreDate, 
+                                    ignoreId,
+                                    ignoreName,
+                                    ignorePk);
+	FieldFilter ff = FieldFilter.create(Pet.class, fm);
+	}}}
 
 ---------------------------------------------------------------------------------------------------
 无需匿名内部类的写法
@@ -141,4 +187,5 @@
     // ext方法会返回一个Dao实例,是对原有dao对象的封装
     }}}
 
+	FieldFilter实例及Daos.ext返回的Dao实例,可重复使用,均为线程安全的.
 

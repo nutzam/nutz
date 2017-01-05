@@ -47,10 +47,10 @@
          * @Table("t_pet") 将对应到 "t_pet"
 
     描述字段
-        {{{
+        {{{<JAVA>
         @Column //提醒一下,对于@Name注解来说这一行是多余的
-        @Name
-        @ColDefine(type=ColType.VARCHAR, width=20)
+        @Name // 代表字符型注解, 数值型主键用@Id
+        @ColDefine(type=ColType.VARCHAR, width=64)
         private String name;
         }}}
          * 将对应到数据表的 "name" 字段 -- 默认用 field 的名字
@@ -59,14 +59,14 @@
          * 如果 @Column(wrap = true) 则该 field 对应为数据表的关键字字段
          * @Name 表示这个字段是字符型注解，你可以 `Pet pet = dao.fetch(Pet.class,"abc");`
          * @Name(casesensitive=false) 表示依靠这个字段 fetch 时，忽略大小写
-         * @ColDefine 是给出这个字段最精确的描述，比如上例就是 `VARCHAR(20)`
+         * @ColDefine 是给出这个字段最精确的描述，比如上例就是 `VARCHAR(64)`
              * @ColDefine 不是必须的，你如果没有声明，Nutz.Dao 会根据字段类型进行猜测
              * 通常，它能猜对，但是对于 String 类型的字段，它实在不知到长度为多少为好
              * 所以它会给一个默认的长度，但是很有可能你希望给一个别的长度
              * @ColDefine 主要是为 `dao.create(XXX.class)` 设计的，因为它要生成建表语句
 
         通常一个字段，你只需要:
-        {{{
+        {{{<JAVA>
         @Column
         private int age;
 
@@ -82,7 +82,7 @@
 EntityMaker 接口
 
     EntityMaker 接口负责具体的 Entity 生成，你可以参看一下它的源代码:
-    {{{
+    {{{<JAVA>
     package org.nutz.dao.entity;
 
     public interface EntityMaker {
@@ -97,7 +97,7 @@ EntityMaker 接口
 动态实体
 
    无需Pojo类,直接操作数据库:
-    {{{
+    {{{<JAVA>
     Map<String,Object> map = new HashMap<String,Object>();
     map.put(".table", "t_person");
     map.put("name", "abc");
@@ -106,7 +106,7 @@ EntityMaker 接口
     }}}
     你给的 Map 只要多一个固定的名值对 ".table"，那么我就能知道你想操作的数据库表名。
     所以，你还可以:
-    {{{
+    {{{<JAVA>
     Map<String,Object> map = new HashMap<String,Object>();
     map.put(".table", "t_person");
     map.put("name", "abc");
