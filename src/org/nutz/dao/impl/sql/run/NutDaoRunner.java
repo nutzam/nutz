@@ -104,7 +104,7 @@ public class NutDaoRunner implements DaoRunner {
             runCallback(conn, callback);
         }
         catch (Exception e) {
-            if (sp != null)
+            if (sp != null && conn != null)
                 try {
                     conn.rollback(sp);
                 }

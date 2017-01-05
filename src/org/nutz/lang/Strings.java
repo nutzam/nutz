@@ -1001,7 +1001,6 @@ public class Strings {
      *            要拼接的数组
      * @return 拼接好的字符串
      */
-    @SuppressWarnings("unchecked")
     public static <T> String join(String sp, T... array) {
         return Lang.concat(sp, array).toString();
     }

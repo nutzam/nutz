@@ -105,8 +105,7 @@ public class SqlTemplate {
                            Map<String, Object> vars,
                            List<Map<String, Object>> batchValues) {
         Sql sqlObj = null;
-        boolean hasBatchValues = batchValues != null && batchValues.size() > 0;
-        if (hasBatchValues) {
+        if (batchValues != null && batchValues.size() > 0) {
             sqlObj = createSqlObj(sql, batchValues.get(0));
             for (Map<String, Object> params : batchValues) {
                 Map<String, Object> newParams = paramProcess(params);

@@ -433,7 +433,7 @@ public class Mirror<T> {
                                  "Fail to find setter for [%s]->[%s(%s)]",
                                  klass.getName(),
                                  fieldName,
-                                 paramType.getName());
+                                 paramType == null ? "" : paramType.getName());
         }
     }
 

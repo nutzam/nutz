@@ -638,6 +638,8 @@ public class Images {
                 break;
             }
         }
+        if (reader == null)
+            return null;
         ImageInputStream input = ImageIO.createImageInputStream(in);
         reader.setInput(input);
         // Read the image raster

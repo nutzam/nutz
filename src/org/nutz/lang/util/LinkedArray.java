@@ -51,7 +51,6 @@ public class LinkedArray<T> {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     public LinkedArray<T> pushAll(T... es) {
         for (T e : es)
             push(e);
