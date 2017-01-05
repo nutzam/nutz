@@ -30,7 +30,6 @@ import org.nutz.dao.entity.Record;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.ioc.meta.IocValue;
-import org.nutz.json.entity.JsonEntityField;
 import org.nutz.json.impl.JsonRenderImpl;
 import org.nutz.json.meta.Issue1199;
 import org.nutz.json.meta.JA;
