@@ -1,9 +1,9 @@
-#title: NutzMore官方插件/集成库
+#title: 编写插件或集成库
 #index:0,1
 #author:wendal(wendal1985@gmail.com)
 
 ------------------------------------------------------------------------
-项目概述
+nutzmore概述
 
 	官网及源码地址 [https://github.com/nutzam/nutzmore nutzmore]
 	
@@ -18,6 +18,52 @@
 	* 集成类 -- 集成Shiro,Beetl等第三方框架
 	
 ------------------------------------------------------------------------
+插件加载规则
+
+	部分插件可通过IocBy加载,取决于该:
+	
+	{{{<JAVA>
+	@IocBy(args = {
+	           "*js","ioc/",
+               "*anno", "net.wendal.nutzbook",
+               "*quartz", // 加载Quartz
+               "*activiti", // 加载activiti
+               "*net.wendal.nutzbook.slog.SLogIocLoader" // 使用完整类名
+               })
+	}}}
+	
+	其中, js和anno属于内置加载器,最后一个SLogIocLoader是完整类名,没什么可以讨论的.
+	
+	quartz和activiti均为插件,它将依次查找
+	
+	{{{<JAVA>
+	// 查找 *quartz 对应的插件加载类
+	org.nutz.integration.quartz.QuartzIocLoader // 真实存在
+	org.nutz.integration.quartz.QuartzAopConfigure
+	org.nutz.plugin.quartz.QuartzIocLoader
+	org.nutz.plugin.quartz.QuartzAopConfigure
+	
+	// 查找 *activiti 对应的插件加载类
+	org.nutz.integration.activiti.ActivitiIocLoader // 真实存在
+	org.nutz.integration.activiti.ActivitiAopConfigure
+	org.nutz.plugin.activiti.ActivitiIocLoader
+	org.nutz.plugin.activiti.ActivitiAopConfigure
+	}}}
+	
+	若以上类均不存在,将抛出ClassNotFound异常.
+	
+------------------------------------------------------------------------
+常用插件类型
+
+	* 第三方集成 -- 实现IocLoader接口.典型应用是nutz-integration-activiti
+	* Mvc视图  -- 实现ViewMaker接口,典型应用是nutz-plugins-views
+	* dao层扩展 -- 实现DaoInterceptor接口,典型应用是nutz-plugins-daocache
+	* Mvc处理器 -- 实现Processor接口/继承AbstractProcessor,典型应用是nutz-integration-shiro中的NutShiroProcessor
+	* Aop注解 -- 继承SimpleAopMaker,典型实现就是内置的AsyncAopIocLoader
+	
+------------------------------------------------------------------------
 提醒
 
-	nutzmore下的项目的代码量很少,建议先浏览源码熟悉一下逻辑
+	nutzmore下的项目代码量很少,建议先浏览源码熟悉一下逻辑
+	
+	非常欢迎提交您的插件到nutzmore,或提供链接供我们关联.
