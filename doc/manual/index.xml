@@ -104,7 +104,7 @@
 	<doc path="img" title="图像处理小军刀">
 		<doc path="overview.man"></doc>
 	</doc>
-	<doc path="integration" title="与第三方框架的集成">
+	<doc path="integration" title="插件与集成">
 		<doc path="nutzmore.man"></doc>
 		<doc path="freemarker.man"></doc>
 		<doc path="velocity.man"></doc>
