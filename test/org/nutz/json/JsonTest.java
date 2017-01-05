@@ -9,8 +9,10 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +30,8 @@ import org.nutz.dao.entity.Record;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.ioc.meta.IocValue;
+import org.nutz.json.entity.JsonEntityField;
+import org.nutz.json.impl.JsonRenderImpl;
 import org.nutz.json.meta.Issue1199;
 import org.nutz.json.meta.JA;
 import org.nutz.json.meta.JB;
@@ -967,5 +971,20 @@ public class JsonTest {
         NutMap re = new NutMap("abc", null);
         assertEquals("{abc:null}", Json.toJson(re, JsonFormat.compact().setIgnoreNull(false).setQuoteName(false)));
         assertEquals("{abc:''}", Json.toJson(re, JsonFormat.compact().setIgnoreNull(false).setQuoteName(false).setNullAsEmtry(true)));
+    }
+    
+    @Test
+    public void test_json_all_string() throws IOException {
+        StringWriter sw = new StringWriter();
+        new JsonRenderImpl(sw, JsonFormat.compact()){
+            public void render(Object value) throws IOException {
+                if (value != null && value instanceof Number) {
+                    getWriter().write(Json.toJson(value.toString()));
+                } else {
+                    super.render(value);
+                }
+            }
+        }.render(new NutMap("age", 1));
+        assertEquals("{\"age\":\"1\"}", sw.getBuffer().toString());
     }
 }
