@@ -2,7 +2,10 @@ package org.nutz.lang.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -10,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.nutz.lang.Encoding;
 import org.nutz.lang.Strings;
 
 /**
@@ -40,8 +44,7 @@ public class MultiLineProperties implements Map<String, String> {
         load(reader, false);
     }
 
-    public synchronized void load(Reader reader, boolean clear)
-            throws IOException {
+    public synchronized void load(Reader reader, boolean clear) throws IOException {
         if (clear)
             this.clear();
         BufferedReader tr = null;
@@ -161,6 +164,32 @@ public class MultiLineProperties implements Map<String, String> {
 
     public String get(Object key) {
         return maps.get(key);
+    }
+
+    public void print(OutputStream out) throws IOException {
+        print(new OutputStreamWriter(out, Encoding.CHARSET_UTF8));
+    }
+
+    public void print(Writer writer) throws IOException {
+        String NL = System.getProperty("line.separator");
+        for (Map.Entry<String, String> en : entrySet()) {
+            writer.write(en.getKey());
+            String val = en.getValue();
+            if (val == null) {
+                writer.write("=");
+                continue;
+            }
+            if (val.contains("\n")) {
+                writer.write(":=");
+                writer.write(val);
+                writer.write(NL);
+                writer.write("#End " + en.getKey());
+            } else {
+                writer.write('=');
+                writer.write(val);
+            }
+            writer.write(NL);
+        }
     }
 
 }
