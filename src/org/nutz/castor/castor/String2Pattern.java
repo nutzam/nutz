@@ -15,7 +15,7 @@ public class String2Pattern extends Castor<String, Pattern> {
             return Pattern.compile(src);
         }
         catch (Exception e) {
-            throw new FailToCastObjectException("Error regex: " + src, Lang.unwrapThrow(e));
+            throw new FailToCastObjectException("Error regex: " + src, e);
         }
     }
 
