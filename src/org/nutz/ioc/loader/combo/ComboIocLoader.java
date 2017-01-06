@@ -109,8 +109,8 @@ public class ComboIocLoader implements IocLoader {
                 String uccp = Strings.upperFirst(className);
                 _names.add(String.format("org.nutz.integration.%s.%sIocLoader", className, uccp));
                 _names.add(String.format("org.nutz.integration.%s.%sAopConfigure", className, uccp));
-                _names.add(String.format("org.nutz.plugin.%s.%sIocLoader", className, uccp));
-                _names.add(String.format("org.nutz.plugin.%s.%sAopConfigure", className, uccp));
+                _names.add(String.format("org.nutz.plugins.%s.%sIocLoader", className, uccp));
+                _names.add(String.format("org.nutz.plugins.%s.%sAopConfigure", className, uccp));
                 // 寻找插件或集成类 @since 1.r.57
                 for (String _className : _names) {
                     klass = (Class<? extends IocLoader>) Lang.loadClassQuite(_className);

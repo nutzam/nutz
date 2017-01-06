@@ -11,6 +11,8 @@ nutzmore概述
 	
 	请同时参考本手册及nutzmore中项目的README文档.
 	
+	手动下载地址: https://jfrog.nutz.cn/artifactory/jcenter/org/nutz/
+	
 ------------------------------------------------------------------------
 旗下的子模块分类
 
@@ -40,14 +42,14 @@ nutzmore概述
 	// 查找 *quartz 对应的插件加载类
 	org.nutz.integration.quartz.QuartzIocLoader // 真实存在
 	org.nutz.integration.quartz.QuartzAopConfigure
-	org.nutz.plugin.quartz.QuartzIocLoader
-	org.nutz.plugin.quartz.QuartzAopConfigure
+	org.nutz.plugins.quartz.QuartzIocLoader
+	org.nutz.plugins.quartz.QuartzAopConfigure
 	
 	// 查找 *activiti 对应的插件加载类
 	org.nutz.integration.activiti.ActivitiIocLoader // 真实存在
 	org.nutz.integration.activiti.ActivitiAopConfigure
-	org.nutz.plugin.activiti.ActivitiIocLoader
-	org.nutz.plugin.activiti.ActivitiAopConfigure
+	org.nutz.plugins.activiti.ActivitiIocLoader
+	org.nutz.plugins.activiti.ActivitiAopConfigure
 	}}}
 	
 	若以上类均不存在,将抛出ClassNotFound异常.

@@ -5,6 +5,6 @@
 -----------------------------------------------
 用法
 
-	请直接看看项目的README,不会让你失望的!!
+	请查阅插件的README
 	
 	[https://github.com/nutzam/nutzmore/tree/master/nutz-integration-quartz nutz-integration-quartz]
