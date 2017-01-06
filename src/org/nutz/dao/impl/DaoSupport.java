@@ -77,12 +77,12 @@ public class DaoSupport {
     /**
      * 数据库的描述
      */
-    private DatabaseMeta meta;
+    protected DatabaseMeta meta;
 
     /**
      * SQL 管理接口实现类
      */
-    private SqlManager sqlManager;
+    protected SqlManager sqlManager;
     
     protected int autoTransLevel = Connection.TRANSACTION_READ_COMMITTED;
     
