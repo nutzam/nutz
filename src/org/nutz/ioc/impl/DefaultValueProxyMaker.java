@@ -80,7 +80,7 @@ public class DefaultValueProxyMaker implements ValueProxyMaker {
         		String[] tmp = value.toString().split("#");
         		return new ReferTypeValue(tmp[0], Lang.forName(tmp[1], Object.class));
         	} else if (value instanceof Field) {
-        		return new ReferTypeValue(((Field)value).getName(), ((Field)value).getType());
+        		return new ReferTypeValue((Field)value);
         	}
         	throw new IocException(ing.getObjectName(), "unspported refer_type:'%s'", value);
         }
