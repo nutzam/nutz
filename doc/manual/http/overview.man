@@ -13,7 +13,7 @@
 
 	GET请求
 	
-	{{{
+	{{{<JAVA>
 		Response response = Http.get("https://nutz.cn/");
         assertNotNull(response);
         assertNotNull(response.getContent());
@@ -26,7 +26,7 @@
 	
 	POST请求
 	
-	{{{
+	{{{<JAVA>
 	    Map<String, Object> parms = new HashMap<String, Object>();
         parms.put("version", "NutzTest");
         parms.put("website", Nutz.version());
@@ -44,7 +44,7 @@
 	
 	响应的编码
 	
-	{{{
+	{{{<JAVA>
 		// 根据Http头的Content-Type自动识别编码类型
         Response response1 = Http.get("www.duokan.com");
         assertEquals("utf-8", response1.getEncodeType().toLowerCase());
@@ -57,7 +57,7 @@
 	
 	上传文件
 	
-	{{{
+	{{{<JAVA>
 		Request req = Request.create(getBaseURL()+"/upload/image",METHOD.POST);
         File f = File.createTempFile("nutz", "data");
         FileWriter fw = new FileWriter(f);
@@ -75,13 +75,13 @@
 
 	设置http代理
 	
-	{{{
+	{{{<JAVA>
 	Http.setHttpProxy("fuck_fbx.com", 8080);
 	}}}
 	
 	代理回落, 即代理服务器不可连接时,尝试直连
 	
-	{{{
+	{{{<JAVA>
 	Http.setAutoSwitch(true);
 	}}}
 
@@ -90,7 +90,7 @@
 
 	关闭jvm的证书检查(Nutz全局).
 	
-	{{{
+	{{{<JAVA>
 		Http.disableJvmHttpsCheck();
 		String url = "https://kyfw.12306.cn/otn/leftTicket/queryT?leftTicketDTO.train_date=2015-01-12&leftTicketDTO.from_station=UXP&leftTicketDTO.to_station=SJP&purpose_codes=ADULT";
         Http.get(url);
@@ -101,7 +101,7 @@
 
 	基本流程
 	
-	{{{
+	{{{<JAVA>
 		// 初始化线程池, 只需要执行一次
 		Sender.setup(null); 
 		

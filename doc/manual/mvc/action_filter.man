@@ -21,13 +21,13 @@
 	其中入口函数的 @Filters 优先级更高，其次是子模块，最后是主模块。
 	
 	就是说，你在入口模块声明了两个过滤器：
-	{{{
+	{{{<JAVA>
 	@Filters({@By(type=Filter1.class), @By(type=Filter2.class)})
 	public final class MainModule{
 		...
 	}}}
 	在某一个入口函数上声明了一个空的过滤器数组：
-	{{{
+	{{{<JAVA>
 	...
 	@At
 	@Filters
@@ -37,7 +37,7 @@
 	那么，这个入口函数将不会应用任何过滤器。
 	------------------------------------------------------------------------------------------
 	使用内置过滤器
-		{{{
+		{{{<JAVA>
 		@Filters(@By(type=CheckSession.class, args={"user", "/login.jsp"}))
 		}}}
 		CheckSession 是 Nutz.Mvc 为你内置的一个唯一的过滤器，它的构造函数需要两个参数：
@@ -47,7 +47,7 @@
 	定制你自己的过滤器
 		
 		你当然可以定制你自己的过滤器，请注意过滤器接口代码：
-		{{{
+		{{{<JAVA>
 		public interface ActionFilter {
 			View match(ActionContext context);
 		}
@@ -61,7 +61,7 @@
 ----------------------------------------------------------------------------------------------
 交给 Ioc 容器管理
 	如果你的 Filter 需要比较灵活的配置，你可以将它交由 Ioc 容器负责
-	{{{
+	{{{<JAVA>
 	@Filters(@By(type=MyFilter.class, args={"ioc:myFilter"}))
 	}}}
 	其中 "myFilter" 就是你这个过滤器在 Ioc 容器中的名字。关于 Ioc 容器更多的知识，请参看
@@ -75,7 +75,7 @@
 
 	从1.r.55开始,如果一个类同时实现了ActionFilter和Processor,那么事情就变得有趣得多
 	
-	{{{
+	{{{<JAVA>
 	public class SayHiFilterProcessor extends AbstractProcessor implements ActionFilter  {
 	
 		public View match(ActionContext ac) {
@@ -93,7 +93,7 @@
 	
 	假设入口方法仅输出一句日志"你好",那么就能看到这样的日志
 	
-	{{{
+	{{{<JAVA>
 	
 	DEBUG - match? maybe.
 	DEBUG - before doNext

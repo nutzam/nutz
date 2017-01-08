@@ -18,11 +18,11 @@
 ---------------------------------------------------------------------------------------------------------
 创建 Mirror
 	Mirror 就是 Class 的一个包裹：
-	{{{
+	{{{<JAVA>
 	Mirror<Pet> mirror = Mirror.me(Pet.class);
 	}}}
 	更多时候，Mirror 用不到类型：
-	{{{
+	{{{<JAVA>
 	Mirror<?> mirror = Mirror.me(Pet.class);
 	}}}
 	
@@ -34,7 +34,7 @@
 	
 	自动判断构造函数
 		比如类：
-		{{{
+		{{{<JAVA>
 		public class Pet{
 			private String name;
 			
@@ -44,14 +44,14 @@
 		}
 		}}}
 		通过如下调用：
-		{{{
+		{{{<JAVA>
 		Mirror.me(Pet.class).born("XiaoBai");
 		}}}
 		Mirror 会自动根据你的参数寻找到相应的构造函数的。
 	
 	自动判断工厂方法
 		比如类：
-		{{{
+		{{{<JAVA>
 		public class Pet{
 			private String name;
 			
@@ -65,7 +65,7 @@
 		}
 		}}}
 		通过如下调用：
-		{{{
+		{{{<JAVA>
 		Mirror.me(Pet.class).born("XiaoBai");
 		}}}
 		Mirror 会自动根据你的参数寻找到相应的工厂方法。
@@ -73,7 +73,7 @@
 		构造函数最优先，如果找不到构造函数会寻找静态工厂方法
 	
 	自动转换类型
-		{{{
+		{{{<JAVA>
 		public class Pet{
 			private String name;
 			private Calendar birthday;
@@ -85,7 +85,7 @@
 		}
 		}}}
 		通过如下调用：
-		{{{
+		{{{<JAVA>
 		Mirror.me(Pet.class).born("XiaoBai", "2008-10-12 12:23:24");
 		}}}
 		Mirror 会尝试寻找接受两个字符串的构造函数。如果找不到，它发现构造函数 Pet(String, Calendar) 起码
@@ -94,7 +94,7 @@
 	更快的构建 - 缓存构造方法
 		就像你知道的一样， Mirror 根据参数自动判断一个类型的构造函数，过程比较费时。一旦它找到了一个构造
 		函数，或者一个静态工厂方法，我们就希望把它记下来，所以你可以：
-		{{{
+		{{{<JAVA>
 		Mirror<Pet> mirror = Mirror.me(Pet.class);
 		Borning<Pet> borning = mirror.getBorning("XiaoBai");
 		Pet xb = borning.born("XiaoBai");
@@ -108,7 +108,7 @@
 
 	调用一个函数
 		比如你有一个类:
-		{{{
+		{{{<JAVA>
 		public class MyClass {
 			public String getInfo(String s) {
 				return "Get " + s + " @ " + System.currentTimeMillis();
@@ -116,7 +116,7 @@
 		}
 		}}}
 		你可以这么调用 getInfo 方法：
-		{{{
+		{{{<JAVA>
 		Mirror<MyClass> mirror = Mirror.me(MyClass.class);
 		MyClass mc = mirror.born();
 		System.out.println(mirror.invoke(mc, "getInfo", "Hello~~~"));
@@ -127,7 +127,7 @@
 		}}}
 
 	参数自动转型
-		{{{
+		{{{<JAVA>
 		System.out.println(mirror.invoke(mc, "getInfo", new Email("zozoh", "263.net")));
 		}}}
 		控制台输出：
@@ -140,71 +140,71 @@
 更方便的获取和设置
 	获取泛型参数
 		 * 如果没有泛型参数，返回 null
-			{{{
+			{{{<JAVA>
 			Type[] types = Mirror.getTypeParams(MyClass.class);
 			}}}
 	
 	获取 getter
-		{{{
+		{{{<JAVA>
 		// 获取 getName() 方法
 		Method getter = mirror.getGetter("name");
 		}}}
 	获取 setter
-		{{{
+		{{{<JAVA>
 		// 获取 setName(String) 方法
 		Method setter = mirror.getSetter("name", String.class);
 		}}}
 	获取全部属性
 		获得所有的属性，包括私有属性。不包括 Object 的属性
-		{{{
+		{{{<JAVA>
 		Field[] fields = mirror.getFields();
 		}}}
 	获取全部方法
 		获取所有的方法，包括私有方法。不包括 Object 的方法
-		{{{
+		{{{<JAVA>
 		Method[] methods = mirror.getMethods();
 		}}}
 	获取全部静态方法
-		{{{
+		{{{<JAVA>
 		Method[] methods = mirror.getStaticMethods();
 		}}}
 	
 	获取字段
 		 * 获取一个字段。这个字段可以是当前类型或者其父类的私有字段。
-			{{{
+			{{{<JAVA>
 			Field f = mirror.getField("name");
 			}}}
 		 * 获取一组声明了特殊注解的字段
-			{{{
+			{{{<JAVA>
 			Field[] fields = mirror.getFields(MyAnnotation.class);
 			}}}
 		 * 获取第一个声明了特殊注解的字段
-			{{{
+			{{{<JAVA>
 			Field f = mirror.getField(MyAnnotation.class);
 			}}}
 	
 	获取字段值
 		 * 不调用 getter，直接获得字段的值
-			{{{
+			{{{<JAVA>
 			Object v = mirror.getValue(obj, mirror.getField("name"));
 			}}}
 		 * 优先通过 getter 获取字段值，如果没有，则直接获取字段值
-			{{{
+			{{{<JAVA>
 			Object v = mirror.getValue(obj, "name");
 			}}}
 	
 	设置字段值
 		 * 为对象的一个字段设值。 不会调用对象的 setter，直接设置字段的值
-			{{{
+			{{{<JAVA>
 			mirror.setValue(obj, mirror.getField("name"), "XiaoBai");
 			}}}
 		 * 为对象的一个字段设置。优先调用 setter 方法。
-			{{{
+			{{{<JAVA>
 			mirror.setValue(obj, "name", "XiaoBai");
 			}}}
 
 	获取静态字段
 		 * 取静态属性
-			{{{
+			{{{<JAVA>
 			Field[] fields = mirror.getStaticField(nofinalOrAll);
 			}}}

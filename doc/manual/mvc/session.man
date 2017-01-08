@@ -26,7 +26,7 @@ Session机制是什么?
 	`SessionProvider` -- 过滤器式的Session提供者
 	
 	示例: 完全禁用Session
-	{{{
+	{{{<JAVA>
 	@SessionBy(NopSessionProvider.class)
 	public class MainModule {} //其他的果断不理啦
 	

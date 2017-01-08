@@ -5,7 +5,7 @@
 格式约定: 参阅xsd文件(包含在jar中): [https://github.com/nutzam/nutz/blob/master/src/nutz-ioc-0.1.xsd nutz-ioc-0.1.xsd]
 
 示例文件 [https://github.com/nutzam/nutz/blob/master/test/org/nutz/ioc/loader/xml/conf/zzh-offered.xml 示例]:
-{{{
+{{{<xml>
 <ioc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
 	<obj name="obj" singleton="true" scope="app" parent="XXX"

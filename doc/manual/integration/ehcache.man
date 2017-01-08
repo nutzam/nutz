@@ -16,7 +16,7 @@
 --------------------------------------------------
 
 	请务必阅读下面代码中的注释!! 分情况选用!!
-	{{{
+	{{{<js>
 	var ioc = {
 		// 直接初始化Ehcache,默认找ehcache.xml文件哦
 		cacheManager : {
@@ -40,7 +40,7 @@
 
 	在你需要使用Ehcache的地方,加入
 	
-	{{{
+	{{{<JAVA>
 	@Inject CacheManager cacheManager;
 	}}}
 	

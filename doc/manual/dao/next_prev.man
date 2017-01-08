@@ -42,7 +42,7 @@
 -----------------------------------------------------------------------------------------------------------------
 插入之后 - @Next
 	在插入之后，你想通过一段 SQL 为你的 POJO 某一个字段设值。你可以通过 @Next 属性
-	{{{
+	{{{<JAVA>
 	@Table("t_pet")
 	public class Pet{
 		@Id
@@ -59,26 +59,26 @@
 	下面让我们举两个例子，详细说明一下 {*变量} 和 {*参数} 的异同点。
 	
 	使用变量的例子	
-		{{{
+		{{{<JAVA>
 		@Prev(@SQL("SELECT pet_name FROM t_user_pet WHERE ownm='$ownerName'"))
 		private String name;
 		}}}
 		在执行 dao.inert 操作时， Nutz.Dao 会预先执行这段 SQL, 执行之前，变量 {* $ownerName} 会被对象本身的 ownerName 字段的值替
 		换，如果对象本身的 ownerName 字段的值恰好是 "zzh"，那么执行的 SQL 会变成：
-		{{{
+		{{{<SQL>
 		SELECT pet_name FROM m_user_pet WHERE ownm='zzh';
 		}}}
 		这段 SQL 执行的结果会复制给对象的 name 字段。
 		
 	
 	使用参数的例子
-		{{{
+		{{{<JAVA>
 		@Prev(@SQL("SELECT pet_name FROM t_user_pet WHERE ownm=@ownerName"))
 		private String name;
 		}}}
 		在执行 dao.inert 操作时， Nutz.Dao 会预先执行这段 SQL, 执行之前，参数 {* @ownerName} 会被 '?' 替换，并根据这段 SQL 生成 
 		PreparedStatement 对象：
-		{{{
+		{{{<SQL>
 		SELECT pet_name FROM m_user_pet WHERE ownm=?;
 		}}}
 		然后，根据对象本身的 ownerName 字段的值，为这个 PreparedStatement 设置参数，执行之后，这段 SQL 执行的结果会复制给对象的 name 字段。
@@ -87,7 +87,7 @@
 数据库方言
 	无论是 @Prev 还是 @Next，你都是通过 @SQL 声明的数据库方言。但是，假设你并不确定你的 POJO 将会工作在哪一个数据
 	库上，比如你的项目有两个数据源，一个是 Oracle 一个是 Postgresql，那么你的 POJO 该如何写方言呢？
-	{{{
+	{{{<JAVA>
 	@Table("t_pet")
 	public class Pet{
 		@Id
@@ -100,14 +100,14 @@
 	...
 	}}}
 	现在 Nutz.Dao 支持这些数据库. 其他未能识别的数据库将当成MySQL:
-	{{{
+	{{{<JAVA>
 	public enum DB {
-		H2, DB2, PSQL, ORACLE, SQLSERVER, MYSQL, OTHER
+		H2, DB2, PSQL, ORACLE, SQLSERVER, MYSQL, OTHER ...
 	}
 	}}}
 
 	特别说一下Oracle的seq, 不过,更推荐使用触发器模拟自增.
-	{{{
+	{{{<JAVA>
 	@Table("t_pet")
 	public class Pet{
 		@Id(auto=false)

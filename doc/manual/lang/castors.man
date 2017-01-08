@@ -17,25 +17,25 @@
 Hello Castors
 	
 	举个很简单的例子：
-	{{{
+	{{{<JAVA>
 	System.out.println(Castors.me().castTo("563", int.class));
 	}}}
 	或者
-	{{{
+	{{{<JAVA>
 	System.out.println(Castors.me().castTo("zozohtnt@gmail.com", org.nutz.lang.meta.Email.class));
 	}}}
 
 	你还可以：
-	{{{
+	{{{<JAVA>
 	Calendar c = Castors.me().castTo("2009-11-12 15:23:12", Calendar.class)
 	}}}
 	你甚至还能：
-	{{{
+	{{{<JAVA>
 	Timestamp t = Castors.me().castTo(Calendar.getInstance(), Timestamp.class);
 	}}}
 
 	它完全能支持容器：
-	{{{
+	{{{<JAVA>
 	List<Pet> petList = ...;
 	Pet[] pets = Castors.me().castTo(petList, Pet[].class);
 	}}}
@@ -54,7 +54,7 @@ Castors 的原理
 类型转换配置
 
 	比如日期和时间，你需要定制自己的日期类型，请参看默认的 CastorSetting 的源代码：
-	{{{
+	{{{<JAVA>
 	public class CastorSetting {
 		public static void setup(DateTimeCastor<?, ?> c) {
 			c.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
@@ -67,14 +67,14 @@ Castors 的原理
 	会初始化一下相应的 DataTimeCastor。
 
 	你可以通过：
-	{{{
+	{{{<JAVA>
 	Object yourSetting = ...;
 	Castors.setSetting(yourSetting);
 	}}}
 	替换这个默认实现。
 
 	你可以通过：
-	{{{
+	{{{<JAVA>
 	Castors.resetSetting();
 	}}}
 	来把转换配置，恢复到默认值
@@ -84,7 +84,7 @@ Castors 的原理
 
 	你的项目可能会有很多自定义的 POJO，而如果你想支持它们之间流畅的转换，你可能需要写一组 A2B 以及 B2A 的转换器。
 	这些转换器，你可以分别放在不同的包下，为了能让 Nutz.Castors 找到你的转换器，你需要在项目启动时：
-	{{{
+	{{{<JAVA>
 	Castors.addCastorPaths(A2B.class, E2D.class);
 	}}}
 
@@ -107,7 +107,7 @@ Castors 的原理
 		Z2Y
 	}}}
 	为了能让 Nutz.Castors 找到这两组转换器，你需要在项目启动时加载一下：
-	{{{
+	{{{<JAVA>
 	Castors.addCastorPaths(A2B.class, X2Y.class);
 	}}}
 	这样， A2B 和 X2Y 这两包下所有的转换器，都会被加载，并且他们的优先级按加载顺序，后加载的比先加载的要高。Nutz 提供的

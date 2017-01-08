@@ -11,7 +11,7 @@
 	向构造函数里注入参数
 		
 		你的 JSON 配置文件会是这样
-		{{{
+		{{{<json>
 		{
 			xb : {
 				type : 'nutz.demo.ioc.book.Pet',
@@ -24,7 +24,7 @@
 		
 	向属性注入参数
 		你的 JSON 配置文件会是这样
-		{{{
+		{{{<json>
 		{
 			xb : {
 				type : 'nutz.demo.ioc.book.Pet',
@@ -35,7 +35,7 @@
 		}
 		}}}
 		如果你不需要写 type，那么你可以用简写模式:
-		{{{
+		{{{<js>
 		{
 		xb : { name: 'XiaoBai'	}
 		}
@@ -45,21 +45,21 @@
 	是的，它还可以是
 
 	布尔
-		{{{
+		{{{<js>
 		{
 			xb : { dead: true }
 		}
 		}}}
 
 	数字
-		{{{
+		{{{<js>
 		{
 			xb : { age: 24 }
 		}
 		}}}
 	
 	内部对象
-		{{{
+		{{{<js>
 		{
 			xb : {
 				friend: {
@@ -72,7 +72,7 @@
 		关于内部对象 [inner_object.man 请看这里]
 	
 	引用
-		{{{
+		{{{<js>
 		{
 			xb : { friend: {refer: 'XiaoBai' } }
 		}
@@ -81,7 +81,7 @@
 		`{refer : '另外一个对象在容器中的名称'}` 将会得到容器中另外一个对象
 		
 	容器自身	
-		{{{
+		{{{<js>
 		{
 			xb : { myIoc : {refer: '$Ioc'} }
 		}
@@ -89,7 +89,7 @@
 		一种特殊的引用，大小写不敏感，值就是 Ioc 容器本身
 	
 	对象的名称
-		{{{
+		{{{<js>
 		{
 			xb : { myIoc : {refer: '$Name'} }
 		}
@@ -97,7 +97,7 @@
 		一种特殊的引用，大小写不敏感，值就是对象的名称，即 "xb"
 	
 	容器上下文
-		{{{
+		{{{<js>
 		{
 			xb : { myIoc : {refer: '$Context'} }
 		}
@@ -105,7 +105,7 @@
 		一种特殊的引用，大小写不敏感，值就是当前容器的上下文环境接口 org.nutz.ioc.IocContext
 	
 	环境变量
-		{{{
+		{{{<js>
 		{
 			xb : { name : {env : "JAVA_HOME"} }
 		}
@@ -114,7 +114,7 @@
 		
 		从1.b.53开始, env及sys支持数组了, 例如需要JAVA_HOME下面的/bin/java的路径,可以写为
 		
-		{{{
+		{{{<js>
 		{
 			xb : { name : {env : ["JAVA_HOME", "/bin/java"]} }
 		}
@@ -124,7 +124,7 @@
 		
 		如果某个环境变量不存在的时候当成空字符串,那么,在前面加个感叹号
 		
-		{{{
+		{{{<js>
 		{
 			xb : { name : {env : ["!JAVA_HOME", "/bin/java"]} }
 		}
@@ -134,14 +134,14 @@
 		
 		同时也支持默认值哦,用冒号分割
 		
-		{{{
+		{{{<js>
 		{
 			xb : { name : {env : ["!JAVA_HOME:/opt/jdk6", "/bin/java"]} }
 		}
 		}}}
 	
 	文件
-		{{{
+		{{{<js>
 		{
 			xb : { profile : {file : "/home/zozoh/tmp/name.txt"} }
 		}
@@ -160,19 +160,19 @@
 		下面只是列出主要的几种应用方式
 		
 		静态属性
-			{{{
+			{{{<js>
 			{
 				xb : { oneField : {java: 'com.my.SomeClass.staticPropertyName'} }
 			}
 			}}}
 		静态函数
-			{{{
+			{{{<js>
 			{
 				xb : { oneField : {java: 'com.my.SomeClass.someFunc'} }
 			}
 			}}}
 		带参数的静态函数
-			{{{
+			{{{<js>
 			{
 				xb : { oneField : {java: 'com.my.SomeClass.someFunc("p1",true)'} }
 			}
@@ -180,28 +180,28 @@
 			参数可以是任何种类的值
 			
 		容器中的对象
-			{{{
+			{{{<js>
 			{
 				xb : { oneField : {java: '$xh'} } ,
 				xh : { name : 'XiaoHei'}
 			}
 			}}}
 		容器对象某个属性
-			{{{
+			{{{<js>
 			{
 				xb : { oneField : {java: '$xh.name'} } ,
 				xh : { name : 'XiaoHei'}
 			}
 			}}}
 		容器对象某个方法的返回值
-			{{{
+			{{{<js>
 			{
 				xb : { oneField : {java: '$xh.getXXX()'} } ,
 				xh : { name : 'XiaoHei'}
 			}
 			}}}
 		容器对象某个方法的返回值，带参数
-			{{{
+			{{{<js>
 			{
 				xb : { oneField : {java: '$xh.getXXX("some string", true, 34)'} } ,
 				xh : { name : 'XiaoHei'}
@@ -220,14 +220,14 @@
 	还可以更多吗？
 	
 	是的，你完全可以扩展，比如你如果想支持一种新的类型：
-	{{{
+	{{{<js>
 	oneField : {scan : '扫描仪地址'}
 	}}}
 	如何支持这种新的值的类型呢？
 	
 	实现一个扩展接口
 		实现  org.nutz.ioc.ValueProxyMaker 接口：
-		{{{
+		{{{<JAVA>
 		package nutz.demo.ioc.book;
 
 		import org.nutz.ioc.IocMaking;
@@ -259,7 +259,7 @@
 		}
 		}}}
 	添加到 Ioc 容器中
-		{{{
+		{{{<JAVA>
 		Ioc2 ioc = new NutIoc(new JsonLoader("path/path/name.js"));
 		ioc.addValueProxyMaker(new ScanValueProxyMaker());
 		

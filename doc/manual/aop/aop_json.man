@@ -42,7 +42,7 @@
 	估计你已经猜到,org.nutz.ioc.aop.config.impl.JsonAopConfigration就是其中一个实现!
 	
 	细看这个部分代码:
-	{{{
+	{{{<JSON>
 			fields : {
 				itemList : [
 					['.+','toString','ioc:log'],
@@ -57,7 +57,7 @@
 	需要什么值? 对,一个数组.
 	
 	数组的每一行,对应一条规则:
-	{{{
+	{{{<JSON>
 	['.+','toString','ioc:log'],
 	['.+','.+','ioc:myMI']
 	['com\.wendal\.nutz\..+','get.+','org.nutz.ioc.aop.config.impl.MyMI2','false']

@@ -152,7 +152,7 @@
 获取操作
 
 	仅仅获取映射对象：
-	{{{
+	{{{<JAVA>
 	Master master = dao.fetch(Master.class, "Peter");
 	dao.fetchLinks(master, "pets");
 	}}}

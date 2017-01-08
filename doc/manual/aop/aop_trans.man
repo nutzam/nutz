@@ -4,7 +4,7 @@
 --------------------------------------------------------------------------------------------------------
 声明式事务
 	
-	{{{
+	{{{<JAVA>
 	@IocBy(type=ComboIocProvider.class,
         args={"*json","org/nutz/mvc/testapp/classes/ioc",
               "*anno","org.nutz.mvc.testapp.classes",

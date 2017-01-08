@@ -9,7 +9,7 @@
 	
 	基本形式如下(严格的JSON格式并不允许注释,但Nutz.Json支持Java风格的注释)
 	
-	{{{
+	{{{<js>
 	{
 	/**
 	块注释
@@ -45,7 +45,7 @@ Nutz对Json的理解
 将对象转为一个Json字符串
 
 	
-	{{{
+	{{{<Java>
 	Pet pet = new Pet();
 	pet.setName("dongdong");
 	pet.setAge(10);
@@ -54,7 +54,7 @@ Nutz对Json的理解
 	
 	输出的内容是:
 	
-	{{{
+	{{{<js>
 	{
 		name : "dongdong",
 		age : 10
@@ -66,7 +66,7 @@ Nutz对Json的理解
 
 	现有字符串
 	
-	{{{
+	{{{<js>
 	{
 		name : "fengfeng",
 		age : -1
@@ -75,7 +75,7 @@ Nutz对Json的理解
 	
 	转换代码
 	
-	{{{
+	{{{<Java>
 	Pet pet = Json.fromJson(Pet.class, str);
 	pet.getName(); // 值为fengfeng
 	pet.getAge();  // 值为-1

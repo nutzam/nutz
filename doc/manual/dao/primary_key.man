@@ -19,7 +19,7 @@
 整数型主键
 
 	@Id与主键属性名称id没有强制性,只是惯例叫id,你可以起名为abc的.
-	{{{
+	{{{<JAVA>
 	@Table("t_pet")
 	public class Pet{
 		@Id
@@ -27,17 +27,17 @@
 		...
 	}}}
 	通过 @Id 声明了一个整数型主键后，你可以：
-	{{{
+	{{{<JAVA>
 	Pet pet = dao.fetch(Pet.class,23);
 	}}}
 
 	默认自增
 		默认的，Nutz.Dao 认为一个整数型主键默认就是自增的。所以他会在：
-		{{{
+		{{{<JAVA>
 		dao.insert(pet);
 		}}}
 		之后，为你插入的对象执行
-		{{{
+		{{{<SQL>
 		SELECT MAX(id) FROM t_pet;
 		// 如果您使用的数据库支持主键返回(例如MySQL),那么上述sql不会出现.
 		}}}
@@ -48,7 +48,7 @@
 	手工设值
 		由于默认的，@Id 字段被认为是自增的，所以在插入时，Nutz.Dao 会忽略这个字段。但是，有些时候，你的整数主键不是自增的，
 		你希望手工为其设值，怎么办呢？ 你可以给 @Id 设一个属性: auto=false
-		{{{
+		{{{<JAVA>
 		@Table("t_pet")
 		public class Pet{
 			@Id(auto=false)
@@ -59,13 +59,13 @@
 
 	快速插入
 		无论你是不是 @Id(auto=false)，通过 Dao.fastInsert ，都不会执行 SELECT MAX(id)
-		{{{
+		{{{<JAVA>
 		dao.fastInsert(pet)
 		}}}
 		它只会单纯的拼出一条 INSERT XXX，然后执行。 在一个循环里，一次插入多个对象时，很适合使用。
 -----------------------------------------------------------------------------------------------------------------
 字符型主键
-	{{{
+	{{{<JAVA>
 	@Table("t_pet")
 	public class Pet{
 		@Name
@@ -73,12 +73,12 @@
 		...
 	}}}
 	通过 @Name 声明了一个字符型主键后，你可以：
-	{{{
+	{{{<JAVA>
 	Pet pet = dao.fetch(Pet.class,"XiaoBai");
 	}}}
 
 	忽略大小写
-		{{{
+		{{{<JAVA>
 		@Table("t_pet")
 			public class Pet{
 				@Name(casesensitive=false)
@@ -86,15 +86,15 @@
 				...
 		}}}
 		因此
-		{{{
+		{{{<JAVA>
 		Pet pet = dao.fetch(Pet.class,"XiaoBai");
-		同
+		//同
 		Pet pet = dao.fetch(Pet.class,"xiaobai");
-		运行的结果就会没有区别
+		//运行的结果就会没有区别
 		}}}
 -----------------------------------------------------------------------------------------------------------------
 复合主键
-	{{{
+	{{{<JAVA>
 	@Table("t_pet")
 	@PK( {"masterId", "petId"} )
 	public class Pet{
@@ -107,11 +107,11 @@
 
 	通过变参获取和删除
 		{*获取}
-		{{{
+		{{{<JAVA>
 		Pet pet = dao.fetchx(Pet.class, 23, 12);
 		}}}
 		{*删除}
-		{{{
+		{{{<JAVA>
 		Pet pet = dao.deletex(Pet.class, 23, 12);
 		}}}
 		{#F00;* 注意}

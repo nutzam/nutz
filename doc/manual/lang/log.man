@@ -46,7 +46,7 @@
 --------------------------------------------------------------------------------------------------------
 如何使用日志
 	Nutz Log的基本用法和常见的log4j等工具没什么不同。比如：
-	{{{
+	{{{<JAVA>
 	public class MyClass {
 		private static final Log log = Logs.getLog(MyClass.class);
 

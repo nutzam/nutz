@@ -10,7 +10,7 @@ beetl的官方文档描述
 ---------------------------------------------------
 关联配置,修改MainModule类,添加注解
 	
-	{{{
+	{{{<JAVA>
 	@Views(value={BeetlViewMaker.class})
 	// 其他配置,如IocBy等等
 	public class MainModule {}
@@ -21,7 +21,7 @@ beetl的官方文档描述
 
 	入口方法示例
 
-	{{{
+	{{{<JAVA>
 	@At("/user")
 	@Ok("beetl:/tmpl/user/home.btl") // 模板文件的路径为  /tmpl/user/home.btl
 	public void home(){}

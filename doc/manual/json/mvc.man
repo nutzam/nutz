@@ -7,13 +7,13 @@ Mvc中使用Json
 
 	第一种,输出用
 	
-	{{{
+	{{{<Java>
 	@Ok("json:{locked:'password|salt'}")
 	}}}
 	
-	第二中  输入用的
+	第二种  输入用的
 	
-	{{{
+	{{{<Java>
 	@AdaptBy(type=JsonAdaptor.class)
 	}}}
 	
@@ -27,7 +27,7 @@ Mvc中使用Json
 
 	最精简也是最常见的形式
 	
-	{{{
+	{{{<Java>
 	@Ok("json")
 	
 	// 等价于
@@ -36,7 +36,7 @@ Mvc中使用Json
 	
 	内置的模式,一对一对应JsonFormat中的几个快捷方法
 	
-	{{{
+	{{{<Java>
 	@Ok("json:nice")
 	@Ok("json:full")
 	@Ok("json:forLook")
@@ -45,7 +45,7 @@ Mvc中使用Json
 	
 	详细配置, 后面的就是JsonFormat的json形式而已,与JsonFormat的属性一一对应
 	
-	{{{
+	{{{<Java>
 	@Ok("json:{ignoreNull:true, locked:'password|salt'}")
 	
 	// 翻译为Java代码的话
@@ -55,13 +55,13 @@ Mvc中使用Json
 	
 示例配置 -- 忽略password和salt属性,且缩进为一个空格
 
-	{{{
+	{{{<Java>
 	@Ok("json:{indentBy:' ', locked:'password|salt'}")
 	}}}
 	
 示例配置2 -- 设置日期格式为yyyyMMdd
 	
-	{{{
+	{{{<Java>
 	@Ok("json:{dateFormat:'yyyyMMdd'}")
 	}}}
 	
@@ -69,7 +69,7 @@ AdaptBy的说明
 
 	JsonAdaptor 适配器本身并没有什么可以配置的东西
 	
-	{{{
+	{{{<Java>
 	@AdaptBy(type=JsonAdaptor.class)
 	}}}
 	
@@ -80,7 +80,7 @@ AdaptBy的说明
 
 	页面端的代码
 	
-	{{{
+	{{{<js>
 	$.ajax({
 		url : ${base}/user/update
 		type : "POST",
@@ -97,7 +97,7 @@ AdaptBy的说明
 	
 	服务器端的入口方法
 	
-	{{{
+	{{{<Java>
 	@AdaptBy(type=JsonAdaptor.class)
 	@At("/user/update")
 	@Ok("json:{locked:'password|salt'}")
@@ -122,7 +122,7 @@ AdaptBy的说明
 	
 	Chrome控制台将打印
 	
-	{{{
+	{{{<js>
 	id=88
 	
 	{

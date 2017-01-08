@@ -9,7 +9,7 @@
 	
 	maven项目的关联
 	
-	{{{
+	{{{<xml>
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz-plugins-views</artifactId>
@@ -22,7 +22,7 @@
 ---------------------------------------------------------------------
 修改MainModule类,添加引用
 
-	{{{
+	{{{<JAVA>
 	@Views(value={FreeMarkerViewMaker.class})
 	// 其他配置,如IocBy等等
 	public class MainModule {}
@@ -33,13 +33,13 @@
 
 	入口方法示例
 	
-	{{{
+	{{{<JAVA>
 	@At("/")
 	@Ok("fm:tmpl.index") // 模板文件的路径为  /WEB-INF/tmpl/index.ftl
 	public void index(){}
 	}}}
 	
-	{{{
+	{{{<JAVA>
 	@At("/user")
 	@Ok("fm:/tmpl/user/home") // 模板文件的路径为  /tmpl/user/home.ftl
 	public void home(){}
@@ -52,7 +52,7 @@
 
 	在src目录下建立freemarker.properties 以下是示例内容
 	
-	{{{
+	{{{<properties>
 	#demo configure
 	tag_syntax=auto_detect
 	template_update_delay=-1

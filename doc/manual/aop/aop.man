@@ -81,7 +81,7 @@
 		* 方法所在的对象必须是Ioc容器中的对象
 		
 	将上一个例子,改造为Ioc形式
-		{{{
+		{{{<JAVA>
         package aop;
         import org.nutz.ioc.aop.Aop;
         import org.nutz.ioc.loader.annotation.IocBean;

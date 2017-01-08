@@ -30,7 +30,7 @@ web.xml 中的映射 - url-pattern
 
 	通常，在 web.xml 中，我们可以声明各种 HttpServlet 子类， 为了能让某一个子类接受 URL， 就需要配置映射，众所周知
 	你可以通过 `<servlet-mapping>`，为你的 Servelet 增加一组至多组的配置：
-	{{{<web.xml>
+	{{{<XML>
 	<servlet-mapping>
 		<servlet-name>MyServletName</servlet-name>
 		<url-pattern>/*</url-pattern>
@@ -158,7 +158,7 @@ web.xml 中的映射 - url-pattern
 		最终确定了 URL {* /a/b/c} 要匹配的入口函数。
 	
 		所以要想匹配 {* /a/b/c} 下面几种形式都是可以的
-		{{{
+		{{{<JAVA>
 		@At("/a")
 		public class MainModule{
 		   ...
@@ -171,7 +171,7 @@ web.xml 中的映射 - url-pattern
 			 ...
 		}}}
 		或者
-		{{{
+		{{{<JAVA>
 		public class MainModule{
 		   ...
 	
@@ -183,7 +183,7 @@ web.xml 中的映射 - url-pattern
 			 ...
 		}}}
 		或者
-		{{{
+		{{{<JAVA>
 		public class MainModule{
 		   ...
 	
@@ -197,7 +197,7 @@ web.xml 中的映射 - url-pattern
 		当然，一般的说，很少有人在主模块上声明 @At, 严重不建议这样做!!!
 
 		{*#F00;注:} 使用不带参数的@At()注解, 默认会使用方法名/类名的小写做为入口地址!
-        {{{
+        {{{<JAVA>
         // 比如 
         @At
         public String getPet() {
@@ -220,7 +220,7 @@ web.xml 中的映射 - url-pattern
 	Nutz 中的全匹配 - /*
 	
 		如果请求为：
-		{{{
+		{{{<JAVA>
 		http://localhost:8080/testweb/abc/getlist.nut
 		}}}
 		对于 Nutz.Mvc 我们需要匹配的部分为：
@@ -233,7 +233,7 @@ web.xml 中的映射 - url-pattern
 		仅对NutServlet有效!!
 		
 		如果请求为：
-		{{{
+		{{{<JAVA>
 		http://localhost:8080/testweb/abc/getlist.nut
 		}}}
 		对于 Nutz.Mvc 我们需要匹配的部分为：

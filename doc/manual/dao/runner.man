@@ -19,7 +19,7 @@ Dao 接口的默认实现 NutDao
     这么做，因为里面的逻辑稍微有点复杂，你非常容易弄错。
 
     DaoExecutor 接口的源码如下：
-    {{{
+    {{{<JAVA>
     public interface DaoExecutor {
         void exec(Connection conn, DaoStatement st);
     }

@@ -23,7 +23,6 @@
 	
 	在public实例方法标注@Async, 前提是Ioc容器内的对象,例如标注了@IocBean或js/xml中声明了该对象
 	{{{<JAVA>
-	
 	@Async
 	public void sendEmail(....) {
 	}

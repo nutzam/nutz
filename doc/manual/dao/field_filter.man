@@ -76,18 +76,18 @@
 
     而且既然在 ThreadLocal 设置了数据，它就不得不考虑
     如何让你清除这个数据。因此，它的写法也保证了你一定会清掉你的数据了。
-    {{{
-    FieldFilter ... run(new Atom(){   <-- 开始将自身加入 ThreadLocal
+    {{{<JAVA>
+    FieldFilter ... run(new Atom(){  // <-- 开始将自身加入 ThreadLocal
         public void run(){
             // 这里是你的代码，你的 Dao 调用都会得到 ThreadLocal 中你对于实体字段过滤的设置
         }
-    });   <-- run 方法结束前，会从 ThreadLocal 清除自身
+    }); //  <-- run 方法结束前，会从 ThreadLocal 清除自身
     }}}
 
 ---------------------------------------------------------------------------------------------------
 字段过滤器的创建
     下面是一个最简单和常用的例子：
-    {{{
+    {{{<JAVA>
     FieldFilter.create(Pet.class, "^id|name$").run(new Atom(){
         public void run(){
             // TODO 你的 DAO 操作代码
@@ -106,7 +106,7 @@
 
 ---------------------------------------------------------------------------------------------------
 忽略少数字段
-        {{{
+        {{{<JAVA>
         FieldFilter.locked(Pet.class, "^last|age$").run(new Atom(){
             public void run(){
                 // TODO 你的 DAO 操作代码
@@ -116,7 +116,7 @@
 
 ---------------------------------------------------------------------------------------------------
 忽略空值
-        {{{
+        {{{<JAVA>
         FieldFilter.create(Pet.class, true).run(new Atom(){
             public void run(){
                 // TODO 你的 DAO 操作代码
@@ -126,7 +126,7 @@
 
 ---------------------------------------------------------------------------------------------------
 保留几个字段且忽略空值
-        {{{
+        {{{<JAVA>
         FieldFilter.create(Pet.class,"^id|name|age|last$", true).run(new Atom(){
             public void run(){
                 // TODO 你的 DAO 操作代码
@@ -136,7 +136,7 @@
 
 ---------------------------------------------------------------------------------------------------
 忽略少数字段且忽略空值
-        {{{
+        {{{<JAVA>
         FieldFilter.create(Pet.class, null, "^age|last$", true).run(new Atom(){
             public void run(){
                 // TODO 你的 DAO 操作代码
@@ -146,7 +146,7 @@
 
 ---------------------------------------------------------------------------------------------------
 为多个实体设置字段过滤
-        {{{
+        {{{<JAVA>
         FieldFilter.create(Pet.class, true)
                    .set(Master.class, "^id|name$")
                    .run(new Atom(){
@@ -175,7 +175,7 @@
 	
 	示例
 	
-    {{{
+    {{{<JAVA>
     //原写法
     FieldFilter.create(Pet.class, "^id|name$").run(new Atom(){
         public void run(){

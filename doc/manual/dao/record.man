@@ -36,7 +36,7 @@ POJO 之苦
 -------------------------------------------------------------------------------------------------
 获取一条记录
 	
-	{{{
+	{{{<JAVA>
 	// 根据主键获取
 	Record re = dao.fetch("t_pet", Cnd.where("id","=",2));
 	
@@ -62,7 +62,7 @@ POJO 之苦
 -------------------------------------------------------------------------------------------------
 查询多条记录
 	
-	{{{
+	{{{<JAVA>
 	// 查询所有以 A 开头的 Pet
 	List<Record> list = dao.query("t_pet", Cnd.where("name","LIKE","A%"), null);
 
@@ -74,16 +74,16 @@ POJO 之苦
 -------------------------------------------------------------------------------------------------
 插入
 	
-	{{{
+	{{{<JAVA>
 	dao.insert("t_pet", Chain.make("name","XiaoBai").add("birthday", new Timestampe(System.currentTimeMillis())));
 	}}}
 	它会执行 SQL
-	{{{
+	{{{<JAVA>
 	INSERT INTO t_pet (name,birthday) VALUES ('XiaoBai', '2010-4-28 14:27:12')
 	}}}
 
 	值链实际就是通过链式赋值的方式构建出的一组名值对，当然如果值链较长你可以：
-	{{{
+	{{{<JAVA>
 	Chain ch = Chain.make("字段名",字段值);
 	ch.add("字段名", 字段值);
 	ch.add("字段名", 字段值);
@@ -94,24 +94,24 @@ POJO 之苦
 -------------------------------------------------------------------------------------------------
 更新
 
-	{{{
+	{{{<JAVA>
 	dao.update("t_pet",
 				Chain.make("name","XiaoBai").add("birthday", new Timestampe(System.currentTimeMillis())),
 				Cnd.where("id","=",2));
 	}}}
 	它会执行 SQL
-	{{{
+	{{{<SQL>
 	UPDATE t_pet SET name='XiaoBai', birthday='2010-4-28 14:27:12' WHERE id=2;
 	}}}
 
 -------------------------------------------------------------------------------------------------
 删除
 
-	{{{
+	{{{<JAVA>
 	dao.clear("t_pet", Cnd.where("id", "=" ,2));
 	}}}
 	它会执行 SQL
-	{{{
+	{{{<SQL>
 	DELETE t_pet WHERE id=2;
 	}}}
 

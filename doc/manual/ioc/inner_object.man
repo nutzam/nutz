@@ -33,7 +33,7 @@
 	然也只会被创建一次。否则，每次宿主被创建的时候，它都会被创建。
 	
 	JSON 配置文件：
-		{{{
+		{{{<js>
 		var ioc = {
 			xb : {
 				name : 'XiaoBai',
@@ -49,10 +49,11 @@
 		}}}
 	
 	调用代码
-		{{{
+		{{{<JAVA>
 		Ioc ioc = new NutIoc(new JsonLoader("nutz/demo/ioc/book/inner.js"));
 		Pet pet = ioc.get(Pet.class, "xb");
 		System.out.println(pet.getFriend().getName());
+		ioc.depose();
 		}}}
 		
 	控制台输出
@@ -81,7 +82,7 @@ JSON 加载器
 
 	语法:
 	
-	{{{
+	{{{<js>
 		{
 			type : "net.wendal.nutzbook.Cache",
 			args : ["user_profile_cache"],
@@ -93,7 +94,7 @@ JSON 加载器
 
 	从1.b.53开始,支持ioc bean做factory bean
 	
-	{{{
+	{{{<js>
 		{
 			type : "net.wendal.nutzbook.Cache",
 			args : ["user_profile_cache"],

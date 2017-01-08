@@ -32,7 +32,7 @@ Json字符串转Java对象, 分成几种情况
 
 	这算是最原始的方法了
 	
-	{{{
+	{{{<Java>
 	Object obj = Json.fromJson(str);
 	}}}
 	
@@ -42,7 +42,7 @@ Json字符串转Java对象, 分成几种情况
 
 	最常用的方法,也是入门级的方法
 	
-	{{{
+	{{{<Java>
 	Pet pet = Json.fromJson(Pet.class, str);
 	pet = Json.fromJson(Pet.class, reader);
 	pet = Json.fromJsonFile(Pet.class, new File("pet.json"));
@@ -52,7 +52,7 @@ Json字符串转Java对象, 分成几种情况
 
 	fromJson方法中最复杂最灵活的方法群
 	
-	{{{
+	{{{<Java>
 	String str = "[{dongdong:{age:80}}]";
 	List<Map<String, Pet>> list = (List<Map<String, Pet>>)Json.fromJson(NutType.list(NutType.mapStr(Pet.class)), str/*其他源也可以*/);
 	
@@ -63,7 +63,7 @@ Pojo集合或Map嵌套
 
 	这群方法事实上就是 有Pojo类对应(复杂自定义) 中的简写形式
 	
-	{{{
+	{{{<Java>
 	String str = "{dongdong:{age:80}}";
 	Map<String, Pet> pets = Json.fromJsonAsMap(Pet.class, str/*其他源也可以*/);
 	

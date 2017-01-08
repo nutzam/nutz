@@ -10,14 +10,14 @@
 基本思路
 
 	原方法(没有返回值)
-	{{{
+	{{{<JAVA>
 	public void exe(){
 		//Do something
 	}
 	}}}
 	
 	被改造后
-	{{{
+	{{{<JAVA>
     import org.nutz.aop.InterceptorChain;
     ....
     

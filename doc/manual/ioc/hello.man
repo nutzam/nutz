@@ -25,7 +25,7 @@
 	例子的源代码，你可以访问 [http://nutzbook.wendal.net Nutzbook]  获取
 	
 	POJO 源代码
-		{{{
+		{{{<JAVA>
 		package nutz.demo.ioc.book;
 		
 		import java.util.Calendar;
@@ -73,7 +73,7 @@
 	
 	Json 配置文件
 		与 POJO 在同一包路径下
-		{{{
+		{{{<js>
 		/*
 		 * 开始写上 var ioc = { ， 是为了利用 eclipse 的  javascript 编辑器的自动格式化功能
 		 */
@@ -101,7 +101,7 @@
 		}}}
 		
 	调用代码
-		{{{
+		{{{<JAVA>
 		package nutz.demo.ioc.book;
 
 		import org.nutz.ioc.Ioc;
@@ -125,7 +125,7 @@
 		}}}
 	
 	如果配置文件中声明了类型，则可不传入类型
-		{{{
+		{{{<JAVA>
 		Pet xh = ioc.get(null, "xiaohei");
 		System.out.printf("%s's friend is %s\n", xh.getName(), xh.getFriend().getName());
 		}}}
@@ -135,7 +135,7 @@
 		}}}
 	
 	声明了 singleton: false，那么它每次获取，都会生成一个新的实例
-		{{{
+		{{{<JAVA>
 		Pet p1 = ioc.get(null, "xiaohei");
 		Pet p2 = ioc.get(null, "xiaohei");
 		System.out.println(p1==p2);

@@ -26,7 +26,7 @@
 
 	每次从 NutIoc 里获取对象，如果你想告诉容器：“嘿，我还有另外的一个缓存，请优先在里面查查”
 	你可以这样调用：
-	{{{
+	{{{<Java>
 	IocContext myCache = ...;  // 获取你的缓存
 	MyObject obj = ioc.get(MyObjec.class, "objName", myCache);
 	}}}

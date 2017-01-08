@@ -96,7 +96,6 @@
 		<doc path="mirror.man"/>
 		<doc path="segment.man"/>
 		<doc path="filepool.man"/>
-		<doc path="plugin.man"/>
 		<doc path="log.man"/>
 	</doc>
 	<doc path="http" title="Http轻客户端">

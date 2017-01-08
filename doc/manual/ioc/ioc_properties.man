@@ -13,7 +13,7 @@
     说：“你去改xxxx Ioc 文件去。”
 
     老实说，运维人员会恨死你，我列一个很简单的 JSON 配置文件:
-    {{{
+    {{{<js>
     var ioc = {
     	// 数据源
     	dataSource : {
@@ -54,7 +54,7 @@
     这样格式的文件，傻子也知道怎么维护。
     
     当然，很多小JIAN人喜欢XML，这样的文件
-    {{{
+    {{{<XML>
     <db>
         <driver>com.mysql.jdbc.Driver</driver>
         <url>jdbc:mysql://127.0.0.1:3306/mydb</url>
@@ -84,7 +84,7 @@
     db-password=123456
     }}}
     那么我们的 Ioc 文件就改成这样：
-    {{{
+    {{{<js>
     var ioc = {
     	// 读取配置文件
     	conf : {

@@ -31,7 +31,7 @@ Dao 接口的第三个参数
 
 ----------------------------------------------------------------------------------------
 将分页信息和查询结果一起返回
-	{{{
+	{{{<JAVA>
 	public QueryResult getPetList(Dao dao, int pageNumber, int pageSize){
 		Pager pager = dao.createPager(pageNumber, pageSize);
 		List<Pet> list = dao.query(Pet.class, null, pager);

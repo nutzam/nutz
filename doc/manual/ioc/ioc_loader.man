@@ -6,10 +6,8 @@
 使用Json
 
     NutIoc 包含一个 JsonLoader，通常同学们*不*会这么用!!!
-    
-    在Mvc环境下,声明了@IocBy,那么new NutIoc基本上等于自寻死路!!! 通过Mvcs.getIoc()可以获取已有Ioc容器.
 
-    {{{
+    {{{<JAVA>
     Ioc ioc = new NutIoc(new JsonLoader("path/to/mybeans.js"));
     }}}
     

@@ -21,19 +21,19 @@
 
 	如果对象不大,直接转json字符串是最方便的咯
 	
-	{{{
+	{{{<Java>
 	Json.toJson(pet);
 	}}}
 	
 	输出到Writer,适合大对象,不然耗太多内存了
 	
-	{{{
+	{{{<Java>
 	Json.toJson(writer, pet);
 	}}}
 	
 	直接输出到文件去
 	
-	{{{
+	{{{<Java>
 	Json.toJsonFile(file, pet);
 	}}}
 	
@@ -44,7 +44,7 @@ JsonFormat格式控制
 	
 	JsonFormat提供了几种快捷配置(静态方法,但可以继续链式设置)
 	
-	{{{
+	{{{<Java>
 	Json.toJson(pet, JsonFormat.compact()); // 紧凑模式 -- 无换行,忽略null值
 	Json.toJson(pet, JsonFormat.full());    // 全部输出模式 -- 换行,不忽略null值
 	Json.toJson(pet, JsonFormat.nice());    // 一般模式 -- 换行,但忽略null值
@@ -59,25 +59,25 @@ JsonFormat详解
 	
 	indentBy -- 缩进所使用的字符,默认是3个空格
 	
-	{{{
+	{{{<Java>
 	Json.toJson(pet, JsonFormat.full().setIndentBy("\t"));// 输出的缩进将使用tab
 	}}}
 	
 	compact -- 是否为紧凑模式,默认为false. 若为true,indent和indentBy将无效.
 	
-	{{{
+	{{{<Java>
 	Json.toJson(pet, JsonFormat.full().setCompact(true)); // 不作任何换行和缩进
 	}}}
 	
 	quoteName -- key是否用双引号包起来,默认为true,同时也是json标准格式的要求. 若设置为false,则新版的jquery将解析出错.
 	
-	{{{
+	{{{<Java>
 	Json.toJson(pet, JsonFormat.full().setQuoteName(false)); // 输出类似 {name:"wendal"}
 	}}}
 	
 	ignoreNull -- 是否忽略控制,默认为false
 	
-	{{{
+	{{{<Java>
 	Json.toJson(pet, JsonFormat.full().setIgnoreNull(true)); // null值的key-value将不会输出,但空List还是会的.
 	}}}
 	
@@ -89,7 +89,7 @@ JsonFormat详解
 	
 	locked -- 与actived刚好相反, 不输出哪些的key,默认为null,即允许所有key. 注意,这是正则表达式!
 	
-	{{{
+	{{{<Java>
 	Json.toJson(pet, JsonFormat.full().setLocked("^(location)$"); // 不输出location,其他key正常输出
 	}}}
 	
@@ -97,7 +97,7 @@ JsonFormat详解
 	
 	autoUnicode -- 自动转换为unicode,默认为false. 特殊需要,一般用不上
 	
-	{{{
+	{{{<Java>
 	Json.toJson(pet, JsonFormat.full().setAutoUnicode(true); // 当非英文字符出现时,转为uf003 形式 
 	}}}
 	
@@ -105,7 +105,7 @@ JsonFormat详解
 	
 	dateFormat -- 日期格式
 	
-	{{{
+	{{{<Java>
 	Json.toJson(pet, JsonFormat.full().setDateFormat("yyyyMMdd"); // 将输出类似于 {"b":"20190823"}
 	}}}
 	

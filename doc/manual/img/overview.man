@@ -15,7 +15,7 @@
 
 	你会发现,Images类只有一个read方法,参数类型是Object
 	
-	{{{
+	{{{<JAVA>
 	// 可以是URL对象
 	Images.read(new Url("http://www.baidu.com/img/bdlogo.png"));
 	// 可以是路径
@@ -31,7 +31,7 @@
 
 	旋转90度
 	
-	{{{
+	{{{<JAVA>
 	img = Images.rotate(img, 90);
 	}}}
 
@@ -40,13 +40,13 @@
 
 	缩放到指定长宽,等比缩放
 	
-	{{{
+	{{{<JAVA>
 	img = Images.zoomScale(img, 160, 180, Color.WHITE);
 	}}}
 	
 	裁剪缩放
 	
-	{{{
+	{{{<JAVA>
 	Images.clipScale("/dev/shm/abc.jpg", "/dev/shm/abc_out.jpg",  1920, 1080);
 	}}
 	
@@ -55,12 +55,12 @@
 
 	根据文件后缀输出图片
 	
-	{{{
+	{{{<JAVA>
 	Images.write(image, new File("/dev/shm/abc.png"));
 	}}}
 	
 	输出jpeg并指定质量
 	
-	{{{
+	{{{<JAVA>
 	Images.writeJpeg(image, new File("/dev/shm/abc.jpg"), 0.9f);
 	}}}

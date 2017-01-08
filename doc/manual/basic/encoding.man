@@ -23,7 +23,7 @@
 --------------------------------------------------------------------------------------------------------
 JSP页面编码
 
-	{{{
+	{{{<JSP>
 	<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 	}}}
 	
@@ -51,7 +51,7 @@ tomcat编码
 	
 	maven的配置如下
 	
-	{{{
+	{{{<xml>
 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	}}}
 	
@@ -71,7 +71,7 @@ tomcat编码
 	
 	修改my.ini的mysqld小节,设置服务器字符集,是最佳解决方式
 	
-	{{{
+	{{{<ini>
 	[mysqld]
 	character-set-server = utf8
 	}}}

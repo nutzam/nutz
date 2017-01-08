@@ -38,7 +38,7 @@
     通过在你的 POJO 类上标注注解，可以让 Nutz 来理解你打算怎么映射字段，这里我们举几个例子
 
     声明实体对应的表名
-        {{{
+        {{{<JAVA>
         @Table
         public class PetBean {
             ...

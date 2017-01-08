@@ -55,8 +55,8 @@
 NutDao 是如何连接关联表的
 
     比如，下面的例子
-    {{{
-    我们有两个 POJO
+    {{{<JAVA>
+    //我们有两个 POJO
     public class Pet {
         @Id
         public int id;
@@ -82,7 +82,7 @@ NutDao 是如何连接关联表的
     }}}
 
     那么我们可以为 Pet 类声明一个多对多关联
-    {{{
+    {{{<JAVA>
     public class Pet {
         @Id
         public int id;
@@ -117,7 +117,7 @@ NutDao 是如何连接关联表的
     读到这里，你一定感到很郁闷，因为你实在不想改变你的关联表，没关系，你可以下面一样声明你的 
     `@ManyMany` 注解
 
-    {{{
+    {{{<JAVA>
     ...
     @ManyMany(relation="t_pet_food", 
                 from="pid:name", 
@@ -211,7 +211,7 @@ NutDao 是如何连接关联表的
 获取操作
 
 	仅仅获取映射对象：
-	{{{
+	{{{<JAVA>
 	Food food = dao.fetch(Food.class, "Fish");
 	dao.fetchLinks(food, "pets");
 	}}}
