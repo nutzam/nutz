@@ -1,0 +1,90 @@
+#title: JUnit支持
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+--------------------------------------------------------------------------------------------------------
+简介
+
+	写测试用例都很头疼,然而对核心方法的单元测试是非常重要的.
+	
+	nutz-plugins-mock 提供了 Ioc支持,Mvc环境, Servlet Mock对象
+	
+----------------------------------------------------------------------------------------------------------
+基本用法
+
+	添加依赖
+	
+	{{{<XML>
+		<dependency>
+			<groupId>org.nutz</groupId>
+			<artifactId>nutz-plugins-mock</artifactId>
+			<version>1.r.59</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- 可选, 安利一下mockito,模拟mock对象很方便 -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>2.0.31-beta</version>
+			<scope>test</scope>
+		</dependency>
+	}}}
+
+	添加Runner. web项目建议覆盖getMainModule方法, 非web项目覆盖getIocArgs
+	
+	{{{<JAVA>
+    public class MyNutTestRunner extends NutTestRunner {
+
+        public MyNutTestRunner(Class<?> klass) throws InitializationError {
+            super(klass);
+        }
+
+        public Class<?> getMainModule() {
+            return MainModule.class;
+        }
+        
+        /**
+         * 可覆盖createIoc,实现参数覆盖, bean替换,等定制.
+         */
+        protected Ioc createIoc() {
+        	Ioc ioc = super.createIoc();
+        	PropertiesProxy conf = ioc.get(PropertiesProxy.class, "conf");
+        	conf.put("db.url", "jdbc:h2:~/test");
+        	return ioc;
+    	}
+    }
+	}}}
+	
+	测试类, 请务必留意测试类所在的package,确保到ioc配置的覆盖范围内.
+	
+	{{{<JAVA>
+    @RunWith(NutBookIocTestRunner.class)
+    @IocBean // 必须有
+    public class SimpleTest extends Assert {
+        
+        //private static final Log log = Logs.get();
+        
+        // 跟通常的@Inject完全一样.
+        @Inject("refer:$ioc")
+        protected Ioc ioc;
+        
+        @Inject
+        protected Dao dao;
+        
+        @Test
+        public void test_user_service_create_user() {
+        	dao.create(User.class, false);
+        	User user = new User("wendal", "1234512345");
+        	dao.insert(user);
+        	
+        	user = dao.fetch(User.class, "wendal");
+        	assertNotNull(user);
+        	assertNotNull(user.getName());
+        }
+    }
+    }}}

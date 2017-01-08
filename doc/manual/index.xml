@@ -115,6 +115,9 @@
 		<doc path="ehcache.man"></doc>
 		<doc path="daocache.man"></doc>
 	</doc>
+	<doc path="testing" title="单元测试">
+		<doc path="junit_testing.man"></doc>
+	</doc>
 	<doc path="committer"  title="关于源码">
 		<doc path="git_project.man"/>
 		<doc path="compile_with_maven.man"/>
