@@ -14,9 +14,9 @@ public class HttpDNSTest {
         
         AliDnsProvider provider = new AliDnsProvider("142444");
         HttpDNS.setProvider(provider);
-        assertNotNull(HttpDNS.getIp("xplay.io"));
+        assertNotNull(HttpDNS.getIp("cdn.nutz.cn"));
         
-        Response resp = Http.get("http://xplay.io");
+        Response resp = Http.get("http://cdn.nutz.cn");
         assertTrue(resp.isOK());
         
         //Response resp = Http.get("http://www.aliyun.com");
