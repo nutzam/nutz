@@ -31,7 +31,7 @@ public class SystemLogAdapter implements LogAdapter, Plugin {
 
         static SystemLog me() {
             if (! warned) {
-                me.warn("!!You are using default SystemLog! Don't use it in Production environment!!");
+                me.info("Select SystemLog as Nutz.Log implement");
                 warned = true;
             }
             return me;
@@ -39,7 +39,7 @@ public class SystemLogAdapter implements LogAdapter, Plugin {
 
         private SystemLog() {
             isInfoEnabled = true;
-            isDebugEnabled = true;//严重考虑中!!
+            isDebugEnabled = true;
         }
 
         public void debug(Object message, Throwable t) {
