@@ -17,7 +17,8 @@ public class HttpDNSTest {
         assertNotNull(HttpDNS.getIp("cdn.nutz.cn"));
         
         Response resp = Http.get("http://cdn.nutz.cn/robots.txt");
-        assertTrue(resp.isOK());
+        resp.isOK();
+        //assertTrue(resp.isOK());
         
         //Response resp = Http.get("http://www.aliyun.com");
         //assertTrue(resp.isOK());
