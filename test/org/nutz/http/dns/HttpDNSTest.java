@@ -16,7 +16,7 @@ public class HttpDNSTest {
         HttpDNS.setProvider(provider);
         assertNotNull(HttpDNS.getIp("cdn.nutz.cn"));
         
-        Response resp = Http.get("http://cdn.nutz.cn");
+        Response resp = Http.get("http://cdn.nutz.cn/robots.txt");
         assertTrue(resp.isOK());
         
         //Response resp = Http.get("http://www.aliyun.com");
