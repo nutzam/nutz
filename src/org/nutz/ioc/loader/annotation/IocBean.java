@@ -59,7 +59,7 @@ public @interface IocBean {
     String fetch() default "";
 
     /**
-     * 你要注入的字段属于超类? 试试这个吧. 只能注入与字段同名的对象 !
+     * 你要注入的字段属于超类. <b>{"dao:refer:dao"}<b/> 前者是属性名称,后者的@Inject的语法. 后面的refer可忽略
      * 
      * @return 需要注入的字段名
      */
