@@ -26,6 +26,7 @@
 		<doc path="session.man"></doc>
 		<doc path="setupby.man"></doc>
 		<doc path="cross_origin.man"></doc>
+		<doc path="websocket.man"></doc>
 	</doc>
 	<doc path="dao" title="Dao 手册">
 		<doc path="hello.man"/>
@@ -52,6 +53,7 @@
 		<doc path="interceptors.man"/>
 		<doc path="procedure.man"/>
 		<doc path="slave.man"/>
+		<doc path="multiple_datasource.man"></doc>
 	</doc>
 	<doc path="ioc"	title="Ioc 手册">
 		<doc path="hello.man"/>

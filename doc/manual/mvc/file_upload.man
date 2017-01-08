@@ -1,6 +1,7 @@
 #title: 文件上传
 #index:0,1
 #author: zozoh(zozohtnt@gmail.com)
+#author: wendal(wendal1985@gmail.com)
 ----------------------------------------------------------------------------------------------
 关于文件上传
 	
@@ -141,8 +142,8 @@
         }}}
 
 
-	------------------------------------------------------------------------------------------
-    在入口函数的参数里获得上传的文件
+------------------------------------------------------------------------------------------
+在入口函数的参数里获得上传的文件
 
         因为 FORM 表单里的 input type=file 项都已经被 UploadAdaptor 解析并存入服务器的临时目录
         （你声明的那个目录，比如上例是 /WEB-INF/tmp），你在入口函数里可以直接获取：
@@ -170,8 +171,8 @@
         }
         }}}
 
-	------------------------------------------------------------------------------------------
-    一次上传多个同名文件
+------------------------------------------------------------------------------------------
+一次上传多个同名文件
 
         相信很多同学都会有这样的用法，就是，希望一次上传的表单为：
         {{{
@@ -193,24 +194,75 @@
         但是这里，有一点{#F00;*限制}
          * {#F00;* 你只能用 `TempFile[]`}
         也就是说，如果你用了 `File[]` 将会出错。原因不解释。
-	
---------------------------------------------------------------------------------------
-Html5流式上传(实验性)
-
-	1.b.44及之后的版本,同时兼容Html5流式上传. 但,请注意以下事项:
-		
-		* 上传的Content-Type必须是application/octet-stream
-		* 必须带Content-Length
-		* 默认情况下,对于的表单属性是filedata,除非在Content-Disposition另外声明
-		* 不支持Content-Type过滤,因为上传数据中通常不携带这种信息
-		* 支持文件名过滤,但请留意默认文件名nutz.jpg
 
 -------------------------------------------------------------------------------------
 可用的参数类型
 
-	* TempFile 推荐
+	* TempFile 及 TempFile[]推荐
 	* File 已废弃
 	* FileMeta 已废弃
-	* InputStream 不推荐
-	* Reader 不推荐
+	* InputStream 已废弃
+	* Reader 已废弃
 	* Map 用于得到全部参数 
+	
+-------------------------------------------------------------------------------------
+推荐的js插件
+
+	ajax下是不能直接提交带文件的表单的,但良好的用户体验,怎么能不使用ajax上传文件呢?
+	
+	* [http://fex.baidu.com/webuploader/ webuploader] 百毒出品,体验还是不错的
+	* [https://github.com/codler/jQuery-Ajax-Upload jQuery-Ajax-Upload] 老牌ajax上传插件
+	
+-------------------------------------------------------------------------------------
+直接上传到云
+
+	以七牛云存储为例, 使用其js-sdk及java-sdk
+	
+	其中,java-sdk用于提供uptoken的入口方法
+	
+	{{{<JAVA>
+    @Ok("json:full")
+    @At
+    public NutMap uptoken() {
+        String accessKey = conf.get("qiniu.accessKey");
+        String secretKey = conf.get("qiniu.secretKey");
+        String bucketName = conf.get("qiniu.bucketName");
+        Auth auth = Auth.create(accessKey, secretKey);
+        //StringMap policy = new StringMap(); // 可选,详情请查阅七牛的文档,建议限定上传路径
+        StringMap policy = null;
+        int timeout = 600;
+        String token = auth.uploadToken(bucketName, null, timeout, policy);
+        return new NutMap("uptoken", token);
+    }
+	}}}
+	
+	供参考的js代码
+	
+	{{{<js>
+	var uploader = Qiniu.uploader({
+		runtimes : 'html5,flash,html4', // 上传模式，依次退化
+		browse_button : 'pickfiles', // 上传选择的点选按钮，必需
+		uptoken_url : base + '/upload/uptoken', // Ajax请求uptoken的Url，强烈建议设置（服务端提供）
+		get_new_uptoken : true, // 设置上传文件的时候是否每次都重新获取新的uptoken
+		max_file_size : '128mb', // 最大文件体积限制
+		max_retries : 3, // 上传失败最大重试次数
+		// dragdrop: true, // 开启可拖曳上传
+		// drop_element: 'container', // 拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
+		chunk_size : '4mb', // 分块上传时，每块的体积
+		auto_start : true, // 选择文件后自动上传，若关闭需要自己绑定事件触发上传
+		unique_names : false,
+		domain : dw_domain,
+		init : {
+			'FileUploaded' : function(up, file, info) {
+				$.ajax({
+					url : base + "/upload/add",
+					data : info,
+					type : "POST",
+					success : function() {
+						layer.alert("上传成功");
+					}
+				});
+			}
+		}
+	});
+	}}}

@@ -10,7 +10,7 @@ WebSocket是什么?
 ------------------------------------------------------------------------------------------
 Nutz为WebSocket准备了什么?
 
-	可以说,没有. 你只需要自行添加下面的类
+	只需要自行添加下面的类
 	
 	{{{<JAVA>
 	import javax.websocket.server.ServerEndpointConfig;
@@ -19,7 +19,20 @@ Nutz为WebSocket准备了什么?
     public class NutIocWebSocketConfigurator extends ServerEndpointConfig.Configurator {
 
         public <T> T getEndpointInstance(Class<T> endpointClass) {
-            return Mvcs.ctx().getDefaultIoc().get(endpointClass);
+        	Ioc ioc = Mvcs.getIoc();
+        	if (ioc == null)
+        	    ioc = Mvcs.ctx().getDefaultIoc();
+            return ioc.get(endpointClass);
         }
     }
+	}}}
+	
+	然后在自己的websocket服务类上添加注解,即可享用ioc注入带来的福利
+	
+	{{{<JAVA>
+	@ServerEndpoint(value = "/websocket", configurator=NutIocWebSocketConfigurator.class)
+	@IocBean
+	public class MyWebsocket extends Endpoint {
+	
+	}
 	}}}

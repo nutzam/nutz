@@ -1,0 +1,100 @@
+#title: 多数据源
+#index:0,1
+-------------------------------------------------------------------------------------------------------------------------------
+概述
+	
+	由于这个问题经常被问到,nutzcn社区累计了好几十个帖子,所以有必要单独开个文档描述一下
+
+	在一些复杂或遗留系统中,通常需要操作两个或更多的数据源.
+	
+	总的原则: NutDao与DataSource是一对一关系. 
+	
+	值得注意的是, javax.sql.DataSource只是一个接口,而且NutDao只会调用其getConnection()方法.
+
+-------------------------------------------------------------------------------------------------------------------------------
+配对模式在Ioc中的示例
+
+	你可以定义无数个dataSourceXXX,只要它们使用不一样的名称, 然后建立对应的N个NutDao实例
+	
+	每个NutDao实例,均refer对应的dataSource
+	
+	{{{<JSON>
+	    // 主数据库
+	    dataSource : {
+	    	// 按标准的写法
+	    },
+	    // 主Dao实例
+		dao : {
+			type : "org.nutz.dao.impl.NutDao",
+			args : [{refer:"dataSource"}] //引用主数据源
+		},
+		//--------------------------------------------------------
+	    // 第三方订单数据库
+	    dataSourceOrder : {
+	        // 同样是标准的写法
+	    },
+		daoOrder : {
+			type : "org.nutz.dao.impl.NutDao",
+			args : [{refer:"dataSourceOrder"}] //引用第三方数据源
+		},
+		//--------------------------------------------------------
+	    // 遗留数据库
+	    dataSourceOld : {
+	        // 同样是标准的写法
+	    },
+		daoOld : {
+			type : "org.nutz.dao.impl.NutDao",
+			args : [{refer:"dataSourceOld"}] //引用第三方数据源
+		},
+	}}}
+	
+	在Module/Service类中的注入
+	
+	{{{
+	// 非父类字段的注入
+	@Inject
+	protect Dao dao; // 注入主Dao实例
+	@Inject
+	protect Dao daoOrder; // 注入第三方订单数据库Dao实例
+	
+	// 通过父类字段的注入,通常是继承的EntityService的服务类.
+	@IocBean(args={"dao:refer:daoOrder"})
+	// 效果是: 调用dao()返回的将是daoOrder实例.
+	}}}
+	
+------------------------------------------------------------------------------------------------------------------------------
+多数据源下的事务模板
+
+	在一般情况下,Trans.exec下,多个数据源下的事务能正常工作,除特殊的情况: 某个数据源commit时报错,之前已经commit的数据源无法回滚.
+	
+	假设有A,B,C三个数据源
+	
+	{{{<JAVA>
+	Trans.exec(new Atom(){
+		public void run() {
+			dao.insert(user);
+			daoOrder.insert(order);
+			daoOld.insert(report);
+		}
+	});
+	}}}
+	
+	事务执行时序
+	
+	{{{
+	begin > dao
+	begin > daoOrder
+	begin > daoOld
+	
+	commit > dao
+	commit > daoOrder
+	commit > daoOld #出错
+	
+	rollback > dao # 回滚失败,因为已经commit过
+	rollback > daoOrder # 回滚失败,因为已经commit过
+	rollback > daoOld # 可能也失败,但没有提交成功
+	}}}
+	
+	以上特殊情况,是任何基于标准JDBC驱动的ORM都无法回避的. 走XA的JDBC API才可能解决.
+	
+	
