@@ -8,8 +8,12 @@ import org.nutz.ioc.IocContext;
 import org.nutz.ioc.IocMaking;
 import org.nutz.ioc.ValueProxy;
 import org.nutz.ioc.loader.annotation.Inject;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public class ReferTypeValue implements ValueProxy {
+    
+    private static Log log = Logs.get();
 	
 	protected String name;
 	
@@ -56,6 +60,8 @@ public class ReferTypeValue implements ValueProxy {
 				return ((Ioc2)ioc).get(type, name, ctx);
 			return ioc.get(type, name);
 		}
+		if (log.isDebugEnabled())
+		    log.debugf("name=%s not found, search for type=%s", name, type.getName());
 		if (ioc instanceof Ioc2)
             return ((Ioc2)ioc).getByType(type, ctx);
         else
