@@ -135,13 +135,11 @@ public class HttpTest {
 //        System.out.println(re);
 //    }
 //    
-//    @Test
-//    public void testHeader() {
-//        String url = "http://www.jsgsj.gov.cn:58888/province/infoQueryServlet.json?pt&c=75B161B67BE862B17AE530F7EF775C053FF98D74A4DA979B34CA5EE6C2A4A474E8E3D7F41B3E9A2C48594245350BD6F5C528B8D5CCC43FCE4A6E4436E46BBAA1";
-//        Request req = Request.get(url);
-//        Response resp = Sender.create(req).setFollowRedirects(false).send();
-//        Header header = resp.getHeader();
-//        assertNotNull(header);
-//        assertNotNull(header.get("Location"));
-//    }
+    @Test
+    public void test_weibo_post() {
+        Response resp = Http.post2("http://weibo.com/kuyunhudong", null,10000);
+        System.out.println(resp.getStatus());
+        System.out.println(resp.getContent());
+        System.out.println(resp.getStatus());
+    }
 }
