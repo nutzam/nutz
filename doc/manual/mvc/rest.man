@@ -24,7 +24,7 @@
      * @At(methods="xxx,yyy,zzz")
 
     比如，你有一个 User 对象，你想为其增加 "修改" 和 "删除" 的操作，在模块类里你可以定义如下两个方法
-    {{{
+    {{{<JAVA>
     @At("/user/?")
     @GET
     public User getUser(int userId){

@@ -33,17 +33,17 @@
     采用默认的动作链工厂实现类({#0000AA;*org.nutz.mvc.impl.NutActionChainMaker})
 
     如果你需要定制动作链工厂，你可以通过类似下面的形式，声明自己特殊配置的动作链工厂：
-    {{{
+    {{{<JAVA>
     @ChainBy(args={"配置文件A路径", "配置文件B路径"})
     }}}
     
     你也可以采用自己的动作链工厂实现类
-    {{{
+    {{{<JAVA>
     @ChainBy(type=MyChainMaker.class, args={...})
     }}}
     
     如果你的动作链工厂需要更复杂的配置，你可以交给 Ioc 容器来管理
-    {{{
+    {{{<JAVA>
     @ChainBy(type=MyChainMaker.class, args={"ioc:myChianMaker"})
     }}}
     这样，你就可以在 Ioc 容器里，声明一个 "myChainMaker" 对象，来对其做任何你想要的配置。
@@ -61,13 +61,13 @@
     {#AAAAAA;@Chain} 注解的话，就是使用这个动作链。你可以通过自己的配置文件覆盖它。
 
     它的构造函数定义为：
-    {{{
+    {{{<JAVA>
     public NutActionChainMaker(String...args) {
         ...
     }}}
     接受变参数数组，每个参数，都是你配置文件的路径，可以是类路径，也可以是绝对路径，当然
     你也可以写成:
-    {{{
+    {{{<JAVA>
     @ChainBy(args={"${app.root}/WEB-INF/chain/mychain.js"})
     }}}
     其中 `${app.root}` 会被 Nutz.Mvc 替换成你的应用在服务器上的根目录。
@@ -77,9 +77,9 @@
 
     每个配置文件你可以配置多个动作链，每个动作链需要一个名字，以便在入口函数通过 
     {#AAAAAA;@Chain}注解来引用，下面让我们来看看默认动作链配置文件的内容：
-    {{{
+    {{{<json>
     {
-        default : {
+        "default" : {
             ps : [
                 "org.nutz.mvc.impl.processor.UpdateRequestAttributesProcessor",
                 "org.nutz.mvc.impl.processor.EncodingProcessor",
@@ -124,7 +124,7 @@
     如果你读完了上述小节，本节光看标题就足够了。
 
     但是，我唠叨成性，这里再举个小例子：
-    {{{
+    {{{<JAVA>
     @At("/a")
     @Chain("abc")
     public void funcA(){}
@@ -151,7 +151,7 @@
 
 	chain.js的代码
 	
-	{{{
+	{{{<js>
 	{
 		"default" : {
 			"ps" : [

@@ -17,7 +17,7 @@
 
 	通过构造函数获得适配器
 		你可以通过 @AdaptBy 注解来改变任何一个入口函数的适配方式。比如
-		{{{
+		{{{<JAVA>
 		@AdaptBy(type=JsonAdaptor.class)
 		}}}
 
@@ -26,7 +26,7 @@
 	------------------------------------------------------------------------------------------
 	通过 Ioc 容器获得适配器
 		更复杂的情况是，如果你希望你的适配器是交由 Ioc 容器管理的，你可以：
-		{{{
+		{{{<JAVA>
 		@AdaptBy(type=JsonAdaptor.class, args={"ioc:objName"}) // 一定不可以是单例
 		}}}
 		即，如果你的参数数组长度为一，并且，由 "ioc:" 开始，那么这个适配器会交付 Ioc 容器管理，你可以在容器的
@@ -38,12 +38,12 @@
 
 	名值对 `(默认)` - PairAdaptor
 		一般方式
-			{{{
+			{{{<JAVA>
 			@AdaptBy(type=PairAdaptor.class)
 			}}}
 			这种方式，是传统的 HTTP 参数方式。关键的问题是如何将 HTTP 的参数表同入口函数的参数对应起来。
 			为此，它支持一个新的注解 {*@Param}，你可以:
-			{{{
+			{{{<JAVA>
 			public String someFunc(	@Param("pid") int petId,
 	                                @Param("pnm") String petName){
 				...
@@ -51,7 +51,7 @@
 
 		表单方式 - Form Bean
 			有些时候，你需要入口函数接受一个对象，比如一个表单对象
-			{{{
+			{{{<JAVA>
 			public String someFunc(	@Param("..") Pet pet){
 				...
 			}}}
@@ -103,7 +103,7 @@
 			}}}
 			关键就是这个 {*`@Param("::user.")`} 符号 '{#FF00FF;*::}' 表示这个参数是一个表单对象，并且它有统一的前缀
 			'{#FF00FF;*user.}' 表示前缀，Nutz.Mvc 会查看一下 User, Department 类所有的字段：
-			{{{
+			{{{<JAVA>
 			public class User {
 				private int id;
 				private String name;
@@ -132,7 +132,7 @@
 			从现在开始, nutz 参数的类型不再只支持单纯的 Object 对象注入了, 同时也提供了 List, Map, Set 以及对象数组. 亲, 还等什么? 赶快来试试吧, 不需要9998, 也不需要998, 只要98, 亲, 还等什么, 赶快拿起你手中的电话...额...请在参数前加上@Param(::前缀).
 
 			更更更强大的功能, nutz开始支持泛型了, 直接来例子, 懒得解释:
-			{{{
+			{{{<JAVA>
 				class Abc<T>{
 					T obj;
 				}
@@ -145,7 +145,7 @@
 
 		混合方式
 			值得一说的是，按照这个约定，实际上，一个入口函数，是可以支持多个  POJO 的，也可以写成这样
-			{{{
+			{{{<JAVA>
 			public String someFunc(	@Param("pid") int petId,
 			                        @Param("..") Pet pet,
 			                        @Param("..") Food food){
@@ -154,7 +154,7 @@
 
 		JSON 的支持
 			你的 HTTP 参数也可以是一个 JSON 字符串
-			{{{
+			{{{<JAVA>
 			public String someFunc(	@Param("pid") int petId,
 			                        @Param("pet") Pet pet,
 			                        @Param("foods") Food[] food){
@@ -181,21 +181,21 @@
 		针对这个问题， JSON 流是一个比 XML 流更好的解决方案，它足够用，并且它更短小。
 
 		如果你的 HTTP 输入流就是一个 JSON 串，你可以这样：
-		{{{
+		{{{<JAVA>
 		@AdaptBy(type=JsonAdaptor.class)
 		public String someFunc( Pet pet ){
 			...
 		}}}
 
 		如果你的 JSON 流是一个数组
-		{{{
+		{{{<JAVA>
 		@AdaptBy(type=JsonAdaptor.class)
 		public String someFunc( Pet[] pet ){
 			...
 		}}}
 
 		如果你的 JSON 流类似：
-		{{{
+		{{{<json>
 		{
 			fox : {
 				name : "Fox",
@@ -209,7 +209,7 @@
 		}}}
 
 		你希望有两个 POJO （Pet 和 Food） 分别表示这两个对象，你可以：
-		{{{
+		{{{<JAVA>
 		@AdaptBy(type=JsonAdaptor.class)
 		public String someFunc(	@Param("fox") Pet pet,
 		                        @Param("fox_food") Food food){
@@ -220,7 +220,7 @@
 	------------------------------------------------------------------------------------------
 	什么都不干 - VoidAdaptor
 		某些特殊的情况，你需要彻底控制输入流的解析，同时你又不想使用任何适配器，你可以
-		{{{
+		{{{<JAVA>
 		@AdaptBy(type=VoidAdaptor.class)
 		public String someFunc(HttpServletRequest req){
 			...
@@ -292,7 +292,7 @@
 	 * {#FF00FF;*'*'} - 多层通配符，后面个不能再有任何内容
 
     单层通配符
-        {{{
+        {{{<JAVA>
 	    @At("/topic/?/comment/?")
 	    public String getComment(int topicId, int commentId){
 	        // 如果输入的 URL 是： /topic/35/comment/171
@@ -303,7 +303,7 @@
 	    如果你有这种需求，我想不用我废话了，不解释，你懂的。
 
 	多层通配符
-	   	{{{
+	   	{{{<JAVA>
     	@At("/article/*")
     	public String getArticle(String author, int articleId){
             // 如果输入的 URL 是： /article/zozoh/1352
@@ -317,7 +317,7 @@
     	之后，如果它发现入口函数还有参数没有被填充完全，它才应用适配器的内部逻辑，填充其余的参数。
 
     单层多层通配符混用
-        {{{
+        {{{<JAVA>
         @At("/user/?/topic/?/comment/*")
         public String getComment(String author, int topicId, int commentId){
             // 如果输入的 URL 是： /user/zozoh/topic/35/comment/171
@@ -374,7 +374,7 @@
 ----------------------------------------------------------------------------------------------
 定制自己的适配器
 	先来看看适配器的接口：
-	{{{
+	{{{<JAVA>
 	public interface HttpAdaptor {
 		void init(Method method);
 		Object[] adapt( HttpServletRequest request, HttpServletResponse response, String[] pathArgs);
@@ -386,3 +386,4 @@
 	 * init 函数是 Nutz.Mvc 在创建你的适配器以后，马上就要调用的一个方法，你可以在这个方法里初始化一些逻辑
 	 * adapt 方法的第三个参数，是 Nutz.Mvc 为你准备好的路径参数，它有可能为 null。 你的适配器 \
 	   将决定是不是应用这个路径参数
+	 * 推荐继承 AbstractAdaptor 

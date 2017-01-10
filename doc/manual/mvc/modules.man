@@ -23,14 +23,14 @@
 	@Modules - 声明应用的所有子模块
 		
 		指定子模块
-		{{{
+		{{{<JAVA>
 		@Modules({ UserModule.class, PetModule.class})
 		public class MainModule {
 			...
 		}}}
 		
 		自动搜索子模块
-		{{{
+		{{{<JAVA>
 		@Modules(scanPackage = true) //1.r.58开始默认就是true
 		public class MainModule {
 			...
@@ -39,7 +39,7 @@
 		[#入口函数 入口函数]将被认为是模块类
 		
 		半自动搜索子模块
-		{{{
+		{{{<JAVA>
 		@Modules(value={Abc.class, Xyz.class}, scanPackage = true)
 		public class MainModule {
 			...
@@ -57,7 +57,7 @@
 		
 		在整个应用启动或者关闭时，你想做一些额外的处理工作，你可以实现一个
 		org.nutz.mvc.Setup 接口，并将其配置在[#主模块 主模块]上
-		{{{
+		{{{<JAVA>
 		@SetupBy(MyAppSetup.class)
 		public class MainModule {
 			...
@@ -112,13 +112,13 @@
 	
 	@At - 入口函数对应的 URL
 		只有标记了这个注解的函数才被认为是[#入口函数 入口函数]，例如
-		{{{
+		{{{<JAVA>
 		@At("/my/abc")
 		public void someFunc(){
 			...
 		}}}
 		你也可以为该函数声明多个 URL 
-		{{{
+		{{{<JAVA>
 		@At({"/my/abc", "/my/xyz"})
 		public void someFunc(){
 			...
@@ -151,7 +151,7 @@
 		保证整个应用有统一的输入输出设定
 		
 		如果你不定义，默认的，Nutz.Mvc 会采用 {*UTF-8} 作为输入输出的编码
-		{{{
+		{{{<JAVA>
 		@Encoding(input="UTF-8",output="UTF-8")
 		}}}
 		

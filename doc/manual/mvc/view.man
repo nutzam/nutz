@@ -90,11 +90,11 @@
 	比如 Jsp 视图
 
 		即你声明:
-		{{{
+		{{{<JAVA>
 		@Ok("jsp:xxxx")
 		}}}
 		的时候，无论入口函数返回什么对象,它会将其保存到request的 {*"obj"} 属性中。比如
-		{{{
+		{{{<JAVA>
 		@At
 		@Ok("jsp:/test.jsp")
 		public String test(){
@@ -116,7 +116,7 @@
 	比如 Json 视图
 		
 		即你声明:
-		{{{
+		{{{<JAVA>
 		@Ok("json")
 		}}}
 		的时候，无论入口函数返回什么对象，都会被 Json.toJson 函数变成字符串，直接写到
@@ -132,7 +132,7 @@
 	根据返回值决定
 	
 		声明如下内容
-		{{{
+		{{{<JAVA>
 		@Ok("re:jsp:/index")
 		public String login(@Param("..")User user, ViewModel model) {
 		    // 检查登陆参数等等...
@@ -174,7 +174,7 @@
 		如果你需要为你的视图声明要渲染的数据，请返回 org.nutz.mvc.view.ViewWrapper
 		
 		比如你可以这样写：
-		{{{
+		{{{<JAVA>
 		...
 		@At("/myurl")
 		public View myFunction(@Param("type") type){
@@ -201,13 +201,13 @@ JSP 视图
 	视图的实现类为： {*org.nutz.mvc.view.JspView}
 	
 	一般的使用形式：
-		{{{
+		{{{<JAVA>
 		@Ok("jsp:pet.detail")
 		}}}
 		将会使用 {*/WEB-INF/pet/detail.jsp} 来渲染 HTTP 输出流
 	
 		你可以不声明视图的值：
-		{{{
+		{{{<JAVA>
 		@Ok("jsp")
 		}}}
 		那么会根据这个请求的地址来寻找 JSP 文件，比如请求：
@@ -306,7 +306,7 @@ JSON 视图
 	视图的实现类为： {*org.nutz.mvc.view.ServerRedirectView}
 	
 	一般的使用形式：
-	{{{
+	{{{<JAVA>
 	@Ok("redirect:/pet/list.nut")
 	或者
 	@Ok("redirect:/article/2009/10465.html")
@@ -321,7 +321,7 @@ JSON 视图
 	视图的实现类为： {*org.nutz.mvc.view.ForwardView}
 	
 	一般的使用形式：
-	{{{
+	{{{<JAVA>
 	@Ok("forward:/pet/list.nut")
 	//或者
 	@Ok("forward:/article/2009/10465.html")
@@ -332,15 +332,15 @@ JSON 视图
 	当:后面不加值,或者不是以/开头的话,生成的路径将与Jsp视图类似,除了最后不加.jsp之外. 
 	其实Jsp视图只是Forward视图的子类而已
 		 * 这个将对应 {#00A;*/WEB-INF/abc/bbc}
-			{{{
+			{{{<JAVA>
 			@Ok("jsp:abc.bbc")
 			}}}
 		 * 这个将对应 {#00A;*/abc/bbc}
-			{{{
+			{{{<JAVA>
 			@Ok("jsp:/abc/bbc")
 			}}}
 		 * 这个将对应 {#00A;*/abc/bbc.jsp}
-			{{{
+			{{{<JAVA>
 			@Ok("jsp:/abc/bbc.jsp")
 			}}}
 	
@@ -350,7 +350,7 @@ HTTP 返回码视图
 	视图的实现类为： {*org.nutz.mvc.view.HttpStatusView}
 
 	使用形式
-	{{{
+	{{{<JAVA>
 	// 返回 HTTP 404 错误码
 	@Ok("http:404")
 	// 返回 HTTP 500 错误码
@@ -361,7 +361,7 @@ HTTP 返回码视图
 	视图的实现类为： {*org.nutz.mvc.view.VoidView}
 
 	使用形式
-	{{{
+	{{{<JAVA>
 	@Ok("void")
 	}}}
 	对 HTTP 输出流不做任何处理,空实现.
@@ -369,7 +369,7 @@ HTTP 返回码视图
 从 Ioc 容器中获取的视图
 	
 	使用形式
-	{{{
+	{{{<JAVA>
 	@Ok("ioc:myView")
 	}}}
 	将从 Ioc 容器中获取 myView 对象。 它必须是一个 View，否则会发生转型错误。
@@ -384,13 +384,18 @@ Raw视图
 
 	ContentType 支持几种缩写: 
 	 * xml - 表示 text/xml 
+	 * js - 表示application/javascript
+	 * json - 表示application/json
 	 * html - 表示 text/html 
 	 * htm - 表示 text/html 
 	 * stream - 表示 application/octet-stream 
+	 * png -- 表示 image/png
+	 * jpg - 表示 image/jpeg
+	 * webp - 表示 image/webp
 	 * 默认的({#AAA;即 '@Ok("raw")'} ) - 将采用 {#080;ContentType?=text/plain}
 	
 	使用方式
-	{{{
+	{{{<JAVA>
 	@Ok("raw")
 	}}}
 	将方法的返回值直接写入流，数据对象可以是如下类型:
@@ -405,7 +410,7 @@ Raw视图
 	
 	 
 	默认设置resp的ContentType为text/plain，当然,你可以设置ContentType的值
-	{{{
+	{{{<JAVA>
 	@Ok("raw:application/rtf")
 	}}}
 	同时，它也支持如下的缩写形式：
@@ -433,13 +438,13 @@ RawView2
 	
 	一般形式, 默认视图为VoidView
 	
-	{{{
+	{{{<JAVA>
 	@Ok("re")
 	}}}
 	
 	一般形式2, 自定义默认视图, 可以是re视图以外的任意可用视图
 	
-	{{{
+	{{{<JAVA>
 	@Ok("re:jsp:/index")
 	}}}
 	

@@ -6,7 +6,7 @@
 内置的 Ioc 容器
 	
 	一个 Mvc 框架可以通过 Ioc 接口同一个 Ioc 容器挂接，挂接的方法很简单： 在主模块上声明 @IocBy
-	{{{
+	{{{<JAVA>
 	@IocBy(args={"*js", "ioc/",
 				 "*anno", "net.wendal.nutzbook",
 				 "*async",
@@ -26,7 +26,7 @@
 	通过 @IocBy 为整个应用声明了 Ioc 容器，那么如何使用呢。 实际上，你的每一个模块都可以来自容器，只要
 	你在模块上声明 @Inject。 当然，在主模块声明这个注解是没有意义的。
 
-	{{{
+	{{{<JAVA>
 	@IocBean("petM")
 	public class PetModule {
 	   ...
