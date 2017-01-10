@@ -6,6 +6,7 @@
 		<doc path="maven.man"></doc>
 		<doc path="encoding.man"></doc>
 		<doc path="support.man"></doc>
+		<doc path="logging.man"></doc>
 	</doc>
 	<doc path="mvc"	title="Mvc 手册">
 		<doc path="overview.man"/>
@@ -169,9 +170,7 @@
 	</doc>
 	<doc path="faq" title="FAQ">
 		<doc path="how_to_pronounce_nutz.man"/>
-		<doc path="use_nutz_without_other_jar.man"/>
 		<doc path="jar_encoding.man"/>
-		<doc path="common_qa_1.man"/>
 	</doc>
 	<doc path="appendix" title="附录">
 		<doc path="create_datasource.man"/>

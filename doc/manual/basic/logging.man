@@ -1,0 +1,123 @@
+#title: Log配置
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+--------------------------------------------------------------------------------------
+一个老生常谈的问题
+	# Nutz需要第三方jar包才能运行吗? 答案是,不需要.但如果有的话更好.
+	# 一般有几种疑问:
+		# 刚刚接触Nutz,直接把nutz.jar扔进工程,发现正常运行起来了
+		# 读源码,发现源码其实是依赖Log4j的几个类的,但为什么没有log4j的jar,Nutz也正常运行了呢?
+		# 想把日志输出到log4j,加上log4j的jar,发现nutz的日志就按log4j的设置输出了
+		# 不想使用log4j,想使用更高效的Logback或者传统的JDK Logging,不知道行不行?
+
+--------------------------------------------------------------------------------------
+解答
+	# Nutz的源码中,依赖两个外部jar -- servlet-api.jar 和 log4j.jar
+		# 前者在任何标准J2EE Web应用中都有, Nutz仅支持Servlet 2.4或以上.
+		# 后者是极其常见的Log4j, 编译器依赖于1.2.17版,但在运行时仅要求是1.2.x.
+	# 我们使用Nutz.Plugin,通过检测是否存在Log4j的核心接口 org.apache.log4j.Log是否存在来判断是否将日志输出到Log4j
+		# 由于仅检测是否存在org.apache.log4j.Log接口,这样就导致两个情况:
+			# 仅仅把Log4j的jar放进classpath,而没有配置之,那么输出日志时,log4j会警告你. 我们认为这是你的失误.
+			# 这样也提供了一个自由度,因为slf4j的log4j-over-slf4j桥也提供这个接口.
+				换句话说,如果你把log4j-over-slf4j.jar放进classpath,那么Nutz的日志也能通过Slf4j输出去.
+
+--------------------------------------------------------------------------------------
+# 最精简搭配,默认输出的就是Debug信息,完全无鸭梨!!
+	
+	不添加任何日志库的时候, nutz会将DEBUG/INFO输出到stdout, WARN/ERROR输出到stderr
+	
+# 配最新的 log4j 1.2.x
+		
+	* nutz.jar + log4j-1.2.17.jar
+
+    {{{<xml>
+    <dependency>
+    	<groupId>org.nutz</groupId>
+    	<artifactId>nutz</artifactId>
+    	<version>${nutz.version}</version>
+    </dependency>
+    <dependency>
+    	<groupId>log4j</groupId>
+    	<artifactId>log4j</artifactId>
+    	<version>1.2.17</version>
+    </dependency>
+    }}}
+    
+    * 记得添加log4j.properties到resources目录(maven) 或 src目录(eclipse普通项目)
+    
+    {{{<properties>
+log4j.rootLogger=debug,Console
+
+log4j.appender.Console=org.apache.log4j.ConsoleAppender
+log4j.appender.Console.layout=org.apache.log4j.PatternLayout
+log4j.appender.Console.layout.ConversionPattern=[%-5p] %d{HH:mm:ss.SSS} %l - %m%n
+    }}}
+
+# 使用 Logback
+
+	* nutz.jar + log4j-over-slf4j.jar + logback-classic.jar
+
+	{{{<xml>
+	<dependency>
+		<groupId>org.nutz</groupId>
+		<artifactId>nutz</artifactId>
+		<version>${nutz.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>log4j-over-slf4j</artifactId>
+		<version>1.7.21</version>
+	</dependency>
+	<dependency>
+		<groupId>ch.qos.logback</groupId>
+		<artifactId>logback-classic</artifactId>
+		<version>1.1.8</version>
+	</dependency>
+	}}}
+
+	请检查依赖关系中是否存在log4j 1.2.x的jar,如果存在,需要删除掉
+	
+* 使用log4j 2.x
+
+	* nutz.jar + log4j-1.2-api.jar + log4j-2.6.jar
+	
+	{{{<xml>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-1.2-api</artifactId>
+			<version>2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-web</artifactId>
+			<version>2.6</version>
+		</dependency>
+	}}}
+	
+	注意,log4j 2.x使用的是log4j2.xml
+	
+	{{{<xml>
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+  <Appenders>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5p (%F:%L) %M - %m%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Root level="debug">
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+  </Loggers>
+</Configuration>
+	}}}
