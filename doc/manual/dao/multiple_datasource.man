@@ -50,7 +50,7 @@
 	
 	在Module/Service类中的注入
 	
-	{{{
+	{{{<JAVA>
 	// 非父类字段的注入
 	@Inject
 	protect Dao dao; // 注入主Dao实例
@@ -58,7 +58,7 @@
 	protect Dao daoOrder; // 注入第三方订单数据库Dao实例
 	
 	// 通过父类字段的注入,通常是继承的EntityService的服务类.
-	@IocBean(args={"dao:refer:daoOrder"})
+	@IocBean(args={"refer:daoOrder"})
 	// 效果是: 调用dao()返回的将是daoOrder实例.
 	}}}
 	
