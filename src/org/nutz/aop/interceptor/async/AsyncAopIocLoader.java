@@ -40,4 +40,8 @@ public class AsyncAopIocLoader extends SimpleAopMaker<Async>{
 	public ExecutorService getExecutorService() {
         return es;
     }
+	
+	public void setExecutorService(ExecutorService es) {
+        this.es = es;
+    }
 }
