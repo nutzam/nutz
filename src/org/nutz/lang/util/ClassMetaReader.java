@@ -28,6 +28,8 @@ public class ClassMetaReader {
     public static Map<String, List<String>> getParamNames(Class<?> klass) throws IOException {
         InputStream in = klass.getResourceAsStream("/" + klass.getName().replace('.', '/') + ".class");
         try {
+            if (in == null)
+                return new HashMap<String, List<String>>();
             return build(in).paramNames;
         }
         finally {

@@ -58,9 +58,14 @@ public class MethodParamNamesScaner {
         }
     }
     
-    public static Map<String, List<String>> getParamNames(Class<?> klass) throws IOException {     
+    public static Map<String, List<String>> getParamNames(Class<?> klass) throws IOException {
+        String key = klass.getName();
+        if (caches.containsKey(key))
+            return caches.get(key);
         InputStream in = klass.getResourceAsStream("/" + klass.getName().replace('.', '/') + ".class");        
-        return getParamNames(in);      
+        Map<String, List<String>> names = getParamNames(in);
+        caches.put(key, names);
+        return names;
     }
     
     public static Map<String, List<String>> getParamNames(InputStream ins) throws IOException {
@@ -68,4 +73,6 @@ public class MethodParamNamesScaner {
             return new HashMap<String, List<String>>();
         return ClassMetaReader.build(ins).paramNames;
     }
+    
+    protected static Map<String, Map<String, List<String>>> caches = new HashMap<String, Map<String,List<String>>>();
 }
