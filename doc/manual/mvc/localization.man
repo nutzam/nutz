@@ -24,9 +24,9 @@
 使用字符串
 	在主模块上声明
 		比如：
-		{{{
+		{{{<JAVA>
 		...
-		@Localization("mymsg")
+		@Localization("mymsg/")
 		public class MyMainModule {
 			...
 		}}}
@@ -63,7 +63,7 @@
     
     自从 1.b.44 之后，Nutz 对本地字符串语言切换的接口做了改动:
 
-    {{{
+    {{{<JAVA>
     // 设置一个本地字符串
     @At("/lang/change")
     @Ok("redirect:/")
@@ -73,7 +73,7 @@
     }}}
 
     1.b.44 版本 之前，只能采用如下方法:
-    {{{
+    {{{<JAVA>
     // 设置一个本地字符串
     @At("/lang/change")
     @Ok("redirect:/")
@@ -89,14 +89,14 @@
     对于任何一个支持多语言版本的应用程序，第一次启动的时候，总要采用一种语言。
     自 1.b.44 之后，Nutz 给出了一个明确的方法，来设置这个信息。你可以在应用程序启动的
     Setup 时，调用:
-    {{{
+    {{{<JAVA>
     ...
     Mvcs.setDefaultLocalizationKey("zh_CN");
     ...
     }}}
 
     在 1.b.45 后，Nutz 又给出一个更直接的实现，你可以直接:
-    {{{
+    {{{<JAVA>
     ...
     @Localization(value="mymsg", defaultLocalizationKey="zh_CN")
     public class MyMainModule {
@@ -112,7 +112,7 @@
     
     你需要自己实现一个 MessageLoader 的接口，然后声明到 '@Localization' 中。
     比如你的实现类名字为 'MyMessageLoader'，那么你应该这么声明:
-    {{{
+    {{{<JAVA>
     ...
     @Localization( type=MyMessageLoader.class,
                    value="msg" )
@@ -121,7 +121,7 @@
     }}}
 
     对于 MessageLoader 接口，就一个方法需要你来实现:
-    {{{
+    {{{<JAVA>
     public interface MessageLoader {
         /**
          * 本函数将根据传入的 "refer" 参数，返回一个 Map <br>
@@ -144,7 +144,7 @@
 让 Ioc 容器管理你的 MessageLoader
     
     这是 1.b.45 已后才有的方法:
-    {{{
+    {{{<JAVA>
     ...
     @Localization( type=MyMessageLoader.class,
                    beanName="myMessages", 

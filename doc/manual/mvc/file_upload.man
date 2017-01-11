@@ -9,7 +9,7 @@
 	为此，Nutz.Mvc 内置了一个专门处理文件上传的适配器 {*org.nutz.mvc.upload.UploadAdaptor}
 
     这个适配器专门解析形式为
-    {{{
+    {{{<html>
     <form target="hideWin" enctype="multipart/form-data" method="post">
         <input type="file">
         ...
