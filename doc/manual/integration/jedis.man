@@ -1,0 +1,59 @@
+#title: 集成Jedis
+#index:0,1
+#author:wendal(wendal1985@gmail.com)
+
+-----------------------------------------------
+简介
+
+	详细说明请查阅插件的README
+	
+	[https://github.com/nutzam/nutzmore/tree/master/nutz-integration-jedis nutz-integration-jedis]
+	
+	jedis是redis的java客户端,请注意区别
+	
+----------------------------------------------
+依赖
+
+	* jedis 2.8+,将来会提升到3.0+
+	* 依赖名为conf类型为PropertiesProxy的ioc bean
+
+-----------------------------------------------
+基本用法
+
+	本插件通过@IocBy加载
+	
+	{{{<JAVA>
+	@IocBy(args = {
+	           "*js","ioc/",
+               "*anno", "net.wendal.nutzbook",
+               "*jedis" // 加载jedis
+               })
+	}}}
+	
+	在conf的扫描路径内,添加一个redis.properties. 以下均为默认值,不写也行.
+	
+	{{{
+	redis.host=localhost
+	redis.port=6379
+	redis.timeout=2000
+	#redis.password=wendal.net
+	redis.database=0
+	}}}
+	
+	通过aop方式使用, 必须是ioc bean对象哦
+	
+	{{{<JAVA>
+	import static org.nutz.integration.jedis.RedisInterceptor.jedis;
+
+	@Aop("redis") //拦截器的名字叫redis
+	public void addTopic(Topic topic) {
+	    // 通过调用jedis()获取上下文的Jedis对象,无需手动关闭或回收.
+		jedis().set("topic:"+R.UU32(), Json.toJson(topic,JsonFormat.full()));
+	}
+	}}}
+	
+	通过注入JedisPool使用
+	
+	{{{<JAVA>
+	@Inject JedisPool jedisPool;
+	}}}

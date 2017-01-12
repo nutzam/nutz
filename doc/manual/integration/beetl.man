@@ -26,8 +26,3 @@ beetl的官方文档描述
 	@Ok("beetl:/tmpl/user/home.btl") // 模板文件的路径为  /tmpl/user/home.btl
 	public void home(){}
 	}}}
-	
------------------------------------------------------
-自定义配置
-
-	请参考 [https://javamonkey.github.io/guide/ beetl的官方文档]

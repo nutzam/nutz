@@ -3,8 +3,55 @@
 #author:wendal(wendal1985@gmail.com)
 
 -----------------------------------------------
-用法
+简介
 
-	请查阅插件的README
+	详细说明请查阅插件的README
 	
 	[https://github.com/nutzam/nutzmore/tree/master/nutz-integration-quartz nutz-integration-quartz]
+	
+----------------------------------------------
+依赖
+
+	* quartz 2.x
+	* 依赖名为conf类型为PropertiesProxy的ioc bean
+
+-----------------------------------------------
+基本用法
+
+	本插件通过@IocBy加载
+	
+	{{{<JAVA>
+	@IocBy(args = {
+	           "*js","ioc/",
+               "*anno", "net.wendal.nutzbook",
+               "*quartz" // 加载Quartz
+               })
+	}}}
+	
+	添加quartz.properties, 本文件放在源文件夹下
+	
+	{{{
+	org.quartz.scheduler.instanceName = NutzbookScheduler 
+	org.quartz.threadPool.threadCount = 3 
+	org.quartz.jobStore.class = org.quartz.simpl.RAMJobStore
+	org.quartz.scheduler.skipUpdateCheck=true
+	}}}
+	
+	在conf的扫描路径内,添加一个cron.properties
+	
+	{{{
+	cron.pkgs=net.wendal.nutzbook.quartz.job
+	cron.net.wendal.nutzbook.quartz.job.CleanTempfileJob=0 0 4 * * *
+	}}}
+	
+	支持两个job定义
+	
+		* 基于注解Scheduled. 依赖于上面用到的cron.pkgs
+		* 直接定义cron表达式, cron.类名=cron表达式
+	
+	触发启动. 在MainSetup.init方法内,添加如下代码进行触发
+	
+	{{{<JAVA>
+	// nc是init方法的参数NutConfig nc
+	nc.getIoc().get(NutQuartzCronJobFactory.class)
+	}}}

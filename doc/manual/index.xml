@@ -69,6 +69,7 @@
 		<doc path="inner_object.man"/>
 		<doc path="xml_ioc_loader.man"/>
 		<doc path="ioc_and_java.man"></doc>
+		<doc path="alias.man"></doc>
 	</doc>
 	<doc path="aop" title="Aop 手册">
 		<doc path="aop_mvc.man"/>
@@ -115,6 +116,7 @@
 		<doc path="quartz.man"></doc>
 		<doc path="ehcache.man"></doc>
 		<doc path="daocache.man"></doc>
+		<doc path="jedis.man"></doc>
 	</doc>
 	<doc path="testing" title="单元测试">
 		<doc path="junit_testing.man"></doc>

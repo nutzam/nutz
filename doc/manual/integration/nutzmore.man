@@ -11,18 +11,20 @@ nutzmore概述
 	
 	请同时参考本手册及nutzmore中项目的README文档.
 	
+	插件均发布到maven中央库,可以直接饮用
+	
 	手动下载地址: https://jfrog.nutz.cn/artifactory/jcenter/org/nutz/
 	
 ------------------------------------------------------------------------
 旗下的子模块分类
 
-	* 插件类 -- 扩展nutz的功能,例如Dao缓存
-	* 集成类 -- 集成Shiro,Beetl等第三方框架
+	* 插件类 -- 扩展nutz的功能,例如Dao缓存,Slog日志注解等
+	* 集成类 -- 集成Shiro,Beetl,Jedis,Activiti等第三方库
 	
 ------------------------------------------------------------------------
 插件加载规则
 
-	部分插件可通过IocBy加载,取决于该:
+	部分插件可通过IocBy加载:
 	
 	{{{<JAVA>
 	@IocBy(args = {
@@ -30,11 +32,11 @@ nutzmore概述
                "*anno", "net.wendal.nutzbook",
                "*quartz", // 加载Quartz
                "*activiti", // 加载activiti
-               "*net.wendal.nutzbook.slog.SLogIocLoader" // 使用完整类名
+               "*net.wendal.nutzbook.ioc.MyMarsLoader" // 使用完整类名
                })
 	}}}
 	
-	其中, js和anno属于内置加载器,最后一个SLogIocLoader是完整类名,没什么可以讨论的.
+	其中, js和anno属于内置加载器,最后一个MyMarsLoader是完整类名,没什么可以讨论的.
 	
 	quartz和activiti均为插件,它将依次查找
 	
