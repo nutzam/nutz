@@ -1,0 +1,31 @@
+#title: Dao操作示例代码
+#author:zozoh(zozohtnt@gmail.com)
+#index:0,1
+------------------------------------------------------------------------------------------
+DaoUpTest类
+
+	不是说好的示例代码吗?怎么是个类名. 没错的,就是一个类哦,而且是一个完整的testcase. 它涵盖了95%以上的常用操作.
+	
+	它的地址是 [https://github.com/nutzam/nutz/blob/master/test/org/nutz/dao/util/DaoUpTest.java DaoUpTest]
+	
+	如果您访问github有"难度", 那么,还有osc上的镜像 [http://git.oschina.net/nutz/nutz/blob/master/test/org/nutz/dao/util/DaoUpTest.java DaoUpTest]
+	
+-------------------------------------------------------------------------------------------
+如何使用
+	
+	看它的注释,非常非常详细,几乎是一行代码一行注释.
+	
+	例如准备说明
+	{{{<JAVA>
+    // 请在src或maven的resources下面添加一个文件叫nutz-test.properties
+    // 内容类似于
+    /**
+	url=jdbc:mysql://127.0.0.1/walnut
+	username=root
+	password=root
+    */
+    // 且加入了对应的数据库驱动, 混熟了可以加入druid和log4j(务必把log4j.properties弄好且日志为debug级)
+    // 程序启动的时候调用*一次*就够了!!!!!!!!!!!!!!
+    DaoUp.me().init(DaoUpTest.class.getClassLoader().getResourceAsStream("nutz-test.properties"));
+    // 请留意nutz输出的日志,如果没有日志输出,那就肯定是log4j没配置好, 建议删掉log4j然后继续.
+    }}}

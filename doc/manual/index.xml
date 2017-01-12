@@ -55,6 +55,7 @@
 		<doc path="procedure.man"/>
 		<doc path="slave.man"/>
 		<doc path="multiple_datasource.man"></doc>
+		<doc path="daoup.man"></doc>
 	</doc>
 	<doc path="ioc"	title="Ioc 手册">
 		<doc path="hello.man"/>
