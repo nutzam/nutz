@@ -16,7 +16,7 @@ import org.nutz.lang.LoopException;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 
-public class ManyLinkField extends AbstractLinkField  {
+public class ManyLinkField extends AbstractLinkField {
 
     public ManyLinkField(Entity<?> entity, EntityHolder holder, LinkInfo info) {
         super(entity, holder, info);
@@ -24,63 +24,74 @@ public class ManyLinkField extends AbstractLinkField  {
         this.mapKey = info.many.key();
 
         Entity<?> ta = this.getLinkedEntity();
-
-        // 链接对方全部内容
+        
         if (Strings.isBlank(info.many.field())) {
             hostField = null;
             linkedField = null;
+            return;
         }
-        // 根据一个字段的值链接
-        else {
-            linkedField = ta.getField(info.many.field());
 
-            if (null == linkedField)
-                throw Lang.makeThrow(    "Invalid @Many(field=%s) '%s' : %s<=>%s",
-                                        info.many.field(),
-                                        this.getName(),
-                                        this.getEntity().getType(),
-                                        ta.getType());
+        String targetFieldName = "_".equals(info.many.field()) ? Strings.lowerFirst(getEntity().getType()
+                                                                                                    .getSimpleName())
+                                                                      + "Id"
+                                                                    : info.many.field();
 
-            // 宿主实体的字段 - 应该是主键
-            boolean intLike = linkedField.getTypeMirror().isIntLike();
-            if (Strings.isBlank(mapKey) || Mirror.me(info.fieldType).isMap()) {
-                
-                hostField = intLike ? getEntity().getIdField() : getEntity().getNameField();
-                if (hostField == null) {
-                    throw new DaoException(String.format("host class=%s, props=%s @Many(field=\"%s\",key=\"%s\")) expect %s at target class=%s", 
-                                                         getEntity().getType().getName(),
-                                                         info.name,
-                                                         info.many.field(),
-                                                         info.many.key(),
-                                                         intLike ? "@Id" : "@Name",
-                                                         targetType.getName()));
-                }
-            } else {
-                hostField = this.getEntity().getField(mapKey);
-                if (hostField == null) {
-                    throw new DaoException(String.format("host class=%s, props=%s @Many(field=\"%s\",key=\"%s\")) expect prop=%s at target class=%s", 
-                                                         getEntity().getType().getName(),
-                                                         info.name,
-                                                         info.many.field(),
-                                                         info.many.key(),
-                                                         mapKey,
-                                                         targetType.getName()));
-                }
+        linkedField = ta.getField(targetFieldName);
+        if (null == linkedField) {
+            throw new DaoException(String.format("host class=%s, props=%s @Many(field=\"%s\",key=\"%s\")) expect prop=%s found at target class=%s",
+                                                 getEntity().getType().getName(),
+                                                 info.name,
+                                                 targetFieldName,
+                                                 info.many.key(),
+                                                 targetFieldName,
+                                                 targetType.getName()));
+        }
+
+        // 宿主实体的字段 - 应该是主键
+        boolean intLike = linkedField.getTypeMirror().isIntLike();
+        if (Strings.isBlank(mapKey) || Mirror.me(info.fieldType).isMap()) {
+
+            hostField = intLike ? getEntity().getIdField() : getEntity().getNameField();
+            if (hostField == null) {
+                throw new DaoException(String.format("host class=%s, prop=%s @Many(field=\"%s\",key=\"%s\")) expect any field %s found at target class=%s",
+                                                     getEntity().getType().getName(),
+                                                     info.name,
+                                                     targetFieldName,
+                                                     info.many.key(),
+                                                     intLike ? "@Id" : "@Name",
+                                                     targetType.getName()));
+            }
+        } else {
+            hostField = this.getEntity().getField(mapKey);
+            if (hostField == null) {
+                throw new DaoException(String.format("host class=%s, prop=%s @Many(field=\"%s\",key=\"%s\")) expect prop=%s found at target class=%s",
+                                                     getEntity().getType().getName(),
+                                                     info.name,
+                                                     targetFieldName,
+                                                     info.many.key(),
+                                                     mapKey,
+                                                     targetType.getName()));
             }
         }
     }
 
-    public ManyLinkField(NutEntity<?> en, EntityHolder holder, LinkInfo info, Class<?> klass, MappingField mf, MappingField mfKey) {
-    	super(en, holder, info);
-    	this.targetType = klass;
-    	this.hostField = mf;
-    	this.linkedField = mfKey;
-	}
+    public ManyLinkField(NutEntity<?> en,
+                         EntityHolder holder,
+                         LinkInfo info,
+                         Class<?> klass,
+                         MappingField mf,
+                         MappingField mfKey) {
+        super(en, holder, info);
+        this.targetType = klass;
+        this.hostField = mf;
+        this.linkedField = mfKey;
+    }
 
-	public Condition createCondition(Object host) {
-        return null == linkedField ? null : Cnd.where(    linkedField.getName(),
-                                                        "=",
-                                                        hostField.getValue(host));
+    public Condition createCondition(Object host) {
+        return null == linkedField ? null
+                                   : Cnd.where(linkedField.getName(),
+                                               "=",
+                                               hostField.getValue(host));
     }
 
     public void updateLinkedField(Object obj, Object linked) {

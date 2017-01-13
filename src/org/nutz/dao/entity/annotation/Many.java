@@ -44,9 +44,9 @@ public @interface Many {
     Class<?> target() default Object.class;
 
     /**
-     * target类的关联属性名
+     * target类的关联属性名. 缺省为本类的类名加id, 例如本类叫Master,那field的默认是masterId
      */
-    String field();
+    String field() default "_";
 
     /**
      * 当前类的一个属性名,缺省情况下,按参考字段名{@link #field()}的类型选取@Id或者@Name等主键字段
