@@ -2,6 +2,7 @@ package org.nutz.dao.impl.entity.field;
 
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
+import org.nutz.dao.DaoException;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.LinkType;
 import org.nutz.dao.entity.MappingField;
@@ -12,6 +13,7 @@ import org.nutz.lang.Each;
 import org.nutz.lang.ExitLoop;
 import org.nutz.lang.Lang;
 import org.nutz.lang.LoopException;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 
 public class ManyLinkField extends AbstractLinkField  {
@@ -40,20 +42,31 @@ public class ManyLinkField extends AbstractLinkField  {
                                         ta.getType());
 
             // 宿主实体的字段 - 应该是主键
-            //if (Strings.isBlank(mapKey)) {
-            	hostField = linkedField.getTypeMirror().isIntLike()    ? this.getEntity().getIdField()
-                                                                       : this.getEntity().getNameField();
-            //} else {
-            //	hostField = this.getEntity().getField(mapKey);
-            //}
-            
-            if (null == hostField)
-                throw Lang.makeThrow(    "Fail to find hostField for @Many(field=%s) '%s' : %s<=>%s",
-                                        info.many.field(),
-                                        this.getName(),
-                                        this.getEntity().getType(),
-                                        ta.getType());
-
+            boolean intLike = linkedField.getTypeMirror().isIntLike();
+            if (Strings.isBlank(mapKey) || Mirror.me(info.fieldType).isMap()) {
+                
+                hostField = intLike ? getEntity().getIdField() : getEntity().getNameField();
+                if (hostField == null) {
+                    throw new DaoException(String.format("host class=%s, props=%s @Many(field=\"%s\",key=\"%s\")) expect %s at target class=%s", 
+                                                         getEntity().getType().getName(),
+                                                         info.name,
+                                                         info.many.field(),
+                                                         info.many.key(),
+                                                         intLike ? "@Id" : "@Name",
+                                                         targetType.getName()));
+                }
+            } else {
+                hostField = this.getEntity().getField(mapKey);
+                if (hostField == null) {
+                    throw new DaoException(String.format("host class=%s, props=%s @Many(field=\"%s\",key=\"%s\")) expect prop=%s at target class=%s", 
+                                                         getEntity().getType().getName(),
+                                                         info.name,
+                                                         info.many.field(),
+                                                         info.many.key(),
+                                                         mapKey,
+                                                         targetType.getName()));
+                }
+            }
         }
     }
 
