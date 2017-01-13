@@ -13,6 +13,8 @@ Nutz核心jar
 		<version>1.r.59</version>
 	</dependency>
 	}}}
+	
+	快照库地址 [https://jfrog.nutz.cn/artifactory/snapshots https://jfrog.nutz.cn/artifactory/snapshots]
 
 ----------------------------------------------------------------------------------------------------
 常用配置模板
