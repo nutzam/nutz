@@ -1,0 +1,107 @@
+#title: 自动建表
+#index:0,1
+
+----------------------------------------------------------------------------------------------------
+背景
+
+	部署到生产环境的时候需要导入SQL文件,是否觉得很繁琐? 而且还得为不同的数据库准备不同的SQL脚本? 太麻烦了是不是.
+	
+	如果能自动建表,自动迁移表结构,然后导入初始化数据,是不是部署过程就非常容易了呢?? 想想就有点小激动.
+	
+----------------------------------------------------------------------------------------------------
+基本用法
+
+	首先,你得有一个dao实例, 还有一个Pojo类.
+	
+	{{{<JAVA>
+	dao.create(User.class, false); // 第一个参数是类, 第二个参数代表是否强制删除重建,通常是false
+	}}}
+	
+	然后它就能很华丽得输出并执行create table语句了.
+	
+	{{{<SQL>
+CREATE TABLE t_user(
+id INT(32),
+name VARCHAR(128) UNIQUE NOT NULL,
+passwd VARCHAR(128),
+salt VARCHAR(128),
+locked BOOLEAN,
+ct DATETIME,
+ut DATETIME,
+PRIMARY KEY (id)
+) ENGINE=InnoDB CHARSET=utf8
+	}}}
+	
+----------------------------------------------------------------------------------------------------
+批量建表
+
+	要是有几十个Pojo,那岂不是要累死? Nutz当然不会让你太累的.
+	
+	通常,pojo都集中存在的某个package下,所以我们只需要告诉Daos.createTableInPackage方法所在的位置就行
+	
+	{{{<JAVA>
+	Daos.createTablesInPackage(dao, "net.wendal.nutzbook.bean", false);
+	}}}
+	
+	然后,它就会扫描该package下,所以带@Table注解的Pojo类,逐一执行dao.create
+	
+----------------------------------------------------------------------------------------------------
+表结构迁移
+
+	老板说要每个用户新增加个phone字段,咋搞? 自定义SQL执行一条ALTER吗? 不不不,自动迁移一下表结构就好了.
+	
+	{{{<JAVA>
+	Daos.migration(User.class, true, false, false);
+	}}}
+	
+	第一个参数是类,第二个参数是否新增字段,第三个参数是否删除字段(通常为false),第4个参数是否检查索引(通常为false).
+	
+	额,那很多很多pojo呢? 也能批量迁移吗? 可以的
+	
+	{{{<JAVA>
+	Daos.migration(dao, "net.wendal.nutzbook.bean", true, false, false);
+	}}}
+
+----------------------------------------------------------------------------------------------------
+自动建表的字段配置
+
+	建表时的详细配置,大部分通过@ColDefine实现
+	
+	定义字符串长度,例如1024,你懂的
+	
+	{{{<JAVA>
+	@ColDefine(width=1024)
+	private String name;
+	}}}
+	
+	定义浮点数精度
+	
+	{{{<JAVA>
+	@ColDefine(width=10,precision=2, type=ColType.FLOAT) // 对数据库来说没有float和double的区别
+	private double price;
+	}}}
+	
+	不允许为null
+	{{{<JAVA>
+	@ColDefine(notNull=true, width=128)
+	private String nickname;
+	}}}
+	
+	自定义类型,终极大招,没法自适应数据库了.
+	{{{<JAVA>
+	@ColDefine(customType="LargeBlob", type=ColType.BLOB)
+	private Blob blob;
+	}}}
+	
+----------------------------------------------------------------------------------------------------
+自动建表的索引配置
+
+	除了为@Id/@Name/@Pk建立自动索引之外, 通过@TableIndexes注解可以配置更多自定义索引.
+	
+	例如为name和age建立联合索引
+	{{{<JAVA>
+	@Table("t_user")
+	@TableIndexes({@Index(name="name_age", fields={"name", "age"}, unique=false)})
+	}}}
+	
+	

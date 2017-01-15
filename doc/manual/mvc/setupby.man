@@ -1,4 +1,4 @@
-#title: 应用启动以及关闭时的额外处理
+#title: 应用启动及关闭时的额外处理
 #index:0,1
 #author: wendal(wendal1985@gmail.com)
 ----------------------------------------------------------
@@ -14,7 +14,7 @@
 	
 	{{{<JAVA>
 	public void init(NutConfig nc) {
-		Ioc ioc = nc.getIoc(); // 可以拿到Ioc容器
+		Ioc ioc = nc.getIoc(); // 拿到Ioc容器
 		Dao dao = ioc.get(Dao.class); // 通过Ioc容器可以拿到你想要的ioc bean
 		
 		// 拿到Dao,自然就可以自动建表了

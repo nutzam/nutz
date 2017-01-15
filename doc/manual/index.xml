@@ -58,6 +58,7 @@
 		<doc path="multiple_datasource.man"></doc>
 		<doc path="daoup.man"></doc>
 		<doc path="trans_session.man"></doc>
+		<doc path="dao_create.man"></doc>
 	</doc>
 	<doc path="ioc"	title="Ioc 手册">
 		<doc path="hello.man"/>

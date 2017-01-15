@@ -1,3 +1,3 @@
 这是一个测试用的WebApp
 
-需要Jetty 6.1.26,因此请添加相关的jar
+需要Jetty 7.x,因此请添加相关的jar

@@ -25,25 +25,26 @@
 	
 	{{{<js>
 	dao : { // 相当于声明一个变量
-	    type : "org.nutz.dao.impl.NutDao", // 需要new的类
-	    args : [{refer:"dataSource"}] // 钩子方法参数,因为另外一个变量
+	    type : "org.nutz.dao.impl.NutDao", // 需要new的类,同时代表这个bean的类型
+	    args : [{refer:"dataSource"}] // 构造方法参数,引用(refer)另外一个bean(dataSource)
 	}
 	}}}
 	
-	那么,通过setter赋值呢?
+	那么,通过setter赋值呢? 先看代码
 	
 	{{{<JAVA>
 	NutDao dao = new NutDao();
 	dao.setDataSource(dataSource);
 	}}}
 	
-	变换为dao.js里面的写法
+	变换为dao.js里面的等价写法
 	
 	{{{<js>
 	dao : { // 相当于声明一个变量
 	    type : "org.nutz.dao.impl.NutDao", // 需要new的类, new NutDao()
 	    fields : {
-	    	dataSource : {refer :"dataSource"} // dao.setDataSource(dataSource);
+	    	// 属性名称, 优先调用其setter. dataSource属性的setter名称就是setDataSource
+	    	dataSource : {refer :"dataSource"} // setter的参数, 引用(refer)另外一个叫dataSource的bean
 	    }
 	}
 	}}}
@@ -53,7 +54,7 @@
 ---------------------------------------------------
 通过工厂方法的例子
 
-	java是这样写的
+	java是这样写的, 通MySuperDS的create方法创建DataSource实例,然后作为构造方法参数,传给NutDao
 	{{{<JAVA>
 	DataSource dataSource = MySuperDS.create("abc", "123456");
 	NutDao dao = new NutDao(dataSource);
@@ -69,9 +70,7 @@
 	},
 	dao : { // 相当于声明一个变量
 	    type : "org.nutz.dao.impl.NutDao", // 需要new的类, new NutDao()
-	    fields : {
-	    	dataSource : {refer :"dataSource"} // dao.setDataSource(dataSource);
-	    }
+	    args : [{refer :"dataSource"}] // 引用dataSource作为参数
 	}
 	}}}
 	
@@ -81,10 +80,15 @@
 	这里,以nutz-integration-activiti的实现原理为例子.
 	
 	{{{<JAVA>
+	// 第一步,使用ProcessEngineConfiguration的静态工厂方法createStandaloneProcessEngineConfiguration创建实例
 	ProcessEngineConfiguration cfg = ProcessEngineConfiguration.createStandaloneProcessEngineConfiguration();
+	// 为cfg设置dataSource属性
     cfg.setDataSource(dataSource)
+    // 设置数据库表结构自动更新
     cfg.setDatabaseSchemaUpdate("true");
+    // 调用cfg的buildProcessEngine方法,生成ProcessEngine的实例
     ProcessEngine processEngine = cfg.buildProcessEngine();
+    // 使用ProcessEngine的实例的getRepositoryService方法生成RepositoryService实例
     RepositoryService repositoryService = processEngine.getRepositoryService();
 	}}}
 	
@@ -107,7 +111,7 @@
 	{{{<JSON>
 	cfg : {
 		factory : "org.activiti.engine.ProcessEngineConfiguration#createStandaloneProcessEngineConfiguration",
-		args : [] // 无参数,可以不写.
+		args : [] // 0个参数,可以不写.
 	}	
 	}}}
 	
@@ -118,8 +122,8 @@
 		factory : "org.activiti.engine.ProcessEngineConfiguration#createStandaloneProcessEngineConfiguration",
 		args : [], // 无参数,可以不写.
 		fields : {
-			dataSource : {refer:"dataSource"},
-			databaseSchemaUpdate : "true"
+			dataSource : {refer:"dataSource"}, // 对应cfg.setDataSource(dataSource);
+			databaseSchemaUpdate : "true" // java代码里面也是字符串"true",所以这里不写布尔值true
 		}
 	}
 	}}}
@@ -128,7 +132,8 @@
 	
 	{{{<JSON>
 	processEngine : {
-		factory : "$cfg#buildProcessEngine"
+		factory : "$cfg#buildProcessEngine" // $cfg, $符号代表这是一个bean, bean的名字叫cfg, #号是分割符,代表后面的方法名称.这里的方法名称是buildProcessEngine
+		// 没有参数,所以args就不写了
 	},
 	}}}
 	
@@ -137,15 +142,15 @@
 	{{{<JSON>
 	repositoryService : {
 		factory : "$processEngine#getRepositoryService"
+		// 没有参数,所以这个args也不写了
 	}
 	}}}
 	
-	最后,全部放在一起的样子就是
+	上面几步,就配全了. 最后,全部放在一起是这样的
 	
 	{{{<JSON>
 	cfg : {
 		factory : "org.activiti.engine.ProcessEngineConfiguration#createStandaloneProcessEngineConfiguration",
-		args : [], // 无参数,可以不写.
 		fields : {
 			dataSource : {refer:"dataSource"},
 			databaseSchemaUpdate : "true"
