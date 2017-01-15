@@ -92,4 +92,6 @@ public interface Node<T> {
     Iterator<Node<T>> iterator();
 
     <E extends Node<T>> void eachChild(Each<E> callback);
+    
+    String toString(int level);
 }

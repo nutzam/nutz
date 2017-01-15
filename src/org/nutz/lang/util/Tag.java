@@ -139,28 +139,33 @@ public class Tag extends SimpleNode<HtmlToken> {
         }
         return list;
     }
-
+    
     public String toString() {
+        return toString(0);
+    }
+
+    public String toString(int level) {
+        String prefix = Strings.dup(' ', level * 4);
         if (get().isText())
             return get().getValue();
         StringBuilder sb = new StringBuilder();
         if (isNoChild()) {
-            return format("<%s%s/>", name(), attributes2String());
+            return prefix + format("<%s%s/>", name(), attributes2String());
         } else if (isInline()) {
             sb.append(format("<%s", name())).append(attributes2String()).append('>');
             for (Node<HtmlToken> tag : getChildren())
                 sb.append(tag);
             sb.append(format("</%s>", name()));
         } else {
-            sb.append(format("<%s", name()));
+            sb.append(prefix).append(format("<%s", name()));
             sb.append(attributes2String()).append('>');
             for (Node<HtmlToken> tag : getChildren()) {
                 if (tag.get().isBlock() || tag.get().isBody())
                     sb.append('\n');
-                sb.append(tag.toString());
+                sb.append(tag.toString(level+1));
             }
             if (!this.isChildAllInline())
-                sb.append('\n');
+                sb.append('\n').append(prefix);
             sb.append(format("</%s>", name()));
         }
         return sb.toString();
