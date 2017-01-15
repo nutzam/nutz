@@ -129,3 +129,13 @@ EntityMaker 接口
 	@Column(wrap=true)
 	String index;
 	}}}
+	
+------------------------------------------------------------------------------------------
+枚举属性的注意事项
+
+	nutz默认把枚举映射为字符串,若数据库中对应的列为int的话,需要特别声明一下
+	
+	{{{<JAV>
+	@ColDefine(type=ColType.INT)
+	private UserType userType;
+	}}}
