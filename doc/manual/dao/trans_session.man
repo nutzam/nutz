@@ -1,0 +1,129 @@
+#title: NutTxDao简介
+#index:0,1
+-----------------------------------------------------------------------------------------
+TransSession的由来
+
+	首先需要强调一下,当前版本(1.r.60)的NutTxDao属于试用性质,预计下个版本达到release.
+	
+	先看看Trans的优缺点
+	* 自动事务管理, 一个内部类完全隔离事务实现, 能有效确保事务的完整性,而且很直观.
+	* 不支持嵌套事务
+	* 手动控制事务比较麻烦
+	
+	{{{<JAVA>
+	Trans.exec( () -> {
+		dao.update(user);
+		dao.update(role);
+	});
+	}}}
+	
+	TransSession试图解决:
+	* 嵌套事务及手动控制事务,以增强事务的可控性
+	* 借助JDK7+的try-with-resource语法,协助用户确保事务的完整性
+	
+	{{{<JAVA>
+	    try (NutTxDao tx = new NutTxDao(dao);) {
+	        tx.beginRC();
+	        tx.update(user);
+	        tx.update(role);
+	        tx.commit();
+	    } catch (Throwable e) {
+	    	tx.rollback();
+	    	log.debug("tx fail", e);
+	    }
+	}}}
+	
+-----------------------------------------------------------------------------------------
+用法
+	 
+	 NutTxDao 是NutDao的子类,通过复制NutDao的内部状态,并设置DaoRunner实例, 改变原有的事务控制逻辑
+	 
+	 一般写法
+	 
+	{{{<JAVA>
+		// 通过NutDao实例构建一下NutTxDao
+		NutTxDao tx = new NutTxDao(dao);
+	    try {
+	    	// 开启事务, tx.beginRC()开启事务级别为Connection.READ_COMMITTED. 是 tx.begin(Connection.READ_COMMITTED); 的缩写.
+	        tx.beginRC(); 
+	        
+	        tx.update(user);
+	        tx.update(role);
+	        
+	        // 提交事务
+	        tx.commit();
+	    } catch (Throwable e) {
+	    	// 回滚事务
+	    	tx.rollback();
+	    	log.debug("tx fail", e);
+	    } finally {
+	    	// 关闭事务
+	    	tx.close();
+	    }
+	}}}
+	
+	结合JDK7+语法
+	
+	{{{<JAVA>
+		// 通过NutDao实例构建一下NutTxDao
+	    try (NutTxDao tx = new NutTxDao(dao);) {
+	    	// 开启事务, tx.beginRC()开启事务级别为Connection.READ_COMMITTED. 是 tx.begin(Connection.READ_COMMITTED); 的缩写.
+	        tx.beginRC(); 
+	        
+	        tx.update(user);
+	        tx.update(role);
+	        
+	        // 提交事务
+	        tx.commit();
+	    } catch (Throwable e) {
+	    	// 回滚事务
+	    	tx.rollback();
+	    	log.debug("tx fail", e);
+	    }
+	}}}
+	
+-----------------------------------------------------------------------------------------
+多线程环境
+
+	与NutDao不一样, NutTxDao*不是*线程安全的, 不可以在不同线程中使用同一个NutTxDao对象.
+	
+	NutTxDao应该以局部变量的形式出现在代码中,而不可以是实例属性或静态属性.
+	
+	创建NutTxDao自身的成本很低,相对于数据库事务来说微乎其微.
+
+-----------------------------------------------------------------------------------------
+交叉事务
+
+	NutTxDao的事务仅依赖于实例本身,与Trans无关,也与其他NutTxDao实例无关.
+	
+	所以, 你可以同时开始多个事务, 然后按需要调用commit或rollback
+	
+	{{{<JAVA>
+	NutTxDao tx1 = new NutTxDao(dao);
+	NutTxDao tx2 = new NutTxDao(dao);
+	NutTxDao tx3 = new NutTxDao(dao);
+	try {
+		tx1.beiginRC();
+		tx2.beiginRC();
+		
+		// 中间嵌套一个独立的事务3
+		tx3.beiginRC();
+		tx3.commit();
+		
+		tx1.commit();
+		tx2.commit();
+	} catch (Throwable e) {
+		tx1.rollback();
+		tx2.rollback();
+		tx3.rollback();
+	}
+	}}}
+	
+-------------------------------------------------------------------
+调试开关
+
+	若对一个NutTxDao的事务行为有疑惑,可以开启其debug开关
+	
+	{{{
+	NutTxDao tx1 = new NutTxDao(dao).setDebug(true);
+	}}}

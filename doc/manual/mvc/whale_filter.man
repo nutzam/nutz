@@ -1,0 +1,93 @@
+#title: WhaleFilter简介
+#author: zozoh(zozohtnt@gmail.com)
+#index:0,1
+------------------------------------------------------------------------------------------
+WhaleFilter是什么?
+
+	简单来说,它是一个专门做脏活的Filter. 例如改变req的method,设置编码等.
+	
+	WhaleFilter实现的是javax.servlet.Filter, 是用到web.xml里面的哦
+	
+	完成WhaleFilter的初衷:
+	* 如何确保req的表单参数的编码一定对, 例如ShiroFilter就有可能对req动手脚
+	* 如何优雅地支持http method的隐式声明
+	* 如何解决自定义日志库的加载问题
+	* 如何统一 普通表单/文件上传/传json 的适配,如何把这3种形式统一起来的问题
+
+------------------------------------------------------------------------------------------
+基本用法
+
+	将其放入web.xml中,确保在所有其他Filter之前,包括NutFilter.
+	
+	{{{<xml>
+	<filter>
+		<filter-class>org.nutz.mvc.WhaleFilter</filter-class>
+		<filter-name>whale</filter-name>
+		<init-param>
+			<param-name>config</param-name>
+			<param-value>
+			enc.input=utf-8
+			enc.output=utf-8
+			</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>whale</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	}}}
+	
+	WhaleFilter通过初始化参数config, Properties文件格式(键值对)的方式进行配置
+	
+	如果不声明config,那WhaleFilter不抛错也不干任何事,安安静静的
+
+-------------------------------------------------------------------------------------------
+编码过滤
+
+	没错,跟Spring的编码过滤器一样,只是我们把它作为WhaleFilter的其中一个配置项了. 
+	
+	enc.input代表req的编码, enc.output代码resp的编码
+	
+	{{{
+	enc.input=utf-8
+	enc.output=utf-8
+	}}}
+
+-------------------------------------------------------------------------------------------
+http方法隐式声明
+
+	什么是http方法隐式声明? 例如 有一个form表单,需要映射到标注@DELETE的入口方法,那么, 有几个选项:
+	
+	* 通过ajax, 设置method
+	* 需要声明一个隐藏参数_method=delete,让WhaleFilter为你改变req的method
+	
+	例如这样的表单
+	
+	{{{<html>
+	<form action="/admin/topic/23" method="post">
+		<input name="_method" value="delete" type="hidden">
+	</form>
+	}}}
+	
+	对应这样的入口方法
+	
+	{{{<JAVA>
+	@Ok(">>:/admin/topic")
+	@DELETE
+	@At("/topic/?")
+	public void topicDelete(int id) {
+	    dao.delete(Topic.class, id);
+	}
+	}}}
+	
+	那WhaleFilter需要什么参数
+	
+	{{{
+	http.hidden_method_param=_method
+	}}}
+
+	顺带说一下, 还有一种方式, "X-HTTP-Method-Override", 可通过下面的配置开启.
+	
+	{{{
+	http.method_override=true
+	}}}
