@@ -7,7 +7,8 @@
 
 	一个ioc bean,通常只有一个名字, 然而,在某些场景下,需要两个名称均指向同一个bean.
 	
-	例如nutzmore中的插件,均以conf这个名称取PropertiesProxy的实例
+	例如nutzmore中的插件,均以conf这个名称取PropertiesProxy的实例,而你的项目中已经定义为config,而且改起来麻烦,
+	那这个时候,你就需要按下面的方式,定义一个影子bean了, 间接达到了别名的效果
 	
 	{{{<JSON>
 	var ioc = {
@@ -27,7 +28,7 @@
 	};
 	}}}
 	
-	原理是啥? Iocs.self方法里面就一句
+	原理是啥? Iocs的self方法是静态方法,且只有一个参数,而内容,也就是会返回参数本身.
 	
 	{{{<JAVA>
     public static Object self(Object obj) {
