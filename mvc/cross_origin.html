@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>跨域请求</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">跨域请求</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#什么是跨域">什么是跨域</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#如何解决">如何解决</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="什么是跨域"></a>什么是跨域</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在浏览器的沙箱环境下,默认只允许js代码请求其所属域的数据,不同域名/ip/协议,都默认禁止.</p>
+<p>跨域所需要的是,是响应浏览器发起的OPTIONS,及真正的GET/POST, 共2个请求哦.</p>
+<p>所需要的逻辑CrossOriginFilter已经封装好了</p>
+<div class="hr"><b></b></div>
+<h1><a name="如何解决"></a>如何解决</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>nutz给出的方案非常简单,仅需要在入口方法上添加CrossOriginFilter即可</p>
+<pre>@Filters(@By(type=CrossOriginFilter.class))
+public ... xxx(...) {
+	<span class="zdoc_code_cmt">// ...
+</span>}
+</pre>
+<p>如果需要标注多个ActionFilter,建议把CrossOriginFilter放在最前面</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

@@ -32,11 +32,17 @@
 <li>Plugin -- 轻便的插件机制</li>
 <li>Resource -- 资源扫描</li>
 </ul>
-<p>它所有的功能均不依赖第三方 jar 包</p>
+<p>它所有的功能均不强制依赖第三方 jar 包</p>
 <p>这就意味着：</p>
 <ul type="disc">
 <li>如果一个 Web 应用，你在 WEB-INF/lib 下只 需要放置一个 nutz.jar 就够了</li>
-<li>当然你要使用连接池，数据库驱动等功能，还需要自行添置 jar 包。</li>
+<li>当然你要使用连接池，数据库驱动, websocket等功能，还需要自行添置 jar 包。</li>
+</ul>
+<p>支持的环境</p>
+<ul type="disc">
+<li>JDK5+, 推荐JDK8</li>
+<li>任意SQL数据库,例如MySQL,Oracle,SqlServer等等</li>
+<li>任意支持servlet 2.5的web容器, 推荐Tomcat 8+/Jetty 9.2+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="Nutz_为谁而设计？"></a>Nutz 为谁而设计？</h1>
@@ -68,7 +74,7 @@
 <h1><a name="你完全可以让这个项目变得更加美好"></a>你完全可以让这个项目变得更加美好</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
-<li>上 <a href="http://www.nutz.cn/">Nutz社区论坛</a> 发帖讨论</li>
+<li>上 <a href="https://www.nutz.cn/">Nutz社区论坛</a> 发帖讨论</li>
 <li><a href="http://xiaofeng.iteye.com/blog/549410">不编写代码，你可以能为这个项目做很多事情</a> @<a href="http://xiaofeng.iteye.com">hilliate</a></li>
 <li>你可以随时 <a href="https://github.com/nutzam/nutz/issues/new">提交你发现的问题</a></li>
 <li>任何人 用 任何方式 =&gt; 指出 Nutz 的缺陷，都是被欢迎的</li>
@@ -78,12 +84,12 @@
 <h1><a name="我使用的时候如果出现问题怎么办？"></a>我使用的时候如果出现问题怎么办？</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
-<li>上 <a href="http://www.nutz.cn/">Nutz社区论坛</a>，有问必答，秒回复</li>
+<li>上 <a href="https://www.nutz.cn/">Nutz社区论坛</a>，有问必答，秒回复</li>
 <li>到 <a href="https://github.com/nutzam/nutz/issues">github</a> 上报告 issue</li>
 <li>或者加入 QQ 群
 <ul type="disc">
+<li><a href="http://qun.qq.com/#jointhegroup/gid/68428921">Nutz社区群（68428921）超级群</a> -- 感谢 <b>c.A</b> 的支持</li>
 <li><a href="http://qun.qq.com/air/#58444676">Nutz &amp; XBlink （58444676 超级群）</a> -- 感谢 <b>E-Hunter</b> 的支持</li>
-<li><a href="http://qun.qq.com/#jointhegroup/gid/68428921">Nutz ② 群 （68428921）超级群</a> -- 感谢 <b>c.A</b> 的支持</li>
 </ul>
 </li>
 </ol>

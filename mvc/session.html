@@ -42,7 +42,7 @@
 <p>但,如果是集群,或者你想用Redis/Memcached等存放Session,那么就需要自定义Session了</p>
 <h2><a name="Session有很多种,_例如:"></a>Session有很多种, 例如:</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>*容器本身提供的(tomcat/jetty/jboss/weblogic等都自带跨JVM的Session,功能强大但存放的对象必须实现Serializable*自行实现的,针对性高,可控性高</p>
+<p>*容器本身提供的(tomcat/jetty/jboss/weblogic等都自带跨JVM的Session,功能强大但存放的对象必须实现Serializable*自行实现的,针对性高,可控性强</p>
 <p>如果是容器提供的Session机制,那么大部分情况下都是对应用透明的,所以nutz也没什么可以做的</p>
 <p>对于控制欲很强,业务不是非常复杂的,自定义Session肯定是首选啦</p>
 <div class="hr"><b></b></div>
@@ -84,8 +84,8 @@ public class NopSessionProvider extend AbstractSessionProvider {
 <h1><a name="哪里有现成的实现?"></a>哪里有现成的实现?</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
-<li>ztask项目,有一个基于mongo的实现</li>
-<li>nutzmore项目,有ShiroSessionProvider,使用Shiro的Session代替原生session</li>
+<li><a href="nutzmore项目">https://github.com/nutzam/nutzmore/tree/master/nutz-integration-shiro</a></li>
+<li>有ShiroSessionProvider,使用Shiro的Session代替原生session</li>
 </ul>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>

@@ -27,7 +27,7 @@ public class MainModule {}
 </span>public class UserService {
 	@Inject Dao dao; <span class="zdoc_code_cmt">// 注入NutDao实例,必须的,哈哈
 </span>
-	@Aop(TransAop.READ_COMMITTED) <span class="zdoc_code_cmt">// TransAop里面定义5个产量,分别对应不同级别的事务拦截器
+	@Aop(TransAop.READ_COMMITTED) <span class="zdoc_code_cmt">// TransAop里面定义5个常量,分别对应不同级别的事务拦截器
 </span>	public void add(User user) {
 		dao.insert(user);
 		dao.update(UserToken.class, Chain.make("xxx","xxx"), Cnd.where(.......);

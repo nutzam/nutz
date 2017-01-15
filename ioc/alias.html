@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>别名</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">别名</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#如何定义一个别名">如何定义一个别名</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="如何定义一个别名"></a>如何定义一个别名</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>一个ioc bean,通常只有一个名字, 然而,在某些场景下,需要两个名称均指向同一个bean.</p>
+<p>例如nutzmore中的插件,均以conf这个名称取PropertiesProxy的实例,而你的项目中已经定义为config,而且改起来麻烦,那这个时候,你就需要按下面的方式,定义一个影子bean了, 间接达到了别名的效果</p>
+<pre>var ioc = {
+    <span class="zdoc_code_cmt">// 原有配置
+</span>    config : {
+		type : "org.nutz.ioc.impl.PropertiesProxy",
+		fields : {
+			paths : ["custom/"]
+		}
+	},
+    <span class="zdoc_code_cmt">// 创建别名 
+</span>    conf : {
+    	type : "org.nutz.ioc.impl.PropertiesProxy"
+    	fatcoty : "org.nutz.ioc.Iocs<span class="zdoc_code_cmt">#self",
+</span>    	args : [{refer:"config"}]
+    }
+};
+</pre>
+<p>原理是啥? Iocs的self方法是静态方法,且只有一个参数,而内容,也就是会返回参数本身.</p>
+<pre>public static Object self(Object obj) {
+    return obj;
+}
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

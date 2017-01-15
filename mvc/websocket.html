@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>WebSocket的支持</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">WebSocket的支持</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#WebSocket是什么?">WebSocket是什么?</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#Nutz为WebSocket准备了什么?">Nutz为WebSocket准备了什么?</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="WebSocket是什么?"></a>WebSocket是什么?</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>WebSocket 规范定义了一种 API，可在网络浏览器和服务器之间建立"套接字"连接。简单地说：客户端和服务器之间存在持久的连接，而且双方都可以随时开始发送数据。</p>
+<div class="hr"><b></b></div>
+<h1><a name="Nutz为WebSocket准备了什么?"></a>Nutz为WebSocket准备了什么?</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>只需要自行添加下面的类</p>
+<pre>import javax.websocket.server.ServerEndpointConfig;
+import org.nutz.mvc.Mvcs;
+
+public class NutIocWebSocketConfigurator extends ServerEndpointConfig.Configurator {
+
+    public &lt;T&gt; T getEndpointInstance(Class&lt;T&gt; endpointClass) {
+    	Ioc ioc = Mvcs.getIoc();
+    	if (ioc == null)
+    	    ioc = Mvcs.ctx().getDefaultIoc();
+        return ioc.get(endpointClass);
+    }
+}
+</pre>
+<p>然后在自己的websocket服务类上添加注解,即可享用ioc注入带来的福利</p>
+<pre>@ServerEndpoint(value = "/websocket", configurator=NutIocWebSocketConfigurator.class)
+@IocBean
+public class MyWebsocket extends Endpoint {
+
+}
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

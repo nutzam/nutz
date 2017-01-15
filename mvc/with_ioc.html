@@ -5,7 +5,7 @@
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">同 Ioc 容器一起工作</div>
-<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 <div class="zdoc_body">
 <ul class="zdoc_index_table">
 <li>
@@ -14,22 +14,16 @@
 <li>
 <div><span class="num">2</span><a href="#由_Ioc_容器管理子模块">由 Ioc 容器管理子模块</a></div>
 </li>
-<li>
-<div><span class="num">3</span><a href="#在容器对象里获得_ServletContext">在容器对象里获得 ServletContext</a></div>
-</li>
-<li>
-<div><span class="num">4</span><a href="#自定_Ioc_容器">自定 Ioc 容器</a></div>
-</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="内置的_Ioc_容器"></a>内置的 Ioc 容器</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>一个 Mvc 框架可以通过 Ioc 接口同一个 Ioc 容器挂接，挂接的方法很简单： 在主模块上声明 @IocBy</p>
-<pre>@IocBy(type=ComboIocProvider.class, args={"*js", "ioc/",
-									   "*anno", "net.wendal.nutzbook",
-									   "*async",
-									   "*tx"
-									   })
+<pre>@IocBy(args={"*js", "ioc/",
+			 "*anno", "net.wendal.nutzbook",
+			 "*async",
+			 "*tx"
+			 })
 public class MainModule {
 	...
 </pre>
@@ -38,31 +32,15 @@ public class MainModule {
 <div class="hr"><b></b></div>
 <h1><a name="由_Ioc_容器管理子模块"></a>由 Ioc 容器管理子模块</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>如果声明了@IocBean,那么 @InjectName是不需要的,且无效的!!</p>
-<p>通过 @IocBy 为整个应用声明了 Ioc 容器，那么如何使用呢。 实际上，你的每一个模块都可以来自容器，只要你在模块上声明 @InjectName。 当然，在主模块声明这个注解是没有意义的。</p>
-<pre>@InjectName("petM")
+<p>通过 @IocBy 为整个应用声明了 Ioc 容器，那么如何使用呢。 实际上，你的每一个模块都可以来自容器，只要你在模块上声明 @Inject。 当然，在主模块声明这个注解是没有意义的。</p>
+<pre>@IocBean("petM")
 public class PetModule {
    ...
 </pre>
 <ul type="disc">
-<li>如果你声明了这个注解， Nutz.Mvc 构造你的这个模块的时候，会通过 Ioc 容器获取，而不直接调用默认构造函数了。</li>
-<li>如果你的 '@InjectName' 并没有值，那么默认会将你的模块类名首字母小写作为模块的注入名
-<ul type="circle">
-<li>比如上例，你直接声明 '@InjectName' 同 '@InjectName("petModule")' 是等效的</li>
+<li>如果你声明了这个注解， Nutz.Mvc 构造你的这个模块的时候，会通过 Ioc 容器获取，而不直接调用默认构造函数了</li>
 </ul>
-</li>
-</ul>
-<div class="hr"><b></b></div>
-<h1><a name="在容器对象里获得_ServletContext"></a>在容器对象里获得 ServletContext</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<p>别注入了,直接拿</p>
-<pre>Mvcs.getServletContext();
-</pre>
-<div class="hr"><b></b></div>
-<h1><a name="自定_Ioc_容器"></a>自定 Ioc 容器</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<p>你很喜欢 Spring，或者你很喜欢 Guice。不管怎么说，你不想用 Nutz.Ioc，那么没关系，你可以自己实现一个 IocProvider。并用 @IocBy 声明到整个应用中即可。通过 Spring 或者 Guice 实现 Ioc 接口想必不是什么难事。</p>
 </div>
-<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 </body>
 </html>

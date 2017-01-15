@@ -1,15 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
-<title>1.r.59 发行注记</title><link href="zdoc.css" rel="stylesheet" type="text/css"/>
+<title>1.r.60 发行注记</title><link href="zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
-<div class="zdoc_header">1.r.59 发行注记</div>
+<div class="zdoc_header">1.r.60 发行注记</div>
 <div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 <div class="zdoc_body">
 <ul class="zdoc_index_table">
 <li>
-<div><span class="num">1</span><a href="#1r59_盐焗腰果_发行注记(20161130)">1.r.59 盐焗腰果 发行注记(20161130)</a></div>
+<div><span class="num">1</span><a href="#1r60_原味青豆_发行注记(20170116)">1.r.60 原味青豆 发行注记(20170116)</a></div>
 </li>
 <li>
 <div><span class="num">2</span><a href="#主要变化:">主要变化:</a></div>
@@ -18,64 +18,61 @@
 <div><span class="num">3</span><a href="#部分新功能介绍">部分新功能介绍</a></div>
 </li>
 <li>
-<div><span class="num">4</span><a href="#详细列表:">详细列表:</a></div>
+<div><span class="num">4</span><a href="#关联项目更新">关联项目更新</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#详细列表:">详细列表:</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="1r59_盐焗腰果_发行注记(20161130)"></a>1.r.59 <b>盐焗腰果</b> 发行注记(20161130)</h1>
+<h1><a name="1r60_原味青豆_发行注记(20170116)"></a>1.r.60 <b>原味青豆</b> 发行注记(20170116)</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>没错,写这段文档的时候我正在吃腰果,带海盐的.2个月的开发,19个issue,原本打算用Java Compiler API写点东西的,结果不了了之.</p>
-<p>这个版本是bugfix和新功能各占一半. 其中有几个bug挺蛋疼的,建议更新.</p>
+<p>青豆,即青豌豆,我(wendal)最近的最爱,因为腰果吃完了.</p>
+<p>这个版本,新功能不多,bugfix也少,最大的亮点是官网更新了(胖五做的),另外官网正在备案,请使用https协议访问.</p>
+<p>文档大幅更新,添加了十几个小节,调整了顺序,其动力来源,就是NutCN社区的3000+帖子. 每隔一段时间,我就会翻一遍,思考一下为什么会有这些问题?而不是单纯解答一下问题.</p>
+<p>感谢osc和博文视点赠送的<b>实战ES2015</b>一书,恩,还得感谢党,感谢国家,感谢CCTV</p>
 <div class="hr"><b></b></div>
 <h1><a name="主要变化:"></a>主要变化:</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
-<li>add: <a href="https://github.com/nutzam/nutz/issues/1144">HttpDNS的实现</a></li>
-<li>fix: <a href="https://github.com/nutzam/nutz/issues/1145">1.r.58的pom.xml强引用了servlet api和log4j</a></li>
-<li>add: <a href="https://github.com/nutzam/nutz/issues/1147">@Modules默认扫描package了</a></li>
-<li>add: <a href="https://github.com/nutzam/nutz/issues/1148">支持隐式HTTP方法</a></li>
-<li>add: <a href="https://github.com/nutzam/nutz/issues/1151">Http类支持自定义SSLSocketFactory</a></li>
-<li>fix: <a href="https://github.com/nutzam/nutz/issues/1156">dao.create没有建中间表</a></li>
-<li>add: <a href="https://github.com/nutzam/nutz/issues/1157">Http类支持自定义默认header</a></li>
-<li>fix: <a href="https://github.com/nutzam/nutz/issues/1160">Ioc工厂方法的唯一参数是变长参数的话会抛异常</a></li>
-<li>add: <a href="https://github.com/nutzam/nutz/issues/1163">关联关系的target类自动推导</a></li>
-<li>fix: <a href="https://github.com/nutzam/nutz/issues/1164">Sqls.callback.maps()应使用NutMap类型</a></li>
-<li>fix: <a href="https://github.com/nutzam/nutz/issues/1166">Dao.migration会删@Name的唯一性索引</a></li>
-<li>fix: <a href="https://github.com/nutzam/nutz/issues/1168">Pojo带view属性的时候@El会报错</a></li>
-<li>fix: <a href="https://github.com/nutzam/nutz/issues/1169">MySQL下建的关联表没有带编码信息</a></li>
-<li>add: <a href="https://github.com/nutzam/nutz/issues/1170">ColDefine的type默认值是个坑</a></li>
-<li>fix: <a href="https://github.com/nutzam/nutz/issues/1173">FileSqlManager在SpringBoot的onejar方式下不能工作</a></li>
-<li>fix: <a href="https://github.com/nutzam/nutz/issues/1176">自定义SQL首条数据带null会丢数据</a></li>
-<li>add: <a href="https://github.com/nutzam/nutz/issues/1177">Http类发送的content-type添加编码信息</a></li>
+<li>fix: Json.toJson处理map循环引用时会导致内存溢出</li>
+<li>fix: EL表达式遇到多余右括号时会死循环</li>
+<li>add: @One/@Many默认关联关系</li>
+<li>add: @Inject支持优先按类型注入</li>
+<li>add: Json.toJson支持null值当空字符串写入</li>
+<li>add: JsonFormat的DateFormat支持非JDK实现</li>
+<li>add: websocket和WhaleFilter的文档</li>
+<li>add: 集成jedis和activiti的文档</li>
+<li>add: ioc js与java代码互转的文档</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="部分新功能介绍"></a>部分新功能介绍</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>关联关系的target自动推导</p>
+<p>@One/@Many现在更简洁了, target和field均可自动推导,当然,自定义依然可用.</p>
 <pre><span class="zdoc_code_cmt">// 以前
-</span>@Many(target = Pet.class, field = "masterId")
-private List&lt;Pet&gt; pets;
-
-<span class="zdoc_code_cmt">// 现在 (@One/@Many/@ManyMany均可省略target)
-</span>@Many(field = "masterId")
-private List&lt;Pet&gt; pets;
-</pre>
-<p>@Modules默认扫描package</p>
-<pre><span class="zdoc_code_cmt">// 以前
-</span>@Modules(scanPackage=true)
+</span>@One(target=Master.class, field="masteId")
+private Master master;
 
 <span class="zdoc_code_cmt">// 现在
-</span><span class="zdoc_code_cmt">// 可以啥都不写,或者象征性写个空的
-</span>@Modules()
+</span>@One
+private Master master;
 </pre>
+<div class="hr"><b></b></div>
+<h1><a name="关联项目更新"></a>关联项目更新</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>nutzmore, 新增jedis/activiti/spring boot/slog等等插件和扩展</li>
+<li>nutz-web, 新增runnable war生成器和启动器</li>
+<li>nutzmongo, 适配mongodb 3.x驱动</li>
+</ul>
 <div class="hr"><b></b></div>
 <h1><a name="详细列表:"></a>详细列表:</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
-<li><a href="https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.59">issue@github</a></li>
+<li><a href="https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.60">issue@github</a></li>
 </ul>
-<p>欢迎访问<a href="http://nutzam.com">官网</a> 及 <a href="https://nutz.cn">Nutz社区</a>,以获取更多信息</p>
-<p><a href="https://nutz.cn">Nutz社区</a>已经累计了2000+的问答帖子, 10000+条回复,注册人数过千,平均回复时间少于10分钟哦,白天基本上秒回!</p>
+<p>欢迎访问<a href="https://nutzam.com">官网</a> 及 <a href="https://nutz.cn">Nutz社区</a>,以获取更多信息</p>
+<p><a href="https://nutz.cn">Nutz社区</a>已经累计了3000+的问答帖子, 10000+条回复,注册人数过千,平均回复时间少于10分钟哦,白天基本上秒回!</p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 </body>

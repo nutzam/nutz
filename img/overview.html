@@ -20,6 +20,9 @@
 <li>
 <div><span class="num">4</span><a href="#图像缩放">图像缩放</a></div>
 </li>
+<li>
+<div><span class="num">5</span><a href="#输出文件">输出文件</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="为什么有这个package"></a>为什么有这个package</h1>
@@ -53,15 +56,12 @@
 </pre>
 <p>裁剪缩放</p>
 <pre>Images.clipScale("/dev/shm/abc.jpg", "/dev/shm/abc_out.jpg",  1920, 1080);
-}}
-
-------------------------------------------------------------------------
-输出文件
-
-根据文件后缀输出图片
-
-{{{
-Images.write(image, new File("/dev/shm/abc.png"));
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="输出文件"></a>输出文件</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>根据文件后缀输出图片</p>
+<pre>Images.write(image, new File("/dev/shm/abc.png"));
 </pre>
 <p>输出jpeg并指定质量</p>
 <pre>Images.writeJpeg(image, new File("/dev/shm/abc.jpg"), 0.9f);

@@ -9,14 +9,62 @@
 <div class="zdoc_body">
 <ul class="zdoc_index_table">
 <li>
-<div><span class="num">1</span><a href="#直接项目README">直接项目README</a></div>
+<div><span class="num">1</span><a href="#简介">简介</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#依赖">依赖</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">3</span><a href="#基本用法">基本用法</a></div>
+<ul>
+<li>
+<div><span class="num">3.1</span><a href="#支持两个job定义">支持两个job定义</a></div>
+</li>
+</ul>
 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="直接项目README"></a>直接项目README</h1>
+<h1><a name="简介"></a>简介</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>请直接看看项目的README,不会让你失望的!!</p>
+<p>详细说明请查阅插件的README</p>
 <p><a href="https://github.com/nutzam/nutzmore/tree/master/nutz-integration-quartz">nutz-integration-quartz</a></p>
+<div class="hr"><b></b></div>
+<h1><a name="依赖"></a>依赖</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>quartz 2.x</li>
+<li>依赖名为conf类型为PropertiesProxy的ioc bean</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="基本用法"></a>基本用法</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>本插件通过@IocBy加载</p>
+<pre>@IocBy(args = {
+           "*js","ioc/",
+           "*anno", "net.wendal.nutzbook",
+           "*quartz" <span class="zdoc_code_cmt">// 加载Quartz
+</span>           })
+</pre>
+<p>添加quartz.properties, 本文件放在源文件夹下</p>
+<pre>org.quartz.scheduler.instanceName = NutzbookScheduler 
+org.quartz.threadPool.threadCount = 3 
+org.quartz.jobStore.class = org.quartz.simpl.RAMJobStore
+org.quartz.scheduler.skipUpdateCheck=true
+</pre>
+<p>在conf的扫描路径内,添加一个cron.properties</p>
+<pre>cron.pkgs=net.wendal.nutzbook.quartz.job
+cron.net.wendal.nutzbook.quartz.job.CleanTempfileJob=0 0 4 * * *
+</pre>
+<h2><a name="支持两个job定义"></a>支持两个job定义</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>基于注解Scheduled. 依赖于上面用到的cron.pkgs</li>
+<li>直接定义cron表达式, cron.类名=cron表达式</li>
+</ul>
+<p>触发启动. 在MainSetup.init方法内,添加如下代码进行触发</p>
+<pre><span class="zdoc_code_cmt">// nc是init方法的参数NutConfig nc
+</span>nc.getIoc().get(NutQuartzCronJobFactory.class)
+</pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 </body>

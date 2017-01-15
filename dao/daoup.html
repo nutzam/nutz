@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Dao操作示例代码</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Dao操作示例代码</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#DaoUpTest类">DaoUpTest类</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#如何使用">如何使用</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="DaoUpTest类"></a>DaoUpTest类</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>不是说好的示例代码吗?怎么是个类名. 没错的,就是一个类哦,而且是一个完整的testcase. 它涵盖了95%以上的常用操作.</p>
+<p>它的地址是 <a href="https://github.com/nutzam/nutz/blob/master/test/org/nutz/dao/util/DaoUpTest.java">DaoUpTest</a></p>
+<p>如果您访问github有"难度", 那么,还有osc上的镜像 <a href="http://git.oschina.net/nutz/nutz/blob/master/test/org/nutz/dao/util/DaoUpTest.java">DaoUpTest</a></p>
+<div class="hr"><b></b></div>
+<h1><a name="如何使用"></a>如何使用</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>看它的注释,非常非常详细,几乎是一行代码一行注释.</p>
+<p>例如准备说明</p>
+<pre><span class="zdoc_code_cmt">// 请在src或maven的resources下面添加一个文件叫nutz-test.properties
+</span><span class="zdoc_code_cmt">// 内容类似于
+</span>/**
+url=jdbc:mysql:<span class="zdoc_code_cmt">//127.0.0.1/walnut
+</span>username=root
+password=root
+*/
+<span class="zdoc_code_cmt">// 且加入了对应的数据库驱动, 混熟了可以加入druid和log4j(务必把log4j.properties弄好且日志为debug级)
+</span><span class="zdoc_code_cmt">// 程序启动的时候调用*一次*就够了!!!!!!!!!!!!!!
+</span>DaoUp.me().init(DaoUpTest.class.getClassLoader().getResourceAsStream("nutz-test.properties"));
+<span class="zdoc_code_cmt">// 请留意nutz输出的日志,如果没有日志输出,那就肯定是log4j没配置好, 建议删掉log4j然后继续.
+</span></pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

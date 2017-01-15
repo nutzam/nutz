@@ -74,6 +74,7 @@
 <div class="hr"><b></b></div>
 <h1><a name="整数型主键"></a>整数型主键</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p>@Id与主键属性名称id没有强制性,只是惯例叫id,你可以起名为abc的.</p>
 <pre>@Table("t_pet")
 public class Pet{
 	@Id
@@ -90,7 +91,8 @@ public class Pet{
 </pre>
 <p>之后，为你插入的对象执行</p>
 <pre>SELECT MAX(id) FROM t_pet;
-</pre>
+<span class="zdoc_code_cmt">// 如果您使用的数据库支持主键返回(例如MySQL),那么上述sql不会出现.
+</span></pre>
 <p>并设置到 pet 对象中。当然，不同的数据库，获得自增值的方式是不一样的，请参看 <a href="next_prev.html">在插入前后的为字段设值</a>里面描述了，通过 @Next 注解，声明数据库本地方言，来获取自增值。注意!! 这里的自增是由数据库表来实现的,而非NutDao的内部自增机制!!</p>
 <h2><a name="手工设值"></a>手工设值</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -101,7 +103,7 @@ public class Pet{
 	private int id;
 	...
 </pre>
-<p>Nutz.Dao 在插入对象时，就不会忽略你这个主键的值了，并且在插入完毕后，它也不会执行 SELECT MAX(id)。</p>
+<p>Nutz.Dao 在插入对象时，就不会忽略你这个主键的值了。</p>
 <h2><a name="快速插入"></a>快速插入</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>无论你是不是 @Id(auto=false)，通过 Dao.fastInsert ，都不会执行 SELECT MAX(id)</p>
@@ -114,8 +116,8 @@ public class Pet{
 <pre>@Table("t_pet")
 public class Pet{
 	@Name
-	private String name;
-	...
+	private String name; <span class="zdoc_code_cmt">// 属性名称可任意指定,并非强制叫name
+</span>	...
 </pre>
 <p>通过 @Name 声明了一个字符型主键后，你可以：</p>
 <pre>Pet pet = dao.fetch(Pet.class,"XiaoBai");
@@ -130,10 +132,10 @@ public class Pet{
 </pre>
 <p>因此</p>
 <pre>Pet pet = dao.fetch(Pet.class,"XiaoBai");
-同
-Pet pet = dao.fetch(Pet.class,"xiaobai");
-运行的结果就会没有区别
-</pre>
+<span class="zdoc_code_cmt">//同
+</span>Pet pet = dao.fetch(Pet.class,"xiaobai");
+<span class="zdoc_code_cmt">//运行的结果就会没有区别
+</span></pre>
 <div class="hr"><b></b></div>
 <h1><a name="复合主键"></a>复合主键</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -195,7 +197,7 @@ public int nextId() {
 
     public Object run(List&lt;Object&gt; fetchParam) {
         <span class="zdoc_code_cmt">// 用redis实现自增
-</span>        return jedis().incr(fetchParam.get(0).toString());
+</span>        return jedis().incr("ig:"+fetchParam.get(0).toString());
     }
 
     public String fetchSelf() {
@@ -206,7 +208,7 @@ public int nextId() {
 </span>CustomMake.me().register("ig", new MySuperIdGenerator()));
 
 @Id(auto=false)
-@Prev(els=@EL("ig('ig:t_user')"))
+@Prev(els=@EL("ig('t_user')"))
 private int id;
 </pre>
 </div>

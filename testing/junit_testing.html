@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>JUnit支持</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">JUnit支持</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#简介">简介</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#基本用法">基本用法</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="简介"></a>简介</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>写测试用例都很头疼,然而对核心方法的单元测试是非常重要的.</p>
+<p>nutz-plugins-mock 提供了 Ioc支持,Mvc环境, Servlet Mock对象</p>
+<div class="hr"><b></b></div>
+<h1><a name="基本用法"></a>基本用法</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>添加依赖</p>
+<pre>	&lt;dependency&gt;
+		&lt;groupId&gt;org.nutz&lt;/groupId&gt;
+		&lt;artifactId&gt;nutz-plugins-mock&lt;/artifactId&gt;
+		&lt;version&gt;1.r.59&lt;/version&gt;
+		&lt;scope&gt;test&lt;/scope&gt;
+	&lt;/dependency&gt;
+	&lt;dependency&gt;
+		&lt;groupId&gt;junit&lt;/groupId&gt;
+		&lt;artifactId&gt;junit&lt;/artifactId&gt;
+		&lt;version&gt;4.12&lt;/version&gt;
+		&lt;scope&gt;test&lt;/scope&gt;
+	&lt;/dependency&gt;
+	&lt;!-- 可选, 安利一下mockito,模拟mock对象很方便 --&gt;
+	&lt;dependency&gt;
+		&lt;groupId&gt;org.mockito&lt;/groupId&gt;
+		&lt;artifactId&gt;mockito-core&lt;/artifactId&gt;
+		&lt;version&gt;2.0.31-beta&lt;/version&gt;
+		&lt;scope&gt;test&lt;/scope&gt;
+	&lt;/dependency&gt;
+</pre>
+<p>添加Runner. web项目建议覆盖getMainModule方法, 非web项目覆盖getIocArgs</p>
+<pre>public class MyNutTestRunner extends NutTestRunner {
+
+    public MyNutTestRunner(Class&lt;?&gt; klass) throws InitializationError {
+        super(klass);
+    }
+
+    public Class&lt;?&gt; getMainModule() {
+        return MainModule.class;
+    }
+    
+    /**
+     * 可覆盖createIoc,实现参数覆盖, bean替换,等定制.
+     */
+    protected Ioc createIoc() {
+    	Ioc ioc = super.createIoc();
+    	PropertiesProxy conf = ioc.get(PropertiesProxy.class, "conf");
+    	conf.put("db.url", "jdbc:h2:~/test");
+    	return ioc;
+	}
+}
+</pre>
+<p>测试类, 请务必留意测试类所在的package,确保到ioc配置的覆盖范围内.</p>
+<pre>@RunWith(NutBookIocTestRunner.class)
+@IocBean <span class="zdoc_code_cmt">// 必须有
+</span>public class SimpleTest extends Assert {
+    
+    <span class="zdoc_code_cmt">//private static final Log log = Logs.get();
+</span>    
+    <span class="zdoc_code_cmt">// 跟通常的@Inject完全一样.
+</span>    @Inject("refer:$ioc")
+    protected Ioc ioc;
+    
+    @Inject
+    protected Dao dao;
+    
+    @Test
+    public void test_user_service_create_user() {
+    	dao.create(User.class, false);
+    	User user = new User("wendal", "1234512345");
+    	dao.insert(user);
+    	
+    	user = dao.fetch(User.class, "wendal");
+    	assertNotNull(user);
+    	assertNotNull(user.getName());
+    }
+}
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

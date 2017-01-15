@@ -80,7 +80,7 @@
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>比如：</p>
 <pre>...
-@Localization("mymsg")
+@Localization("mymsg/")
 public class MyMainModule {
 	...
 </pre>
@@ -156,26 +156,7 @@ public class MyMainModule {
 <div class="hr"><b></b></div>
 <h1><a name="使用过滤器"></a>使用过滤器</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>有些是由，你想让你的 JSP 文件 (不是通过 Nutz.Mvc 入口函数访问的)也可以使用"<b>本地化字符串</b>"功能，那么你需要在 web.xml 这么配置:</p>
-<pre>&lt;!--
-	Nutz.Mvc 还提供了一个过滤器，你可以用这个过滤器为所有的直接访问的 jsp 设置必要的 Request 属性。 比如 ${base}
-	以及 ${msg}
---&gt;
-&lt;filter&gt;
-	&lt;filter-name&gt;msgs&lt;/filter-name&gt;
-	&lt;filter-class&gt;org.nutz.mvc.NutFilter&lt;/filter-class&gt;
-&lt;/filter&gt;
-
-&lt;filter-mapping&gt;
-	&lt;filter-name&gt;msgs&lt;/filter-name&gt;
-	&lt;url-pattern&gt;*.jsp&lt;/url-pattern&gt;
-&lt;/filter-mapping&gt;
-
-&lt;filter-mapping&gt;
-	&lt;filter-name&gt;msgs&lt;/filter-name&gt;
-	&lt;url-pattern&gt;*.jspx&lt;/url-pattern&gt;
-&lt;/filter-mapping&gt;
-</pre>
+<p>让你的 JSP 文件 (不是通过 Nutz.Mvc 入口函数访问的)也可以使用"<b>本地化字符串</b>"功能? web.xml配置了NutFilter就行</p>
 <div class="hr"><b></b></div>
 <h1><a name="定制自己的本地化字符串方式"></a>定制自己的本地化字符串方式</h1>
 <div style="float:right;"><a href="#top">Top</a></div>

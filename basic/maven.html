@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Maven基本配置</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Maven基本配置</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#Nutz核心jar">Nutz核心jar</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#常用配置模板">常用配置模板</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="Nutz核心jar"></a>Nutz核心jar</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>nutz及周边插件,均已发布到maven中央库库,可以直接配置使用</p>
+<pre>&lt;dependency&gt;
+	&lt;groupId&gt;org.nutz&lt;/groupId&gt;
+	&lt;artifactId&gt;nutz&lt;/artifactId&gt;
+	&lt;version&gt;1.r.59&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+<p>快照库地址 <a href="https://jfrog.nutz.cn/artifactory/snapshots">https://jfrog.nutz.cn/artifactory/snapshots</a></p>
+<p>快照库内包含nutz主库,插件库,等快照jar</p>
+<div class="hr"><b></b></div>
+<h1><a name="常用配置模板"></a>常用配置模板</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>新建项目的参考配置,nutz+mysql+druid,并应用了nutzcn提供的maven镜像服务及快照库.</p>
+<pre>&lt;project xmlns="http:<span class="zdoc_code_cmt">//maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+</span>xsi:schemaLocation="http:<span class="zdoc_code_cmt">//maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+</span>&lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+&lt;groupId&gt;mygroupId&lt;/groupId&gt;
+&lt;artifactId&gt;myartifactId&lt;/artifactId&gt;
+&lt;packaging&gt;war&lt;/packaging&gt;
+&lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+&lt;properties&gt;
+	&lt;!-- UTF8大法好 --&gt;
+	&lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+&lt;/properties&gt;
+&lt;dependencies&gt;
+	&lt;!-- 核心jar --&gt;
+	&lt;dependency&gt;
+		&lt;groupId&gt;org.nutz&lt;/groupId&gt;
+		&lt;artifactId&gt;nutz&lt;/artifactId&gt;
+		&lt;version&gt;1.r.59&lt;/version&gt;
+	&lt;/dependency&gt;
+	&lt;!-- mysql驱动 --&gt;
+	&lt;dependency&gt;
+		&lt;groupId&gt;mysql&lt;/groupId&gt;
+		&lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+		&lt;version&gt;5.1.40&lt;/version&gt;
+	&lt;/dependency&gt;
+	&lt;dependency&gt;
+		&lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+		&lt;artifactId&gt;javax.servlet-api&lt;/artifactId&gt;
+		&lt;version&gt;3.1.0&lt;/version&gt;
+		&lt;scope&gt;provided&lt;/scope&gt;
+	&lt;/dependency&gt;
+	&lt;!-- Druid连接池 --&gt;
+	&lt;dependency&gt;
+		&lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+		&lt;artifactId&gt;druid&lt;/artifactId&gt;
+		&lt;version&gt;1.0.25&lt;/version&gt;
+	&lt;/dependency&gt;
+	&lt;dependency&gt;
+		&lt;groupId&gt;junit&lt;/groupId&gt;
+		&lt;artifactId&gt;junit&lt;/artifactId&gt;
+		&lt;version&gt;4.12&lt;/version&gt;
+		&lt;scope&gt;test&lt;/scope&gt;
+	&lt;/dependency&gt;
+&lt;/dependencies&gt;
+&lt;build&gt;
+	&lt;plugins&gt;
+		&lt;plugin&gt;
+			&lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+			&lt;version&gt;3.3&lt;/version&gt;
+			&lt;configuration&gt;
+				&lt;source&gt;1.8&lt;/source&gt;
+				&lt;target&gt;1.8&lt;/target&gt;
+				&lt;compilerArgs&gt;
+					&lt;arg&gt;-parameters&lt;/arg&gt;
+				&lt;/compilerArgs&gt;
+				&lt;useIncrementalCompilation&gt;false&lt;/useIncrementalCompilation&gt;
+			&lt;/configuration&gt;
+		&lt;/plugin&gt;
+	&lt;/plugins&gt;
+&lt;/build&gt;
+&lt;repositories&gt;
+	&lt;repository&gt;
+		&lt;id&gt;nutz&lt;/id&gt;
+		&lt;url&gt;https:<span class="zdoc_code_cmt">//jfrog.nutz.cn/artifactory/jcenter&lt;/url&gt;
+</span>	&lt;/repository&gt;
+	&lt;repository&gt;
+		&lt;id&gt;nutz-snapshots&lt;/id&gt;
+		&lt;url&gt;https:<span class="zdoc_code_cmt">//jfrog.nutz.cn/artifactory/snapshots&lt;/url&gt;
+</span>		&lt;snapshots&gt;
+			&lt;enabled&gt;true&lt;/enabled&gt;
+			&lt;updatePolicy&gt;always&lt;/updatePolicy&gt;
+		&lt;/snapshots&gt;
+		&lt;releases&gt;
+			&lt;enabled&gt;false&lt;/enabled&gt;
+		&lt;/releases&gt;
+	&lt;/repository&gt;
+&lt;/repositories&gt;
+&lt;/project&gt;
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

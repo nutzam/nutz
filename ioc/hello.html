@@ -197,10 +197,16 @@ System.out.println(p1==p2);
 <p>从1.b.51开始, nutz内置的json/xml/annotation加载器支持工厂方法了</p>
 <p>Json写法是</p>
 <pre>	{
-		ssdb : {
+		<span class="zdoc_code_cmt">// 根据静态方法构建对象
+</span>		ssdb : {
 			type : "org.nutz.ssdbj4.spi.SSDB", <span class="zdoc_code_cmt">// 接口或抽象类
 </span>			args : ["127.0.0.1", 8888, 5000, null],
 			factory : "org.nutz.ssdbj4.SSDBs<span class="zdoc_code_cmt">#pool" // 类名#方法名
+</span>		},
+		<span class="zdoc_code_cmt">// 用另外一个bean的实例方法构建对象
+</span>		yyy : {
+			args : "abc",
+			factory : "$ssdb<span class="zdoc_code_cmt">#batch" // $对象名称#方法名
 </span>		}
 	}
 </pre>

@@ -129,12 +129,12 @@ public class Pet{
 	private long id;
 ...
 </pre>
-<p>现在 Nutz.Dao 支持这些数据库:</p>
+<p>现在 Nutz.Dao 支持这些数据库. 其他未能识别的数据库将当成MySQL:</p>
 <pre>public enum DB {
-	H2, DB2, PSQL, ORACLE, SQLSERVER, MYSQL, OTHER
+	H2, DB2, PSQL, ORACLE, SQLSERVER, MYSQL, OTHER ...
 }
 </pre>
-<p>特别说一下Oracle的seq</p>
+<p>特别说一下Oracle的seq, 不过,更推荐使用触发器模拟自增.</p>
 <pre>@Table("t_pet")
 public class Pet{
 	@Id(auto=false)

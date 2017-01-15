@@ -5,7 +5,7 @@
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">文件上传</div>
-<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 <div class="zdoc_body">
 <ul class="zdoc_index_table">
 <li>
@@ -20,24 +20,32 @@
 <li>
 <div><span class="num">2.2</span><a href="#更细腻的控制">更细腻的控制</a></div>
 </li>
-<li>
-<div><span class="num">2.3</span><a href="#在入口函数的参数里获得上传的文件">在入口函数的参数里获得上传的文件</a></div>
-</li>
-<li>
-<div><span class="num">2.4</span><a href="#一次上传多个同名文件">一次上传多个同名文件</a></div>
-</li>
 </ul>
 </li>
 <li>
-<div class="zdoc_folder"><span class="num">3</span><a href="#Html5流式上传(实验性)">Html5流式上传(实验性)</a></div>
+<div class="zdoc_folder"><span class="num">3</span><a href="#在入口函数的参数里获得上传的文件">在入口函数的参数里获得上传的文件</a></div>
 <ul>
 <li>
-<div><span class="num">3.1</span><a href="#1b44及之后的版本,同时兼容Html5流式上传_但,请注意以下事项:">1.b.44及之后的版本,同时兼容Html5流式上传. 但,请注意以下事项:</a></div>
+<div><span class="num">3.1</span><a href="#因为_FORM_表单里的_input_type=file_项都已经被_UploadAdaptor_解析并存入服务器的临时目录">因为 FORM 表单里的 input type=file 项都已经被 UploadAdaptor 解析并存入服务器的临时目录</a></div>
 </li>
 </ul>
 </li>
 <li>
-<div><span class="num">4</span><a href="#可用的参数类型">可用的参数类型</a></div>
+<div class="zdoc_folder"><span class="num">4</span><a href="#一次上传多个同名文件">一次上传多个同名文件</a></div>
+<ul>
+<li>
+<div><span class="num">4.1</span><a href="#相信很多同学都会有这样的用法，就是，希望一次上传的表单为：">相信很多同学都会有这样的用法，就是，希望一次上传的表单为：</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">5</span><a href="#可用的参数类型">可用的参数类型</a></div>
+</li>
+<li>
+<div><span class="num">6</span><a href="#推荐的js插件">推荐的js插件</a></div>
+</li>
+<li>
+<div><span class="num">7</span><a href="#直接上传到云">直接上传到云</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
@@ -66,6 +74,7 @@
 <li>UploadInfo 字段 current 是当前会话已经上传了多少字节</li>
 </ul>
 </li>
+<li>如果使用ajax进行文件上传,请使用webuploader等js插件.</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="如何使用"></a>如何使用</h1>
@@ -79,7 +88,8 @@
 public void uploadPhoto(@Param("id") int id, @Param("photo") File f){
 	...
 </pre>
-<p>Nutz.Mvc 会为你的入口函数创建一个上传适配器，上传适配器的会将临时文件存放在<i><b>WEB-INF/tmp</b></i> 目录下。</p>
+<p>Nutz.Mvc 会为你的入口函数创建一个上传适配器，上传适配器的会将临时文件存放在<i><b>WEB-INF/tmp</b></i> 目录下。 请为不同的入口方法分配不同的临时文件夹路径请为不同的入口方法分配不同的<b>临时文件路径*</b>哦</p>
+<p>app.root代表web项目的根路径, 也就是servletContext.getRealPath("/")所返回的值</p>
 <div class="hr"><b></b></div>
 <h2><a name="更细腻的控制"></a>更细腻的控制</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -159,9 +169,11 @@ tmpFilePool : {
 </span>},
 </pre>
 <div class="hr"><b></b></div>
-<h2><a name="在入口函数的参数里获得上传的文件"></a>在入口函数的参数里获得上传的文件</h2>
+<h1><a name="在入口函数的参数里获得上传的文件"></a>在入口函数的参数里获得上传的文件</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>因为 FORM 表单里的 input type=file 项都已经被 UploadAdaptor 解析并存入服务器的临时目录（你声明的那个目录，比如上例是 /WEB-INF/tmp），你在入口函数里可以直接获取：</p>
+<h2><a name="因为_FORM_表单里的_input_type=file_项都已经被_UploadAdaptor_解析并存入服务器的临时目录"></a>因为 FORM 表单里的 input type=file 项都已经被 UploadAdaptor 解析并存入服务器的临时目录</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>（你声明的那个目录，比如上例是 /WEB-INF/tmp），你在入口函数里可以直接获取：</p>
 <pre>@AdaptBy(type = UploadAdaptor.class, args = { "ioc:myUpload" })
 public void uploadPhoto( @Param("photo") File f){
     ...
@@ -182,9 +194,10 @@ public void uploadPhoto( @Param("photo") TempFile tf){
 </span>}
 </pre>
 <div class="hr"><b></b></div>
-<h2><a name="一次上传多个同名文件"></a>一次上传多个同名文件</h2>
+<h1><a name="一次上传多个同名文件"></a>一次上传多个同名文件</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>相信很多同学都会有这样的用法，就是，希望一次上传的表单为：</p>
+<h2><a name="相信很多同学都会有这样的用法，就是，希望一次上传的表单为："></a>相信很多同学都会有这样的用法，就是，希望一次上传的表单为：</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <pre>&lt;form target="hideWin" enctype="multipart/form-data" method="post"&gt;
     &lt;input type="file" name="photo"&gt;
     &lt;input type="file" name="photo"&gt;
@@ -202,31 +215,71 @@ public void uploadPhoto( @Param("photo") TempFile[] tfs){
 <ul type="disc">
 <li><span style="color:#FF0000;"><b> 你只能用 TempFile[]</b></span></li>
 </ul>
-<p>也就是说，如果你用了 File[] 将会出错。原因不解释。</p>
-<div class="hr"><b></b></div>
-<h1><a name="Html5流式上传(实验性)"></a>Html5流式上传(实验性)</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<h2><a name="1b44及之后的版本,同时兼容Html5流式上传_但,请注意以下事项:"></a>1.b.44及之后的版本,同时兼容Html5流式上传. 但,请注意以下事项:</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
-<ul type="disc">
-<li>上传的Content-Type必须是application/octet-stream</li>
-<li>必须带Content-Length</li>
-<li>默认情况下,对于的表单属性是filedata,除非在Content-Disposition另外声明</li>
-<li>不支持Content-Type过滤,因为上传数据中通常不携带这种信息</li>
-<li>支持文件名过滤,但请留意默认文件名nutz.jpg</li>
-</ul>
+<p>也就是说，如果你用了 File[] 将会出错。</p>
 <div class="hr"><b></b></div>
 <h1><a name="可用的参数类型"></a>可用的参数类型</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
-<li>TempFile 推荐</li>
-<li>File 已废弃</li>
-<li>FileMeta 已废弃</li>
-<li>InputStream 不推荐</li>
-<li>Reader 不推荐</li>
+<li>TempFile 及 TempFile推荐</li>
+<li>File 推荐用TempFile</li>
 <li>Map 用于得到全部参数</li>
 </ul>
+<div class="hr"><b></b></div>
+<h1><a name="推荐的js插件"></a>推荐的js插件</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>ajax下是不能直接提交带文件的表单的,但良好的用户体验,怎么能不使用ajax上传文件呢?</p>
+<ul type="disc">
+<li><a href="http://fex.baidu.com/webuploader/">webuploader</a> 百毒出品,体验还是不错的</li>
+<li><a href="https://github.com/codler/jQuery-Ajax-Upload">jQuery-Ajax-Upload</a> 老牌ajax上传插件</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="直接上传到云"></a>直接上传到云</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>以七牛云存储为例, 使用其js-sdk及java-sdk</p>
+<p>其中,java-sdk用于提供uptoken的入口方法</p>
+<pre>@Ok("json:full")
+@At
+public NutMap uptoken() {
+    String accessKey = conf.get("qiniu.accessKey");
+    String secretKey = conf.get("qiniu.secretKey");
+    String bucketName = conf.get("qiniu.bucketName");
+    Auth auth = Auth.create(accessKey, secretKey);
+    <span class="zdoc_code_cmt">//StringMap policy = new StringMap(); // 可选,详情请查阅七牛的文档,建议限定上传路径
+</span>    StringMap policy = null;
+    int timeout = 600;
+    String token = auth.uploadToken(bucketName, null, timeout, policy);
+    return new NutMap("uptoken", token);
+}
+</pre>
+<p>供参考的js代码</p>
+<pre>var uploader = Qiniu.uploader({
+	runtimes : 'html5,flash,html4', <span class="zdoc_code_cmt">// 上传模式，依次退化
+</span>	browse_button : 'pickfiles', <span class="zdoc_code_cmt">// 上传选择的点选按钮，必需
+</span>	uptoken_url : base + '/upload/uptoken', <span class="zdoc_code_cmt">// Ajax请求uptoken的Url，强烈建议设置（服务端提供）
+</span>	get_new_uptoken : true, <span class="zdoc_code_cmt">// 设置上传文件的时候是否每次都重新获取新的uptoken
+</span>	max_file_size : '128mb', <span class="zdoc_code_cmt">// 最大文件体积限制
+</span>	max_retries : 3, <span class="zdoc_code_cmt">// 上传失败最大重试次数
+</span>	<span class="zdoc_code_cmt">// dragdrop: true, // 开启可拖曳上传
+</span>	<span class="zdoc_code_cmt">// drop_element: 'container', // 拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
+</span>	chunk_size : '4mb', <span class="zdoc_code_cmt">// 分块上传时，每块的体积
+</span>	auto_start : true, <span class="zdoc_code_cmt">// 选择文件后自动上传，若关闭需要自己绑定事件触发上传
+</span>	unique_names : false,
+	domain : dw_domain,
+	init : {
+		'FileUploaded' : function(up, file, info) {
+			$.ajax({
+				url : base + "/upload/add",
+				data : info,
+				type : "POST",
+				success : function() {
+					layer.alert("上传成功");
+				}
+			});
+		}
+	}
+});
+</pre>
 </div>
-<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 </body>
 </html>

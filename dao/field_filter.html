@@ -12,45 +12,62 @@
 <div><span class="num">1</span><a href="#为什么需要过滤字段">为什么需要过滤字段</a></div>
 </li>
 <li>
-<div><span class="num">2</span><a href="#如何过滤字段的例子">如何过滤字段的例子</a></div>
+<div><span class="num">2</span><a href="#如何过滤字段">如何过滤字段</a></div>
 </li>
 <li>
 <div><span class="num">3</span><a href="#字段过滤器的原理">字段过滤器的原理</a></div>
 </li>
 <li>
-<div class="zdoc_folder"><span class="num">4</span><a href="#字段过滤器的创建">字段过滤器的创建</a></div>
-<ul>
-<li>
-<div><span class="num">4.1</span><a href="#忽略少数字段">忽略少数字段</a></div>
+<div><span class="num">4</span><a href="#字段过滤器的创建">字段过滤器的创建</a></div>
 </li>
 <li>
-<div><span class="num">4.2</span><a href="#忽略空值">忽略空值</a></div>
+<div><span class="num">5</span><a href="#忽略少数字段">忽略少数字段</a></div>
 </li>
 <li>
-<div><span class="num">4.3</span><a href="#保留几个字段且忽略空值">保留几个字段且忽略空值</a></div>
+<div><span class="num">6</span><a href="#忽略空值">忽略空值</a></div>
 </li>
 <li>
-<div><span class="num">4.4</span><a href="#忽略少数字段且忽略空值">忽略少数字段且忽略空值</a></div>
+<div><span class="num">7</span><a href="#保留几个字段且忽略空值">保留几个字段且忽略空值</a></div>
 </li>
 <li>
-<div><span class="num">4.5</span><a href="#为多个实体设置字段过滤">为多个实体设置字段过滤</a></div>
-</li>
-</ul>
+<div><span class="num">8</span><a href="#忽略少数字段且忽略空值">忽略少数字段且忽略空值</a></div>
 </li>
 <li>
-<div><span class="num">5</span><a href="#无需匿名内部类的写法">无需匿名内部类的写法</a></div>
+<div><span class="num">9</span><a href="#为多个实体设置字段过滤">为多个实体设置字段过滤</a></div>
+</li>
+<li>
+<div><span class="num">10</span><a href="#使用FieldMatcher创建复杂规则">使用FieldMatcher创建复杂规则</a></div>
+</li>
+<li>
+<div><span class="num">11</span><a href="#无需匿名内部类的写法">无需匿名内部类的写法</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="为什么需要过滤字段"></a>为什么需要过滤字段</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>某些时候，尤其是在更新对象的时候，用户希望忽略某些字段。通过注解 <a href="annotations.html">Nutz.Dao 实体注解</a> <span style="color:#AA7744;"><b>@Readonly</b></span> 可以达到 这个目的。但是更多的时候，对于 POJO 对象，只有在运行时，用户的程序才能决定哪些字段更新，哪些不更新。<span style="color:#AA7744;"><b>@Readonly</b></span> 注解可就达不到这个 目的了。</p>
-<p>怎么办呢？ Nutz.Dao 提供了类似于 <a href="dynamic_table_name.html">动态表名</a> 的解决办法。</p>
+<p>例如insert时需要忽略某个特定属性, update时只更新某些属性, 查询时需要跳过大字段等。</p>
+<p>FieldFilter/FieldMatcher提供细致的过滤选项,包括:</p>
+<ul type="disc">
+<li>黑名单(locked)</li>
+<li>白名单(actived)</li>
+<li>忽略空值(ignoreNull)</li>
+<li>忽略数值0(ignoreZero)</li>
+<li>忽略日期属性(ignoreDate)</li>
+<li>忽略空字符串(ignoreBlankStr)</li>
+<li>忽略数值型主键(ignoreId), 仅insert操作有效</li>
+<li>忽略字符型主键(ignoreName), 仅insert操作有效</li>
+<li>忽略复合主键(ignorePk), 仅insert操作有效</li>
+</ul>
+<p>FieldFilter是FieldMatcher的包装,相当于Map&lt;Class, FieldMatcher&gt;</p>
+<p>黑名单和白名单,均为正则表达式,匹配是Java属性名!!</p>
+<p>ignoreNull/ignoreZero/ignoreDate/ignoreBlankStr对insert(pet)无效,有多参数的insert替代.</p>
 <div class="hr"><b></b></div>
-<h1><a name="如何过滤字段的例子"></a>如何过滤字段的例子</h1>
+<h1><a name="如何过滤字段"></a>如何过滤字段</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>如下代码，将只更新 Pet 的 id 和 name 字段：</p>
-<pre>FieldFilter.create(Pet.class, "^id|name$").run(new Atom() {
+<p>如下代码，将只更新 Pet 的 id 和 name 属性：</p>
+<pre><span class="zdoc_code_cmt">// 第二个参数是正则表达式
+</span>FieldFilter ff = FieldFilter.create(Pet.class, "^id|name$");
+ff.run(new Atom() {
 	public void run() {
 		Pet pet = dao.fetch(Pet.class, 24);
 		pet.setName("ABC");
@@ -58,6 +75,18 @@
 		dao.update(pet);
 	}
 });
+<span class="zdoc_code_cmt">// 或者
+</span>Daos.ext(dao, ff).update(pet);
+</pre>
+<p>以下代码, 将只查询id和name属性</p>
+<pre>FieldFilter ff = FieldFilter.create(Pet.class, "^id|name$");
+Pet pet = ff.run(new Molecule() {
+	public void run() {
+		setObj(dao.fetch(Pet.class, "ABC"));
+	}
+});
+<span class="zdoc_code_cmt">// 或者用Daos.ext
+</span>Pet pet = Daos.ext(dao, ff).fetch(Pet.class, "ABC");
 </pre>
 <div class="hr"><b></b></div>
 <h1><a name="字段过滤器的原理"></a>字段过滤器的原理</h1>
@@ -77,12 +106,12 @@
     ...
 </pre>
 <p>而且既然在 ThreadLocal 设置了数据，它就不得不考虑如何让你清除这个数据。因此，它的写法也保证了你一定会清掉你的数据了。</p>
-<pre>FieldFilter ... run(new Atom(){   &lt;-- 开始将自身加入 ThreadLocal
-    public void run(){
+<pre>FieldFilter ... run(new Atom(){  <span class="zdoc_code_cmt">// &lt;-- 开始将自身加入 ThreadLocal
+</span>    public void run(){
         <span class="zdoc_code_cmt">// 这里是你的代码，你的 Dao 调用都会得到 ThreadLocal 中你对于实体字段过滤的设置
 </span>    }
-});   &lt;-- run 方法结束前，会从 ThreadLocal 清除自身
-</pre>
+}); <span class="zdoc_code_cmt">//  &lt;-- run 方法结束前，会从 ThreadLocal 清除自身
+</span></pre>
 <div class="hr"><b></b></div>
 <h1><a name="字段过滤器的创建"></a>字段过滤器的创建</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -108,7 +137,8 @@
 <li>如果我想忽略所有之为空的字段怎么办呢？</li>
 <li>如果我想同时为多个实体设置字段过滤怎么办呢？</li>
 </ul>
-<h2><a name="忽略少数字段"></a>忽略少数字段</h2>
+<div class="hr"><b></b></div>
+<h1><a name="忽略少数字段"></a>忽略少数字段</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>FieldFilter.locked(Pet.class, "^last|age$").run(new Atom(){
     public void run(){
@@ -116,7 +146,8 @@
 </span>    }
 });
 </pre>
-<h2><a name="忽略空值"></a>忽略空值</h2>
+<div class="hr"><b></b></div>
+<h1><a name="忽略空值"></a>忽略空值</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>FieldFilter.create(Pet.class, true).run(new Atom(){
     public void run(){
@@ -124,7 +155,8 @@
 </span>    }
 });
 </pre>
-<h2><a name="保留几个字段且忽略空值"></a>保留几个字段且忽略空值</h2>
+<div class="hr"><b></b></div>
+<h1><a name="保留几个字段且忽略空值"></a>保留几个字段且忽略空值</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>FieldFilter.create(Pet.class,"^id|name|age|last$", true).run(new Atom(){
     public void run(){
@@ -132,7 +164,8 @@
 </span>    }
 });
 </pre>
-<h2><a name="忽略少数字段且忽略空值"></a>忽略少数字段且忽略空值</h2>
+<div class="hr"><b></b></div>
+<h1><a name="忽略少数字段且忽略空值"></a>忽略少数字段且忽略空值</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>FieldFilter.create(Pet.class, null, "^age|last$", true).run(new Atom(){
     public void run(){
@@ -140,7 +173,8 @@
 </span>    }
 });
 </pre>
-<h2><a name="为多个实体设置字段过滤"></a>为多个实体设置字段过滤</h2>
+<div class="hr"><b></b></div>
+<h1><a name="为多个实体设置字段过滤"></a>为多个实体设置字段过滤</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>FieldFilter.create(Pet.class, true)
            .set(Master.class, "^id|name$")
@@ -149,6 +183,16 @@
         <span class="zdoc_code_cmt">// TODO 你的 DAO 操作代码
 </span>    }
 });
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="使用FieldMatcher创建复杂规则"></a>使用FieldMatcher创建复杂规则</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>FieldMatcher fm = FieldMatcher.make(actived, locked, ignoreNull, 
+                                ignoreZero, ignoreDate, 
+                                ignoreId,
+                                ignoreName,
+                                ignorePk);
+FieldFilter ff = FieldFilter.create(Pet.class, fm);
 </pre>
 <div class="hr"><b></b></div>
 <h1><a name="无需匿名内部类的写法"></a>无需匿名内部类的写法</h1>
@@ -165,6 +209,7 @@
 </span>Daos.ext(dao, FieldFilter.create(Pet.class, "^id|name$")).update(pet);
 <span class="zdoc_code_cmt">// ext方法会返回一个Dao实例,是对原有dao对象的封装
 </span></pre>
+<p>FieldFilter实例及Daos.ext返回的Dao实例,可重复使用,均为线程安全的.</p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>

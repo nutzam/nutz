@@ -59,7 +59,8 @@
 				interceptors : [
 							"log", <span class="zdoc_code_cmt">// 默认的日志还需要的
 </span>							"time", <span class="zdoc_code_cmt">// 加个时间又如何呢?
-</span>							"net.demo.MyDaoInterceptor" <span class="zdoc_code_cmt">// 加入自己的,才合适
+</span>							"net.demo.MyDaoInterceptor", <span class="zdoc_code_cmt">// 加入自己的,才合适
+</span>							{refer:"superI"} <span class="zdoc_code_cmt">// 引用另外一个bean作为拦截器
 </span>							]
 			}
 		}

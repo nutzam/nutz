@@ -25,6 +25,7 @@
 <div class="hr"><b></b></div>
 <h1><a name="ioc_js形式的配置"></a>ioc js形式的配置</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p>NutDaoRunner新增了slaveDataSource属性</p>
 <pre>    dataSource : {
     	<span class="zdoc_code_cmt">// master数据源
 </span>    },
@@ -49,7 +50,7 @@
 <h1><a name="读写分离的判据"></a>读写分离的判据</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
-<li>不在事务模板内!!</li>
+<li>不在事务内</li>
 <li>select语句</li>
 </ul>
 <p>继承NutDaoRunner覆盖selectDataSource方法,可以实现多个从库或分库分表.</p>

@@ -48,6 +48,7 @@
 <li>生成 Pager 对象的时候需要传入 <span style="color:#0000AA;">“当前页数”</span> 和 <span style="color:#0000AA;">“页大小”</span></li>
 <li>Pager 虽然有 getRecordCount() 和 getPageCount() 方法，但是它不会自动被设值 -- 因为考虑到效率</li>
 <li>通过 Pager.setRecordCount() 可以为 Pager 设置结果集的总数，Pager 会通过 getPageCount() 返回总页数</li>
+<li>分页页数从1开始算,如果页数是0,代表不分页,请特别注意.</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="将分页信息和查询结果一起返回"></a>将分页信息和查询结果一起返回</h1>

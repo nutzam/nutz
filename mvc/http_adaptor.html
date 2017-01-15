@@ -110,8 +110,8 @@
 <h2><a name="通过_Ioc_容器获得适配器"></a>通过 Ioc 容器获得适配器</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>更复杂的情况是，如果你希望你的适配器是交由 Ioc 容器管理的，你可以：</p>
-<pre>@AdaptBy(type=JsonAdaptor.class, args={"ioc:objName"})
-</pre>
+<pre>@AdaptBy(type=JsonAdaptor.class, args={"ioc:objName"}) <span class="zdoc_code_cmt">// 一定不可以是单例
+</span></pre>
 <p>即，如果你的参数数组长度为一，并且，由 "ioc:" 开始，那么这个适配器会交付 Ioc 容器管理，你可以在容器的配置文件中详细规定这个适配器的各个属性。当然，你需要在整个应用启用 Ioc 容器，详情，请参看 <a href="with_ioc.html">同 Ioc 容器一起工作</a></p>
 <div class="hr"><b></b></div>
 <h1><a name="内置的适配器"></a>内置的适配器</h1>
@@ -414,6 +414,7 @@ public void errParam(@Param("id") long id, AdaptorErrorContext errCtx) {
 </li>
 <li>init 函数是 Nutz.Mvc 在创建你的适配器以后，马上就要调用的一个方法，你可以在这个方法里初始化一些逻辑</li>
 <li>adapt 方法的第三个参数，是 Nutz.Mvc 为你准备好的路径参数，它有可能为 null。 你的适配器 将决定是不是应用这个路径参数</li>
+<li>推荐继承 AbstractAdaptor</li>
 </ul>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>

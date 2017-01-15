@@ -110,7 +110,7 @@
 </ul>
 </li>
 <li>
-<div class="zdoc_folder"><span class="num">11</span><a href="#严重提醒">严重提醒</a></div>
+<div class="zdoc_folder"><span class="num">11</span><a href="#重要提醒">重要提醒</a></div>
 <ul>
 <li>
 <div><span class="num">11.1</span><a href="#绝对错误的用法">绝对错误的用法</a></div>
@@ -210,11 +210,10 @@
             depose : 'close'
         },
         fields : {
-            driverClassName : "org.postgresql.Driver",
             url : "jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase",
 </span>            username : "enzozhong",
             password : "123",
-            maxWait: 15000, <span class="zdoc_code_cmt">// 若不配置此项,如果数据库未启动,druid会一直等可用连接,卡住启动过程,
+            maxWait: 15000, <span class="zdoc_code_cmt">// 若不配置此项,如果数据库未启动,druid会一直等可用连接,卡住启动过程
 </span>            defaultAutoCommit : false <span class="zdoc_code_cmt">// 提高fastInsert的性能
 </span>        }
     }
@@ -368,13 +367,13 @@ dao.insert(User.create("wendal","123456"));
 ioc.depose(); <span class="zdoc_code_cmt">//关闭Ioc容器
 </span></pre>
 <div class="hr"><b></b></div>
-<h1><a name="严重提醒"></a>严重提醒</h1>
+<h1><a name="重要提醒"></a>重要提醒</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
-<li>非Mvc环境建议用DaoUp类!!!</li>
-<li>Mvc环境下请使用IocBy!!!</li>
+<li>非Mvc环境建议用DaoUp类.</li>
+<li>Mvc环境下请使用IocBy.</li>
 <li>上面提及的Java代码均为演示(main方法中的简单示例),实际用的时候, 必须将ioc容器本身单例化(例如存放到一个static属性)</li>
-<li>重复创建DataSource(例如反复创建ioc容器, new NutIoc(...))会导致数据库连接数耗尽!!</li>
+<li>重复创建DataSource(例如反复创建ioc容器, new NutIoc(...))会导致数据库连接数耗尽.</li>
 <li>ioc容器本身,应该尽可能作为单例, 不要创建一个ioc容器后,获取ioc对象,然后就抛弃, 例如:</li>
 </ul>
 <h2><a name="绝对错误的用法"></a>绝对错误的用法</h2>

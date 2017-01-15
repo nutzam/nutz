@@ -18,7 +18,7 @@
 <div><span class="num">3</span><a href="#创建_POJO">创建 POJO</a></div>
 </li>
 <li>
-<div><span class="num">4</span><a href="#创建_main_函数">创建 main 函数</a></div>
+<div><span class="num">4</span><a href="#创建一个方法">创建一个方法</a></div>
 </li>
 <li>
 <div><span class="num">5</span><a href="#如何进阶">如何进阶</a></div>
@@ -28,33 +28,28 @@
 <h1><a name="检查运行环境"></a>检查运行环境</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
-<li>首先，你必须安装 JDK 1.6</li>
+<li>首先，你必须安装 JDK 1.6,推荐JDK 8u112</li>
 <li>其次，为了运行 Nutz.Dao，你必须要有一个数据库软件：
 <ol type="a">
 <li>Mysql,Postgresql, SQLServer, Oracle, DB2 , H2都可以。</li>
 </ol>
 </li>
-<li>建立一个普通的 Java 项目：
+<li>建立一个 Java 项目：
 <ol type="a">
-<li>你可以采用任何自己觉得舒适的 IDE 环境，或者编辑器。</li>
+<li>推荐使用Eclipse或Idea等IDE工具</li>
 <li>你要将数据库的 JDBC Driver 和你喜欢的连接池加入项目的 classpath。</li>
 </ol>
 </li>
-<li>在数据库里建立一张你自己的数据表， 这里我们用 t_person 来举例：</li>
-<li>初学推荐看DaoUp类,及其文档DaoUpTest(在github源码中有)</li>
-<li>如果你完全不知道神马情况,建议看<a href="http://nutzbook.wendal.net">nutzbook</a></li>
+<li>NutDao并不依赖MVC环境及Ioc.</li>
+<li>在Mvc环境下,通常使用Ioc管理NutDao的实例.</li>
+<li>NutDao是线程安全的,无需重复创建其实例.</li>
 </ol>
 <div class="hr"><b></b></div>
 <h1><a name="创建数据库"></a>创建数据库</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>此处代码适用于PostgreSQL，如果你使用了不同的数据库，请自行修改相应建库语句：</p>
-<pre>CREATE TABLE t_person (
-  id  SERIAL PRIMARY KEY,
-  name  VARCHAR(50) NOT NULL UNIQUE,
-  age INT
-);
-<span class="zdoc_code_cmt">//对于最新版的Nutz,请直接使用dao.create(XXX.class, false)来完成建表
-</span></pre>
+<p>以mysql为例</p>
+<pre>create database nutzdemo;
+</pre>
 <div class="hr"><b></b></div>
 <h1><a name="创建_POJO"></a>创建 POJO</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -62,53 +57,40 @@
 <pre>import org.nutz.dao.entity.annotation.*;
 
 @Table("t_person")   <span class="zdoc_code_cmt">// 声明了Person对象的数据表
-</span>public class Person { <span class="zdoc_code_cmt">//无需继承任何Nutz的类
+</span>public class Person { <span class="zdoc_code_cmt">// 不会强制要求继承某个类
 </span>
 	@Id       <span class="zdoc_code_cmt">// 表示该字段为一个自增长的Id,注意,是数据库表中自增!!
-</span>	private int id;
-
+</span>	private int id; <span class="zdoc_code_cmt">// @Id与属性名称id没有对应关系.
+</span>
 	@Name    <span class="zdoc_code_cmt">// 表示该字段可以用来标识此对象，或者是字符型主键，或者是唯一性约束
 </span>	private String name;
 
 	@Column	  <span class="zdoc_code_cmt">// 表示该对象属性可以映射到数据库里作为一个字段
 </span>	private int age;
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public int getAge() {
-		return age;
-	}
-
-	public void setAge(int age) {
-		this.age = age;
-	}
-
-}
+	<span class="zdoc_code_cmt">// 省略getter/setter
+</span>}
 </pre>
 <div class="hr"><b></b></div>
-<h1><a name="创建_main_函数"></a>创建 main 函数</h1>
+<h1><a name="创建一个方法"></a>创建一个方法</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>随便建立一个有 main 函数的类，在 main 函数里这么写：</p>
-<pre><span class="zdoc_code_cmt">//实际使用的话必须单例或使用DaoUp类(推荐),如果是Mvc中使用, 请使用注入,或Mvcs.ctx().getDefaultIoc().get(Dao.class)获取
+<pre><span class="zdoc_code_cmt">// 创建一个数据源
+</span>SimpleDataSource dataSource = new SimpleDataSource();
+dataSource.setJdbcUrl("jdbc:mysql:<span class="zdoc_code_cmt">//127.0.0.1/nutzdemo");
+</span>dataSource.setUsername("root");
+dataSource.setPassword("root");
+
+<span class="zdoc_code_cmt">// 创建一个NutDao实例,在真实项目中, NutDao通常由ioc托管, 使用注入的方式获得.
 </span>Dao dao = new NutDao(dataSource);
+
+<span class="zdoc_code_cmt">// 创建表
+</span>dao.create(Person.class, false); <span class="zdoc_code_cmt">// false的含义是,如果表已经存在,就不要删除重建了.
+</span>
 Person p = new Person();
 p.setName("ABC");
 p.setAge(20);
 dao.insert(p);
+System.out.println(p.getId());
 </pre>
 <ul type="disc">
 <li>执行完毕后，在数据表中会多出一条记录。</li>

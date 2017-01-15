@@ -105,6 +105,9 @@
 <pre>Sql sql = Sqls.create("DELETE FROM $table WHERE name=@name");
 sql.vars().set("table","t_abc");
 sql.params().set("name","Peter");
+<span class="zdoc_code_cmt">// 连写
+</span>sql.setVar("table","t_abc").setVar(...);
+sql.setParam("name","Peter").setParam(...);
 </pre>
 <ul type="disc">
 <li>$table 将会被替换成 <span style="color:#FF00FF;">t_abc</span></li>
@@ -138,7 +141,10 @@ UPDATE FROM $table SET name=@name WHERE id=@id
 <li>fetchEntity</li>
 <li>fetchInt</li>
 <li>fetchString</li>
+<li>fetchRecord</li>
 <li>queryEntity</li>
+<li>queryRecord</li>
+<li>其他等你发现</li>
 </ul>
 <p>方法来帮助你构建 Sql 对象。它们之间的区别在稍后会详细说明。</p>
 <p>通常的情况，你需要构建某些 <b>动态</b> 的 SQL，所以我也允许你为你的 SQL 设置占位符，占位符分两种：</p>

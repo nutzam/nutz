@@ -1,10 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
-<title>应用启动以及关闭时的额外处理</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+<title>应用启动及关闭时的额外处理</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
-<div class="zdoc_header">应用启动以及关闭时的额外处理</div>
+<div class="zdoc_header">应用启动及关闭时的额外处理</div>
 <div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 <div class="zdoc_body">
 <ul class="zdoc_index_table">
@@ -24,7 +24,7 @@
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>首先, 实现Setup接口.这个接口就2个方法,分别对应启动(init)和关闭(depose)</p>
 <pre>public void init(NutConfig nc) {
-	Ioc ioc = nc.getIoc(); <span class="zdoc_code_cmt">// 可以拿到Ioc容器
+	Ioc ioc = nc.getIoc(); <span class="zdoc_code_cmt">// 拿到Ioc容器
 </span>	Dao dao = ioc.get(Dao.class); <span class="zdoc_code_cmt">// 通过Ioc容器可以拿到你想要的ioc bean
 </span>	
 	<span class="zdoc_code_cmt">// 拿到Dao,自然就可以自动建表了

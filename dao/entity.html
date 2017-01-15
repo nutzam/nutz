@@ -26,10 +26,13 @@
 <div><span class="num">3</span><a href="#EntityMaker_接口">EntityMaker 接口</a></div>
 </li>
 <li>
-<div><span class="num">4</span><a href="#动态实体">动态实体</a></div>
+<div><span class="num">4</span><a href="#无需Pojo类,直接操作数据库:">无需Pojo类,直接操作数据库:</a></div>
 </li>
 <li>
 <div><span class="num">5</span><a href="#字段名与数据库关键字">字段名与数据库关键字</a></div>
+</li>
+<li>
+<div><span class="num">6</span><a href="#枚举属性的注意事项">枚举属性的注意事项</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
@@ -68,17 +71,18 @@ public class PetBean {
 <h2><a name="描述字段"></a>描述字段</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>@Column <span class="zdoc_code_cmt">//提醒一下,对于@Name注解来说这一行是多余的
-</span>@Name
-@ColDefine(type=ColType.VARCHAR, width=20)
+</span>@Name <span class="zdoc_code_cmt">// 代表字符型注解, 数值型主键用@Id
+</span>@ColDefine(type=ColType.VARCHAR, width=64)
 private String name;
 </pre>
 <ul type="disc">
 <li>将对应到数据表的 "name" 字段 -- 默认用 field 的名字</li>
 <li>如果 @Column(hump = true) 则该 field 对应为数据表的蛇底式小写(snake_case)的字段</li>
 <li>如果 @Column("nm") 则对应到数据表的 "nm" 字段</li>
+<li>如果 @Column(wrap = true) 则该 field 对应为数据表的关键字字段</li>
 <li>@Name 表示这个字段是字符型注解，你可以 Pet pet = dao.fetch(Pet.class,"abc");</li>
 <li>@Name(casesensitive=false) 表示依靠这个字段 fetch 时，忽略大小写</li>
-<li>@ColDefine 是给出这个字段最精确的描述，比如上例就是 VARCHAR(20)
+<li>@ColDefine 是给出这个字段最精确的描述，比如上例就是 VARCHAR(64)
 <ul type="circle">
 <li>@ColDefine 不是必须的，你如果没有声明，Nutz.Dao 会根据字段类型进行猜测</li>
 <li>通常，它能猜对，但是对于 String 类型的字段，它实在不知到长度为多少为好</li>
@@ -108,16 +112,9 @@ public interface EntityMaker {
 </pre>
 <p>Entity&lt;T&gt; 也是一个接口，当然，默认实现类 NutEntity&lt;T&gt; 应该能满足你大多数需求，我想至力于想扩展 Entity 生成方式的同学，会直接阅读相关的源代码作为参考，所以这里就不啰嗦了。</p>
 <div class="hr"><b></b></div>
-<h1><a name="动态实体"></a>动态实体</h1>
+<p>动态实体</p>
+<h1><a name="无需Pojo类,直接操作数据库:"></a>无需Pojo类,直接操作数据库:</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>在 1.b.38 之前的版本，曾经记得有个朋友提出一个意见，他希望:</p>
-<pre>Map&lt;String,Object&gt; map = new HashMap&lt;String,Object&gt;();
-map.put("name", "abc");
-map.put("age", 18);
-dao.update(map);    <span class="zdoc_code_cmt">// 这个是不会有编译错误的
-</span></pre>
-<p>我记得当时我们的理由是：“搞不定呀，我们不知道表名呀””</p>
-<p>现在，我们已经支持了这个特性:</p>
 <pre>Map&lt;String,Object&gt; map = new HashMap&lt;String,Object&gt;();
 map.put(".table", "t_person");
 map.put("name", "abc");
@@ -141,8 +138,12 @@ dao.insert(map);
 </span>@Column(wrap=true)
 String index;
 </pre>
-<p>全局解决</p>
-<pre>Daos.CHECK_COLUMN_NAME_KEYWORD = true;
+<div class="hr"><b></b></div>
+<h1><a name="枚举属性的注意事项"></a>枚举属性的注意事项</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>nutz默认把枚举映射为字符串,若数据库中对应的列为int的话,需要特别声明一下</p>
+<pre>@ColDefine(type=ColType.INT)
+private UserType userType;
 </pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>

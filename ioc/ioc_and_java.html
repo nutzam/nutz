@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>ioc配置与Java代码的互相转换</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">ioc配置与Java代码的互相转换</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#背景">背景</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#简单例子">简单例子</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#通过工厂方法的例子">通过工厂方法的例子</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#用对象生成对象">用对象生成对象</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#与properties配置文件一起工作">与properties配置文件一起工作</a></div>
+</li>
+<li>
+<div><span class="num">6</span><a href="#根据配置文件中的特定前置生成对象">根据配置文件中的特定前置生成对象</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="背景"></a>背景</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>无论是集成第三方jar,还是一些遗留系统,都可能涉及到如何把对象声明到ioc容器的问题.</p>
+<p>由于是第三方类,无法直接标注@IocBean等注解,所以需要ioc js之类的配置.</p>
+<p>然而, 如何把一段java代码,变成ioc配置,的确难住了很多人.</p>
+<p>变换的核心,就是如何灵活使用factory,配合type,args,fields,肯定能适配绝大部分的java代码.</p>
+<div class="hr"><b></b></div>
+<h1><a name="简单例子"></a>简单例子</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>首先看一段Java代码</p>
+<pre>NutDao dao = new NutDao(dataSource);
+</pre>
+<p>变换为dao.js里面的写法</p>
+<pre>dao : { <span class="zdoc_code_cmt">// 相当于声明一个变量
+</span>    type : "org.nutz.dao.impl.NutDao", <span class="zdoc_code_cmt">// 需要new的类,同时代表这个bean的类型
+</span>    args : [{refer:"dataSource"}] <span class="zdoc_code_cmt">// 构造方法参数,引用(refer)另外一个bean(dataSource)
+</span>}
+</pre>
+<p>那么,通过setter赋值呢? 先看代码</p>
+<pre>NutDao dao = new NutDao();
+dao.setDataSource(dataSource);
+</pre>
+<p>变换为dao.js里面的等价写法</p>
+<pre>dao : { <span class="zdoc_code_cmt">// 相当于声明一个变量
+</span>    type : "org.nutz.dao.impl.NutDao", <span class="zdoc_code_cmt">// 需要new的类, new NutDao()
+</span>    fields : {
+    	<span class="zdoc_code_cmt">// 属性名称, 优先调用其setter. dataSource属性的setter名称就是setDataSource
+</span>    	dataSource : {refer :"dataSource"} <span class="zdoc_code_cmt">// setter的参数, 引用(refer)另外一个叫dataSource的bean
+</span>    }
+}
+</pre>
+<p>refer, 引用另外一个对象</p>
+<div class="hr"><b></b></div>
+<h1><a name="通过工厂方法的例子"></a>通过工厂方法的例子</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>java是这样写的, 通MySuperDS的create方法创建DataSource实例,然后作为构造方法参数,传给NutDao</p>
+<pre>DataSource dataSource = MySuperDS.create("abc", "123456");
+NutDao dao = new NutDao(dataSource);
+</pre>
+<p>变换为dao.js里面的写法</p>
+<pre>dataSource : { <span class="zdoc_code_cmt">// 声明变量(就是ioc内的唯一识别名)
+</span>	type : "javax.sql.DataSource", <span class="zdoc_code_cmt">// 类型,1.r.58以上可以不写.
+</span>	factory : "net.wendal.nutzbook.MySuperDS<span class="zdoc_code_cmt">#create",// 选用MySuperDS.create方法
+</span>	args : ["abc", "123456"] <span class="zdoc_code_cmt">// 为工厂方法提供参数 ("abc", "123456")
+</span>},
+dao : { <span class="zdoc_code_cmt">// 相当于声明一个变量
+</span>    type : "org.nutz.dao.impl.NutDao", <span class="zdoc_code_cmt">// 需要new的类, new NutDao()
+</span>    args : [{refer :"dataSource"}] <span class="zdoc_code_cmt">// 引用dataSource作为参数
+</span>}
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="用对象生成对象"></a>用对象生成对象</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>这里,以nutz-integration-activiti的实现原理为例子.</p>
+<pre><span class="zdoc_code_cmt">// 第一步,使用ProcessEngineConfiguration的静态工厂方法createStandaloneProcessEngineConfiguration创建实例
+</span>ProcessEngineConfiguration cfg = ProcessEngineConfiguration.createStandaloneProcessEngineConfiguration();
+<span class="zdoc_code_cmt">// 为cfg设置dataSource属性
+</span>cfg.setDataSource(dataSource)
+<span class="zdoc_code_cmt">// 设置数据库表结构自动更新
+</span>cfg.setDatabaseSchemaUpdate("true");
+<span class="zdoc_code_cmt">// 调用cfg的buildProcessEngine方法,生成ProcessEngine的实例
+</span>ProcessEngine processEngine = cfg.buildProcessEngine();
+<span class="zdoc_code_cmt">// 使用ProcessEngine的实例的getRepositoryService方法生成RepositoryService实例
+</span>RepositoryService repositoryService = processEngine.getRepositoryService();
+</pre>
+<p>首先,有3个对象, cfg, processEngine, repositoryService. 及一个已存在的对象dataSource</p>
+<pre>cfg : {
+	<span class="zdoc_code_cmt">// TODO
+</span>},
+processEngine : {
+	<span class="zdoc_code_cmt">// TODO
+</span>},
+repositoryService : {
+	<span class="zdoc_code_cmt">// TODO
+</span>}
+</pre>
+<p>然后,cfg是通过ProcessEngineConfiguration的工厂方法createStandaloneProcessEngineConfiguration产生的</p>
+<pre>cfg : {
+	factory : "org.activiti.engine.ProcessEngineConfiguration<span class="zdoc_code_cmt">#createStandaloneProcessEngineConfiguration",
+</span>	args : [] <span class="zdoc_code_cmt">// 0个参数,可以不写.
+</span>}	
+</pre>
+<p>再然后, cfg需要设置两个属性,分别是dataSource和databaseSchemaUpdate</p>
+<pre>cfg : {
+	factory : "org.activiti.engine.ProcessEngineConfiguration<span class="zdoc_code_cmt">#createStandaloneProcessEngineConfiguration",
+</span>	args : [], <span class="zdoc_code_cmt">// 无参数,可以不写.
+</span>	fields : {
+		dataSource : {refer:"dataSource"}, <span class="zdoc_code_cmt">// 对应cfg.setDataSource(dataSource);
+</span>		databaseSchemaUpdate : "true" <span class="zdoc_code_cmt">// java代码里面也是字符串"true",所以这里不写布尔值true
+</span>	}
+}
+</pre>
+<p>接下来,processEngine是通过cfg的buildProcessEngine生成的,所以就用到了对象生成对象的技巧</p>
+<pre>processEngine : {
+	factory : "$cfg<span class="zdoc_code_cmt">#buildProcessEngine" // $cfg, $符号代表这是一个bean, bean的名字叫cfg, #号是分割符,代表后面的方法名称.这里的方法名称是buildProcessEngine
+</span>	<span class="zdoc_code_cmt">// 没有参数,所以args就不写了
+</span>},
+</pre>
+<p>同理, repositoryService是processEngine的getRepositoryService得到的</p>
+<pre>repositoryService : {
+	factory : "$processEngine<span class="zdoc_code_cmt">#getRepositoryService"
+</span>	<span class="zdoc_code_cmt">// 没有参数,所以这个args也不写了
+</span>}
+</pre>
+<p>上面几步,就配全了. 最后,全部放在一起是这样的</p>
+<pre>cfg : {
+	factory : "org.activiti.engine.ProcessEngineConfiguration<span class="zdoc_code_cmt">#createStandaloneProcessEngineConfiguration",
+</span>	fields : {
+		dataSource : {refer:"dataSource"},
+		databaseSchemaUpdate : "true"
+	}
+},
+processEngine : {
+	factory : "$cfg<span class="zdoc_code_cmt">#buildProcessEngine"
+</span>},
+repositoryService : {
+	factory : "$processEngine<span class="zdoc_code_cmt">#getRepositoryService"
+</span>}
+</pre>
+<p>详细实现,请查阅<a href="https://github.com/nutzam/nutzmore/blob/master/nutz-integration-activiti/">nutz-integration-activiti</a>的源码.</p>
+<div class="hr"><b></b></div>
+<h1><a name="与properties配置文件一起工作"></a>与properties配置文件一起工作</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>通常来说,我们会定义一个叫conf的配置主管,它将加载paths属性指定的路径下所有properties文件.</p>
+<pre>conf : {
+		type : "org.nutz.ioc.impl.PropertiesProxy",
+		fields : {
+			paths : ["custom/"]
+		}
+	},
+</pre>
+<p>之前的例子中的放在配置文件中,就可以这样引用</p>
+<pre>cfg : {
+	factory : "org.activiti.engine.ProcessEngineConfiguration<span class="zdoc_code_cmt">#createStandaloneProcessEngineConfiguration",
+</span>	fields : {
+		dataSource : {refer:"dataSource"},
+		<span class="zdoc_code_cmt">// 从conf中取出key为activiti.databaseSchemaUpdate的值,如果不存在,则使用"true"
+</span>		databaseSchemaUpdate : {java : "$conf.get('activiti.databaseSchemaUpdate', 'true')"}
+	}
+}
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="根据配置文件中的特定前置生成对象"></a>根据配置文件中的特定前置生成对象</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>PropertiesProxy类有个很好用的make方法</p>
+<pre>    dataSource : {
+        factory : "$conf<span class="zdoc_code_cmt">#make", // 对象生成对象哦, 调用的是 conf.make方法
+</span>        args : ["com.alibaba.druid.pool.DruidDataSource", "db."],
+        events : {
+        	create : "init",
+            depose : 'close'
+        }
+    },
+    <span class="zdoc_code_cmt">// 假设有db.url, db.username, db.password 属性,就等价于
+</span>    /*
+    fields : {
+    	url : {java:"$conf.get('db.url')"},
+    	username : {java:"$conf.get('db.username')"},
+    	password : {java:"$conf.get('db.password')"},
+    }
+    */
+</pre>
+<p>最终的等价Java代码</p>
+<pre>DruidDataSource ds = new DruidDataSource();
+ds.setUrl(conf.get("db.url"));
+ds.setUsername(conf.get("db.username"));
+ds.setPassword(conf.get("db.password"));
+<span class="zdoc_code_cmt">// 其他属性...
+</span></pre>
+<p>这样,只需要增加properties里面的配置,就能添加更多属性.</p>
+<p>顺带说一句, fields依然可以加.</p>
+<pre>    dataSource : {
+        factory : "$conf<span class="zdoc_code_cmt">#make", // 对象生成对象哦, 调用的是 conf.make方法
+</span>        args : ["com.alibaba.druid.pool.DruidDataSource", "db."],
+        events : {
+        	create : "init",
+            depose : 'close'
+        },
+        fields : {
+        	<span class="zdoc_code_cmt">// 其他不需要/不想通过properties配置的属性
+</span>    		filters : "stat",
+    	}
+    }
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

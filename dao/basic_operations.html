@@ -169,12 +169,10 @@ dao.update(pets);	<span class="zdoc_code_cmt">// 可以是数组，当然 pets �
 <div class="hr"><b></b></div>
 <h1><a name="创建数据表"></a>创建数据表</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>为 Pet 创建数据表，如果数据表存在，先 DROP 掉，再创建</p>
-<pre>dao.create(Pet.class, true); <span class="zdoc_code_cmt">//生产环境你可千万别这样写!!
-</span></pre>
-<p>为 Pet 创建数据表，如果数据表存在，忽略</p>
-<pre>dao.create(Pet.class, false); <span class="zdoc_code_cmt">//一般我们都这样写
-</span></pre>
+<p>为 Pet 创建数据表，如果数据表存在，则自动忽略</p>
+<pre><span class="zdoc_code_cmt">//一般我们都这样写
+</span>dao.create(Pet.class, false);
+</pre>
 <div class="hr"><b></b></div>
 <h1><a name="删除数据表"></a>删除数据表</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -197,14 +195,15 @@ System.out.println(p.getId());
 <div class="hr"><b></b></div>
 <h1><a name="取得_Fetch"></a>取得 Fetch</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>根据名称获取 （如果你的实体声明了 @Name 字段）</p>
+<p>根据名称获取 （如果你的实体声明了 @Name 字段, 字符型主键,或者带唯一性索引的字段）</p>
 <pre>Person p = dao.fetch(Person.class,"Peter");
 System.out.println(p.getId());
 </pre>
-<p>根据 ID 获取 （如果你的实体声明了 @Id 字段）</p>
+<p>根据 ID 获取 （如果你的实体声明了 @Id 字段, 数值型主键）</p>
 <pre>Person p = dao.fetch(Person.class,2);
 System.out.println(p.getName());
 </pre>
+<p>@Id和@Name可以同时存在于一个Pojo类内,但不允许标注在同一个属性,毕竟不可以同时是数值型主键又是字符型主键</p>
 <div class="hr"><b></b></div>
 <h1><a name="更新_Update"></a>更新 Update</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -213,20 +212,32 @@ p.setAge(32);
 dao.update(p)
 
 dao.update(p, "^age$"); <span class="zdoc_code_cmt">//仅更新age,参数是个正则表达式
+</span><span class="zdoc_code_cmt">// 注意, p至少带@Id/@Name/@Pk中的一种
+</span>
+dao.update(list, "^age$"); <span class="zdoc_code_cmt">//更新一个集合也是可以的
 </span></pre>
 <div class="hr"><b></b></div>
 <h1><a name="更新多条"></a>更新多条</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>dao.update(Person.class, Chain.make("dead",true), Cnd.where("age","&gt;",150));
+<pre><span class="zdoc_code_cmt">// 根据特定条件更新特定字段
+</span>dao.update(Person.class, Chain.make("dead",true), Cnd.where("age","&gt;",150));
+<span class="zdoc_code_cmt">// 常用的+1更新
+</span>dao.update(Person.class, Chain.makeSpecial("age", "+1").and("location", "yvr"), Cnd.where("name","=", "wendal"));
 </pre>
 <div class="hr"><b></b></div>
 <h1><a name="删除_Delete"></a>删除 Delete</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p>直接删对象</p>
+<pre>dao.delete(pet); <span class="zdoc_code_cmt">// Pet必须带@Id/@Name/@Pk中的一种或多种
+</span></pre>
 <p>根据名称删除 （如果你的实体声明了 @Name 字段）. 批量删除请用clear</p>
 <pre>dao.delete(Person.class,"Peter");
 </pre>
 <p>根据 ID 删除 （如果你的实体声明了 @Id 字段）</p>
 <pre>dao.delete(Person.class,2);
+</pre>
+<p>直接删列表. 如果要按条件删,用dao.clear</p>
+<pre>dao.delete(list);
 </pre>
 <div class="hr"><b></b></div>
 <h1><a name="查询_Query"></a>查询 Query</h1>
@@ -322,7 +333,7 @@ public class UserOrder {
 <h2><a name="局限性"></a>局限性</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
-<li>不生成外键</li>
+<li>不生成外键,我们也不推荐用外键</li>
 <li>只能解决一般建表需求,复制的表结构请通过自定义sql完成</li>
 </ul>
 <div class="hr"><b></b></div>

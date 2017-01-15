@@ -30,14 +30,13 @@
 <div class="hr"><b></b></div>
 <h1><a name="为什么有这个package"></a>为什么有这个package</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>这个package一直有,老久了,只是一直都是我们内部自己用,没有直接写出来</p>
 <p>简单来说, 这个package是对UrlConnection操作的薄封装.</p>
 <p>远没有apache http client的完善,但足以满足一般的http请求了.</p>
 <div class="hr"><b></b></div>
 <h1><a name="基本请求"></a>基本请求</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>GET请求</p>
-<pre>	Response response = Http.get("http:<span class="zdoc_code_cmt">//nutztest.herokuapp.com/");
+<pre>	Response response = Http.get("https:<span class="zdoc_code_cmt">//nutz.cn/");
 </span>    assertNotNull(response);
     assertNotNull(response.getContent());
     assertNotNull(response.getDetail());

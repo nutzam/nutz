@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>编码与乱码</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">编码与乱码</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#乱码的根源">乱码的根源</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#将Eclipse设置为UTF-8">将Eclipse设置为UTF-8</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#JSP页面编码">JSP页面编码</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#tomcat编码">tomcat编码</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#源码的编码">源码的编码</a></div>
+</li>
+<li>
+<div><span class="num">6</span><a href="#数据库编码">数据库编码</a></div>
+</li>
+<li>
+<div><span class="num">7</span><a href="#Nutz的相关日志">Nutz的相关日志</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="乱码的根源"></a>乱码的根源</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>源编码与目标编码的不一致. 而中文window系统默认编码GBK,害惨了多少程序员.</p>
+<p>要尽量减少出现乱码,我个人认为要做到5码合一, IDE(Eclipse/idea),页面(jsp/其他模板引擎),应用服务器(tomcat等),源码(Java源码及周边文件),数据库编码.</p>
+<div class="hr"><b></b></div>
+<h1><a name="将Eclipse设置为UTF-8"></a>将Eclipse设置为UTF-8</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>打开Eclipse安装目录下的eclipse.ini,在最末尾新增一行</p>
+<pre>-Dfile.encoding=UTF-8
+</pre>
+<p>修改之后的,重启eclipse即可.</p>
+<div class="hr"><b></b></div>
+<h1><a name="JSP页面编码"></a>JSP页面编码</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>&lt;%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %&gt;
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="tomcat编码"></a>tomcat编码</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>打开 tomcat安装目录下的 bin\setenv.bat ,该文件通常不存在,新建之, 添加如下内容</p>
+<pre>set JAVA_OPTS=-Dfile.encoding=UTF-8
+</pre>
+<p>打开conf\server.conf, 在8080端口所属的Connector节点,添加URIEncoding,可解决大部分GET请求中文乱码的问题</p>
+<pre>URIEncoding="UTF-8"
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="源码的编码"></a>源码的编码</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>通常情况下, 文件本身的编码,取决于新建文件时,IDE或Project的编码.</p>
+<p>另外一个隐藏的编码,是maven/ant编译java源文件时使用的编码</p>
+<p>maven的配置如下</p>
+<pre>&lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="数据库编码"></a>数据库编码</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>通常来说,如果其他4码解决了,那大部分情况下是mysql会出现编码问题</p>
+<p>mysql有4个编码</p>
+<pre>Server characterset:    utf8      <span class="zdoc_code_cmt">// 服务器字节集
+</span>Db     characterset:    utf8      <span class="zdoc_code_cmt">// 当前数据集字节集
+</span>Client characterset:    utf8      <span class="zdoc_code_cmt">// 客户端字节集
+</span>Conn.  characterset:    utf8      <span class="zdoc_code_cmt">// 当前连接的字节集
+</span></pre>
+<p>修改my.ini的mysqld小节,设置服务器字符集,是最佳解决方式</p>
+<pre>[mysqld]
+character-set-server = utf8
+</pre>
+<p>然而,对于现有系统,全局修改的风险比较大,所以,可以在客户端解决,即jdbcurl上做配置</p>
+<pre>jdbc:mysql:<span class="zdoc_code_cmt">//127.0.0.1/nutzdemo?useUnicode=true&amp;characterEncoding=UTF-8
+</span></pre>
+<div class="hr"><b></b></div>
+<h1><a name="Nutz的相关日志"></a>Nutz的相关日志</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>nutz在启动时也会打印周围的编码信息,帮助排查.</p>
+<pre>21:22:23.235 INFO  (NutLoading.java:55) load - Nutz Version : 1.r.59 
+21:22:23.235 INFO  (NutLoading.java:56) load - Nutz.Mvc[nutz] is initializing ...
+21:22:23.235 DEBUG (NutLoading.java:60) load - Web Container Information:
+21:22:23.237 DEBUG (NutLoading.java:61) load -  - Default Charset : UTF-8
+21:22:23.237 DEBUG (NutLoading.java:62) load -  - Current . path  : D:\nutzbook\eclipse\.
+21:22:23.237 DEBUG (NutLoading.java:63) load -  - Java Version    : 1.8.0_112
+21:22:23.237 DEBUG (NutLoading.java:65) load -  - Timezone        : Asia/Shanghai
+21:22:23.238 DEBUG (NutLoading.java:66) load -  - OS              : Windows 7 amd64
+21:22:23.238 DEBUG (NutLoading.java:67) load -  - ServerInfo      : Apache Tomcat/9.0.0.M13
+21:22:23.238 DEBUG (NutLoading.java:68) load -  - Servlet API     : 4.0
+21:22:23.238 DEBUG (NutLoading.java:73) load -  - ContextPath     : /nutzbook
+21:22:25.134 DEBUG (DaoSupport.java:199) invoke - JDBC Name   --&gt; MySQL Connector Java
+21:22:25.135 DEBUG (DaoSupport.java:201) invoke - JDBC URL    --&gt; jdbc:mysql:<span class="zdoc_code_cmt">//127.0.0.1:3306/nutzbook
+</span>21:22:25.145 DEBUG (MysqlJdbcExpert.java:212) checkDataSource - Mysql : character_set_client=utf8
+21:22:25.146 DEBUG (MysqlJdbcExpert.java:212) checkDataSource - Mysql : character_set_connection=utf8
+21:22:25.146 DEBUG (MysqlJdbcExpert.java:212) checkDataSource - Mysql : character_set_database=utf8
+21:22:25.146 DEBUG (MysqlJdbcExpert.java:212) checkDataSource - Mysql : character_set_filesystem=binary
+21:22:25.146 DEBUG (MysqlJdbcExpert.java:212) checkDataSource - Mysql : character_set_results=
+21:22:25.146 DEBUG (MysqlJdbcExpert.java:212) checkDataSource - Mysql : character_set_server=utf8
+21:22:25.147 DEBUG (MysqlJdbcExpert.java:212) checkDataSource - Mysql : character_set_system=utf8
+</pre>
+<p>Default Charset的编码,在Eclipse环境内, 通过eclipse.ini调整,在tomcat内的话,通过setenv.bat调整.</p>
+<p>mysql的编码,通过修改my.ini或jdbc url进行调整</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

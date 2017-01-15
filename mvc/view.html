@@ -24,7 +24,7 @@
 <div><span class="num">3.2</span><a href="#比如_Json_视图">比如 Json 视图</a></div>
 </li>
 <li>
-<div><span class="num">3.3</span><a href="#根据返回值决定视图(1b53开始支持)">根据返回值决定视图(1.b.53开始支持)</a></div>
+<div><span class="num">3.3</span><a href="#根据返回值决定">根据返回值决定</a></div>
 </li>
 </ul>
 </li>
@@ -40,54 +40,82 @@
 </ul>
 </li>
 <li>
-<div class="zdoc_folder"><span class="num">5</span><a href="#内置的视图">内置的视图</a></div>
+<div><span class="num">5</span><a href="#内置的视图">内置的视图</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">6</span><a href="#JSP_视图">JSP 视图</a></div>
 <ul>
 <li>
-<div><span class="num">5.1</span><a href="#JSP_视图">JSP 视图</a></div>
+<div><span class="num">6.1</span><a href="#一般的使用形式：">一般的使用形式：</a></div>
 </li>
 <li>
-<div><span class="num">5.2</span><a href="#JSON_视图">JSON 视图</a></div>
+<div><span class="num">6.2</span><a href="#使用_JSTL">使用 JSTL</a></div>
 </li>
 <li>
-<div><span class="num">5.3</span><a href="#重定向视图">重定向视图</a></div>
+<div><span class="num">6.3</span><a href="#JSP_文件的位置">JSP 文件的位置</a></div>
 </li>
 <li>
-<div><span class="num">5.4</span><a href="#内部重定向视图">内部重定向视图</a></div>
-</li>
-<li>
-<div><span class="num">5.5</span><a href="#HTTP_返回码视图">HTTP 返回码视图</a></div>
-</li>
-<li>
-<div><span class="num">5.6</span><a href="#空白视图">空白视图</a></div>
-</li>
-<li>
-<div><span class="num">5.7</span><a href="#从_Ioc_容器中获取的视图">从 Ioc 容器中获取的视图</a></div>
-</li>
-<li>
-<div><span class="num">5.8</span><a href="#Raw视图">Raw视图</a></div>
-</li>
-<li>
-<div><span class="num">5.9</span><a href="#RawView2">RawView2</a></div>
-</li>
-<li>
-<div><span class="num">5.10</span><a href="#根据返回值决定视图">根据返回值决定视图</a></div>
+<div><span class="num">6.4</span><a href="#本地化字符串">本地化字符串</a></div>
 </li>
 </ul>
 </li>
 <li>
-<div class="zdoc_folder"><span class="num">6</span><a href="#定制自己的视图">定制自己的视图</a></div>
+<div><span class="num">7</span><a href="#JSON_视图">JSON 视图</a></div>
+</li>
+<li>
+<div><span class="num">8</span><a href="#重定向视图">重定向视图</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">9</span><a href="#内部重定向视图">内部重定向视图</a></div>
 <ul>
 <li>
-<div><span class="num">6.1</span><a href="#实现自己的视图">实现自己的视图</a></div>
+<div><span class="num">9.1</span><a href="#当:后面不加值,或者不是以/开头的话,生成的路径将与Jsp视图类似,除了最后不加jsp之外_其实Jsp视图只是Forward视图的子类而已">当:后面不加值,或者不是以/开头的话,生成的路径将与Jsp视图类似,除了最后不加.jsp之外. 其实Jsp视图只是Forward视图的子类而已</a></div>
+</li>
+</ul>
 </li>
 <li>
-<div><span class="num">6.2</span><a href="#实现自己的视图工厂">实现自己的视图工厂</a></div>
+<div><span class="num">10</span><a href="#HTTP_返回码视图">HTTP 返回码视图</a></div>
 </li>
 <li>
-<div><span class="num">6.3</span><a href="#将视图工厂整合进应用中">将视图工厂整合进应用中</a></div>
+<div><span class="num">11</span><a href="#空白视图">空白视图</a></div>
 </li>
 <li>
-<div><span class="num">6.4</span><a href="#已有的,经过检验的自定义视图">已有的,经过检验的自定义视图</a></div>
+<div><span class="num">12</span><a href="#从_Ioc_容器中获取的视图">从 Ioc 容器中获取的视图</a></div>
+</li>
+<li>
+<div><span class="num">13</span><a href="#Raw视图">Raw视图</a></div>
+</li>
+<li>
+<div><span class="num">14</span><a href="#RawView2">RawView2</a></div>
+</li>
+<li>
+<div><span class="num">15</span><a href="#根据返回值决定视图">根据返回值决定视图</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">16</span><a href="#视图参数填充">视图参数填充</a></div>
+<ul>
+<li>
+<div><span class="num">16.1</span><a href="#用返回对象的字段填充：">用返回对象的字段填充：</a></div>
+</li>
+<li>
+<div><span class="num">16.2</span><a href="#用_HTTP_参数填充">用 HTTP 参数填充</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">17</span><a href="#定制自己的视图">定制自己的视图</a></div>
+<ul>
+<li>
+<div><span class="num">17.1</span><a href="#实现自己的视图">实现自己的视图</a></div>
+</li>
+<li>
+<div><span class="num">17.2</span><a href="#实现自己的视图工厂">实现自己的视图工厂</a></div>
+</li>
+<li>
+<div><span class="num">17.3</span><a href="#将视图工厂整合进应用中">将视图工厂整合进应用中</a></div>
+</li>
+<li>
+<div><span class="num">17.4</span><a href="#已有的,经过检验的自定义视图">已有的,经过检验的自定义视图</a></div>
 </li>
 </ul>
 </li>
@@ -199,7 +227,7 @@ public String test(){
 </ul>
 <p>等，这时候你用 Json 视图来输出本身也是自找别扭，建议你使用 <a href="#Raw视图">#Raw视图</a></p>
 <p>Json 视图的更多介绍请参看 <a href="#JSON_视图">#JSON_视图</a></p>
-<h2><a name="根据返回值决定视图(1b53开始支持)"></a>根据返回值决定视图(1.b.53开始支持)</h2>
+<h2><a name="根据返回值决定"></a>根据返回值决定</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>声明如下内容</p>
 <pre>@Ok("re:jsp:/index")
@@ -223,8 +251,8 @@ public String login(@Param("..")User user, ViewModel model) {
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>执行一个业务逻辑可能有两种结果</p>
 <ol type="1">
-<li>成功</li>
-<li>失败</li>
+<li>成功,正常返回</li>
+<li>失败,特指入口方法抛出异常</li>
 </ol>
 <p>在每个入口函数上，你都可声明这两个注解</p>
 <ol type="1">
@@ -261,10 +289,10 @@ public View myFunction(@Param("type") type){
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>通过 <b>org.nutz.mvc.view.DefaultViewMaker</b>， Nutz.Mvc 提供了一些内置视图， 你可以通过@Ok 和 @Fail 注解声明在你的入口函数上</p>
 <div class="hr"><b></b></div>
-<h2><a name="JSP_视图"></a>JSP 视图</h2>
+<h1><a name="JSP_视图"></a>JSP 视图</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>视图的实现类为： <b>org.nutz.mvc.view.JspView</b></p>
-<h3><a name="一般的使用形式："></a>一般的使用形式：</h3>
+<h2><a name="一般的使用形式："></a>一般的使用形式：</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>@Ok("jsp:pet.detail")
 </pre>
@@ -276,7 +304,7 @@ public View myFunction(@Param("type") type){
 <pre>/pet/detail.nut
 </pre>
 <p>将会使用 <i><b>WEB-INF/pet/detail.jsp</b></i> 来渲染 HTTP 输出流</p>
-<h3><a name="使用_JSTL"></a>使用 JSTL</h3>
+<h2><a name="使用_JSTL"></a>使用 JSTL</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>如果你使用 JSTL，你还可以</p>
 <ul type="disc">
@@ -285,7 +313,7 @@ public View myFunction(@Param("type") type){
 <li>通过 ${obj.xxx} 输出要渲染对象的某个属性值</li>
 <li>你需要知道，JSP 视图，会将要渲染的对象存入 request 对象的一个属性里，属性名为 "obj"</li>
 </ul>
-<h3><a name="JSP_文件的位置"></a>JSP 文件的位置</h3>
+<h2><a name="JSP_文件的位置"></a>JSP 文件的位置</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>有些人（比如我）喜欢把 JSP 文件统统放在 WEB-INF 目录里。但是更多人的习惯是将 JSP 放在 WEB-INF 外面。</p>
 <ul type="disc">
@@ -302,12 +330,12 @@ public View myFunction(@Param("type") type){
 </pre>
 </li>
 </ul>
-<h3><a name="本地化字符串"></a>本地化字符串</h3>
+<h2><a name="本地化字符串"></a>本地化字符串</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>在 Nutz.Mvc 入口函数里使用的 JSP 文件可以使用 ${base} 和 ${msg} 来获取应用的 URL 前缀以及本地字符串。</p>
 <p>如果你希望放在 WEB-INF 外面如果还希望使用本地化字符串，那么你需要在 web.xml 额外声明一个 Fileter，请参考 <a href="localization.html">本地化字符串</a> <b>使用过滤器</b>一节。</p>
 <div class="hr"><b></b></div>
-<h2><a name="JSON_视图"></a>JSON 视图</h2>
+<h1><a name="JSON_视图"></a>JSON 视图</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>视图的实现类为： <b>org.nutz.mvc.view.UTF8JsonView</b></p>
 <p>一般的使用形式：</p>
@@ -317,67 +345,45 @@ public View myFunction(@Param("type") type){
 <p>你可以对这个 JSON 字符串的格式进行更多的控制：</p>
 <pre>@Ok("json:{quoteName:true, ignoreNull:true}")
 </pre>
-<p>视图的值就是： "{quoteName:true, ignoreNull:true}"，这个字符串会被转换成 JsonFormat 对象。如果你想了解更多的 Json 转换的介绍哦，请参看 <a href="overview.html">Json 手册</a></p>
-<p>格式控制支持4个常用模式的简写</p>
+<p>视图的值就是： "{quoteName:true, ignoreNull:true}"，这个JSON字符串会被转换成 JsonFormat 对象。如果你想了解更多的 Json 转换的介绍哦，请参看 <a href="overview.html">Json 手册</a></p>
+<p>格式控制支持5个常用模式的简写,与JsonFormat的几个快捷方法一一对应</p>
 <pre>@Ok("json:full")
 @Ok("json:nice")
 @Ok("json:forlook")
 @Ok("json:compact")
+@Ok("json:tiny")
 </pre>
-<p>1.b.53 开始支持jsonp,默认取请求参数中的callback作为回调名称</p>
+<p>忽略特定属性</p>
+<pre><span class="zdoc_code_cmt">// 忽略password和salt. locked的值是一个正则表达式
+</span>@Ok("json:{locked:'password|salt'}")
+<span class="zdoc_code_cmt">// 仅输出abc和def
+</span>@Ok("json:{actived:'abc|dbf'}")
+</pre>
+<p>自动应用unicode</p>
+<pre>@Ok("json:{autoUnicode:true}")
+<span class="zdoc_code_cmt">// 还可以强制让unicode小写,某些变态的php需要这样
+</span>@Ok("json:{autoUnicode:true, unicodeLower:true}")
+</pre>
+<p>支持jsonp,默认取请求参数中的callback作为回调名称</p>
 <pre>@Ok("jsonp")
 </pre>
+<p>叠加配置. 因为本身就是json字符串,所以可以任意搭配</p>
+<pre>@Ok("json:{autoUnicode:true,locked:'password|salt'}")
+</pre>
 <div class="hr"><b></b></div>
-<h2><a name="重定向视图"></a>重定向视图</h2>
+<h1><a name="重定向视图"></a>重定向视图</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>视图的实现类为： <b>org.nutz.mvc.view.ServerRedirectView</b></p>
 <p>一般的使用形式：</p>
 <pre>@Ok("redirect:/pet/list.nut")
 或者
 @Ok("redirect:/article/2009/10465.html")
+<span class="zdoc_code_cmt">// redirect与&gt;&gt;完全等价
+</span>@Ok("&gt;&gt;:/article/2009/10465.html")
 </pre>
-<p>它将按照给定的视图值，发送 HTTP 重定向命令到客户端</p>
-<p>给定参数</p>
-<pre>@Ok("redirect:/pet/detail.nut?pid=${obj.id}")
-或者
-@Ok("redirect:/article/2009/${articleId}.html")
-</pre>
-<p>视图会填充占位符号。填充的规则是：</p>
-<ol type="1">
-<li>如果占位符名称以 "obj." 开头，则表示应该用入口函数的返回对象的某一个字段来填充
-<ul type="disc">
-<li>"obj.name" 表示对象的 "name" 字段</li>
-</ul>
-</li>
-<li>如果占位符名称以 "p." 开头，，用 HTTP 参数表的值来填充
-<ul type="disc">
-<li>"p.abc" 就表示 HTTP 参数中的 "abc" 参数</li>
-</ul>
-</li>
-<li>如果参数表没有值，则用空字符串来填充</li>
-</ol>
-<p>下面举几个例子：</p>
-<h3><a name="用返回对象的字段填充："></a>用返回对象的字段填充：</h3>
-<div style="float:right;"><a href="#top">Top</a></div>
-<pre>@Ok("redirect:/pet/detail.nut?pid=${obj.id}")
-入口函数返回： Pet 对象
-则取 pet.getId() 填充 ${obj.id}
-</pre>
-<h3><a name="用_HTTP_参数填充"></a>用 HTTP 参数填充</h3>
-<div style="float:right;"><a href="#top">Top</a></div>
-<pre>@Ok("redirect:/pet/detail.nut?pid=${id}")
-从 HTTP 参数表取 "id"，填充
-如果没有这个参数，入口函数返回什么，直接 toString() 以后填充
-如果入口函数是 void 或者返回 null，则用空串填充
-</pre>
-<h3><a name="另外一种写法"></a>另外一种写法</h3>
-<div style="float:right;"><a href="#top">Top</a></div>
-<pre>@Ok("redirect:/pet/detail.nut?pid=${id}")
-<span class="zdoc_code_cmt">//等价于
-</span>@Ok("&gt;&gt;:/pet/detail.nut?pid=${id}")
-</pre>
+<p>它将按照给定的视图值，发送 HTTP 重定向命令到客户端.</p>
 <div class="hr"><b></b></div>
-<h2><a name="内部重定向视图"></a>内部重定向视图</h2>
+<h1><a name="内部重定向视图"></a>内部重定向视图</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>视图的实现类为： <b>org.nutz.mvc.view.ForwardView</b></p>
 <p>一般的使用形式：</p>
@@ -387,7 +393,7 @@ public View myFunction(@Param("type") type){
 同时也可以写成
 @Ok("-&gt;:/article/2009/10465.html")
 </pre>
-<h3><a name="当:后面不加值,或者不是以/开头的话,生成的路径将与Jsp视图类似,除了最后不加jsp之外_其实Jsp视图只是Forward视图的子类而已"></a>当:后面不加值,或者不是以/开头的话,生成的路径将与Jsp视图类似,除了最后不加.jsp之外. 其实Jsp视图只是Forward视图的子类而已</h3>
+<h2><a name="当:后面不加值,或者不是以/开头的话,生成的路径将与Jsp视图类似,除了最后不加jsp之外_其实Jsp视图只是Forward视图的子类而已"></a>当:后面不加值,或者不是以/开头的话,生成的路径将与Jsp视图类似,除了最后不加.jsp之外. 其实Jsp视图只是Forward视图的子类而已</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
 <li>这个将对应 <span style="color:#0000AA;"><i><b>WEB-INF/abc/bbc</b></i></span>
@@ -405,15 +411,17 @@ public View myFunction(@Param("type") type){
 </ul>
 <p>它将按照给定的视图值，服务器内部重定向到指定的地址.</p>
 <div class="hr"><b></b></div>
-<h2><a name="HTTP_返回码视图"></a>HTTP 返回码视图</h2>
+<h1><a name="HTTP_返回码视图"></a>HTTP 返回码视图</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>视图的实现类为： <b>org.nutz.mvc.view.HttpStatusView</b></p>
 <p>使用形式</p>
-<pre>@Ok("http:404")
+<pre><span class="zdoc_code_cmt">// 返回 HTTP 404 错误码
+</span>@Ok("http:404")
+<span class="zdoc_code_cmt">// 返回 HTTP 500 错误码
+</span>@Ok("http:500")
 </pre>
-<p>返回 HTTP 404 错误码</p>
 <div class="hr"><b></b></div>
-<h2><a name="空白视图"></a>空白视图</h2>
+<h1><a name="空白视图"></a>空白视图</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>视图的实现类为： <b>org.nutz.mvc.view.VoidView</b></p>
 <p>使用形式</p>
@@ -421,23 +429,28 @@ public View myFunction(@Param("type") type){
 </pre>
 <p>对 HTTP 输出流不做任何处理,空实现.</p>
 <div class="hr"><b></b></div>
-<h2><a name="从_Ioc_容器中获取的视图"></a>从 Ioc 容器中获取的视图</h2>
+<h1><a name="从_Ioc_容器中获取的视图"></a>从 Ioc 容器中获取的视图</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>使用形式</p>
 <pre>@Ok("ioc:myView")
 </pre>
 <p>将从 Ioc 容器中获取 myView 对象。 它必须是一个 View，否则会发生转型错误。通过这种形式，可以支持你可以在 Ioc 容器中定义自己的视图对象。</p>
 <div class="hr"><b></b></div>
-<h2><a name="Raw视图"></a>Raw视图</h2>
+<h1><a name="Raw视图"></a>Raw视图</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>视图的实现类为： <b>org.nutz.mvc.view.RawView</b></p>
 <p>该视图将数据对象直接写入 HTTP 响应</p>
 <p>ContentType 支持几种缩写: </p>
 <ul type="disc">
 <li>xml - 表示 text/xml</li>
+<li>js - 表示application/javascript</li>
+<li>json - 表示application/json</li>
 <li>html - 表示 text/html</li>
 <li>htm - 表示 text/html</li>
 <li>stream - 表示 application/octet-stream</li>
+<li>png -- 表示 image/png</li>
+<li>jpg - 表示 image/jpeg</li>
+<li>webp - 表示 image/webp</li>
 <li>默认的(<span style="color:#AAAAAA;">即 '@Ok("raw")'</span> ) - 将采用 <span style="color:#008800;">ContentType?=text/plain</span></li>
 </ul>
 <p>使用方式</p>
@@ -520,11 +533,11 @@ public View myFunction(@Param("type") type){
 <td> 等价于@Ok("raw:image/webp"); </td>
 </tr>
 </table>
-<h2><a name="RawView2"></a>RawView2</h2>
+<h1><a name="RawView2"></a>RawView2</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>视图的实现类为： <b>org.nutz.mvc.view.RawView2</b></p>
 <p>该视图用于已知长度的输入流进行断点续传,一般用户不会接触到.</p>
-<h2><a name="根据返回值决定视图"></a>根据返回值决定视图</h2>
+<h1><a name="根据返回值决定视图"></a>根据返回值决定视图</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>视图的实现类为： <b>org.nutz.mvc.view.ViewZone</b></p>
 <p>该视图允许带一个默认视图,当方法返回值为null时调用</p>
@@ -549,6 +562,61 @@ public String login(@Param("..")User user, ViewModel model) {
 </pre>
 <p>注意, 入口的方法的ViewModel参数不可以重新赋值,否则无法传值.</p>
 <p>返回值所代表的视图,不需要与默认视图一致.</p>
+<div class="hr"><b></b></div>
+<h1><a name="视图参数填充"></a>视图参数填充</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>内置的视图,继承与AbstractPathView的, 均支持给定参数, 通过内置的nutz.el实现</p>
+<pre>@Ok("redirect:/pet/detail.nut?pid=${obj.id}")
+或者
+@Ok("redirect:/article/2009/${p.articleId}.html")
+</pre>
+<p>视图会填充占位符号。填充的规则是：</p>
+<ol type="1">
+<li>如果占位符名称以 "obj." 开头，则表示应该用入口函数的返回对象的某一个字段来填充
+<ul type="disc">
+<li>"obj.name" 表示对象的 "name" 字段</li>
+</ul>
+</li>
+<li>如果占位符名称以 "p." 开头，，用 HTTP 参数表的值来填充
+<ul type="disc">
+<li>"p.abc" 就表示 HTTP 参数中的 "abc" 参数</li>
+</ul>
+</li>
+<li>如果占位符名称以 "req_attr." 开头，，用 req 的attr的值来填充
+<ul type="disc">
+<li>"req_attr.abc" 就表示 req.getAttribute("abc")</li>
+</ul>
+</li>
+<li>如果占位符名称以 "session_attr." 开头，，用 session 的attr的值来填充
+<ul type="disc">
+<li>"session_attr.abc" 就表示 session.getAttribute("abc")</li>
+</ul>
+</li>
+<li>如果参数表没有值，则用空字符串来填充</li>
+</ol>
+<p>下面举几个例子：</p>
+<h2><a name="用返回对象的字段填充："></a>用返回对象的字段填充：</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@Ok("&gt;&gt;:/pet/detail.nut?pid=${obj.id}")
+入口函数返回： Pet 对象
+则取 pet.getId() 填充 ${obj.id}
+</pre>
+<h2><a name="用_HTTP_参数填充"></a>用 HTTP 参数填充</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@Ok("&gt;&gt;:/pet/detail.nut?pid=${p.id}")
+从 HTTP 参数表取 "id"，填充
+如果没有这个参数，入口函数返回什么，直接 toString() 以后填充
+如果入口函数是 void 或者返回 null，则用空串填充
+</pre>
+<p>根据不同的返回值进行填充,充分利用EL表达式的功能</p>
+<pre><span class="zdoc_code_cmt">// 如果用户未登录,跳到登录页面(/login.jsp),否则进入用户个人主页(/WEB-INF/jsp/user/home.jsp)
+</span>@Ok("jsp:${obj == null ? '/login' : 'jsp.user.home'}")
+public User home() {
+       if (isLogined())
+           return dao.fetch(User.class, uid);
+       return null;
+}
+</pre>
 <div class="hr"><b></b></div>
 <h1><a name="定制自己的视图"></a>定制自己的视图</h1>
 <div style="float:right;"><a href="#top">Top</a></div>

@@ -30,8 +30,8 @@
 <pre>@IocBy(args={
 			"*js", "ioc/", <span class="zdoc_code_cmt">// 读取ioc/下的js/json配置文件 
 </span>			"*anno", "net.wendal.nutzbook", <span class="zdoc_code_cmt">// 扫描package下的ioc注解
-</span>			"*tx", <span class="zdoc_code_cmt">// 内置的事务拦截器
-</span>			"*async", "48", <span class="zdoc_code_cmt">// 异步执行注解
+</span>			"*tx", <span class="zdoc_code_cmt">// 启用内置的事务拦截器 例如: @Aop(TransAop.txREAD_COMMITTED)
+</span>			"*async", "48", <span class="zdoc_code_cmt">// 启用异步执行注解拦截器, 后面的48是线程池大小. 即注解@Async
 </span>			"*net.wendal.nutzbook.aop.DemoAopLoader" <span class="zdoc_code_cmt">// 自定义aop注解加载器
 </span>	})
 </pre>

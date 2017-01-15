@@ -26,15 +26,18 @@
 <div class="zdoc_folder"><span class="num">3</span><a href="#Nutz_给你的快速实现">Nutz 给你的快速实现</a></div>
 <ul>
 <li>
-<div><span class="num">3.1</span><a href="#直接硬编码">直接硬编码</a></div>
+<div><span class="num">3.1</span><a href="#一个友好的工具类_--_Cnd">一个友好的工具类 -- Cnd</a></div>
 </li>
 <li>
-<div><span class="num">3.2</span><a href="#一个友好的工具类_--_Cnd">一个友好的工具类 -- Cnd</a></div>
+<div><span class="num">3.2</span><a href="#直接硬编码(不推荐)">直接硬编码(不推荐)</a></div>
 </li>
 </ul>
 </li>
 <li>
 <div><span class="num">4</span><a href="#拼装更加复杂的条件">拼装更加复杂的条件</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#模糊查询的小提示">模糊查询的小提示</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
@@ -59,14 +62,14 @@
 <h1><a name="Condition_接口"></a>Condition 接口</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
-<li>这个接口只有一个方法 toSql(Entity<img src="?"/> entity)
+<li>这个接口只有一个方法 toSql(Entity&lt;?&gt; entity)
 <ul type="circle">
 <li>这个方法带一个参数 org.nutz.dao.entity.Entity</li>
 <li>通过这个参数，实现者可以获得当前需要操作的实体的配置信息</li>
 <li>当然，如果你不需要的话，你可以不理睬这个参数</li>
 </ul>
 </li>
-<li>Nutz.Dao 会将 toSql(Entity<img src="?"/> entity) 的返回直接拼接到SQL 的 WHERE 关键字后面
+<li>Nutz.Dao 会将toSql(Entity&lt;?&gt; entity) 的返回直接拼接到SQL 的 WHERE 关键字后面
 <ul type="circle">
 <li>如果你返回的字符串以 WHERE 或者 ORDER BY 开头，它会直接使用，否则会补上一个 WHERE 关键字</li>
 <li>这个判断会忽略前后空白以及大小写</li>
@@ -80,18 +83,6 @@
 <li>如果你的数据库字段被假设不会发生变化，用直接硬编码是个很好的选择</li>
 <li>如果在开发期，你的数据库字段变化非常频繁，用 Cnd 工具类则是更好的选择</li>
 </ul>
-<h2><a name="直接硬编码"></a>直接硬编码</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
-<p>最简单直接的方法就是直接输出 WHERE 关键字后面的 SQL 代码了。比如查询一个 Person 对象</p>
-<pre>List&lt;Person&gt; crowd = dao.query(Person.class, Cnd.wrap("name LIKE 'J%' AND age&gt;20"), null);
-</pre>
-<p>这句话，就会将所有名称以 J 开头，并且年龄超过20岁的人全部查询出来。参看 <a href="hello.html">Nutz.Dao 入门</a>针对 Person 对象的描述，实际上，上面那句话执行的 SQL 代码为：</p>
-<pre>SELECT * FROM t_person WHERE name LIKE 'J%' AND age&gt;20;
-</pre>
-<p>当然你要是写</p>
-<pre>Cnd.wrap("name LIKE 'J%' AND age&gt;20 ORDER BY name ASC");
-</pre>
-<p>就会按照 name 字段排序。</p>
 <h2><a name="一个友好的工具类_--_Cnd"></a>一个友好的工具类 -- Cnd</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>有些情况，数据库中的字段同 Java 对象中的字段并不同名，所以就需要给 Java 字段上的数据库字段注解加上参数 @Column(<span style="color:#FF00FF;">"数据库字段名"</span>)如果你通过 Cnd.wrap() 硬编码某个字段，那么当这个字段数据库字段名发生改变时，你就需要改动很多。因此你希望仅仅将对于数据库的变动限制在 Java 对象的源文件里所以 Nutz 提供了 Cnd.where() 方法</p>
@@ -107,6 +98,15 @@ Condition c = Cnd.where(e1).or(e2).asc("name");
 </pre>
 <p>这个条件将生成 SQL </p>
 <pre>WHERE (name LIKE 'P%' AND age&gt;'20') OR (name LIKE 'S%' AND age&lt;'30') ORDER BY name ASC
+</pre>
+<h2><a name="直接硬编码(不推荐)"></a>直接硬编码(不推荐)</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>最暴力的方法就是直接输出 WHERE 关键字后面的 SQL 代码了。比如查询一个 Person 对象</p>
+<pre>List&lt;Person&gt; crowd = dao.query(Person.class, Cnd.wrap("name LIKE 'J%' AND age&gt;20"), null);
+</pre>
+<p>部分暴力,使用Static</p>
+<pre><span class="zdoc_code_cmt">// 筛选年龄(age)小于20,现金(cash字段)多于负债(due字段)的XX
+</span>List&lt;Pet&gt; list = dao.query(Girl.class, Cnd.where("age", "&lt;", 20).and(new Static("cash &gt; due")));
 </pre>
 <div class="hr"><b></b></div>
 <h1><a name="拼装更加复杂的条件"></a>拼装更加复杂的条件</h1>
@@ -143,6 +143,19 @@ cri.getOrderBy().asc("name").desc("id");
 <li>GTE : 大于等于 (GreatThanEqual)</li>
 <li>LTE : 小于等于 (LessThanEqual)</li>
 </ul>
+<div class="hr"><b></b></div>
+<h1><a name="模糊查询的小提示"></a>模糊查询的小提示</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如下代码,当str的长度大于1和等于1时的行为有差异</p>
+<pre>Cnd cnd = Cnd.where("name", "like", str);
+<span class="zdoc_code_cmt">// 若str的长度为1,输出的SQL是
+</span><span class="zdoc_code_cmt">// where name like "%a%"
+</span><span class="zdoc_code_cmt">// 若str的长度为2,输出的SQL是
+</span><span class="zdoc_code_cmt">// where name like "ab"
+</span></pre>
+<p>正确的写法是</p>
+<pre>Cnd cnd = Cnd.where("name", "like", "%" + str + "%s");
+</pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>

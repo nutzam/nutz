@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>WhaleFilter简介</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">WhaleFilter简介</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#WhaleFilter是什么?">WhaleFilter是什么?</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#基本用法">基本用法</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#编码过滤">编码过滤</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#http方法隐式声明">http方法隐式声明</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="WhaleFilter是什么?"></a>WhaleFilter是什么?</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>简单来说,它是一个专门做脏活的Filter. 例如改变req的method,设置编码等.</p>
+<p>WhaleFilter实现的是javax.servlet.Filter, 是用到web.xml里面的哦</p>
+<p>完成WhaleFilter的初衷:</p>
+<ul type="disc">
+<li>如何确保req的表单参数的编码一定对, 例如ShiroFilter就有可能对req动手脚</li>
+<li>如何优雅地支持http method的隐式声明</li>
+<li>如何解决自定义日志库的加载问题</li>
+<li>如何统一 普通表单/文件上传/传json 的适配,如何把这3种形式统一起来的问题</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="基本用法"></a>基本用法</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>将其放入web.xml中,确保在所有其他Filter之前,包括NutFilter.</p>
+<pre>&lt;filter&gt;
+	&lt;filter-class&gt;org.nutz.mvc.WhaleFilter&lt;/filter-class&gt;
+	&lt;filter-name&gt;whale&lt;/filter-name&gt;
+	&lt;init-param&gt;
+		&lt;param-name&gt;config&lt;/param-name&gt;
+		&lt;param-value&gt;
+		enc.input=utf-8
+		enc.output=utf-8
+		&lt;/param-value&gt;
+	&lt;/init-param&gt;
+&lt;/filter&gt;
+&lt;filter-mapping&gt;
+	&lt;filter-name&gt;whale&lt;/filter-name&gt;
+	&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+</pre>
+<p>WhaleFilter通过初始化参数config, Properties文件格式(键值对)的方式进行配置</p>
+<p>如果不声明config,那WhaleFilter不抛错也不干任何事,安安静静的</p>
+<div class="hr"><b></b></div>
+<h1><a name="编码过滤"></a>编码过滤</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>没错,跟Spring的编码过滤器一样,只是我们把它作为WhaleFilter的其中一个配置项了. </p>
+<p>enc.input代表req的编码, enc.output代码resp的编码</p>
+<pre>enc.input=utf-8
+enc.output=utf-8
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="http方法隐式声明"></a>http方法隐式声明</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>什么是http方法隐式声明? 例如 有一个form表单,需要映射到标注@DELETE的入口方法,那么, 有几个选项:</p>
+<ul type="disc">
+<li>通过ajax, 设置method</li>
+<li>需要声明一个隐藏参数_method=delete,让WhaleFilter为你改变req的method</li>
+</ul>
+<p>例如这样的表单</p>
+<pre>&lt;form action="/admin/topic/23" method="post"&gt;
+	&lt;input name="_method" value="delete" type="hidden"&gt;
+&lt;/form&gt;
+</pre>
+<p>对应这样的入口方法</p>
+<pre>@Ok("&gt;&gt;:/admin/topic")
+@DELETE
+@At("/topic/?")
+public void topicDelete(int id) {
+    dao.delete(Topic.class, id);
+}
+</pre>
+<p>那WhaleFilter需要什么参数</p>
+<pre>http.hidden_method_param=_method
+</pre>
+<p>顺带说一下, 还有一种方式, "X-HTTP-Method-Override", 可通过下面的配置开启.</p>
+<pre>http.method_override=true
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

@@ -1,10 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
-<title>Nutz需要依赖第三方jar吗?Log如何配置?</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+<title>Log配置</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
-<div class="zdoc_header">Nutz需要依赖第三方jar吗?Log如何配置?</div>
+<div class="zdoc_header">Log配置</div>
 <div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 <div class="zdoc_body">
 <ul class="zdoc_index_table">
@@ -13,9 +13,6 @@
 </li>
 <li>
 <div><span class="num">2</span><a href="#解答">解答</a></div>
-</li>
-<li>
-<div><span class="num">3</span><a href="#搭配组合">搭配组合</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
@@ -32,6 +29,7 @@
 </ol>
 </li>
 </ol>
+<div class="hr"><b></b></div>
 <h1><a name="解答"></a>解答</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
@@ -54,15 +52,12 @@
 </ol>
 </li>
 </ol>
-<h1><a name="搭配组合"></a>搭配组合</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<div class="hr"><b></b></div>
 <ol type="1">
-<li>最精简搭配,适合尝试阶段的新手,默认输出的就是Debug信息,完全无鸭梨!!
-<ul type="disc">
-<li>nutz.jar</li>
-</ul>
+<li>最精简搭配,默认输出的就是Debug信息,完全无鸭梨!!
+<p>不添加任何日志库的时候, nutz会将DEBUG/INFO输出到stdout, WARN/ERROR输出到stderr</p>
 </li>
-<li>推荐搭配,搭配最新的 log4j
+<li>配最新的 log4j 1.2.x
 <ul type="disc">
 <li>nutz.jar + log4j-1.2.17.jar</li>
 </ul>
@@ -77,8 +72,17 @@
 	&lt;version&gt;1.2.17&lt;/version&gt;
 &lt;/dependency&gt;
 </pre>
+<ul type="disc">
+<li>记得添加log4j.properties到resources目录(maven) 或 src目录(eclipse普通项目)</li>
+</ul>
+<pre>log4j.rootLogger=debug,Console
+
+log4j.appender.Console=org.apache.log4j.ConsoleAppender
+log4j.appender.Console.layout=org.apache.log4j.PatternLayout
+log4j.appender.Console.layout.ConversionPattern=[%-5p] %d{HH:mm:ss.SSS} %l - %m%n
+</pre>
 </li>
-<li>性能至上,使用 Logback
+<li>使用 Logback
 <ul type="disc">
 <li>nutz.jar + log4j-over-slf4j.jar + logback-classic.jar</li>
 </ul>
@@ -98,50 +102,52 @@
 	&lt;version&gt;1.1.8&lt;/version&gt;
 &lt;/dependency&gt;
 </pre>
-</li>
-<li>传统选择,使用JDK Loggging(jul)
-<ul type="disc">
-<li>nutz.jar + log4j-over-slf4j.jar + slfj4-jdk14.jar</li>
-</ul>
-<pre>&lt;dependency&gt;
-	&lt;groupId&gt;org.nutz&lt;/groupId&gt;
-	&lt;artifactId&gt;nutz&lt;/artifactId&gt;
-	&lt;version&gt;${nutz.version}&lt;/version&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-	&lt;groupId&gt;org.slf4j&lt;/groupId&gt;
-	&lt;artifactId&gt;log4j-over-slf4j&lt;/artifactId&gt;
-	&lt;version&gt;1.7.21&lt;/version&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-	&lt;groupId&gt;org.slf4j&lt;/groupId&gt;
-	&lt;artifactId&gt;slf4j-jdk14&lt;/artifactId&gt;
-	&lt;version&gt;1.7.21&lt;/version&gt;
-&lt;/dependency&gt;
-</pre>
-</li>
-<li>另类之选,使用Apache Common Logging(jcl)
-<ul type="disc">
-<li>nutz.jar + log4j-over-slf4j.jar + slfj4-jcl.jar</li>
-</ul>
-<pre>&lt;dependency&gt;
-	&lt;groupId&gt;org.nutz&lt;/groupId&gt;
-	&lt;artifactId&gt;nutz&lt;/artifactId&gt;
-	&lt;version&gt;${nutz.version}&lt;/version&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-	&lt;groupId&gt;org.slf4j&lt;/groupId&gt;
-	&lt;artifactId&gt;log4j-over-slf4j&lt;/artifactId&gt;
-	&lt;version&gt;1.7.21&lt;/version&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-	&lt;groupId&gt;org.slf4j&lt;/groupId&gt;
-	&lt;artifactId&gt;slf4j-jcl&lt;/artifactId&gt;
-	&lt;version&gt;1.7.21&lt;/version&gt;
-&lt;/dependency&gt;
-</pre>
+<p>请检查依赖关系中是否存在log4j 1.2.x的jar,如果存在,需要删除掉</p>
 </li>
 </ol>
+<ul type="disc">
+<li>使用log4j 2.x
+<ul type="circle">
+<li>nutz.jar + log4j-1.2-api.jar + log4j-2.6.jar</li>
+</ul>
+<pre>	&lt;dependency&gt;
+		&lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+		&lt;artifactId&gt;log4j-core&lt;/artifactId&gt;
+		&lt;version&gt;2.6&lt;/version&gt;
+	&lt;/dependency&gt;
+	&lt;dependency&gt;
+		&lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+		&lt;artifactId&gt;log4j-slf4j-impl&lt;/artifactId&gt;
+		&lt;version&gt;2.6&lt;/version&gt;
+	&lt;/dependency&gt;
+	&lt;dependency&gt;
+		&lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+		&lt;artifactId&gt;log4j-1.2-api&lt;/artifactId&gt;
+		&lt;version&gt;2.6&lt;/version&gt;
+	&lt;/dependency&gt;
+	&lt;dependency&gt;
+		&lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+		&lt;artifactId&gt;log4j-web&lt;/artifactId&gt;
+		&lt;version&gt;2.6&lt;/version&gt;
+	&lt;/dependency&gt;
+</pre>
+<p>注意,log4j 2.x使用的是log4j2.xml</p>
+<pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Configuration&gt;
+&lt;Appenders&gt;
+&lt;Console name="STDOUT" target="SYSTEM_OUT"&gt;
+  &lt;PatternLayout pattern="%d{HH:mm:ss.SSS} %-5p (%F:%L) %M - %m%n"/&gt;
+&lt;/Console&gt;
+&lt;/Appenders&gt;
+&lt;Loggers&gt;
+&lt;Root level="debug"&gt;
+  &lt;AppenderRef ref="STDOUT"/&gt;
+&lt;/Root&gt;
+&lt;/Loggers&gt;
+&lt;/Configuration&gt;
+</pre>
+</li>
+</ul>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 </body>

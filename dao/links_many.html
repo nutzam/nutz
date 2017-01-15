@@ -15,36 +15,22 @@
 <div><span class="num">2</span><a href="#在_POJO_中配置一对多映射">在 POJO 中配置一对多映射</a></div>
 </li>
 <li>
-<div class="zdoc_folder"><span class="num">3</span><a href="#你不仅可以在集合类型字段上声明一对多映射">你不仅可以在集合类型字段上声明一对多映射</a></div>
-<ul>
-<li>
-<div><span class="num">3.1</span><a href="#数组">数组</a></div>
+<div><span class="num">3</span><a href="#插入操作">插入操作</a></div>
 </li>
 <li>
-<div><span class="num">3.2</span><a href="#Map">Map</a></div>
+<div><span class="num">4</span><a href="#获取操作">获取操作</a></div>
 </li>
 <li>
-<div><span class="num">3.3</span><a href="#POJO">POJO</a></div>
-</li>
-</ul>
+<div><span class="num">5</span><a href="#更新操作">更新操作</a></div>
 </li>
 <li>
-<div><span class="num">4</span><a href="#插入操作">插入操作</a></div>
-</li>
-<li>
-<div><span class="num">5</span><a href="#获取操作">获取操作</a></div>
-</li>
-<li>
-<div><span class="num">6</span><a href="#更新操作">更新操作</a></div>
-</li>
-<li>
-<div><span class="num">7</span><a href="#删除操作">删除操作</a></div>
+<div><span class="num">6</span><a href="#删除操作">删除操作</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="什么是一对多映射"></a>什么是一对多映射</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>有两张数据表，其中A表的某个字段的值指向B表的主键。因为B表的任何一条记录理论上可以对应A表的多条记录，所以称这种映射为B表对A表数据的一对多映射。(<span style="color:#999999;"> 当然，反过来，你也可是说，是A表对B表的</span><a href="links_one.html">一对一映射</a>)。</p>
+<p>有两张数据表，其中A表的某个字段的值指向B表的主键。因为B表的任何一条记录理论上可以对应A表的多条记录，所以称这种映射为B表对A表数据的一对多映射。</p>
 <p>上述结构，如果用 POJO 来表示的话，可以参看下图：</p>
 <p><img src="links_many.png"/></p>
 <p>如上图，一个 Master 自然就能对应多个 Pet ，所以， Master.pets （一个 List&lt;Pet&gt;） 就可以指向多个 Pet 对象，那么我们说 Master.pets 就是 Master 对 Pet 的一对多映射。</p>
@@ -72,12 +58,12 @@ public class Master extends Pojo {
 </pre>
 <p>在 Master 对象中必须存在一个 List&lt;Pet&gt; 类型的字段，你的一对多映射就需要配置在这个字段上。通过 <b>@Many</b> 注解告诉 Nutz.Dao对象 Pet 和 Master 对象的关系，其中：</p>
 <ul type="disc">
-<li>1.r.59之前你需要使用 target 表示你要映射的对象类型</li>
-<li>field 表示你打算依靠<b>目标对象</b>的哪一个字段来映射本对象的主键</li>
+<li>1.r.59之前你需要使用 target 表示你要映射的对象类型, 新版能自动识别类型.若识别失败,则需要主动声明target类型,并烦请报个issue给我们.</li>
+<li>field 表示你打算依靠<b>目标对象</b>的哪一个属性来映射本对象的主键</li>
 </ul>
 <p>因此：</p>
 <ul type="disc">
-<li>目标 POJO 类 （<span style="color:#AA0000;">Pet</span>）中<b>必须</b>存在一个字段，用来同本 POJO <a href="primary_key.html">POJO 类的主键</a>关联
+<li>目标 POJO 类 （<span style="color:#AA0000;">Pet</span>）中<b>必须</b>存在一个属性，用来同本 POJO <a href="primary_key.html">POJO 类的主键</a>关联
 <ul type="circle">
 <li><span style="color:#FF0000;"><b>还要注意</b></span>，这里的名称是 目标 POJO 的 <b>JAVA</b> 字段的名称。</li>
 <li><span style="color:#FF0000;"><b>注意</b></span>，这里是大小写敏感的。</li>
@@ -85,63 +71,6 @@ public class Master extends Pojo {
 </li>
 <li>该字段必须同本 <a href="primary_key.html">POJO 类的主键</a>类型相同</li>
 </ul>
-<div class="hr"><b></b></div>
-<h1><a name="你不仅可以在集合类型字段上声明一对多映射"></a>你不仅可以在集合类型字段上声明一对多映射</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<p>本 POJO 类的 @Many 映射，可以不止声明在 List 对象上，它还可以声明在</p>
-<ul type="disc">
-<li>数组</li>
-<li>Map</li>
-<li>POJO</li>
-</ul>
-<div class="hr"><b></b></div>
-<h2><a name="数组"></a>数组</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
-<p>例如：</p>
-<pre>@Table("t_master")
-public class Master extends Pojo {
-	@Many(field = "masterId")
-	private Pet[] pets;
-
-	<span class="zdoc_code_cmt">// ... 省略其余代码
-</span></pre>
-<p>当采用 fetchLinks 获取值的时候，会自动填充此数组</p>
-<div class="hr"><b></b></div>
-<h2><a name="Map"></a>Map</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
-<p>如果采用 Map 类型， 我们还需要你为 @Many 注解多添加一个参数，通过这个参数, Nutz.Dao 才能知道采用目标 POJO 对象的哪一个字段来作为 Map　的键。</p>
-<pre>@Table("t_master")
-public class Master extends Pojo {
-	@Many(field = "masterId", key="name")
-	private Map&lt;String,Pet&gt; pets;
-
-	<span class="zdoc_code_cmt">// ... 省略其余代码
-</span></pre>
-<p>其中：</p>
-<ul type="disc">
-<li>key 所指的字段 name，表示 Pet 对象的  name 字段， Nutz.Dao  将采用这个字段作为 Map 的键
-<ul type="circle">
-<li>为目标 POJO 类的 JAVA 字段名</li>
-<li>大小写敏感</li>
-</ul>
-</li>
-<li>请注意，将 Map 的第一个泛型参数设置正确，同 key  所指向的字段类型相同即可。</li>
-</ul>
-<div class="hr"><b></b></div>
-<h2><a name="POJO"></a>POJO</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
-<p>例如：</p>
-<pre>@Table("t_master")
-public class Master extends Pojo {
-	@Many(field = "masterId")
-	private Pet pet;
-
-	<span class="zdoc_code_cmt">// ... 省略其余代码
-</span></pre>
-<p>则会从 Pet 对象的数据表中，选取<b>第一个</b> masterId 为当前对象主键值的 Pet 对象。至于什么是 “<b>第一</b>”不同的数据库有所不同。总之，就是 SQL 语句：</p>
-<pre>SELECT * FROM t_pet;
-</pre>
-<p>选出的结果集中的第一个记录。</p>
 <div class="hr"><b></b></div>
 <h1><a name="插入操作"></a>插入操作</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
