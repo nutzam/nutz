@@ -92,7 +92,7 @@ Nutz 的未来
 --------------------------------------------------------------------------------------------------------
 你完全可以让这个项目变得更加美好
 
-	 * 上 [http://www.nutz.cn/ Nutz社区论坛] 发帖讨论
+	 * 上 [https://www.nutz.cn/ Nutz社区论坛] 发帖讨论
 	 * [http://xiaofeng.iteye.com/blog/549410 不编写代码，你可以能为这个项目做很多事情] @[http://xiaofeng.iteye.com hilliate]
 	 * 你可以随时 [https://github.com/nutzam/nutz/issues/new 提交你发现的问题]
 	 * 任何人 用 任何方式 => 指出 Nutz 的缺陷，都是被欢迎的
@@ -100,7 +100,7 @@ Nutz 的未来
 --------------------------------------------------------------------------------------------------------
 我使用的时候如果出现问题怎么办？
 
-	 # 上 [http://www.nutz.cn/ Nutz社区论坛]，有问必答，秒回复
+	 # 上 [https://www.nutz.cn/ Nutz社区论坛]，有问必答，秒回复
 	 # 到 [https://github.com/nutzam/nutz/issues github] 上报告 issue
 	 # 或者加入 QQ 群
 		 * [http://qun.qq.com/#jointhegroup/gid/68428921 Nutz社区群（68428921）超级群] -- 感谢 {*c.A} 的支持  

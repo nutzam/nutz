@@ -15,6 +15,8 @@ Nutz核心jar
 	}}}
 	
 	快照库地址 [https://jfrog.nutz.cn/artifactory/snapshots https://jfrog.nutz.cn/artifactory/snapshots]
+	
+	快照库内包含nutz主库,插件库,等快照jar
 
 ----------------------------------------------------------------------------------------------------
 常用配置模板
