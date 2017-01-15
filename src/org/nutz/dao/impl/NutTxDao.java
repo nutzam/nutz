@@ -164,13 +164,18 @@ public class NutTxDao extends NutDao implements Closeable {
         if (debug)
             log.debugf("rollback id=%s", id);
         try {
+            Savepoint sp = null;
             if (this.id.equals(id))
+                sp = this.sp;
+            else if (sps != null) {
+                sp = sps.getAs(id, Savepoint.class);
+            }
+            if (sp != null)
                 conn.rollback(sp);
             else
-                conn.rollback(sps.getAs(id, Savepoint.class));
+                log.debug("Null Savepoint found, skip, id=" + id);
         }
-        catch (SQLException e) {
-            throw new DaoException(e);
+        catch (Throwable e) {
         }
         return this;
     }
@@ -206,8 +211,7 @@ public class NutTxDao extends NutDao implements Closeable {
             conn.close();
             conn = null;
         }
-        catch (SQLException e) {
-            throw new DaoException(e);
+        catch (Throwable e) {
         }
     }
 
@@ -235,8 +239,9 @@ public class NutTxDao extends NutDao implements Closeable {
      * @param debug
      *            是否开启debug日志
      */
-    public void setDebug(boolean debug) {
+    public NutTxDao setDebug(boolean debug) {
         this.debug = debug;
+        return this;
     }
 
     protected void finalize() throws Throwable {
