@@ -107,7 +107,24 @@ Nutz 给你的快速实现
      * GTE : 大于等于 (GreatThanEqual)
      * LTE : 小于等于 (LessThanEqual)
 
+------------------------------------------------------------------------------------------
+模糊查询的小提示
 
+	如下代码,当str的长度大于1和等于1时的行为有差异
+	
+	{{{<JAVA>
+	Cnd cnd = Cnd.where("name", "like", str);
+	// 若str的长度为1,输出的SQL是
+	// where name like "%a%"
+	// 若str的长度为2,输出的SQL是
+	// where name like "ab"
+	}}}
+	
+	正确的写法是
+	
+	{{{<JAVA>
+	Cnd cnd = Cnd.where("name", "like", "%" + str + "%s");
+	}}}
 
 
 
