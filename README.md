@@ -105,13 +105,7 @@ DaoUp.me().close();
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.r.59</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>servlet-api</artifactId>
-					<groupId>javax.servlet</groupId>
-				</exclusion>
-			</exclusions>
+			<version>1.r.60</version>
 		</dependency>
 ```
 
@@ -131,7 +125,7 @@ DaoUp.me().close();
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.r.60-SNAPSHOT</version>
+			<version>1.r.61-SNAPSHOT</version>
 		</dependency>
 		<!-- 其他依赖 -->
 	</dependencies>
@@ -139,12 +133,12 @@ DaoUp.me().close();
 
 也可以将repositories配置放入$HOME/.m2/settings.xml中
 
-或者直接去[快照库下载](https://jfrog.nutz.cn/artifactory/snapshots/org/nutz/nutz/1.r.60-SNAPSHOT/)
+或者直接去[快照库下载](https://jfrog.nutz.cn/artifactory/snapshots/org/nutz/nutz/1.r.61-SNAPSHOT/)
 
 ## Gradle 依赖
 
 ```gradle
-compile(group: 'org.nutz', name: 'nutz', version:'1.r.59')
+compile(group: 'org.nutz', name: 'nutz', version:'1.r.60')
 ```
 
 ## Android下使用nutz时的注意事项
@@ -154,7 +148,7 @@ compile(group: 'org.nutz', name: 'nutz', version:'1.r.59')
 * Scans及Ioc中类扫描机制,是不能工作的
 
 ```gradle
-compile(group: 'org.nutz', name: 'nutz', version:'1.r.59', classifier:'android')
+compile(group: 'org.nutz', name: 'nutz', version:'1.r.60', classifier:'android')
 ```
 
 ### 混淆时需要加入的配置
