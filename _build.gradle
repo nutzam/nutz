@@ -4,7 +4,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 group = 'org.nutz'
-version = '1.r.59'
+version = '1.r.60'
 
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
@@ -106,7 +106,7 @@ artifacts {
     archives sourcesJar
     archives javadocJar
 	archives androidJar
-	archives jsonJar
+//	archives jsonJar
 }
 
 processResources {
