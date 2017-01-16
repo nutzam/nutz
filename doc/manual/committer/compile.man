@@ -7,7 +7,7 @@
 	
 	如果你对于 Eclipse 以及 Git 不是特别熟悉，请参看 [git_project.man 从 Git编译源码]。如果你认为自己有足够的经验，你需要知道一下几点就能顺利编译：
 
-	 # Nutz 在 Github 的 地址为 https://github.com/nutzam/nutz （国内镜像In_Git@OSC https://git.oschina.net/nutz/nutz）
+	 # Nutz 在 Github 的 地址为 https://github.com/nutzam/nutz （Git@OSC镜像 https://git.oschina.net/nutz/nutz）
 		 * 获取一份包括历史记录的代码，请运行这个命令：git clone git://github.com/nutzam/nutz.git
 		 * （国内可以）获取一份包括历史记录的代码，请运行这个命令：git clone https://git.oschina.net/nutz/nutz.git
 		 * 如果你只想阅读最新的代码，请运行这个命令：git clone git://github.com/nutzam/nutz.git --depth=1 --branch=master

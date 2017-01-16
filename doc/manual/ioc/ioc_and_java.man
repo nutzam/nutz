@@ -164,7 +164,7 @@
 	}
 	}}}
 	
-	详细实现,请查阅[https://github.com/nutzam/nutzmore/blob/master/nutz-integration-activiti/ nutz-integration-activiti] [https://git.oschina.net/nutz/nutzmore/tree/master/nutz-integration-activiti 国内镜像In_Git@OSC]的源码.
+	详细实现,请查阅[https://github.com/nutzam/nutzmore/blob/master/nutz-integration-activiti/ nutz-integration-activiti] [https://git.oschina.net/nutz/nutzmore/tree/master/nutz-integration-activiti Git@OSC镜像]的源码.
 
 ---------------------------------------------------
 与properties配置文件一起工作

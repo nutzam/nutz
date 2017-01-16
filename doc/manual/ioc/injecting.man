@@ -155,7 +155,7 @@
 	Java 调用
 		这是个极度灵活的注入方式，它几乎可以让你 {*做任何事情}。 因为它允许你直接调用一个 JAVA 函数。
 		
-		更详细的说明，请参看 [https://github.com/nutzam/nutz/blob/master/src/org/nutz/ioc/val/JavaValue.java org.nutz.ioc.val.JavaValue] [https://git.oschina.net/nutz/nutz/raw/master/src/org/nutz/ioc/val/JavaValue.java 国内镜像In_Git@OSC]的 JDoc
+		更详细的说明，请参看 [https://github.com/nutzam/nutz/blob/master/src/org/nutz/ioc/val/JavaValue.java org.nutz.ioc.val.JavaValue] [https://git.oschina.net/nutz/nutz/raw/master/src/org/nutz/ioc/val/JavaValue.java Git@OSC镜像]的 JDoc
 		
 		下面只是列出主要的几种应用方式
 		

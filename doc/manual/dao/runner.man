@@ -46,4 +46,4 @@ Dao 接口的默认实现 NutDao
     </bean>
     }}}
     
-    SpringDaoRunner类可以在[https://github.com/nutzam/nutzmore/tree/master/nutz-integration-spring nutz-integration-spring] （[https://git.oschina.net/nutz/nutzmore/tree/master/nutz-integration-spring 国内镜像In_Git@OSC]）中找到
+    SpringDaoRunner类可以在[https://github.com/nutzam/nutzmore/tree/master/nutz-integration-spring nutz-integration-spring] （[https://git.oschina.net/nutz/nutzmore/tree/master/nutz-integration-spring Git@OSC镜像]）中找到

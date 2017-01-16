@@ -8,4 +8,4 @@
 	请查阅插件的README
 	
 	[https://github.com/nutzam/nutzmore/tree/master/nutz-plugins-daocache nutz-plugins-daocache]
-	[https://git.oschina.net/nutz/nutzmore/tree/master/nutz-plugins-daocache 国内镜像In_Git@OSC]
+	[https://git.oschina.net/nutz/nutzmore/tree/master/nutz-plugins-daocache Git@OSC镜像]

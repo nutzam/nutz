@@ -154,7 +154,7 @@
 --------------------------------------------------------------------
 如何进阶
 	 * [http://github.com/nutzam/nutzdemo/ 访问 demo site]
-	 * [http://git.oschina.net/nutz/nutzdemo/ 国内镜像In_Git@OSC]
+	 * [http://git.oschina.net/nutz/nutzdemo/ Git@OSC镜像]
 	 * [../lang/log.man#让_Nutz_输出日志 让_Nutz_输出日志]
 	 * [overview.man 详细阅读 Mvc 手册]
 
