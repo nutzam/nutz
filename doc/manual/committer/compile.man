@@ -7,9 +7,11 @@
 	
 	如果你对于 Eclipse 以及 Git 不是特别熟悉，请参看 [git_project.man 从 Git编译源码]。如果你认为自己有足够的经验，你需要知道一下几点就能顺利编译：
 
-	 # Nutz 在 Github 的 地址为 https://github.com/nutzam/nutz
+	 # Nutz 在 Github 的 地址为 https://github.com/nutzam/nutz （Git@OSC镜像 https://git.oschina.net/nutz/nutz）
 		 * 获取一份包括历史记录的代码，请运行这个命令：git clone git://github.com/nutzam/nutz.git
+		 * （国内可以）获取一份包括历史记录的代码，请运行这个命令：git clone https://git.oschina.net/nutz/nutz.git
 		 * 如果你只想阅读最新的代码，请运行这个命令：git clone git://github.com/nutzam/nutz.git --depth=1 --branch=master
+		 * （国内可以）如果你只想阅读最新的代码，请运行这个命令：git clone https://git.oschina.net/nutz/nutz.git --depth=1 --branch=master
 	 # 项目编译依赖
 		 * log4j 用来编译 Nutz.log，在运行时，则不是必须的。关于 Nutz.log 更多介绍，请[../lang/log.man 参看这里]
 		 * commons-dbcp 和 commons-pool 是运行 Junit 测试所必须的。并且你还需要一个 JDBC 驱动

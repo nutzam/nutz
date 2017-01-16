@@ -8,7 +8,7 @@
 
     我们这次按计划发布，修了一批小 bug，这些 bug 基本都是小修改，再次感谢提交了这些 bug 的 Nutzer 们。
     并且颇有几个问题，是 Nutzer 通过 [https://github.com/nutzam/nutz/pulls pull request] 提交的修改。
-    喜欢 [http://nutzam.com Nutz] 就 [https://github.com/nutzam/nutz Fork 它]。
+    喜欢 [https://nutzam.com Nutz] 就 [https://github.com/nutzam/nutz Fork 它]。
 
     {*#00F;做一点呼吁}
     
@@ -35,7 +35,7 @@
     
      * 稳定版下载地址 : [http://code.google.com/p/nutz/downloads/list]
      * 日编译下载地址 : [http://build.sunfarms.net/nutz/]
-     * Nutz 的主页 :  [http://nutzam.com]
+     * Nutz 的主页 :  [https://nutzam.com]
 
 
 --------------------------------------------------------------------------------------------------------
@@ -130,6 +130,6 @@
 	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。
 	我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!
 	
-	欢迎访问[http://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
-	[http://nutzam.com/doc/html/ 用户手册]
+	欢迎访问[https://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
+	[https://nutzam.com/doc/html/ 用户手册]
 

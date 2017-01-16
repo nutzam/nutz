@@ -9,7 +9,7 @@
     是夏令时的问题。强烈建议各位立即升级。
 
     由于 googlecode 不在支持更新下载包了，我们于是在自己的服务器上做了[http://downloads.nutzam.com/ 下载列表]
-    顺手也稍微修改了一下 [http://nutzam.com nutzam.com] 那个小主页。等我们手头几个项目完结后，我们会把它
+    顺手也稍微修改了一下 [https://nutzam.com nutzam.com] 那个小主页。等我们手头几个项目完结后，我们会把它
     再华丽丽的升个级。 
 
     冬天就要来了，大家注意保暖。
@@ -17,7 +17,7 @@
     ------------------------------ Nutz 的相关资源的分隔线 -------------------------
 
      * 下载地址 : [http://downloads.nutzam.com/]
-     * Nutz 的主页 :  [http://nutzam.com]
+     * Nutz 的主页 :  [https://nutzam.com]
      * Github 地址 :  [https://github.com/nutzam/nutz]
 
 --------------------------------------------------------------------------------------------------------
@@ -77,9 +77,9 @@
 文档
 
     * [http://www.nutzam.com/core/el/overview.html 表达式引擎简介] 修改
-    * [http://nutzam.com/core/mvc/view.html 重定向视图] 修改
-    * [http://nutzam.com/core/ioc/inner_object.html 如何定义对象] 修改
-    * [http://nutzam.com/core/ioc/ioc_loader.html 如何配置一个 IocBean] 修改
+    * [https://nutzam.com/core/mvc/view.html 重定向视图] 修改
+    * [https://nutzam.com/core/ioc/inner_object.html 如何定义对象] 修改
+    * [https://nutzam.com/core/ioc/ioc_loader.html 如何配置一个 IocBean] 修改
    
 --------------------------------------------------------------------------------------------------------
 主要贡献者名单
@@ -128,5 +128,5 @@
 	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。
 	我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!
 	
-	欢迎访问[http://nutzam.com 官网],以获取更多信息
+	欢迎访问[https://nutzam.com 官网],以获取更多信息
 

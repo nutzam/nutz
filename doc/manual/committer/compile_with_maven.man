@@ -7,9 +7,11 @@
 	从很久以前的某个版本开始（大约是1.b.35版），Nutz 就偷偷的加入了 maven 的 pom.xml 文件，
 	极好的解决了测试时需要依赖其他 jar 包的问题，接下来就让我们使用 Maven 来进行 JUnit 测试吧。
 
-	 * Nutz 在 Github 的 地址为 https://github.com/nutzam/nutz
+	 * Nutz 在 Github 的 地址为 https://github.com/nutzam/nutz（Git@OSC镜像 https://git.oschina.net/nutz/nutz）
 		 * 获取一份包括历史记录的代码，请运行这个命令：git clone git://github.com/nutzam/nutz.git
+		 * （国内可以）获取一份包括历史记录的代码，请运行这个命令：git clone https://git.oschina.net/nutz/nutz.git
 		 * 如果你只想阅读最新的代码，请运行这个命令：git clone git://github.com/nutzam/nutz.git --depth=1 --branch=master
+		 * （国内可以）如果你只想阅读最新的代码，请运行这个命令：git clone https://git.oschina.net/nutz/nutz.git --depth=1 --branch=master
 
 	你可以参看 [git_project.man 从 Git编译源码]，这是我们推荐的项目构建和编译方式。
 

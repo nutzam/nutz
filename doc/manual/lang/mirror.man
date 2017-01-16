@@ -12,7 +12,7 @@
 	（你需要捕捉很多无聊的异常），虽然不那么快。
 
 	既然这样，那么能不能让反射工作的更好一些呢？
-	[https://github.com/nutzam/nutz/tree/master/src/org/nutz/lang org.nutz.lang] 包提供了
+	[https://github.com/nutzam/nutz/tree/master/src/org/nutz/lang org.nutz.lang] [https://git.oschina.net/nutz/nutz/tree/master/src/org/nutz/lang Git@OSC镜像] 包提供了
 	`Mirror<T>` 类，通过它，你可以更方便的使用反射的特性
 
 ---------------------------------------------------------------------------------------------------------

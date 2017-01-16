@@ -9,7 +9,7 @@
 	
 	前几天 360 和腾讯刚干完架，特地记录一下。作为一名不明真相且兴致勃勃的围观群众，我表示："{*不过瘾，不给力，希望他们能早日再战}"。
 	
-	关于 [http://nutzam.com Nutz]，最大的新闻就是，从这个版起，无敌的[http://myblog.sunfarms.net/ Wendal]同学
+	关于 [https://nutzam.com Nutz]，最大的新闻就是，从这个版起，无敌的[http://myblog.sunfarms.net/ Wendal]同学
 	[http://myblog.sunfarms.net/124.html 终于把 Nutz 提交给 Maven 库了]，
 	之后，[http://myblog.sunfarms.net/126.html 据说他要看亚运会]，让我们在这里祝福他。
 	
@@ -125,6 +125,6 @@
 	 * GTalk 聊天群 {#AAAAAA;/添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令}
 	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^
 	
-	欢迎访问[http://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
+	欢迎访问[https://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
 	[http://build.sunfarms.net/nutz/lastest/manual/ 用户手册]
 

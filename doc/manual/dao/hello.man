@@ -82,4 +82,4 @@
 	 * Nutz.Dao 全部的文档并不很多，花上1-2个晚上，你就可以看完。
 	 * 你如果想快速了解 Nutz.Dao 到底支持多少注解，[annotations.man 请看这里]
 	 * 在 [http://github.com/nutzam/nutzdemo Nutz 的 Demo Site] 上，我们也会不断增加有针对性的演示，你可以 \
-	   [http://github.com/nutzam/nutzdemo 访问它的首页]，看看里面有没有你需要的例子代码
+	   [http://github.com/nutzam/nutzdemo 访问它的首页]（[https://git.oschina.net/nutz/nutzdemo Git@OSC镜像]），看看里面有没有你需要的例子代码

@@ -5,7 +5,7 @@
 --------------------------------------------------------------------------------------------------------
 1.b.53 发行注记
     
-    又到金秋，距离上一个版 [http://nutzam.com/core/history/1_b_52.html 1.b.52] 也颇有段时间了。
+    又到金秋，距离上一个版 [https://nutzam.com/core/history/1_b_52.html 1.b.52] 也颇有段时间了。
     在 [http://wendal.net/ wendal] 的催促下（事实上他白天晚上的在QQ上催了我两个多月）终于熬到了这一天。
 
     实际上，作为 Nutz 项目发起人的我，这两年的精力很多不在 Nutz 上，我逐渐的退化成 Nutz 的重重重度用户了。
@@ -67,7 +67,7 @@
     ---------------- Nutz 的相关资源的分隔线 ------------------
 
      * 下载地址 : [http://downloads.nutzam.com/]
-     * Nutz 的官网 :  [http://nutzam.com]
+     * Nutz 的官网 :  [https://nutzam.com]
      * Github 地址 :  [https://github.com/nutzam/nutz]
      * Nutzmore地址: [https://github.com/nutzam/nutzmore]
      * Nutzbook: [http://nutzbook.wendal.net]
@@ -253,4 +253,4 @@
      * [http://qun.qq.com/#jointhegroup/gid/68428921 Nutz ② 群 （68428921）超级群(推荐)]
 	 * [http://qun.qq.com/air/#58444676 Nutz & XBlink （58444676 超级群）]
 
-	欢迎访问[http://nutzam.com 官网],以获取更多信息
+	欢迎访问[https://nutzam.com 官网],以获取更多信息

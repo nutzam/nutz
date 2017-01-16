@@ -8,7 +8,7 @@
 	的运行环境，我假设你已经：
 	 # 有了 Eclipse J2EE 套件 -- Eclipse 3.5 以上版本,推荐4.x系列
 	 # 安装了 Tomcat 6.0 及以上版本, 推荐8.x系列
-	 # 下载了 Nutz 的最新版本  http://downloads.nutzam.com/
+	 # 下载了 Nutz 的最新版本  https://nutz.cn/nutzdw/
 
 
 --------------------------------------------------------------------
@@ -47,7 +47,7 @@
 
 		本例子需要 Nutz-1.r.59 或者更高的版本
 
-		在 WebContent > WEB-INF > lib 把nutz-1.r.59.jar放进去.
+		在 WebContent > WEB-INF > lib 把nutz-1.r.60.jar放进去.
 
 	创建主模块
 
@@ -63,10 +63,10 @@
 
 		{{{<xml>
 		<?xml version="1.0" encoding="UTF-8"?>
-		<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			xmlns="http://java.sun.com/xml/ns/javaee"
-			xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-			version="2.5">
+		<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+			 version="3.1">
 			<display-name>hellonutz</display-name>
 			<filter>
 				<filter-name>nutz</filter-name>
@@ -154,6 +154,7 @@
 --------------------------------------------------------------------
 如何进阶
 	 * [http://github.com/nutzam/nutzdemo/ 访问 demo site]
+	 * [http://git.oschina.net/nutz/nutzdemo/ Git@OSC镜像]
 	 * [../lang/log.man#让_Nutz_输出日志 让_Nutz_输出日志]
 	 * [overview.man 详细阅读 Mvc 手册]
 

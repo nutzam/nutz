@@ -4,7 +4,6 @@ import java.util.regex.Pattern;
 
 import org.nutz.castor.Castor;
 import org.nutz.castor.FailToCastObjectException;
-import org.nutz.lang.Lang;
 
 public class String2Pattern extends Castor<String, Pattern> {
 

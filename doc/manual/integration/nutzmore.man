@@ -5,7 +5,7 @@
 ------------------------------------------------------------------------
 nutzmore概述
 
-	官网及源码地址 [https://github.com/nutzam/nutzmore nutzmore]
+	官网及源码地址 [https://github.com/nutzam/nutzmore nutzmore] [https://git.oschina.net/nutz/nutzmore Git@OSC镜像]
 	
 	为Nutz与其他框架的集成提供官方支持
 	

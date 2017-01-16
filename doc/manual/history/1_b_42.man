@@ -8,15 +8,15 @@
     
     本版没啥好说的，我们修复了几个错误，决定在 1.b.43 前，发一版，因为 1.b.43 可能要等到 3月底了。所以它是一个非常安全升级版
     
-    这期间，[https://github.com/ywjno 罗马de温泉] 同学非常抢眼，给 [http://nutzam.com Nutz] 的
+    这期间，[https://github.com/ywjno 罗马de温泉] 同学非常抢眼，给 [https://nutzam.com Nutz] 的
     [https://github.com/nutzam/nutz GitHub 代码库] 提交了 [https://github.com/nutzam/nutz/pulls 很多 Pull Request]。
     啥都别说了，感动啊，眼泪 Hua Hua 的 ...
     
     鉴于很多入门级朋友抱怨的 demo 不给力问题，我们会开始有重点的整理一下 [https://github.com/nutzam/nutzdemo Nutz Demo]
     的一些文档和注释，当然也会慢慢 review 代码，让 demo 程序变得更好
     
-    关注 [http://nutzam.com Nutz] 的老朋友都知道，
-    为了支持我们把 Web 程序做得更好，我们发布 [http://nutzam.com Nutz] 的同时也一直在维护下面这些项目:
+    关注 [https://nutzam.com Nutz] 的老朋友都知道，
+    为了支持我们把 Web 程序做得更好，我们发布 [https://nutzam.com Nutz] 的同时也一直在维护下面这些项目:
      * [https://github.com/nutzam/nutzdoc zDoc] - 一个更友好的 wiki
      * [https://github.com/nutzam/nutzmole zMole] - Nutz 的项目脚手架代码生成器
      * [https://github.com/nutzam/nutzmore NutzMore] - Nutz 的扩展包
@@ -35,9 +35,9 @@
     
     虽然上面那些项目我们并不承诺一定要做的惊世骇俗，甚至我们都不承诺一定要做完，
     但是我们的确会不断的，快速得，试验性的写一些应用出来。如果这个应用不错，我们希望能持续投入，做的更好。 我们也将会在 
-    [http://nutzam.com nutzam.com] 上有选择的部署几个成熟一点的应用 ...
+    [https://nutzam.com nutzam.com] 上有选择的部署几个成熟一点的应用 ...
     
-    如果有兴趣，你可以回头看看 [http://nutzam.com/doc/html/ 这个页面]，
+    如果有兴趣，你可以回头看看 [https://nutzam.com/doc/html/ 这个页面]，
     它写于 3 年前的某个寒冷的晚上， 那个时候这个小项目刚刚诞生，这篇文章说出了它存在的意义:
     
     {#FF0000;* "在力所能及的情况下，最大限度的提高Web开发人员的生产力。"}
@@ -55,7 +55,7 @@
     
      * 稳定版下载地址 : [http://code.google.com/p/nutz/downloads/list]
      * 日编译下载地址 : [http://build.sunfarms.net/nutz/]
-     * Nutz 的主页 :  [http://nutzam.com]
+     * Nutz 的主页 :  [https://nutzam.com]
 
 
 --------------------------------------------------------------------------------------------------------
@@ -126,6 +126,6 @@
 	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。
 	我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!
 	
-	欢迎访问[http://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
-	[http://nutzam.com/doc/html/ 用户手册]
+	欢迎访问[https://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
+	[https://nutzam.com/doc/html/ 用户手册]
 

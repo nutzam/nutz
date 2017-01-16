@@ -4,7 +4,7 @@
 --------------------------------------------------------------------------------------------------------
 1.b.44 发行注记
 
-    又到了 [http://nutzam.com Nutz] 发布的日子，本次发布不像之前的几次，仅仅是一点微调，
+    又到了 [https://nutzam.com Nutz] 发布的日子，本次发布不像之前的几次，仅仅是一点微调，
     这次我们还是稍微的用了一点心思
      * 我们支持了 [http://db.apache.org/derby/ Derby] 数据库
      * 为了能更灵活的支持 JSON 类的数据转换，将 JSON 包中的某些方法抽象成 [maplist/overview.man Mapl 结构]
@@ -15,13 +15,13 @@
     
     说点新闻。前几天，[http://www.iteye.com/news/24777 我们的开源项目] 在北京弄了一个沙龙一样的聚会，
     征集演讲主题，并投票决定是否给你分配演讲的时间。由于自知是一个小众的项目，因此如果事先知道还要被投票，我们可能就不会参加了。
-    不过另我们意外的是，[http://nutzam.com Nutz] 水军力量似乎比较强大，我们获得了排名第二的投票。所以阴差阳错的去了。
+    不过另我们意外的是，[https://nutzam.com Nutz] 水军力量似乎比较强大，我们获得了排名第二的投票。所以阴差阳错的去了。
     说起来，这似乎是第一次，我们在公开场合肉身谈论 Nutz 这个项目。
     记得当天早上，我神奇发了烧，嗓子发炎的厉害。
     以致被 [http://pangwu86.iteye.com/ 胖五] 坚决的认为我心理素质有问题，遇见大场面就需要尿不湿。
     
     无论怎样，我们是去参加了这个活动，并且认真的准备了一组演讲稿:
-    [http://nutzam.com/press/what_is_nutz/ Nutz:一次刻意的意外 de 演讲稿]
+    [https://nutzam.com/press/what_is_nutz/ Nutz:一次刻意的意外 de 演讲稿]
     
     当天 [http://pangwu86.iteye.com/ 胖五] 录了一段未剪辑过的演讲视频。有兴趣的朋友请看这里:
     [http://v.youku.com/v_show/id_XNDAzMDI0NDEy.html Nutz - 一次刻意的意外]
@@ -29,17 +29,17 @@
     这个活动是一个系列的活动，我想关注国内开源的朋友或多或少都听说过，有的还参加过。
     这里，我们希望活动的主创人员能够坚持下去，也祝愿这个活动越办越好。
     
-    因为要肉身现场和上百个人谈论 [http://nutzam.com Nutz]， [http://wendal.net Wendal] 也就决定肉身过来听听。
+    因为要肉身现场和上百个人谈论 [https://nutzam.com Nutz]， [http://wendal.net Wendal] 也就决定肉身过来听听。
     因此我心里上很感谢 [http://www.iteye.com/news/24777 我们的开源项目]，要不是他们，我可能到现在还没有见过 
     [http://wendal.net Wendal] 的真人。 我们在一起度过一个愉快的周末，当然我们也录了很多 DV，
-    因为太多，不能全放上来，我做了一点剪辑，后来发现加几个字配个背景音乐，可以完全当作一个 [http://nutzam.com Nutz]
+    因为太多，不能全放上来，我做了一点剪辑，后来发现加几个字配个背景音乐，可以完全当作一个 [https://nutzam.com Nutz]
     的宣传视频，有兴趣的朋友可以看这里  [http://v.youku.com/v_show/id_XNDA3MDE3ODc2.html nutz_宣传片第0季]
     
     [http://my.oschina.net/dlpinghailinfeng jeffsui] 在 OSChain 上也投递了一篇相关的新闻
     [http://www.oschina.net/news/29608/nutz-video IT范儿是什么范儿-nutz_宣传片第0季]
     
-    期间，我就 [http://nutzam.com Nutz] 这个项目采访了过 [http://pangwu86.iteye.com/ 胖五同学]， 
-    稍候我会做整理，把视频传上来。 [http://pangwu86.iteye.com/ 胖五同学] 对 [http://nutzam.com Nutz] 未来的一些
+    期间，我就 [https://nutzam.com Nutz] 这个项目采访了过 [http://pangwu86.iteye.com/ 胖五同学]， 
+    稍候我会做整理，把视频传上来。 [http://pangwu86.iteye.com/ 胖五同学] 对 [https://nutzam.com Nutz] 未来的一些
     设想，未来的几个月内将变成现实，我可以负责任的说: "虽然还需要继续做一些工作，但是基本已经没有什么悬念了。" 
 
     
@@ -47,7 +47,7 @@
     
      * 稳定版下载地址 : [http://code.google.com/p/nutz/downloads/list]
      * 日编译下载地址 : [http://build.sunfarms.net/nutz/]
-     * Nutz 的主页 :  [http://nutzam.com]
+     * Nutz 的主页 :  [https://nutzam.com]
 
 
 --------------------------------------------------------------------------------------------------------
@@ -148,6 +148,6 @@
 	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。
 	我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!
 	
-	欢迎访问[http://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
-	[http://nutzam.com/doc/html/ 用户手册]
+	欢迎访问[https://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
+	[https://nutzam.com/doc/html/ 用户手册]
 

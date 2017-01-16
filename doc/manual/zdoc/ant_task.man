@@ -6,15 +6,15 @@
 	使用Resource
 	{{{
 		<taskdef resource="zdoc_ant.properties">
-			<classpath path="nutz-1.a.32.jar"></classpath>
-			<classpath path="nutzdoc-1.13.jar"></classpath>
+			<classpath path="nutz-1.r.60.jar"></classpath>
+			<classpath path="nutzdoc-1.16.jar"></classpath>
 		</taskdef>
 	}}}
 	直接指定类
 	{{{
 		<taskdef name="zdoc" classname="org.nutz.doc.ant.ZDocTask">
-			<classpath path="nutz-1.a.32.jar"></classpath>
-			<classpath path="nutzdoc-1.13.jar"></classpath>
+			<classpath path="nutz-1.r.60.jar"></classpath>
+			<classpath path="nutzdoc-1.16.jar"></classpath>
 		</taskdef>
 	}}}
 	

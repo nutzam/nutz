@@ -11,7 +11,7 @@
 
     当然，想不到的事情还有很多，譬如木有想到 GoogleDoc 又不能用了，也木有想到，都完球了，还不能用，靠，骏马跑在戈壁上！
 
-    不管怎么样，[http://nutzam.com Nutz] 这个小 jar 包这 3 个月来一直在被持续的微量的改进着，
+    不管怎么样，[https://nutzam.com Nutz] 这个小 jar 包这 3 个月来一直在被持续的微量的改进着，
     [http://wendal.net/ 无敌的 wendal] 懒洋洋的催道：“该写注记了吧!”
     然后统计了一下，靠，又 fix 了 30 多个 Issue，接受的 pull request 也更多了 ...
 
@@ -22,7 +22,7 @@
 
      * 稳定版下载地址 : [http://code.google.com/p/nutz/downloads/list]
      * 日编译下载地址 : [http://build.sunfarms.net/nutz/]
-     * Nutz 的主页 :  [http://nutzam.com]
+     * Nutz 的主页 :  [https://nutzam.com]
 
 
 --------------------------------------------------------------------------------------------------------
@@ -119,6 +119,6 @@
 	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。
 	我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!
 	
-	欢迎访问[http://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
-	[http://nutzam.com/doc/html/ 用户手册]
+	欢迎访问[https://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
+	[https://nutzam.com/doc/html/ 用户手册]
 

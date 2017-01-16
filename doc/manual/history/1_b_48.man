@@ -20,7 +20,7 @@
 
      * 稳定版下载地址 : [http://code.google.com/p/nutz/downloads/list]
      * 日编译下载地址 : [https://oss.sonatype.org/content/repositories/snapshots/org/nutz/nutz/]
-     * Nutz 的主页 :  [http://nutzam.com]
+     * Nutz 的主页 :  [https://nutzam.com]
 
 --------------------------------------------------------------------------------------------------------
 问题修复
@@ -69,8 +69,8 @@
 --------------------------------------------------------------------------------------------------------
 文档
 
-    * 增加 [http://nutzam.com/doc/html/#mvc/session.html Session机制]
-    * 修改 [http://nutzam.com/doc/html/#ioc/events.html 事件监听]
+    * 增加 [https://nutzam.com/doc/html/#mvc/session.html Session机制]
+    * 修改 [https://nutzam.com/doc/html/#ioc/events.html 事件监听]
 
 --------------------------------------------------------------------------------------------------------
 主要贡献者名单
@@ -127,6 +127,6 @@
 	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。
 	我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!
 	
-	欢迎访问[http://nutzam.com 官网],以获取 [https://oss.sonatype.org/content/repositories/snapshots/org/nutz/nutz/ 最新的快照版] 和
-	[http://nutzam.com/doc/html/ 用户手册]
+	欢迎访问[https://nutzam.com 官网],以获取 [https://oss.sonatype.org/content/repositories/snapshots/org/nutz/nutz/ 最新的快照版] 和
+	[https://nutzam.com/doc/html/ 用户手册]
 
