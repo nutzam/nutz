@@ -8,6 +8,7 @@
 	详细说明请查阅插件的README
 	
 	[https://github.com/nutzam/nutzmore/tree/master/nutz-integration-jedis nutz-integration-jedis]
+	[https://git.oschina.net/nutz/nutzmore/tree/master/nutz-integration-jedis 国内镜像In_Git@OSC]
 	
 	jedis是redis的java客户端,请注意区别
 	

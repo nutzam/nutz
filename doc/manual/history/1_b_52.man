@@ -41,7 +41,7 @@
     ------------------------------ Nutz 的相关资源的分隔线 -------------------------
 
      * 下载地址 : [http://downloads.nutzam.com/]
-     * Nutz 的官网 :  [http://nutzam.com]
+     * Nutz 的官网 :  [https://nutzam.com]
      * Github 地址 :  [https://github.com/nutzam/nutz]
      * Nutzmore地址: [https://github.com/nutzam/nutzmore]
 
@@ -187,4 +187,4 @@
 	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。
 	我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!
 
-	欢迎访问[http://nutzam.com 官网],以获取更多信息
+	欢迎访问[https://nutzam.com 官网],以获取更多信息

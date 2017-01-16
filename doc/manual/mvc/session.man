@@ -61,4 +61,5 @@ Session机制是什么?
 哪里有现成的实现?
 
 	* [nutzmore项目 https://github.com/nutzam/nutzmore/tree/master/nutz-integration-shiro]
+	* [https://git.oschina.net/nutz/nutzmore/tree/master/nutz-integration-shiro 国内镜像In_Git@OSC]
 	* 有ShiroSessionProvider,使用Shiro的Session代替原生session

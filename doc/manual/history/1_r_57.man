@@ -48,6 +48,6 @@
   <../imgs/nutz_ecosystem.png>
 
 
-欢迎访问[http://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
+欢迎访问[https://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
     
 [https://nutz.cn Nutz社区]已经累计了1500+的问答帖子, 7000+条回复, 平均首次回复时间少于1小时哦,白天基本上秒回!

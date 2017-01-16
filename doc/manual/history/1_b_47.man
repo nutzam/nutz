@@ -4,7 +4,7 @@
 --------------------------------------------------------------------------------------------------------
 1.b.47 发行注记
 
-    前一版 [http://nutzam.com/doc/html/#history/1_b_46.html 1.b.46] 的时候有一个小问题，就是 JSON 文件的
+    前一版 [https://nutzam.com/doc/html/#history/1_b_46.html 1.b.46] 的时候有一个小问题，就是 JSON 文件的
     解析更严格了，如果对象尾部多了一个逗号（","）（当然，JSON 语法上，这个的确是错的），JSON 解析会报错。
     详细请参看 [https://github.com/nutzam/nutz/issues/349 Issue 349]
 
@@ -18,7 +18,7 @@
 
      * 稳定版下载地址 : [http://code.google.com/p/nutz/downloads/list]
      * 日编译下载地址 : [http://build.sunfarms.net/nutz/]
-     * Nutz 的主页 :  [http://nutzam.com]
+     * Nutz 的主页 :  [https://nutzam.com]
 
 
 --------------------------------------------------------------------------------------------------------
@@ -81,6 +81,6 @@
 	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。
 	我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!
 	
-	欢迎访问[http://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
-	[http://nutzam.com/doc/html/ 用户手册]
+	欢迎访问[https://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
+	[https://nutzam.com/doc/html/ 用户手册]
 

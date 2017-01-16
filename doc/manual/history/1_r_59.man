@@ -58,6 +58,6 @@
   
     * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.59 issue@github]
 
-欢迎访问[http://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
+欢迎访问[https://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
 
 [https://nutz.cn Nutz社区]已经累计了2000+的问答帖子, 10000+条回复,注册人数过千,平均回复时间少于10分钟哦,白天基本上秒回!

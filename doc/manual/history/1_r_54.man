@@ -28,6 +28,6 @@
     * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.54 issue@github] 不再详细列出
 
 
-欢迎访问[http://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
+欢迎访问[https://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
     
 [https://nutz.cn Nutz社区]已经累计了500+的问答帖子,平均首次回复时间少于1小时哦

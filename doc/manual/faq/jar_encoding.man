@@ -26,7 +26,7 @@ Ecipse 用户
 -------------------------------------------------------------
 Netbean 用户 
     
-    # 找到你的Netbeans安装目录下的etc文件夹,如C:\Program Files\NetBeans 6.0 M9\etc
+    # 找到你的Netbeans安装目录下的etc文件夹,如C:\Program Files\NetBeans 8.2\etc
     # 用记事本打开netbeans.conf
     # 找到netbeans_default_options这一句(没带#号的,带#号的是注释)
     # 在最后面加上一个空格,再加入-J-Dfile.encoding=UTF-8

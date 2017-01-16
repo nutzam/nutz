@@ -22,9 +22,9 @@
     当然，Nutz 的下载地址仍然一直会是 [http://code.google.com/p/nutz/downloads/list Google Code 下载列表]
     ，并且 [http://nutz.googlecode.com Nutz 在 Google Code 的项目主页] 也会一直维护。
 
-    同时，我想提醒大家注意一下 [http://nutzam.com Nutz 的官网]，我们会不断的充实它的内容，比如最近做的
-     * [http://nutzam.com/doc/html/ Nutz 的文档]
-     * [http://nutzam.com:8080/nutzam Nutz 的小白测试]
+    同时，我想提醒大家注意一下 [https://nutzam.com Nutz 的官网]，我们会不断的充实它的内容，比如最近做的
+     * [https://nutzam.com/doc/html/ Nutz 的文档]
+     * [https://nutzam.com:8080/nutzam Nutz 的小白测试]
     
     说到小白测试，不得不提一下 Dao 重构。我们这次重构 Dao 后总是不放心，其实我们在今年 5 月初就重构完了，
     然后我们测试呀，测试，毕竟是重构 Dao 了嘛，但是我们还是不放心，于是又测试呀测试... 
@@ -32,13 +32,13 @@
 
     于是 [https://github.com/juqkai Juqkai] 同学在我和 Wendal 的撺掇下痛下决心，写了这个应用:
 
-    [http://nutzam.com:8080/nutzam/ Nutz 小白测试计划]
+    [https://nutzam.com:8080/nutzam/ Nutz 小白测试计划]
 
     我们希望这个计划，能让更多人方便的参与测试，提交测试结果，这样我们就能为更多的人提供更稳定的 Jar 包。
     同时，我们也能更准确的统计贡献者名单。
     
     当然如果没有人参与这个测试计划，最差的结果就是维持现状。令人欣慰的是，还是有4位同学(包括我)参加了
-    [http://nutzam.com:8080/nutzam/testResult/list.htm?nutzVersion=1.b.38 1.b.38测试的小白测试]
+    [https://nutzam.com:8080/nutzam/testResult/list.htm?nutzVersion=1.b.38 1.b.38测试的小白测试]
     
     那么，让我们看看，以后的版本参加的人是会越来越多，还是越来越少 ^_^!
 
@@ -223,6 +223,6 @@ EL 兼容性问题
 	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。
 	我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!
 	
-	欢迎访问[http://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
-	[http://nutzam.com/doc/html/ 用户手册]
+	欢迎访问[https://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
+	[https://nutzam.com/doc/html/ 用户手册]
 

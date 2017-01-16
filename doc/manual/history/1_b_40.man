@@ -7,9 +7,9 @@
     Hi 大家好，好久不见，^_^
     
     又到了30天一度的 Nutz 发布的日子了。 当然，上一个 30天我们木有发布，为啥涅？ 因为看看 Issue 列表，想再攒攒嘛。不过可以看出
-    [http://nutzam.com/doc/html/#history/1_b_39.html 1.b.39 这个版] 顶了2个多月，看起来工作的还可以。
+    [https://nutzam.com/doc/html/#history/1_b_39.html 1.b.39 这个版] 顶了2个多月，看起来工作的还可以。
     
-    我记得 [http://nutzam.com/doc/html/#history/1_b_39.html 1.b.39 这个版]发布后 和 [http://wendal.net/ Wendal] 
+    我记得 [https://nutzam.com/doc/html/#history/1_b_39.html 1.b.39 这个版]发布后 和 [http://wendal.net/ Wendal] 
     私下小声嘀咕过，看起来再过几个版，Nutz 似乎可以 RC 了。 说起 [http://wendal.net/ Wendal 同学]，如果你仔细阅读他
     的博客，你会发现，这个博客很有料，文章的品质很高，而且更新的频率也不低，这里推荐几篇文章给大家:
      * [http://wendal.net/326.html 《初试Jetty使用Mongodb作为Session管理器》]
@@ -65,7 +65,7 @@
     一个字 --- {*快}，我们期待着他们能搞出一些更酷的代码，大家拿来用用哈 :D
     
     {#00F;*最后 ...}
-     * Nutz 的首页 : [http://nutzam.com/]
+     * Nutz 的首页 : [https://nutzam.com/]
      * Nutz 的下载地址 : [http://code.google.com/p/nutz/downloads/list]
     
     {#080;Enjoy it ^_^}
@@ -174,6 +174,6 @@
 	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。
 	我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!
 	
-	欢迎访问[http://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
-	[http://nutzam.com/doc/html/ 用户手册]
+	欢迎访问[https://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
+	[https://nutzam.com/doc/html/ 用户手册]
 

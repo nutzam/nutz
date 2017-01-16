@@ -20,7 +20,7 @@
     和
     [http://code.google.com/p/nutz/downloads/detail?name=NutMVC%20--%20QuickStart_v2.exe 这里]
     ，无论怎样，你在 [http://code.google.com/p/nutz/downloads/list Nutz 的下载列表] 就能找到这两个文件，
-    强烈推荐刚接触 [http://nutzam.com Nutz 框架] 的同学看一下
+    强烈推荐刚接触 [https://nutzam.com Nutz 框架] 的同学看一下
 
     另外需要推介的是 [http://helloqiner.iteye.com/ QinerG] 同学写的两篇文章
 
@@ -136,6 +136,6 @@
 	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。
 	我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!
 	
-	欢迎访问[http://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
+	欢迎访问[https://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
 	[http://build.sunfarms.net/nutz/lastest/manual/ 用户手册]
 

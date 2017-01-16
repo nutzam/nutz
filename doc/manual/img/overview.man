@@ -17,7 +17,7 @@
 	
 	{{{<JAVA>
 	// 可以是URL对象
-	Images.read(new Url("http://www.baidu.com/img/bdlogo.png"));
+	Images.read(new Url("https://www.baidu.com/img/bdlogo.png"));
 	// 可以是路径
 	Images.read("/dev/shm/shiro_login.png");
 	// 可以是File对象
