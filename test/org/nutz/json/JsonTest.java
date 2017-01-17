@@ -986,4 +986,17 @@ public class JsonTest {
         }.render(new NutMap("age", 1));
         assertEquals("{\"age\":\"1\"}", sw.getBuffer().toString());
     }
+    
+    @Test
+    public void test_json_timezone() throws IOException {
+        Date date = new Date(0);
+        JsonFormat jf_china = Json.fromJson(JsonFormat.class, "{dateFormat:'yyyy-MM-dd HH:mm:ss', timeZone:'GMT+8'}").setCompact(true);
+        JsonFormat jf_yvr = Json.fromJson(JsonFormat.class, "{dateFormat:'yyyy-MM-dd HH:mm:ss', timeZone:'GMT-8'}").setCompact(true);
+        String json_china = Json.toJson(new NutMap("date", date), jf_china);
+        String json_yvr = Json.toJson(new NutMap("date", date), jf_yvr);
+        System.out.println(json_china);
+        System.out.println(json_yvr);
+        assertEquals("{\"date\":\"1970-01-01 08:00:00\"}", json_china);
+        assertEquals("{\"date\":\"1969-12-31 16:00:00\"}", json_yvr);
+    }
 }

@@ -99,9 +99,9 @@ public class JsonRenderImpl implements JsonRender {
             else if (mr.isDateTimeLike()) {
                 boolean flag = true;
                 if (obj instanceof Date) {
-                    DateFormat df = format.getDateFormat();
-                    if (df != null) {
-                        string2Json(df.format((Date)obj));
+                    String _val = doDateFormat((Date)obj, null);
+                    if (_val != null) {
+                        string2Json(_val);
                         flag = false;
                     }
                 }
@@ -426,6 +426,8 @@ public class JsonRenderImpl implements JsonRender {
             }
         }
         if (df != null) {
+            if (df instanceof DateFormat)
+                return doDateFormat((Date)value, (DateFormat)df);
             return df.format(value);
         }
         return value.toString();
@@ -442,5 +444,16 @@ public class JsonRenderImpl implements JsonRender {
             writer.write("''");
         else
             writer.write("null");
+    }
+    
+    protected String doDateFormat(Date date, DateFormat df) {
+        if (df == null)
+            df = format.getDateFormat();
+        if (df != null) {
+            if (format.getTimeZone() != null)
+                df.setTimeZone(format.getTimeZone());
+            return df.format(date);
+        }
+        return null;
     }
 }

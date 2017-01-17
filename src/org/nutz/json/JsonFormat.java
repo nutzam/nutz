@@ -3,6 +3,7 @@ package org.nutz.json;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import org.nutz.castor.Castors;
@@ -139,6 +140,8 @@ public class JsonFormat implements Cloneable {
      * 遇到空值的时候写入字符串
      */
     private boolean nullAsEmtry;
+    
+    private TimeZone timeZone;
 
     /**
      * 判断该字段是否是指定输出方式中的字段
@@ -467,5 +470,13 @@ public class JsonFormat implements Cloneable {
     public JsonFormat setNullAsEmtry(boolean nullAsEmtry) {
         this.nullAsEmtry = nullAsEmtry;
         return this;
+    }
+
+    public TimeZone getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(TimeZone timeZone) {
+        this.timeZone = timeZone;
     }
 }
