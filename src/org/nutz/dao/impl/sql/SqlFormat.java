@@ -1,11 +1,15 @@
 package org.nutz.dao.impl.sql;
 
+import java.io.Serializable;
+
 /**
  * Sql打印格式
  * 
  * @author 幸福的旁边(happyday517@163.com)
  */
-public class SqlFormat implements Cloneable{
+public class SqlFormat implements Cloneable, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * 打印所有信息,参数打印10行，且参数不限长度

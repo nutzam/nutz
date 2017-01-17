@@ -188,4 +188,19 @@ public class CndTest extends DaoCase {
         Condition c = Cnd.where(e2).andNot(e3);
         assertEquals(" WHERE (f2=1) AND NOT (f3=1)", c.toString());
     }
+    
+    /**
+     * 序列化测试
+     */
+    @Test
+    public void test_obj_read_write() {
+        SqlExpression e2 = Cnd.exps("f2", "=", 1);
+        SqlExpression e3 = Cnd.exps("f3", "=", 1);
+        Condition c = Cnd.where(e2).andNot(e3);
+        
+        byte[] buf = Lang.toBytes(c);
+        c = Lang.fromBytes(buf, Cnd.class);
+        
+        assertEquals(" WHERE (f2=1) AND NOT (f3=1)", c.toString());
+    }
 }

@@ -10,6 +10,8 @@ import org.nutz.dao.sql.Pojo;
 
 public class OrderBySet extends NoParamsPItem implements OrderBy {
 
+    private static final long serialVersionUID = 1L;
+
     private List<OrderByItem> list;
 
     protected OrderBySet() {

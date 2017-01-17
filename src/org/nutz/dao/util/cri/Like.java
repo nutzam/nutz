@@ -6,6 +6,8 @@ import org.nutz.dao.jdbc.ValueAdaptor;
 
 public class Like extends AbstractSqlExpression {
 
+    private static final long serialVersionUID = 1L;
+
     static Like create(String name, String value, boolean ignoreCase) {
         Like like = new Like(name);
         like.value = value;

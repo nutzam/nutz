@@ -11,6 +11,8 @@ import org.nutz.lang.Lang;
 
 public class InsertValuesPItem extends AbstractPItem {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 缓存要操作的字段
      */

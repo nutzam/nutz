@@ -8,6 +8,8 @@ import org.nutz.dao.util.Pojos;
 
 public class InsertFieldsPItem extends NoParamsPItem {
 
+    private static final long serialVersionUID = 1L;
+
     public void joinSql(Entity<?> en, StringBuilder sb) {
         List<MappingField> mfs = Pojos.getFieldsForInsert(_en(en), getFieldMatcher());
 

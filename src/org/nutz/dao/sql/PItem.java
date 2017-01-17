@@ -1,5 +1,7 @@
 package org.nutz.dao.sql;
 
+import java.io.Serializable;
+
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.jdbc.ValueAdaptor;
 
@@ -8,7 +10,7 @@ import org.nutz.dao.jdbc.ValueAdaptor;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public interface PItem {
+public interface PItem extends Serializable {
 
     /**
      * 设置所属的 POJO 对象

@@ -6,6 +6,8 @@ import org.nutz.dao.impl.sql.pojo.AbstractPItem;
 
 public abstract class AbstractSqlExpression extends AbstractPItem implements SqlExpression {
 
+    private static final long serialVersionUID = 1L;
+
     protected boolean not;
 
     private String name;

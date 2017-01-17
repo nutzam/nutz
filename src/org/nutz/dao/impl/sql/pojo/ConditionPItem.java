@@ -6,6 +6,8 @@ import org.nutz.dao.util.Pojos;
 
 public class ConditionPItem extends NoParamsPItem {
 
+    private static final long serialVersionUID = 1L;
+
     private Condition cnd;
 
     public ConditionPItem(Condition cnd) {

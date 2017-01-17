@@ -4,6 +4,8 @@ import org.nutz.dao.entity.Entity;
 
 public class SqlRange extends NoParamsSqlExpression implements SqlExpression {
 
+    private static final long serialVersionUID = 1L;
+
     private String sql;
 
     public SqlRange(String name, String fmt, Object... args) {

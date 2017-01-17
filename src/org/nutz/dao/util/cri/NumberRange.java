@@ -6,6 +6,8 @@ import org.nutz.dao.jdbc.ValueAdaptor;
 
 public abstract class NumberRange extends AbstractSqlExpression {
 
+    private static final long serialVersionUID = 1L;
+
     protected long[] ids;
 
     protected NumberRange(String name) {

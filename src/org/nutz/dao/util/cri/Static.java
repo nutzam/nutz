@@ -10,6 +10,8 @@ import org.nutz.dao.impl.sql.pojo.NoParamsPItem;
  */
 public class Static extends NoParamsPItem implements SqlExpression {
 
+    private static final long serialVersionUID = 1L;
+
     private String str;
 
     public Static(String str) {

@@ -4,6 +4,8 @@ import org.nutz.dao.entity.Entity;
 
 public class StaticPItem extends NoParamsPItem {
 
+    private static final long serialVersionUID = 1L;
+
     private String str;
     private boolean tidy;
 

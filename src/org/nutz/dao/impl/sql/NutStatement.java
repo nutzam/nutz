@@ -23,6 +23,8 @@ import org.nutz.lang.Strings;
 
 public abstract class NutStatement implements DaoStatement {
 
+    private static final long serialVersionUID = 1L;
+
     private Entity<?> entity;
 
     private SqlContext context;

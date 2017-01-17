@@ -13,6 +13,8 @@ import org.nutz.dao.sql.Pojo;
 
 public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy, GroupBy {
 
+    private static final long serialVersionUID = 1L;
+
     private SqlExpressionGroup where;
 
     private OrderBySet orderBy;

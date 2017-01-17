@@ -5,6 +5,8 @@ import org.nutz.dao.impl.sql.pojo.NoParamsPItem;
 
 public class OrderByItem extends NoParamsPItem {
 
+    private static final long serialVersionUID = 1L;
+
     private String name;
 
     private String by;

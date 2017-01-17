@@ -9,6 +9,8 @@ import org.nutz.lang.Lang;
 
 class SimpleVarSet implements VarSet {
 
+    private static final long serialVersionUID = 1L;
+
     private HashMap<String, Object> map;
 
     SimpleVarSet() {

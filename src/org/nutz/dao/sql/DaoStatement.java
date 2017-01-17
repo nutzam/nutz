@@ -1,5 +1,6 @@
 package org.nutz.dao.sql;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,7 +18,7 @@ import org.nutz.dao.pager.Pager;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public interface DaoStatement {
+public interface DaoStatement extends Serializable {
 
     /**
      * @return 当前语句是否是一个 SELECT 语句

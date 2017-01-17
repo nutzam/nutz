@@ -9,6 +9,8 @@ import org.nutz.lang.Lang;
 
 public class UpdateFieldsByChainPItem extends AbstractPItem {
 
+    private static final long serialVersionUID = 1L;
+
     private Chain chain;
 
     public UpdateFieldsByChainPItem(Chain chain) {

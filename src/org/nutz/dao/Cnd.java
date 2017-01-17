@@ -65,6 +65,8 @@ import org.nutz.lang.util.Callback2;
  */
 public class Cnd implements OrderBy, Criteria, GroupBy {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * 用字符串和参数格式化出一个条件语句,注意,不会抹除特殊字符
      * @param format sql条件

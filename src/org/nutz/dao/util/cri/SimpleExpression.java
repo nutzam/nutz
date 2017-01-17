@@ -7,6 +7,8 @@ import org.nutz.dao.jdbc.ValueAdaptor;
 
 public class SimpleExpression extends AbstractSqlExpression {
 
+    private static final long serialVersionUID = 1L;
+
     private String op;
     private Object value;
 

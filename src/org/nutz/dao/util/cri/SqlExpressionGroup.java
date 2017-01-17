@@ -27,6 +27,8 @@ import org.nutz.log.Logs;
  */
 public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
 
+    private static final long serialVersionUID = 1L;
+
     private List<SqlExpression> exps;
 
     private boolean top;

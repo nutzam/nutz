@@ -8,6 +8,8 @@ import org.nutz.lang.Lang;
 
 public class InsertByChainPItem extends AbstractPItem {
 
+    private static final long serialVersionUID = 1L;
+
     private String[] names;
     private Object[] values;
 

@@ -9,6 +9,8 @@ import org.nutz.dao.sql.SqlType;
 
 public abstract class AbstractPItem implements PItem {
 
+    private static final long serialVersionUID = 1L;
+
     protected Pojo pojo;
 
     public Pojo getPojo() {

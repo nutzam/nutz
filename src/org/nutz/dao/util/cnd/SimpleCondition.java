@@ -10,6 +10,8 @@ import org.nutz.dao.entity.Entity;
  */
 public class SimpleCondition implements Condition {
 
+    private static final long serialVersionUID = 1L;
+
     private String content;
 
     public SimpleCondition(Object obj) {

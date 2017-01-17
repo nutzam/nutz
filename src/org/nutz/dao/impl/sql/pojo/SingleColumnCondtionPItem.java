@@ -8,6 +8,8 @@ import org.nutz.lang.Lang;
 
 public class SingleColumnCondtionPItem extends AbstractPItem {
 
+    private static final long serialVersionUID = 1L;
+
     private ValueAdaptor va;
 
     private Object def;

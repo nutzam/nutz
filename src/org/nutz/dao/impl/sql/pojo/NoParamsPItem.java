@@ -5,6 +5,8 @@ import org.nutz.dao.jdbc.ValueAdaptor;
 
 public abstract class NoParamsPItem extends AbstractPItem {
 
+    private static final long serialVersionUID = 1L;
+
     private static final String[] re = new String[0];
 
     public String[] getParamNames() {

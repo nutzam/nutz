@@ -1,5 +1,7 @@
 package org.nutz.dao;
 
+import java.io.Serializable;
+
 import org.nutz.dao.entity.Entity;
 
 /**
@@ -15,7 +17,7 @@ import org.nutz.dao.entity.Entity;
  * 
  * @see org.nutz.dao.Cnd
  */
-public interface Condition {
+public interface Condition extends Serializable {
 
     /**
      * 根据一个实体，你可以生成一个条件，这个条件就是 SQL 'WHERE' 关键字后面的那部分。

@@ -9,6 +9,8 @@ import org.nutz.lang.Lang;
 
 public class QueryEntityFieldsPItem extends NoParamsPItem {
 
+    private static final long serialVersionUID = 1L;
+
     public void joinSql(Entity<?> en, StringBuilder sb) {
         FieldMatcher fm = getFieldMatcher();
         if (null == fm) {

@@ -5,6 +5,8 @@ import org.nutz.dao.jdbc.ValueAdaptor;
 
 public abstract class NoParamsSqlExpression extends AbstractSqlExpression {
 
+    private static final long serialVersionUID = 1L;
+
     protected NoParamsSqlExpression(String name) {
         super(name);
     }

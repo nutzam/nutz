@@ -1,5 +1,7 @@
 package org.nutz.dao.impl.sql;
 
+import java.io.Serializable;
+
 import org.nutz.dao.sql.SqlType;
 import org.nutz.dao.sql.VarIndex;
 import org.nutz.lang.Strings;
@@ -8,7 +10,9 @@ import org.nutz.lang.Strings;
  * @author zozoh
  * @author wendal(wendal1985@gmail.com)
  */
-public class SqlLiteral implements Cloneable {
+public class SqlLiteral implements Cloneable, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     WorkingStack stack;
 

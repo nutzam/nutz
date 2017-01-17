@@ -12,6 +12,8 @@ import org.nutz.dao.jdbc.ValueAdaptor;
  */
 public class BetweenExpression extends AbstractSqlExpression {
 
+    private static final long serialVersionUID = 1L;
+
 	private Object min;
 	private Object max;
 	

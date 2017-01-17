@@ -31,6 +31,8 @@ import org.nutz.lang.Strings;
 
 public class NutSql extends NutStatement implements Sql {
 
+    private static final long serialVersionUID = 1L;
+
     protected String sourceSql;
     protected VarSet vars;
     protected List<VarSet> rows;

@@ -1,5 +1,6 @@
 package org.nutz.dao.sql;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -8,7 +9,7 @@ import java.util.Set;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public interface VarIndex {
+public interface VarIndex extends Serializable {
 
     int[] indexesOf(String name);
 

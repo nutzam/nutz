@@ -12,6 +12,8 @@ import org.nutz.lang.util.LinkedIntArray;
 
 class VarIndexImpl implements VarIndex {
 
+    private static final long serialVersionUID = 1L;
+
     private Map<String, LinkedIntArray> indexes;
 
     private Map<Integer, String> names;

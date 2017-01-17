@@ -10,6 +10,8 @@ import org.nutz.lang.Lang;
 
 public class PkConditionPItem extends AbstractPItem {
 
+    private static final long serialVersionUID = 1L;
+
     private ValueAdaptor[] vas;
 
     private Object[] pks;
