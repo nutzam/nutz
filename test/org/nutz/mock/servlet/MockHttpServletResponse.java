@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponseWrapper;
 
@@ -126,6 +127,13 @@ public class MockHttpServletResponse extends HttpServletResponseWrapper {
             public void write(int arg0) throws IOException {
                 stream.write(arg0);
             }
+
+            public boolean isReady() {
+                
+                return false;
+            }
+
+            public void setWriteListener(WriteListener writeListener) {}
         };
     }
 

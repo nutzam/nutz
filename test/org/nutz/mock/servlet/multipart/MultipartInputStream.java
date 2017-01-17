@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
+import javax.servlet.ReadListener;
+
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.mock.servlet.MockInputStream;
@@ -117,5 +119,15 @@ public class MultipartInputStream extends MockInputStream {
             throw Lang.wrapThrow(e);
         }
     }
+
+    public boolean isFinished() {
+        return false;
+    }
+
+    public boolean isReady() {
+        return false;
+    }
+
+    public void setReadListener(ReadListener readListener) {}
 
 }
