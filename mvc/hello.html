@@ -54,7 +54,7 @@
 <ol type="1">
 <li>有了 Eclipse J2EE 套件 -- Eclipse 3.5 以上版本,推荐4.x系列</li>
 <li>安装了 Tomcat 6.0 及以上版本, 推荐8.x系列</li>
-<li>下载了 Nutz 的最新版本  http://downloads.nutzam.com/</li>
+<li>下载了 Nutz 的最新版本  https://nutz.cn/nutzdw/</li>
 </ol>
 <div class="hr"><b></b></div>
 <h1><a name="详细步骤"></a>详细步骤</h1>
@@ -84,7 +84,7 @@
 <h2><a name="将_Nutzjar_加入_lib_目录中"></a>将 Nutz.jar 加入 lib 目录中</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>本例子需要 Nutz-1.r.59 或者更高的版本</p>
-<p>在 WebContent &gt; WEB-INF &gt; lib 把nutz-1.r.59.jar放进去.</p>
+<p>在 WebContent &gt; WEB-INF &gt; lib 把nutz-1.r.60.jar放进去.</p>
 <h2><a name="创建主模块"></a>创建主模块</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>在 src 目录上右键选择 New &gt; Class</p>
@@ -94,10 +94,10 @@
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>通过声明一个 Filter，<a href="web_xml.html">将 Nutz.mvc 挂载到 Tomcat 中</a></p>
 <pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;web-app xmlns:xsi="http:<span class="zdoc_code_cmt">//www.w3.org/2001/XMLSchema-instance"
-</span>	xmlns="http:<span class="zdoc_code_cmt">//java.sun.com/xml/ns/javaee"
-</span>	xsi:schemaLocation="http:<span class="zdoc_code_cmt">//java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-</span>	version="2.5"&gt;
+&lt;web-app xmlns="http:<span class="zdoc_code_cmt">//xmlns.jcp.org/xml/ns/javaee"
+</span>	 xmlns:xsi="http:<span class="zdoc_code_cmt">//www.w3.org/2001/XMLSchema-instance"
+</span>	 xsi:schemaLocation="http:<span class="zdoc_code_cmt">//xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+</span>	 version="3.1"&gt;
 	&lt;display-name&gt;hellonutz&lt;/display-name&gt;
 	&lt;filter&gt;
 		&lt;filter-name&gt;nutz&lt;/filter-name&gt;
@@ -171,6 +171,7 @@ public class MainModule {
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
 <li><a href="http://github.com/nutzam/nutzdemo/">访问 demo site</a></li>
+<li><a href="http://git.oschina.net/nutz/nutzdemo/">Git@OSC镜像</a></li>
 <li><a href="../lang/log.html#让_Nutz_输出日志">让_Nutz_输出日志</a></li>
 <li><a href="overview.html">详细阅读 Mvc 手册</a></li>
 </ul>
