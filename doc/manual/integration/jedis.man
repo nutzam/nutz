@@ -92,7 +92,7 @@
 -----------------------------------------------
 注入RedisService使用
 
-	RedisService继承了Jedis类的大部分方法, 所以方法均自动开启和关闭Jedis实例,除pipeline外的大部分方法均可正常使用. 
+	RedisService继承了Jedis类的大部分方法, 所有方法均自动开启和关闭Jedis实例,除pipeline外的大部分方法均可正常使用. 
 	
 	若涉及到pipeline, 可注入JedisPool取出原生Jedis进行操作.
 	
