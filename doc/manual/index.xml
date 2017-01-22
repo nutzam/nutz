@@ -29,6 +29,7 @@
 		<doc path="cross_origin.man"></doc>
 		<doc path="websocket.man"></doc>
 		<doc path="whale_filter.man"></doc>
+		<doc path="questions.man"></doc>
 	</doc>
 	<doc path="dao" title="Dao 手册">
 		<doc path="hello.man"/>
@@ -59,6 +60,7 @@
 		<doc path="daoup.man"></doc>
 		<doc path="trans_session.man"></doc>
 		<doc path="dao_create.man"></doc>
+		<doc path="questions.man"></doc>
 	</doc>
 	<doc path="ioc"	title="Ioc 手册">
 		<doc path="hello.man"/>
@@ -72,8 +74,10 @@
 		<doc path="scope.man"/>
 		<doc path="inner_object.man"/>
 		<doc path="xml_ioc_loader.man"/>
+		<doc path="ioc_properties.man"></doc>
 		<doc path="ioc_and_java.man"></doc>
 		<doc path="alias.man"></doc>
+		<doc path="questions.man"></doc>
 	</doc>
 	<doc path="aop" title="Aop 手册">
 		<doc path="aop_mvc.man"/>

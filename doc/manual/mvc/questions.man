@@ -1,0 +1,45 @@
+#title: MVC常见问题
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+--------------------------------------------------------------------------------------
+tomcat报readUnsignedShort
+
+	部署到生产环境时(tomcat版本一般较低), 出现类似这样的报错,然后tomcat无法启动:
+	
+	{{{
+java.io.EOFException
+	at java.io.DataInputStream.readUnsignedShort(DataInputStream.java:340)
+	at org.apache.tomcat.util.bcel.classfile.Utility.swallowMethodParameters(Utility.java:796)
+	at org.apache.tomcat.util.bcel.classfile.Attribute.readAttribute(Attribute.java:171)
+	at org.apache.tomcat.util.bcel.classfile.FieldOrMethod.<init>(FieldOrMethod.java:57)
+	at org.apache.tomcat.util.bcel.classfile.Method.<init>(Method.java:71)
+	at org.apache.tomcat.util.bcel.classfile.ClassParser.readMethods(ClassParser.java:267)
+	at org.apache.tomcat.util.bcel.classfile.ClassParser.parse(ClassParser.java:127)
+	}}}
+
+	原因:
+	
+		* tomcat 7.0.58之前的版本,处理由JDK8带`-parameters`编译的类文件有bug
+		* nutz从1.r.58开始,使用JDK8带`-parameters`编译,从而实现eclipse无源码也能提示参数名称
+		
+	解决版本:
+	
+		* 首选: 把tomcat升级到7.x最新版
+		* 备选: 下载nutz源码,重新编译一份不带`-parameters`的jar,不推荐使用
+		
+--------------------------------------------------------------------------------------
+出现nutz日志之前,停顿几十秒到几分钟不等:
+
+	该情况只出现在老版本的Linux系统,卡顿结束后,第一条日志类似
+	
+	{{{
+	INFO: Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [301,654] milliseconds.
+	}}}
+	
+	原因: 由于linux下/dev/random极其低效,导致SecureRandom初始化非常慢
+	
+	解决方案: 添加启动参数
+	
+	{{{
+	JAVA_OPTS="$JAVA_OPTS -Dfile.encoding=utf-8 -Djava.security.egd=file:/dev/urandom"
+	}}}

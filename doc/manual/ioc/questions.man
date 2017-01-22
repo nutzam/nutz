@@ -1,0 +1,29 @@
+#title: Ioc常见问题
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+--------------------------------------------------------------------------------------
+Ioc depose tigger by GC
+	
+	表现就是标题这句日志了
+	
+	原因是, "您自己"的代码,创建了一个临时NutIoc容器,然后抛弃掉, 例如
+	
+	{{{<JAVA>
+	public static Dao dao() {
+		IocLoader loader = new JsonLoader("dao.js");
+		return new NutIoc().get(Dao.class);
+	}
+	}}}
+	
+	解决办法, 全局搜索 `new NutIoc`, 改成正确的方式, [ioc_by_hand.man 点我传送门]
+--------------------------------------------------------------------------------------
+Object 'dao' without define!
+
+	表现就是标题这句日志了, dao可以替换成其他需要得到的bean name
+	
+	原因呢, 一般是因为@IocBy配置错误,或类名错误
+	
+	解决办法
+		
+		* 如果这是您自己写的类, 看看是不是缺了@IocBean
+		* 如果是在ioc js中定义的bean,检查一下名字

@@ -1,0 +1,40 @@
+#title: Dao常见问题
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+--------------------------------------------------------------------------------------
+nutz日志已出,卡在获取数据库连接的地方
+	
+	打印以下日志后,就没反应了,一直没反应
+	{{{
+	Get Connection from DataSource for JdbcExpert, if you lock at here, check your database server and configure
+	}}}
+	
+	原因: 使用了Driud,且没有配置maxWait参数,然后数据库参数错误,druid一直尝试获取连接,导致假死.
+	
+	解决方案: 为druid添加maxWait参数,从而抛出真实异常,方便查错. 下面给出dao.js中的示意配置
+	
+	{{{<json>
+	    dataSource : {
+	        type : "com.alibaba.druid.pool.DruidDataSource",
+	        events : {
+	        	...
+	        },
+	        fields : {
+	            ...
+	        	maxWait : 5000, // 毫秒数,在5秒内拿不到新连接,就抛异常,而不是继续瞎等
+	        	...
+	        }
+	    },
+	}}}
+	
+--------------------------------------------------------------------------------------
+报without any Mapping Field
+
+	通常是update/fetchLinks传错参数, 例如
+	
+	{{{<JAVA>
+	dao.fetchLink(User.class, null); // 第一个参数应该是对象,而非类
+	dao.update(User.class); // 同上
+	
+	dao.update(date); // 传了非pojo对象
+	}}}
