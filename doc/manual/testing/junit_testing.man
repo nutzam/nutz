@@ -63,7 +63,7 @@
 	测试类, 请务必留意测试类所在的package,确保到ioc配置的覆盖范围内.
 	
 	{{{<JAVA>
-    @RunWith(NutBookIocTestRunner.class)
+    @RunWith(MyNutTestRunner.class)
     @IocBean // 必须有
     public class SimpleTest extends Assert {
         
