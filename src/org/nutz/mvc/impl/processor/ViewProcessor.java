@@ -32,7 +32,7 @@ public class ViewProcessor extends AbstractProcessor {
 
         Class<?>[] params = ai.getMethod().getParameterTypes();
         for (int i = 0; i < params.length; i++) {
-            if (params[i].isAssignableFrom(ViewModel.class)) {
+            if (ViewModel.class.isAssignableFrom(params[i])) {
                 index = i;
                 break;
             }
