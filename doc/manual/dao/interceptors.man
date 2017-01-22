@@ -28,7 +28,7 @@ public interface DaoInterceptor {
 示例实现
 
 {{{<java>
-public class MyDaoInterceptor {
+public class MyDaoInterceptor implements DaoInterceptor {
     public void filter(DaoInterceptorChain chain) throws DaoException {
         DaoStatement st = chain.getDaoStatement();
         if (st instanceof NutPojo) {
