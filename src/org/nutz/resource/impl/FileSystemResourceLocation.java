@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.nutz.NutRuntimeException;
 import org.nutz.lang.util.Disks;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
@@ -34,7 +33,7 @@ public class FileSystemResourceLocation extends ResourceLocation {
 
     public FileSystemResourceLocation(File root) throws IOException {
         if (root == null)
-            throw new NutRuntimeException("FileSystemResourceLocation root can't be NULL");
+            throw new RuntimeException("FileSystemResourceLocation root can't be NULL");
         this.root = root.getAbsoluteFile().getCanonicalFile();
     }
 }
