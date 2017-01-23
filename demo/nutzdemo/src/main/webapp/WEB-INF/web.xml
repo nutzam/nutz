@@ -8,8 +8,8 @@
 	</absolute-ordering>
 	<display-name>Nutz Web Demo</display-name>
 	<filter>
-		<filter-class>org.nutz.mvc.NutFilter</filter-class>
 		<filter-name>nutz</filter-name>
+		<filter-class>org.nutz.mvc.NutFilter</filter-class>
 		<init-param>
 			<param-name>modules</param-name>
 			<param-value>net.wendal.nutzdemo.MainModule</param-value>
