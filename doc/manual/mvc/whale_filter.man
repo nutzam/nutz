@@ -64,8 +64,8 @@ http方法隐式声明
 	例如这样的表单
 	
 	{{{<html>
-	<form action="/admin/topic/23" method="post">
-		<input name="_method" value="delete" type="hidden">
+	<form action="/admin/topic/23?_method=delete" method="post">
+		...
 	</form>
 	}}}
 	
