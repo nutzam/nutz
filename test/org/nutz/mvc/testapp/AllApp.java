@@ -13,5 +13,6 @@ import org.nutz.mvc.testapp.views.AllView;
                      AllView.class,
                      AllAdaptor.class,
                      AllUpload.class,
-                     AllMapping.class})
+                     //AllMapping.class
+                     })
 public class AllApp {}
