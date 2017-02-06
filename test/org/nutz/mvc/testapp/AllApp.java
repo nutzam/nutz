@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 //import org.nutz.mvc.testapp.adaptor.AllAdaptor;
 import org.nutz.mvc.testapp.adaptor.AllAdaptor;
+import org.nutz.mvc.testapp.mapping.AllMapping;
 import org.nutz.mvc.testapp.upload.AllUpload;
 import org.nutz.mvc.testapp.views.AllView;
 
@@ -11,5 +12,6 @@ import org.nutz.mvc.testapp.views.AllView;
 @Suite.SuiteClasses({BaseTest.class,
                      AllView.class,
                      AllAdaptor.class,
-                     AllUpload.class})
+                     AllUpload.class,
+                     AllMapping.class})
 public class AllApp {}

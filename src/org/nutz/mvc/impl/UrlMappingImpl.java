@@ -158,7 +158,7 @@ public class UrlMappingImpl implements UrlMapping {
     protected String genMethodDesc(ActionInfo ai) {
         Method method = ai.getMethod();
         String prefix = "";
-        if (ai.getLineNumber() > 0) {
+        if (ai.getLineNumber() != null && ai.getLineNumber() > 0) {
             prefix = String.format("(%s.java:%d).%s",
                                  method.getDeclaringClass().getSimpleName(),
                                  ai.getLineNumber(),

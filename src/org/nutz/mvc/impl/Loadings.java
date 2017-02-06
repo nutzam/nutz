@@ -193,12 +193,17 @@ public abstract class Loadings {
      */
     private static void checkModule(Set<Class<?>> modules, List<Class<?>> subs) {
         for (Class<?> sub : subs) {
-            if (isModule(sub)) {
-                if (log.isDebugEnabled())
-                    log.debugf("   >> add '%s'", sub.getName());
-                modules.add(sub);
-            } else if (log.isTraceEnabled()) {
-                log.tracef("   >> ignore '%s'", sub.getName());
+            try {
+                if (isModule(sub)) {
+                    if (log.isDebugEnabled())
+                        log.debugf("   >> add '%s'", sub.getName());
+                    modules.add(sub);
+                } else if (log.isTraceEnabled()) {
+                    log.tracef("   >> ignore '%s'", sub.getName());
+                }
+            }
+            catch (Exception e) {
+                throw new RuntimeException("something happen when handle class=" + sub.getName(), e);
             }
         }
     }
