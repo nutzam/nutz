@@ -7,10 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.io.File;
 
 import org.nutz.img.Colors;
-import org.nutz.img.Images;
 import org.nutz.lang.util.NutMap;
 
 /**
@@ -31,18 +29,6 @@ public abstract class Avatar {
         }
     }
 
-    public static void main(String[] args) {
-        // BufferedImage avImage = createAvatar("武佩文", 300, "#F00", "#080",
-        // null);
-        BufferedImage t1 = createAvatar("武佩文");
-        File av1 = Files.createFileIfNoExists2("/Users/pw/Downloads/a1.png");
-        Images.write(t1, av1);
-
-        BufferedImage t2 = createAvatar("胖五");
-        File av2 = Files.createFileIfNoExists2("/Users/pw/Downloads/a2.png");
-        Images.write(t2, av2);
-    }
-
     /**
      * 根据名字生成头像，英文采用第一个字母，中文2个字使用2个字，超过2个字采用第一个字
      * 
@@ -51,7 +37,7 @@ public abstract class Avatar {
      * @return
      */
     public static BufferedImage createAvatar(String name) {
-        return createAvatar(name, 0, null, null, null, 0, 1);
+        return createAvatar(name, 0, null, null, null, 0, Font.BOLD);
     }
 
     /**
@@ -100,7 +86,11 @@ public abstract class Avatar {
             fontStyle = Font.BOLD;
         }
         // 分析要写入的文字
-        String content = ("" + name.charAt(0)).toUpperCase();
+        String content = name;
+        if (name.length() > 2) {
+            content = ("" + name.charAt(0));
+        }
+        content = content.toUpperCase();
         // 准备参数
         BufferedImage im;
         Graphics2D gc;
@@ -118,11 +108,11 @@ public abstract class Avatar {
         gc.setFont(cFont);
         FontMetrics cFontM = gc.getFontMetrics(cFont);
         int cW = cFontM.stringWidth(content);
-        int cH = cFontM.getHeight();
-        int cHFix = cH / 3 * 2;
+        int ascent = cFontM.getAscent(); // 取得Ascent
+        int descent = cFontM.getDescent(); // 取得Descent
         int x, y;
         x = size / 2 - cW / 2;
-        y = cHFix + (size / 2 - cH / 2) + (cFontM.getAscent() - fontSize);
+        y = (size - (ascent + descent)) / 2 + ascent;
         gc.drawString(content, x, y);
         return im;
     }

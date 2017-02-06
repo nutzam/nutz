@@ -60,24 +60,4 @@ public abstract class OS {
     public static boolean isJava1_8 = isJavaVersion("1.8");
     public static boolean isJava1_9 = isJavaVersion("9");
 
-    public static void main(String[] args) {
-        System.out.println("os.name: " + OS.OS_NAME);
-        System.out.println("java.specification.version: " + OS.JAVA_SPECIFICATION_VERSION);
-        System.out.println("java.version: " + OS.JAVA_VERSION);
-
-        System.out.println("Linux: " + OS.isLinux());
-        System.out.println("MacOS: " + OS.isMacOS());
-        System.out.println("Windows: " + OS.isWindows());
-        System.out.println("Android: " + OS.isAndroid());
-
-        System.out.println("java1.1: " + OS.isJava1_1);
-        System.out.println("java1.2: " + OS.isJava1_2);
-        System.out.println("java1.3: " + OS.isJava1_3);
-        System.out.println("java1.4: " + OS.isJava1_4);
-        System.out.println("java1.5: " + OS.isJava1_5);
-        System.out.println("java1.6: " + OS.isJava1_6);
-        System.out.println("java1.7: " + OS.isJava1_7);
-        System.out.println("java1.8: " + OS.isJava1_8);
-        System.out.println("java1.9: " + OS.isJava1_9);
-    }
 }
