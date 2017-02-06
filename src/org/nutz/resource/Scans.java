@@ -70,7 +70,6 @@ public class Scans {
      * <p/>
      * 调用一次就可以了
      */
-    @SuppressWarnings("unchecked")
 	public Scans init(final ServletContext sc) {
         // 获取classes文件夹的路径
         String classesPath = sc.getRealPath("/WEB-INF/classes/");

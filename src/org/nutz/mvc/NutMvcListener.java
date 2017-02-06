@@ -79,7 +79,6 @@ public class NutMvcListener implements ServletContextListener, IocProvider {
      * <p/>
      * 子类可以覆盖这个方法实现从任意方式加载配置
      */
-    @SuppressWarnings("unchecked")
     protected void findConfig() {
         String propLocation = sc.getInitParameter(PROP_LOCATION);
         if (Strings.isBlank(propLocation)) {

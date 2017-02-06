@@ -68,7 +68,6 @@ public abstract class AbstractPathView implements View {
      *            入口函数的返回值
      * @return 上下文对象
      */
-    @SuppressWarnings("unchecked")
     public static Context createContext(HttpServletRequest req, Object obj) {
         Context context = Lang.context();
         // 复制全局的上下文对象

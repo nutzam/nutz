@@ -27,7 +27,6 @@ public class BaseParamExtractor implements ParamExtractor {
         return req.getParameterValues(name);
     }
 
-    @SuppressWarnings("unchecked")
     public Set<String> keys() {
         if (req == null)
             return new HashSet<String>();

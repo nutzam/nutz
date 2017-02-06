@@ -39,7 +39,6 @@ public class MapParamExtractor implements ParamExtractor {
         return req.getParameterValues(name);
     }
 
-    @SuppressWarnings("unchecked")
     public Set<String> keys() {
         Set<String> ss = new HashSet<String>();
         ss.addAll(map.keySet());

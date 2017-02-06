@@ -22,7 +22,6 @@ public class ReqHeaderInjector implements ParamInjector {
 		this.type = type;
 	}
 	
-	@SuppressWarnings("unchecked")
     public Object get(ServletContext sc,
 					  HttpServletRequest req,
 					  HttpServletResponse resp,

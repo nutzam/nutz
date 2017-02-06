@@ -26,7 +26,6 @@ public class SessionIocContext implements IocContext {
 
     public void clear() {
         synchronized (session) {
-            @SuppressWarnings("unchecked")
             Enumeration<String> ems = session.getAttributeNames();
             List<String> keys = new ArrayList<String>();
             while (ems.hasMoreElements()) {
@@ -82,7 +81,6 @@ public class SessionIocContext implements IocContext {
     public Set<String> names() {
         Set<String> list = new HashSet<String>();
         synchronized (session) {
-            @SuppressWarnings("unchecked")
             Enumeration<String> ems = session.getAttributeNames();
             while (ems.hasMoreElements()) {
                 String key = ems.nextElement();

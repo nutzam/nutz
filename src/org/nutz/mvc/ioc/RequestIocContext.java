@@ -26,7 +26,6 @@ public class RequestIocContext implements IocContext {
 
     public void clear() {
         synchronized (req) {
-            @SuppressWarnings("unchecked")
             Enumeration<String> ems = req.getAttributeNames();
             List<String> keys = new ArrayList<String>();
             while (ems.hasMoreElements()) {
@@ -82,7 +81,6 @@ public class RequestIocContext implements IocContext {
     public Set<String> names() {
         Set<String> list = new HashSet<String>();
         synchronized (req) {
-            @SuppressWarnings("unchecked")
             Enumeration<String> ems = req.getAttributeNames();
             while (ems.hasMoreElements()) {
                 String key = ems.nextElement();
