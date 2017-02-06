@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
@@ -22,8 +21,7 @@ public abstract class Avatar {
     private static NutMap fontMap = NutMap.NEW();
 
     static {
-        GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        String[] fonts = environment.getAvailableFontFamilyNames(); // 获得系统字体
+        String[] fonts = OS.fontsRefresh(); // 获得系统字体
         for (String fnm : fonts) {
             fontMap.addv(fnm, true);
         }

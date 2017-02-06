@@ -1,5 +1,7 @@
 package org.nutz.lang;
 
+import java.awt.GraphicsEnvironment;
+
 /**
  * 判断当前系统的类型
  * 
@@ -20,6 +22,37 @@ public abstract class OS {
     public static final String OS_NAME = sysProp("os.name").toLowerCase();
     public static final String JAVA_SPECIFICATION_VERSION = sysProp("java.specification.version");
     public static final String JAVA_VERSION = sysProp("java.version");
+
+    static {
+        refreshFonts();
+    }
+
+    // ------------------------- 系统字体
+    private static String[] _fonts;
+
+    private static void refreshFonts() {
+        GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        _fonts = environment.getAvailableFontFamilyNames(); // 获得系统字体
+    }
+
+    /**
+     * 返回字体列表
+     * 
+     * @return
+     */
+    public static String[] fonts() {
+        return _fonts.clone();
+    }
+
+    /**
+     * 重新加载，返回字体列表
+     * 
+     * @return
+     */
+    public static String[] fontsRefresh() {
+        refreshFonts();
+        return fonts();
+    }
 
     // ------------------------- 系统判断
 
