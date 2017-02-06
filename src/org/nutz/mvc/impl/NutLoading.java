@@ -191,12 +191,9 @@ public class NutLoading implements Loading {
         for (Class<?> module : modules) {
             ActionInfo moduleInfo = Loadings.createInfo(module).mergeWith(mainInfo);
             for (Method method : module.getMethods()) {
-                /*
-                 * public 并且声明了 @At 的当前模块函数，且非继承函数，非Bridge函数，才是入口函数
-                 */
-                if (!Modifier.isPublic(method.getModifiers()) || method.isBridge()
-                    || Mirror.getAnnotationDeep(method, At.class) == null
-                    || method.getDeclaringClass() != module)
+                if (!Modifier.isPublic(method.getModifiers()) || method.isBridge())
+                    continue;
+                if (Mirror.getAnnotationDeep(method, At.class) == null)
                     continue;
                 // 增加到映射中
                 ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);
