@@ -32,15 +32,15 @@ public abstract class BaseWebappTest {
 
     private String serverURL = "http://localhost:8888";
 
-    {
-        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
-            if (ste.getClassName().startsWith("org.apache.maven.surefire")) {
-                isRunInMaven = true;
-                serverURL = "http://nutztest.herokuapp.com";
-                break;
-            }
-        }
-    }
+//    {
+//        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+//            if (ste.getClassName().startsWith("org.apache.maven.surefire")) {
+//                isRunInMaven = true;
+//                serverURL = "http://nutztest.herokuapp.com";
+//                break;
+//            }
+//        }
+//    }
 
     @Before
     public void startServer() throws Throwable {

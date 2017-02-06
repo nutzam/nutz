@@ -190,5 +190,9 @@ namespace '/nutztest' do
   post '/upload/image' do
     "image&3"
   end
+  
+  get '/mapping/issue1212/sayhi' do
+  	"hi"
+  end
 
 end
