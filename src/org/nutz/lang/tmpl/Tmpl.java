@@ -174,8 +174,6 @@ public class Tmpl {
                 if (!m2.find())
                     throw Lang.makeThrow("Fail to parse tmpl key '%s'", m.group(1));
 
-                // System.out.println(Dumps.matcherFound(m2));
-
                 String key = m2.group(1);
                 String type = Strings.sNull(m2.group(3), "string");
                 String fmt = m2.group(5);
