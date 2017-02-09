@@ -150,7 +150,7 @@
 	|| uuid     || 一个Number(可选)|| 生成UUID字符串          || uuid()  uuid(16) ||
 	|| base64   || 一个或两个String || 编码为base64或解码之 || base64('abc')}  base64('decode', 'sfasdfsadfsa') ||
 	|| urlencode|| 一个或两个String || 执行URLEncode    || urlencode("中文") urlencode("中文", "UTF-8") ||
-	|| trim     || 一个String     || 去掉字符串两边的空格        || trim("   1  ")=> "1" ||
+	|| now      || 0个或一个String || 时间格式化    || 无参数时返回当前时间的long值,否则作为SimpleDateFormat格式化当前时间 ||
 	
 	它们注册在 "org/nutz/conf/NutzDefaultConfig.js", 均实现了RunMethod接口.
 	
