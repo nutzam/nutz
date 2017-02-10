@@ -19,4 +19,12 @@ public class MultiLinePropertiesTest extends Assert {
         assertEquals("", props.get("dao2"));
     }
 
+    @Test
+    public void test_properties_unicode() throws IOException {
+        MultiLineProperties props = new MultiLineProperties(new InputStreamReader(getClass().getResourceAsStream("unicode.properties")));
+        assertNotNull(props);
+        assertEquals(2, props.size());
+        assertEquals("中文", props.get("chinese"));
+        assertEquals("最棒的", props.get("nutz"));
+    }
 }

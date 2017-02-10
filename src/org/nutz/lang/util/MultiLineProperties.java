@@ -12,6 +12,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Strings;
@@ -22,6 +24,19 @@ import org.nutz.lang.Strings;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public class MultiLineProperties implements Map<String, String> {
+    
+    protected static final Pattern reUnicode = Pattern.compile("\\\\u([0-9a-zA-Z]{4})");
+
+    public static String decode(String s) {
+        Matcher m = reUnicode.matcher(s);
+        StringBuffer sb = new StringBuffer(s.length());
+        while (m.find()) {
+            m.appendReplacement(sb,
+                    Character.toString((char) Integer.parseInt(m.group(1), 16)));
+        }
+        m.appendTail(sb);
+        return sb.toString();
+    }
 
     public MultiLineProperties(Reader reader) throws IOException {
         this();
@@ -82,7 +97,10 @@ public class MultiLineProperties implements Map<String, String> {
                     }
                     value = sb.toString();
                 }
-                // TODO 对value里面的\进行转义?
+                // 对value里面的\\uXXXX进行转义?
+                if (value.contains("\\u")) {
+                    value = decode(value);
+                }
                 maps.put(Strings.trim(name), value);
             } else if (c == ':') {
                 String name = s.substring(0, pos);
