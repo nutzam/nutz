@@ -90,14 +90,6 @@ public class ComboIocLoader implements IocLoader {
         }
         if (currentClassName != null)
             createIocLoader(currentClassName, argsList);
-
-        Set<String> beanNames = new HashSet<String>();
-        for (IocLoader loader : iocLoaders) {
-            for (String beanName : loader.getName()) {
-                if (!beanNames.add(beanName) && log.isWarnEnabled())
-                    log.warnf("Found Duplicate beanName=%s, pls check you config! loader=%s", beanName,loader.getClass());
-            }
-        }
     }
 
     @SuppressWarnings("unchecked")
