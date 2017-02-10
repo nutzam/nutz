@@ -221,22 +221,7 @@ public class AnnotationIocLoader implements IocLoader {
                 iocObject.setFactory(iocBean.factory());
             }
         } else {
-            // 这里只是检查一下@Inject,要避免抛出异常.
-            try {
-                if (log.isWarnEnabled()) {
-                    Field[] fields = classZ.getDeclaredFields();
-                    for (Field field : fields)
-                        if (field.getAnnotation(Inject.class) != null) {
-                            log.warnf("class(%s) don't has @IocBean, but field(%s) has @Inject! Miss @IocBean ??",
-                                      classZ.getName(),
-                                      field.getName());
-                            break;
-                        }
-                }
-            }
-            catch (Throwable e) {
-                // 无需处理.
-            }
+            // 不再检查其他类.
         }
     }
 
