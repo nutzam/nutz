@@ -25,18 +25,7 @@ import org.nutz.lang.Strings;
  */
 public class MultiLineProperties implements Map<String, String> {
     
-    protected static final Pattern reUnicode = Pattern.compile("\\\\u([0-9a-zA-Z]{4})");
 
-    public static String decode(String s) {
-        Matcher m = reUnicode.matcher(s);
-        StringBuffer sb = new StringBuffer(s.length());
-        while (m.find()) {
-            m.appendReplacement(sb,
-                    Character.toString((char) Integer.parseInt(m.group(1), 16)));
-        }
-        m.appendTail(sb);
-        return sb.toString();
-    }
 
     public MultiLineProperties(Reader reader) throws IOException {
         this();
@@ -99,7 +88,7 @@ public class MultiLineProperties implements Map<String, String> {
                 }
                 // 对value里面的\\uXXXX进行转义?
                 if (value.contains("\\u")) {
-                    value = decode(value);
+                    value = Strings.unicodeDecode(value);
                 }
                 maps.put(Strings.trim(name), value);
             } else if (c == ':') {
