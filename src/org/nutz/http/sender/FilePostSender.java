@@ -35,7 +35,7 @@ public class FilePostSender extends PostSender {
 	@Override
 	public Response send() throws HttpException {
 		try {
-			String boundary = "---------------------------[Nutz]" + R.UU32();
+			String boundary = "------FormBoundary" + R.UU32();
 			openConnection();
 			setupRequestHeader();
 			conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
@@ -69,7 +69,7 @@ public class FilePostSender extends PostSender {
                             writeFile((File)ele, key, outs, boundary, enc);
                             return;
                         }
-                        outs.writeBytes("Content-Disposition:    form-data;    name=\""
+                        outs.writeBytes("Content-Disposition: form-data; name=\""
                                     + key
                                     + "\""
                                     + SEPARATOR
@@ -89,14 +89,16 @@ public class FilePostSender extends PostSender {
 	}
 	
 	protected static void writeFile(File f, String key, DataOutputStream outs, String boundary, final String enc) throws IOException {
-	    outs.writeBytes("Content-Disposition:    form-data;    name=\""
+	    outs.writeBytes("Content-Disposition: form-data; name=\""
                 + key
                 + "\";    filename=\"");
         outs.write(f.getName().getBytes(enc));
         outs.writeBytes("\"" + SEPARATOR);
-        outs.writeBytes("Content-Type:   application/octet-stream"
-                + SEPARATOR
-                + SEPARATOR);
+        String ct = "application/octet-stream";
+        if (f.getName().endsWith(".jpg")) {
+            ct = "image/jpeg";
+        }
+        outs.writeBytes("Content-Type: " + ct + SEPARATOR + SEPARATOR);
         InputStream is = null;
         try {
             is = Streams.fileIn(f);
