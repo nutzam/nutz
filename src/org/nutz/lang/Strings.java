@@ -5,6 +5,8 @@ import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.nutz.lang.meta.Email;
 
@@ -1210,5 +1212,18 @@ public class Strings {
         if (dft != null)
             return dft;
         return String.format("/*%s(toString FAILED)*/", obj.getClass().getName());
+    }
+    
+    protected static final Pattern reUnicode = Pattern.compile("\\\\u([0-9a-zA-Z]{4})");
+
+    public static String unicodeDecode(String s) {
+        Matcher m = reUnicode.matcher(s);
+        StringBuffer sb = new StringBuffer(s.length());
+        while (m.find()) {
+            m.appendReplacement(sb,
+                    Character.toString((char) Integer.parseInt(m.group(1), 16)));
+        }
+        m.appendTail(sb);
+        return sb.toString();
     }
 }

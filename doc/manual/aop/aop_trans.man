@@ -2,7 +2,11 @@
 #author:wendal(wendal1985@gmail.com)
 #index:0,1
 --------------------------------------------------------------------------------------------------------
-声明式事务
+简介
+
+	声明式事务, 可以脱离Trans类实现单个方法或多个的事务模板. 例如设置Service类所有insert开头的方法,均应用READ_COMMITTED事务
+	
+	声明式事务,是通过aop拦截器做的, 而aop依赖ioc, 在@IocBy注解中启用即可.
 	
 	{{{<JAVA>
 	@IocBy(type=ComboIocProvider.class,
@@ -11,7 +15,14 @@
               "*tx" // 你只需要加上这一行,即可声明5种不同事务级别的拦截器.
 		})
 	public class MainModule {}
+	}}}
+
+基于注解的声明式事务
+--------------------------------------------------------------------------------------------------------
+
+	为单个方法添加事务. 必须是Ioc Bean(注解/或json声明的bean都可以), 而且不可以是工厂方法生成的对象哦
 	
+	{{{<JAVA>
 	// 演示aop事务
 	@IocBean // 需要aop,那当然需要时ioc的bean
 	public class UserService {
@@ -25,3 +36,30 @@
 		}
 	}	
 	}}}
+	
+基于json的声明式事务
+--------------------------------------------------------------------------------------------------------
+
+	这种方式也是aop,通过JsonAopConfigration实现的,可以按"正则表达式"匹配需要类名和方法名称, 应用特定的事务拦截器
+	
+	
+	{{{<js>
+	var ioc = {
+		$aop : {
+			type : "org.nutz.ioc.aop.config.impl.JsonAopConfigration",
+			fields : {
+				itemList : [
+				    //[类名的正则表达式,方法名的正则表达式,事务拦截器名称] 事务拦截器的名称请看TransAop类
+					["net.wendal.nutzcn.servie..+Service$", "^save.+", "txREAD_COMMITTED"],
+					["net.wendal.nutzcn.servie..+Service$", "^query.+", "txNONE"],
+					["net.wendal.nutzcn.servie..+Service$", "^update.+", "txSERIALIZABLE"],
+					["net.wendal.nutzcn.module..+Module$", ".+", "txREAD_COMMITTED"],
+				]
+			}
+		}
+	}
+	}}}
+	
+	如果上述规则不能满足你的需求,可继承JsonAopConfigration,覆盖setItemList方法实现自定义哦.
+	
+	当然, 更进一步,你可以继承AbstractAopConfigration甚至直接实现AopConfigration接口哦

@@ -305,8 +305,9 @@ public class FieldMatcher {
         return ignoreBlankStr;
     }
 
-    public void setIgnoreBlankStr(boolean ignoreBlankStr) {
+    public FieldMatcher setIgnoreBlankStr(boolean ignoreBlankStr) {
         this.ignoreBlankStr = ignoreBlankStr;
+        return this;
     }
 
     public static FieldMatcher simple(String ...fields) {

@@ -22,6 +22,8 @@ import org.nutz.lang.Strings;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public class MultiLineProperties implements Map<String, String> {
+    
+
 
     public MultiLineProperties(Reader reader) throws IOException {
         this();
@@ -82,7 +84,10 @@ public class MultiLineProperties implements Map<String, String> {
                     }
                     value = sb.toString();
                 }
-                // TODO 对value里面的\进行转义?
+                // 对value里面的\\uXXXX进行转义?
+                if (value.contains("\\u")) {
+                    value = Strings.unicodeDecode(value);
+                }
                 maps.put(Strings.trim(name), value);
             } else if (c == ':') {
                 String name = s.substring(0, pos);

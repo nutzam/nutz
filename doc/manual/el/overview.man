@@ -21,6 +21,8 @@
          * 需要嵌入式表达式引擎的人是 Java 开发者的少数人，但是这些人也应该比 Nutz 的用户要多
          * 这些人基本上编程水平要强一些
      * 其他的提交者对增加这个特性没有特别强烈的反对
+     
+  提醒一句, Nutz.EL不依赖MVC环境, 它在JavaSE或Android下也工作良好.
 
 ------------------------------------------------------------------------
 近一步介绍表达式引擎
@@ -132,57 +134,51 @@
 
     当然，同任何编程语言一样，表达式也支持 左括号 {*#00A;`(`} 以及 右括号{*#00A;`)`}，
     来控制表达式的的计算优先级别
-
-------------------------------------------------------------------------
-自定义函数
-
+--------------------------------------------------------------------------------
+自定义Function
+	
 	好吧, 你肯定要说上面的功能简直弱爆了, 就一点简单的加加减减有什么好稀奇的, 
 	再强点的需求就没办法满足了.
 	确实是这样, 所以, 我们在 EL 里面添加了自定义函数, 
     嘿嘿, 这回强了吧. 言归正传,下面详细的说说它的使用, 以及怎么自定义.
 	
-	现有的自定义函数:
-	|| 名称 || 参数           || 解释                 || 例子                 ||
-	|| max  || 任意个Number型 || 取出参数中最大值     || max(1, 2, 3, 4)=>4   ||
-	|| min  || 任意个Number型 || 取出参数中最小值     || min(1, 2, 3, 4)=>1   ||
-	|| trim || 一个String     || 去掉字符串两边的空格 || trim("   1  ")=> "1" ||
+	现有的内置函数:   
+	|| 名称                 || 参数                              || 解释                               || 例子                 ||
+	|| max      || 任意个Number型      || 取出参数中最大值        || max(1, 2, 3, 4)=>4   ||
+	|| min      || 任意个Number型      || 取出参数中最小值        || min(1, 2, 3, 4)=>1   ||
+	|| trim     || 一个String     || 去掉字符串两边的空格 || trim("   1  ")=> "1" ||
+	|| uuid     || 一个Number(可选)|| 生成UUID字符串          || uuid()  uuid(16) ||
+	|| base64   || 一个或两个String || 编码为base64或解码之 || base64('abc')}  base64('decode', 'sfasdfsadfsa') ||
+	|| urlencode|| 一个或两个String || 执行URLEncode    || urlencode("中文") urlencode("中文", "UTF-8") ||
+	|| now      || 0个或一个String || 时间格式化    || 无参数时返回当前时间的long值,否则作为SimpleDateFormat格式化当前时间 ||
 	
-	使用很简单吧.
+	它们注册在 "org/nutz/conf/NutzDefaultConfig.js", 均实现了RunMethod接口.
+	
+	 有两种办法来添加自定义 Function: 代码注册或配置文件
 
-	当EL里面的功能无法满足你的需求时, 你可以自定义一些功能来实现, 怎么自定义呢? 
-    {{{
-    # 创建一个类, 使它实现 org.nutz.el.opt.RunMethod, org.nutz.plugin.Plugin 这两个接口.
-    # 在配置文件中添加一个配置项:
-    {
-    "EL": {"custom":[...函数列表...]}
+	通过代码的方式注册,通常是在MainSetup类(@SetupBy)的init方法内:
+	
+	{{{<JAVA>
+	// register任意一个实现了RunMethod接口的对象
+	CustomMake.me().register("today", new TodayRunMethod());
+	CustomMake.me().register("ig", ioc.get(RedisIdGenerator.class));
+	}}}
+	 
+	配置文件, 建一个js/json文件,保存为 "org/nutz/conf/NutzDefaultConfig.js", 这样就能覆盖默认实现了.
+	{{{
+	{
+    	"EL": {
+    		"custom":[
+    			"net.wendal.nutzbook.el.ABC", // 需要实现RunMethod和Plugin接口
+    			"net.wendal.nutzbook.el.DEF",
+    			... 其他Function类名
+    			... 务必添加默认的Function哦
+    			]
+    	}
     }
-    # 如果你只使用了EL这一个模块, 没有其它模块, 并且在其它地方都没有加载过配置, 请使用下面的语句加载配置:
-    NutConf.load("配置文件");
-    //加载自定义函数配置, 必须!因为默认情况下, CustomMake只在static{}块中加载一次配置, 新添加的配置在static之后的话, 那么新添加的函数配置将不会生效!
-    CustomMake.init();
-    }}}
-
-    完成这两步后, 你就定义了你自己的函数. 看个trim的例子:
-    {{{<JAVA>
-    public class Trim implements RunMethod, Plugin{
-        //处理方法, fetchParam为函数的参数. 它会将EL中函数括号后的所有内容传递过来
-        public Object run(List<Object> fetchParam) {
-            if(fetchParam.size() <= 0){
-            throw new ElException("trim方法参数错误");
-            }
-            String obj = (String) fetchParam.get(0);
-            return obj.trim();
-        }
-        //是否可以执行
-        public boolean canWork() {
-            return true;
-        }
-        //在EL表达式中的函数名
-        public String fetchSelf() {
-            return "trim";
-        }
-    }
-    }}}
+	}}}
+	
+	
 
 ------------------------------------------------------------------------
 还有些什么功能?
@@ -307,35 +303,6 @@
         System.out.println(El.eval(context,"a>10"));
         // 输出为  true
         }}}
-	
---------------------------------------------------------------------------------
-通过代码注册自定义Function
-	
-	局部注册
-	
-	{{{<JAVA>
-	
-	@Test
-    public void test_el2() throws Exception {
-        El el = new El("sayhi(name)");
-        Context ctx = Lang.context();
-        ctx.set("name", "wendal");
-        ctx.set("sayhi", getClass().getMethod("sayhi", String.class));
-        assertEquals("hi,wendal", el.eval(ctx));
-    }
-    
-    public static String sayhi(String name) {
-        return "hi,"+name;
-    }
-	}}}
-	
-	
-	全局注册
-	
-	{{{<JAVA>
-	// register任意一个实现了RunMethod接口的对象
-	CustomMake.me().register("ig", ioc.get(RedisIdGenerator.class));
-	}}}
 	
 	
 	

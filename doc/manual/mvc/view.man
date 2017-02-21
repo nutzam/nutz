@@ -141,7 +141,7 @@
 		        return null; // 返回null, 则代表走默认视图 jsp:/index
 		    }
 		    // 登陆失败
-		    model.set("err-msg", "用户名或密码错误");
+		    model.setv("err-msg", "用户名或密码错误");
 		    return "jsp:/user/login";
 		}
 		}}}

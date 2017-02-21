@@ -442,6 +442,7 @@ public class JsonFormat implements Cloneable {
         jf.unicodeLower = this.unicodeLower;
         jf.dateFormat = this.dateFormat;
         jf.numberFormat = this.numberFormat;
+        jf.nullAsEmtry = this.nullAsEmtry;
         return jf;
     }
     

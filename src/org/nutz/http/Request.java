@@ -19,7 +19,7 @@ import org.nutz.lang.LoopException;
 public class Request {
 
     public static enum METHOD {
-        GET, POST, OPTIONS, PUT, DELETE, TRACE, CONNECT
+        GET, POST, OPTIONS, PUT, DELETE, TRACE, CONNECT, HEAD
     }
 
     public static Request get(String url) {

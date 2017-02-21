@@ -143,9 +143,12 @@ public abstract class Lang {
      *            参数
      * @return 异常对象
      */
+    @SuppressWarnings("unchecked")
     public static <T extends Throwable> T makeThrow(Class<T> classOfT,
                                                     String format,
                                                     Object... args) {
+        if (classOfT == RuntimeException.class)
+            return (T) new RuntimeException(String.format(format, args));
         return Mirror.me(classOfT).born(String.format(format, args));
     }
 
