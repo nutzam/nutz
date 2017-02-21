@@ -22,6 +22,7 @@ import org.nutz.lang.util.NutMap;
  * <li><b>boolean</b>: 否/是 格式化字符串
  * <li><b>date</b> : yyyyMMdd 格式化字符串
  * <li><b>string</b>: %s 格式化字符串
+ * <li><b>json<b> : cqn 输出一段 JSON 文本,c紧凑，q输出引号,n忽略null
  * </ul>
  * <p/>
  * 如果没有声明类型，则当做 "string"
@@ -36,7 +37,7 @@ public class Tmpl {
     // + "([?] *(.*) *)?");
 
     private static final Pattern _P2 = Pattern.compile("([^<>?]+)"
-                                                       + "(<(int|long|boolean|float|double|date|string)?( *: *([^>]*))?>)?"
+                                                       + "(<(int|long|boolean|float|double|date|string|json)?( *: *([^>]*))?>)?"
                                                        + "([?] *(.*) *)?");
 
     private Pattern _P;
@@ -211,6 +212,10 @@ public class Tmpl {
                 // date
                 else if ("date".equals(type)) {
                     list.add(new TmplDateEle(key, fmt, dft));
+                }
+                // json
+                else if ("json".equals(type)) {
+                    list.add(new TmplJsonEle(key, fmt, dft));
                 }
                 // 靠不可能
                 else {

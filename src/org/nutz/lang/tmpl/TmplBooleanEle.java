@@ -3,7 +3,7 @@ package org.nutz.lang.tmpl;
 import org.nutz.castor.Castors;
 import org.nutz.lang.Strings;
 
-class TmplBooleanEle extends TmplDynamicEle<Boolean> {
+class TmplBooleanEle extends TmplDynamicEle {
 
     private String[] texts;
 

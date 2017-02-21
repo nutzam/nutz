@@ -3,7 +3,7 @@ package org.nutz.lang.tmpl;
 import org.nutz.castor.Castors;
 import org.nutz.lang.Strings;
 
-class TmplIntEle extends TmplDynamicEle<Integer> {
+class TmplIntEle extends TmplDynamicEle {
 
     public TmplIntEle(String key, String fmt, String dft) {
         super("int", key, fmt, dft);

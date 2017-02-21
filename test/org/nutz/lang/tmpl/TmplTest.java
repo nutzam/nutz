@@ -9,6 +9,17 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Times;
 
 public class TmplTest {
+    
+    @Test
+    public void test_json_format(){
+        assertEquals("null", Tmpl.exec("${a<json>}", Lang.map("")));
+        assertEquals("null", Tmpl.exec("${a<json>}", Lang.map("a:null")));
+        assertEquals("{x:100,y:99}", Tmpl.exec("${a<json:c>}", Lang.map("a:{x:100,y:99}")));
+        assertEquals("{\"x\":100,\"y\":99}", Tmpl.exec("${a<json:cq>}", Lang.map("a:{x:100,y:99}")));
+        assertEquals("", Tmpl.exec("${a<json>?}", Lang.map("")));
+        assertEquals("[]", Tmpl.exec("${a<json>?[]}", Lang.map("")));
+        assertEquals("{}", Tmpl.exec("${a<json>?{}}", Lang.map("")));
+    }
 
     @Test
     public void test_string_format() {

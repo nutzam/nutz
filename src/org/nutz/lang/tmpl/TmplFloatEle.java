@@ -3,7 +3,7 @@ package org.nutz.lang.tmpl;
 import org.nutz.castor.Castors;
 import org.nutz.lang.Strings;
 
-class TmplFloatEle extends TmplDynamicEle<Float> {
+class TmplFloatEle extends TmplDynamicEle {
 
     public TmplFloatEle(String key, String fmt, String dft) {
         super("float", key, fmt, dft);

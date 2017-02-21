@@ -3,7 +3,7 @@ package org.nutz.lang.tmpl;
 import org.nutz.castor.Castors;
 import org.nutz.lang.Strings;
 
-class TmplStringEle extends TmplDynamicEle<String> {
+class TmplStringEle extends TmplDynamicEle {
 
     public TmplStringEle(String key, String fmt, String dft) {
         super(null, key, null, dft);

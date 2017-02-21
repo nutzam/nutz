@@ -4,7 +4,7 @@ import org.nutz.lang.Strings;
 import org.nutz.lang.util.NutBean;
 import org.nutz.mapl.Mapl;
 
-abstract class TmplDynamicEle<T> implements TmplEle {
+abstract class TmplDynamicEle implements TmplEle {
 
     private String _type;
 
