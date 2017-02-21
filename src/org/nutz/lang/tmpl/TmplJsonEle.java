@@ -23,7 +23,9 @@ public class TmplJsonEle extends TmplDynamicEle {
         if (null == val)
             return "null";
 
-        if (val instanceof CharSequence){
+        if (val instanceof CharSequence) {
+            if ("-obj-".equals(val))
+                return "{}";
             return val.toString();
         }
 
