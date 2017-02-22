@@ -8,11 +8,11 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.nutz.dao.ConnCallback;
-import org.nutz.dao.Dao;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityMaker;
 import org.nutz.dao.impl.entity.NutEntity;
 import org.nutz.dao.impl.entity.field.NutMappingField;
+import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
@@ -20,6 +20,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.eject.EjectFromMap;
 import org.nutz.lang.inject.InjectToMap;
+import org.nutz.lang.util.Callback;
 
 /**
  * 封装一些获取实体对象的帮助函数
@@ -31,12 +32,15 @@ public class EntityHolder {
     // DaoSupport 会设置这个值
     public EntityMaker maker;
 
-    private DaoSupport support;
+    protected JdbcExpert expert;
 
     private Map<Class<?>, Entity<?>> map;
+    
+    protected Callback<ConnCallback> connCallback;
 
-    public EntityHolder(DaoSupport support) {
-        this.support = support;
+    public EntityHolder(JdbcExpert expert, Callback<ConnCallback> connCallback) {
+        this.expert = expert;
+        this.connCallback = connCallback;
         this.map = new ConcurrentHashMap<Class<?>, Entity<?>>();
     }
 
@@ -73,24 +77,6 @@ public class EntityHolder {
             }
         }
         return (Entity<T>) re;
-    }
-
-    /**
-     * 重新载入
-     */
-    public <T> Entity<T> reloadEntity(Dao dao, Class<T> classOfT) {
-        final Entity<T> re = maker.make(classOfT);
-        synchronized (map) {
-            map.put(classOfT, re);
-        }
-        support.expert.createEntity(dao, re);
-        // 最后在数据库中验证一下实体各个字段
-        support.run(new ConnCallback() {
-            public void invoke(Connection conn) throws Exception {
-                support.expert.setupEntityField(conn, re);
-            }
-        });
-        return re;
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -140,7 +126,7 @@ public class EntityHolder {
 
             // 猜测一下数据库类型
             Jdbcs.guessEntityFieldColumnType(ef);
-            ef.setAdaptor(support.expert.getAdaptor(ef));
+            ef.setAdaptor(expert.getAdaptor(ef));
             if (mirror != null)
                 ef.setType(mirror.getType());
             ef.setInjecting(new InjectToMap(key)); // 这里比较纠结,回设的时候应该用什么呢?
@@ -148,9 +134,9 @@ public class EntityHolder {
 
             if (ef.isAutoIncreasement()
                 && ef.isId()
-                && support.expert.isSupportAutoIncrement()
-                && !support.expert.isSupportGeneratedKeys()) {
-                en.addAfterInsertMacro(support.expert.fetchPojoId(en, ef));
+                && expert.isSupportAutoIncrement()
+                && !expert.isSupportGeneratedKeys()) {
+                en.addAfterInsertMacro(expert.fetchPojoId(en, ef));
             }
 
             en.addMappingField(ef);
@@ -162,9 +148,9 @@ public class EntityHolder {
 
         // 最后在数据库中验证一下实体各个字段
         if (check)
-            support.run(new ConnCallback() {
+            connCallback.invoke(new ConnCallback() {
                 public void invoke(Connection conn) throws Exception {
-                    support.expert.setupEntityField(conn, en);
+                    expert.setupEntityField(conn, en);
                 }
             });
 

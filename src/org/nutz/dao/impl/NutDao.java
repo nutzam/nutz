@@ -781,7 +781,16 @@ public class NutDao extends DaoSupport implements Dao {
                 return en;
             }
         }
-        return holder.reloadEntity(this, classOfT);
+        holder.remove(classOfT.getName());
+        final Entity<T> _en = holder.getEntity(classOfT);
+        expert.createEntity(this, _en);
+        // 最后在数据库中验证一下实体各个字段
+        run(new ConnCallback() {
+            public void invoke(Connection conn) throws Exception {
+                expert.setupEntityField(conn, _en);
+            }
+        });
+        return en;
     }
 
     public boolean drop(Class<?> classOfT) {
