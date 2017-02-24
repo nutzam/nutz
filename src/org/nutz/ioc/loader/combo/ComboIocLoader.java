@@ -107,7 +107,7 @@ public class ComboIocLoader implements IocLoader {
                 for (String _className : _names) {
                     klass = (Class<? extends IocLoader>) Lang.loadClassQuite(_className);
                     if (klass != null) {
-                        log.debug("found " + _className + " -- " + _className);
+                        log.debug("found " + className + " -- " + _className);
                         break;
                     }
                 }
