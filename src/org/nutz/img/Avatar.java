@@ -1,4 +1,4 @@
-package org.nutz.lang;
+package org.nutz.img;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -7,7 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import org.nutz.img.Colors;
+import org.nutz.lang.OS;
+import org.nutz.lang.Strings;
 import org.nutz.lang.util.NutMap;
 
 /**
