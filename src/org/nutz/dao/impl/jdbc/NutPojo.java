@@ -25,7 +25,12 @@ import org.nutz.lang.Lang;
 
 public class NutPojo extends NutStatement implements Pojo {
 
-    private PojoCallback before;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8499040181844973777L;
+
+	private PojoCallback before;
 
     private PojoCallback after;
 

@@ -17,7 +17,12 @@ import org.nutz.lang.Lang;
 
 public class SqlFieldMacro extends NutPojo {
 
-    private Sql sql;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3404648162248580014L;
+
+	private Sql sql;
 
     private MappingField entityField;
     
