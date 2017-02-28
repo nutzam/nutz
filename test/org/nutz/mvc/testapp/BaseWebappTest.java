@@ -107,4 +107,11 @@ public abstract class BaseWebappTest {
         assertNotNull(resp);
         return resp;
     }
+    
+    public Response upload(String path, Map<String, Object> params) {
+        Header header = Header.create();
+        resp = Sender.create(Request.create(getBaseURL() + path, METHOD.POST, params, header)).send();
+        assertNotNull(resp);
+        return resp;
+    }
 }

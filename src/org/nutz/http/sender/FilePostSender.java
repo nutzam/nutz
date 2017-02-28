@@ -55,7 +55,6 @@ public class FilePostSender extends PostSender {
 	public static void export(Map<String, Object> params, OutputStream out, final String boundary, final String enc) throws IOException {
 	    final DataOutputStream outs = new DataOutputStream(out);
         for (Entry<String, ?> entry : params.entrySet()) {
-            outs.writeBytes("--" + boundary + SEPARATOR);
             final String key = entry.getKey();
             Object val = entry.getValue();
             if (val == null)
@@ -65,6 +64,7 @@ public class FilePostSender extends PostSender {
                 public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop, LoopException {
 
                     try {
+                        outs.writeBytes("--" + boundary + SEPARATOR);
                         if (ele != null && ele instanceof File) {
                             writeFile((File)ele, key, outs, boundary, enc);
                             return;

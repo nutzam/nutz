@@ -198,7 +198,11 @@ public class NutSql extends NutStatement implements Sql {
 
     class SqlVarPItem extends AbstractPItem {
 
-        public String name;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 2655530650031939556L;
+		public String name;
 
         public SqlVarPItem(String name) {
             this.name = name;
@@ -251,7 +255,11 @@ public class NutSql extends NutStatement implements Sql {
 
     class SqlParamPItem extends AbstractPItem {
 
-        public String name;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1494513192752663060L;
+		public String name;
 
         public SqlParamPItem(String name) {
             this.name = name;

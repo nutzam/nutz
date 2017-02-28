@@ -181,7 +181,12 @@ public class SimpleDaoTest extends DaoCase {
     public void test_count_with_entity() {
         insertRecords(8);
         int re = dao.count(Pet.class, new Condition() {
-            public String toSql(Entity<?> entity) {
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 6425274813857908874L;
+
+			public String toSql(Entity<?> entity) {
                 return entity.getField("nickName").getColumnName() + " IN ('alias_5','alias_6')";
             }
         });
