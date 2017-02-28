@@ -1155,6 +1155,14 @@ public class Strings {
         }
         return true;
     }
+    
+    public static Pattern P_CitizenId = Pattern.compile("[1-9]\\d{5}[1-2]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}(\\d|X|x)");
+    public static Pattern P_Mobile = Pattern.compile("^((13[0-9])|(15[0-9])|(14[0-9])|(18[0-9]))\\\\d{8}$");
+    public static Pattern P_ZipCode = Pattern.compile("\\d{6}");
+    public static Pattern P_Money = Pattern.compile("^(\\d+(?:\\.\\d+)?)$");
+    public static Pattern P_Number = Pattern.compile("^[\\d]+$");
+    public static Pattern P_Email = Pattern.compile("^([a-zA-Z0-9]*[-_]?[\\w.]+)*@([a-zA-Z0-9]*[-_]?[a-zA-Z0-9]+)+[\\\\.][A-Za-z]{2,3}([\\\\.][A-Za-z]{2})?$");
+    public static Pattern P_QQ = Pattern.compile("[1-9][0-9]{4,10}");
 
     /**
      * 判断字符串是否为身份证号码（18位中国）<br>
@@ -1165,7 +1173,7 @@ public class Strings {
      */
     public static boolean isCitizenId(String s) {
         if (isBlank(s)) return false;
-        return isMactchRegex(Pattern.compile("[1-9]\\d{5}[1-2]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}(\\d|X|x)"), s);
+        return isMactchRegex(P_CitizenId, s);
     }
 
     /**
@@ -1176,7 +1184,7 @@ public class Strings {
      */
     public static boolean isMobile(String s) {
         if (isBlank(s)) return false;
-        return isMactchRegex(Pattern.compile("^((13[0-9])|(15[0-9])|(14[0-9])|(18[0-9]))\\\\d{8}$"), s);
+        return isMactchRegex(P_Mobile, s);
     }
 
     /**
@@ -1187,7 +1195,7 @@ public class Strings {
      */
     public static boolean isZipCode(String s) {
         if (isBlank(s)) return false;
-        return isMactchRegex(Pattern.compile("\\d{6}"), s);
+        return isMactchRegex(P_ZipCode, s);
     }
 
     /**
@@ -1198,7 +1206,7 @@ public class Strings {
      */
     public static boolean isMoney(String s) {
         if (isBlank(s)) return false;
-        return isMactchRegex(Pattern.compile("^(\\d+(?:\\.\\d+)?)$"), s);
+        return isMactchRegex(P_Money, s);
     }
 
     /**
@@ -1210,7 +1218,7 @@ public class Strings {
     public static boolean isNumber(String s) {
 
         if (isBlank(s)) return false;
-        return isMactchRegex(Pattern.compile("\\d+"), s);
+        return isMactchRegex(P_Number, s);
     }
 
     /**
@@ -1246,7 +1254,7 @@ public class Strings {
      */
     public static boolean isEmail(String s){
         if(isBlank(s)) return  false;
-        return isMatch(Pattern.compile("^([a-zA-Z0-9]*[-_]?[a-zA-Z0-9]+)*@([a-zA-Z0-9]*[-_]?[a-zA-Z0-9]+)+[\\\\.][A-Za-z]{2,3}([\\\\.][A-Za-z]{2})?$"), s);
+        return isMatch(P_Email, s);
     }
 
     /**
@@ -1257,6 +1265,6 @@ public class Strings {
      */
     public static boolean isQQ(String s){
         if(isBlank(s)) return  false;
-        return isMatch(Pattern.compile("[1-9][0-9]{4,10}"), s);
+        return isMatch(P_QQ, s);
     }
 }
