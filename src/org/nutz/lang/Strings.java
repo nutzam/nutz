@@ -1142,7 +1142,7 @@ public class Strings {
     }
 
     /**
-     * 判断是否为URL
+     * 判断字符串是否为URL
      *
      * @param s 字符串内容
      * @return 判断结果
@@ -1157,7 +1157,7 @@ public class Strings {
     }
 
     /**
-     * 判断是否为身份证号码（18位中国）<br>
+     * 判断字符串是否为身份证号码（18位中国）<br>
      * 出生日期只支持到到2999年
      *
      * @param s 字符串内容
@@ -1176,11 +1176,11 @@ public class Strings {
      */
     public static boolean isMobile(String s) {
         if (isBlank(s)) return false;
-        return isMactchRegex(Pattern.compile("1\\d{10}"), s);
+        return isMactchRegex(Pattern.compile("^((13[0-9])|(15[0-9])|(14[0-9])|(18[0-9]))\\\\d{8}$"), s);
     }
 
     /**
-     * 判断是否为邮政编码（中国）
+     * 判断字符串是否为邮政编码（中国）
      *
      * @param s 字符串内容
      * @return 判断结果
@@ -1191,7 +1191,7 @@ public class Strings {
     }
 
     /**
-     * 判断是否为货币
+     * 判断字符串是否为货币
      *
      * @param s 字符串内容
      * @return 判断结果
@@ -1236,5 +1236,27 @@ public class Strings {
             //提供null的字符串为不匹配
             return false;
         return pattern.matcher(content).matches();
+    }
+
+    /**
+     * 判断字符串是否为邮箱
+     *
+     * @param s 字符串内容
+     * @return 判断结果
+     */
+    public static boolean isEmail(String s){
+        if(isBlank(s)) return  false;
+        return isMatch(Pattern.compile("^([a-zA-Z0-9]*[-_]?[a-zA-Z0-9]+)*@([a-zA-Z0-9]*[-_]?[a-zA-Z0-9]+)+[\\\\.][A-Za-z]{2,3}([\\\\.][A-Za-z]{2})?$"), s);
+    }
+
+    /**
+     * 判断字符串是否为QQ号
+     *
+     * @param s 字符串内容
+     * @return 判断结果
+     */
+    public static boolean isQQ(String s){
+        if(isBlank(s)) return  false;
+        return isMatch(Pattern.compile("[1-9][0-9]{4,10}"), s);
     }
 }
