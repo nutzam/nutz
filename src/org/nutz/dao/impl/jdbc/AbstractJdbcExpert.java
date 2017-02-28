@@ -71,6 +71,14 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
     // 下面为子类默认实现几个接口函数
 
     public void setupEntityField(Connection conn, Entity<?> en) {
+        List<MappingField> mfs = new ArrayList<MappingField>();
+        for (MappingField mf : en.getMappingFields()) {
+            if (mf.getTypeMirror().isEnum()) {
+                mfs.add(mf);
+            }
+        }
+        if (mfs.isEmpty())
+            return;
         Statement stat = null;
         ResultSet rs = null;
         ResultSetMetaData rsmd = null;
@@ -80,26 +88,28 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
             rs = stat.executeQuery(createResultSetMetaSql(en));
             rsmd = rs.getMetaData();
             // 循环字段检查
-            for (MappingField mf : en.getMappingFields()) {
+            List<String> columnNames = new ArrayList<String>();
+            List<String> columnLabels = new ArrayList<String>();
+            int columnCount = rsmd.getColumnCount();
+            for (int i = 1; i <= columnCount; i++) {
+                columnNames.add(rsmd.getColumnName(i));
+                columnLabels.add(rsmd.getColumnLabel(i));
+            }
+            for (MappingField mf : mfs) {
                 try {
-                    int ci = Daos.getColumnIndex(rsmd, mf.getColumnName());
-                    // 是否只读，如果人家已经是指明是只读了，那么就不要自作聪明得再从数据库里验证了
-                    // if (!mf.isReadonly() && rsmd.isReadOnly(ci))
-                    // mf.setAsReadonly();
-                    // 是否非空
-                    if (ResultSetMetaData.columnNoNulls == rsmd.isNullable(ci))
-                        mf.setAsNotNull();
+                    int ci = columnNames.indexOf(mf.getColumnName()) + 1;
+                    if (ci == 0) {
+                        log.debugf("Can not find @Column(%s) in table/view (%s), skip checking", mf.getColumnName(), rsmd.getTableName(1));
+                        continue;
+                    }
                     // 枚举类型在数据库中的值
-                    if (mf.getTypeMirror().isEnum()) {
-                        if (Daos.isIntLikeColumn(rsmd, ci)) {
-                            mf.setColumnType(ColType.INT);
-                        } else {
-                            mf.setColumnType(ColType.VARCHAR);
-                        }
+                    if (Daos.isIntLikeColumn(rsmd, ci)) {
+                        mf.setColumnType(ColType.INT);
+                    } else {
+                        mf.setColumnType(ColType.VARCHAR);
                     }
                 }
                 catch (Exception e) {
-                    // TODO 需要log一下不?
                 }
             }
         }
