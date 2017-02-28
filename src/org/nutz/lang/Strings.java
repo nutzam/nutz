@@ -22,120 +22,7 @@ import org.nutz.lang.meta.Email;
  */
 public class Strings {
 
-    protected Strings() {
-    }
-
-    /**
-     * 按长度截取字符串（尾部补足）
-     *
-     * @param length 长度
-     * @param s 字符串内容
-     * @param supply 补足内容
-     * @return
-     */
-    public static String cutStr(int length, String s, String supply) {
-
-        if (Lang.isEmpty(length) || Lang.isEmpty(s)) return null;
-        else if (s.length() <= length) return s;
-        else return s.substring(0, length - 1) + supply;
-    }
-
-    /**
-     * 判断是否为URL
-     *
-     * @param s 字符串内容
-     * @return 判断结果
-     */
-    public static boolean isUrl(String s) {
-        try {
-            new java.net.URL(s);
-        } catch (MalformedURLException e) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * 判断是否为身份证号码（18位中国）<br>
-     * 出生日期只支持到到2999年
-     *
-     * @param s 字符串内容
-     * @return 判断结果
-     */
-    public static boolean isCitizenId(String s) {
-        if (isBlank(s)) return false;
-        return isMactchRegex(Pattern.compile("[1-9]\\d{5}[1-2]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}(\\d|X|x)"), s);
-    }
-
-    /**
-     * 判断是否为手机号码（中国）
-     *
-     * @param s 字符串内容
-     * @return 判断结果
-     */
-    public static boolean isMobile(String s) {
-        if (isBlank(s)) return false;
-        return isMactchRegex(Pattern.compile("1\\d{10}"), s);
-    }
-
-    /**
-     * 判断是否为邮政编码（中国）
-     *
-     * @param s 字符串内容
-     * @return 判断结果
-     */
-    public static boolean isZipCode(String s) {
-        if (isBlank(s)) return false;
-        return isMactchRegex(Pattern.compile("\\d{6}"), s);
-    }
-
-    /**
-     * 判断是否为货币
-     *
-     * @param s 字符串内容
-     * @return 判断结果
-     */
-    public static boolean isMoney(String s) {
-        if (isBlank(s)) return false;
-        return isMactchRegex(Pattern.compile("^(\\d+(?:\\.\\d+)?)$"), s);
-    }
-
-    /**
-     * 判断字符串是否是数字
-     *
-     * @param s 字符串内容
-     * @return 判断结果
-     */
-    public static boolean isNumber(String s) {
-
-        if (isBlank(s)) return false;
-        return isMactchRegex(Pattern.compile("\\d+"), s);
-    }
-
-    /**
-     * 通过正则表达式验证
-     *
-     * @param pattern 正则模式
-     * @param value   值
-     * @return 判断结果
-     */
-    public static boolean isMactchRegex(Pattern pattern, String value) {
-        return isMatch(pattern, value);
-    }
-
-    /**
-     * 给定内容是否匹配正则
-     *
-     * @param pattern 模式
-     * @param content 内容
-     * @return 正则为null或者""则不检查，返回true，内容为null返回false
-     */
-    public static boolean isMatch(Pattern pattern, String content) {
-        if (content == null || pattern == null)
-            //提供null的字符串为不匹配
-            return false;
-        return pattern.matcher(content).matches();
-    }
+    protected Strings() { }
 
     /**
      * 是中文字符吗?
@@ -1237,5 +1124,117 @@ public class Strings {
         }
         m.appendTail(sb);
         return sb.toString();
+    }
+
+    /**
+     * 按长度截取字符串（尾部补足）
+     *
+     * @param length 长度
+     * @param s 字符串内容
+     * @param supply 补足内容
+     * @return
+     */
+    public static String cutStr(int length, String s, String supply) {
+
+        if (Lang.isEmpty(length) || Lang.isEmpty(s)) return null;
+        else if (s.length() <= length) return s;
+        else return s.substring(0, length - 1) + supply;
+    }
+
+    /**
+     * 判断是否为URL
+     *
+     * @param s 字符串内容
+     * @return 判断结果
+     */
+    public static boolean isUrl(String s) {
+        try {
+            new java.net.URL(s);
+        } catch (MalformedURLException e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 判断是否为身份证号码（18位中国）<br>
+     * 出生日期只支持到到2999年
+     *
+     * @param s 字符串内容
+     * @return 判断结果
+     */
+    public static boolean isCitizenId(String s) {
+        if (isBlank(s)) return false;
+        return isMactchRegex(Pattern.compile("[1-9]\\d{5}[1-2]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}(\\d|X|x)"), s);
+    }
+
+    /**
+     * 判断是否为手机号码（中国）
+     *
+     * @param s 字符串内容
+     * @return 判断结果
+     */
+    public static boolean isMobile(String s) {
+        if (isBlank(s)) return false;
+        return isMactchRegex(Pattern.compile("1\\d{10}"), s);
+    }
+
+    /**
+     * 判断是否为邮政编码（中国）
+     *
+     * @param s 字符串内容
+     * @return 判断结果
+     */
+    public static boolean isZipCode(String s) {
+        if (isBlank(s)) return false;
+        return isMactchRegex(Pattern.compile("\\d{6}"), s);
+    }
+
+    /**
+     * 判断是否为货币
+     *
+     * @param s 字符串内容
+     * @return 判断结果
+     */
+    public static boolean isMoney(String s) {
+        if (isBlank(s)) return false;
+        return isMactchRegex(Pattern.compile("^(\\d+(?:\\.\\d+)?)$"), s);
+    }
+
+    /**
+     * 判断字符串是否是数字
+     *
+     * @param s 字符串内容
+     * @return 判断结果
+     */
+    public static boolean isNumber(String s) {
+
+        if (isBlank(s)) return false;
+        return isMactchRegex(Pattern.compile("\\d+"), s);
+    }
+
+    /**
+     * 通过正则表达式验证
+     *
+     * @param pattern 正则模式
+     * @param value   值
+     * @return 判断结果
+     */
+    public static boolean isMactchRegex(Pattern pattern, String value) {
+        return isMatch(pattern, value);
+    }
+
+    /**
+     * 给定内容是否匹配正则
+     *
+     * @param pattern 模式
+     * @param content 内容
+     * @return 正则为null或者""则不检查，返回true，内容为null返回false
+     */
+    public static boolean isMatch(Pattern pattern, String content) {
+        if (content == null || pattern == null)
+            //提供null的字符串为不匹配
+            return false;
+        return pattern.matcher(content).matches();
     }
 }
