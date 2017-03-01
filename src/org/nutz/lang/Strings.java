@@ -1157,7 +1157,7 @@ public class Strings {
     }
     
     public static Pattern P_CitizenId = Pattern.compile("[1-9]\\d{5}[1-2]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}(\\d|X|x)");
-    public static Pattern P_Mobile = Pattern.compile("^((13[0-9])|(15[0-9])|(14[0-9])|(18[0-9]))\\\\d{8}$");
+    public static Pattern P_Mobile = Pattern.compile("^((13[0-9])|(15[0-9])|(14[0-9])|(17[0-9])|(18[0-9]))\\\\d{8}$");
     public static Pattern P_ZipCode = Pattern.compile("\\d{6}");
     public static Pattern P_Money = Pattern.compile("^(\\d+(?:\\.\\d+)?)$");
     public static Pattern P_Number = Pattern.compile("^[\\d]+$");
@@ -1266,5 +1266,37 @@ public class Strings {
     public static boolean isQQ(String s){
         if(isBlank(s)) return  false;
         return isMatch(P_QQ, s);
+    }
+	
+	public static Pattern P_USCC = Pattern.compile("^(11|12|13|19|51|52|53|59|91|92|93|Y1)[1-9]{1}[0-9]{5}[0-9A-HJ-NP-RT-UW-Y0-9]{9}[0-90-9A-HJ-NP-RT-UW-Y]{1}$");
+	public static Pattern P_UnionPayCard = Pattern.compile("^62[0-5]\d{13,16}$");
+	
+	/**
+     * 判断字符串是否为统一社会信用代码（18位）<br>
+     * 统一代码由十八位的阿拉伯数字或大写英文字母（不使用I、O、Z、S、V）组成。<br>
+     * 第1位：登记管理部门代码（共一位字符）[1、5、9、Y]<br>
+     * 第2位：机构类别代码（共一位字符）[与第一位合并成，11、12、13、19、51、52、53、59、91、92、93、Y1]组成。<br>
+     * 第3位~第8位：登记管理机关行政区划码（共六位阿拉伯数字）[100000~999999]<br>
+     * 第9位~第17位：主体标识码（组织机构代码）（共九位字符）<br>
+     * 第18位：校验码​（共一位字符）<br>
+     *
+     * @param s 字符串内容
+     * @return 判断结果
+     */
+    public static boolean isUSCC(String s){
+        if(isBlank(s)) return  false;
+        return isMatch(P_USCC, s);
+    }
+
+    /**
+     * 判断字符串是否为银联卡号<br>
+     * 银联卡规则62开头，卡号为16-19位数字	 
+     *
+     * @param s 字符串内容
+     * @return 判断结果
+     */	
+	public static boolean isUnionPayCard(String s){
+        if(isBlank(s)) return  false;
+        return isMatch(P_UnionPayCard, s);
     }
 }

@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.nutz.castor.Castors;
 import org.nutz.lang.Mirror;
-import org.nutz.lang.Strings;
 
 public abstract class AbstractContext implements Context {
 
@@ -101,12 +100,12 @@ public abstract class AbstractContext implements Context {
         if (null != obj) {
             // Context
             if (obj instanceof Context) {
-                Context ctx = (Context)obj;
+                Context ctx = (Context) obj;
                 for (String key : ctx.keys()) {
                     if (null == prefix)
                         this.set(key, ctx.get(key));
                     else
-                        this.set(prefix+key, ctx.get(key));
+                        this.set(prefix + key, ctx.get(key));
                 }
             }
             // Map

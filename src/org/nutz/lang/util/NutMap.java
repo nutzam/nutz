@@ -186,6 +186,23 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
     }
 
     /**
+     * 就是 pickAndRemoveBy 的一个便利写法
+     * 
+     * @param regex
+     *            正则表达式，! 开头表示取反
+     * @return 新 Map
+     * 
+     * @see #pickAndRemoveBy(Pattern, boolean)
+     */
+    public NutMap pickAndRemoveBy(String regex) {
+        if (Strings.isBlank(regex))
+            return new NutMap();
+        boolean isNot = regex.startsWith("!");
+        Pattern p = Pattern.compile(isNot ? regex.substring(1) : regex);
+        return pickAndRemoveBy(p, isNot);
+    }
+
+    /**
      * 从 Map 里挑选一些键生成一个新的 Map，自己同时删除这些键
      * 
      * @param p
