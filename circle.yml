@@ -1,4 +1,3 @@
-version: 2
 machine:
   timezone: Asia/Shanghai
   java:
