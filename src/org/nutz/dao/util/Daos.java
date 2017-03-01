@@ -250,8 +250,7 @@ public abstract class Daos {
         Molecule<List<T>> molecule = new Molecule<List<T>>() {
             public void run() {
                 List<T> list = dao.query(classOfT, cnd, pager);
-                for (T t : list)
-                    dao.fetchLinks(t, regex);
+                dao.fetchLinks(list, regex);
                 setObj(list);
             }
         };
