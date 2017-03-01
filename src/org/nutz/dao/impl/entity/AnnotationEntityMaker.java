@@ -113,7 +113,8 @@ public class AnnotationEntityMaker implements EntityMaker {
         String tableName = null;
         if (null == ti.annTable) {
         	tableName = Strings.lowerWord(type.getSimpleName(), '_');
-        	log.warnf("No @Table found, fallback to use table name='%s' for type '%s'", tableName, type.getName());
+        	if (null == ti.annView)
+        	    log.warnf("No @Table found, fallback to use table name='%s' for type '%s'", tableName, type.getName());
         } else {
         	tableName = ti.annTable.value();
         }
