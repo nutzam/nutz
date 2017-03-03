@@ -2302,10 +2302,46 @@ public abstract class Lang {
     }
 
     /**
+     * 获取指定文件的 SHA256 值
+     *
+     * @param f
+     *            文件
+     * @return 指定文件的 SHA256 值
+     * @see #digest(String, File)
+     */
+    public static String sha256(File f) {
+        return digest("SHA-256", f);
+    }
+
+    /**
+     * 获取指定输入流的 SHA256 值
+     *
+     * @param ins
+     *            输入流
+     * @return 指定输入流的 SHA256 值
+     * @see #digest(String, InputStream)
+     */
+    public static String sha256(InputStream ins) {
+        return digest("SHA-256", ins);
+    }
+
+    /**
+     * 获取指定字符串的 SHA256 值
+     *
+     * @param cs
+     *            字符串
+     * @return 指定字符串的 SHA256 值
+     * @see #digest(String, CharSequence)
+     */
+    public static String sha256(CharSequence cs) {
+        return digest("SHA-256", cs);
+    }
+
+    /**
      * 从数据文件计算出数字签名
      *
      * @param algorithm
-     *            算法，比如 "SHA1" 或者 "MD5" 等
+     *            算法，比如 "SHA1" "SHA-256" 或者 "MD5" 等
      * @param f
      *            文件
      * @return 数字签名
