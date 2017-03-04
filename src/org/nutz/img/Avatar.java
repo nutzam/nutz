@@ -12,7 +12,17 @@ import org.nutz.lang.Strings;
 import org.nutz.lang.util.NutMap;
 
 /**
- * 头像生成工具
+ * 根据文字生成图片的小工具，适用于一些生成头像的场景。
+ * 
+ * <pre>
+ * 
+ * 直接生成黑底白字
+ * Avatar.createAvatar("王小二");
+ * 
+ * 手动设置图片大小，文字/背景色，字体，字体样式, 字体大小等
+ * Avatar.createAvatar("王小二", 128, "rgba(255,0,0,0.8)", "rgba(0,0,0,0.1)", "微软雅黑", 64, Font.BOLD);
+ * 
+ * </pre>
  * 
  * @author pw
  *
