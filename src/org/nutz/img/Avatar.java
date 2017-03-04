@@ -208,6 +208,7 @@ public abstract class Avatar {
         if (fontStyle < 0 || fontStyle > 2) {
             fontStyle = Font.BOLD;
         }
+
         // 分析要写入的文字
         String content = name;
         if (name.length() > 2) {
@@ -219,8 +220,13 @@ public abstract class Avatar {
         Graphics2D gc;
         Color colorFont = Colors.as(fontColor);
         Color colorBg = Colors.as(bgColor);
+        // 判断图片格式
+        int imageType = BufferedImage.TYPE_INT_RGB;
+        if (colorFont.getAlpha() < 255 || colorBg.getAlpha() < 255) {
+            imageType = BufferedImage.TYPE_INT_ARGB;
+        }
         // 生成背景
-        im = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+        im = new BufferedImage(size, size, imageType);
         gc = im.createGraphics();
         gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         gc.setBackground(colorBg);
