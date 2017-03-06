@@ -38,7 +38,6 @@ Nutz 可以做什么？
 	 * Castors -- Java 对象类型转换
 	 * Lang -- 更简洁的 Java 函数以及更丰富的反射支持
 	 * Aop -- 轻便快速的切面编程支持
-	 * Plugin -- 轻便的插件机制
 	 * Resource -- 资源扫描
 
 	 它所有的功能均不强制依赖第三方 jar 包
