@@ -26,8 +26,6 @@
                 System.out.println("登陆失败");
                 return false;
             }
-        
-            private static ClassDefiner cd = new DefaultClassDefiner(UserAction.class.getClassLoader());
             
             public static void main(String[] args) throws Throwable {
                 //无AOP的时候
@@ -36,6 +34,8 @@
         
                 System.out.println("-----------------------------------------------------");
                 System.out.println("-----------------------------------------------------");
+                
+                ClassDefiner cd = DefaultClassDefiner.defaultOne();
                 
                 //有AOP的时候
                 ClassAgent agent = new AsmClassAgent();
