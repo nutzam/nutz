@@ -1157,7 +1157,7 @@ public class Strings {
     }
     
     public static Pattern P_CitizenId = Pattern.compile("[1-9]\\d{5}[1-2]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}(\\d|X|x)");
-    public static Pattern P_Mobile = Pattern.compile("^((13[0-9])|(15[0-9])|(14[0-9])|(17[0-9])|(18[0-9]))\\\\d{8}$");
+    public static Pattern P_Mobile = Pattern.compile("^((13[0-9])|(15[0-9])|(14[0-9])|(17[0-9])|(18[0-9]))\\d{8}$");
     public static Pattern P_ZipCode = Pattern.compile("\\d{6}");
     public static Pattern P_Money = Pattern.compile("^(\\d+(?:\\.\\d+)?)$");
     public static Pattern P_Number = Pattern.compile("^[\\d]+$");
