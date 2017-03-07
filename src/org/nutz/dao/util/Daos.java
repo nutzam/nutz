@@ -1084,6 +1084,8 @@ public abstract class Daos {
 
     /** 是否把字段名给变成大写 */
     public static boolean FORCE_UPPER_COLUMN_NAME = false;
+    
+    public static boolean FORCE_HUMP_COLUMN_NAME = false;
 
     /** varchar 字段的默认字段长度 */
     public static int DEFAULT_VARCHAR_WIDTH = 128;

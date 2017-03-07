@@ -355,12 +355,13 @@ public class AnnotationEntityMaker implements EntityMaker {
         // 字段的数据库名
         if (null == info.annColumn || Strings.isBlank(info.annColumn.value())){
             columnName = info.name;
+            if((null != info.annColumn && info.annColumn.hump()) || Daos.FORCE_HUMP_COLUMN_NAME){
+                columnName = Strings.lowerWord(columnName, '_');
+            }
         }else{
             columnName = info.annColumn.value();
         }
-        if(null != info.annColumn && info.annColumn.hump()){
-            columnName = Strings.lowerWord(columnName, '_');
-        }
+        
         ef.setColumnName(columnName);
         // 字段的注释
         boolean hasColumnComment = null != info.columnComment;
