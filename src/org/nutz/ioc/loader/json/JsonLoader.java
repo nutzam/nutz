@@ -45,7 +45,8 @@ public class JsonLoader extends MapLoader {
         List<NutResource> list = Scans.me().loadResource("^(.+[.])(js|json)$", paths);
         try {
             for (NutResource nr : list) {
-            	log.debugf("loading ioc js config from [%s]", nr.getName());
+                if (log.isDebugEnabled())
+                    log.debugf("loading [%s]", nr.getName());
                 loadFromReader(nr.getReader());
             }
         }

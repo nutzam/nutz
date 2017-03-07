@@ -109,6 +109,8 @@ public class PropertiesProxy extends MultiLineProperties {
             List<NutResource> list = getResources(paths);
             if (utf8)
                 for (NutResource nr : list) {
+                    if (log.isDebugEnabled())
+                        log.debug("load properties from " + nr);
                     Reader r = nr.getReader();
                     try {
                         load(nr.getReader(), false);

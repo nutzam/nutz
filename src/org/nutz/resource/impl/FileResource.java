@@ -21,6 +21,7 @@ public class FileResource extends NutResource {
         this.file = f;
         this.name = f.getName();
         setSource(f.getAbsolutePath());
+        priority = 150;
     }
 
     public FileResource(String base, File file) {
@@ -60,5 +61,9 @@ public class FileResource extends NutResource {
 
     public int hashCode() {
     	return file.hashCode();
+    }
+    
+    public String toString() {
+        return "File["+file.getAbsolutePath()+"]";
     }
 }

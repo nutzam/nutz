@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -41,6 +42,7 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.resource.impl.ErrorResourceLocation;
 import org.nutz.resource.impl.FileResource;
+import org.nutz.resource.impl.JarResource;
 import org.nutz.resource.impl.ResourceLocation;
 import org.nutz.resource.impl.SimpleResource;
 
@@ -254,21 +256,7 @@ public class Scans {
                 }
             }
         }
-        ArrayList<NutResource> tmp = new ArrayList<NutResource>();
-        for (NutResource r : list) {
-        	int index = tmp.indexOf(r);
-        	if (index > -1) {
-        	    NutResource old = tmp.get(index);
-        	    if (old.getSource() != null && r.getSource() != null && old.getSource().equals(r.getSource())) {
-        	        continue;
-        	    }
-        		log.infof("same resource path [%s](%s) will be override by [%s](%s)", 
-        		          tmp.get(index).getName(), tmp.get(index).getSource(),
-        		          r.getName(), r.getSource());
-        		tmp.set(index, r);
-        	} else
-        		tmp.add(r);
-		}
+        Collections.sort(list);
         if (log.isDebugEnabled())
             log.debugf("Found %s resource by src( %s ) , regex( %s )", list.size(), src, regex);
         return list;
@@ -339,22 +327,7 @@ public class Scans {
     public static NutResource makeJarNutResource(    final String jarPath,
                                                     final String entryName,
                                                     final String base) throws IOException {
-        NutResource nutResource = new NutResource() {
-
-            public InputStream getInputStream() throws IOException {
-                ZipInputStream zis = makeZipInputStream(jarPath);
-                ZipEntry ens = null;
-                while (null != (ens = zis.getNextEntry())) {
-                    if (ens.getName().equals(entryName))
-                        return zis;
-                }
-                throw Lang.impossible();
-            }
-            
-            public int hashCode() {
-            	return (jarPath + ":" + entryName).hashCode();
-            }
-        };
+        NutResource nutResource = new JarResource(jarPath, entryName);
         if (entryName.equals(base))
             nutResource.setName(entryName);
         else

@@ -6,7 +6,16 @@ import java.io.Reader;
 
 import org.nutz.lang.Streams;
 
-public abstract class NutResource {
+public abstract class NutResource implements Comparable<NutResource> {
+
+    protected String name;
+
+    /**
+     * 这个对象的来源
+     */
+    protected String source;
+    
+    protected int priority = 100;
     
     public NutResource() {}
 
@@ -44,13 +53,6 @@ public abstract class NutResource {
     public String toString() {
         return String.format("NutResource[%s]", name);
     }
-
-    protected String name;
-
-    /**
-     * 这个对象的来源
-     */
-    protected String source;
     
     public void setSource(String source) {
         this.source = source;
@@ -58,5 +60,19 @@ public abstract class NutResource {
     
     public String getSource() {
         return source;
+    }
+    
+    public int compareTo(NutResource o) {
+        if (o.priority == this.priority)
+            return 0;
+        return o.priority > this.priority ? -1 : 1;
+    }
+    
+    public int getPriority() {
+        return priority;
+    }
+    
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 }
