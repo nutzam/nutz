@@ -1544,7 +1544,6 @@ public abstract class Lang {
                     return;
 
             // 进行循环
-            Class<T> eType = Mirror.getTypeParam(callback.getClass(), 0);
             if (obj.getClass().isArray()) {
                 int len = Array.getLength(obj);
                 for (int i = 0; i < len; i++)
@@ -1570,6 +1569,7 @@ public abstract class Lang {
                 Map map = (Map) obj;
                 int len = map.size();
                 int i = 0;
+                Class<T> eType = Mirror.getTypeParam(callback.getClass(), 0);
                 if (null != eType && eType != Object.class && eType.isAssignableFrom(Entry.class)) {
                     for (Object v : map.entrySet())
                         try {

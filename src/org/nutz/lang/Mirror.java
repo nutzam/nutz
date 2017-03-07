@@ -1700,6 +1700,8 @@ public class Mirror<T> {
     @SuppressWarnings("unchecked")
     public static <T> Class<T> getTypeParam(Class<?> klass, int index) {
         Type[] types = getTypeParams(klass);
+        if (types == null)
+            return null;
         if (index >= 0 && index < types.length) {
             Type t = types[index];
             Class<T> clazz = (Class<T>) Lang.getTypeClass(t);
