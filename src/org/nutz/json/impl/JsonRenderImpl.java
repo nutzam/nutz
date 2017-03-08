@@ -441,7 +441,7 @@ public class JsonRenderImpl implements JsonRender {
     
     protected void appendNull() throws IOException {
         if (format.isNullAsEmtry())
-            writer.write("''");
+            writer.write("\"\"");
         else
             writer.write("null");
     }

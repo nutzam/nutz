@@ -969,7 +969,7 @@ public class JsonTest {
     public void test_null_as_emtry_string() {
         NutMap re = new NutMap("abc", null);
         assertEquals("{abc:null}", Json.toJson(re, JsonFormat.compact().setIgnoreNull(false).setQuoteName(false)));
-        assertEquals("{abc:''}", Json.toJson(re, JsonFormat.compact().setIgnoreNull(false).setQuoteName(false).setNullAsEmtry(true)));
+        assertEquals("{abc:\"\"}", Json.toJson(re, JsonFormat.compact().setIgnoreNull(false).setQuoteName(false).setNullAsEmtry(true)));
     }
     
     @Test
@@ -998,5 +998,17 @@ public class JsonTest {
         System.out.println(json_yvr);
         assertEquals("{\"date\":\"1970-01-01 08:00:00\"}", json_china);
         assertEquals("{\"date\":\"1969-12-31 16:00:00\"}", json_yvr);
+    }
+
+
+    @Test
+    public void test_json_nullAsEmtry() throws IOException {
+        HashMap data = new HashMap();
+        data.put("xx", null);
+        JsonFormat jsonFormat = new JsonFormat();
+        jsonFormat.setNullAsEmtry(true);
+        String json_str= Json.toJson(data, jsonFormat);
+        System.out.println(json_str);
+        assertEquals("{\"xx\":\"\"}", json_str);
     }
 }
