@@ -10,29 +10,15 @@ WebSocket是什么?
 ------------------------------------------------------------------------------------------
 Nutz为WebSocket准备了什么?
 
-	只需要自行添加下面的类
+	请下载最新的nutz-plugins-websocket及websocket api的jar, 然后只需要一个类, 即可完成websocket的基础集成.
 	
 	{{{<JAVA>
-	import javax.websocket.server.ServerEndpointConfig;
-    import org.nutz.mvc.Mvcs;
-
-    public class NutIocWebSocketConfigurator extends ServerEndpointConfig.Configurator {
-
-        public <T> T getEndpointInstance(Class<T> endpointClass) {
-        	Ioc ioc = Mvcs.getIoc();
-        	if (ioc == null)
-        	    ioc = Mvcs.ctx().getDefaultIoc();
-            return ioc.get(endpointClass);
-        }
-    }
-	}}}
-	
-	然后在自己的websocket服务类上添加注解,即可享用ioc注入带来的福利
-	
-	{{{<JAVA>
-	@ServerEndpoint(value = "/websocket", configurator=NutIocWebSocketConfigurator.class)
+	@ServerEndpoint(value = "/websocket", configurator=NutWsConfigurator.class)
 	@IocBean
-	public class MyWebsocket extends Endpoint {
-	
+	public class MyWebsocket extends AbstractWsEndpoint {
 	}
 	}}}
+	
+	其他类注入MyWebsocket实例(一般就是@Inject嘛), 通过sendXXX方法发送数据到浏览器
+	
+	若需要扩展,请查阅AbstractWsEndpoint的javadoc及[nutz-plugins-websocket的README.md](https://github.com/nutzam/nutzmore/tree/master/nutz-plugins-websocket)
