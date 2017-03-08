@@ -969,7 +969,7 @@ public class JsonTest {
     public void test_null_as_emtry_string() {
         NutMap re = new NutMap("abc", null);
         assertEquals("{abc:null}", Json.toJson(re, JsonFormat.compact().setIgnoreNull(false).setQuoteName(false)));
-        assertEquals("{abc:''}", Json.toJson(re, JsonFormat.compact().setIgnoreNull(false).setQuoteName(false).setNullAsEmtry(true)));
+        assertEquals("{abc:\"\"}", Json.toJson(re, JsonFormat.compact().setIgnoreNull(false).setQuoteName(false).setNullAsEmtry(true)));
     }
     
     @Test
