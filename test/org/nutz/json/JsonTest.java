@@ -1005,11 +1005,10 @@ public class JsonTest {
     public void test_json_nullAsEmtry() throws IOException {
         HashMap data = new HashMap();
         data.put("xx", null);
-        data.put("aa", "123");
         JsonFormat jsonFormat = new JsonFormat();
         jsonFormat.setNullAsEmtry(true);
         String json_str= Json.toJson(data, jsonFormat);
         System.out.println(json_str);
-        assertEquals("{\"xx\":\"\",\"aa\":\"123\"}", json_str);
+        assertEquals("{\"xx\":\"\"}", json_str);
     }
 }
