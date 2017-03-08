@@ -999,4 +999,17 @@ public class JsonTest {
         assertEquals("{\"date\":\"1970-01-01 08:00:00\"}", json_china);
         assertEquals("{\"date\":\"1969-12-31 16:00:00\"}", json_yvr);
     }
+
+
+    @Test
+    public void test_json_nullAsEmtry() throws IOException {
+        HashMap data = new HashMap();
+        data.put("xx", null);
+        data.put("aa", "123");
+        JsonFormat jsonFormat = new JsonFormat();
+        jsonFormat.setNullAsEmtry(true);
+        String json_str= Json.toJson(data, jsonFormat);
+        System.out.println(json_str);
+        assertEquals("{\"xx\":\"\",\"aa\":\"123\"}", json_str);
+    }
 }
