@@ -98,7 +98,7 @@ public class Http {
     }
 
     public static String getStatusText(int statusCode, String dft) {
-        return Strings.sNull(code_text.get(statusCode), dft);
+        return Strings.sNull(code_text.get(""+statusCode), dft);
     }
 
     public static class multipart {
