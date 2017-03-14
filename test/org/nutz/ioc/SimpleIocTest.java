@@ -39,4 +39,20 @@ public class SimpleIocTest {
     	assertEquals(101, Issue399Service.CreateCount);
     	assertEquals(0, Issue399Service.DeposeCount);
     }
+    
+    @Test(expected=IocException.class)
+    public void test_issue_1232() {
+        Ioc ioc = null;
+        try {
+            ioc = new NutIoc(new AnnotationIocLoader("org.nutz.ioc.meta.issue1232"));
+            assertEquals(3, ioc.getNames().length);
+            ioc.get(null, "a");
+        } catch (IocException e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            if (ioc != null)
+                ioc.depose();
+        }
+    }
 }
