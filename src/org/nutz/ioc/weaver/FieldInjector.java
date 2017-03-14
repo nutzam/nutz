@@ -2,7 +2,6 @@ package org.nutz.ioc.weaver;
 
 import org.nutz.ioc.IocMaking;
 import org.nutz.ioc.ValueProxy;
-import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.inject.Injecting;
 import org.nutz.log.Log;
@@ -17,12 +16,14 @@ public class FieldInjector {
         fi.valueProxy = vp;
         fi.inj = mirror.getInjecting(fieldName);
         fi.optional = optional;
+        fi.fieldName = fieldName;
         return fi;
     }
 
     private ValueProxy valueProxy;
     private Injecting inj;
     private boolean optional;
+    private String fieldName;
 
     private FieldInjector() {}
 
@@ -35,7 +36,8 @@ public class FieldInjector {
 				log.info("field inject fail, but this field is optional, ignore error", e);
 				return;
 			}
-			throw Lang.wrapThrow(e);
+			String msg = String.format("IocBean[%s] fail at field=[%s]", ing.getObjectName(), fieldName);
+			throw new RuntimeException(msg, e);
 		}
     }
 }
