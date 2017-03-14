@@ -68,16 +68,16 @@ public class SimpleDataSource implements DataSource {
         String[] drivers = {"org.h2.Driver",
                             "com.ibm.db2.jcc.DB2Driver",
                             "org.hsqldb.jdbcDriver",
-                            "org.gjt.mm.mysql.Driver",
                             "oracle.jdbc.OracleDriver",
                             "org.postgresql.Driver",
                             "net.sourceforge.jtds.jdbc.Driver",
                             "com.microsoft.sqlserver.jdbc.SQLServerDriver",
                             "org.sqlite.JDBC",
-                            "com.mysql.jdbc.Driver"};
+                            "com.mysql.jdbc.Driver",
+                            "com.beyondb.jdbc.BeyondbDriver"};
         for (String driverClassName : drivers) {
             try {
-                Lang.loadClass(driverClassName);
+                Class.forName(driverClassName);
             } catch (Throwable e) {}
         }
     }
