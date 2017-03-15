@@ -34,6 +34,7 @@ import org.nutz.Nutz;
 import org.nutz.castor.Castors;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Stopwatch;
 import org.nutz.lang.Streams;
 import org.nutz.lang.util.ClassTools;
 import org.nutz.lang.util.Disks;
@@ -58,7 +59,7 @@ public class Scans {
 
     private static final Log log = Logs.get();
 
-    private static final Scans me = new Scans();
+    private static Scans me = new Scans();
 
     private Map<String, ResourceLocation> locations = new LinkedHashMap<String, ResourceLocation>();
 
@@ -73,13 +74,11 @@ public class Scans {
      * 调用一次就可以了
      */
 	public Scans init(final ServletContext sc) {
+	    Stopwatch sw = Stopwatch.begin();
         // 获取classes文件夹的路径
         String classesPath = sc.getRealPath("/WEB-INF/classes/");
         if (classesPath != null) {
             addResourceLocation(ResourceLocation.file(new File(classesPath)));
-        } else {
-            if (log.isWarnEnabled())
-                log.warn("/WEB-INF/classes/ NOT found?!");
         }
 
         // 获取lib文件夹中的全部jar
@@ -98,12 +97,8 @@ public class Scans {
                 }
             }
         }
-        else {
-            if (log.isWarnEnabled())
-                log.warn("/WEB-INF/lib/ NOT found?!");
-        }
-        if (log.isDebugEnabled())
-            log.debug("Locations for Scans:\n" + locations);
+        sw.stop();
+        printLocations(sw);
         return this;
     }
 
@@ -347,7 +342,7 @@ public class Scans {
         }
         return zis;
     }
-
+    
     public static final Scans me() {
         return me;
     }
@@ -438,16 +433,18 @@ public class Scans {
         }
     }
 
-    private Scans() {
+    protected Scans() {
         if (Lang.isAndroid) {
             if (log.isInfoEnabled())
                 log.info("Running in Android , so nothing I can scan , just disable myself");
             return;
         }
+        Stopwatch sw = Stopwatch.begin();
         // 当前文件夹
         addResourceLocation(ResourceLocation.file(new File(".")));
         // 推测一下nutz自身所在的位置
         registerLocation(Nutz.class);
+        List<String> jars = new ArrayList<String>();
         ClassLoader cloader = ClassTools.getClassLoader();
         for (String referPath : referPaths) {
             try {
@@ -455,30 +452,57 @@ public class Scans {
                 while (urls.hasMoreElements()) {
                     URL url = urls.nextElement();
                     String url_str = url.toString();
-                    if (!url_str.contains("jar!"))
+                    if (url_str.contains("jar!")) {
+                        String tmp = url_str.substring(0, url_str.lastIndexOf("jar!") + 3);
+                        if (tmp.startsWith("jar:"))
+                            tmp = tmp.substring("jar:".length());
+                        if (tmp.startsWith("file:/"))
+                            tmp = tmp.substring("file:/".length());
+                        if (tmp.contains("tomcat"))
+                            continue;
+                        if (tmp.contains("Java"))
+                            continue;
+                        //jars.add(tmp);
+                    }
+                    else
                         registerLocation(new URL(url_str.substring(0, url_str.length() - referPath.length())));
                 }
             }
             catch (IOException e) {}
         }
-
         // 把ClassPath也扫描一下
         try {
             String classpath = System.getProperties().getProperty("java.class.path");
             String[] paths = classpath.split(System.getProperties().getProperty("path.separator"));
             for (String pathZ : paths) {
                 if (pathZ.endsWith(".jar"))
-                    addResourceLocation(ResourceLocation.jar(pathZ));
+                    jars.add(pathZ);
                 else
                     addResourceLocation(ResourceLocation.file(new File(pathZ)));
             }
         }
         catch (Throwable e) {
-            // TODO: handle exception
+        }
+        addConcurrency(jars.toArray(new String[jars.size()]));
+        sw.stop();
+        printLocations(sw);
+    }
+    
+    class RL implements Callable<ResourceLocation>{
+        
+        public ResourceLocation loc;
+        public String path;
+        
+        public RL(String path) {
+            this.path = path;
         }
 
-        if (log.isDebugEnabled())
-            log.debug("Locations for Scans:\n" + locations.values());
+        public ResourceLocation call() throws Exception {
+            log.debug(">> " + path);
+            loc = ResourceLocation.jar(path);
+            return loc;
+        }
+        
     }
     
     public boolean addConcurrency(String[] _jars) {
@@ -514,6 +538,19 @@ public class Scans {
     
     public void addResourceLocation(ResourceLocation loc) {
         locations.put(loc.id(), loc);
+    }
+    
+    protected void printLocations(Stopwatch sw) {
+        if (log.isDebugEnabled()) {
+            log.debugf("Locations count=%d time use %sms", locations.size(), sw.du());
+        }
+        if (log.isTraceEnabled()) {
+            StringBuilder sb = new StringBuilder();
+            for (ResourceLocation rc : locations.values()) {
+                sb.append('\t').append(rc.toString()).append("\r\n");
+            }
+            log.trace("Locations for Scans:\n" + sb);
+        }
     }
     
     public static boolean USE_CONCURRENCY = true;
