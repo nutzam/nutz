@@ -444,7 +444,6 @@ public class Scans {
         addResourceLocation(ResourceLocation.file(new File(".")));
         // 推测一下nutz自身所在的位置
         registerLocation(Nutz.class);
-        List<String> jars = new ArrayList<String>();
         ClassLoader cloader = ClassTools.getClassLoader();
         for (String referPath : referPaths) {
             try {
