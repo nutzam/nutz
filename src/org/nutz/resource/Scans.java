@@ -476,14 +476,13 @@ public class Scans {
             String[] paths = classpath.split(System.getProperties().getProperty("path.separator"));
             for (String pathZ : paths) {
                 if (pathZ.endsWith(".jar"))
-                    jars.add(pathZ);
+                    addResourceLocation(ResourceLocation.jar(pathZ));
                 else
                     addResourceLocation(ResourceLocation.file(new File(pathZ)));
             }
         }
         catch (Throwable e) {
         }
-        addConcurrency(jars.toArray(new String[jars.size()]));
         sw.stop();
         printLocations(sw);
     }
