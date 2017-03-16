@@ -377,8 +377,7 @@ public class Images {
         return clipScale(srcIm, taIm, w, h);
     }
 
-    public static BufferedImage clipScale(Object srcIm, int[] startPoint, int[] endPoint)
-            throws IOException {
+    public static BufferedImage clipScale(Object srcIm, int[] startPoint, int[] endPoint) {
         // 计算给定坐标后的图片的尺寸
         int width = endPoint[0] - startPoint[0];
         int height = endPoint[1] - startPoint[1];
