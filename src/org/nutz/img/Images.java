@@ -193,7 +193,8 @@ public class Images {
                                           String taPath,
                                           int w,
                                           int h,
-                                          Color bgColor) throws IOException {
+                                          Color bgColor)
+            throws IOException {
         File srcIm = Files.findFile(srcPath);
         if (null == srcIm)
             throw Lang.makeThrow("Fail to find image file '%s'!", srcPath);
@@ -237,14 +238,14 @@ public class Images {
         // 原图太宽，计算当原图与画布同高时，原图的等比宽度
         if (oR > nR) {
             nW = w;
-            nH = (int) (((float) w) / oR);
+            nH = (int) ((w) / oR);
             x = 0;
             y = (h - nH) / 2;
         }
         // 原图太高
         else if (oR < nR) {
             nH = h;
-            nW = (int) (((float) h) * oR);
+            nW = (int) ((h) * oR);
             x = (w - nW) / 2;
             y = 0;
         }
@@ -376,6 +377,22 @@ public class Images {
         return clipScale(srcIm, taIm, w, h);
     }
 
+    public static BufferedImage clipScale(Object srcIm, int[] startPoint, int[] endPoint)
+            throws IOException {
+        // 计算给定坐标后的图片的尺寸
+        int width = endPoint[0] - startPoint[0];
+        int height = endPoint[1] - startPoint[1];
+
+        BufferedImage old = read(srcIm);
+        BufferedImage im = Images.clipScale(old.getSubimage(startPoint[0],
+                                                            startPoint[1],
+                                                            width,
+                                                            height),
+                                            width,
+                                            height);
+        return im;
+    }
+
     /**
      * 根据给定的起始坐标点与结束坐标点来剪切一个图片，令其符合给定的尺寸，并将其保存成目标图像文件
      * <p>
@@ -396,17 +413,8 @@ public class Images {
      */
     public static BufferedImage clipScale(Object srcIm, File taIm, int[] startPoint, int[] endPoint)
             throws IOException {
-        // 计算给定坐标后的图片的尺寸
-        int width = endPoint[0] - startPoint[0];
-        int height = endPoint[1] - startPoint[1];
-
         BufferedImage old = read(srcIm);
-        BufferedImage im = Images.clipScale(old.getSubimage(startPoint[0],
-                                                            startPoint[1],
-                                                            width,
-                                                            height),
-                                            width, height);
-
+        BufferedImage im = clipScale(old, startPoint, endPoint);
         write(im, taIm);
         return old;
     }
@@ -432,7 +440,8 @@ public class Images {
     public static BufferedImage clipScale(String srcPath,
                                           String taPath,
                                           int[] startPoint,
-                                          int[] endPoint) throws IOException {
+                                          int[] endPoint)
+            throws IOException {
         File srcIm = Files.findFile(srcPath);
         if (null == srcIm)
             throw Lang.makeThrow("Fail to find image file '%s'!", srcPath);
@@ -502,6 +511,9 @@ public class Images {
      */
     public static BufferedImage read(Object img) {
         try {
+            if (img instanceof BufferedImage) {
+                return (BufferedImage) img;
+            }
             if (img instanceof CharSequence) {
                 return ImageIO.read(Files.checkFile(img.toString()));
             }
@@ -513,7 +525,7 @@ public class Images {
 
             if (img instanceof InputStream) {
                 File tmp = File.createTempFile("nutz_img", ".jpg");
-                Files.write(tmp, (InputStream) img);
+                Files.write(tmp, img);
                 try {
                     return read(tmp);
                 }
@@ -633,7 +645,7 @@ public class Images {
         Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("JPEG");
         ImageReader reader = null;
         while (readers.hasNext()) {
-            reader = (ImageReader) readers.next();
+            reader = readers.next();
             if (reader.canReadRaster()) {
                 break;
             }
@@ -743,12 +755,14 @@ public class Images {
 
         return Base64.encodeToString(bImage, false);
     }
-    
+
     /**
      * 在一个RGB画布上重新绘制Image,解决CMYK图像偏色的问题
      */
     public static BufferedImage redraw(BufferedImage img, Color bg) {
-        BufferedImage rgbImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+        BufferedImage rgbImage = new BufferedImage(img.getWidth(),
+                                                   img.getHeight(),
+                                                   BufferedImage.TYPE_3BYTE_BGR);
         Graphics2D g2d = rgbImage.createGraphics();
         g2d.drawImage(img, 0, 0, bg, null);
         g2d.dispose();
