@@ -164,6 +164,8 @@ public class Scans {
             } else if (str.startsWith("file:")) {
                 return ResourceLocation.file(new File(url.getFile()));
             } else {
+                if (str.startsWith("jar:file:"))
+                    return ResourceLocation.jar(str.substring(str.indexOf('!')));
                 if (log.isDebugEnabled())
                     log.debug("Unkown URL " + url);
                 //return ResourceLocation.file(new File(url.toURI()));
