@@ -954,28 +954,36 @@ public class JsonTest {
         String j = Json.toJson(map);
         System.out.println(j);
     }
-    
+
     @Test
     public void test_ptype_map() {
         String str = "{abc:{def:{age:1}}}";
-        Map<String, Map<String, Record>> map = Json.fromJson(new PType<Map<String, Map<String, Record>>>(){}, str);
+        Map<String, Map<String, Record>> map = Json.fromJson(new PType<Map<String, Map<String, Record>>>() {},
+                                                             str);
         assertNotNull(map);
         assertNotNull(map.get("abc"));
         assertNotNull(map.get("abc").get("def"));
         assertEquals(1, map.get("abc").get("def").getInt("age"));
     }
-    
+
     @Test
     public void test_null_as_emtry_string() {
         NutMap re = new NutMap("abc", null);
-        assertEquals("{abc:null}", Json.toJson(re, JsonFormat.compact().setIgnoreNull(false).setQuoteName(false)));
-        assertEquals("{abc:\"\"}", Json.toJson(re, JsonFormat.compact().setIgnoreNull(false).setQuoteName(false).setNullAsEmtry(true)));
+        assertEquals("{abc:null}",
+                     Json.toJson(re,
+                                 JsonFormat.compact().setIgnoreNull(false).setQuoteName(false)));
+        assertEquals("{abc:\"\"}",
+                     Json.toJson(re,
+                                 JsonFormat.compact()
+                                           .setIgnoreNull(false)
+                                           .setQuoteName(false)
+                                           .setNullAsEmtry(true)));
     }
-    
+
     @Test
     public void test_json_all_string() throws IOException {
         StringWriter sw = new StringWriter();
-        new JsonRenderImpl(sw, JsonFormat.compact()){
+        new JsonRenderImpl(sw, JsonFormat.compact()) {
             public void render(Object value) throws IOException {
                 if (value != null && value instanceof Number) {
                     getWriter().write(Json.toJson(value.toString()));
@@ -986,12 +994,16 @@ public class JsonTest {
         }.render(new NutMap("age", 1));
         assertEquals("{\"age\":\"1\"}", sw.getBuffer().toString());
     }
-    
+
     @Test
     public void test_json_timezone() throws IOException {
         Date date = new Date(0);
-        JsonFormat jf_china = Json.fromJson(JsonFormat.class, "{dateFormat:'yyyy-MM-dd HH:mm:ss', timeZone:'GMT+8'}").setCompact(true);
-        JsonFormat jf_yvr = Json.fromJson(JsonFormat.class, "{dateFormat:'yyyy-MM-dd HH:mm:ss', timeZone:'GMT-8'}").setCompact(true);
+        JsonFormat jf_china = Json.fromJson(JsonFormat.class,
+                                            "{dateFormat:'yyyy-MM-dd HH:mm:ss', timeZone:'GMT+8'}")
+                                  .setCompact(true);
+        JsonFormat jf_yvr = Json.fromJson(JsonFormat.class,
+                                          "{dateFormat:'yyyy-MM-dd HH:mm:ss', timeZone:'GMT-8'}")
+                                .setCompact(true);
         String json_china = Json.toJson(new NutMap("date", date), jf_china);
         String json_yvr = Json.toJson(new NutMap("date", date), jf_yvr);
         System.out.println(json_china);
@@ -1000,14 +1012,13 @@ public class JsonTest {
         assertEquals("{\"date\":\"1969-12-31 16:00:00\"}", json_yvr);
     }
 
-
     @Test
     public void test_json_nullAsEmtry() throws IOException {
-        HashMap data = new HashMap();
+        HashMap<String, Object> data = new HashMap<String, Object>();
         data.put("xx", null);
         JsonFormat jsonFormat = new JsonFormat();
         jsonFormat.setNullAsEmtry(true);
-        String json_str= Json.toJson(data, jsonFormat);
+        String json_str = Json.toJson(data, jsonFormat);
         System.out.println(json_str);
         assertEquals("{\"xx\":\"\"}", json_str);
     }
