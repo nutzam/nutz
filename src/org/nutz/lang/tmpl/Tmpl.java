@@ -36,8 +36,8 @@ public class Tmpl {
     // + "(<(int|long|boolean|float|double|date|string)( *: *([^>]*))?>)?"
     // + "([?] *(.*) *)?");
 
-    private static final Pattern _P2 = Pattern.compile("([^<>?]+)"
-                                                       + "(<(int|long|boolean|float|double|date|string|json)?( *: *([^>]*))?>)?"
+    private static final Pattern _P2 = Pattern.compile("([^<>()?]+)"
+                                                       + "([<(](int|long|boolean|float|double|date|string|json)?( *: *([^>]*))?[>)])?"
                                                        + "([?] *(.*) *)?");
 
     private Pattern _P;
