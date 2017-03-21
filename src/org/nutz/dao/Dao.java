@@ -476,6 +476,8 @@ public interface Dao {
      * @return 一共迭代的数量
      */
     int each(String tableName, Condition cnd, Each<Record> callback);
+    
+    int each(String tableName, Condition cnd, Pager pager, Each<Record> callback, String fields);
 
     /**
      * 根据对象 ID 删除一个对象。它只会删除这个对象，关联对象不会被删除。

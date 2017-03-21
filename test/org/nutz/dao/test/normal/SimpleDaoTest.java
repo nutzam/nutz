@@ -844,4 +844,14 @@ public class SimpleDaoTest extends DaoCase {
         dao.insert(pojo);
         dao.fetch(Issue1179.class);
     }
+    
+    @Test
+    public void test_issue_1235() {
+        dao.create(Pet.class, false);
+        dao.insert(Pet.create(R.UU32()));
+        List<Record> list = dao.query("t_pet", null, null, "id,name");
+        assertNotNull(list);
+        assertTrue(list.size() > 0);
+        assertEquals(2, list.get(0).size());
+    }
 }
