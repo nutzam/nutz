@@ -256,9 +256,13 @@ public abstract class Daos {
         };
         return Trans.exec(molecule);
     }
+    
+    public static StringBuilder dataDict(DataSource ds, String... packages) {
+        return dataDict(new NutDao(ds), packages);
+    }
 
     /** 根据Pojo生成数据字典,zdoc格式 */
-    public static StringBuilder dataDict(DataSource ds, String... packages) {
+    public static StringBuilder dataDict(Dao dao, String... packages) {
         StringBuilder sb = new StringBuilder();
         List<Class<?>> ks = new ArrayList<Class<?>>();
         for (String packageName : packages) {
@@ -272,17 +276,7 @@ public abstract class Daos {
         }
         // log.infof("Found %d table class", ks.size());
 
-        JdbcExpert exp = Jdbcs.getExpert(ds);
-        NutDao dao = new NutDao(ds);
-
-        Method evalFieldType;
-        try {
-            evalFieldType = exp.getClass().getDeclaredMethod("evalFieldType", MappingField.class);
-        }
-        catch (Throwable e) {
-            throw Lang.wrapThrow(e);
-        }
-        evalFieldType.setAccessible(true);
+        JdbcExpert exp = dao.getJdbcExpert();
         Entity<?> entity = null;
         String line = "-------------------------------------------------------------------\n";
         sb.append("#title:数据字典\n");
@@ -298,13 +292,7 @@ public abstract class Daos {
             sb.append("\t||序号||列名||数据类型||主键||非空||默认值||java属性名||java类型||注释||\n");
             int index = 1;
             for (MappingField field : entity.getMappingFields()) {
-                String dataType;
-                try {
-                    dataType = (String) evalFieldType.invoke(exp, field);
-                }
-                catch (Throwable e) {
-                    throw Lang.wrapThrow(e); // 不可能发生的
-                }
+                String dataType = exp.evalFieldType(field);
                 sb.append("\t||")
                   .append(index++)
                   .append("||")

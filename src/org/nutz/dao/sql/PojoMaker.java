@@ -13,6 +13,8 @@ public interface PojoMaker {
     Pojo makeQuery(Entity<?> en);
 
     Pojo makeQuery(String tableName);
+    
+    Pojo makeQuery(String tableName, String fields);
 
     Pojo makeDelete(Entity<?> en);
 

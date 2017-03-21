@@ -156,6 +156,10 @@ public class Http {
         return Sender.create(Request.get(url)).setTimeout(timeout).send();
     }
     
+    public static Response get(String url, Map<String, Object> params, int timeout) {
+        return Sender.create(Request.get(url).setParams(params)).setTimeout(timeout).send();
+    }
+    
     public static Response get(String url, Header header, int timeout) {
         return Sender.create(Request.get(url).setHeader(header)).setTimeout(timeout).send();
     }

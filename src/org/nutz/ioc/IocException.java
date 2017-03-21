@@ -3,6 +3,8 @@ package org.nutz.ioc;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.nutz.lang.Strings;
+
 public class IocException extends RuntimeException {
 
     private static final long serialVersionUID = -420118435729449317L;
@@ -28,6 +30,6 @@ public class IocException extends RuntimeException {
         String msg = super.getMessage();
         if (msg.length() > 4096)
             return msg;
-        return beanNames+" # " + msg;
+        return "IocBean[" + Strings.join(" -> ", beanNames.toArray()) + "] " + msg;
     }
 }

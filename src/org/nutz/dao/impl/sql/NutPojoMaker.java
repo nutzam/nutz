@@ -68,13 +68,17 @@ public class NutPojoMaker implements PojoMaker {
         pojo.append(Pojos.Items.entityViewName());
         return pojo;
     }
-
+    
     public Pojo makeQuery(String tableName) {
+        return makeQuery(tableName, "*");
+    }
+
+    public Pojo makeQuery(String tableName, String fields) {
         String[] ss = tableName.split(":");
         // String idFieldName = ss.length > 1 ? ss[1] : "*";//按id字段来统计,比较快
         Pojo pojo = makePojo(SqlType.SELECT);
         // pojo.append(Pojos.Items.wrap(idFieldName));//与org.nutz.dao.test.normal.QueryTest.query_records_pager()冲突
-        pojo.append(Pojos.Items.wrap("*"));
+        pojo.append(Pojos.Items.wrap(fields));
         pojo.append(Pojos.Items.wrap("FROM"));
         pojo.append(Pojos.Items.wrap(ss[0]));
         return pojo;

@@ -480,7 +480,7 @@ public class NutDao extends DaoSupport implements Dao {
     }
     
     public List<Record> query(String tableName, Condition cnd, Pager pager, String fields) {
-        Pojo pojo = pojoMaker.makeQuery(tableName)
+        Pojo pojo = pojoMaker.makeQuery(tableName, fields)
                              .addParamsBy(fields)
                              .setPager(pager)
                              .append(Pojos.Items.cnd(cnd));
@@ -494,9 +494,9 @@ public class NutDao extends DaoSupport implements Dao {
         return query(tableName, cnd, Pojos.Items.pager(cnd));
     }
 
-    public int each(String tableName, Condition cnd, Pager pager, Each<Record> callback) {
-        Pojo pojo = pojoMaker.makeQuery(tableName)
-                             .addParamsBy("*")
+    public int each(String tableName, Condition cnd, Pager pager, Each<Record> callback, String fields) {
+        Pojo pojo = pojoMaker.makeQuery(tableName, fields)
+                             .addParamsBy(fields)
                              .setPager(pager)
                              .append(Pojos.Items.cnd(cnd));
         expert.formatQuery(pojo);
@@ -505,6 +505,10 @@ public class NutDao extends DaoSupport implements Dao {
         pojo.getContext().attr("dao-cache-skip", "true");
         _exec(pojo);
         return pojo.getInt();
+    }
+    
+    public int each(String tableName, Condition cnd, Pager pager, Each<Record> callback) {
+        return each(tableName, cnd, pager, callback, "*");
     }
 
     public int each(String tableName, Condition cnd, Each<Record> callback) {
@@ -562,7 +566,7 @@ public class NutDao extends DaoSupport implements Dao {
     }
     
     public Record fetch(String tableName, Condition cnd, String fields) {
-        Pojo pojo = pojoMaker.makeQuery(tableName)
+        Pojo pojo = pojoMaker.makeQuery(tableName, fields)
                              .append(Pojos.Items.cnd(cnd))
                              .addParamsBy(fields)
                              .setPager(createPager(1, 1))

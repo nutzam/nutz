@@ -174,3 +174,33 @@ ToJson注解
 		return "{age:" + age + ", name: null}"; // 我就喜欢返回个null,有值也返回null,咋的,就是这么任性
 	}
 	}}}
+
+----------------------------------------------
+虚拟属性
+
+	虚拟属性指的是没有对应的属性,但有成对的getter/setter. 例如
+	
+	{{{<JAVA>
+	public class PojoForQQ {
+	    public int id;
+    	@JsonField
+    	public String getName() {
+        	return "wendal," + id;
+    	}
+    	public void setName(String name) {
+    	}
+    }
+	}}}
+	
+	会输出
+	
+	{{{<JSON>
+	{
+		"id" : 123,
+		"name" : "wendal,123"
+	}
+	}}}
+	
+	可以看到, 成对的getter/setter,配合@JsonField,可以输出一个虚拟属性.
+	
+	

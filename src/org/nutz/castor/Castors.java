@@ -255,12 +255,10 @@ public class Castors {
             throw e;
         }
         catch (Exception e) {
-            throw new FailToCastObjectException(String.format("Fail to cast from <%s> to <%s> for {%s} because:\n%s:%s",
+            throw new FailToCastObjectException(String.format("Fail to cast from <%s> to <%s> for {%s}",
                                                               fromType.getName(),
                                                               toType.getName(),
-                                                              src,
-                                                              e.getClass().getSimpleName(),
-                                                              e.getMessage()),
+                                                              src),
                                                 Lang.unwrapThrow(e));
         }
     }

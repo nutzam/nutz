@@ -320,4 +320,8 @@ public class DaoSupport {
         }
         return null;
     }
+    
+    public DataSource getDataSource() {
+        return dataSource;
+    }
 }

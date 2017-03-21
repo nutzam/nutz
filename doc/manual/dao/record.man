@@ -103,6 +103,12 @@ POJO 之苦
 	{{{<SQL>
 	UPDATE t_pet SET name='XiaoBai', birthday='2010-4-28 14:27:12' WHERE id=2;
 	}}}
+	
+	如果已经有一个map呢??
+	{{{<JAVA>
+	dao.update("t_pet", Chain.from(map), Cnd.where("id","=",2));
+	}}}
+	
 
 -------------------------------------------------------------------------------------------------
 删除
@@ -114,5 +120,4 @@ POJO 之苦
 	{{{<SQL>
 	DELETE t_pet WHERE id=2;
 	}}}
-
 
