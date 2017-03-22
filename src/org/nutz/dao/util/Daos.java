@@ -334,8 +334,9 @@ public abstract class Daos {
     }
 
     /**
-     * 查询某sql的结果条数
+     * 查询某sql的结果条数. 请使用Sql接口的版本
      */
+    @Deprecated
     public static long queryCount(Dao dao, String sql) {
         String tmpTable = "as _nutz_tmp";
         if (dao.meta().isDB2())
@@ -347,6 +348,25 @@ public abstract class Daos {
         Sql sql2 = Sqls.fetchInt("select count(1) from (" + sql + ")" + tmpTable);
         dao.execute(sql2);
         return sql2.getInt();
+    }
+    
+    /**
+     * 查询某sql的结果条数
+     * @param dao 用于执行该count方法的dao实例
+     * @param sql 原本的Sql对象,将复制其sql语句,变量和参数表.
+     */
+    public static long queryCount(Dao dao, Sql sql) {
+        String tmpTable = "as _nutz_tmp";
+        if (dao.meta().isDB2())
+            tmpTable = "as nutz_tmp_" + R.UU32();
+        else if (dao.meta().isOracle())
+            tmpTable = "";
+        else
+            tmpTable += "_" + R.UU32();
+        Sql sql2 = Sqls.fetchInt("select count(1) from (" + sql.getSourceSql() + ")" + tmpTable);
+        sql2.params().putAll(sql.params());
+        sql2.vars().putAll(sql.vars());
+        return dao.execute(sql2).getInt();
     }
 
     /**
