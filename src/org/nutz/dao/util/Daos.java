@@ -364,8 +364,12 @@ public abstract class Daos {
         else
             tmpTable += "_" + R.UU32();
         Sql sql2 = Sqls.fetchLong("select count(1) from (" + sql.getSourceSql() + ")" + tmpTable);
-        sql2.params().putAll(sql.params());
-        sql2.vars().putAll(sql.vars());
+        for (String key : sql.params().keys()) {
+            sql2.setParam(key, sql.params().get(key));
+        }
+        for (String key : sql.vars().keys()) {
+            sql2.setVar(key, sql.vars().get(key));
+        }
         return dao.execute(sql2).getLong();
     }
 
