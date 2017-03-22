@@ -12,6 +12,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -112,7 +113,7 @@ public class Scans {
                                     "folder or file like '%s' no found in %s",
                                     regex,
                                     Castors.me().castToString(paths));
-        return new ArrayList<NutResource>((new LinkedHashSet<NutResource>(list)));
+        return list;
     }
 
     public void registerLocation(Class<?> klass) {
@@ -206,10 +207,10 @@ public class Scans {
         if (srcFile.exists()) {
             if (srcFile.isDirectory()) {
                 Disks.visitFile(srcFile,
-                                new ResourceFileVisitor(list, src),
+                                new ResourceFileVisitor(list, src, 250),
                                 new ResourceFileFilter(pattern));
             } else {
-                list.add(new FileResource(src, srcFile));
+                list.add(new FileResource(src, srcFile).setPriority(250));
             }
         }
         for (ResourceLocation location : locations.values()) {
@@ -252,6 +253,22 @@ public class Scans {
                 }
             }
         }
+        List<NutResource> _list = new ArrayList<NutResource>();
+        OUT: for (NutResource nr : list) {
+            Iterator<NutResource> it = _list.iterator();
+            while (it.hasNext()) {
+                NutResource nr2 = it.next();
+                if (nr.equals(nr2)) {
+                    if (nr.priority > nr2.priority) {
+                        it.remove();
+                    } else {
+                        continue OUT;
+                    }
+                }
+            }
+            _list.add(nr);
+        }
+        list = _list;
         Collections.sort(list);
         if (log.isDebugEnabled())
             log.debugf("Found %s resource by src( %s ) , regex( %s )", list.size(), src, regex);
@@ -421,16 +438,18 @@ public class Scans {
 
     public static class ResourceFileVisitor implements FileVisitor {
         public void visit(File f) {
-            list.add(new FileResource(base, f));
+            list.add(new FileResource(base, f).setPriority(priority));
         }
 
         String base;
         List<NutResource> list;
+        int priority;
 
-        public ResourceFileVisitor(List<NutResource> list, String base) {
+        public ResourceFileVisitor(List<NutResource> list, String base, int priority) {
             super();
             this.list = list;
             this.base = base;
+            this.priority = priority;
         }
     }
 
@@ -442,7 +461,12 @@ public class Scans {
         }
         Stopwatch sw = Stopwatch.begin();
         // 当前文件夹
-        addResourceLocation(ResourceLocation.file(new File(".")));
+        try {
+            FileSystemResourceLocation rc = new FileSystemResourceLocation(new File(".").getAbsoluteFile().getCanonicalFile());
+            rc.priority = 200;
+            addResourceLocation(rc);
+        } catch (Throwable e) {
+        }
         // 推测一下nutz自身所在的位置
         //registerLocation(Nutz.class);
         ClassLoader cloader = ClassTools.getClassLoader();

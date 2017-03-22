@@ -24,7 +24,7 @@ public class FileSystemResourceLocation extends ResourceLocation {
             return;
         }
         
-        Disks.visitFile(baseFile, new Scans.ResourceFileVisitor(list, base), new Scans.ResourceFileFilter(pattern));
+        Disks.visitFile(baseFile, new Scans.ResourceFileVisitor(list, base, priority), new Scans.ResourceFileFilter(pattern));
     }
 
     public String toString() {
