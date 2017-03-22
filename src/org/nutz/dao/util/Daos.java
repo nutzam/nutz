@@ -345,9 +345,9 @@ public abstract class Daos {
             tmpTable = "";
         else
             tmpTable += "_" + R.UU32();
-        Sql sql2 = Sqls.fetchInt("select count(1) from (" + sql + ")" + tmpTable);
+        Sql sql2 = Sqls.fetchLong("select count(1) from (" + sql + ")" + tmpTable);
         dao.execute(sql2);
-        return sql2.getInt();
+        return sql2.getLong();
     }
     
     /**
@@ -363,10 +363,10 @@ public abstract class Daos {
             tmpTable = "";
         else
             tmpTable += "_" + R.UU32();
-        Sql sql2 = Sqls.fetchInt("select count(1) from (" + sql.getSourceSql() + ")" + tmpTable);
+        Sql sql2 = Sqls.fetchLong("select count(1) from (" + sql.getSourceSql() + ")" + tmpTable);
         sql2.params().putAll(sql.params());
         sql2.vars().putAll(sql.vars());
-        return dao.execute(sql2).getInt();
+        return dao.execute(sql2).getLong();
     }
 
     /**
