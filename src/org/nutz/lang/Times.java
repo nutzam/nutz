@@ -746,7 +746,7 @@ public abstract class Times {
     private static final DateFormat DF_DATE_TIME_MS4 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private static final DateFormat DF_DATE_TIME = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final DateFormat DF_DATE = new SimpleDateFormat("yyyy-MM-dd");
-    private static final DateFormat DF_MONTH = new SimpleDateFormat("yyyy-MM");
+    //private static final DateFormat DF_MONTH = new SimpleDateFormat("yyyy-MM");
 
     public static final long T_1S = 1000;
     public static final long T_1M = 60 * 1000;
