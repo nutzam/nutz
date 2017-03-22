@@ -10,6 +10,8 @@ import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
 
 public class FileSystemResourceLocation extends ResourceLocation {
+    
+    public int priority = 150;
 
     public String id() {
         return root.getAbsolutePath();
@@ -18,7 +20,7 @@ public class FileSystemResourceLocation extends ResourceLocation {
     public void scan(final String base, final Pattern pattern, final List<NutResource> list) {
         final File baseFile = new File(root.getAbsolutePath()+"/"+base);
         if (baseFile.isFile()) {
-            list.add(new FileResource(baseFile));
+            list.add(new FileResource(baseFile).setPriority(priority));
             return;
         }
         

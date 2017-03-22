@@ -18,19 +18,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.servlet.ServletContext;
 
-import org.nutz.Nutz;
 import org.nutz.castor.Castors;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
@@ -43,9 +36,12 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.resource.impl.ErrorResourceLocation;
 import org.nutz.resource.impl.FileResource;
+import org.nutz.resource.impl.FileSystemResourceLocation;
 import org.nutz.resource.impl.JarResource;
+import org.nutz.resource.impl.JarResourceLocation;
 import org.nutz.resource.impl.ResourceLocation;
 import org.nutz.resource.impl.SimpleResource;
+import org.nutz.resource.impl.WebClassesResourceLocation;
 
 /**
  * 资源扫描的帮助函数集
@@ -75,25 +71,28 @@ public class Scans {
      */
 	public Scans init(final ServletContext sc) {
 	    Stopwatch sw = Stopwatch.begin();
-        // 获取classes文件夹的路径
-        String classesPath = sc.getRealPath("/WEB-INF/classes/");
-        if (classesPath != null) {
-            addResourceLocation(ResourceLocation.file(new File(classesPath)));
-        }
+        // 获取classes文件夹的路径, 优先级为125
+	    String classesPath = sc.getRealPath("/WEB-INF/classes");
+	    if (classesPath == null)
+	        addResourceLocation(new WebClassesResourceLocation(sc));
+	    else {
+	        ResourceLocation rc = ResourceLocation.file(new File(classesPath));
+	        if (rc instanceof FileSystemResourceLocation)
+	            ((FileSystemResourceLocation)rc).priority = 125;
+	        addResourceLocation(rc);
+	    }
 
-        // 获取lib文件夹中的全部jar
+        // 获取lib文件夹中的全部jar, 优先级是50
         Set<String> jars = sc.getResourcePaths("/WEB-INF/lib/");
         if (jars != null) {// 这个文件夹不一定存在,尤其是Maven的WebApp项目
-            String[] _jars = jars.toArray(new String[jars.size()]);
-            for (int i = 0; i < _jars.length; i++) {
-                _jars[i] = sc.getRealPath(_jars[i]);
-            }
-            if (!USE_CONCURRENCY || !addConcurrency(_jars)) {
-                log.info("fallback to one by one Scans.init");
-                for (String path : jars) {
-                    if (!path.toLowerCase().endsWith(".jar"))
-                        continue;
-                    addResourceLocation(ResourceLocation.jar(sc.getRealPath(path)));
+            for (String path : jars) {
+                if (!path.endsWith(".jar"))
+                    continue;
+                try {
+                    addResourceLocation(new JarResourceLocation(sc.getResource(path)));
+                }
+                catch (Exception e) {
+                    log.debug("parse jar fail >> " + e.getMessage());
                 }
             }
         }
@@ -155,7 +154,7 @@ public class Scans {
         try {
             String str = url.toString();
             if (str.endsWith(".jar")) {
-                return ResourceLocation.jar(str);
+                return new JarResourceLocation(url);
             } else if (str.contains("jar!")) {
             	if (str.startsWith("jar:file:")) {
             		str = str.substring("jar:file:".length());
@@ -445,7 +444,7 @@ public class Scans {
         // 当前文件夹
         addResourceLocation(ResourceLocation.file(new File(".")));
         // 推测一下nutz自身所在的位置
-        registerLocation(Nutz.class);
+        //registerLocation(Nutz.class);
         ClassLoader cloader = ClassTools.getClassLoader();
         for (String referPath : referPaths) {
             try {
@@ -488,53 +487,6 @@ public class Scans {
         printLocations(sw);
     }
     
-    class RL implements Callable<ResourceLocation>{
-        
-        public ResourceLocation loc;
-        public String path;
-        
-        public RL(String path) {
-            this.path = path;
-        }
-
-        public ResourceLocation call() throws Exception {
-            log.debug(">> " + path);
-            loc = ResourceLocation.jar(path);
-            return loc;
-        }
-        
-    }
-    
-    public boolean addConcurrency(String[] _jars) {
-        ExecutorService es = Executors.newFixedThreadPool(8);
-        List<Future<ResourceLocation>> tmps = new ArrayList<Future<ResourceLocation>>(_jars.length);
-        for (int i = 0; i < _jars.length; i++) {
-            final String path = _jars[i];
-            if (path == null || !path.toLowerCase().endsWith(".jar"))
-                continue;
-            tmps.add(es.submit(new Callable<ResourceLocation>() {
-                public ResourceLocation call() {
-                    return ResourceLocation.jar(path);
-                }
-            }));
-        }
-        es.shutdown();
-        try {
-            es.awaitTermination(5, TimeUnit.MINUTES);
-            for (Future<ResourceLocation> f : tmps) {
-                try {
-                    if (f.get() != null)
-                        addResourceLocation(f.get());
-                }
-                catch (ExecutionException e) {
-                }
-            }
-            return true;
-        }
-        catch (InterruptedException e) {
-            return false;
-        }
-    }
     
     public void addResourceLocation(ResourceLocation loc) {
         locations.put(loc.id(), loc);
@@ -552,6 +504,4 @@ public class Scans {
             log.trace("Locations for Scans:\n" + sb);
         }
     }
-    
-    public static boolean USE_CONCURRENCY = true;
 }

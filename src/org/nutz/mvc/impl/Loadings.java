@@ -156,7 +156,7 @@ public abstract class Loadings {
             catch (NullPointerException e) {
                 // Android上无法拿到getProtectionDomain,just pass
             }
-            Scans.me().registerLocation(type);
+            //Scans.me().registerLocation(type);
         }
 
         // 执行扫描

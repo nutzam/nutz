@@ -72,7 +72,8 @@ public abstract class NutResource implements Comparable<NutResource> {
         return priority;
     }
     
-    public void setPriority(int priority) {
+    public NutResource setPriority(int priority) {
         this.priority = priority;
+        return this;
     }
 }
