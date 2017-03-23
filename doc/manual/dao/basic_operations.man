@@ -97,7 +97,7 @@
     // 根据特定条件更新特定字段
     dao.update(Person.class, Chain.make("dead",true), Cnd.where("age",">",150));
     // 常用的+1更新
-    dao.update(Person.class, Chain.makeSpecial("age", "+1").and("location", "yvr"), Cnd.where("name","=", "wendal"));
+    dao.update(Person.class, Chain.makeSpecial("age", "+1").add("location", "yvr"), Cnd.where("name","=", "wendal"));
     }}}
 -----------------------------------------------------------------------------------------------------------------
 删除 Delete
