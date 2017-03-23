@@ -141,6 +141,14 @@ public class JsonFormat implements Cloneable {
      */
     private boolean nullAsEmtry;
     
+    private boolean nullListAsEmpty;
+    
+    private boolean nullStringAsEmpty;
+    
+    private boolean nullBooleanAsFalse;
+    
+    private boolean nullNumberAsZero;
+    
     private TimeZone timeZone;
 
     /**
@@ -443,6 +451,11 @@ public class JsonFormat implements Cloneable {
         jf.dateFormat = this.dateFormat;
         jf.numberFormat = this.numberFormat;
         jf.nullAsEmtry = this.nullAsEmtry;
+        jf.nullListAsEmpty = this.nullListAsEmpty;
+        jf.nullNumberAsZero = this.nullNumberAsZero;
+        jf.nullStringAsEmpty = this.nullStringAsEmpty;
+        jf.nullBooleanAsFalse = this.nullBooleanAsFalse;
+        jf.timeZone = this.timeZone;
         return jf;
     }
     
@@ -479,5 +492,37 @@ public class JsonFormat implements Cloneable {
 
     public void setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
+    }
+
+    public boolean isNullListAsEmpty() {
+        return nullListAsEmpty;
+    }
+
+    public void setNullListAsEmpty(boolean nullListAsEmpty) {
+        this.nullListAsEmpty = nullListAsEmpty;
+    }
+
+    public boolean isNullStringAsEmpty() {
+        return nullStringAsEmpty;
+    }
+
+    public void setNullStringAsEmpty(boolean nullStringAsEmpty) {
+        this.nullStringAsEmpty = nullStringAsEmpty;
+    }
+
+    public boolean isNullBooleanAsFalse() {
+        return nullBooleanAsFalse;
+    }
+
+    public void setNullBooleanAsFalse(boolean nullBooleanAsFalse) {
+        this.nullBooleanAsFalse = nullBooleanAsFalse;
+    }
+
+    public boolean isNullNumberAsZero() {
+        return nullNumberAsZero;
+    }
+
+    public void setNullNumberAsZero(boolean nullNumberAsZero) {
+        this.nullNumberAsZero = nullNumberAsZero;
     }
 }

@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -272,35 +273,58 @@ public class JsonRenderImpl implements JsonRender {
                                 value = null;
                         }
                     }
-                    // 如果是强制输出为字符串的
-                    if (null != value && jef.isForceString()) {
-                        // 数组
-                        if (value.getClass().isArray()) {
-                            String[] ss = new String[Array.getLength(value)];
-                            for (int i = 0; i < ss.length; i++) {
-                                ss[i] = Array.get(value, i).toString();
+                    if (null == value) {
+                        // 处理各种类型的空值
+                        if (mirror != null) {
+                            if (mirror.isStringLike()) {
+                                if (format.isNullStringAsEmpty())
+                                    value = "";
                             }
-                            value = ss;
-                        }
-                        // 集合
-                        else if (value instanceof Collection) {
-                            Collection col = (Collection) Mirror.me(value)
-                                                                .born();
-                            for (Object ele : (Collection) value) {
-                                col.add(ele.toString());
+                            else if (mirror.isNumber()) {
+                                if (format.isNullNumberAsZero())
+                                    value = 0;
                             }
-                            value = col;
+                            else if (mirror.isCollection()) {
+                                if (format.isNullListAsEmpty())
+                                    value = Collections.EMPTY_LIST;
+                            }
+                            else if (jef.getGenericType() == Boolean.class) {
+                                if (format.isNullBooleanAsFalse())
+                                    value = false;
+                            }
                         }
-                        // 其他统统变字符串
-                        else {
-                            value = value2string(jef, value);
+                    } else {
+                        // 如果是强制输出为字符串的
+                        if (jef.isForceString()) {
+                            // 数组
+                            if (value.getClass().isArray()) {
+                                String[] ss = new String[Array.getLength(value)];
+                                for (int i = 0; i < ss.length; i++) {
+                                    ss[i] = Array.get(value, i).toString();
+                                }
+                                value = ss;
+                            }
+                            // 集合
+                            else if (value instanceof Collection) {
+                                Collection col = (Collection) Mirror.me(value)
+                                                                    .born();
+                                for (Object ele : (Collection) value) {
+                                    col.add(ele.toString());
+                                }
+                                value = col;
+                            }
+                            // 其他统统变字符串
+                            else {
+                                value = value2string(jef, value);
+                            }
+                        } else if (jef.hasDataFormat() && value instanceof Date) {
+                            value = jef.getDataFormat().format((Date)value);
+                        } else if (jef.hasDataFormat() && (mirror != null && mirror.isNumber())) {
+                            value = jef.getDataFormat().format(value);
                         }
-                    } else if (jef.hasDataFormat() && null != value && value instanceof Date) {
-                        value = jef.getDataFormat().format((Date)value);
-                    } else if (jef.hasDataFormat() && null != value && (mirror != null && mirror.isNumber())) {
-                        value = jef.getDataFormat().format(value);
                     }
-
+                    
+                    
                     // 加入输出列表 ...
                     list.add(new Pair(name, value));
                 }
