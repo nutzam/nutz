@@ -115,7 +115,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         }
         catch (Exception e) {
             if (log.isDebugEnabled())
-                log.debugf("Table '%s' doesn't exist!", en.getViewName());
+                log.debugf("Table '%s' doesn't exist! class=%s", en.getViewName(), en.getType().getName());
         }
         // Close ResultSet and Statement
         finally {
