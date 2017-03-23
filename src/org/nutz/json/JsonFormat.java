@@ -465,16 +465,18 @@ public class JsonFormat implements Cloneable {
         return actived;
     }
 
-    public void setActived(Pattern actived) {
+    public JsonFormat setActived(Pattern actived) {
         this.actived = actived;
+        return this;
     }
 
     public Pattern getLocked() {
         return locked;
     }
 
-    public void setLocked(Pattern locked) {
+    public JsonFormat setLocked(Pattern locked) {
         this.locked = locked;
+        return this;
     }
 
     public boolean isNullAsEmtry() {
@@ -490,39 +492,44 @@ public class JsonFormat implements Cloneable {
         return timeZone;
     }
 
-    public void setTimeZone(TimeZone timeZone) {
+    public JsonFormat setTimeZone(TimeZone timeZone) {
         this.timeZone = timeZone;
+        return this;
     }
 
     public boolean isNullListAsEmpty() {
         return nullListAsEmpty;
     }
 
-    public void setNullListAsEmpty(boolean nullListAsEmpty) {
+    public JsonFormat setNullListAsEmpty(boolean nullListAsEmpty) {
         this.nullListAsEmpty = nullListAsEmpty;
+        return this;
     }
 
     public boolean isNullStringAsEmpty() {
         return nullStringAsEmpty;
     }
 
-    public void setNullStringAsEmpty(boolean nullStringAsEmpty) {
+    public JsonFormat setNullStringAsEmpty(boolean nullStringAsEmpty) {
         this.nullStringAsEmpty = nullStringAsEmpty;
+        return this;
     }
 
     public boolean isNullBooleanAsFalse() {
         return nullBooleanAsFalse;
     }
 
-    public void setNullBooleanAsFalse(boolean nullBooleanAsFalse) {
+    public JsonFormat setNullBooleanAsFalse(boolean nullBooleanAsFalse) {
         this.nullBooleanAsFalse = nullBooleanAsFalse;
+        return this;
     }
 
     public boolean isNullNumberAsZero() {
         return nullNumberAsZero;
     }
 
-    public void setNullNumberAsZero(boolean nullNumberAsZero) {
+    public JsonFormat setNullNumberAsZero(boolean nullNumberAsZero) {
         this.nullNumberAsZero = nullNumberAsZero;
+        return this;
     }
 }
