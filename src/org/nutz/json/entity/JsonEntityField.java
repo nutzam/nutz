@@ -43,6 +43,8 @@ public class JsonEntityField {
     private boolean hasJsonIgnore;
     
     private Format dataFormat;
+    
+    private Mirror<?> mirror;
 
     public boolean isForceString() {
         return forceString;
@@ -69,6 +71,7 @@ public class JsonEntityField {
         jef.name = name;
         jef.ejecting = new EjectByGetter(getter);
         jef.injecting = new InjectBySetter(setter);
+        jef.mirror = Mirror.me(getter.getReturnType());
         return jef;
     }
 
@@ -78,6 +81,7 @@ public class JsonEntityField {
         jef.name = name;
         jef.ejecting = ejecting;
         jef.injecting = injecting;
+        jef.mirror = Mirror.me(type);
         return jef;
     }
 
@@ -101,6 +105,7 @@ public class JsonEntityField {
         jef.name = Strings.sBlank(null == jf ? null : jf.value(), fld.getName());
         jef.ejecting = mirror.getEjecting(fld.getName());
         jef.injecting = mirror.getInjecting(fld.getName());
+        jef.mirror = Mirror.me(fld.getType());
 
         // 瞬时变量和明确声明忽略的，变 ignore
         if (Modifier.isTransient(fld.getModifiers())
@@ -177,5 +182,9 @@ public class JsonEntityField {
     
     public boolean hasDataFormat() {
         return dataFormat != null;
+    }
+    
+    public Mirror<?> getMirror() {
+        return mirror;
     }
 }
