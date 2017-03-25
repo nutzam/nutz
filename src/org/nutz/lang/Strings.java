@@ -1299,25 +1299,4 @@ public class Strings {
         return isMatch(P_UnionPayCard, s);
     }
 	
-    /**
-     * 按分割符驼峰输出字符串
-     * @param s 待转化的字符串
-     * @param j 分隔符  经测试英文点（.）无需转译（\\.）
-     * @return 输出驼峰字符
-     */
-    public static String camelCase(String s, String j) {
-
-        StringBuffer sb = new StringBuffer();
-        int first = 0;
-        while (s.indexOf(j) != -1) {
-            first = s.indexOf(j);
-            if (first != s.length()) {
-                sb.append(s.substring(0, first));
-                s = s.substring(first + j.length(), s.length());
-                s = Strings.upperFirst(s);
-            }
-        }
-        sb.append(s);
-        return sb.toString();
-    }
 }
