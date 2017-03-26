@@ -108,6 +108,9 @@
 		<doc path="filepool.man"/>
 		<doc path="log.man"/>
 	</doc>
+	<doc path="weixin" title="微信">
+		<doc path="helloworld.man"></doc>
+	</doc>
 	<doc path="http" title="Http轻客户端">
 		<doc path="overview.man"></doc>
 	</doc>
