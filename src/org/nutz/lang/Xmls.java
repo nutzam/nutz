@@ -542,7 +542,11 @@ public abstract class Xmls {
      * @return XML 字符串
      */
     public static String mapToXml(Map<String, Object> map) {
-        StringBuilder sb = new StringBuilder("<xml>");
+        return mapToXml("xml", map);
+    }
+    
+    public static String mapToXml(String root, Map<String, Object> map) {
+        StringBuilder sb = new StringBuilder("<"+root+">");
         for (Map.Entry<String, Object> en : map.entrySet()) {
             String key = en.getKey();
             Object val = en.getValue();
@@ -552,7 +556,7 @@ public abstract class Xmls {
             sb.append(val.toString());
             sb.append("</").append(key).append('>');
         }
-        sb.append("\n</xml>");
+        sb.append("\n</"+root+">");
         return sb.toString();
     }
 
@@ -585,4 +589,6 @@ public abstract class Xmls {
             throw Lang.wrapThrow(e);
         }
     }
+    
+    public static String HEAD = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
 }
