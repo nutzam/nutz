@@ -30,6 +30,8 @@ TransSession的由来
 	    } catch (Throwable e) {
 	    	tx.rollback();
 	    	log.debug("tx fail", e);
+	    } finally {
+	    	tx.close();
 	    }
 	}}}
 	
