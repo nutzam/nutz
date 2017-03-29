@@ -2,6 +2,7 @@ package org.nutz.dao.jdbc;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
@@ -104,7 +105,7 @@ public class JdbcExpertConfigFile {
     // 在 fromJson 的时候，会被调用
     public void setExperts(Map<String, Class<? extends JdbcExpert>> experts) {
         this.experts = experts;
-        this._experts = new HashMap<Pattern, Class<? extends JdbcExpert>>();
+        this._experts = new LinkedHashMap<Pattern, Class<? extends JdbcExpert>>();
         for (Entry<String, Class<? extends JdbcExpert>> entry : experts.entrySet()) {
             //忽略大小写,并且让换行符与.能够匹配
             _experts.put(Pattern.compile(entry.getKey(), Pattern.DOTALL & Pattern.CASE_INSENSITIVE), entry.getValue());
