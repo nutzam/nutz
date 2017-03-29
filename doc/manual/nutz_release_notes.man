@@ -19,6 +19,7 @@
     * fix: Strings.isEmail()规则不完整 [https://github.com/nutzam/nutz/issues/1215 issue_1215]
     * fix: Lang.each方法与JDK8闭包的兼容性问题 [https://github.com/nutzam/nutz/issues/1228 issue_1228]
     * fix: 注入一个类型不合的对象到另外一个对象的属性时,报错信息让人迷惑 [https://github.com/nutzam/nutz/issues/1232 issue_1232]
+    * fix: 腾讯云Mysql数据库被识别为DB2 [https://github.com/nutzam/nutz/issues/1210 issue_1210]
     * add: 增加 Http的Request HEAD方法的支持 [https://github.com/nutzam/nutz/issues/1206 issue_1206]
     * add: Http.upload上传文件，支持同一个参数含有多个文件 [https://github.com/nutzam/nutz/issues/1220 issue_1220]
     * add: 提供不需要@column的机制和驼峰式命名的全局开关 [https://github.com/nutzam/nutz/issues/1217 issue_1217]
