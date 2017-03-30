@@ -31,7 +31,7 @@ class ChangeToChildConstructorMethodAdapter extends NormalMethodAdapter {
         // end of Linenumber
         mv.visitVarInsn(ALOAD, 0);
         loadArgs();
-        mv.visitMethodInsn(INVOKESPECIAL, superClassName, "<init>", desc);
+        mv.visitMethodInsn(INVOKESPECIAL, superClassName, "<init>", desc, false);
         mv.visitInsn(RETURN);
         mv.visitMaxs(2, 2);
         mv.visitEnd();

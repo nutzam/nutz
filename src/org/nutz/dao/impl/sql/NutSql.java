@@ -15,7 +15,6 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.impl.sql.pojo.AbstractPItem;
 import org.nutz.dao.impl.sql.pojo.StaticPItem;
-import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.DaoStatement;

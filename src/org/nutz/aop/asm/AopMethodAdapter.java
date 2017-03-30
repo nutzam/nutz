@@ -65,11 +65,13 @@ class AopMethodAdapter extends NormalMethodAdapter implements Opcodes {
         mv.visitMethodInsn(    INVOKESPECIAL,
                             ORG_NUTZ_AOP_INTERCEPTOR_CHAIN,
                             "<init>",
-                            "(ILjava/lang/Object;Ljava/lang/reflect/Method;Ljava/util/List;[Ljava/lang/Object;)V");
+                            "(ILjava/lang/Object;Ljava/lang/reflect/Method;Ljava/util/List;[Ljava/lang/Object;)V",
+                            false);
         mv.visitMethodInsn(    INVOKEVIRTUAL,
                             ORG_NUTZ_AOP_INTERCEPTOR_CHAIN,
                             "doChain",
-                            "()Lorg/nutz/aop/InterceptorChain;");
+                            "()Lorg/nutz/aop/InterceptorChain;",
+                            false);
 
         {
             if (Type.getReturnType(desc).equals(Type.VOID_TYPE)) {
@@ -78,7 +80,8 @@ class AopMethodAdapter extends NormalMethodAdapter implements Opcodes {
                 mv.visitMethodInsn(    INVOKEVIRTUAL,
                                     ORG_NUTZ_AOP_INTERCEPTOR_CHAIN,
                                     "getReturn",
-                                    "()Ljava/lang/Object;");
+                                    "()Ljava/lang/Object;",
+                                    false);
                 AsmHelper.checkCast(returnType,mv);
                 returnIt();
             }
