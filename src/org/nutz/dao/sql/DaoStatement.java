@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.List;
 
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 
@@ -252,4 +253,6 @@ public interface DaoStatement extends Serializable {
     boolean isForceExecQuery();
     
     String forPrint();
+    
+    void setExpert(JdbcExpert expert);
 }

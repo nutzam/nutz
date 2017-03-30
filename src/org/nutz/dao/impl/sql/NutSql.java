@@ -298,7 +298,7 @@ public class NutSql extends NutStatement implements Sql {
                 }
             }
             if (val == null) {
-                adaptors[off] = Jdbcs.getAdaptorBy(null);
+                adaptors[off] = getAdapterBy(null);
                 return off + 1;
             } else if (val instanceof PItem) {
                 return ((PItem) val).joinAdaptor(en, adaptors, off);
@@ -306,14 +306,14 @@ public class NutSql extends NutStatement implements Sql {
                 int len = Lang.length(val);
                 Lang.each(val, new Each<Object>() {
                     public void invoke(int index, Object ele, int length) {
-                        adaptors[off + index] = Jdbcs.getAdaptorBy(ele);
+                        adaptors[off + index] = getAdapterBy(ele);
                     }
                 });
                 return off + len;
                 // } else if (val instanceof Condition) {
 
             } else {
-                adaptors[off] = Jdbcs.getAdaptorBy(val);
+                adaptors[off] = getAdapterBy(val);
                 return off + 1;
             }
         }

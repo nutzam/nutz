@@ -12,6 +12,10 @@ import java.util.List;
 import org.nutz.castor.Castors;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.impl.entity.field.NutMappingField;
+import org.nutz.dao.jdbc.JdbcExpert;
+import org.nutz.dao.jdbc.Jdbcs;
+import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.sql.SqlContext;
 import org.nutz.dao.sql.SqlType;
@@ -31,7 +35,7 @@ public abstract class NutStatement implements DaoStatement {
 
     private SqlType sqlType;
     
-    private boolean forceExecQuery;
+    protected JdbcExpert expert;
     
     public NutStatement() {
         this.context = new SqlContext();
@@ -308,14 +312,29 @@ public abstract class NutStatement implements DaoStatement {
     }
 
     public void forceExecQuery() {
-    	this.forceExecQuery = true;
+    	this.sqlType = SqlType.SELECT;
     }
     
     public boolean isForceExecQuery() {
-    	return forceExecQuery;
+    	return isSelect();
     }
 
     public String toString() {
         return toStatement(this.getParamMatrix(), this.toPreparedStatement());
+    }
+    
+    public void setExpert(JdbcExpert expert) {
+        this.expert = expert;
+    }
+    
+    protected ValueAdaptor getAdapterBy(Object value) {
+        if (value == null)
+            return Jdbcs.Adaptor.asNull;
+        if (expert == null)
+            return Jdbcs.getAdaptorBy(value);
+        NutMappingField mf = new NutMappingField(entity);
+        mf.setType(value.getClass());
+        Jdbcs.guessEntityFieldColumnType(mf);
+        return expert.getAdaptor(mf);
     }
 }
