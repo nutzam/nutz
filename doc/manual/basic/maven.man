@@ -102,3 +102,28 @@ Nutz核心jar
 	</repositories>
 </project>
 	}}}
+	
+----------------------------------------------------------------------------------------------------
+特别提醒
+
+	如果配置过镜像库,例如阿里的镜像库, 你的settings.xml里面也许有这样的配置,注意星号
+	
+	{{{<XML>
+	<mirror>
+        <id>nexus-aliyun</id>
+        <mirrorOf>*</mirrorOf>
+        <name>Nexus aliyun</name>
+        <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+	</mirror>
+	}}}
+	
+	这个配置是错误的, 星号代表全部,无论是release还是snapshots都代理, 会导致所有第三方快照库的设置都失效. 要改成
+	
+	{{{<XML>
+	<mirror>
+        <id>nexus-aliyun</id>
+        <mirrorOf>central</mirrorOf>
+        <name>Nexus aliyun</name>
+        <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+	</mirror>
+	}}}
