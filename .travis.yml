@@ -2,8 +2,6 @@ sudo: false
 language: java
 script: mvn clean source:jar cobertura:cobertura package
 jdk:
-  - openjdk7
-  - oraclejdk7
   - oraclejdk8
 # whitelist
 branches:
