@@ -1,10 +1,15 @@
 package org.nutz.mvc.testapp;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Map;
 
+import org.apache.tomcat.InstanceManager;
+import org.apache.tomcat.SimpleInstanceManager;
+import org.eclipse.jetty.apache.jsp.JettyJasperInitializer;
+import org.eclipse.jetty.plus.annotation.ContainerInitializer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.After;
@@ -51,7 +56,11 @@ public abstract class BaseWebappTest {
                 System.err.println(url);
                 server = new Server(8888);
                 String warUrlString = path.substring(0, path.length() - 4);
-                server.setHandler(new WebAppContext(warUrlString, getContextPath()));
+                WebAppContext webapp = new WebAppContext(warUrlString, getContextPath());
+                webapp.setAttribute("org.eclipse.jetty.containerInitializers" , Arrays.asList (
+                                                                                               new ContainerInitializer(new JettyJasperInitializer(), null)));
+                                                                            webapp.setAttribute(InstanceManager.class.getName(), new SimpleInstanceManager());
+                server.setHandler(webapp);
                 server.start();
             }
             catch (Throwable e) {
