@@ -927,28 +927,6 @@ public abstract class Times {
     }
 
     /**
-     * 两个日期String yyyy-MM-dd HH:mm:ss相减得到的秒数
-     *
-     * @param sDT1
-     * @param sDT2
-     * @return 两个日期相减得到的秒数
-     */
-    public static long timeSub(String sDT1, String sDT2) {
-        return (parseq(DF_DATE_TIME, sDT2).getTime() - parseq(DF_DATE_TIME, sDT1).getTime()) / 1000;
-    }
-
-    /**
-     * 两个日期相减得到的秒数
-     *
-     * @param sDT1
-     * @param sDT2
-     * @return 两个日期相减得到的秒数
-     */
-    public static long timeSub(Date sDT1, Date sDT2) {
-        return (sDT2.getTime() - sDT1.getTime()) / 1000;
-    }
-
-    /**
      * 获得某月的天数
      *
      * @param year
@@ -1272,5 +1250,31 @@ public abstract class Times {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DATE, 1);
         return format(DF_DATE, cal.getTime());
+    }
+
+    public static final long T_1MS = 1;
+    public static final long T_1W = 7 * 24 * 60 * 60 * 1000;
+
+    /**
+     * 判断两个日期相差的时长
+     * @param s 起始日期
+     * @param e 结束日期
+     * @param unit 相差的单位
+     *             T_1MS 毫秒 T_1S 秒 T_1M 分 T_1H 时 T_1D 天 T_1W 周
+     * @return
+     */
+    public static long between(Date s, Date e, long unit) {
+
+        Date start;
+        Date end;
+        if (s.before(e)) {
+            start = s;
+            end = e;
+        } else {
+            start = e;
+            end = s;
+        }
+        long diff = end.getTime() - start.getTime();
+        return diff / unit;
     }
 }
