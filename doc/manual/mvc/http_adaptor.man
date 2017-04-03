@@ -217,6 +217,20 @@
 		}}}
 		实际上，Nutz.Mvc 会将 HTTP 输入流解析成一个 Map，然后从 Map 里取出 "fox" 和 "fox_food" 这
 		两个子 Map，分别转换成 Pet 对象和 Food 对象。
+		
+		js通常这样写
+		
+		{{{<JS>
+		var data = {id:1,name:'陆离',age:19,sex:'女',relation:'媳妇'};
+		$.ajax({
+			url:'/HelloNutz/jsonAdapter',
+			"data": JSON.stringify(data), // 注意要转为json,除非data本身就是json字符串
+			dataType:'json',
+			success:function(data){
+				console.log(data);
+			}
+		});
+		}}}
 	------------------------------------------------------------------------------------------
 	什么都不干 - VoidAdaptor
 		某些特殊的情况，你需要彻底控制输入流的解析，同时你又不想使用任何适配器，你可以
