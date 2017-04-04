@@ -20,5 +20,9 @@ public interface FastClass {
 	Object setField(Object obj, String fieldName, Object value);
 
 	Object getField(Object obj, String fieldName);
+	
+	FastMethod fast(Method method);
+	
+	FastMethod fast(Constructor<?> constructor);
 
 }

@@ -21,8 +21,8 @@ import org.nutz.lang.Mirror;
 import org.nutz.lang.born.BornContext;
 import org.nutz.lang.born.Borning;
 import org.nutz.lang.born.Borns;
-import org.nutz.lang.reflect.FastClass;
 import org.nutz.lang.reflect.FastClassFactory;
+import org.nutz.lang.reflect.FastMethod;
 import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -188,11 +188,16 @@ public class NutEntity<T> implements Entity<T> {
             bornByDefault = mirror.getBorningByArgTypes();
             try {
                 type.getConstructor();// 测试是否有默认构造方法
-                final FastClass fast = FastClassFactory.get(type);
+                final FastMethod fm = FastClassFactory.get(type).fast(type.getConstructor());
                 bornByDefault = new Borning<T>() {
                     @SuppressWarnings("unchecked")
                     public T born(Object... args) {
-                        return (T)fast.born();
+                        try {
+                            return (T)fm.invoke(null);
+                        }
+                        catch (Exception e) {
+                            throw Lang.wrapThrow(e);
+                        }
                     }
                 };
             }
