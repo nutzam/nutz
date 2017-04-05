@@ -3,18 +3,20 @@ package org.nutz.lang.born;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-public class ConstructorBorning<T> implements Borning<T> {
+import org.nutz.lang.reflect.FastMethod;
 
-    private Constructor<T> c;
+public class ConstructorBorning<T> extends AbstractConstructorBorning implements Borning<T> {
+
+    protected FastMethod fm;
 
     public ConstructorBorning(Constructor<T> c) {
-        this.c = c;
-        this.c.setAccessible(true);
+        super(c);
     }
 
+    @SuppressWarnings("unchecked")
     public T born(Object... args) {
     	try {
-			return c.newInstance(args);
+    	    return (T)call(args);
 		} catch (InvocationTargetException e1) {
 			throw new BorningException(e1.getTargetException(), c.getDeclaringClass(), args);
 		} catch (Exception e) {
