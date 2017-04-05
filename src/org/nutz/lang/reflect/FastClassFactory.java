@@ -55,8 +55,12 @@ public final class FastClassFactory implements Opcodes {
         }
     }
     
-    public static Object invoke(Object obj, Method method, Object ... args) {
-        return get(method.getDeclaringClass()).invoke(obj, method, args);
+    public static FastMethod get(Method method) {
+        return get(method.getDeclaringClass()).fast(method);
+    }
+    
+    public static FastMethod get(Constructor<?> constructor) {
+        return get(constructor.getDeclaringClass()).fast(constructor);
     }
 
     protected static synchronized FastClass create(Class<?> klass) {

@@ -10,6 +10,7 @@ import java.util.Map;
 import org.nutz.el.opt.custom.CustomMake;
 import org.nutz.json.Json;
 import org.nutz.lang.Files;
+import org.nutz.lang.Lang;
 import org.nutz.lang.util.NutType;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -142,4 +143,6 @@ public class NutConf {
     public static void clear() {
         conf = null;
     }
+    
+    public static boolean USE_FASTCLASS = !Lang.isAndroid;
 }

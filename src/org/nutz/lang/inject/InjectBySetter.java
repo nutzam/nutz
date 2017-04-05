@@ -7,8 +7,11 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.nutz.castor.Castors;
+import org.nutz.conf.NutConf;
 import org.nutz.json.Json;
 import org.nutz.lang.Lang;
+import org.nutz.lang.reflect.FastClassFactory;
+import org.nutz.lang.reflect.FastMethod;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -16,6 +19,7 @@ public class InjectBySetter implements Injecting {
     
     private static final Log log = Logs.get();
     
+    protected FastMethod fm;
     private Method setter;
     private Class<?> valueType;
     private Type type;
@@ -37,7 +41,13 @@ public class InjectBySetter implements Injecting {
             } else {
                 v = Castors.me().castTo(value, valueType);
             }
-            setter.invoke(obj, v);
+            if (NutConf.USE_FASTCLASS) {
+                if (fm == null)
+                    fm = FastClassFactory.get(setter);
+                fm.invoke(obj, v);
+            } else {
+                setter.invoke(obj, v);
+            }
         }
         catch (Exception _e) {
             Throwable e = _e;

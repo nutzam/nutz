@@ -27,7 +27,11 @@ public class FastMethodFactory implements Opcodes {
     protected static FastMethod make(Class<?> klass, Method method) {
         String descriptor = Type.getMethodDescriptor(method);
         String key = Lang.md5(descriptor);
-        String className = klass.getName() + "$FastMethod$" + method.getName() + "$" + key;
+        String className;
+        if (klass.getName().startsWith("java"))
+            className = FastMethodFactory.class.getPackage().getName() + ".fast." + klass.getName() + "$FastMethod$" + method.getName() + "$" + key;
+        else
+            className = klass.getName() + "$FastMethod$" + method.getName() + "$" + key;
         FastMethod fm = (FastMethod) cache.get(className);
         if (fm != null)
             return fm;
@@ -42,7 +46,7 @@ public class FastMethodFactory implements Opcodes {
                            method.getParameterTypes(),
                            _Method(method),
                            method.getReturnType(),
-                           className.replace('.', '/'),
+                           className,
                            descriptor);
         Class<?> t = DefaultClassDefiner.defaultOne().define(className,
                                                              buf,
@@ -60,7 +64,11 @@ public class FastMethodFactory implements Opcodes {
     protected static FastMethod make(Class<?> klass, Constructor<?> constructor) {
         String descriptor = Type.getConstructorDescriptor(constructor);
         String key = Lang.md5(descriptor);
-        String className = klass.getName() + "$FastConstructor$" + key;
+        String className;
+        if (klass.getName().startsWith("java"))
+            className = FastMethodFactory.class.getPackage().getName() + ".fast." + klass.getName() + "$FastConstructor$" + key;
+        else
+            className = klass.getName() + "$FastConstructor$" + key;
         FastMethod fm = (FastMethod) cache.get(className);
         if (fm != null)
             return fm;
@@ -75,7 +83,7 @@ public class FastMethodFactory implements Opcodes {
                            constructor.getParameterTypes(),
                            _Method(constructor),
                            null,
-                           className.replace('.', '/'),
+                           className,
                            descriptor);
         Class<?> t = DefaultClassDefiner.defaultOne().define(className,
                                                              buf,
@@ -100,7 +108,7 @@ public class FastMethodFactory implements Opcodes {
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         cw.visit(V1_5,
                  ACC_PUBLIC,
-                 className,
+                 className.replace('.', '/'),
                  null,
                  "java/lang/Object",
                  new String[]{FastMethod.class.getName().replace('.', '/')});

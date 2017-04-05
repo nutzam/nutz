@@ -49,7 +49,7 @@ public class MethodInvokeProcessor extends AbstractProcessor{
 	    synchronized (this) {
             if (fm != null)
                 return;
-            fm = FastClassFactory.get(method.getDeclaringClass()).fast(method);
+            fm = FastClassFactory.get(method);
         }
 	}
 }

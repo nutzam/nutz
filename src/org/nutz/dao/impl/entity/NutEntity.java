@@ -21,11 +21,7 @@ import org.nutz.lang.Mirror;
 import org.nutz.lang.born.BornContext;
 import org.nutz.lang.born.Borning;
 import org.nutz.lang.born.Borns;
-import org.nutz.lang.reflect.FastClassFactory;
-import org.nutz.lang.reflect.FastMethod;
 import org.nutz.lang.util.Context;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
 
 /**
  * 记录一个实体
@@ -33,8 +29,6 @@ import org.nutz.log.Logs;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public class NutEntity<T> implements Entity<T> {
-    
-    private static final Log log = Logs.get();
 
     private static final Object[] EMTRY_ARG = new Object[]{};
 
@@ -186,25 +180,6 @@ public class NutEntity<T> implements Entity<T> {
         // 获得默认的构造方法
         try {
             bornByDefault = mirror.getBorningByArgTypes();
-            try {
-                type.getConstructor();// 测试是否有默认构造方法
-                final FastMethod fm = FastClassFactory.get(type).fast(type.getConstructor());
-                bornByDefault = new Borning<T>() {
-                    @SuppressWarnings("unchecked")
-                    public T born(Object... args) {
-                        try {
-                            return (T)fm.invoke(null);
-                        }
-                        catch (Exception e) {
-                            throw Lang.wrapThrow(e);
-                        }
-                    }
-                };
-            }
-            catch (Throwable e) {
-                // pls report issues
-                log.debugf("create FastClass for type=%s, but it is ok: %s", type, e.getMessage(), e);
-            }
         }
         catch (Exception e) {}
 

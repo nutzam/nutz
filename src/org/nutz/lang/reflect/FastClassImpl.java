@@ -49,12 +49,7 @@ public class FastClassImpl implements FastClass {
 
     public Object born(Constructor<?> constructor, Object... args) {
         try {
-            FastMethod fm = fast(constructor);
-            if (fm != null)
-                return fm.invoke(null, args);
-            if (!constructor.isAccessible())
-                constructor.setAccessible(true);
-            return constructor.newInstance(args);
+            return fast(constructor).invoke(null, args);
         }
         catch (Exception e) {
             throw Lang.wrapThrow(e);
@@ -93,7 +88,16 @@ public class FastClassImpl implements FastClass {
         return methods.get(method.getName() + "$" + Type.getMethodDescriptor(method));
     }
     
-    public FastMethod fast(Constructor<?> constructor) {
-        return constructors.get(Type.getConstructorDescriptor(constructor));
+    public FastMethod fast(final Constructor<?> constructor) {
+        FastMethod fm = constructors.get(Type.getConstructorDescriptor(constructor));
+        if (fm == null)
+            fm = new FastMethod() {
+                public Object invoke(Object obj, Object... args) throws Exception {
+                    if (!constructor.isAccessible())
+                        constructor.setAccessible(true);
+                    return constructor.newInstance(args);
+                }
+            };
+       return fm;
     }
 }
