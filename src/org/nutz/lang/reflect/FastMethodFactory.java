@@ -3,8 +3,6 @@ package org.nutz.lang.reflect;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.nutz.aop.DefaultClassDefiner;
@@ -18,34 +16,22 @@ import org.nutz.repo.org.objectweb.asm.commons.GeneratorAdapter;
 public class FastMethodFactory implements Opcodes {
 
     protected static ConcurrentHashMap<String, FastMethod> cache = new ConcurrentHashMap<String, FastMethod>();
-    protected static Map<String, FastMethod> object_methods = new HashMap<String, FastMethod>();
 
     protected static org.nutz.repo.org.objectweb.asm.commons.Method _M;
     protected static org.nutz.repo.org.objectweb.asm.Type Exception_TYPE;
     static {
         _M = _Method("invoke", "(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;");
         Exception_TYPE = Type.getType(Throwable.class);
-        if (!Lang.isAndroid) {
-            try {
-                for (Method method : Object.class.getMethods()) {
-                    String descriptor = Type.getMethodDescriptor(method);
-                    String key = "$FM$" + method.getName() + "$" + Lang.md5(descriptor);
-                    object_methods.put(key, make(Object.class, method));
-                }
-            } catch (Throwable e) {
-            }
-        }
     }
     
-    protected static FastMethod make(Class<?> klass, Method method) {
+    protected static FastMethod make(Method method) {
+        Class<?> klass = method.getDeclaringClass();
         String descriptor = Type.getMethodDescriptor(method);
         String key = "$FM$" + method.getName() + "$" + Lang.md5(descriptor);
         String className = klass.getName() + key;
         if (klass.getName().startsWith("java"))
             className = FastMethod.class.getPackage().getName() + ".fast." + className;
-        FastMethod fm = object_methods.get(key);
-        if (fm == null)
-            fm = cache.get(className);
+        FastMethod fm = cache.get(className);
         if (fm != null)
             return fm;
         try {
@@ -70,18 +56,17 @@ public class FastMethodFactory implements Opcodes {
         catch (Exception e) {
             throw new RuntimeException(e);
         }
-        cache.put(key, fm);
+        cache.put(className, fm);
         return fm;
     }
 
-    protected static FastMethod make(Class<?> klass, Constructor<?> constructor) {
+    protected static FastMethod make(Constructor<?> constructor) {
+        Class<?> klass = constructor.getDeclaringClass();
         String descriptor = Type.getConstructorDescriptor(constructor);
         String key = Lang.md5(descriptor);
-        String className;
+        String className = klass.getName() + "$FC$" + key;
         if (klass.getName().startsWith("java"))
-            className = FastMethodFactory.class.getPackage().getName() + ".fast." + klass.getName() + "$FastConstructor$" + key;
-        else
-            className = klass.getName() + "$FastConstructor$" + key;
+            className = FastMethod.class.getPackage().getName() + ".fast." + className;
         FastMethod fm = (FastMethod) cache.get(className);
         if (fm != null)
             return fm;
@@ -107,7 +92,7 @@ public class FastMethodFactory implements Opcodes {
         catch (Exception e) {
             throw new RuntimeException(e);
         }
-        cache.put(key, fm);
+        cache.put(className, fm);
         return fm;
     }
 

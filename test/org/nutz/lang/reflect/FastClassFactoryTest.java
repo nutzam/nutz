@@ -28,7 +28,8 @@ public class FastClassFactoryTest extends Assert {
     @Test
     public void testInvokeObjectMethodObjectArray() throws Throwable {
         DefaultClassDefiner.debugDir = "/nutz_fastclass/";
-        FastMethod fc = FastMethodFactory.make(Pet.class, Pet.class.getConstructor());
+        FastMethod fc = FastMethodFactory.make(Pet.class.getConstructor());
+        fc = FastMethodFactory.make(Pet.class.getConstructor());
         //net.sf.cglib.reflect.FastClass fc2 = net.sf.cglib.reflect.FastClass.create(Pet.class);
         Mirror<Pet> mirror = Mirror.me(Pet.class);
         Borning<Pet> mb = mirror.getBorning();
@@ -107,7 +108,7 @@ public class FastClassFactoryTest extends Assert {
 //        Lang.quiteSleep(1000);
 //        System.gc();
         if (pet != null)
-            System.out.println(pet.hashCode());
+            System.out.println(FastClassFactory.get(Pet.class.getMethod("hashCode")).invoke(pet));
     }
 
     @Test
