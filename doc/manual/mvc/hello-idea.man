@@ -141,7 +141,7 @@
 
 		仅仅是输出入口函数的返回值。是的，无论入口函数返回什么，都会保存在 request 对象 "obj" 属性中
 
-	启动服务 点击右侧maven Projectc > Plugins > jetty > jetty:run
+	启动服务 点击右侧Maven Projects > Plugins > jetty > jetty:run
 
 		控制台输出
 
