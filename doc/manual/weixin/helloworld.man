@@ -153,10 +153,10 @@ public class DefaultWxHandler extends BasicWxHandler {
     }
 
     public WxOutMsg text(WxInMsg msg) {
-        if ("1".equals(msg)) {
+        if ("1".equals(msg.getContent())) {
             return Wxs.respText("广告法说不能自称第一");
         }
-        else if ("2".equals(msg)) {
+        else if ("2".equals(msg.getContent())) {
             return Wxs.respText("就是这么2");
         }
         return super.text(msg);
