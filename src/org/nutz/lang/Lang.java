@@ -2596,6 +2596,8 @@ public abstract class Lang {
      * @return 来源ip
      */
     public static String getIP(HttpServletRequest request) {
+        if (request == null)
+            return "";
         String ip = request.getHeader("X-Forwarded-For");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
@@ -2623,6 +2625,8 @@ public abstract class Lang {
                 }
             }
         }
+        if (Strings.isBlank(ip))
+            return "";
         if (isIPv4Address(ip) || isIPv6Address(ip)) {
             return ip;
         }
