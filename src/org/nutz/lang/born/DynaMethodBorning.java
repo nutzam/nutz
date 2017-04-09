@@ -10,7 +10,8 @@ public class DynaMethodBorning<T> implements Borning<T> {
 
     public DynaMethodBorning(Method method) {
         this.method = method;
-        this.method.setAccessible(true);
+        if (!method.isAccessible())
+            this.method.setAccessible(true);
     }
 
     @SuppressWarnings("unchecked")

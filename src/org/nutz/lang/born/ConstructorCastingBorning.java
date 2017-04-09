@@ -4,21 +4,20 @@ import java.lang.reflect.Constructor;
 
 import org.nutz.lang.Lang;
 
-public class ConstructorCastingBorning<T> implements Borning<T> {
+public class ConstructorCastingBorning<T> extends AbstractConstructorBorning implements Borning<T> {
 
-    private Constructor<T> c;
     private Class<?>[] pts;
 
     public ConstructorCastingBorning(Constructor<T> c) {
-        this.c = c;
-        this.c.setAccessible(true);
+        super(c);
         this.pts = c.getParameterTypes();
     }
 
+    @SuppressWarnings("unchecked")
     public T born(Object... args) {
         try {
             args = Lang.array2ObjectArray(args, pts);
-            return c.newInstance(args);
+            return (T) call(args);
         }
         catch (Exception e) {
             throw new BorningException(e, c.getDeclaringClass(), args);

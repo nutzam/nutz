@@ -8,7 +8,11 @@
 
 ---------------------------------------------------------------------------------------------------------
 主要变化:
-  
+
+    * update: 重写了Scans类的初始化过程,性能提升20+倍
+    * update: 内置的asm升级到5.2.0,这次无删减了.
+    * update: 重写FastClass实现,非常接近原生的性能了.
+    * update: Mirror与FastClass的透明化融合
     * update: 关于 org.nutz.resource.Scans 覆盖问题 [https://github.com/nutzam/nutz/issues/1227 issue_1227]
     * update: servlet api更新到3.1.0, 运行时继续兼容servlet api 2.5+
     * fix: ViewProcessor的ViewModel参数判断问题 [https://github.com/nutzam/nutz/issues/1209 issue_1209]

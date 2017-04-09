@@ -2,31 +2,16 @@ package org.nutz.lang.born;
 
 import java.lang.reflect.Constructor;
 
-import org.nutz.conf.NutConf;
-import org.nutz.lang.reflect.FastClassFactory;
-import org.nutz.lang.reflect.FastMethod;
-
-public class EmptyArgsConstructorBorning<T> implements Borning<T> {
-
-    private Constructor<T> c;
-    
-    private FastMethod fm;
+public class EmptyArgsConstructorBorning<T> extends AbstractConstructorBorning implements Borning<T> {
 
     public EmptyArgsConstructorBorning(Constructor<T> c) {
-        this.c = c;
-        if (!c.isAccessible())
-            this.c.setAccessible(true);
+        super(c);
     }
 
     @SuppressWarnings("unchecked")
     public T born(Object... args) {
         try {
-            if (NutConf.USE_FASTCLASS) {
-                if (fm == null)
-                    fm = FastClassFactory.get(c);
-                return (T) fm.invoke(null);
-            }
-            return c.newInstance();
+            return (T) call();
         }
         catch (Exception e) {
             throw new BorningException(e, c.getDeclaringClass(), null);

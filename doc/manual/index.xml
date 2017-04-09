@@ -11,6 +11,7 @@
 	<doc path="mvc"	title="Mvc 手册">
 		<doc path="overview.man"/>
 		<doc path="hello.man"/>
+		<doc path="hello-idea.man"/>
 		<doc path="web_xml.man"/>
 		<doc path="modules.man"/>
 		<doc path="url_mapping.man"/>
