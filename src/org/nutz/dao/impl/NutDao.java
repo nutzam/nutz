@@ -267,21 +267,54 @@ public class NutDao extends DaoSupport implements Dao {
         return opt.getUpdateCount();
     }
 
-    public int update(final Object obj, String regex) {
+    public int update(final Object obj, String actived) {
         Object first = Lang.first(obj);
         if (null == first)
             return 0;
 
-        if (Strings.isBlank(regex))
+        if (Strings.isBlank(actived))
             return update(obj);
-
-        Molecule<Integer> m = new Molecule<Integer>() {
+        
+        return update(obj, FieldFilter.create(first.getClass(), actived));
+    }
+    
+    public int update(final Object obj, String actived, String locked, boolean ignoreNull) {
+        Object first = Lang.first(obj);
+        if (null == first)
+            return 0;
+        return update(obj, FieldFilter.create(first.getClass(), actived, locked, ignoreNull));
+    }
+    
+    public int update(final Object obj, FieldFilter fieldFilter) {
+        if (fieldFilter == null)
+            return update(obj);
+        
+        return fieldFilter.run(new Molecule<Integer>() {
             public void run() {
                 setObj(update(obj));
             }
-        };
-        FieldFilter.create(first.getClass(), regex).run(m);
-        return m.getObj();
+        });
+    }
+    
+    public int update(final Object obj, FieldFilter fieldFilter, final Condition cnd) {
+        if (fieldFilter == null)
+            return update(obj, cnd);
+        return fieldFilter.run(new Molecule<Integer>() {
+            public void run() {
+                setObj(update(obj, cnd));
+            }
+        });
+    }
+    
+    public int update(Object obj, Condition cnd) {
+        if (cnd == null)
+            return update(obj);
+        EntityOperator opt = _optBy(obj);
+        if (null == opt)
+            return 0;
+        opt.addUpdateByPkAndCnd(cnd);
+        opt.exec();
+        return opt.getUpdateCount();
     }
 
     public int updateIgnoreNull(final Object obj) {

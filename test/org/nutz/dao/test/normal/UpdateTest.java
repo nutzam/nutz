@@ -247,7 +247,18 @@ public class UpdateTest extends DaoCase {
     }
 
     @Test
-    public void testZZ() {
-
+    public void test_update_with_pk_and_cnd() {
+        dao.create(Pet.class, true);
+        Pet pet = Pet.create("wendal");
+        pet.setAge(30);
+        dao.insert(pet);
+        pet = dao.fetch(Pet.class, "wendal");
+        pet.setAge(31);
+        // 第一次更新, age符合要求
+        dao.update(pet, FieldFilter.create(Pet.class, "age"), Cnd.where("age", "=", 30));
+        // 第二次更新, age不符合要求
+        pet.setAge(90);
+        dao.update(pet, FieldFilter.create(Pet.class, "age"), Cnd.where("age", "=", 30));
+        assertEquals(31, dao.fetch(Pet.class, "wendal").getAge());
     }
 }

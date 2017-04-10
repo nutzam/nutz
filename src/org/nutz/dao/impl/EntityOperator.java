@@ -9,11 +9,14 @@ import org.nutz.dao.Condition;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.impl.sql.pojo.InsertByChainPItem;
+import org.nutz.dao.impl.sql.pojo.NoParamsPItem;
+import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.PojoMaker;
 import org.nutz.dao.sql.SqlType;
 import org.nutz.dao.util.Pojos;
+import org.nutz.dao.util.cri.Static;
 import org.nutz.lang.Each;
 import org.nutz.lang.ExitLoop;
 import org.nutz.lang.Lang;
@@ -73,6 +76,34 @@ public class EntityOperator {
         Pojo pojo = dao.pojoMaker.makeUpdate(en, null)
                                     .append(Pojos.Items.cndAuto(en, Lang.first(obj)))
                                     .setOperatingObject(obj);
+        pojoList.add(pojo);
+        return pojo;
+    }
+    
+    public Pojo addUpdateByPkAndCnd(Condition cnd) {
+        return addUpdateByPkAndCnd(entity, myObj, cnd);
+    }
+    
+    @SuppressWarnings("serial")
+    public Pojo addUpdateByPkAndCnd(final Entity<?> en, final Object obj, final Condition cnd) {
+        if (null == en)
+            return null;
+
+        Pojo pojo = dao.pojoMaker.makeUpdate(en, null)
+                                    .append(Pojos.Items.cndAuto(en, Lang.first(obj)))
+                                    .setOperatingObject(obj);
+        pojo.append(new Static(" AND "));
+        if (cnd instanceof Criteria) {
+            Criteria cri = (Criteria)cnd;
+            cri.where().setTop(false);
+            pojo.append(cri);
+        } else {
+            pojo.append(new NoParamsPItem() {
+                public void joinSql(Entity<?> en, StringBuilder sb) {
+                    sb.append(cnd.toSql(en));
+                }
+            });
+        }
         pojoList.add(pojo);
         return pojo;
     }
