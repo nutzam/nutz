@@ -30,8 +30,6 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     private static final long serialVersionUID = 1L;
 
     private List<SqlExpression> exps;
-
-    private boolean top;
     
     protected boolean not;
     
@@ -39,7 +37,6 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
 
     public SqlExpressionGroup() {
         exps = new ArrayList<SqlExpression>(); // 默认就是10个，能放5个条件，够了吧
-        top = true;
     }
 
     public SqlExpressionGroup and(String name, String op, Object value) {
@@ -363,10 +360,6 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
 
     public List<SqlExpression> cloneExps() {
         return new ArrayList<SqlExpression>(exps);
-    }
-    
-    public void setTop(boolean top) {
-        this.top = top;
     }
     
     public List<SqlExpression> getExps() {

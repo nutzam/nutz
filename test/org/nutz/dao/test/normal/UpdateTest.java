@@ -270,6 +270,12 @@ public class UpdateTest extends DaoCase {
         dao.insert(pet);
         pet = dao.fetch(Pet.class, "wendal");
 
+        // 应该只有第一次生效
+        dao.updateAndIncrIfMatch(pet, null, "age");
+        dao.updateAndIncrIfMatch(pet, null, "age");
+        dao.updateAndIncrIfMatch(pet, null, "age");
+        dao.updateAndIncrIfMatch(pet, null, "age");
+        dao.updateAndIncrIfMatch(pet, null, "age");
         dao.updateAndIncrIfMatch(pet, null, "age");
         assertEquals(31, dao.fetch(Pet.class, "wendal").getAge());
     }

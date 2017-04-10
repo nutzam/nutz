@@ -9,8 +9,9 @@ import org.nutz.dao.Condition;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
+import org.nutz.dao.impl.sql.pojo.AbstractPItem;
+import org.nutz.dao.impl.sql.pojo.ConditionPItem;
 import org.nutz.dao.impl.sql.pojo.InsertByChainPItem;
-import org.nutz.dao.impl.sql.pojo.NoParamsPItem;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.sql.Pojo;
@@ -85,7 +86,6 @@ public class EntityOperator {
         return addUpdateByPkAndCnd(entity, myObj, cnd);
     }
     
-    @SuppressWarnings("serial")
     public Pojo addUpdateByPkAndCnd(final Entity<?> en, final Object obj, final Condition cnd) {
         if (null == en)
             return null;
@@ -95,15 +95,10 @@ public class EntityOperator {
                                     .setOperatingObject(obj);
         pojo.append(new Static(" AND "));
         if (cnd instanceof Criteria) {
-            Criteria cri = (Criteria)cnd;
-            cri.where().setTop(false);
-            pojo.append(cri);
+            // 只取它的where条件
+            pojo.append(((Criteria)cnd).where().setTop(false));
         } else {
-            pojo.append(new NoParamsPItem() {
-                public void joinSql(Entity<?> en, StringBuilder sb) {
-                    sb.append(cnd.toSql(en));
-                }
-            });
+            pojo.append(new ConditionPItem(cnd).setTop(false));
         }
         pojoList.add(pojo);
         return pojo;
@@ -142,12 +137,11 @@ public class EntityOperator {
         if (null == en)
             return null;
         MappingField mf = en.getField(fieldName);
-        if (mf != null)
-            fieldName = mf.getColumnNameInSql();
         Pojo pojo = dao.pojoMaker.makeUpdate(en, null)
                                     .append(new Static("," + fieldName + "=" + fieldName + "+1"))
                                     .append(Pojos.Items.cndAuto(en, Lang.first(obj)))
                                     .setOperatingObject(obj);
+        pojo.append(new Static("AND")).append(((AbstractPItem)Pojos.Items.cndColumn(mf, null)).setTop(false));
         pojoList.add(pojo);
         return pojo;
     }
