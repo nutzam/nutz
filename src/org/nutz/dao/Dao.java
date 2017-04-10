@@ -973,4 +973,8 @@ public interface Dao {
     JdbcExpert getJdbcExpert();
     
     <T> T insert(T t, boolean ignoreNull, boolean ignoreZero, boolean ignoreBlankStr);
+    
+    <T> T insertOrUpdate(T t);
+    
+    int updateAndIncrIfMatch(Object obj, FieldFilter fieldFilter, String fieldName);
 }

@@ -8,6 +8,7 @@ import org.nutz.dao.Chain;
 import org.nutz.dao.Condition;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.impl.sql.pojo.InsertByChainPItem;
 import org.nutz.dao.impl.sql.pojo.NoParamsPItem;
 import org.nutz.dao.sql.Criteria;
@@ -135,6 +136,20 @@ public class EntityOperator {
         pojoList.addAll(re);
 
         return re;
+    }
+    
+    public Pojo addUpdateAndIncrIfMatch(final Entity<?> en, final Object obj, String fieldName) {
+        if (null == en)
+            return null;
+        MappingField mf = en.getField(fieldName);
+        if (mf != null)
+            fieldName = mf.getColumnNameInSql();
+        Pojo pojo = dao.pojoMaker.makeUpdate(en, null)
+                                    .append(new Static("," + fieldName + "=" + fieldName + "+1"))
+                                    .append(Pojos.Items.cndAuto(en, Lang.first(obj)))
+                                    .setOperatingObject(obj);
+        pojoList.add(pojo);
+        return pojo;
     }
 
     public Pojo addUpdate(Condition cnd) {

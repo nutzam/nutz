@@ -261,4 +261,16 @@ public class UpdateTest extends DaoCase {
         dao.update(pet, FieldFilter.create(Pet.class, "age"), Cnd.where("age", "=", 30));
         assertEquals(31, dao.fetch(Pet.class, "wendal").getAge());
     }
+    
+    @Test
+    public void test_update_with_age_incr() {
+        dao.create(Pet.class, true);
+        Pet pet = Pet.create("wendal");
+        pet.setAge(30);
+        dao.insert(pet);
+        pet = dao.fetch(Pet.class, "wendal");
+
+        dao.updateAndIncrIfMatch(pet, null, "age");
+        assertEquals(31, dao.fetch(Pet.class, "wendal").getAge());
+    }
 }

@@ -1069,4 +1069,38 @@ public class NutDao extends DaoSupport implements Dao {
         };
         return ff.run(m);
     }
+    
+    public <T> T insertOrUpdate(T t) {
+        if (t == null)
+            return null;
+        if (fetch(t) != null)
+            update(t);
+        else
+            insert(t);
+        return t;
+    }
+    
+    public int updateAndIncrIfMatch(Object obj, FieldFilter fieldFilter, String fieldName) {
+        EntityOperator opt = _optBy(obj);
+        if (null == opt)
+            return 0;
+        if (fieldName == null)
+            fieldName = "version";
+        if (fieldFilter == null)
+            fieldFilter = FieldFilter.create(obj.getClass(), null, "^"+fieldName+"$", false);
+        else {
+            FieldMatcher fieldMatcher = fieldFilter.map().get(obj.getClass());
+            if (fieldMatcher == null) {
+                fieldMatcher = FieldMatcher.make(null, "^"+fieldName+"$", false);
+                fieldFilter.map().put(obj.getClass(), fieldMatcher);
+            } else {
+                if (fieldMatcher.getLocked() == null) {
+                    fieldMatcher.setLocked("^"+fieldName+"$");
+                }
+            }
+        }
+        opt.addUpdateAndIncrIfMatch(getEntity(obj.getClass()), obj, fieldName);
+        opt.exec();
+        return opt.getUpdateCount();
+    }
 }
