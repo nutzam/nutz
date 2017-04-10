@@ -1071,12 +1071,16 @@ public class NutDao extends DaoSupport implements Dao {
     }
     
     public <T> T insertOrUpdate(T t) {
+        return insertOrUpdate(t, null, null);
+    }
+    
+    public <T> T insertOrUpdate(T t, FieldFilter insertFieldFilter, FieldFilter updateFieldFilter) {
         if (t == null)
             return null;
         if (fetch(t) != null)
-            update(t);
+            update(t, updateFieldFilter);
         else
-            insert(t);
+            insert(t, insertFieldFilter);
         return t;
     }
     

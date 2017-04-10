@@ -29,7 +29,7 @@ public interface Dao {
      * @see org.nutz.dao.SqlManager
      */
     SqlManager sqls();
-    
+
     PojoMaker pojoMaker();
 
     /**
@@ -68,7 +68,7 @@ public interface Dao {
      * @return 对象
      */
     <T> T getObject(Class<T> classOfT, ResultSet rs, FieldMatcher fm);
-    
+
     <T> T getObject(Class<T> classOfT, ResultSet rs, FieldMatcher fm, String prefix);
 
     /**
@@ -104,12 +104,16 @@ public interface Dao {
      * @see org.nutz.dao.entity.annotation.Next
      */
     <T> T insert(T obj);
-    
+
     /**
-     * 将一个对象按FieldFilter过滤后,插入到一个数据源。<p/>
+     * 将一个对象按FieldFilter过滤后,插入到一个数据源。
+     * <p/>
      * <code>dao.insert(pet, FieldFilter.create(Pet.class, FieldMatcher.create(false)));</code>
-     * @param obj 要被插入的对象
-     * @param filter 字段过滤器, 其中FieldMatcher.isIgnoreId生效
+     * 
+     * @param obj
+     *            要被插入的对象
+     * @param filter
+     *            字段过滤器, 其中FieldMatcher.isIgnoreId生效
      * @return 插入后的对象
      * @see org.nutz.dao.Dao#insert(Object)
      */
@@ -242,7 +246,7 @@ public interface Dao {
      * @return 返回实际被更新的记录条数，一般的情况下，如果更新成功，返回 1，否则，返回 0
      */
     int update(Object obj, String actived);
-    
+
     /**
      * 更新对象一部分字段
      * 
@@ -253,11 +257,11 @@ public interface Dao {
      * @return 返回实际被更新的记录条数，一般的情况下，如果更新成功，返回 1，否则，返回 0
      */
     int update(Object obj, String actived, String locked, boolean ignoreNull);
-    
+
     int update(Object obj, FieldFilter fieldFilter);
-    
+
     int update(Object obj, FieldFilter fieldFilter, Condition cnd);
-    
+
     int update(Object obj, Condition cnd);
 
     /**
@@ -364,13 +368,10 @@ public interface Dao {
      * 
      * @see org.nutz.dao.entity.annotation.ManyMany
      */
-    int updateRelation(Class<?> classOfT,
-                       String regex,
-                       Chain chain,
-                       Condition cnd);
-    
+    int updateRelation(Class<?> classOfT, String regex, Chain chain, Condition cnd);
+
     <T> List<T> query(Class<T> classOfT, Condition cnd, Pager pager, FieldMatcher matcher);
-    
+
     <T> List<T> query(Class<T> classOfT, Condition cnd, Pager pager, String regex);
 
     /**
@@ -415,7 +416,23 @@ public interface Dao {
      * @see org.nutz.dao.Condition
      */
     List<Record> query(String tableName, Condition cnd, Pager pager);
-    
+
+    /**
+     * 查询出一组记录。
+     * 
+     * @param tableName
+     *            表名 - 格式为 <b>tableName[:idName]</b> 比如 ： <b>t_pet</b> 或者
+     *            <b>t_pet:id</b> 尤其在 SqlServer2005 的环境下，需要用 t_pet:id 的形式来指明 ID
+     *            字段，否则 不能分页
+     * @param cnd
+     *            条件 - <b style=color:red>请注意：</b> 你传入的 Criteria 实现必须考虑到 没有
+     *            'Entity<?>' 传入。即 toSql 函数的参数永远为 null。
+     * @param pager
+     *            翻页信息
+     * @param fields
+     *            需要查询的列, 将直接拼入SQL中.由于不会提前探知表结构,所以这fields并非正则表达式,务必留意.
+     * @return
+     */
     List<Record> query(String tableName, Condition cnd, Pager pager, String fields);
 
     /**
@@ -448,7 +465,7 @@ public interface Dao {
      * @return 一共迭代的数量
      */
     <T> int each(Class<T> classOfT, Condition cnd, Pager pager, Each<T> callback);
-    
+
     /**
      * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
      * 
@@ -461,7 +478,7 @@ public interface Dao {
      * @return 一共迭代的数量
      */
     <T> int each(Class<T> classOfT, Condition cnd, Each<T> callback);
-    
+
     /**
      * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
      * 
@@ -493,7 +510,22 @@ public interface Dao {
      * @return 一共迭代的数量
      */
     int each(String tableName, Condition cnd, Each<Record> callback);
-    
+
+    /**
+     * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
+     * 
+     * @param tableName
+     *            表名 - 格式为 <b>tableName[:idName]</b> 比如 ： <b>t_pet</b> 或者
+     *            <b>t_pet:id</b> 尤其在 SqlServer2005 的环境下，需要用 t_pet:id 的形式来指明 ID
+     *            字段，否则 不能分页
+     * @param cnd
+     *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序
+     * @param callback
+     *            处理回调
+     * @param fields
+     *            需要查询的列, 将直接拼入SQL中.由于不会提前探知表结构,所以这fields并非正则表达式,务必留意.
+     * @return 一共迭代的数量
+     */
     int each(String tableName, Condition cnd, Pager pager, Each<Record> callback, String fields);
 
     /**
@@ -660,12 +692,15 @@ public interface Dao {
      * @return Record 对象
      */
     Record fetch(String tableName, Condition cnd);
-    
+
     /**
      * 
-     * @param tableName 表名
-     * @param cnd 条件
-     * @param fields 需要select的属性, 不可以是null!!!
+     * @param tableName
+     *            表名
+     * @param cnd
+     *            条件
+     * @param fields
+     *            需要select的属性, 不可以是null!!!
      * @return Record 对象
      */
     Record fetch(String tableName, Condition cnd, String fields);
@@ -720,7 +755,7 @@ public interface Dao {
      *            正则表达式，描述了什么样的关联字段将被关注。如果为 null，则表示全部的关联字段都会被查询
      * @param cnd
      *            关联字段的过滤(排序,条件语句,分页等)
-     * @return  传入的数据对象
+     * @return 传入的数据对象
      */
     <T> T fetchLinks(T obj, String regex, Condition cnd);
 
@@ -788,6 +823,7 @@ public interface Dao {
 
     /**
      * 获取实体描述, 其中包含了Java Pojo<-->数据库的全部映射信息
+     * 
      * @param classOfT
      *            对象类型
      * @return 实体描述
@@ -854,7 +890,18 @@ public interface Dao {
      * @return 计算结果
      */
     int func(Class<?> classOfT, String funcName, String fieldName);
-
+    
+    /**
+     * 对某一个对象字段，进行计算。
+     * 
+     * @param classOfT
+     *            对象类型
+     * @param funcName
+     *            计算函数名，请确保你的数据库是支持这个函数的
+     * @param fieldName
+     *            对象 java 字段名
+     * @return 计算结果
+     */
     Object func2(Class<?> classOfT, String funcName, String fieldName);
 
     /**
@@ -870,6 +917,17 @@ public interface Dao {
      */
     int func(String tableName, String funcName, String colName);
 
+    /**
+     * 对某一个数据表字段，进行计算。
+     * 
+     * @param tableName
+     *            表名
+     * @param funcName
+     *            计算函数名，请确保你的数据是支持库这个函数的
+     * @param colName
+     *            数据库字段名
+     * @return 计算结果
+     */
     Object func2(String tableName, String funcName, String colName);
 
     /**
@@ -887,10 +945,20 @@ public interface Dao {
      */
     int func(Class<?> classOfT, String funcName, String fieldName, Condition cnd);
 
-    Object func2(Class<?> classOfT,
-                 String funcName,
-                 String fieldName,
-                 Condition cnd);
+    /**
+     * 对某一个对象字段，进行计算。
+     * 
+     * @param classOfT
+     *            对象类型
+     * @param funcName
+     *            计算函数名，请确保你的数据库是支持这个函数的
+     * @param fieldName
+     *            对象 java 字段名
+     * @param cnd
+     *            过滤条件
+     * @return 计算结果
+     */
+    Object func2(Class<?> classOfT, String funcName, String fieldName, Condition cnd);
 
     /**
      * 对某一个数据表字段，进行计算。
@@ -907,10 +975,20 @@ public interface Dao {
      */
     int func(String tableName, String funcName, String colName, Condition cnd);
 
-    Object func2(String tableName,
-                 String funcName,
-                 String colName,
-                 Condition cnd);
+    /**
+     * 对某一个数据表字段，进行计算。
+     * 
+     * @param tableName
+     *            表名
+     * @param funcName
+     *            计算函数名，请确保你的数据库是支持这个函数的
+     * @param colName
+     *            数据库字段名
+     * @param cnd
+     *            过滤条件
+     * @return 计算结果
+     */
+    Object func2(String tableName, String funcName, String colName, Condition cnd);
 
     /**
      * 根据数据源的类型，创建一个翻页对象
@@ -965,16 +1043,84 @@ public interface Dao {
      * @return 是否移除成功
      */
     boolean drop(String tableName);
-    
+
+    /**
+     * 执行单条自定义SQL
+     * 
+     * @param sql
+     *            自定义SQL对象
+     * @return 传入的SQL对象,方便链式调用
+     */
     Sql execute(Sql sql);
-    
+
+    /**
+     * 设置数据库方言.
+     * 
+     * @param obj
+     *            可以是类名,JdbcExpert实例,或者数据库名称
+     * @throws Exception
+     *             类名不合法/不存在的时抛出异常
+     */
     void setExpert(Object obj) throws Exception;
-    
+
+    /**
+     * 获取数据库方言的实现实例
+     * 
+     * @return
+     */
     JdbcExpert getJdbcExpert();
-    
+
+    /**
+     * 以特殊规则执行insert
+     * 
+     * @param t
+     *            实例对象
+     * @param ignoreNull
+     *            忽略空值
+     * @param ignoreZero
+     *            忽略0值
+     * @param ignoreBlankStr
+     *            忽略空白字符串
+     * @return 传入的实例变量
+     */
     <T> T insert(T t, boolean ignoreNull, boolean ignoreZero, boolean ignoreBlankStr);
-    
+
+    /**
+     * 根据对象的主键(@Id/@Name/@Pk)先查询, 如果存在就更新, 不存在就插入
+     * 
+     * @param t
+     *            对象
+     * @return 原对象
+     */
     <T> T insertOrUpdate(T t);
     
+    /**
+     * 根据对象的主键(@Id/@Name/@Pk)先查询, 如果存在就更新, 不存在就插入
+     * 
+     * @param t
+     *            对象
+     * @param insertFieldFilter
+     *            插入时的字段过滤, 可以是null
+     * @param updateFieldFilter
+     *            更新时的字段过滤,可以是null
+     * @return 原对象
+     */
+    <T> T insertOrUpdate(T t, FieldFilter insertFieldFilter, FieldFilter updateFieldFilter);
+
+    /**
+     * 乐观锁, 以特定字段的值作为限制条件,更新对象,并自增该字段.
+     * <p/>
+     * 执行的sql如下:
+     * <p/>
+     * <code>update t_user set age=30, city="广州", version=version+1 where name="wendal" and version=124;</code>
+     * 
+     * @param obj
+     *            需要更新的对象, 必须带@Id/@Name/@Pk中的其中一种.
+     * @param fieldFilter
+     *            需要过滤的属性. 若设置了哪些字段不更新,那务必确保过滤掉fieldName的字段
+     * @param fieldName
+     *            参考字段的Java属性名.默认是"version",可以是任意数值字段
+     * @return 若更新成功,返回值大于0, 否则小于等于0
+     */
     int updateAndIncrIfMatch(Object obj, FieldFilter fieldFilter, String fieldName);
 }
