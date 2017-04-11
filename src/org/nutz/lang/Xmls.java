@@ -485,6 +485,9 @@ public abstract class Xmls {
      * @return 一个 Map 对象
      */
     public static NutMap asMap(Element ele, final boolean lowFirst) {
+        return asMap(ele, lowFirst, false);
+    }
+    public static NutMap asMap(Element ele, final boolean lowFirst, final boolean dupAsList) {
         final NutMap map = new NutMap();
         eachChildren(ele, new Each<Element>() {
             public void invoke(int index, Element _ele, int length)
@@ -494,12 +497,18 @@ public abstract class Xmls {
                     key = Strings.lowerFirst(key);
                 Map<String, Object> tmp = asMap(_ele, lowFirst);
                 if (!tmp.isEmpty()) {
-                    map.setv(key, tmp);
+                    if (dupAsList)
+                        map.addv(key, tmp);
+                    else
+                        map.setv(key, tmp);
                     return;
                 }
                 String val = getText(_ele);
                 if (!Strings.isBlank(val)) {
-                    map.setv(key, val);
+                    if (dupAsList)
+                        map.addv(key, val);
+                    else
+                        map.setv(key, val);
                 }
             }
         });

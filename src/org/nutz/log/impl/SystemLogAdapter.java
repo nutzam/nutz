@@ -73,7 +73,7 @@ public class SystemLogAdapter implements LogAdapter, Plugin {
         }
 
         private void printOut(String level, Object message, Throwable t) {
-            System.out.printf("%s %s [%s] %s\n", Times.sDTms(new Date()), level, Thread.currentThread().getName(),message);
+            System.out.printf("%s %s [%s] %s\n", Times.sDTms2(new Date()), level, Thread.currentThread().getName(),message);
             if (t != null)
                 t.printStackTrace(System.out);
         }

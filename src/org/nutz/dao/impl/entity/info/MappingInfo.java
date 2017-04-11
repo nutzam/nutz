@@ -10,7 +10,6 @@ import org.nutz.dao.entity.annotation.Next;
 import org.nutz.dao.entity.annotation.PK;
 import org.nutz.dao.entity.annotation.Prev;
 import org.nutz.dao.entity.annotation.Readonly;
-import org.nutz.dao.entity.annotation.Version;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
@@ -27,8 +26,6 @@ public class MappingInfo extends FieldInfo {
     public Id annId;
 
     public Name annName;
-    
-    public Version annVersion;//版本字段，解决乐观锁
 
     public Next annNext;
 
