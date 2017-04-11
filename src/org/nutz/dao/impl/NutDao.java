@@ -1084,8 +1084,8 @@ public class NutDao extends DaoSupport implements Dao {
         return t;
     }
     
-    public int updateAndIncrIfMatch(Object obj, FieldFilter fieldFilter, String fieldName) {
-        EntityOperator opt = _optBy(obj);
+    public int updateAndIncrIfMatch(final Object obj, FieldFilter fieldFilter, String fieldName) {
+        final EntityOperator opt = _optBy(obj);
         if (null == opt)
             return 0;
         if (fieldName == null)
@@ -1103,8 +1103,12 @@ public class NutDao extends DaoSupport implements Dao {
                 }
             }
         }
-        opt.addUpdateAndIncrIfMatch(getEntity(obj.getClass()), obj, fieldName);
-        opt.exec();
+        final String _fieldName = fieldName;
+        fieldFilter.run(new Atom() {
+            public void run() {
+                opt.addUpdateAndIncrIfMatch(getEntity(obj.getClass()), obj, _fieldName);
+                opt.exec();}
+        });
         return opt.getUpdateCount();
     }
 }
