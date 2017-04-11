@@ -1,67 +1,27 @@
 package org.nutz.dao.impl;
 
+import org.nutz.dao.*;
+import org.nutz.dao.entity.*;
+import org.nutz.dao.impl.link.*;
+import org.nutz.dao.impl.sql.pojo.*;
+import org.nutz.dao.jdbc.JdbcExpert;
+import org.nutz.dao.jdbc.Jdbcs;
+import org.nutz.dao.pager.Pager;
+import org.nutz.dao.sql.*;
+import org.nutz.dao.util.Daos;
+import org.nutz.dao.util.Pojos;
+import org.nutz.dao.util.cri.SqlExpressionGroup;
+import org.nutz.lang.*;
+import org.nutz.trans.Atom;
+import org.nutz.trans.Molecule;
+
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.sql.DataSource;
-
-import org.nutz.dao.Chain;
-import org.nutz.dao.Condition;
-import org.nutz.dao.ConnCallback;
-import org.nutz.dao.Dao;
-import org.nutz.dao.DaoException;
-import org.nutz.dao.FieldFilter;
-import org.nutz.dao.FieldMatcher;
-import org.nutz.dao.SqlManager;
-import org.nutz.dao.Sqls;
-import org.nutz.dao.entity.Entity;
-import org.nutz.dao.entity.EntityMaker;
-import org.nutz.dao.entity.LinkField;
-import org.nutz.dao.entity.LinkVisitor;
-import org.nutz.dao.entity.MappingField;
-import org.nutz.dao.entity.Record;
-import org.nutz.dao.impl.link.DoClearLinkVisitor;
-import org.nutz.dao.impl.link.DoClearRelationByHostFieldLinkVisitor;
-import org.nutz.dao.impl.link.DoClearRelationByLinkedFieldLinkVisitor;
-import org.nutz.dao.impl.link.DoDeleteLinkVisitor;
-import org.nutz.dao.impl.link.DoInsertLinkVisitor;
-import org.nutz.dao.impl.link.DoInsertRelationLinkVisitor;
-import org.nutz.dao.impl.link.DoUpdateLinkVisitor;
-import org.nutz.dao.impl.link.DoUpdateRelationLinkVisitor;
-import org.nutz.dao.impl.sql.pojo.ConditionPItem;
-import org.nutz.dao.impl.sql.pojo.PojoEachEntityCallback;
-import org.nutz.dao.impl.sql.pojo.PojoEachRecordCallback;
-import org.nutz.dao.impl.sql.pojo.PojoFetchEntityCallback;
-import org.nutz.dao.impl.sql.pojo.PojoFetchIntCallback;
-import org.nutz.dao.impl.sql.pojo.PojoFetchObjectCallback;
-import org.nutz.dao.impl.sql.pojo.PojoFetchRecordCallback;
-import org.nutz.dao.impl.sql.pojo.PojoQueryEntityCallback;
-import org.nutz.dao.impl.sql.pojo.PojoQueryRecordCallback;
-import org.nutz.dao.jdbc.JdbcExpert;
-import org.nutz.dao.jdbc.Jdbcs;
-import org.nutz.dao.pager.Pager;
-import org.nutz.dao.sql.Criteria;
-import org.nutz.dao.sql.DaoStatement;
-import org.nutz.dao.sql.GroupBy;
-import org.nutz.dao.sql.PItem;
-import org.nutz.dao.sql.Pojo;
-import org.nutz.dao.sql.PojoCallback;
-import org.nutz.dao.sql.Sql;
-import org.nutz.dao.util.Daos;
-import org.nutz.dao.util.Pojos;
-import org.nutz.dao.util.cri.SqlExpressionGroup;
-import org.nutz.lang.ContinueLoop;
-import org.nutz.lang.Each;
-import org.nutz.lang.ExitLoop;
-import org.nutz.lang.Lang;
-import org.nutz.lang.LoopException;
-import org.nutz.lang.Strings;
-import org.nutz.trans.Atom;
-import org.nutz.trans.Molecule;
 
 public class NutDao extends DaoSupport implements Dao {
 
@@ -1104,6 +1064,15 @@ public class NutDao extends DaoSupport implements Dao {
             }
         }
         opt.addUpdateAndIncrIfMatch(getEntity(obj.getClass()), obj, fieldName);
+        opt.exec();
+        return opt.getUpdateCount();
+    }
+
+    public int updateWithVersion(Object obj) {
+        EntityOperator opt = _optBy(obj);
+        if (null == opt)
+            return 0;
+        opt.addUpdateWithVersion();
         opt.exec();
         return opt.getUpdateCount();
     }

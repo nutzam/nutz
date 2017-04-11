@@ -22,4 +22,6 @@ public interface PojoMaker {
 
     Pojo makeFunc(String tableName, String funcName, String colName);
 
+    Pojo makeUpdateVersion(Entity<?> en, Object refer);
+
 }

@@ -263,4 +263,20 @@ public class EntityOperator {
     public int getPojoListSize() {
     	return pojoList.size();
     }
+
+    public Pojo addUpdateWithVersion() {
+        return addUpdateWithVersion(entity, myObj);
+    }
+
+    public Pojo addUpdateWithVersion(final Entity<?> en, final Object obj) {
+        if (null == en)
+            return null;
+
+        Pojo pojo = dao.pojoMaker.makeUpdateVersion(en, null)
+                .append(Pojos.Items.cndAuto(en, Lang.first(obj)))
+                .append(Pojos.Items.cndVersion())//version where条件
+                .setOperatingObject(obj);
+        pojoList.add(pojo);
+        return pojo;
+    }
 }
