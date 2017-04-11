@@ -118,6 +118,10 @@
 	<doc path="img" title="图像处理小军刀">
 		<doc path="overview.man"></doc>
 	</doc>
+	<doc path="nosql" title="NoSQL相关">
+		<doc path="jedis.man"></doc>
+		<doc path="mongodb.man"></doc>
+	</doc>
 	<doc path="integration" title="插件与集成">
 		<doc path="nutzmore.man"></doc>
 		<doc path="freemarker.man"></doc>
