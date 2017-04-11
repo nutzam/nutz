@@ -232,13 +232,12 @@ public class AnnotationEntityMaker implements EntityMaker {
             }
             else{
             	//wjw(2017-04-10),add,version
-           	 if(mi.annVersion != null){
-                	if(miVersion != null){
-                		throw new DaoException("Allows only a single @Version ! " + type);
+           	    if(mi.annColumn != null && mi.annColumn.version()){
+                    if(miVersion != null){
+                        throw new DaoException("Allows only a single @Version ! " + type);
                 	}
                 	miVersion = mi;
                 }
-            	
             	tmp.add(mi);
             }
         }
@@ -386,7 +385,7 @@ public class AnnotationEntityMaker implements EntityMaker {
         }
         
         //wjw(2017-04-10),add,version
-        if(null != info.annVersion){
+        if(null != info.annColumn && info.annColumn.version()){
         	ef.setAsVersion();
         }
 

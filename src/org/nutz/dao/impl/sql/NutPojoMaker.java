@@ -3,7 +3,6 @@ package org.nutz.dao.impl.sql;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
-import org.nutz.dao.impl.sql.pojo.UpdateFieldsWithVersionPItem;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.PojoCallback;
@@ -124,13 +123,5 @@ public class NutPojoMaker implements PojoMaker {
 			});
 			return pojo.getOperatingObject();
 		}
-    }
-
-    public Pojo makeUpdateVersion(Entity<?> en, Object refer) {
-        Pojo pojo = Pojos.pojo(expert, en, SqlType.UPDATE);
-        pojo.setEntity(en);
-        pojo.append(Pojos.Items.entityTableName());
-        pojo.append(new UpdateFieldsWithVersionPItem(refer));//version自动加一
-        return pojo;
     }
 }

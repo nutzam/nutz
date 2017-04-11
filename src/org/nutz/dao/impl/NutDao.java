@@ -1073,11 +1073,6 @@ public class NutDao extends DaoSupport implements Dao {
     }
 
     public int updateWithVersion(Object obj) {
-        EntityOperator opt = _optBy(obj);
-        if (null == opt)
-            return 0;
-        opt.addUpdateWithVersion();
-        opt.exec();
-        return opt.getUpdateCount();
+        return updateAndIncrIfMatch(obj, null, getEntity(obj.getClass()).getVersionField().getName());
     }
 }

@@ -138,7 +138,7 @@ public class EntityOperator {
             return null;
         MappingField mf = en.getField(fieldName);
         Pojo pojo = dao.pojoMaker.makeUpdate(en, null)
-                                    .append(new Static("," + fieldName + "=" + fieldName + "+1"))
+                                    .append(new Static("," + mf.getColumnNameInSql() + "=" + mf.getColumnNameInSql() + "+1"))
                                     .append(Pojos.Items.cndAuto(en, Lang.first(obj)))
                                     .setOperatingObject(obj);
         pojo.append(new Static("AND")).append(((AbstractPItem)Pojos.Items.cndColumn(mf, null)).setTop(false));
@@ -262,21 +262,5 @@ public class EntityOperator {
 
     public int getPojoListSize() {
     	return pojoList.size();
-    }
-
-    public Pojo addUpdateWithVersion() {
-        return addUpdateWithVersion(entity, myObj);
-    }
-
-    public Pojo addUpdateWithVersion(final Entity<?> en, final Object obj) {
-        if (null == en)
-            return null;
-
-        Pojo pojo = dao.pojoMaker.makeUpdateVersion(en, null)
-                .append(Pojos.Items.cndAuto(en, Lang.first(obj)))
-                .append(Pojos.Items.cndVersion())//version where条件
-                .setOperatingObject(obj);
-        pojoList.add(pojo);
-        return pojo;
     }
 }
