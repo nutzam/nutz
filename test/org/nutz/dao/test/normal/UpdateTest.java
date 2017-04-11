@@ -268,15 +268,20 @@ public class UpdateTest extends DaoCase {
         Pet pet = Pet.create("wendal");
         pet.setAge(30);
         dao.insert(pet);
-        pet = dao.fetch(Pet.class, "wendal");
+        final Pet pet2 = dao.fetch(Pet.class, "wendal");
+        FieldFilter.create(Pet.class, true).run(new Atom() {
+            public void run() {
 
-        // 应该只有第一次生效
-        dao.updateAndIncrIfMatch(pet, null, "age");
-        dao.updateAndIncrIfMatch(pet, null, "age");
-        dao.updateAndIncrIfMatch(pet, null, "age");
-        dao.updateAndIncrIfMatch(pet, null, "age");
-        dao.updateAndIncrIfMatch(pet, null, "age");
-        dao.updateAndIncrIfMatch(pet, null, "age");
-        assertEquals(31, dao.fetch(Pet.class, "wendal").getAge());
+                // 应该只有第一次生效
+                dao.updateAndIncrIfMatch(pet2, null, "age");
+                dao.updateAndIncrIfMatch(pet2, null, "age");
+                dao.updateAndIncrIfMatch(pet2, null, "age");
+                dao.updateAndIncrIfMatch(pet2, null, "age");
+                dao.updateAndIncrIfMatch(pet2, null, "age");
+                dao.updateAndIncrIfMatch(pet2, null, "age");
+                assertEquals(31, dao.fetch(Pet.class, "wendal").getAge());
+            }
+        });
+
     }
 }
