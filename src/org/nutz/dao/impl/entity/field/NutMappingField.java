@@ -1,8 +1,5 @@
 package org.nutz.dao.impl.entity.field;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.Record;
@@ -12,6 +9,9 @@ import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.lang.segment.Segment;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class NutMappingField extends AbstractEntityField implements MappingField {
 
@@ -34,6 +34,8 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 	private boolean isId;
 
 	private boolean isName;
+
+	private boolean isVersion;
 
 	private boolean readonly;
 
@@ -265,4 +267,12 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 	public void setColumnNameInSql(String columnNameInSql) {
         this.columnNameInSql = columnNameInSql;
     }
+
+	public boolean isVersion() {
+		return isVersion;
+	}
+
+	public void setAsVersion() {
+		this.isVersion = true;
+	}
 }

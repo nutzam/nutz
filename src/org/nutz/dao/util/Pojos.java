@@ -1,45 +1,26 @@
 package org.nutz.dao.util;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import org.nutz.dao.Chain;
-import org.nutz.dao.Condition;
-import org.nutz.dao.DaoException;
-import org.nutz.dao.FieldFilter;
-import org.nutz.dao.FieldMatcher;
+import org.nutz.dao.*;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
 import org.nutz.dao.impl.jdbc.NutPojo;
-import org.nutz.dao.impl.sql.pojo.ConditionPItem;
-import org.nutz.dao.impl.sql.pojo.EntityTableNamePItem;
-import org.nutz.dao.impl.sql.pojo.EntityViewNamePItem;
-import org.nutz.dao.impl.sql.pojo.InsertFieldsPItem;
-import org.nutz.dao.impl.sql.pojo.InsertValuesPItem;
-import org.nutz.dao.impl.sql.pojo.PkConditionPItem;
-import org.nutz.dao.impl.sql.pojo.QueryEntityFieldsPItem;
-import org.nutz.dao.impl.sql.pojo.SingleColumnCondtionPItem;
-import org.nutz.dao.impl.sql.pojo.SqlTypePItem;
-import org.nutz.dao.impl.sql.pojo.StaticPItem;
-import org.nutz.dao.impl.sql.pojo.UpdateFieldsByChainPItem;
-import org.nutz.dao.impl.sql.pojo.UpdateFieldsPItem;
+import org.nutz.dao.impl.sql.pojo.*;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
-import org.nutz.dao.sql.Criteria;
-import org.nutz.dao.sql.PItem;
-import org.nutz.dao.sql.Pojo;
-import org.nutz.dao.sql.PojoCallback;
-import org.nutz.dao.sql.SqlType;
+import org.nutz.dao.sql.*;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 public abstract class Pojos {
 
@@ -114,6 +95,10 @@ public abstract class Pojos {
 													mappingField.getTypeClass(),
 													mappingField.getAdaptor(),
 													def);
+		}
+
+		public static PItem cndVersion() {
+			return new VersionConditionPItem();
 		}
 
 		public static PItem cndPk(Entity<?> en, Object[] pks) {
@@ -221,6 +206,42 @@ public abstract class Pojos {
 			      && null != refer 
 			      && fm.isIgnoreNull() 
 			      && null == mf.getValue(Lang.first(refer)))
+				continue;
+			if (null == fm || fm.match(mf.getName()))
+				re.add(mf);
+		}
+		if (re.isEmpty() && log.isDebugEnabled())
+			log.debug("none field for update!");
+		return re;
+	}
+
+	/**
+	 * 用于乐观锁更新
+	 * wjw(2017-04-10),add
+	 * @param en
+	 * @param fm
+	 * @param refer
+	 * @return
+	 */
+	public static List<MappingField> getFieldsForUpdateWithVersion(Entity<?> en, FieldMatcher fm, Object refer) {
+		List<MappingField> re = new ArrayList<MappingField>(en.getMappingFields().size());
+		for (MappingField mf : en.getMappingFields()) {
+			if(mf.isVersion())
+				continue;//version则不添加进去
+			if (mf.isPk()) {
+				if (en.getPkType() == PkType.ID && mf.isId())
+					continue;
+				if (en.getPkType() == PkType.NAME && mf.isName())
+					continue;
+				if (en.getPkType() == PkType.COMPOSITE && mf.isCompositePk())
+					continue;
+			}
+			if (mf.isReadonly() || mf.isAutoIncreasement() || !mf.isUpdate())
+				continue;
+			else if (null != fm
+					&& null != refer
+					&& fm.isIgnoreNull()
+					&& null == mf.getValue(Lang.first(refer)))
 				continue;
 			if (null == fm || fm.match(mf.getName()))
 				re.add(mf);

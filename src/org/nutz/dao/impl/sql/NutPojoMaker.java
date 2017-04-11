@@ -1,26 +1,23 @@
 package org.nutz.dao.impl.sql;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Arrays;
-import java.util.Map;
-
 import org.nutz.dao.DaoException;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
+import org.nutz.dao.impl.sql.pojo.UpdateFieldsWithVersionPItem;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.PojoCallback;
 import org.nutz.dao.sql.PojoMaker;
 import org.nutz.dao.sql.SqlType;
 import org.nutz.dao.util.Pojos;
-import org.nutz.lang.ContinueLoop;
-import org.nutz.lang.Each;
-import org.nutz.lang.ExitLoop;
-import org.nutz.lang.Lang;
-import org.nutz.lang.LoopException;
+import org.nutz.lang.*;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Arrays;
+import java.util.Map;
 
 public class NutPojoMaker implements PojoMaker {
 
@@ -127,5 +124,13 @@ public class NutPojoMaker implements PojoMaker {
 			});
 			return pojo.getOperatingObject();
 		}
+    }
+
+    public Pojo makeUpdateVersion(Entity<?> en, Object refer) {
+        Pojo pojo = Pojos.pojo(expert, en, SqlType.UPDATE);
+        pojo.setEntity(en);
+        pojo.append(Pojos.Items.entityTableName());
+        pojo.append(new UpdateFieldsWithVersionPItem(refer));//version自动加一
+        return pojo;
     }
 }
