@@ -216,6 +216,7 @@ public class AnnotationEntityMaker implements EntityMaker {
         List<MappingInfo> tmp = new ArrayList<MappingInfo>(infos.size());
         MappingInfo miId = null;
         MappingInfo miName = null;
+        MappingInfo miVersion = null;//wjw(2017-04-10),add,version
         for (MappingInfo mi : infos) {
             if (mi.annId != null) {
             	if (miId != null) {
@@ -229,8 +230,17 @@ public class AnnotationEntityMaker implements EntityMaker {
             	}
                 miName = mi;
             }
-            else
-                tmp.add(mi);
+            else{
+            	//wjw(2017-04-10),add,version
+           	 if(mi.annVersion != null){
+                	if(miVersion != null){
+                		throw new DaoException("Allows only a single @Version ! " + type);
+                	}
+                	miVersion = mi;
+                }
+            	
+            	tmp.add(mi);
+            }
         }
         if (miName != null)
             tmp.add(0, miName);
@@ -373,6 +383,11 @@ public class AnnotationEntityMaker implements EntityMaker {
             } else {
                 ef.setColumnComment(comment);
             }
+        }
+        
+        //wjw(2017-04-10),add,version
+        if(null != info.annVersion){
+        	ef.setAsVersion();
         }
 
         // Id 字段

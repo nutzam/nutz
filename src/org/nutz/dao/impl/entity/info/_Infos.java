@@ -17,6 +17,7 @@ import org.nutz.dao.entity.annotation.One;
 import org.nutz.dao.entity.annotation.PK;
 import org.nutz.dao.entity.annotation.Prev;
 import org.nutz.dao.entity.annotation.Readonly;
+import org.nutz.dao.entity.annotation.Version;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.eject.EjectByGetter;
@@ -103,6 +104,8 @@ public class _Infos {
         info.annNext = method.getAnnotation(Next.class);
         info.annPrev = method.getAnnotation(Prev.class);
         info.annReadonly = method.getAnnotation(Readonly.class);
+        //wjw(2017-04-10),add,version
+        info.annVersion = method.getAnnotation(Version.class);
         return info;
     }
 
@@ -127,6 +130,8 @@ public class _Infos {
         info.annPrev = field.getAnnotation(Prev.class);
         info.annReadonly = field.getAnnotation(Readonly.class);
         info.columnComment = field.getAnnotation(Comment.class);
+        //wjw(2017-04-10),add
+        info.annVersion = field.getAnnotation(Version.class);
         
         //检查@Id和@Name的属性类型
         if (info.annId != null) {
@@ -137,6 +142,12 @@ public class _Infos {
         if (info.annName != null)
             if (!Mirror.me(field.getType()).isStringLike())
                 throw Lang.makeThrow(DaoException.class, "Field(%s) annotation @Name , but not String type!!", field);
+        //检查@Version属性类型，必须是int、long、short
+        if (info.annVersion != null){
+        	Mirror<?> mirror =Mirror.me(field.getType());
+        	if (!mirror.isInt() && !mirror.isShort() && !mirror.isLong())
+        		throw Lang.makeThrow(DaoException.class, "Field(%s) annotation @Version , but not  int\\long\\short type!", field);
+        }
         
         return info;
     }

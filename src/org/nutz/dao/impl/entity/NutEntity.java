@@ -265,6 +265,10 @@ public class NutEntity<T> implements Entity<T> {
             theId = field;
         else if (field.isName())
             theName = field;
+      //wjw(2017-04-10),add,乐观锁
+        else if (field.isVersion())
+        	theVersion =field;
+        
         byJava.put(field.getName(), field);
         byDB.put(field.getColumnName(), field);
         fields.add(field);
@@ -381,6 +385,10 @@ public class NutEntity<T> implements Entity<T> {
         return this.theName;
     }
 
+    public MappingField getVersionField() {
+    	return this.theVersion;
+    }
+
     public MappingField getIdField() {
         return this.theId;
     }
@@ -495,9 +503,5 @@ public class NutEntity<T> implements Entity<T> {
         if (null != bornByRS)
             return bornByRS.born(rs);
         return bornByDefault.born(EMTRY_ARG);
-    }
-
-    public MappingField getVersionField() {
-        return this.theVersion;
     }
 }
