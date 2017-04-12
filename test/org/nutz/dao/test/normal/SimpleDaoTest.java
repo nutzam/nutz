@@ -49,13 +49,17 @@ import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.A;
 import org.nutz.dao.test.meta.Abc;
+import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.ColDefineUser;
 import org.nutz.dao.test.meta.DynamicTable;
 import org.nutz.dao.test.meta.Master;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.PetObj;
+import org.nutz.dao.test.meta.Platoon;
 import org.nutz.dao.test.meta.PojoWithNull;
 import org.nutz.dao.test.meta.SimplePOJO;
+import org.nutz.dao.test.meta.Soldier;
+import org.nutz.dao.test.meta.Tank;
 import org.nutz.dao.test.meta.UseBlobClob;
 import org.nutz.dao.test.meta.issue1074.PojoSql;
 import org.nutz.dao.test.meta.issue1163.Issue1163Master;
@@ -853,5 +857,66 @@ public class SimpleDaoTest extends DaoCase {
         assertNotNull(list);
         assertTrue(list.size() > 0);
         assertEquals(2, list.get(0).size());
+    }
+    
+    @Test
+    public void test_fetch_by_join() {
+        dao.create(Platoon.class, true);
+        dao.create(Soldier.class, true);
+        dao.create(Base.class, true);
+        dao.create(Tank.class, true);
+        Platoon platoon = new Platoon();
+        platoon.setName("wendal");
+        
+        Soldier soldier = new Soldier();
+        soldier.setName("stone");
+        
+        Base base = new Base();
+        base.setName("china");
+        
+        platoon.setBase(base);
+        platoon.setLeader(soldier);
+        dao.insertWith(platoon, null);
+        
+        //=======================================
+        // 用条件查
+        platoon = dao.fetchByJoin(Platoon.class, null, Cnd.where("dao_platoon.name", "=", "wendal"));
+        
+        assertNotNull(platoon);
+        assertEquals("wendal", platoon.getName());
+        
+        assertNotNull(platoon.getLeader());
+        assertEquals("stone", platoon.getLeader().getName());
+        
+        assertNotNull(platoon.getBase());
+        assertEquals("china", platoon.getBase().getName());
+        
+        //=======================================
+        // 用@Name
+        platoon = dao.fetchByJoin(Platoon.class, null, "wendal");
+        
+        assertNotNull(platoon);
+        assertEquals("wendal", platoon.getName());
+        
+        assertNotNull(platoon.getLeader());
+        assertEquals("stone", platoon.getLeader().getName());
+        
+        assertNotNull(platoon.getBase());
+        assertEquals("china", platoon.getBase().getName());
+        
+        //=======================================
+        // 用@Id
+        platoon = dao.fetchByJoin(Platoon.class, null, platoon.getId());
+        
+        assertNotNull(platoon);
+        assertEquals("wendal", platoon.getName());
+        
+        assertNotNull(platoon.getLeader());
+        assertEquals("stone", platoon.getLeader().getName());
+        
+        assertNotNull(platoon.getBase());
+        assertEquals("china", platoon.getBase().getName());
+        
+        dao.queryByJoin(Platoon.class, null, null);
     }
 }

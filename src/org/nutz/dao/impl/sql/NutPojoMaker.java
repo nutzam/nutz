@@ -1,8 +1,12 @@
 package org.nutz.dao.impl.sql;
 
 import org.nutz.dao.DaoException;
+import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.LinkField;
+import org.nutz.dao.entity.LinkVisitor;
 import org.nutz.dao.entity.MappingField;
+import org.nutz.dao.impl.sql.pojo.NoParamsPItem;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.PojoCallback;
@@ -16,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class NutPojoMaker implements PojoMaker {
@@ -123,5 +128,70 @@ public class NutPojoMaker implements PojoMaker {
 			});
 			return pojo.getOperatingObject();
 		}
+    }
+    
+    @Override
+    public Pojo makeQueryByJoin(final Entity<?> en, String regex) {
+        final Pojo pojo = Pojos.pojo(expert, en, SqlType.SELECT);
+        pojo.setEntity(en);
+        pojo.append(new QueryJoinFeilds(en, true));
+        final int[] index = new int[1];
+        en.visitOne(null, regex, new LinkVisitor() {
+            public void visit(Object obj, LinkField lnk) {
+                pojo.append(Pojos.Items.wrap(","));
+                pojo.append(new QueryJoinFeilds(lnk.getLinkedEntity(), false));
+                index[0]++;
+            }
+        });
+        pojo.append(Pojos.Items.wrap("FROM"));
+        pojo.append(Pojos.Items.entityViewName());
+        index[0] = 0;
+        en.visitOne(null, regex, new LinkVisitor() {
+            public void visit(Object obj, LinkField lnk) {
+                Entity<?> lnkEntity = lnk.getLinkedEntity();
+                String LJ = String.format("LEFT JOIN %s ON %s.%s = %s.%s", 
+                                          lnkEntity.getTableName(), 
+                                          en.getTableName(), lnk.getHostField().getColumnNameInSql(),
+                                          lnkEntity.getTableName(), lnk.getLinkedField().getColumnNameInSql());
+                pojo.append(Pojos.Items.wrap(LJ));
+                index[0]++;
+            }
+        });
+        return pojo;
+    }
+    
+    @SuppressWarnings("serial")
+    protected static class QueryJoinFeilds extends NoParamsPItem {
+        
+        protected Entity<?> en;
+        protected boolean main;
+        
+        public QueryJoinFeilds(Entity<?> en, boolean main) {
+            this.en = en;
+            this.main = main;
+        }
+
+        public void joinSql(Entity<?> en, StringBuilder sb) {
+            en = this.en;
+            FieldMatcher fm = getFieldMatcher();
+            List<MappingField> efs = _en(en).getMappingFields();
+
+            int old = sb.length();
+
+            for (MappingField ef : efs) {
+                if (fm == null || fm.match(ef.getName())) {
+                    sb.append(en.getTableName()).append(".").append(ef.getColumnNameInSql()).append(" as ");
+                    if (!main)
+                        sb.append(en.getTableName()).append("_z_");
+                    sb.append(ef.getColumnNameInSql()).append(',');
+                }
+            }
+
+            if (sb.length() == old)
+                throw Lang.makeThrow("No columns be queryed: '%s'", _en(en));
+
+            sb.setCharAt(sb.length() - 1, ' ');
+        }
+
     }
 }

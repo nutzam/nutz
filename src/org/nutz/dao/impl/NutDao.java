@@ -595,15 +595,8 @@ public class NutDao extends DaoSupport implements Dao {
         if (null == obj)
             return null;
         Lang.each(obj, false, new Each<Object>() {
-            public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop,
-                    LoopException {
-                EntityOperator opt = _optBy(ele);
-                if (null == opt)
-                    return;
-                opt.entity.visitMany(ele, regex, doLinkQuery(opt, cnd));
-                opt.entity.visitManyMany(ele, regex, doLinkQuery(opt, cnd));
-                opt.entity.visitOne(ele, regex, doFetch(opt));
-                opt.exec();
+            public void invoke(int index, Object ele, int length) {
+                _fetchLinks(ele, regex, true, true, true);
             }
         });
         return obj;
@@ -633,8 +626,7 @@ public class NutDao extends DaoSupport implements Dao {
         if (null == obj)
             return null;
         Lang.each(obj, false, new Each<Object>() {
-            public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop,
-                    LoopException {
+            public void invoke(int index, Object ele, int length) {
                 EntityOperator opt = _optBy(ele);
                 if (null == opt)
                     return;
@@ -1073,6 +1065,73 @@ public class NutDao extends DaoSupport implements Dao {
     }
 
     public int updateWithVersion(Object obj) {
-        return updateAndIncrIfMatch(obj, null, getEntity(obj.getClass()).getVersionField().getName());
+        return updateWithVersion(obj, null);
+    }
+    
+    public int updateWithVersion(Object obj, FieldFilter fieldFilter) {
+        return updateAndIncrIfMatch(obj, fieldFilter, getEntity(obj.getClass()).getVersionField().getName());
+    }
+    
+    public <T> T fetchByJoin(Class<T> klass, String regex, long id) {
+        Entity<T> en = getEntity(klass);
+        MappingField mf = en.getIdField();
+        return fetchByJoin(klass, regex, en, mf, id);
+    }
+    
+    public <T> T fetchByJoin(Class<T> klass, String regex, String name) {
+        Entity<T> en = getEntity(klass);
+        MappingField mf = en.getNameField();
+        return fetchByJoin(klass, regex, en, mf, name);
+    }
+    
+    public <T> T fetchByJoin(Class<T> klass, String regex, Entity<T> en, MappingField mf, Object value) {
+        String key = en.getTableName() + "." + mf.getColumnNameInSql();
+        T t = fetchByJoin(klass, regex, Cnd.where(key, "=", value));
+        if (t != null)
+            _fetchLinks(t, regex, false, true, true);
+        return t;
+    }
+    
+    public <T> T fetchByJoin(Class<T> classOfT, String regex, Condition cnd) {
+        Pojo pojo = pojoMaker.makeQueryByJoin(holder.getEntity(classOfT), regex)
+                .append(Pojos.Items.cnd(cnd))
+                .addParamsBy("*")
+                .setPager(createPager(1, 1))
+                .setAfter(new PojoFetchEntityByJoinCallback(regex));
+        expert.formatQuery(pojo);
+        _exec(pojo);
+        T t = pojo.getObject(classOfT);
+        if (t != null)
+            _fetchLinks(t, regex, false, true, true);
+        return t;
+    }
+    
+    public <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd) {
+        Pojo pojo = pojoMaker.makeQueryByJoin(holder.getEntity(classOfT), regex)
+                .append(Pojos.Items.cnd(cnd))
+                .addParamsBy("*")
+                .setAfter(new PojoQueryEntityByJoinCallback(regex));
+        expert.formatQuery(pojo);
+        _exec(pojo);
+        List<T> list = pojo.getList(classOfT);
+        if (list != null && list.size() > 0) 
+            for (T t : list) {
+                _fetchLinks(t, regex, false, true, true);
+            }
+        return list;
+    }
+    
+    protected Object _fetchLinks(Object t, String regex, boolean visitOne, boolean visitMany, boolean visitManyMany) {
+        EntityOperator opt = _optBy(t);
+        if (null == opt)
+            return t;
+        if (visitMany)
+            opt.entity.visitMany(t, regex, doLinkQuery(opt, null));
+        if (visitManyMany)
+            opt.entity.visitManyMany(t, regex, doLinkQuery(opt, null));
+        if (visitOne)
+            opt.entity.visitOne(t, regex, doFetch(opt));
+        opt.exec();
+        return t;
     }
 }

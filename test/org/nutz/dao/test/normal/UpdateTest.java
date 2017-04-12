@@ -12,6 +12,7 @@ import org.nutz.dao.test.meta.BeanWithDefault;
 import org.nutz.dao.test.meta.Fighter;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.Platoon;
+import org.nutz.dao.test.meta.issue1244.VersionTestPojo;
 import org.nutz.lang.Lang;
 import org.nutz.trans.Atom;
 
@@ -283,5 +284,20 @@ public class UpdateTest extends DaoCase {
             }
         });
 
+    }
+    
+    @Test
+    public void test_update_with_version() {
+        VersionTestPojo ttp = new VersionTestPojo();
+        ttp.setName("wendal");
+        ttp.setAge(20);
+        
+        dao.create(VersionTestPojo.class, true);
+        dao.insert(ttp);
+        ttp.setAge(30);
+        dao.updateWithVersion(ttp);
+        ttp.setAge(90);
+        dao.updateWithVersion(ttp);
+        assertEquals(30, dao.fetch(VersionTestPojo.class, "wendal").getAge());
     }
 }
