@@ -151,8 +151,6 @@ public class NutDao extends DaoSupport implements Dao {
     }
 
     public <T> T insertWith(T obj, String regex) {
-        // TODO 天啊,每个调用都有4个正则表达式,能快起来不?
-        // TODO zzh: NutEntity 会缓存正则表达式计算的结果的，会很快的
         EntityOperator opt = _optBy(obj);
         if (null == opt)
             return null;
@@ -287,19 +285,15 @@ public class NutDao extends DaoSupport implements Dao {
     }
 
     public int update(String tableName, Chain chain, Condition cnd) {
-        if (chain.isSpecial())
-            return Daos.updateBySpecialChain(this, null, tableName, chain, cnd);
         EntityOperator opt = _optBy(chain.toEntityMap(tableName));
         if (null == opt)
             return 0;
-        opt.addUpdate(cnd);
+        opt.addUpdate(chain, cnd);
         opt.exec();
         return opt.getUpdateCount();
     }
 
     public int update(Class<?> classOfT, Chain chain, Condition cnd) {
-        if (chain.isSpecial())
-            return Daos.updateBySpecialChain(this, getEntity(classOfT), null, chain, cnd);
         EntityOperator opt = _opt(classOfT);
         opt.addUpdate(chain, cnd);
         opt.exec();
