@@ -1126,8 +1126,65 @@ public interface Dao {
 
     /**
      * 基于版本的更新，版本不一样无法更新到数据
-     * @param obj
-     * @return
+     * @param obj 需要更新的对象, 必须有version属性
+     * @return 若更新成功,大于0, 否则小于0
      */
     int updateWithVersion(Object obj);
+    
+    /**
+     * 基于版本的更新，版本不一样无法更新到数据
+     * @param obj 需要更新的对象, 必须有version属性
+     * @param fieldFilter 需要过滤的字段设置
+     * @return 若更新成功,大于0, 否则小于0
+     */
+    int updateWithVersion(Object obj, FieldFilter fieldFilter);
+    
+    /**
+     * 根据查询条件获取一个对象.<b>注意: 条件语句需要加上表名!!!</b>
+     * <p/>
+     * 这个方法是让@One关联的属性,通过left join一次性取出. 与fetch+fetchLinks是等价的
+     * @param klass 实体类
+     * @param regex 需要过滤的关联属性,可以是null,取出全部关联属性.
+     * @param cnd 查询条件,必须带表名!!!
+     * @return 实体对象,符合regex的关联属性也会取出
+     */
+    <T> T fetchByJoin(Class<T> classOfT, String regex, Condition cnd);
+
+    /**
+     * 根据对象 ID 获取一个对象。它只会获取这个对象，关联对象不会被获取。
+     * <p>
+     * 你的对象必须在某个字段声明了注解 '@Id'，否则本操作会抛出一个运行时异常
+     * <p/>
+     * 这个方法是让@One关联的属性,通过left join一次性取出. 与fetch+fetchLinks是等价的
+     * @param classOfT 实体类
+     * @param regex 需要取出的关联属性,是正则表达式哦,匹配的是Java属性名
+     * @param id 对象id
+     * @return 实体
+     */
+    <T> T fetchByJoin(Class<T> classOfT, String regex, long id);
+    
+    /**
+     * 根据对象 NAME 获取一个对象。它只会获取这个对象，关联对象不会被获取。
+     * <p>
+     * 你的对象必须在某个字段声明了注解 '@Name'，否则本操作会抛出一个运行时异常
+     * <p/>
+     * 这个方法是让@One关联的属性,通过left join一次性取出. 与fetch+fetchLinks是等价的
+     * 
+     * @param classOfT 实体类
+     * @param regex 需要取出的关联属性,是正则表达式哦,匹配的是Java属性名
+     * @param name 对象name
+     * @return 实体
+     */
+    <T> T fetchByJoin(Class<T> classOfT, String regex, String name);
+    
+    /**
+     * 根据查询条件获取一个对象.<b>注意: 条件语句需要加上表名!!!</b>
+     * <p/>
+     * 这个方法是让@One关联的属性,通过left join一次性取出. 与query+fetchLinks是等价的
+     * @param klass 实体类
+     * @param regex 需要过滤的关联属性,可以是null,取出全部关联属性.
+     * @param cnd 查询条件,必须带表名!!!
+     * @return 实体对象的列表,符合regex的关联属性也会取出
+     */
+    <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd);
 }

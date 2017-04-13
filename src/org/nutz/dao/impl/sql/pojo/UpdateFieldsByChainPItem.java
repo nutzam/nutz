@@ -22,8 +22,31 @@ public class UpdateFieldsByChainPItem extends AbstractPItem {
             sb.append(" SET ");
             Chain c = chain.head();
             while (c != null) {
-                sb.append(this._fmtcolnm(en, c.name()));
-                sb.append("=? ,");
+                sb.append(this._fmtcolnm(en, c.name())).append('=');
+                if (c.isSpecial()) {
+                    Chain head = c;
+                    if (head.value() != null && head.value() instanceof String) {
+                        String str = (String) head.value();
+                        if (str.length() > 0) {
+                            switch (str.charAt(0)) {
+                            case '+':
+                            case '-':
+                            case '*':
+                            case '/':
+                            case '%':
+                            case '&':
+                            case '^':
+                            case '|':
+                                sb.append(this._fmtcolnm(en, c.name()));
+                                break;
+                            }
+                        }
+                    }
+                    sb.append(head.value());
+                } else {
+                    sb.append("?");
+                }
+                sb.append(',');
                 c = c.next();
             }
             sb.deleteCharAt(sb.length() - 1);
@@ -36,12 +59,14 @@ public class UpdateFieldsByChainPItem extends AbstractPItem {
     public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
         Chain c = chain.head();
         while (c != null) {
-            MappingField mf = en.getField(c.name());
-            // TODO 移除这种数组下标用++的写法!!!
-            if (c.adaptor() == null)
-                adaptors[off++] = (null == mf ? Jdbcs.getAdaptorBy(c.value()) : mf.getAdaptor());
-            else
-                adaptors[off++] = c.adaptor();
+            if (!c.isSpecial()) {
+                MappingField mf = en.getField(c.name());
+                // TODO 移除这种数组下标用++的写法!!!
+                if (c.adaptor() == null)
+                    adaptors[off++] = (null == mf ? Jdbcs.getAdaptorBy(c.value()) : mf.getAdaptor());
+                else
+                    adaptors[off++] = c.adaptor();
+            }
             c = c.next();
         }
         return off;
@@ -50,14 +75,22 @@ public class UpdateFieldsByChainPItem extends AbstractPItem {
     public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
         Chain c = chain.head();
         while (c != null) {
-            params[off++] = c.value();
+            if (!c.isSpecial())
+                params[off++] = c.value();
             c = c.next();
         }
         return off;
     }
 
     public int paramCount(Entity<?> en) {
-        return chain.size();
+        int count = 0;
+        Chain c = chain.head();
+        while (c != null) {
+            if (!c.isSpecial())
+                count++;
+            c = c.next();
+        }
+        return count;
     }
 
 }
