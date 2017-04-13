@@ -2,6 +2,9 @@ package org.nutz.dao.test.normal;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 import org.nutz.dao.Chain;
@@ -299,5 +302,32 @@ public class UpdateTest extends DaoCase {
         ttp.setAge(90);
         dao.updateWithVersion(ttp);
         assertEquals(30, dao.fetch(VersionTestPojo.class, "wendal").getAge());
+    }
+    
+    @Test
+    public void test_update_list_with_version() {
+        dao.create(VersionTestPojo.class, true);
+        List<VersionTestPojo> list = new ArrayList<VersionTestPojo>();
+        VersionTestPojo ttp = new VersionTestPojo();
+        ttp.setName("wendal");
+        ttp.setAge(20);
+        list.add(ttp);
+        
+        ttp = new VersionTestPojo();
+        ttp.setName("wendal2");
+        ttp.setAge(30);
+        list.add(ttp);
+        
+        dao.insert(list);
+        
+        for (VersionTestPojo vtp : list) {
+            vtp.setAge(40);
+        }
+        
+        dao.updateWithVersion(list);
+        //assertEquals(2, re);
+        dao.updateWithVersion(list);
+        assertEquals(40, dao.fetch(VersionTestPojo.class, "wendal").getAge());
+        assertEquals(40, dao.fetch(VersionTestPojo.class, "wendal2").getAge());
     }
 }

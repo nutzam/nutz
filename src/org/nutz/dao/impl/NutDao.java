@@ -1043,12 +1043,12 @@ public class NutDao extends DaoSupport implements Dao {
         if (fieldName == null)
             fieldName = "version";
         if (fieldFilter == null)
-            fieldFilter = FieldFilter.create(obj.getClass(), null, "^"+fieldName+"$", false);
+            fieldFilter = FieldFilter.create(opt.entity.getType(), null, "^"+fieldName+"$", false);
         else {
-            FieldMatcher fieldMatcher = fieldFilter.map().get(obj.getClass());
+            FieldMatcher fieldMatcher = fieldFilter.map().get(opt.entity.getType());
             if (fieldMatcher == null) {
                 fieldMatcher = FieldMatcher.make(null, "^"+fieldName+"$", false);
-                fieldFilter.map().put(obj.getClass(), fieldMatcher);
+                fieldFilter.map().put(opt.entity.getType(), fieldMatcher);
             } else {
                 if (fieldMatcher.getLocked() == null) {
                     fieldMatcher.setLocked("^"+fieldName+"$");
@@ -1058,7 +1058,7 @@ public class NutDao extends DaoSupport implements Dao {
         final String _fieldName = fieldName;
         fieldFilter.run(new Atom() {
             public void run() {
-                opt.addUpdateAndIncrIfMatch(getEntity(obj.getClass()), obj, _fieldName);
+                opt.addUpdateAndIncrIfMatch(opt.entity, obj, _fieldName);
                 opt.exec();}
         });
         return opt.getUpdateCount();
@@ -1069,7 +1069,7 @@ public class NutDao extends DaoSupport implements Dao {
     }
     
     public int updateWithVersion(Object obj, FieldFilter fieldFilter) {
-        return updateAndIncrIfMatch(obj, fieldFilter, getEntity(obj.getClass()).getVersionField().getName());
+        return updateAndIncrIfMatch(obj, fieldFilter, getEntity(Lang.first(obj).getClass()).getVersionField().getName());
     }
     
     public <T> T fetchByJoin(Class<T> klass, String regex, long id) {
