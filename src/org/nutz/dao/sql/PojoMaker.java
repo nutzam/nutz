@@ -22,4 +22,5 @@ public interface PojoMaker {
 
     Pojo makeFunc(String tableName, String funcName, String colName);
 
+    Pojo makeQueryByJoin(Entity<?> en, String regex);
 }
