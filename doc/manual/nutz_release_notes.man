@@ -4,12 +4,22 @@
 --------------------------------------------------------------------------------------------------------
 1.r.61 {*未知} 发行注记(20170417)
     
-	跳票中...
+	恩,你比之前快了. 不仅开始的时候快了,过程也快了
+	
+	启动加速, 指Scans类的初始化过程,当项目里面有上百个jar的时候,老版本需3s,现在仅需50ms
+	
+	运行加速, 指FastClass已经完全重写并默认启用,而且对使用者是透明的
+	
+	乐观锁,由[crskyp https://github.com/crskyp]提供
+	
+	我们已经部署上线运行几天,然后才发布这个版本,所以又又又跳票了半个多月.
+	
+	来吧,更新一下,体验一下飞一般的速度
 
 ---------------------------------------------------------------------------------------------------------
 主要变化:
 
-    * update: 重写了Scans类的初始化过程,性能提升20+倍
+    * update: 重写了Scans类的初始化过程,性能提升50+倍
     * update: 内置的asm升级到5.2.0,这次无删减了.
     * update: 重写FastClass实现,非常接近原生的性能了.
     * update: Mirror与FastClass的透明化融合
@@ -24,6 +34,7 @@
     * fix: Lang.each方法与JDK8闭包的兼容性问题 [https://github.com/nutzam/nutz/issues/1228 issue_1228]
     * fix: 注入一个类型不合的对象到另外一个对象的属性时,报错信息让人迷惑 [https://github.com/nutzam/nutz/issues/1232 issue_1232]
     * fix: 腾讯云Mysql数据库被识别为DB2 [https://github.com/nutzam/nutz/issues/1210 issue_1210]
+    * add: 乐观锁(dao.updateWithVersion)
     * add: 增加 Http的Request HEAD方法的支持 [https://github.com/nutzam/nutz/issues/1206 issue_1206]
     * add: Http.upload上传文件，支持同一个参数含有多个文件 [https://github.com/nutzam/nutz/issues/1220 issue_1220]
     * add: 提供不需要@column的机制和驼峰式命名的全局开关 [https://github.com/nutzam/nutz/issues/1217 issue_1217]
@@ -42,7 +53,7 @@
 --------------------------------------------------------------------------------------------------------
 部分新功能介绍
 
-	原Daos.queryCount(String)已废弃,替换为Daos.queryCount(Sql)
+	原Daos.queryCount(String)已废弃,替换为Daos.queryCount(Sql),该方法能适应更多场景.
 	
 	{{{<JAVA>
 	Sql sql = Sqls.create(...);
@@ -52,11 +63,27 @@
 	long count = Daos.queryCount(sql);
 	}}}
 	
+	乐观锁及其底层方法
+	
+	{{{<JAVA>
+	// 通过@Column(version=true)指定版本控制属性
+	dao.updateWithVersion(pet, null);
+	// 通过编码方式指定版本控制属性
+	dao.updateAndIncrIfMatch(pet, null, "version");
+	}}}
+	
+	fetchByJoin/queryByJoin 一条SQL取出@One关联对象
+	
+	{{{<JAVA>
+	platoon = dao.fetchByJoin(Platoon.class, null, "wendal");
+	}}}
+	
 --------------------------------------------------------------------------------------------------------
 文档更新
 
 	* nutzwx 的入门文档
-	* 各种小修改
+	* nutzmongo 的入门文档
+	* 各种小修改,继续整理,准备全面转markdown
 
 --------------------------------------------------------------------------------------------------------
 详细列表:
@@ -65,4 +92,4 @@
 
 欢迎访问[https://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
 
-[https://nutz.cn Nutz社区]已经累计了3600+的问答帖子, 17000+条回复,注册人数近2千,平均回复时间少于10分钟哦,白天基本上秒回!
+[https://nutz.cn Nutz社区]已经累计了近4000个帖子, 20000+条回复,平均回复时间少于10分钟哦,白天基本上秒回!
