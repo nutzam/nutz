@@ -1428,4 +1428,45 @@ public class Strings {
         return isMatch(P_UnionPayCard, s);
     }
 
+    /**
+     * 截去最后一个字符
+     * <p>
+     * 比如:
+     * <ul>
+     * <li>removeLast("12345") => 1234
+     * <li>removeLast("A") => ""
+     * </ul>
+     *
+     * @param str
+     *            字符串
+     * @return 新字符串
+     */
+    public static String removeLast(CharSequence str) {
+        if (str == null)
+            return null;
+        if (str.length() > 1)
+            return str.subSequence(0, str.length() - 1).toString();
+        return "";
+    }
+
+    /**
+     * 如果str中最后一个字符和 c一致,则删除,否则返回 str
+     * <p>
+     * 比如:
+     * <ul>
+     * <li>removeLast("12345",5) => "12345"
+     * <li>removeLast("ABC",'B') => "ABC"
+     * <li>removeLast("A",'B') => "A"
+     * <li>removeLast("A",'A') => ""
+     * </ul>
+     *
+     * @param str
+     *            字符串
+     * @param c
+     *            最后一个个要被截取的字符
+     * @return 新字符串
+     */
+    public static String removeLast(String str, char c) {
+        return (Strings.isEmpty(str) || !str.endsWith(c + "")) ? str : str.subSequence(0, str.length() - 1).toString();
+    }
 }
