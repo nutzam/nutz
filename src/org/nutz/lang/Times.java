@@ -862,10 +862,9 @@ public abstract class Times {
     /**
      * 比较2个字符串格式时间yyyy-MM-dd hh:mm:ss大小
      * 2017-2-8 17:14:14
-     * @param t1
-     * @param t2
-     * @return
-     * @throws ParseException
+     * @param t1 第一个时间
+     * @param t2 第二个时间
+     * @return true,如果相等
      */
     public static boolean sDTcompare(String t1, String t2) {
         //将字符串形式的时间转化为Date类型的时间
@@ -881,9 +880,9 @@ public abstract class Times {
     /**
      * Unix时间戳转String日期
      *
-     * @param timestamp
-     * @param sf
-     * @return
+     * @param timestamp 时间戳
+     * @param sf 日期格式
+     * @return 日期字符串
      */
     public static String ts2S(long timestamp, String sf) {
         DateFormat format = new SimpleDateFormat(sf);
@@ -892,7 +891,7 @@ public abstract class Times {
 
     /**
      * 取Unix时间戳
-     * @return
+     * @return 时间戳
      */
     public static long getTS() {
         return System.currentTimeMillis() / 1000;
@@ -901,8 +900,8 @@ public abstract class Times {
     /**
      * 字符串yyyy-MM-dd HH:mm:ss时间转化成Unix时间戳
      *
-     * @param str yyyy-MM-dd HH:mm:ss
-     * @return timestamp
+     * @param str 日期,符合yyyy-MM-dd HH:mm:ss
+     * @return timestamp 时间戳字符串
      */
     public static String sDT2TS(String str, DateFormat df) {
         String timestamp = null;
@@ -920,7 +919,7 @@ public abstract class Times {
 
     /**
      * 取当前时间的字符串形式 , 格式为 yyyy-MM-dd HH:mm:ss
-     * @return
+     * @return 时间字符串
      */
     public static String getNowSDT() {
         return sDT(now());
@@ -929,9 +928,9 @@ public abstract class Times {
     /**
      * 获得某月的天数
      *
-     * @param year
-     * @param month
-     * @return int
+     * @param year 年
+     * @param month 月
+     * @return int 指定年月的天数
      */
     public static int getDaysOfMonth(String year, String month) {
         int days = 0;
@@ -956,9 +955,9 @@ public abstract class Times {
     /**
      * 获取某年某月的天数
      *
-     * @param year  int
-     * @param month int 月份[1-12]
-     * @return int
+     * @param year  int 年
+     * @param month int 月份[1-12] 月
+     * @return int 指定年月的天数
      */
     public static int getDaysOfMonth(int year, int month) {
         Calendar calendar = Calendar.getInstance();
@@ -969,7 +968,7 @@ public abstract class Times {
     /**
      * 获得当前日期
      *
-     * @return int
+     * @return 当前日期,按月算,即DAY_OF_MONTH
      */
     public static int getToday() {
         Calendar calendar = Calendar.getInstance();
@@ -979,7 +978,7 @@ public abstract class Times {
     /**
      * 获得当前月份
      *
-     * @return int
+     * @return 当前月份,1开始算
      */
     public static int getToMonth() {
         Calendar calendar = Calendar.getInstance();
@@ -989,7 +988,7 @@ public abstract class Times {
     /**
      * 获得当前年份
      *
-     * @return int
+     * @return 当前年份
      */
     public static int getToYear() {
         Calendar calendar = Calendar.getInstance();
@@ -999,8 +998,8 @@ public abstract class Times {
     /**
      * 返回日期的天
      *
-     * @param date Date
-     * @return int
+     * @param date 指定的Date
+     * @return 指定时间所在月的DAY_OF_MONTH
      */
     public static int getDay(Date date) {
         Calendar calendar = Calendar.getInstance();
@@ -1011,8 +1010,8 @@ public abstract class Times {
     /**
      * 返回日期的年
      *
-     * @param date Date
-     * @return int
+     * @param date 指定的Date
+     * @return 指定时间的年份
      */
     public static int getYear(Date date) {
         Calendar calendar = Calendar.getInstance();
@@ -1023,8 +1022,8 @@ public abstract class Times {
     /**
      * 返回日期的月份，1-12
      *
-     * @param date Date
-     * @return int
+     * @param date 指定的Date
+     * @return 指定时间的月份
      */
     public static int getMonth(Date date) {
         Calendar calendar = Calendar.getInstance();
@@ -1046,9 +1045,9 @@ public abstract class Times {
     /**
      * 比较两个日期的年差
      *
-     * @param before
-     * @param after
-     * @return
+     * @param before 前一个日期,格式yyyy-MM-dd
+     * @param after 后一个日期,格式yyyy-MM-dd
+     * @return 年份差值
      */
     public static int yearDiff(String before, String after) {
         Date beforeDay = parseq(DF_DATE, before);
@@ -1059,8 +1058,8 @@ public abstract class Times {
     /**
      * 比较指定日期与当前日期的年差
      *
-     * @param after
-     * @return
+     * @param after 指定的后一个日期,格式yyyy-MM-dd
+     * @return 年份差值
      */
     public static int yearDiffCurr(String after) {
         Date beforeDay = new Date();
@@ -1071,9 +1070,8 @@ public abstract class Times {
     /**
      * 比较指定日期与当前日期的天差
      *
-     * @param before
-     * @return
-     * @author chenyz
+     * @param before 指定的前应日期,格式yyyy-MM-dd
+     * @return 天差
      */
     public static long dayDiffCurr(String before){
         Date currDate = parseq(DF_DATE, sD(now()));
@@ -1085,8 +1083,8 @@ public abstract class Times {
     /**
      * 根据生日获取星座
      *
-     * @param birth YYYY-mm-dd
-     * @return
+     * @param birth 日期格式为YYYY-mm-dd
+     * @return 星座,单一字符
      */
     public static String getAstro(String birth) {
         if (!isDate(birth)) {
@@ -1107,8 +1105,8 @@ public abstract class Times {
     /**
      * 判断日期是否有效,包括闰年的情况
      *
-     * @param date YYYY-mm-dd
-     * @return
+     * @param date 日期格式YYYY-mm-dd
+     * @return true,如果合法
      */
     public static boolean isDate(String date) {
         StringBuffer reg = new StringBuffer(
@@ -1171,7 +1169,7 @@ public abstract class Times {
     /**
      * 取得当前时间距离1900/1/1的天数
      *
-     * @return
+     * @return 天数
      */
     public static int getDayNum() {
         int daynum = 0;
@@ -1186,8 +1184,8 @@ public abstract class Times {
     /**
      * getDayNum的逆方法(用于处理Excel取出的日期格式数据等)
      *
-     * @param day
-     * @return
+     * @param day 天数
+     * @return 反推出的时间
      */
     public static Date getDateByNum(int day) {
         GregorianCalendar gd = new GregorianCalendar(1900, 1, 1);
@@ -1199,9 +1197,8 @@ public abstract class Times {
     /**
      * 取得距离今天 day 日的日期
      *
-     * @param day
-     * @param
-     * @return
+     * @param day 天数
+     * @return 日期字符串
      */
     public static String nextDay(int day) {
         Calendar cal = Calendar.getInstance();
@@ -1212,6 +1209,8 @@ public abstract class Times {
 
     /**
      * 获取明天的日期
+     * 
+     * return 明天的日期
      */
     public static String afterDay() {
         return nextDay(1);
@@ -1220,7 +1219,7 @@ public abstract class Times {
     /**
      * 获取昨天的日期
      *
-     * @return
+     * @return 昨天的日期
      */
     public static String befoDay() {
         return nextDay(-1);
@@ -1229,8 +1228,7 @@ public abstract class Times {
     /**
      * 获取本月最后一天
      *
-     * @param
-     * @return
+     * @return 本月最后一天
      */
     public static String getLastDayOfMonth() {
         Calendar cal = Calendar.getInstance();
@@ -1243,8 +1241,7 @@ public abstract class Times {
     /**
      * 获取本月第一天
      *
-     * @param
-     * @return
+     * @return 本月第一天
      */
     public static String getFirstDayOfMonth() {
         Calendar cal = Calendar.getInstance();
@@ -1261,7 +1258,7 @@ public abstract class Times {
      * @param e 结束日期
      * @param unit 相差的单位
      *             T_1MS 毫秒 T_1S 秒 T_1M 分 T_1H 时 T_1D 天 T_1W 周
-     * @return
+     * @return 相差的数量
      */
     public static long between(Date s, Date e, long unit) {
 

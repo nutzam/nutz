@@ -431,7 +431,7 @@ public interface Dao {
      *            翻页信息
      * @param fields
      *            需要查询的列, 将直接拼入SQL中.由于不会提前探知表结构,所以这fields并非正则表达式,务必留意.
-     * @return
+     * @return 数据库记录
      */
     List<Record> query(String tableName, Condition cnd, Pager pager, String fields);
 
@@ -1066,7 +1066,7 @@ public interface Dao {
     /**
      * 获取数据库方言的实现实例
      * 
-     * @return
+     * @return 数据库方言的实现实例
      */
     JdbcExpert getJdbcExpert();
 
@@ -1143,7 +1143,7 @@ public interface Dao {
      * 根据查询条件获取一个对象.<b>注意: 条件语句需要加上表名!!!</b>
      * <p/>
      * 这个方法是让@One关联的属性,通过left join一次性取出. 与fetch+fetchLinks是等价的
-     * @param klass 实体类
+     * @param classOfT 实体类
      * @param regex 需要过滤的关联属性,可以是null,取出全部关联属性.
      * @param cnd 查询条件,必须带表名!!!
      * @return 实体对象,符合regex的关联属性也会取出
@@ -1181,7 +1181,7 @@ public interface Dao {
      * 根据查询条件获取一个对象.<b>注意: 条件语句需要加上表名!!!</b>
      * <p/>
      * 这个方法是让@One关联的属性,通过left join一次性取出. 与query+fetchLinks是等价的
-     * @param klass 实体类
+     * @param classOfT 实体类
      * @param regex 需要过滤的关联属性,可以是null,取出全部关联属性.
      * @param cnd 查询条件,必须带表名!!!
      * @return 实体对象的列表,符合regex的关联属性也会取出

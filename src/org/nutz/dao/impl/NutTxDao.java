@@ -156,7 +156,7 @@ public class NutTxDao extends NutDao implements Closeable {
     /**
      * 回滚事务
      * 
-     * @param sp
+     * @param id
      *            回滚点
      * @return 原对象
      */

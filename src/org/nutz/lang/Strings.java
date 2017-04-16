@@ -1234,7 +1234,7 @@ public class Strings {
      *            字符串内容
      * @param supply
      *            补足内容
-     * @return
+     * @return 截断后的字符串
      */
     public static String cutStr(int length, String s, String supply) {
 

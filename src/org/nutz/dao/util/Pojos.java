@@ -230,42 +230,6 @@ public abstract class Pojos {
 		return re;
 	}
 
-	/**
-	 * 用于乐观锁更新
-	 * wjw(2017-04-10),add
-	 * @param en
-	 * @param fm
-	 * @param refer
-	 * @return
-	 */
-	public static List<MappingField> getFieldsForUpdateWithVersion(Entity<?> en, FieldMatcher fm, Object refer) {
-		List<MappingField> re = new ArrayList<MappingField>(en.getMappingFields().size());
-		for (MappingField mf : en.getMappingFields()) {
-			if(mf.isVersion())
-				continue;//version则不添加进去
-			if (mf.isPk()) {
-				if (en.getPkType() == PkType.ID && mf.isId())
-					continue;
-				if (en.getPkType() == PkType.NAME && mf.isName())
-					continue;
-				if (en.getPkType() == PkType.COMPOSITE && mf.isCompositePk())
-					continue;
-			}
-			if (mf.isReadonly() || mf.isAutoIncreasement() || !mf.isUpdate())
-				continue;
-			else if (null != fm
-					&& null != refer
-					&& fm.isIgnoreNull()
-					&& null == mf.getValue(Lang.first(refer)))
-				continue;
-			if (null == fm || fm.match(mf.getName()))
-				re.add(mf);
-		}
-		if (re.isEmpty() && log.isDebugEnabled())
-			log.debug("none field for update!");
-		return re;
-	}
-
 	private static final Pattern ptn = Pattern.compile(	"^(WHERE|ORDER BY)(.+)",
 														Pattern.CASE_INSENSITIVE);
 

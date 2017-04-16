@@ -167,7 +167,7 @@ public abstract class Avatar {
      * 
      * @param name
      *            名字
-     * @return
+     * @return 头像
      */
     public static BufferedImage createAvatar(String name) {
         return createAvatar(name, 0, null, null, null, 0, Font.BOLD);
@@ -184,13 +184,13 @@ public abstract class Avatar {
      *            文字颜色 默认白色
      * @param bgColor
      *            背景颜色 默认黑色
-     * @param font
+     * @param fontName
      *            字体名称 需运行环境中已有该字体名称
      * @param fontSize
      *            字体大小
      * @param fontStyle
      *            字体样式 Font.PLAIN || Font.BOLD || Font.ITALIC
-     * @return
+     * @return 头像
      */
     public static BufferedImage createAvatar(String name,
                                              int size,
