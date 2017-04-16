@@ -121,23 +121,25 @@
 	看，简单不？ 你的构造函数有多少个参数，你就一并在 "args" 属性里声明就好了， 那么你都能注入什么呢？
 
 	它注入的值同字段注入的值描述方式相同，请继续看下面一节，我们有更详细的解释
+	
+	若没有声明args,那么就会找无参构造方法哦
 
 --------------------------------------------------------------------------------------------------------
 为对象的字段注入
 	
-	这个更加简单，比如:
+	比如:
 	{{{<Java>
 	@IocBean
 	public class MyObject {
 		
-		@Inject("abcc")
-		private String name;
-		
-		@Inject("true")
-		private boolean live;
+		@Inject("daoSlave") // 等价于 refer:daoSlave
+		private Dao dao;
 		
 		@Inject("refer:another")
 		private AnotherObject obj;
+		
+		@Inject // 先按名字找,然后按类型找
+		private UserService users;
 		
 		...
 		

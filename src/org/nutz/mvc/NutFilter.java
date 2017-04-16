@@ -15,6 +15,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.conf.NutConf;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
@@ -62,6 +63,9 @@ public class NutFilter implements Filter {
     
     public void init(FilterConfig conf) throws ServletException {
     	try {
+    	    if ("disable".equals(conf.getInitParameter("fast-class"))) {
+    	        NutConf.USE_FASTCLASS = false;
+    	    }
     		_init(conf);
     	} finally {
     		Mvcs.set(null, null, null);
