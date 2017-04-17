@@ -173,7 +173,7 @@
 		<echo>Build Html manual for CN</echo>
 		<zdoc suffix="html" src="${basedir}/doc/manual" dest="${basedir}/${zdoc-dir}" />
 		<echo>Build PDF manual for CN</echo>
-		<zdoc suffix="pdf" src="${basedir}/doc/manual_en" dest="${basedir}/${nutz.manual_en.pdf}" />
+		<zdoc suffix="pdf" src="${basedir}/doc/manual" dest="${basedir}/${nutz.manual.pdf}" />
 		<echo>Build RTF manual for CN</echo>
 		<zdoc suffix="rtf" src="${basedir}/doc/manual" dest="${basedir}/${nutz.manual.rtf}" />
 	</target>
