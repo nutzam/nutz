@@ -38,7 +38,7 @@ public abstract class OS {
     /**
      * 返回字体列表
      * 
-     * @return
+     * @return 字体列表
      */
     public static String[] fonts() {
         return _fonts.clone();
@@ -47,7 +47,7 @@ public abstract class OS {
     /**
      * 重新加载，返回字体列表
      * 
-     * @return
+     * @return 字体列表
      */
     public static String[] fontsRefresh() {
         refreshFonts();
