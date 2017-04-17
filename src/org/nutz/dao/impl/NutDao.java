@@ -590,7 +590,7 @@ public class NutDao extends DaoSupport implements Dao {
             return null;
         Lang.each(obj, false, new Each<Object>() {
             public void invoke(int index, Object ele, int length) {
-                _fetchLinks(ele, regex, true, true, true);
+                _fetchLinks(ele, regex, true, true, true, cnd);
             }
         });
         return obj;
@@ -1082,7 +1082,7 @@ public class NutDao extends DaoSupport implements Dao {
         String key = en.getTableName() + "." + mf.getColumnNameInSql();
         T t = fetchByJoin(klass, regex, Cnd.where(key, "=", value));
         if (t != null)
-            _fetchLinks(t, regex, false, true, true);
+            _fetchLinks(t, regex, false, true, true, null);
         return t;
     }
     
@@ -1096,7 +1096,7 @@ public class NutDao extends DaoSupport implements Dao {
         _exec(pojo);
         T t = pojo.getObject(classOfT);
         if (t != null)
-            _fetchLinks(t, regex, false, true, true);
+            _fetchLinks(t, regex, false, true, true, null);
         return t;
     }
     
@@ -1110,19 +1110,19 @@ public class NutDao extends DaoSupport implements Dao {
         List<T> list = pojo.getList(classOfT);
         if (list != null && list.size() > 0) 
             for (T t : list) {
-                _fetchLinks(t, regex, false, true, true);
+                _fetchLinks(t, regex, false, true, true, null);
             }
         return list;
     }
     
-    protected Object _fetchLinks(Object t, String regex, boolean visitOne, boolean visitMany, boolean visitManyMany) {
+    protected Object _fetchLinks(Object t, String regex, boolean visitOne, boolean visitMany, boolean visitManyMany, final Condition cnd) {
         EntityOperator opt = _optBy(t);
         if (null == opt)
             return t;
         if (visitMany)
-            opt.entity.visitMany(t, regex, doLinkQuery(opt, null));
+            opt.entity.visitMany(t, regex, doLinkQuery(opt, cnd));
         if (visitManyMany)
-            opt.entity.visitManyMany(t, regex, doLinkQuery(opt, null));
+            opt.entity.visitManyMany(t, regex, doLinkQuery(opt, cnd));
         if (visitOne)
             opt.entity.visitOne(t, regex, doFetch(opt));
         opt.exec();
