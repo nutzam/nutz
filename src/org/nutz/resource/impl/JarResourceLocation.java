@@ -81,13 +81,9 @@ public class JarResourceLocation extends ResourceLocation {
         }
         finally {
             if (jf != null)
-                if (jf instanceof Closeable)
-                    Streams.safeClose(jf);
-                else {
-                    try {
-                        jf.close();
-                    } catch (Throwable e) {
-                    }
+                try {
+                    jf.close();
+                } catch (Throwable e) {
                 }
         }
     }
