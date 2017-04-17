@@ -10,7 +10,7 @@
 	
 	运行加速, 指FastClass已经完全重写并默认启用,而且对使用者是透明的
 	
-	乐观锁,由[crskyp https://github.com/crskyp]提供
+	乐观锁,由[https://github.com/crskyp crskyp]提供
 	
 	来,体验一下飞一般的速度
 	
