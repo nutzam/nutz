@@ -1,5 +1,6 @@
 package org.nutz.resource.impl;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,7 +80,15 @@ public class JarResourceLocation extends ResourceLocation {
             e.printStackTrace();
         }
         finally {
-            Streams.safeClose(jf);
+            if (jf != null)
+                if (jf instanceof Closeable)
+                    Streams.safeClose(jf);
+                else {
+                    try {
+                        jf.close();
+                    } catch (Throwable e) {
+                    }
+                }
         }
     }
 
