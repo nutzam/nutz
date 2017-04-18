@@ -8,6 +8,13 @@ import org.nutz.dao.impl.jdbc.psql.PsqlJdbcExpert;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
 import org.nutz.dao.sql.Pojo;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class H2JdbcExpert extends PsqlJdbcExpert {
 
     public H2JdbcExpert(JdbcExpertConfigFile conf) {
@@ -23,5 +30,27 @@ public class H2JdbcExpert extends PsqlJdbcExpert {
         Pojo autoInfo = new SqlFieldMacro(idField, autoSql);
         autoInfo.setEntity(en);
         return autoInfo;
+    }
+
+    /**
+     * 重写， 获得H2 数据库指定表的索引
+     * H2 语法 http://www.h2database.com/html/grammar.html
+     * @param en
+     * @param conn
+     * @return
+     * @throws SQLException
+     */
+    @Override
+    public List<String> getIndexNames(Entity<?> en, Connection conn) throws SQLException {
+        List<String> names = new ArrayList<String>();
+        String showIndexs = "SELECT * FROM INFORMATION_SCHEMA.INDEXES WHERE TABLE_NAME = ?";
+        PreparedStatement preparedStatement = conn.prepareStatement(showIndexs);
+        preparedStatement.setString(1, en.getTableName().toUpperCase());
+        ResultSet rest = preparedStatement.executeQuery();
+        while (rest.next()) {
+            String index = rest.getString(5);
+            names.add(index);
+        }
+        return names;
     }
 }
