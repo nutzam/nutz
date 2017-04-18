@@ -32,14 +32,6 @@ public class H2JdbcExpert extends PsqlJdbcExpert {
         return autoInfo;
     }
 
-    /**
-     * 重写， 获得H2 数据库指定表的索引
-     * H2 语法 http://www.h2database.com/html/grammar.html
-     * @param en
-     * @param conn
-     * @return
-     * @throws SQLException
-     */
     @Override
     public List<String> getIndexNames(Entity<?> en, Connection conn) throws SQLException {
         List<String> names = new ArrayList<String>();
