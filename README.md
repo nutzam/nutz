@@ -38,16 +38,17 @@ Nutz遵循Apache协议,完全开源,文档齐全,永远免费(商用也是)
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.r.61</version>
+			<version>1.r.61.r2</version>
 		</dependency>
 ```
+
 
 详情: https://nutzam.com/core/basic/maven.html
 
 ## Gradle 依赖
 
 ```gradle
-compile(group: 'org.nutz', name: 'nutz', version:'1.r.61')
+compile(group: 'org.nutz', name: 'nutz', version:'1.r.61.r2')
 ```
 
 
