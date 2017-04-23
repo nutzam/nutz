@@ -5,6 +5,8 @@ import java.util.Collection;
 
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
+import org.nutz.dao.impl.DaoSupport;
+import org.nutz.dao.impl.SimpleNesting;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
@@ -512,5 +514,9 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     
     public GroupBy getGroupBy() {
         return cri.getGroupBy();
+    }
+    
+    public static Nesting nst(DaoSupport dao){
+    	return new SimpleNesting(dao);
     }
 }
