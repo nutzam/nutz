@@ -33,7 +33,7 @@ public class DaoTest {
 
 	@Test
 	public void simpleTest(){
-		List<A> list = dao.query(A.class, Cnd.where("aid","=",1));
+		List<A> list = dao.query(A.class, Cnd.where("aid","=",Cnd.nst(dao).select("aaa", A.class, Cnd.where("aaa", "=", "a1"))));
 		System.out.println(list);
 	}
 	
