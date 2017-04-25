@@ -16,6 +16,7 @@ import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.cnd.SimpleCondition;
 import org.nutz.dao.util.cri.Exps;
+import org.nutz.dao.util.cri.NestExps;
 import org.nutz.dao.util.cri.SimpleCriteria;
 import org.nutz.dao.util.cri.SqlExpression;
 import org.nutz.dao.util.cri.SqlExpressionGroup;
@@ -109,6 +110,9 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      * @return 条件表达式
      */
     public static SqlExpression exp(String name, String op, Object value) {
+    	if(value!=null && value instanceof Nesting){
+    		return NestExps.create(name, op, (Nesting) value);
+    	}
         return Exps.create(name, op, value);
     }
 

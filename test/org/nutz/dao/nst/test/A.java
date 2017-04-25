@@ -1,4 +1,4 @@
-package org.nutz.dao.test;
+package org.nutz.dao.nst.test;
 
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Id;
