@@ -940,5 +940,6 @@ public class SimpleDaoTest extends DaoCase {
         MappingField mf = en.getField("id");
         assertTrue(mf.isId());
         assertTrue(mf.isPk());
+        Daos.FORCE_WRAP_COLUMN_NAME = false;
     }
 }
