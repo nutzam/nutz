@@ -100,7 +100,7 @@ public class DaoTest {
 		dao.query(A.class,
 				Cnd.where("aid", "=",
 						Cnd.nst(dao).select("aid", A.class, Cnd.where("aid", "=", 1).and("aname", "=", "a1")))
-				.and("aname", "=", "a1"));
+						.and("aname", "=", "a1"));
 	}
 
 	@Test
@@ -112,8 +112,8 @@ public class DaoTest {
 
 	@Test
 	public void limitTest() {
-		dao.query(A.class, Cnd.where("aid","!=",1).limit(2,1));
-		//FIXME nst不会加上分页信息
+		dao.query(A.class, Cnd.where("aid", "!=", 1).limit(2, 1));
+		// 我的数据库版本不支持子查询分页 不过能成功生成期望语句
 		dao.query(A.class,
 				Cnd.where("aid", "in", Cnd.nst(dao).select("aid", A.class, Cnd.where("aid", "!=", 1).limit(2, 1))));
 	}

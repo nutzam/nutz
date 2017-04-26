@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
 import org.nutz.dao.ConnCallback;
 import org.nutz.dao.FieldMatcher;
@@ -11,6 +12,7 @@ import org.nutz.dao.Nesting;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.impl.entity.AnnotationEntityMaker;
 import org.nutz.dao.jdbc.JdbcExpert;
+import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.SqlType;
 import org.nutz.dao.util.Pojos;
@@ -23,11 +25,11 @@ public class SimpleNesting implements Nesting {
 
 	public SimpleNesting(final DaoSupport dao) {
 		this.expert = dao.getJdbcExpert();
-		holder = new EntityHolder(dao.getJdbcExpert(),new Callback<ConnCallback>() {
-            public void invoke(ConnCallback callback) {
-            	dao.runner.run(dao.getDataSource(), callback);
-            }
-        });
+		holder = new EntityHolder(dao.getJdbcExpert(), new Callback<ConnCallback>() {
+			public void invoke(ConnCallback callback) {
+				dao.runner.run(dao.getDataSource(), callback);
+			}
+		});
 		holder.maker = new AnnotationEntityMaker(dao.getDataSource(), dao.getJdbcExpert(), holder);
 	}
 
@@ -43,6 +45,13 @@ public class SimpleNesting implements Nesting {
 		pojo.append(Pojos.Items.wrap("FROM"));
 		pojo.append(Pojos.Items.entityViewName());
 		pojo.append(Pojos.Items.cnd(cnd));
+		if (cnd instanceof Cnd) {
+			Pager pager = ((Cnd) cnd).getPager();
+			if (pager != null) {
+				pojo.setPager(pager);
+			}
+		}
+		expert.formatQuery(pojo);
 		return this;
 	}
 
@@ -55,7 +64,7 @@ public class SimpleNesting implements Nesting {
 
 	private Pojo distinct(Pojo pojo, String names) {
 		if (!Lang.isEmpty(names) && names.length() != 0) {
-			List<String> nameList =Arrays.asList(names.trim().split(","));
+			List<String> nameList = Arrays.asList(names.trim().split(","));
 			if (names.toLowerCase().contains(DISTINCT)) {
 				pojo.append(Pojos.Items.wrap(DISTINCT));
 				// distinct只能作用一个在一个字段上
@@ -63,18 +72,18 @@ public class SimpleNesting implements Nesting {
 				for (int i = 0; i < nameList.size(); ++i) {
 					if (nameList.get(i).toLowerCase().contains(DISTINCT)) {
 						Collections.swap(nameList, 0, i);
-						//为了让字段作为正则匹配到列,删除DINSTINCT
+						// 为了让字段作为正则匹配到列,删除DINSTINCT
 						nameList.set(0, nameList.get(0).toLowerCase().replace(DISTINCT, "").toLowerCase());
 						break;
 					}
 				}
 			}
-			StringBuilder sb=new StringBuilder();
-			for(String name:nameList){
+			StringBuilder sb = new StringBuilder();
+			for (String name : nameList) {
 				sb.append(name.trim());
 				sb.append("|");
 			}
-			sb.setLength(sb.length()-1);
+			sb.setLength(sb.length() - 1);
 			pojo.getContext().setFieldMatcher(FieldMatcher.make(sb.toString(), null, true));
 		}
 		return pojo;

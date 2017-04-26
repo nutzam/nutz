@@ -520,6 +520,9 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         return cri.getGroupBy();
     }
     
+    /**
+     * 构造一个可嵌套条件，需要dao支持才能映射类与表和属性与列
+     */
     public static Nesting nst(DaoSupport dao){
     	return new SimpleNesting(dao);
     }
