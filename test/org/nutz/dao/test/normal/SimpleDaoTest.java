@@ -68,6 +68,7 @@ import org.nutz.dao.test.meta.issue1166.Issue1166;
 import org.nutz.dao.test.meta.issue1168.Issue1168;
 import org.nutz.dao.test.meta.issue1179.Issue1179;
 import org.nutz.dao.test.meta.issue1179.Issue1179Enum;
+import org.nutz.dao.test.meta.issue1254.BookTag;
 import org.nutz.dao.test.meta.issue396.Issue396Master;
 import org.nutz.dao.test.meta.issue726.Issue726;
 import org.nutz.dao.test.meta.issue901.XPlace;
@@ -135,7 +136,7 @@ public class SimpleDaoTest extends DaoCase {
     public void test_simple_fetch_record() {
         Pet pet = Pet.create("abc");
         long now = System.currentTimeMillis();
-        pet.setBirthday(Castors.me().castTo(now/1000*1000, Timestamp.class));
+        pet.setBirthday(Castors.me().castTo(now / 1000 * 1000, Timestamp.class));
         dao.insert(pet);
 
         List<Record> pets = dao.query("t_pet", null, null);
@@ -186,11 +187,11 @@ public class SimpleDaoTest extends DaoCase {
         insertRecords(8);
         int re = dao.count(Pet.class, new Condition() {
             /**
-			 * 
-			 */
-			private static final long serialVersionUID = 6425274813857908874L;
+             *
+             */
+            private static final long serialVersionUID = 6425274813857908874L;
 
-			public String toSql(Entity<?> entity) {
+            public String toSql(Entity<?> entity) {
                 return entity.getField("nickName").getColumnName() + " IN ('alias_5','alias_6')";
             }
         });
@@ -623,8 +624,8 @@ public class SimpleDaoTest extends DaoCase {
     //
     //// assertEquals("你好", new String((byte[])re.get("filecontent")));
     // }
-    
-    //@Test
+
+    // @Test
     public void test_fastinsert_speed() {
         SimpleDataSource ds = new SimpleDataSource();
         ds.setJdbcUrl("jdbc:mysql://localhost/nutztest");
@@ -634,7 +635,7 @@ public class SimpleDaoTest extends DaoCase {
         // 删表重建
         dao.create(Pet.class, true);
         Lang.sleep(1000);
-        
+
         Stopwatch sw = Stopwatch.begin();
         // 生成10*2000个对象
         List<List<Pet>> list = new ArrayList<List<Pet>>();
@@ -647,10 +648,9 @@ public class SimpleDaoTest extends DaoCase {
             list.add(pets);
         }
         sw.stop();
-        
+
         System.out.println("生成对象的耗时: " + sw);
-        
-        
+
         for (final List<Pet> tmp : list) {
             sw = Stopwatch.begin();
             Trans.exec(new Atom() {
@@ -658,16 +658,16 @@ public class SimpleDaoTest extends DaoCase {
                     dao.fastInsert(tmp);
                 }
             });
-            
+
             sw.stop();
-            
+
             System.out.println("fastInsert插入2000个对象的耗时" + sw);
         }
-        
+
         dao.create(Pet.class, false);
         for (int i = 0; i < 10; i++) {
             try {
-                final int  t = i;
+                final int t = i;
                 Connection conn = ds.getConnection();
                 conn.setAutoCommit(false);
                 sw = Stopwatch.begin();
@@ -675,12 +675,12 @@ public class SimpleDaoTest extends DaoCase {
                 PreparedStatement ps = conn.prepareStatement("INSERT INTO t_pet(name,alias) VALUES(?,?)");
                 System.out.println(System.currentTimeMillis());
                 for (int j = 0; j < 2000; j++) {
-                    ps.setString(1, "pet_"+t+"_" + j);
+                    ps.setString(1, "pet_" + t + "_" + j);
                     ps.setString(2, "");
-//                    ps.setInt(3, 30);
-//                    ps.setInt(4, 0);
-//                    ps.setDate(5, null);
-//                    ps.setFloat(6, 0);
+                    // ps.setInt(3, 30);
+                    // ps.setInt(4, 0);
+                    // ps.setDate(5, null);
+                    // ps.setFloat(6, 0);
                     ps.addBatch();
                 }
                 System.out.println(System.currentTimeMillis());
@@ -696,22 +696,21 @@ public class SimpleDaoTest extends DaoCase {
             }
         }
     }
-    
+
     @Test
     public void test_insert_ignore_null() {
-    	Pet pet = Pet.create(R.UU32());
-    	dao.insert(pet, true, true, true);
-    	assertTrue(pet.getId() > 0);
-    	dao.insert(Pet.create(1000), true, true, true);
+        Pet pet = Pet.create(R.UU32());
+        dao.insert(pet, true, true, true);
+        assertTrue(pet.getId() > 0);
+        dao.insert(Pet.create(1000), true, true, true);
     }
-        
+
     @Test
     @Deprecated
     public void test_daos_queryCount() {
-    	String str = "select * from t_pet";
-    	Daos.queryCount(dao, str);
+        String str = "select * from t_pet";
+        Daos.queryCount(dao, str);
     }
-
 
     @Test
     public void test_cnd_andEX_orEX() {
@@ -729,20 +728,20 @@ public class SimpleDaoTest extends DaoCase {
 
         assertEquals("WHERE name='wendal' OR id>1", cnd.toString().trim());
     }
-    
+
     @Test
     public void test_insert_chain_with_null() {
         dao.create(Pet.class, true);
         dao.insert("t_pet", Chain.make("name", "wendal").add("alias", null));
     }
-    
+
     @Test
     public void test_cnd_emtry_in() {
         assertEquals(" WHERE  1 != 1 ", Cnd.where("name", "in", Collections.EMPTY_LIST).toString());
         assertEquals(" WHERE  1 != 1 ", Cnd.where("name", "in", new String[0]).toString());
         assertEquals(" WHERE  1 != 1 ", Cnd.where("id", "in", new int[]{}).toString());
     }
-    
+
     @Test
     public void new_nutdao_inside_trans() {
         // 这纯粹是重现bug的代码,不要学
@@ -753,25 +752,25 @@ public class SimpleDaoTest extends DaoCase {
             }
         });
     }
-    
+
     @Test
     public void test_pojo_sql_params() {
         dao.create(PojoSql.class, false);
         PojoSql pojo = new PojoSql();
         pojo.setName(R.UU32());
         dao.insert(pojo);
-        
+
         assertEquals(pojo.getName(), pojo.getNickname());
     }
-    
+
     @Test
     public void test_record_treemap() {
         TreeMap<Record, String> map = new TreeMap<Record, String>();
         map.put(new Record(), "abc");
         map.put(new Record(), "abc");
-        
+
     }
-    
+
     @Test
     public void test_count_groupby() {
         if (!dao.meta().isMySql())
@@ -779,7 +778,7 @@ public class SimpleDaoTest extends DaoCase {
         // MySQL/PgSQL/SqlServer 与 Oracle/H2的结果会不一样,奇葩啊
         for (int i = 0; i < 10; i++) {
             Pet pet = Pet.create(R.UU32());
-            pet.setAge(20+i/4);
+            pet.setAge(20 + i / 4);
             dao.insert(pet);
         }
         Cnd cnd = Cnd.where("age", ">", 20);
@@ -787,47 +786,47 @@ public class SimpleDaoTest extends DaoCase {
         assertEquals(10, dao.count(Pet.class, null));
         assertEquals(4, dao.count(Pet.class, cnd));
     }
-    
+
     @Test
     public void test_issue_1163() {
         dao.create(Issue1163Master.class, true);
         dao.create(Issue1163Pet.class, true);
-        
+
         ArrayList<Issue1163Pet> pets = new ArrayList<Issue1163Pet>();
         for (int i = 0; i < 3; i++) {
             Issue1163Pet pet = new Issue1163Pet();
-            pet.setName("i"+i);
+            pet.setName("i" + i);
             pets.add(pet);
         }
         Issue1163Pet gpet = new Issue1163Pet();
         gpet.setName("zozoh");
-        
+
         Issue1163Master master = new Issue1163Master();
         master.setName("wendal");
         master.setPets(pets);
         master.setGpet(gpet);
-        
+
         dao.insertWith(master, null);
     }
-    
-    @Test(expected=DaoException.class)
+
+    @Test(expected = DaoException.class)
     public void test_issue_1166() {
         dao.create(Issue1166.class, true);
         Daos.migration(dao, Issue1166.class, true, true, true);
         Issue1166 is = new Issue1166();
         is.setName("wendal");
-        
+
         dao.insert(is);
         dao.insert(is);
     }
-    
+
     @Test
     public void test_issue_1168() {
         dao.create(Issue1168.class, true);
         Issue1168 right = new Issue1168();
         dao.insert(right);
     }
-    
+
     @Test
     public void test_coldefine_len() {
         dao.create(ColDefineUser.class, true);
@@ -837,8 +836,7 @@ public class SimpleDaoTest extends DaoCase {
         user.setPassword(Lang.sha1("abc" + user.getSalt()));
         dao.insert(user);
     }
-    
-    
+
     @Test
     public void test_issue_1179() {
         dao.create(Issue1179.class, true);
@@ -848,7 +846,7 @@ public class SimpleDaoTest extends DaoCase {
         dao.insert(pojo);
         dao.fetch(Issue1179.class);
     }
-    
+
     @Test
     public void test_issue_1235() {
         dao.create(Pet.class, false);
@@ -858,7 +856,7 @@ public class SimpleDaoTest extends DaoCase {
         assertTrue(list.size() > 0);
         assertEquals(2, list.get(0).size());
     }
-    
+
     @Test
     public void test_fetch_by_join() {
         dao.create(Platoon.class, true);
@@ -867,56 +865,80 @@ public class SimpleDaoTest extends DaoCase {
         dao.create(Tank.class, true);
         Platoon platoon = new Platoon();
         platoon.setName("wendal");
-        
+
         Soldier soldier = new Soldier();
         soldier.setName("stone");
-        
+
         Base base = new Base();
         base.setName("china");
-        
+
         platoon.setBase(base);
         platoon.setLeader(soldier);
         dao.insertWith(platoon, null);
-        
-        //=======================================
+
+        // =======================================
         // 用条件查
-        platoon = dao.fetchByJoin(Platoon.class, null, Cnd.where("dao_platoon.name", "=", "wendal"));
-        
+        platoon = dao.fetchByJoin(Platoon.class,
+                                  null,
+                                  Cnd.where("dao_platoon.name", "=", "wendal"));
+
         assertNotNull(platoon);
         assertEquals("wendal", platoon.getName());
-        
+
         assertNotNull(platoon.getLeader());
         assertEquals("stone", platoon.getLeader().getName());
-        
+
         assertNotNull(platoon.getBase());
         assertEquals("china", platoon.getBase().getName());
-        
-        //=======================================
+
+        // =======================================
         // 用@Name
         platoon = dao.fetchByJoin(Platoon.class, null, "wendal");
-        
+
         assertNotNull(platoon);
         assertEquals("wendal", platoon.getName());
-        
+
         assertNotNull(platoon.getLeader());
         assertEquals("stone", platoon.getLeader().getName());
-        
+
         assertNotNull(platoon.getBase());
         assertEquals("china", platoon.getBase().getName());
-        
-        //=======================================
+
+        // =======================================
         // 用@Id
         platoon = dao.fetchByJoin(Platoon.class, null, platoon.getId());
-        
+
         assertNotNull(platoon);
         assertEquals("wendal", platoon.getName());
-        
+
         assertNotNull(platoon.getLeader());
         assertEquals("stone", platoon.getLeader().getName());
-        
+
         assertNotNull(platoon.getBase());
         assertEquals("china", platoon.getBase().getName());
-        
+
         dao.queryByJoin(Platoon.class, null, null);
+    }
+
+    @Test
+    public void test_migration_issue1254() {
+        try {
+            dao.execute(Sqls.create("drop table t_issue1254_book"));
+            dao.execute(Sqls.create("drop table t_issue1254_book_tag"));
+            dao.execute(Sqls.create("drop table t_issue1254_tag"));
+        }
+        catch (Exception e) {}
+
+        Daos.FORCE_WRAP_COLUMN_NAME = true;
+        Daos.createTablesInPackage(dao, BookTag.class, false);
+        Daos.migration(dao,
+                       BookTag.class.getPackage().getName(),
+                       !dao.meta().isSQLite(),
+                       !dao.meta().isSQLite());
+
+        Entity<BookTag> en = dao.getEntity(BookTag.class);
+        MappingField mf = en.getField("id");
+        assertTrue(mf.isId());
+        assertTrue(mf.isPk());
     }
 }
