@@ -21,7 +21,7 @@ public abstract class Exps {
     public static Like like(String name, String value) {
         return Like.create(name, value, true);
     }
-
+    
     public static Like like(String name, String value, boolean ignoreCase) {
         return Like.create(name, value, ignoreCase);
     }
@@ -33,23 +33,23 @@ public abstract class Exps {
     public static SimpleExpression eq(String name, Object val) {
         return new SimpleExpression(name, "=", val);
     }
-
+    
     public static SimpleExpression gt(String name, long val) {
         return new SimpleExpression(name, ">", val);
     }
-
+    
     public static SimpleExpression lt(String name, long val) {
         return new SimpleExpression(name, "<", val);
     }
-
+    
     public static SimpleExpression gte(String name, long val) {
         return new SimpleExpression(name, ">=", val);
     }
-
+    
     public static SimpleExpression lte(String name, long val) {
         return new SimpleExpression(name, "<=", val);
     }
-
+    
     public static IntRange inInt(String name, int... ids) {
         return new IntRange(name, ids);
     }

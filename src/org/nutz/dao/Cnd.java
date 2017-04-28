@@ -5,6 +5,8 @@ import java.util.Collection;
 
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
+import org.nutz.dao.impl.DaoSupport;
+import org.nutz.dao.impl.SimpleNesting;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
@@ -14,6 +16,7 @@ import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.cnd.SimpleCondition;
 import org.nutz.dao.util.cri.Exps;
+import org.nutz.dao.util.cri.NestExps;
 import org.nutz.dao.util.cri.SimpleCriteria;
 import org.nutz.dao.util.cri.SqlExpression;
 import org.nutz.dao.util.cri.SqlExpressionGroup;
@@ -107,6 +110,9 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      * @return 条件表达式
      */
     public static SqlExpression exp(String name, String op, Object value) {
+    	if(value!=null && value instanceof Nesting){
+    		return NestExps.create(name, op, (Nesting) value);
+    	}
         return Exps.create(name, op, value);
     }
 
@@ -512,5 +518,12 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     
     public GroupBy getGroupBy() {
         return cri.getGroupBy();
+    }
+    
+    /**
+     * 构造一个可嵌套条件，需要dao支持才能映射类与表和属性与列
+     */
+    public static Nesting nst(DaoSupport dao){
+    	return new SimpleNesting(dao);
     }
 }
