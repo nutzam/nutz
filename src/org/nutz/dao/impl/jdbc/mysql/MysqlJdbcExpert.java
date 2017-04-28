@@ -30,7 +30,7 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
     private static final String META_ENGINE = "mysql-engine";
 
     private static final String META_CHARSET = "mysql-charset";
-    
+
     private static final Log log = Logs.get();
 
     public MysqlJdbcExpert(JdbcExpertConfigFile conf) {
@@ -45,9 +45,7 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
         Pager pager = pojo.getContext().getPager();
         // 需要进行分页
         if (null != pager && pager.getPageNumber() > 0)
-            pojo.append(Pojos.Items.wrapf(" LIMIT %d, %d",
-                                          pager.getOffset(),
-                                          pager.getPageSize()));
+            pojo.append(Pojos.Items.wrapf(" LIMIT %d, %d", pager.getOffset(), pager.getPageSize()));
     }
 
     public void formatQuery(Sql sql) {
@@ -83,14 +81,16 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
         if (mf.getColumnType() == ColType.MYSQL_JSON) {
             return "JSON";
         }
+        // MySQL 5.0 开始 数据库 BIT(1) 对应 java 的 boolean 类型（现在应该没有使用更低版本的 MySQL 了吧
+        if (mf.getColumnType() == ColType.BOOLEAN) {
+            return "BIT(1)";
+        }
         // 其它的参照默认字段规则 ...
         return super.evalFieldType(mf);
     }
 
     public boolean createEntity(Dao dao, Entity<?> en) {
-        StringBuilder sb = new StringBuilder("CREATE TABLE "
-                                             + en.getTableName()
-                                             + "(");
+        StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
         // 创建字段
         for (MappingField mf : en.getMappingFields()) {
             if (mf.isReadonly())
@@ -133,9 +133,7 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
             }
 
             if (mf.hasColumnComment()) {
-                sb.append(" COMMENT '")
-                  .append(mf.getColumnComment())
-                  .append("'");
+                sb.append(" COMMENT '").append(mf.getColumnComment()).append("'");
             }
 
             sb.append(',');
@@ -186,10 +184,10 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
     }
 
     public Pojo fetchPojoId(Entity<?> en, MappingField idField) {
-//        String autoSql = "SELECT @@@@IDENTITY";
-//        Pojo autoInfo = new SqlFieldMacro(idField, autoSql);
-//        autoInfo.setEntity(en);
-//        return autoInfo;
+        // String autoSql = "SELECT @@@@IDENTITY";
+        // Pojo autoInfo = new SqlFieldMacro(idField, autoSql);
+        // autoInfo.setEntity(en);
+        // return autoInfo;
         return null;
     }
 
@@ -201,7 +199,7 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
             return super.getAdaptor(ef);
         }
     }
-    
+
     @Override
     public void checkDataSource(Connection conn) throws SQLException {
         if (log.isDebugEnabled()) {
@@ -237,16 +235,16 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
             pstmt.setString(1, dbName);
             rs = pstmt.executeQuery();
             if (rs.next())
-                log.debug("Mysql : '"+rs.getString(1) + "' engine=MyISAM");
+                log.debug("Mysql : '" + rs.getString(1) + "' engine=MyISAM");
             rs.close();
             pstmt.close();
         }
     }
-    
+
     public boolean canCommentWhenAddIndex() {
         return true;
     }
-    
+
     protected Sql createRelation(Dao dao, LinkField lf) {
         Sql sql = super.createRelation(dao, lf);
         if (sql == null)
