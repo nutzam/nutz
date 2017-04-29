@@ -930,16 +930,20 @@ public class SimpleDaoTest extends DaoCase {
         catch (Exception e) {}
 
         Daos.FORCE_WRAP_COLUMN_NAME = true;
-        Daos.createTablesInPackage(dao, BookTag.class, false);
-        Daos.migration(dao,
-                       BookTag.class.getPackage().getName(),
-                       !dao.meta().isSQLite(),
-                       !dao.meta().isSQLite());
+        try {
+            Daos.createTablesInPackage(dao, BookTag.class, false);
+            Daos.migration(dao,
+                           BookTag.class.getPackage().getName(),
+                           !dao.meta().isSQLite(),
+                           !dao.meta().isSQLite());
 
-        Entity<BookTag> en = dao.getEntity(BookTag.class);
-        MappingField mf = en.getField("id");
-        assertTrue(mf.isId());
-        assertTrue(mf.isPk());
-        Daos.FORCE_WRAP_COLUMN_NAME = false;
+            Entity<BookTag> en = dao.getEntity(BookTag.class);
+            MappingField mf = en.getField("id");
+            assertTrue(mf.isId());
+            assertTrue(mf.isPk());
+        } finally {
+            Daos.FORCE_WRAP_COLUMN_NAME = false;
+        }
+        
     }
 }
