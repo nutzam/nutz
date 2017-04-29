@@ -922,6 +922,8 @@ public class SimpleDaoTest extends DaoCase {
 
     @Test
     public void test_migration_issue1254() {
+        if (!dao.meta().isMySql())
+            return;
         try {
             dao.execute(Sqls.create("drop table t_issue1254_book"));
             dao.execute(Sqls.create("drop table t_issue1254_book_tag"));
