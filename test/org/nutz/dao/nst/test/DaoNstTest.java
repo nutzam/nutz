@@ -2,34 +2,16 @@ package org.nutz.dao.nst.test;
 
 import java.util.List;
 
-import javax.sql.DataSource;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.nutz.dao.Cnd;
-import org.nutz.dao.impl.NutDao;
-import org.nutz.dao.impl.SimpleDataSource;
+import org.nutz.dao.test.DaoCase;
 
-public class DaoTest {
-
-	private DataSource dataSource;
-	private NutDao dao;
-
-	@Before
-	public void initDataSource() {
-		SimpleDataSource dataSource = new SimpleDataSource();
-		dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/test");
-		dataSource.setUsername("root");
-		dataSource.setPassword("rootroot");
-		this.dataSource = dataSource;
-		this.dao = new NutDao(dataSource);
-	}
-
-	@After
-	public void destoryDataSource() {
-		((SimpleDataSource) this.dataSource).close();
-	}
+/**
+ * TODO fix: 这个类的testcase不完整,无法运行
+ * @author wendal
+ *
+ */
+public abstract class DaoNstTest extends DaoCase {
 
 	@Test
 	public void eqTest() {
