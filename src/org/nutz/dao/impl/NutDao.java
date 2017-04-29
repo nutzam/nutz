@@ -1171,4 +1171,8 @@ public class NutDao extends DaoSupport implements Dao {
         opt.exec();
         return t;
     }
+    
+    public EntityHolder getEntityHolder() {
+        return holder;
+    }
 }

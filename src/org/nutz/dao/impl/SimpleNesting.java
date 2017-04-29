@@ -6,31 +6,24 @@ import java.util.List;
 
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
-import org.nutz.dao.ConnCallback;
+import org.nutz.dao.Dao;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.Nesting;
 import org.nutz.dao.entity.Entity;
-import org.nutz.dao.impl.entity.AnnotationEntityMaker;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.SqlType;
 import org.nutz.dao.util.Pojos;
 import org.nutz.lang.Lang;
-import org.nutz.lang.util.Callback;
 
 public class SimpleNesting implements Nesting {
 
 	private static final String DISTINCT = "distinct";
 
-	public SimpleNesting(final DaoSupport dao) {
+	public SimpleNesting(Dao dao) {
 		this.expert = dao.getJdbcExpert();
-		holder = new EntityHolder(dao.getJdbcExpert(), new Callback<ConnCallback>() {
-			public void invoke(ConnCallback callback) {
-				dao.runner.run(dao.getDataSource(), callback);
-			}
-		});
-		holder.maker = new AnnotationEntityMaker(dao.getDataSource(), dao.getJdbcExpert(), holder);
+		holder = dao.getEntityHolder();
 	}
 
 	protected JdbcExpert expert;
