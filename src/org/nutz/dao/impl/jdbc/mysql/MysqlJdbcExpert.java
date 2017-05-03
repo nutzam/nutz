@@ -81,10 +81,6 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
         if (mf.getColumnType() == ColType.MYSQL_JSON) {
             return "JSON";
         }
-        // MySQL 5.0 开始 数据库 BIT(1) 对应 java 的 boolean 类型（现在应该没有使用更低版本的 MySQL 了吧
-        if (mf.getColumnType() == ColType.BOOLEAN) {
-            return "BIT(1)";
-        }
         // 其它的参照默认字段规则 ...
         return super.evalFieldType(mf);
     }
