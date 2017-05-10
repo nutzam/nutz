@@ -1007,13 +1007,12 @@ public class Strings {
             case '>':
                 sb.append("&gt;");
                 break;
-            // zozoh: 貌似不需要替换这俩 ...
-            // case '\'':
-            // sb.append("&#x27;");
-            // break;
-            // case '"':
-            // sb.append("&quot;");
-            // break;
+            case '\'':
+                sb.append("&#x27;");
+                break;
+            case '"':
+                sb.append("&quot;");
+                break;
             default:
                 sb.append(c);
             }
