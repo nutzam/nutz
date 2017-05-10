@@ -666,6 +666,86 @@ public class Strings {
     }
 
     /**
+     * 计算一个字符串开头有几个缩进，
+     * 
+     * @param str
+     *            给定字符串
+     * @param tabWidth
+     *            一个 \t 相当于几个空格，默认 4
+     * @return 返回缩进级别
+     */
+    public static int countStrHeadIndent(String str, int tabWidth) {
+        int n = 0;
+        if (!isEmpty(str)) {
+            for (int i = 0; i < str.length(); i++) {
+                char c = str.charAt(i);
+                if (' ' == c)
+                    n++;
+                else if ('\t' == c)
+                    n += tabWidth;
+                else
+                    break;
+            }
+        }
+        return n / tabWidth;
+    }
+
+    /**
+     * 计算一个字符串开头有几个重复的字符
+     * 
+     * @param str
+     *            给定字符串
+     * @param c
+     *            指定重复字符
+     * @return 开头重复字符的个数
+     */
+    public static int countStrHeadChar(String str, char c) {
+        int re = 0;
+        if (!isEmpty(str))
+            for (; re < str.length(); re++) {
+                if (str.charAt(re) != c)
+                    return re;
+            }
+        return re;
+    }
+
+    /**
+     * 对字符串反向缩进
+     * 
+     * @param str
+     *            给定字符串
+     * @param indent
+     *            反向 indent 几次，如果小于等于 0 相当于 1
+     * @param tabWidth
+     *            一个 \t 相当于几个空格，默认 4
+     * 
+     * @return 反向缩进后的字符串
+     */
+    public static String shiftIndent(String str, int indent, int tabWidth) {
+        if (isEmpty(str))
+            return str;
+        if (indent <= 0)
+            indent = 1;
+
+        int n = 0;
+        int i = 0;
+        for (; i < str.length(); i++) {
+            if (n > 0 && (n / tabWidth) >= indent)
+                break;
+            char c = str.charAt(i);
+            if (' ' == c)
+                n++;
+            else if ('\t' == c)
+                n += tabWidth;
+            else
+                break;
+        }
+        if (i > 0)
+            return str.substring(i);
+        return str;
+    }
+
+    /**
      * 获得一个字符串集合中，最长串的长度
      *
      * @param coll
@@ -927,12 +1007,13 @@ public class Strings {
             case '>':
                 sb.append("&gt;");
                 break;
-            case '\'':
-                sb.append("&#x27;");
-                break;
-            case '"':
-                sb.append("&quot;");
-                break;
+            // zozoh: 貌似不需要替换这俩 ...
+            // case '\'':
+            // sb.append("&#x27;");
+            // break;
+            // case '"':
+            // sb.append("&quot;");
+            // break;
             default:
                 sb.append(c);
             }
@@ -1005,6 +1086,19 @@ public class Strings {
      */
     public static <T> String join(String sp, T... array) {
         return Lang.concat(sp, array).toString();
+    }
+
+    /**
+     * 使用给定的分隔符, 将一个集合拼接成字符串
+     * 
+     * @param sp
+     *            分隔符
+     * @param coll
+     *            要拼接的集合
+     * @return 拼接好的字符串
+     */
+    public static <T> String join(String sp, Collection<T> coll) {
+        return Lang.concat(sp, coll).toString();
     }
 
     /**
@@ -1467,6 +1561,9 @@ public class Strings {
      * @return 新字符串
      */
     public static String removeLast(String str, char c) {
-        return (Strings.isEmpty(str) || !str.endsWith(c + "")) ? str : str.subSequence(0, str.length() - 1).toString();
+        return (Strings.isEmpty(str) || !str.endsWith(c + "")) ? str
+                                                               : str.subSequence(0,
+                                                                                 str.length() - 1)
+                                                                    .toString();
     }
 }
