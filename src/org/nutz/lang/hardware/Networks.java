@@ -5,6 +5,7 @@ import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,7 +29,7 @@ public class Networks {
     }
 
     public static Map<String, NetworkItem> networkItems() {
-        Map<String, NetworkItem> netFaces = new HashMap<String, NetworkItem>();
+        Map<String, NetworkItem> netFaces = new LinkedHashMap<String, NetworkItem>();
         try {
             Enumeration<NetworkInterface> network = NetworkInterface.getNetworkInterfaces();
             while (network.hasMoreElements()) {
@@ -61,7 +62,7 @@ public class Networks {
                 netItem.setMtu(face.getMTU());
                 netItem.setDisplay(face.getDisplayName());
                 
-                if (netItem.getIpv4() == null && netItem.getMac() == null && netItem.getMtu() < 1)
+                if (netItem.getIpv4() == null && netItem.getMac() == null && netItem.getMtu() < 1 && !face.getName().startsWith("eth"))
                 	continue;
                 netFaces.put(face.getName(), netItem);
             }
