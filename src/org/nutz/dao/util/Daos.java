@@ -818,9 +818,15 @@ public abstract class Daos {
                 if (mf.isName())
                     continue;
             }
-            delSqls.add(Sqls.createf("ALTER TABLE %s DROP INDEX %s",
-                                     getTableName(dao, en, t),
-                                     index));
+            if (dao.meta().isSqlServer()) {
+                delSqls.add(Sqls.createf("DROP INDEX %s.%s",
+                                         getTableName(dao, en, t),
+                                         index));
+            } else {
+                delSqls.add(Sqls.createf("ALTER TABLE %s DROP INDEX %s",
+                                         getTableName(dao, en, t),
+                                         index));
+            }
         }
         if (!Lang.isEmpty(delSqls)) {
             uis.setSqlsDel(Lang.collection2array(delSqls));
