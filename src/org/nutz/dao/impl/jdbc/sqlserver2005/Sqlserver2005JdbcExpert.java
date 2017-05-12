@@ -216,11 +216,9 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
     
     public List<String> getIndexNames(Entity<?> en, Connection conn) throws SQLException {
         List<String> names = new ArrayList<String>();
-        String showIndexs = "SELECT idx.name" +
-                            " FROM    sysindexes idx" +
-                            " JOIN    sysindexkeys idk ON idx.id = idk.id AND idx.indid = idk.indid " +
-                            " JOIN    sysobjects o ON idk.id = o.id AND o.xtype = 'U'" +
-                            " WHERE   o.name = '" + en.getTableName() + "'";
+        String showIndexs = "SELECT i.name FROM sys.indexes AS i "
+                + "INNER JOIN sys.tables AS o ON i.[object_id] = o.[object_id] "
+                + "WHERE  o.name = '"+en.getTableName()+"' AND i.is_primary_key = 0";
         
         PreparedStatement ppstat = conn.prepareStatement(showIndexs);
         ResultSet rest = ppstat.executeQuery();
