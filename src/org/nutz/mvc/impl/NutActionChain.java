@@ -1,7 +1,6 @@
 package org.nutz.mvc.impl;
 
 import java.lang.reflect.Method;
-import java.util.Iterator;
 import java.util.List;
 
 import org.nutz.lang.Lang;
@@ -21,17 +20,11 @@ public class NutActionChain implements ActionChain {
     private Integer lineNumber;
 
     public NutActionChain(List<Processor> list, Processor errorProcessor, ActionInfo ai) {
-        if (null != list) {
-            Iterator<Processor> it = list.iterator();
-            if (it.hasNext()) {
-                head = it.next();
-                Processor p = head;
-                while (it.hasNext()) {
-                    Processor next = it.next();
-                    p.setNext(next);
-                    p = next;
-                }
-            }
+        if (null != list && list.size() > 0) {
+        	head = list.get(0) ;
+        	for (int i = 1; i < list.size(); i++) {
+        		list.get(i-1).setNext(list.get(i));
+        	}
         }
         this.errorProcessor = errorProcessor;
         this.method = ai.getMethod();
