@@ -23,7 +23,7 @@ public class UpdateFieldsByChainPItem extends AbstractPItem {
             Chain c = chain.head();
             while (c != null) {
                 sb.append(this._fmtcolnm(en, c.name())).append('=');
-                if (c.isSpecial()) {
+                if (c.special()) {
                     Chain head = c;
                     if (head.value() != null && head.value() instanceof String) {
                         String str = (String) head.value();
@@ -59,7 +59,7 @@ public class UpdateFieldsByChainPItem extends AbstractPItem {
     public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
         Chain c = chain.head();
         while (c != null) {
-            if (!c.isSpecial()) {
+            if (!c.special()) {
                 MappingField mf = en.getField(c.name());
                 // TODO 移除这种数组下标用++的写法!!!
                 if (c.adaptor() == null)
@@ -75,7 +75,7 @@ public class UpdateFieldsByChainPItem extends AbstractPItem {
     public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
         Chain c = chain.head();
         while (c != null) {
-            if (!c.isSpecial())
+            if (!c.special())
                 params[off++] = c.value();
             c = c.next();
         }
@@ -86,7 +86,7 @@ public class UpdateFieldsByChainPItem extends AbstractPItem {
         int count = 0;
         Chain c = chain.head();
         while (c != null) {
-            if (!c.isSpecial())
+            if (!c.special())
                 count++;
             c = c.next();
         }

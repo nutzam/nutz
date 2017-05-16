@@ -2,6 +2,7 @@ package org.nutz.dao.test.normal;
 
 import static org.junit.Assert.*;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -329,5 +330,10 @@ public class UpdateTest extends DaoCase {
         dao.updateWithVersion(list);
         assertEquals(40, dao.fetch(VersionTestPojo.class, "wendal").getAge());
         assertEquals(40, dao.fetch(VersionTestPojo.class, "wendal2").getAge());
+    }
+    
+    @Test
+    public void test_issue1260() {
+        dao.update(Pet.class, Chain.makeSpecial("age", "+1").add("birthday", new Timestamp(System.currentTimeMillis())), null);
     }
 }
