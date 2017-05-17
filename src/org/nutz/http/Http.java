@@ -243,6 +243,13 @@ public class Http {
                      .send()
                      .getContent(reenc);
     }
+    
+    public static Response postXML(String url, String xml, int timeout) {
+        Request req = Request.create(url, METHOD.POST);
+        req.setData(xml);
+        req.getHeader().set("Content-Type", "application/xml");
+        return Sender.create(req).setTimeout(timeout).send();
+    }
 
     protected static ProxySwitcher proxySwitcher;
 
