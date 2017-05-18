@@ -8,14 +8,14 @@ import org.nutz.lang.meta.Pair;
 
 public class HtmlToken {
 
-    private static final Pattern BLOCK = Pattern.compile(    "^(head|div|p|ul|ol|blockquote|pre|title|h[1-9]|li|hr|table|tr|td)$",
-                                                            Pattern.CASE_INSENSITIVE);
+    private static final Pattern BLOCK = Pattern.compile("^(head|div|p|ul|ol|blockquote|pre|title|h[1-9]|li|hr|table|tr|td)$",
+                                                         Pattern.CASE_INSENSITIVE);
 
-    private static final Pattern INLINE = Pattern.compile(    "^(span|b|i|u|em|strong|sub|sup|code|font)$",
-                                                            Pattern.CASE_INSENSITIVE);
+    private static final Pattern INLINE = Pattern.compile("^(span|b|i|u|em|strong|sub|sup|code|font)$",
+                                                          Pattern.CASE_INSENSITIVE);
 
-    private static final Pattern NOCHILD = Pattern.compile(    "^(br|img|link|hr|meta)$",
-                                                            Pattern.CASE_INSENSITIVE);
+    private static final Pattern NOCHILD = Pattern.compile("^(br|img|link|hr|meta)$",
+                                                           Pattern.CASE_INSENSITIVE);
 
     HtmlToken() {
         attributes = new ArrayList<Pair<String>>();
