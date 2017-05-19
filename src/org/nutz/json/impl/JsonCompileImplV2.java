@@ -286,7 +286,12 @@ final class JsonTokenScan {
                     }
                 }
                 Nums.Radix r = Nums.evalRadix(token.value);
-                long n = Long.parseLong(r.val, r.radix);
+                long n = 0;
+                try {
+                    n = Long.parseLong(r.val, r.radix);
+                } catch (Throwable e) {
+                    n = Long.parseLong(token.value);
+                }
                 if (Integer.MAX_VALUE >= n && n >= Integer.MIN_VALUE) {
                     return (int) n;
                 }

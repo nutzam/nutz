@@ -1022,4 +1022,19 @@ public class JsonTest {
         System.out.println(json_str);
         assertEquals("{\"xx\":\"\"}", json_str);
     }
+    
+    @Test
+    public void test_json_nullStringAsEmtry() throws IOException {
+        Pet pet = Pet.create(null);
+        JsonFormat jsonFormat = new JsonFormat();
+        jsonFormat.setNullStringAsEmpty(true).setActived("name");
+        String json_str = Json.toJson(pet, jsonFormat);
+        System.out.println(json_str);
+    }
+    
+
+    @Test
+    public void test_json_08() throws IOException {
+        assertEquals(8, Json.fromJson(NutMap.class, "{id:08}").getInt("id"));
+    }
 }
