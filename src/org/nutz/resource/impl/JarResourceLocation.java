@@ -13,9 +13,13 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.resource.NutResource;
 
 public class JarResourceLocation extends ResourceLocation {
+    
+    private static final Log log = Logs.get();
 
     protected List<String> names = new ArrayList<String>();
 
@@ -75,7 +79,8 @@ public class JarResourceLocation extends ResourceLocation {
             }
         }
         catch (Throwable e) {
-            e.printStackTrace();
+            if (log.isTraceEnabled())
+                log.trace("URL=" + url, e);
         }
         finally {
             if (jf != null)
