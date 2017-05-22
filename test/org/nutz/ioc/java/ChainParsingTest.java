@@ -137,4 +137,27 @@ public class ChainParsingTest {
     public void test_static_field() {
         N(NAME("XNAME"));
     }
+
+    @Test
+    public void deep_args() {
+        String s = "$obj.xyz($tt.zz(), @Ioc, true, 34, 'TbT')";
+        ChainNode cn = N(s);
+        assertEquals(s, cn.toString());
+        s = "$obj.xyz(@Ioc, true, $tt.zz.nn, 34, 'TbT')";
+        cn = N(s);
+        assertEquals(s, cn.toString());
+
+        s = "$obj.xyz(@Ioc, true, 34, 'TbT', $tt.zz.nn())";
+        cn = N(s);
+        assertEquals(s, cn.toString());
+
+        s = "$obj.xyz(@Ioc.bbb)";
+        cn = N(s);
+        assertEquals(s, cn.toString());
+
+        //谁的配置会写成这样，呵呵
+        s = "$obj.xyz($bb.cc($dd.ee(true)))";
+        cn = N(s);
+        assertEquals(s, cn.toString());
+    }
 }
