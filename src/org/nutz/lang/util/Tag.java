@@ -2,6 +2,8 @@ package org.nutz.lang.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
@@ -35,36 +37,88 @@ public class Tag extends SimpleNode<HtmlToken> {
     }
 
     public boolean isBlock() {
-        return get().isBlock();
+        return this.is("^(HEAD|DIV|P|UL|OL|LI|BLOCKQUOTE|PRE|TITLE|H[1-9]|HR|TABLE|TR|TD)$");
     }
 
     public boolean isInline() {
-        return get().isInline();
+        return this.is("^(SPAN|B|I|U|EM|DEL|STRONG|SUB|SUP|CODE|FONT)$");
     }
 
     public boolean isNoChild() {
-        return get().isNoChild();
+        return this.is("^(BR|HR|IMG|LINK|META)$");
+    }
+
+    public boolean isHeading() {
+        return this.is("^H[1-9]$");
+    }
+
+    /**
+     * 标题级别
+     * 
+     * @return 0 表示不是标题， 1-6 分别表示标题级别
+     */
+    public int getHeadingLevel() {
+        if (this.isElement()) {
+            Matcher m = Pattern.compile("^H([1-9])$").matcher(tagName());
+            if (m.find())
+                return Integer.parseInt(m.group(1));
+        }
+        return 0;
+    }
+
+    public boolean isList() {
+        return this.is("^[OU]L$");
+    }
+
+    public boolean is(String regex) {
+        if (this.isTextNode())
+            return false;
+        String tagName = this.tagName();
+        if (regex.startsWith("^"))
+            return tagName.matches(regex.toUpperCase());
+        return tagName.equals(regex.toUpperCase());
     }
 
     public boolean isHtml() {
-        return "html".equalsIgnoreCase(get().getName());
+        return this.is("HTML");
     }
 
     public boolean isBody() {
-        return "body".equalsIgnoreCase(get().getName());
+        return this.is("BODY");
+    }
+
+    public boolean isElement() {
+        return this.get().isElement();
+    }
+
+    public boolean isTextNode() {
+        return this.get().isText();
     }
 
     public boolean isChildAllInline() {
         if (!get().isElement())
             return false;
         for (Node<HtmlToken> ht : this.getChildren())
-            if (ht.get().isBlock())
+            if (((Tag) ht).isBlock())
                 return false;
         return true;
     }
 
+    public List<Tag> getChildTags() {
+        List<Node<HtmlToken>> list = this.getChildren();
+        List<Tag> tags = new ArrayList<Tag>(list.size());
+        for (Node<HtmlToken> ele : list) {
+            tags.add((Tag) ele);
+        }
+        return tags;
+    }
+
     public String name() {
         return get().getName();
+    }
+
+    public String tagName() {
+        return get().getTagName();
     }
 
     public Tag attr(String name, String value) {
@@ -74,6 +128,10 @@ public class Tag extends SimpleNode<HtmlToken> {
 
     public Tag attr(String name, int value) {
         return attr(name, String.valueOf(value));
+    }
+
+    public String attr(String name) {
+        return this.get().getAttrVal(name);
     }
 
     public Tag attrs(String... attrs) {
@@ -133,6 +191,30 @@ public class Tag extends SimpleNode<HtmlToken> {
         return get().getAttrVal("id");
     }
 
+    public String getNodeValue() {
+        return this.get().getValue();
+    }
+
+    public String getText() {
+        StringBuilder sb = new StringBuilder();
+        for (Node<HtmlToken> nd : this.getChildren()) {
+            Tag tag = (Tag) nd;
+            // 文本
+            if (tag.isTextNode()) {
+                sb.append(nd.get().getValue());
+            }
+            // 空格
+            else if (tag.isNoChild()) {
+                sb.append(' ');
+            }
+            // 其他
+            else {
+                sb.append(tag.getText());
+            }
+        }
+        return sb.toString();
+    }
+
     public Tag setText(String text) {
         this.add(Tag.text(text));
         return this;
@@ -167,14 +249,13 @@ public class Tag extends SimpleNode<HtmlToken> {
     public String toInnerHtml(boolean autoIndent) {
         int level = autoIndent ? 0 : -1;
         StringBuilder sb = new StringBuilder();
-        
+
         for (Node<HtmlToken> child : this.getChildren()) {
             Tag childTag = (Tag) child;
-            HtmlToken token = childTag.get();
 
             __join_to_string(sb, childTag, level, false);
 
-            if (token.isBlock() || token.isBody())
+            if (childTag.isBlock() || childTag.isBody())
                 sb.append('\n');
         }
         return sb.toString();
@@ -218,9 +299,8 @@ public class Tag extends SimpleNode<HtmlToken> {
 
             for (Node<HtmlToken> child : tag.getChildren()) {
                 Tag childTag = (Tag) child;
-                HtmlToken token = child.get();
 
-                if (token.isBlock() || token.isBody())
+                if (childTag.isBlock() || childTag.isBody())
                     sb.append('\n');
 
                 __join_to_string(sb, childTag, level >= 0 ? level + 1 : level, closeNoChild);

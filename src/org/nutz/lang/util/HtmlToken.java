@@ -2,20 +2,10 @@ package org.nutz.lang.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.nutz.lang.meta.Pair;
 
 public class HtmlToken {
-
-    private static final Pattern BLOCK = Pattern.compile("^(head|div|p|ul|ol|blockquote|pre|title|h[1-9]|li|hr|table|tr|td)$",
-                                                         Pattern.CASE_INSENSITIVE);
-
-    private static final Pattern INLINE = Pattern.compile("^(span|b|i|u|em|strong|sub|sup|code|font)$",
-                                                          Pattern.CASE_INSENSITIVE);
-
-    private static final Pattern NOCHILD = Pattern.compile("^(br|img|link|hr|meta)$",
-                                                           Pattern.CASE_INSENSITIVE);
 
     HtmlToken() {
         attributes = new ArrayList<Pair<String>>();
@@ -24,6 +14,10 @@ public class HtmlToken {
     private String name;
     private String value;
     private List<Pair<String>> attributes;
+
+    public String getTagName() {
+        return name.toUpperCase();
+    }
 
     public String getName() {
         return name;
@@ -49,36 +43,6 @@ public class HtmlToken {
 
     public boolean isText() {
         return null == name && value != null;
-    }
-
-    public boolean isBlock() {
-        if (null == name)
-            return false;
-        return BLOCK.matcher(name).find();
-    }
-
-    public boolean isInline() {
-        if (null == name)
-            return false;
-        return INLINE.matcher(name).find();
-    }
-
-    public boolean isNoChild() {
-        if (null == name)
-            return true;
-        return NOCHILD.matcher(name).find();
-    }
-
-    public boolean isHtml() {
-        if (null == name)
-            return false;
-        return name.equalsIgnoreCase("html");
-    }
-
-    public boolean isBody() {
-        if (null == name)
-            return false;
-        return name.equalsIgnoreCase("body");
     }
 
     public HtmlToken attr(String name, String value) {
