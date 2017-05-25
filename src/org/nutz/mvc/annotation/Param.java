@@ -27,6 +27,8 @@ public @interface Param {
     String dfmt() default "";
 
     String df() default "//NOT EXIST IN//";
+    
+    String locale() default "";
 
     /**
      * 在输入参数是一个字符串，而入口函数参数是一个数组的时候：

@@ -7,6 +7,7 @@ import java.util.TimeZone;
 
 import org.junit.Test;
 import org.nutz.lang.Times;
+import org.nutz.lang.util.NutMap;
 import org.nutz.mvc.testapp.BaseWebappTest;
 
 public class SimpleAdaptorTest extends BaseWebappTest {
@@ -114,5 +115,13 @@ public class SimpleAdaptorTest extends BaseWebappTest {
         resp = post("/adaptor/issue1069", "showAdd=");
         assertEquals(200, resp.getStatus());
         assertEquals("", resp.getContent());
+    }
+    
+    @Test
+    public void issue_1267() {
+        resp = post("/adaptor/issue1267", new NutMap("time", "Thu May 25 2017 07:16:32 GMT+0800 (CST)"));
+        assertEquals(200, resp.getStatus());
+        System.out.println(resp.getContent());
+        //assertEquals("1495667792000", resp.getContent());
     }
 }

@@ -2,7 +2,10 @@ package org.nutz.lang;
 
 import static org.junit.Assert.assertEquals;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import org.junit.Test;
 
@@ -103,4 +106,11 @@ public class TimesTest {
         assertEquals(s0501, s0501_2);
     }
 
+    @Test
+    public void long_long_time() throws ParseException {
+        String fmt = "EEE MMM dd yyyy HH:mm:ss 'GMT'Z (z)";
+        String time = "Thu May 25 2017 07:16:32 GMT+0800 (CST)";
+        new SimpleDateFormat(fmt, Locale.forLanguageTag("en")).parse(time);
+        Times.parse(new SimpleDateFormat(fmt, Locale.forLanguageTag("en")), time);
+    }
 }

@@ -3,6 +3,7 @@ package org.nutz.mvc.adaptor.convertor;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import org.nutz.castor.Castors;
 import org.nutz.lang.Strings;
@@ -14,12 +15,15 @@ public class DateParamConvertor implements ParamConvertor {
     private Class<?> type;
     private DateFormat dfmt;
 
-    public DateParamConvertor(Class<?> type, String datefmt) {
+    public DateParamConvertor(Class<?> type, String datefmt, String locale) {
         this.type = type;
         if (Strings.isBlank(datefmt)) {
             dfmt = null;
         } else {
-            dfmt = new SimpleDateFormat(datefmt);
+            if (Strings.isBlank(locale))
+                dfmt = new SimpleDateFormat(datefmt);
+            else
+                dfmt = new SimpleDateFormat(datefmt, Locale.forLanguageTag(locale));
         }
     }
 

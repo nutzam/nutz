@@ -47,8 +47,9 @@ public class ObjectPairInjector implements ParamInjector {
             Param param = f.getAnnotation(Param.class);
             String nm = null == param ? f.getName() : param.value();
             String datefmt = null == param ? null : param.dfmt();
+            String locale = null == param ? null : param.locale();
             this.names[i] = prefix + nm;
-            this.converters[i] = Params.makeParamConvertor(f.getType(), datefmt);
+            this.converters[i] = Params.makeParamConvertor(f.getType(), datefmt, locale);
         }
     }
 

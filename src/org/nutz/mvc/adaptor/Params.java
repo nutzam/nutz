@@ -25,12 +25,17 @@ public abstract class Params {
      */
     public static ParamConvertor makeParamConvertor(Class<?> type,
                                                     String datefmt) {
+        return makeParamConvertor(type, datefmt, null);
+    }
+    public static ParamConvertor makeParamConvertor(Class<?> type,
+                                                    String datefmt,
+                                                    String locale) {
         if (type.isArray())
             return new ArrayParamConvertor(type.getComponentType());
 
         Mirror<?> mirror = Mirror.me(type);
         if (mirror.isDateTimeLike()) {
-            return new DateParamConvertor(type, datefmt);
+            return new DateParamConvertor(type, datefmt, locale);
         }
         if (mirror.isBoolean()) {
             return new BooleanParamConvertor();
