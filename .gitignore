@@ -22,3 +22,4 @@
 /build/libs
 .gradle
 local.properties
+/mysrc

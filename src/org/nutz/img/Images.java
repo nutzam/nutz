@@ -502,6 +502,72 @@ public class Images {
     }
 
     /**
+     * 水平翻转一张图片
+     * 
+     * @param srcIm
+     *            图像对象
+     * @return 被转换后的图像
+     */
+    public static BufferedImage flipHorizontal(Object srcIm) {
+        BufferedImage im1 = read(srcIm);
+        int w = im1.getWidth();
+        int h = im1.getHeight();
+        BufferedImage flipImage = new BufferedImage(w, h, im1.getType());
+        Graphics2D gs = flipImage.createGraphics();
+        gs.drawImage(im1, 0, 0, w, h, w, 0, 0, h, null);
+        gs.dispose();
+        return flipImage;
+    }
+
+    /**
+     * 水平翻转一张图片
+     * 
+     * @param srcIm
+     *            源图片
+     * @param tarIm
+     *            目标图片
+     * @return 被转换后的图像
+     */
+    public static BufferedImage flipHorizontal(Object srcIm, File tarIm) {
+        BufferedImage flipImage = flipHorizontal(srcIm);
+        Images.write(flipImage, tarIm);
+        return flipImage;
+    }
+
+    /**
+     * 垂直翻转一张图片
+     * 
+     * @param srcIm
+     *            图像对象
+     * @return 被转换后的图像
+     */
+    public static BufferedImage flipVertical(Object srcIm) {
+        BufferedImage im1 = read(srcIm);
+        int w = im1.getWidth();
+        int h = im1.getHeight();
+        BufferedImage flipImage = new BufferedImage(w, h, im1.getType());
+        Graphics2D gs = flipImage.createGraphics();
+        gs.drawImage(im1, 0, 0, w, h, 0, h, w, 0, null);
+        gs.dispose();
+        return flipImage;
+    }
+
+    /**
+     * 垂直翻转一张图片
+     * 
+     * @param srcIm
+     *            源图片
+     * @param tarIm
+     *            目标图片
+     * @return 被转换后的图像
+     */
+    public static BufferedImage flipVertical(Object srcIm, File tarIm) {
+        BufferedImage flipImage = flipVertical(srcIm);
+        Images.write(flipImage, tarIm);
+        return flipImage;
+    }
+
+    /**
      * 将一个图片文件读入内存
      * 
      * @param img
