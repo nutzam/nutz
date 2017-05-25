@@ -1,5 +1,6 @@
 package org.nutz.img;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Transparency;
@@ -505,7 +506,7 @@ public class Images {
      * 水平翻转一张图片
      * 
      * @param srcIm
-     *            图像对象
+     *            源图片
      * @return 被转换后的图像
      */
     public static BufferedImage flipHorizontal(Object srcIm) {
@@ -538,7 +539,7 @@ public class Images {
      * 垂直翻转一张图片
      * 
      * @param srcIm
-     *            图像对象
+     *            源图片
      * @return 被转换后的图像
      */
     public static BufferedImage flipVertical(Object srcIm) {
@@ -565,6 +566,109 @@ public class Images {
         BufferedImage flipImage = flipVertical(srcIm);
         Images.write(flipImage, tarIm);
         return flipImage;
+    }
+
+    public static final int WATERMARK_TOP_LEFT = 1;
+    public static final int WATERMARK_TOP_CENTER = 2;
+    public static final int WATERMARK_TOP_RIGHT = 3;
+    public static final int WATERMARK_CENTER_LEFT = 4;
+    public static final int WATERMARK_CENTER = 5;
+    public static final int WATERMARK_CENTER_RIGHT = 6;
+    public static final int WATERMARK_BOTTOM_LEFT = 7;
+    public static final int WATERMARK_BOTTOM_CENTER = 8;
+    public static final int WATERMARK_BOTTOM_RIGHT = 9;
+
+    /**
+     * 为图片添加水印，可以设定透明度与水印的位置
+     * <p>
+     * 水印位置默认支持9种，分别是：
+     * 
+     * TOP_LEFT | TOP_CENTER | TOP_RIGHT CENTER_LEFT | CENTER | CENTER_RIGHT
+     * BOTTOM_LEFT | BOTTOM_CENTER | BOTTOM_RIGHT
+     * 
+     * 
+     * @param srcIm
+     *            源图片
+     * @param markIm
+     *            水印图片
+     * @param opacity
+     *            透明度, 要求大于0小于1, 默认为0.5f
+     * @param pos
+     *            共9个位置，请使用 Images.WATERMARK_{XXX} 进行设置，默认为
+     *            Images.WATERMARK_CENTER
+     * @param margin
+     *            水印距离四周的边距 默认为0
+     * @return
+     */
+    public static BufferedImage addWatermark(Object srcIm,
+                                             Object markIm,
+                                             float opacity,
+                                             int pos,
+                                             int margin) {
+        BufferedImage im1 = read(srcIm);
+        BufferedImage im2 = read(markIm);
+
+        int cw = im1.getWidth();
+        int ch = im1.getHeight();
+        int mw = im2.getWidth();
+        int mh = im2.getHeight();
+
+        if (opacity > 1 || opacity <= 0) {
+            opacity = 0.5f;
+        }
+        if (pos > 9 || pos <= 0) {
+            pos = 5;
+        }
+
+        // 计算水印位置
+        int px = 0;
+        int py = 0;
+        switch (pos) {
+        case WATERMARK_TOP_LEFT:
+            px = margin;
+            py = margin;
+            break;
+        case WATERMARK_TOP_CENTER:
+            px = (cw - mw) / 2;
+            py = margin;
+            break;
+        case WATERMARK_TOP_RIGHT:
+            px = cw - mw - margin;
+            py = margin;
+            break;
+        case WATERMARK_CENTER_LEFT:
+            px = margin;
+            py = (ch - mh) / 2;
+            break;
+        case WATERMARK_CENTER:
+            px = (cw - mw) / 2;
+            py = (ch - mh) / 2;
+            break;
+        case WATERMARK_CENTER_RIGHT:
+            px = cw - mw - margin;
+            py = (ch - mh) / 2;
+            break;
+        case WATERMARK_BOTTOM_LEFT:
+            px = margin;
+            py = ch - mh - margin;
+            break;
+        case WATERMARK_BOTTOM_CENTER:
+            px = (cw - mw) / 2;
+            py = ch - mh - margin;
+            break;
+        case WATERMARK_BOTTOM_RIGHT:
+            px = cw - mw - margin;
+            py = ch - mh - margin;
+            break;
+        }
+
+        // 添加水印
+        Graphics2D gs = im1.createGraphics();
+        gs.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
+        gs.drawImage(im2, px, py, null);
+        gs.dispose();
+
+        return im1;
     }
 
     /**
