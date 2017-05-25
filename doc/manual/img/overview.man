@@ -1,5 +1,5 @@
 #title: 图像处理小军刀
-#author:wendal(wendal1985@gmail.com)
+#author:wendal(wendal1985@gmail.com), pangwu86(pangwu86@gmail.com)
 #index:0,1
 ------------------------------------------------------------------------
 为什么有这个package
@@ -7,7 +7,6 @@
 	这个package一直有,老久了,只是一直都是我们内部自己用,没有直接写出来. 
 	
 	直接原文拷贝啦,从http,哈哈.
-	
 	
 	
 ------------------------------------------------------------------------
@@ -34,6 +33,21 @@
 	{{{<JAVA>
 	img = Images.rotate(img, 90);
 	}}}
+    
+------------------------------------------------------------------------
+图像翻转
+
+    水平翻转
+	
+    {{{<JAVA>
+    img = Images.flipHorizontal(img);
+    }}}
+    
+    垂直翻转
+    
+    {{{<JAVA>
+    img = Images.flipVertical(img);
+    }}}
 
 ------------------------------------------------------------------------
 图像缩放
@@ -49,7 +63,29 @@
 	{{{<JAVA>
 	Images.clipScale("/dev/shm/abc.jpg", "/dev/shm/abc_out.jpg",  1920, 1080);
 	}}}
-	
+
+------------------------------------------------------------------------
+添加水印
+
+    添加位置默认提供9个选择
+
+    # Images.WATERMARK_TOP_LEFT 
+    # Images.WATERMARK_TOP_CENTER 
+    # Images.WATERMARK_TOP_RIGHT
+    # Images.WATERMARK_CENTER_LEFT
+    # Images.WATERMARK_CENTER
+    # Images.WATERMARK_CENTER_RIGHT
+    # Images.WATERMARK_BOTTOM_LEFT
+    # Images.WATERMARK_BOTTOM_CENTER
+    # Images.WATERMARK_BOTTOM_RIGHT
+
+
+    右下角添加图片水印, 50%透明度，20像素边距
+
+    {{{<JAVA>
+    img = Images.addWatermark(img, watermarkImg,  0.5f, Images.WATERMARK_BOTTOM_RIGHT, 20);
+    }}}
+
 ------------------------------------------------------------------------
 输出文件
 
