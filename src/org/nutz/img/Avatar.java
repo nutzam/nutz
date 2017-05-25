@@ -16,7 +16,7 @@ import java.awt.image.BufferedImage;
  * </pre>
  * 
  * @author pw
- *
+ * @deprecated 代码已转移到Images类中，请修改引用
  */
 @Deprecated
 public abstract class Avatar {
