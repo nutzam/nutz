@@ -2683,7 +2683,7 @@ public abstract class Lang {
     }
 
     public static StringBuilder execOutput(String cmd) throws IOException {
-        return execOutput(Lang.array(cmd), Encoding.CHARSET_UTF8);
+        return execOutput(Strings.splitIgnoreBlank(cmd, " "), Encoding.CHARSET_UTF8);
     }
 
     public static StringBuilder execOutput(String cmd, Charset charset) throws IOException {
