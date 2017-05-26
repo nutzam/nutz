@@ -65,16 +65,18 @@
 	}}}
 	
 -----------------------------------------------
-通过注入JedisPool使用
+通过注入JedisAgent使用
 	
-	JedisPool是一个连接池实现,通过getResource取出Jedis实例进行操作, 操作完成后,需要调用其close方法关闭.
+	JedisAgent封装了JedisPool和JedisCluster,通过getResource取出Jedis实例进行操作, 操作完成后,需要调用其close方法关闭.
 	
 	{{{<JAVA>
-	@Inject JedisPool jedisPool;
+	@Inject JedisAgent jedisAgent;
+	//@Inject JedisCluster jedisCluster;
+	//@Inject JedisPool jedisPool;
 	
 	// JDK 7+ , 可利用try-with-resources特性, 让JDK自动回收(会自定义调用close方法)
 	public void setxxx(xxx yyy) {
-		try (Jedis jedis = jedisPool.getResource()) {
+		try (Jedis jedis = jedisAgent.getResource()) {
 			jedis.set("wendal", "https://nutz.cn");
 		}
 	}
@@ -82,13 +84,15 @@
 	public void setxxx(xxx yyy) {
 	    Jedis jedis = null;
 		try { 
-		    jedis = jedisPool.getResource();
+		    jedis = jedisAgent.getResource();
 			jedis.set("wendal", "https://nutz.cn");
 		} finally {
 			Streams.safeClose(jedis);
 		}
 	}
 	}}}
+	
+	也可以注入JedisPool(单机版jedis)或JedisCluster(集群版redis). 推荐使用JedisAgent.
 	
 -----------------------------------------------
 注入RedisService使用
