@@ -54,7 +54,7 @@ public class Cookie implements HttpReqRespInterceptor {
             if ("Path".equals(p.getName()) || "Expires".equals(p.getName()))
                 continue;
             if ("Max-Age".equals(p.getName())) {
-                int age = Integer.parseInt(p.getValue());
+                long age = Long.parseLong(p.getValue());
                 if (age == 0)
                     return;
             }
