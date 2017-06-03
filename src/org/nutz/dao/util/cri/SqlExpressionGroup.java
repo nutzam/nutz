@@ -365,4 +365,12 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     public List<SqlExpression> getExps() {
 		return exps;
 	}
+    
+    public SqlExpressionGroup clone(){
+        SqlExpressionGroup seg = new SqlExpressionGroup();
+        seg.exps = cloneExps();
+        seg.pojo = this.pojo;
+        seg.top = this.top;
+        return seg;
+    }
 }
