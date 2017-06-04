@@ -199,7 +199,7 @@ XML
 			{{{<JAVA>
 			assertEquals("aBC", Strings.lowerFirst("ABC"));
 			}}}
-		 * 切除首位空白
+		 * 切除首尾空白
 			{{{<JAVA>
 			assertEquals("ABC", Strings.trim("\t   ABC \r\n   "));
 			}}}
@@ -220,8 +220,8 @@ XML
 			}}}
 		 * 固定长度右填充 (居左)，当无法填充时将按照指定的长度截断原字符串
 			{{{<JAVA>
-			assertEquals("FE00", Strings.cutRight("FE", 4, '0'));
-			assertEquals("AB", Strings.cutRight("ABCD", 2, '0'));
+			assertEquals("FE00", Strings.cutLeft("FE", 4, '0'));
+			assertEquals("AB", Strings.cutLeft("ABCD", 2, '0'));
 			}}}
 	转换
 		 * 二进制形式字符串
