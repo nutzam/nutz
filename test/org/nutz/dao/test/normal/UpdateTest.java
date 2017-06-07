@@ -1,13 +1,19 @@
 package org.nutz.dao.test.normal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialClob;
+import javax.sql.rowset.serial.SerialException;
 
+import org.junit.Test;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.FieldFilter;
@@ -17,7 +23,9 @@ import org.nutz.dao.test.meta.Fighter;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.Platoon;
 import org.nutz.dao.test.meta.issue1244.VersionTestPojo;
+import org.nutz.dao.test.meta.other.UpdateClobBlobBean;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Strings;
 import org.nutz.trans.Atom;
 
 public class UpdateTest extends DaoCase {
@@ -335,5 +343,19 @@ public class UpdateTest extends DaoCase {
     @Test
     public void test_issue1260() {
         dao.update(Pet.class, Chain.makeSpecial("age", "+1").add("birthday", new Timestamp(System.currentTimeMillis())), null);
+    }
+
+    @Test
+    public void test_update_clob() throws SerialException, SQLException {
+        dao.create(UpdateClobBlobBean.class, true);
+        UpdateClobBlobBean bean = new UpdateClobBlobBean();
+        bean.setManytext(new SerialClob(Strings.dup('8', 4097).toCharArray()));
+        bean.setManybinary(new SerialBlob(Strings.dup('9', 4097).getBytes()));
+        dao.insert(bean);
+
+        bean.setManytext(new SerialClob(Strings.dup('7', 4097).toCharArray()));
+        bean.setManybinary(new SerialBlob(Strings.dup('6', 4097).getBytes()));
+
+        dao.update(bean);
     }
 }

@@ -82,6 +82,7 @@ import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Stopwatch;
 import org.nutz.lang.random.R;
+import org.nutz.lang.util.NutMap;
 import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
 
@@ -947,5 +948,18 @@ public class SimpleDaoTest extends DaoCase {
             Daos.FORCE_WRAP_COLUMN_NAME = false;
         }
         
+    }
+    
+    @Test
+    public void test_fast_insert_maps() {
+        List<NutMap> list = new ArrayList<NutMap>();
+        for (int i = 0; i < 100; i++) {
+            NutMap pet = new NutMap();
+            pet.setv("name", "wendal" + i).setv("age", i);
+            list.add(pet);
+        }
+        list.get(0).setv(".table", "t_pet");
+        
+        dao.fastInsert(list);
     }
 }
