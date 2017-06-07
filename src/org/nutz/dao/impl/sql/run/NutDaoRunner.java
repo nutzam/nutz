@@ -123,9 +123,11 @@ public class NutDaoRunner implements DaoRunner {
             conn = selectDataSource(null, dataSource, callback).getConnection();
             // 开始真正运行
             runCallback(conn, callback);
-            // 完成提交
-            if (!conn.getAutoCommit())
-                conn.commit();
+            // 完成提交，----
+            // wjw（20170607），注释，如果和其他框架集成，nutz-dao只是做为sql的解析和执行工具，并
+            //不控制事务，需要注释这段代码
+            //if (!conn.getAutoCommit())
+              //  conn.commit();
         }
         // 异常回滚
         catch (Exception e) {
