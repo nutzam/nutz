@@ -2,6 +2,7 @@ package org.nutz.dao.test.normal;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import org.nutz.dao.entity.Record;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
+import org.nutz.dao.test.meta.Master;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.util.cri.SimpleCriteria;
 import org.nutz.lang.Each;
@@ -267,5 +269,27 @@ public class QueryTest extends DaoCase {
         assertEquals(2, pets.size());
         assertEquals("pet4", pets.get(0).get("name"));
         assertEquals("pet5", pets.get(1).get("name"));
+    }
+    
+
+    @Test
+    public void fetchLinks_with_cnd() {
+        dao.create(Pet.class, true);
+        dao.create(Master.class, true);
+        Master master = new Master();
+        master.setName("zozoh");
+        
+        Pet petA = new Pet();
+        petA.setName("wendal");
+        petA.setAge(31);
+        Pet petB = new Pet();
+        petB.setName("pangwu");
+        petB.setAge(30);
+        master.setPets(Arrays.asList(petA, petB));
+        dao.insertWith(master, null);
+        
+        master = dao.fetch(Master.class, master.getName());
+        dao.fetchLinks(master, null, Cnd.where("age", "=", 31));
+        assertEquals(1, master.getPets().size());
     }
 }

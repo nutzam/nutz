@@ -131,4 +131,12 @@ public class AdaptorTestModule extends BaseWebappTest {
     public Object issue1109(@Param("::issue")List<Issue1109> pojos) {
         return pojos;
     }
+    
+
+    @At("/issue1267")
+    @Ok("raw")
+    @AdaptBy(type=PairAdaptor.class)
+    public long issue1267(@Param("..")Issue1267 issue) {
+        return issue.getTime().getTime();
+    }
 }

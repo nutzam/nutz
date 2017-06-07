@@ -10,7 +10,7 @@ WebSocket是什么?
 ------------------------------------------------------------------------------------------
 Nutz为WebSocket准备了什么?
 
-	请下载最新的nutz-plugins-websocket及websocket api的jar, 然后只需要一个类, 即可完成websocket的基础集成.
+	请下载最新的nutz-plugins-websocket及websocket api, 然后只需要一个类, 即可完成websocket的基础集成.
 	
 	{{{<JAVA>
 	@ServerEndpoint(value = "/websocket", configurator=NutWsConfigurator.class)
@@ -22,3 +22,21 @@ Nutz为WebSocket准备了什么?
 	其他类注入MyWebsocket实例(一般就是@Inject嘛), 通过sendXXX方法发送数据到浏览器
 	
 	若需要扩展,请查阅AbstractWsEndpoint的javadoc及[https://github.com/nutzam/nutzmore/tree/master/nutz-plugins-websocket nutz-plugins-websocket的README.md]
+	
+-----------------------------------------------------------------------------------------
+maven依赖
+
+	{{{<XML>
+	
+		<dependency>
+			<groupId>javax.websocket</groupId>
+			<artifactId>javax.websocket-api</artifactId>
+			<version>1.1</version>
+			<scope>provided</scope><!-- 非常重要哦 -->
+		</dependency>
+		<dependency>
+			<groupId>org.nutz</groupId>
+			<artifactId>nutz-plugins-websocket</artifactId>
+			<version>1.r.61.r2</version>
+		</dependency>
+	}}}

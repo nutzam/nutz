@@ -134,54 +134,71 @@
 	private int id; 
 	}}}
 	
-	Oracle的seq序列
+	使用自定义的Oracle的seq序列
 	
-	{{{<JAVA>
-	@Id // 1.r.58之前的版本需要设置为false
-	@Prev(@SQL(value="select xxx_seq.nextval from dual", db=DB.ORACLE))
-	private int id; 
-	}}}
+		{{{<JAVA>
+		@Id // 1.r.58之前的版本需要设置为false
+		@Prev(@SQL(value="select xxx_seq.nextval from dual", db=DB.ORACLE))
+		private int id; 
+		}}}
 	
 	调用pojo自身的方法生成
 	
-	{{{<JAVA>
-	@Id(auto=false)
-	@Prev(els=@EL("$me.nextId()"))
-	private int id;
+		{{{<JAVA>
+		@Id(auto=false)
+		@Prev(els=@EL("$me.nextId()"))
+		private int id;
 	
-	public int nextId() {
-		return System.currentTimeMillis();//仅供演示!!!
-	} 
-	}}}
+		public int nextId() {
+			return System.currentTimeMillis();//仅供演示!!!
+		} 
+		}}}
 	
 	
-	走UUID,实现类org.nutz.el.opt.custom.MakeUUID
+	走UUID
 	
-	{{{<JAVA>
-	@Name //注意,字符串主键用@Name,与属性名称无关!!!
-	@Prev(els=@EL("uuid(32)")) // 可以是 uuid() uuid(32)
-	private String id;
-	}}}
+		通过EL内置的全局方法uuid(), 它的实现类是org.nutz.el.opt.custom.MakeUUID
 	
-	自定义生成器,注册到EL全局即可,是上述UUID的延伸
+		{{{<JAVA>
+		@Name //注意,字符串主键用@Name,与属性名称无关!!!
+		@Prev(els=@EL("uuid(32)")) // 可以是 uuid() uuid(32)
+		private String id;
+		}}}
 	
-	{{{<JAVA>
-	// 首先, 做一个类,实现RunMethod
-	public class MySuperIdGenerator implements RunMethod {
+	完全自定义
+	
+		自己写了个很棒的id生成方法?想集成第三方id生成器? 实现RunMethod接口即可, 然后将其注册到EL全局.
+	
+		{{{<JAVA>
+		// 首先, 做一个类,实现RunMethod
+		@IocBean
+		public class MySuperIdGenerator implements RunMethod {
 
-        public Object run(List<Object> fetchParam) {
-            // 用redis实现自增
-            return jedis().incr("ig:"+fetchParam.get(0).toString());
-        }
+			@Aop("jedis")
+        	public Object run(List<Object> fetchParam) {
+            	// 用redis实现自增
+            	return jedis().incr("ig:"+fetchParam.get(0).toString());
+        	}
 
-        public String fetchSelf() {
-            return "ig";
-        }
-    }
-	// 然后, 在MainSetup.init方法或dao操作之前执行一次注册.
-	CustomMake.me().register("ig", new MySuperIdGenerator()));
+        	public String fetchSelf() {
+            	return "ig";
+        	}
+    	}
+		// 然后, 在MainSetup.init方法或dao操作之前执行一次注册, 一次就可以哦.
+		// CustomMake.me().register("ig", ioc.get(MySuperIdGenerator.class)));
 	
-	@Id(auto=false)
-	@Prev(els=@EL("ig('t_user')"))
-	private int id;
-	}}}
+		// 用法:
+		@Id(auto=false)
+		@Prev(els=@EL("ig(view.tableName)")) // view.tableName 相当于 dao.getEntity(pojo.getClass()).getTableName()
+		private int id;
+		}}}
+		
+	EL表达式中可用的变量
+	
+		{{{
+		$me -- 当前Pojo对象
+		view -- 当前Pojo对象的Entity实例, 可以拿到各种元数据,例如表名. 相当于 dao.getEntity(pojo.getClass())
+		field -- 当前属性, 相当于 dao.getEntity(pojo.getClass()).getField("id/name/...")
+		}}}
+		
+		

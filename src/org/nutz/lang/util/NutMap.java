@@ -309,8 +309,9 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         if (null == _map)
             return super.values();
         List<Object> vals = new LinkedList<Object>();
-        vals.addAll(super.values());
-        vals.addAll(_map.values());
+        for (String key : this.keySet()) {
+            vals.add(this.get(key));
+        }
         return vals;
     }
 
@@ -538,6 +539,81 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
             list.add(value);
             put(key, list);
         }
+        return this;
+    }
+
+    /**
+     * 向某个键增加一组值，如果原来就有值，是集合的话，会被合并，否则原来的值用列表包裹后再加入新值
+     * 
+     * @param key
+     *            键
+     * @param values
+     *            值列表
+     * @return 自身
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public <T> NutMap pushTo(String key, T... values) {
+        if (null != values && values.length > 0) {
+            Object v = get(key);
+            // 不存在的话，增加列表
+            if (null == v) {
+                List<Object> list = new LinkedList<Object>();
+                for (Object val : values)
+                    list.add(val);
+                this.put(key, list);
+            }
+            // 如果是集合的话，就增加
+            else if (v instanceof Collection) {
+                for (Object val : values)
+                    ((Collection) v).add(val);
+            }
+            // 否则将原来的值变成列表再增加
+            else {
+                List<Object> list = new LinkedList<Object>();
+                list.add(v);
+                for (Object val : values)
+                    list.add(val);
+                this.put(key, list);
+            }
+        }
+        // 返回自身以便链式赋值
+        return this;
+    }
+
+    /**
+     * 是 pushTo 函数的另一个变种（可以接受集合）
+     * 
+     * @param key
+     *            键
+     * @param values
+     *            值列表
+     * @return 自身
+     * 
+     * @see #pushTo(String, Collection)
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public NutMap pushTo(String key, Collection<?> values) {
+        if (null != values && values.size() > 0) {
+            Object v = get(key);
+            // 不存在的话，增加列表
+            if (null == v) {
+                List<Object> list = new LinkedList<Object>();
+                list.addAll(values);
+                this.put(key, list);
+            }
+            // 如果是集合的话，就增加
+            else if (v instanceof Collection) {
+                ((Collection) v).addAll(values);
+            }
+            // 否则将原来的值变成列表再增加
+            else {
+                List<Object> list = new LinkedList<Object>();
+                list.add(v);
+                list.addAll(values);
+                this.put(key, list);
+            }
+        }
+        // 返回自身以便链式赋值
         return this;
     }
 

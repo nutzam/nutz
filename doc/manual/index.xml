@@ -2,6 +2,7 @@
 <doc title="Nutz核心包" author="zozoh(zozohtnt@gmail.com)">
 	<doc path="nutz_preface.man"/>
 	<doc path="nutz_release_notes.man"/>
+	<doc path="changelog.man"></doc>
 	<doc path="basic" title="通用知识">
 		<doc path="maven.man"></doc>
 		<doc path="encoding.man"></doc>
@@ -147,6 +148,7 @@
 		<doc path="be_committer.man"/>
 	</doc>
 	<doc path="history" title="版本历史">
+		<doc path="1_r_61.man"/>
 		<doc path="1_r_60.man"/>
 		<doc path="1_r_59.man"/>
 		<doc path="1_r_58.man"/>

@@ -226,8 +226,9 @@
 			url:'/HelloNutz/jsonAdapter',
 			"data": JSON.stringify(data), // 注意要转为json,除非data本身就是json字符串
 			dataType:'json',
-			success:function(data){
-				console.log(data);
+			type : 'POST',
+			success:function(re){
+				console.log(re);
 			}
 		});
 		}}}

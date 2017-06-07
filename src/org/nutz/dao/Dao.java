@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Record;
+import org.nutz.dao.impl.EntityHolder;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.PojoMaker;
@@ -1187,4 +1188,6 @@ public interface Dao {
      * @return 实体对象的列表,符合regex的关联属性也会取出
      */
     <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd);
+    
+    EntityHolder getEntityHolder();
 }

@@ -1,15 +1,12 @@
 package org.nutz.conf;
 
-import java.io.File;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.nutz.el.opt.custom.CustomMake;
 import org.nutz.json.Json;
-import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.util.NutType;
 import org.nutz.log.Log;
@@ -17,7 +14,6 @@ import org.nutz.log.Logs;
 import org.nutz.mapl.Mapl;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
-import org.nutz.resource.impl.FileResource;
 
 /**
  * 配置加载器<br/>
@@ -74,14 +70,7 @@ public class NutConf {
     @SuppressWarnings({"unchecked", "rawtypes"})
     private void loadResource(String... paths) {
         for (String path : paths) {
-            List<NutResource> resources;
-            if (path.endsWith(".js") || path.endsWith(".json")) {
-                File f = Files.findFile(path);
-                resources = new ArrayList<NutResource>();
-                resources.add(new FileResource(f));
-            } else {
-                resources = Scans.me().scan(path, "\\.(js|json)$");
-            }
+            List<NutResource> resources = Scans.me().scan(path, "\\.(js|json)$");
 
             for (NutResource nr : resources) {
                 try {
