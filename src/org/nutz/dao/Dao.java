@@ -1,5 +1,8 @@
 package org.nutz.dao;
 
+import java.sql.ResultSet;
+import java.util.List;
+
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.impl.EntityHolder;
@@ -8,9 +11,6 @@ import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.PojoMaker;
 import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Each;
-
-import java.sql.ResultSet;
-import java.util.List;
 
 /**
  * Nutz.Dao 核心接口。 封装了所有的数据库操作

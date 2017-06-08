@@ -3,17 +3,17 @@
 #author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
 1.r.61 {*岗地苹果} 发行注记(20170417)
-    
+
 	恩,你比之前快了.
-	
+
 	启动加速, 指Scans类的初始化过程,当项目里面有上百个jar的时候,老版本需3s,现在仅需50ms
-	
+
 	运行加速, 指FastClass已经完全重写并默认启用,而且对使用者是透明的
-	
+
 	乐观锁,由[https://github.com/crskyp crskyp]提供
-	
+
 	来,体验一下飞一般的速度
-	
+
 	在此感谢社区,QQ群里以各种方式贡献的童鞋,^_^,未能一一记录,深表歉意
 
 ---------------------------------------------------------------------------------------------------------
@@ -48,13 +48,13 @@
     * add: Tmpl类支持更多语法
     * remove: LazyNutDao
     * remove: httpdns 有更多更专业的库提供这个功能
-    
+
 
 --------------------------------------------------------------------------------------------------------
 部分新功能介绍
 
 	原Daos.queryCount(String)已废弃,替换为Daos.queryCount(Sql),该方法能适应更多场景.
-	
+
 	{{{<JAVA>
 	Sql sql = Sqls.create(...);
 	// 原本
@@ -62,22 +62,22 @@
 	// 现在
 	long count = Daos.queryCount(sql);
 	}}}
-	
+
 	乐观锁及其底层方法
-	
+
 	{{{<JAVA>
 	// 通过@Column(version=true)指定版本控制属性
 	dao.updateWithVersion(pet, null);
 	// 通过编码方式指定版本控制属性
 	dao.updateAndIncrIfMatch(pet, null, "version");
 	}}}
-	
+
 	fetchByJoin/queryByJoin 一条SQL取出@One关联对象
-	
+
 	{{{<JAVA>
 	platoon = dao.fetchByJoin(Platoon.class, null, "wendal");
 	}}}
-	
+
 --------------------------------------------------------------------------------------------------------
 文档更新
 
@@ -87,7 +87,7 @@
 
 --------------------------------------------------------------------------------------------------------
 详细列表:
-  
+
     * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.61 issue@github]
 
 欢迎访问[https://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
