@@ -589,8 +589,10 @@ public abstract class Daos {
                 if (matcher.isIgnoreDate() && val instanceof Date) {
                     continue;
                 }
-                if (matcher.isIgnoreBlankStr() && val instanceof String) {
-
+                if (matcher.isIgnoreBlankStr()
+                    && val instanceof CharSequence
+                    && Strings.isBlank((CharSequence) val)) {
+                    continue;
                 }
             }
             callback.invoke(mf, val);
