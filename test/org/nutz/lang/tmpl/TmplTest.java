@@ -9,9 +9,15 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Times;
 
 public class TmplTest {
-    
+
     @Test
-    public void test_bracket_mode(){
+    public void test_customized_a() {
+        assertEquals("A100C", Tmpl.exec("A@<b(int)?89>C", "@", "<", ">", Lang.map("b:100"), true));
+        assertEquals("A100C", Tmpl.exec("A@{b(int)?89}C", "@", Lang.map("b:100"), true));
+    }
+
+    @Test
+    public void test_bracket_mode() {
         assertEquals("A100C", Tmpl.exec("A${b(int)?89}C", Lang.map("b:100")));
         assertEquals("A89C", Tmpl.exec("A${b(int)?89}C", null));
     }
@@ -41,6 +47,7 @@ public class TmplTest {
     @Test
     public void test_escape() {
         assertEquals("A${b}C", Tmpl.exec("A$${b}C", Lang.map("b:'BB'}")));
+        assertEquals("${A}", Tmpl.exec("$${${x}}", Lang.map("x:'A'")));
     }
 
     @Test
