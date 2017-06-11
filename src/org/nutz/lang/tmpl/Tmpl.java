@@ -108,9 +108,9 @@ public class Tmpl {
                        + "])["
                        + startChar
                        + "]["
-                       + leftBrace
+                       + ("[".equals(leftBrace) ? "\\[" : leftBrace)
                        + "]([^"
-                       + rightBrace
+                       + ("]".equals(rightBrace) ? "\\]" : rightBrace)
                        + "]+)["
                        + rightBrace
                        + "])|(["

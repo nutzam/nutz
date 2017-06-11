@@ -235,25 +235,33 @@ public class Tag extends SimpleNode<HtmlToken> {
 
     public String toString(int level) {
         StringBuilder sb = new StringBuilder();
-        __join_to_string(sb, this, level, true);
+        __join_to_string(sb, this, level, true, null);
         return sb.toString();
     }
 
     public String toOuterHtml(boolean autoIndent) {
+        return toOuterHtml(autoIndent, null);
+    }
+
+    public String toOuterHtml(boolean autoIndent, Callback<Tag> tagWatcher) {
         int level = autoIndent ? 0 : -1;
         StringBuilder sb = new StringBuilder();
-        __join_to_string(sb, this, level, false);
+        __join_to_string(sb, this, level, false, tagWatcher);
         return sb.toString();
     }
 
     public String toInnerHtml(boolean autoIndent) {
+        return toInnerHtml(autoIndent, null);
+    }
+
+    public String toInnerHtml(boolean autoIndent, Callback<Tag> tagWatcher) {
         int level = autoIndent ? 0 : -1;
         StringBuilder sb = new StringBuilder();
 
         for (Node<HtmlToken> child : this.getChildren()) {
             Tag childTag = (Tag) child;
 
-            __join_to_string(sb, childTag, level, false);
+            __join_to_string(sb, childTag, level, false, tagWatcher);
 
             if (childTag.isBlock() || childTag.isBody())
                 sb.append('\n');
@@ -264,7 +272,13 @@ public class Tag extends SimpleNode<HtmlToken> {
     private static void __join_to_string(StringBuilder sb,
                                          Tag tag,
                                          int level,
-                                         boolean closeNoChild) {
+                                         boolean closeNoChild,
+                                         Callback<Tag> tagWatcher) {
+        // 预处理 Tag
+        if (null != tagWatcher) {
+            tagWatcher.invoke(tag);
+        }
+
         // 纯文本
         if (tag.get().isText()) {
             sb.append(tag.get().getValue());
@@ -288,7 +302,7 @@ public class Tag extends SimpleNode<HtmlToken> {
             __join_tag_prefix(sb, tag, prefix);
             __join_tag_begin(sb, tag);
             for (Node<HtmlToken> child : tag.getChildren()) {
-                __join_to_string(sb, (Tag) child, level, closeNoChild);
+                __join_to_string(sb, (Tag) child, level, closeNoChild, tagWatcher);
             }
             __join_tag_end(sb, tag);
         }
@@ -303,7 +317,11 @@ public class Tag extends SimpleNode<HtmlToken> {
                 if (childTag.isBlock() || childTag.isBody())
                     sb.append('\n');
 
-                __join_to_string(sb, childTag, level >= 0 ? level + 1 : level, closeNoChild);
+                __join_to_string(sb,
+                                 childTag,
+                                 level >= 0 ? level + 1 : level,
+                                 closeNoChild,
+                                 tagWatcher);
             }
             sb.append('\n');
             __join_tag_prefix(sb, tag, prefix);
