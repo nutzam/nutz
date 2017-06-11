@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.nutz.lang.Dumps;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.NutBean;
@@ -249,8 +248,6 @@ public class Tmpl {
             // 看看是逃逸呢，还是匹配上了
             String s_escape = this.escapeIndex > 0 ? m.group(this.escapeIndex) : null;
             String s_match = m.group(this.groupIndex);
-
-            System.out.println(Dumps.matcherFound(m));
 
             // 如果是逃逸
             if (!Strings.isBlank(s_escape)) {
