@@ -211,7 +211,10 @@ public abstract class Sender implements Callable<Response> {
             conn.addRequestProperty("Host", host);
         }
         conn.setConnectTimeout(Default_Conn_Timeout);
-        conn.setRequestMethod(request.getMethod().name());
+        if (request.getMethodString() == null)
+        	conn.setRequestMethod(request.getMethod().name());
+        else
+        	conn.setRequestMethod(request.getMethodString());
         if (timeout > 0)
             conn.setReadTimeout(timeout);
         else

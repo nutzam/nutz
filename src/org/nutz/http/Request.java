@@ -67,6 +67,7 @@ public class Request {
 
     private String url;
     private METHOD method;
+    private String methodString;
     private Header header;
     private Map<String, Object> params;
     private byte[] data;
@@ -247,9 +248,23 @@ public class Request {
     public String getEnc() {
         return enc;
     }
-    
+
     public Request header(String key, String value) {
         getHeader().set(key, value);
         return this;
+    }
+
+    public Request setMethodString(String methodString) {
+        try {
+            method = METHOD.valueOf(methodString.toUpperCase());
+        }
+        catch (Throwable e) {
+            this.methodString = methodString;
+        }
+        return this;
+    }
+
+    public String getMethodString() {
+        return methodString;
     }
 }
