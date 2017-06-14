@@ -836,6 +836,18 @@ public class SimpleDaoTest extends DaoCase {
         user.setSalt(R.UU32());
         user.setPassword(Lang.sha1("abc" + user.getSalt()));
         dao.insert(user);
+        
+        NutMap map = new NutMap(".table", "t_test_user");
+        map.put("+*id", 0);
+        map.put("name", "wendal");
+        dao.insert(map);
+        assertNotNull(map.get("id"));
+        
+        map = new NutMap(".table", "t_test_user");
+        map.put("*+id", 0);
+        map.put("name", "wendal2");
+        dao.insert(map);
+        assertNotNull(map.get("id"));
     }
 
     @Test

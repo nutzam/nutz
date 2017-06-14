@@ -102,22 +102,26 @@ public class EntityHolder {
             Mirror<?> mirror = Mirror.me(value);
             NutMappingField ef = new NutMappingField(en);
 
-            if (key.startsWith("+")) {
-                ef.setAsAutoIncreasement();
-                if (mirror != null && mirror.isIntLike())
-                    ef.setAsId();
-                key = key.substring(1);
-            }
-            if (key.startsWith("!")) {
-                ef.setAsNotNull();
-                key = key.substring(1);
-            }
-            if (key.startsWith("*")) {
-                key = key.substring(1);
-                if (mirror != null && mirror.isIntLike())
-                    ef.setAsId();
-                else
-                    ef.setAsName();
+            while (true) {
+                if (key.startsWith("+")) {
+                    ef.setAsAutoIncreasement();
+                    if (mirror != null && mirror.isIntLike())
+                        ef.setAsId();
+                    key = key.substring(1);
+                }
+                else if (key.startsWith("!")) {
+                    ef.setAsNotNull();
+                    key = key.substring(1);
+                }
+                else if (key.startsWith("*")) {
+                    key = key.substring(1);
+                    if (mirror != null && mirror.isIntLike())
+                        ef.setAsId();
+                    else
+                        ef.setAsName();
+                } else {
+                    break;
+                }
             }
             ef.setName(key);
 
