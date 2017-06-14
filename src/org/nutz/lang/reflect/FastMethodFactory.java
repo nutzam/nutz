@@ -96,6 +96,16 @@ public class FastMethodFactory implements Opcodes {
         return fm;
     }
 
+    /**
+     * 生成两种FastClass实例: 创建对象, 和执行普通方法的. 区分的点就是returnType是否为null. 模式为创建对象,returnType总是null, 模式为执行方法,returnType总不是null, 要么Void要么是某个类.
+     * @param klass 被代理的类
+     * @param mod 方法的modify数据
+     * @param params 参数列表
+     * @param method asm下的方法签名
+     * @param returnType 返回值. 如果执行的是构造方法,那么它是null,否则肯定不是null.
+     * @param className 目标类名,FastClass实现类的类名
+     * @param descriptor 类签名
+     */
     public static byte[] _make(Class<?> klass,
                                int mod,
                                Class<?>[] params,
@@ -116,53 +126,78 @@ public class FastMethodFactory implements Opcodes {
         // 首先, 定义默认构造方法
         addConstructor(cw, Type.getType(Object.class), org.nutz.repo.org.objectweb.asm.commons.Method.getMethod("void <init> ()"));
 
-        // 然后定义执行方法
+        // 然后定义执行方法, _M就是invoke方法的签名
         GeneratorAdapter mg = new GeneratorAdapter(ACC_PUBLIC, _M, null, new Type[]{Exception_TYPE}, cw);
-        if (returnType == null) {
-            mg.newInstance(klassType);
+        if (returnType == null) { // 没有返回值,是代表这里模式是 "构造方法"
+            mg.newInstance(klassType); // 相当于 new User . 注意, 没有括号哦,因为构造方法参数还没传
             mg.dup();
         }
-        else if (!Modifier.isStatic(mod)) {
+        else if (!Modifier.isStatic(mod)) { // 有返回值, 那么, 模式是"执行方法". 然后呢, 非静态方法的话,需要载入对象
             mg.loadThis();
-            mg.loadArg(0);
-            mg.checkCast(klassType);
+            mg.loadArg(0); // 代表 Object invoke(Object obj, Object ... args) 中的 obj
+            mg.checkCast(klassType); // 因为invoke方法的签名中, obj的类型是Object, 需要cast为目标类型.
+            // 相当于执行了 ((User)obj)
         }
+        // 准备参数列表. 根据被执行的方法或构造方法的签名,可以推测出参数列表.
+        // invoke方法得到的是一个 Object[], 需要一一展开
         if (params.length > 0) {
             for (int i = 0; i < params.length; i++) {
-                mg.loadArg(1);
-                mg.push(i);
-                mg.arrayLoad(Type.getType(Object.class));
-                Type paramType = Type.getType(params[i]);
+                mg.loadArg(1); // 代表 Object invoke(Object obj, Object ... args) 中的 args
+                mg.push(i); // 数组下标
+                mg.arrayLoad(Type.getType(Object.class)); // 读取数组. 上面三句相当于 args[i]
+                Type paramType = Type.getType(params[i]); // 读取目标方法/构造方法的参数的类型
                 if (params[i].isPrimitive()) {
-                    mg.unbox(paramType);
+                    mg.unbox(paramType); // 如果是基本数据类型,需要开箱. Object --> Integer --> int . 在Java源文件里面有自动封箱/自动开箱,asm可没这种东西. 
                 } else {
-                    mg.checkCast(paramType);
+                    mg.checkCast(paramType); // 其他类型? 直接cast一下就好了
                 }
             }
+            // 上面的代码转换为java写法的话,就是
+            // ((Integer)args[0], (String)args[1], ....)
+            // 注意, 没有 对象在前面, 因为还没执行
         }
-        if (returnType == null) {
+        if (returnType == null) { // 模式是
             mg.invokeConstructor(klassType, method);
+            // 跟前面的代码合并在一起        new User((Integer)args[0], (String)args[1], ....);
         } else {
             if (Modifier.isStatic(mod)) {
                 mg.invokeStatic(klassType, method);
+                // 跟前面的代码合并在一起,假设方法名称是create,静态方法
+                // User.create((Integer)args[0], (String)args[1], ....);
             } else if (Modifier.isInterface(klass.getModifiers())) {
                 mg.invokeInterface(klassType, method);
+                // 跟前面的代码合并在一起,假设方法名称是create, User是一个接口
+                // ((User)obj).create((Integer)args[0], (String)args[1], ....);
             } else {
                 mg.invokeVirtual(klassType, method);
+                // 跟前面的代码合并在一起,假设方法名称是create, User是一个普通类
+                // ((User)obj).create((Integer)args[0], (String)args[1], ....);
             }
+            // 处理方法返回值的特殊情况
             if (Void.class.equals(returnType)) {
+                // 如果method没有返回值(void),那么,塞入一个null做invoke方法返回值
                 mg.visitInsn(ACONST_NULL);
             } else if (returnType.isPrimitive()) {
+                // method有返回值,而且是基本数据类型? 那么就要封箱了,因为invoke方法返回的是Object, 基本数据类型可不是Object.
                 mg.box(Type.getType(returnType));
+            } else {
+                // 其余的情况就是没情况, method的返回值已经在堆栈里面,等着返回就行
             }
         }
+        // 伪造一下行号, 这样eclipse就不会抱怨
         Label tmp = new Label();
         mg.visitLabel(tmp);
         mg.visitLineNumber(1, tmp);
+        
+        // 把堆栈中的返回值给弹出去.
         mg.returnValue();
+        // 完整整个方法
         mg.endMethod();
+        // 再注册一下源文件名称, 结合行号, 日志里面会显示 (User.java:1)
         cw.visitSource(klass.getSimpleName() + ".java", null);
+        // 整个类结束
         cw.visitEnd();
+        // 字节码生成完成, 返回byte[]
         return cw.toByteArray();
     }
 
