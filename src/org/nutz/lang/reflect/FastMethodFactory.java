@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.nutz.aop.DefaultClassDefiner;
 import org.nutz.lang.Lang;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.repo.org.objectweb.asm.ClassWriter;
 import org.nutz.repo.org.objectweb.asm.Label;
 import org.nutz.repo.org.objectweb.asm.Opcodes;
@@ -16,6 +18,7 @@ import org.nutz.repo.org.objectweb.asm.commons.GeneratorAdapter;
 public class FastMethodFactory implements Opcodes {
 
     protected static ConcurrentHashMap<String, FastMethod> cache = new ConcurrentHashMap<String, FastMethod>();
+    protected static final Log log = Logs.get();
 
     protected static org.nutz.repo.org.objectweb.asm.commons.Method _M;
     protected static org.nutz.repo.org.objectweb.asm.Type Exception_TYPE;
@@ -24,7 +27,7 @@ public class FastMethodFactory implements Opcodes {
         Exception_TYPE = Type.getType(Throwable.class);
     }
     
-    protected static FastMethod make(Method method) {
+    protected static FastMethod make(final Method method) {
         Class<?> klass = method.getDeclaringClass();
         String descriptor = Type.getMethodDescriptor(method);
         String key = "$FM$" + method.getName() + "$" + Lang.md5(descriptor);
@@ -39,22 +42,24 @@ public class FastMethodFactory implements Opcodes {
             cache.put(className, fm);
             return fm;
         }
-        catch (Exception e) {}
-        byte[] buf = _make(klass,
-                           method.getModifiers(),
-                           method.getParameterTypes(),
-                           _Method(method),
-                           method.getReturnType(),
-                           className,
-                           descriptor);
-        Class<?> t = DefaultClassDefiner.defaultOne().define(className,
-                                                             buf,
-                                                             klass.getClassLoader());
+        catch (Throwable e) {}
         try {
+            byte[] buf = _make(klass,
+                               method.getModifiers(),
+                               method.getParameterTypes(),
+                               _Method(method),
+                               method.getReturnType(),
+                               className,
+                               descriptor);
+            Class<?> t = DefaultClassDefiner.defaultOne().define(className,
+                                                                 buf,
+                                                                 klass.getClassLoader());
             fm = (FastMethod) t.newInstance();
         }
-        catch (Exception e) {
-            throw new RuntimeException(e);
+        catch (Throwable e) {
+            if (log.isTraceEnabled())
+                log.trace("Fail to create FastMethod for " + method, e);
+            fm = new FallbackFastMethod(method);
         }
         cache.put(className, fm);
         return fm;
@@ -75,22 +80,24 @@ public class FastMethodFactory implements Opcodes {
             cache.put(key, fm);
             return fm;
         }
-        catch (Exception e) {}
-        byte[] buf = _make(klass,
-                           constructor.getModifiers(),
-                           constructor.getParameterTypes(),
-                           _Method(constructor),
-                           null,
-                           className,
-                           descriptor);
-        Class<?> t = DefaultClassDefiner.defaultOne().define(className,
-                                                             buf,
-                                                             klass.getClassLoader());
+        catch (Throwable e) {}
         try {
+            byte[] buf = _make(klass,
+                               constructor.getModifiers(),
+                               constructor.getParameterTypes(),
+                               _Method(constructor),
+                               null,
+                               className,
+                               descriptor);
+            Class<?> t = DefaultClassDefiner.defaultOne().define(className,
+                                                                 buf,
+                                                                 klass.getClassLoader());
             fm = (FastMethod) t.newInstance();
         }
-        catch (Exception e) {
-            throw new RuntimeException(e);
+        catch (Throwable e) {
+            if (log.isTraceEnabled())
+                log.trace("Fail to create FastMethod for " + constructor, e);
+            fm = new FallbackFastMethod(constructor);
         }
         cache.put(className, fm);
         return fm;
@@ -226,5 +233,31 @@ public class FastMethodFactory implements Opcodes {
         mg.invokeConstructor(parent, m);
         mg.returnValue();
         mg.endMethod();
+    }
+    
+    public static class FallbackFastMethod implements FastMethod {
+        
+        public Method method;
+        
+        public Constructor<?> constructor;
+        
+        public FallbackFastMethod(Method method) {
+            this.method = method;
+            if (!this.method.isAccessible())
+                this.method.setAccessible(true);
+        }
+
+        public FallbackFastMethod(Constructor<?> constructor) {
+            this.constructor = constructor;
+            if (!this.constructor.isAccessible())
+                this.constructor.setAccessible(true);
+        }
+
+        public Object invoke(Object obj, Object... args) throws Exception {
+            if (method == null)
+                return constructor.newInstance(args);
+            return method.invoke(obj, args);
+        }
+        
     }
 }

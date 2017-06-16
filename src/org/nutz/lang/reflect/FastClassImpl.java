@@ -91,13 +91,7 @@ public class FastClassImpl implements FastClass {
     public FastMethod fast(final Constructor<?> constructor) {
         FastMethod fm = constructors.get(Type.getConstructorDescriptor(constructor));
         if (fm == null)
-            fm = new FastMethod() {
-                public Object invoke(Object obj, Object... args) throws Exception {
-                    if (!constructor.isAccessible())
-                        constructor.setAccessible(true);
-                    return constructor.newInstance(args);
-                }
-            };
+            fm = new FastMethodFactory.FallbackFastMethod(constructor);
        return fm;
     }
 }
