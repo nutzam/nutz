@@ -25,6 +25,7 @@ import org.nutz.mvc.impl.AdaptorErrorContext;
 import org.nutz.mvc.testapp.BaseWebappTest;
 import org.nutz.mvc.testapp.classes.bean.Issue1069;
 import org.nutz.mvc.testapp.classes.bean.Issue1109;
+import org.nutz.mvc.testapp.classes.bean.Issue1277;
 
 import junit.framework.TestCase;
 
@@ -138,5 +139,12 @@ public class AdaptorTestModule extends BaseWebappTest {
     @AdaptBy(type=PairAdaptor.class)
     public long issue1267(@Param("..")Issue1267 issue) {
         return issue.getTime().getTime();
+    }
+    
+    @At("/issue1277")
+    @Ok("json")
+    @AdaptBy(type=PairAdaptor.class)
+    public Object issue1277(@Param("..")Issue1277 issue) {
+        return issue;
     }
 }

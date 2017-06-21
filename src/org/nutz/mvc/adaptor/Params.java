@@ -55,4 +55,6 @@ public abstract class Params {
         }
         return new BaseParamExtractor(req);
     }
+
+    public static final String ParamDefaultTag = "//NOT EXIST IN//";
 }

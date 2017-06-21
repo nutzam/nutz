@@ -42,7 +42,7 @@ public class PairAdaptor extends AbstractAdaptor {
             return null;// 让超类来处理吧,我不管了!!
 
         String defaultValue = null;
-        if (param.df() != null && !ParamDefailtTag.equals(param.df()))
+        if (param.df() != null && !Params.ParamDefaultTag.equals(param.df()))
             defaultValue = param.df();
         String pm = param.value();
         String datefmt = param.dfmt();
