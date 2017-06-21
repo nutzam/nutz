@@ -1,0 +1,102 @@
+#title: 微信登录
+#index:0,1
+#author:wendal(wendal1985@gmail.com)
+--------------------------------------------------------------------------------------------------------
+什么是微信登录
+
+    微信登录事实上有3种, PC网页,公众号,App.
+    
+    * PC网页登录 -- 服务器生成URL,浏览器访问,出二维码,微信客户端扫码,确认登录,带token回调到服务器指定地址
+    * 公众号登录 -- 服务器生成URL,微信客户端自动访问,用户确认登录(或自动登录),带token回调到服务器指定地址
+    * App登录 -- 第三方app跳转到微信客户端,用户确认登录,附带token跳转回原来的app,第三方app使用token访问服务器
+    
+    共通点与差异:
+     
+    * 前两种需要生成URL, app登录不需要
+    * 最终结果都是拿到一个token, 然后服务器拿着这个token找微信服务器要用户信息
+    
+    那nutzwx做了啥?
+    
+    * 封装生成URL的逻辑
+    * 封装token变用户信息的逻辑
+    
+-----------------------------------------------------------------------------
+PC网页版微信登录的准备工作
+
+    首先, 需要在 https://open.weixin.qq.com 上注册并认证, 申请网站应用并审核通过之后,就能看到appid和appsecret.
+    
+    然后, 在conf所引用的配置文件目录,添加一个新的配置文件 wxlogin.properties . 
+    
+    {{{
+    # 网页版微信登录所需要的密钥
+    #wxlogin.host=https://nutz.cn
+    wxlogin.appid=wxc1c9aa2d78658ab1
+    wxlogin.appsecret=XXXXXXXXXXXXXXXXXXX
+    }}}
+    
+-----------------------------------------------------------------------------
+生成重定向所需要的URL
+
+	{{{<JAVA>
+	@At("/wxlogin/")
+	@IocBean
+	public class WeixinModule {
+	
+	    @Inject
+	    protected PropertiesProxy conf;
+	    
+	    @Inject
+	    protected Dao dao;
+	
+	    // PC网页版微信登录
+	    // https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&token=fea88cbef0867899abcd3bb3c1bee60ea53e64b3&lang=zh_CN
+		@At("/qrconnect")
+		@Ok(">>:${obj}")
+	    public String qrconnect(HttpServletRequest req) {
+	        String redirect_uri = req.getRequestURL().toString().replace("qrconnect", "wxlogin/access_token");
+	        return wxLogin("wxlogin").qrconnect(redirect_uri, "snsapi_login", null);
+	    }
+	    
+	    // 公众号登录
+	    // https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842
+		@At("/authorize")
+		@Ok(">>:${obj}")
+	    public String authorize(HttpServletRequest req) {
+	        String redirect_uri = req.getRequestURL().toString().replace("authorize", "weixin/access_token");
+	        return wxLogin("weixin").authorize(redirect_uri, "snsapi_userinfo", null); // snsapi_base静默登录,snsapi_userinfo需要确认,后者才能获取用户详细信息
+	    }
+	    
+	    @At("/?/access_token")
+	    @Ok(">>:/user/home?msg=${obj}")
+	    public String access_token(String prefix, @Param("code")String code, @Param("state")String state, HttpSession session) {
+	        WxResp resp = wxLogin(prefix).access_token(code);
+	        if (resp == null) {
+	            return "登录失败";
+	        }
+	        String openid = resp.getString("openid");
+	        // 因为已经得到openid, 可以用户表,确定对应的用户,完成登录操作
+	        // 下面假设user表有openid字段
+	        User user = dao.fetch(User.class, "openid", "=", openid);
+	        if (user == null) {
+	           // 新用户 xxooo
+	        }
+	        // 执行登录操作 (普通方式)
+	        session.setAttribute("me", user);
+	        // Shiro的方式
+	        // Subject subject = SecurityUtils.getSubject();
+	        // subject.login(new SimpleShiroToken(user.getId()));
+	        
+	        // 最后呢, 如果不是公众号的静默登录snsapi_base,还可以获取用户详细信息
+	        
+	        String access_token = resp.getString("access_token");
+	        resp = wxLogin(prefix).userinfo(openid, access_token);
+	        // 然后做你想做的事吧...
+	        return "ok";
+	    }
+	    
+	    protected WxLogin wxLogin(String prefix) {
+	        WxLoginImpl w = new WxLoginImpl();
+	        return w.configure(conf, prefix + ".");
+	    }
+	}
+	}}}

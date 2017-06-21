@@ -115,6 +115,7 @@
 		<doc path="helloworld.man"></doc>
 		<doc path="weixin_handler.man"></doc>
 		<doc path="weixin_api.man"></doc>
+		<doc path="weixin_login.man"></doc>
 	</doc>
 	<doc path="http" title="Http轻客户端">
 		<doc path="overview.man"></doc>

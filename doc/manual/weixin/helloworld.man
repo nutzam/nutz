@@ -55,7 +55,7 @@ Nutz 为 微信准备了什么?
   	<dependency>
   		<groupId>org.nutz</groupId>
   		<artifactId>nutzwx</artifactId>
-  		<version>1.r.61-SNAPSHOT</version>
+  		<version>1.r.62-SNAPSHOT</version>
   	</dependency>
     }}}
 
