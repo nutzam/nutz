@@ -877,17 +877,35 @@ public class SimpleDaoTest extends DaoCase {
         dao.create(Base.class, true);
         dao.create(Tank.class, true);
         Platoon platoon = new Platoon();
+        Platoon platoon1 = new Platoon();
+        Platoon platoon2 = new Platoon();
         platoon.setName("wendal");
+        platoon1.setName("xiaomo");
+        platoon2.setName("test");
 
         Soldier soldier = new Soldier();
+        Soldier soldier1 = new Soldier();
+        Soldier soldier2 = new Soldier();
         soldier.setName("stone");
+        soldier1.setName("stone_sz");
+        soldier2.setName("stone_sc");
 
         Base base = new Base();
+        Base base1 = new Base();
+        Base base2 = new Base();
         base.setName("china");
+        base1.setName("china_sz");
+        base2.setName("china_sc");
 
         platoon.setBase(base);
+        platoon1.setBase(base1);
+        platoon2.setBase(base2);
         platoon.setLeader(soldier);
+        platoon1.setLeader(soldier1);
+        platoon2.setLeader(soldier2);
         dao.insertWith(platoon, null);
+        dao.insertWith(platoon1, null);
+        dao.insertWith(platoon2, null);
 
         // =======================================
         // 用条件查
@@ -930,7 +948,10 @@ public class SimpleDaoTest extends DaoCase {
         assertNotNull(platoon.getBase());
         assertEquals("china", platoon.getBase().getName());
 
-        dao.queryByJoin(Platoon.class, null, null);
+        // =======================================
+        // @One分页测试，总共3个，分页的为2个
+        assertEquals(3,dao.queryByJoin(Platoon.class, null, null).size());
+        assertEquals(2,dao.queryByJoin(Platoon.class, null, null,new Pager(1, 2)).size());
     }
 
     @Test

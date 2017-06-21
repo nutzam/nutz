@@ -1179,7 +1179,7 @@ public interface Dao {
     <T> T fetchByJoin(Class<T> classOfT, String regex, String name);
     
     /**
-     * 根据查询条件获取一个对象.<b>注意: 条件语句需要加上表名!!!</b>
+     * 根据查询条件获取所有对象.<b>注意: 条件语句需要加上表名!!!</b>
      * <p/>
      * 这个方法是让@One关联的属性,通过left join一次性取出. 与query+fetchLinks是等价的
      * @param classOfT 实体类
@@ -1188,6 +1188,18 @@ public interface Dao {
      * @return 实体对象的列表,符合regex的关联属性也会取出
      */
     <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd);
+    
+    /**
+     * 根据查询条件获取分页对象.<b>注意: 条件语句需要加上表名!!!</b>
+     * <p/>
+     * 这个方法是让@One关联的属性,通过left join一次性取出. 与query+fetchLinks是等价的
+     * @param classOfT 实体类
+     * @param regex 需要过滤的关联属性,可以是null,取出全部关联属性.
+     * @param cnd 查询条件,必须带表名!!!
+     * @param pager 分页对象 <b>注意: 分页不要在cnd中传入!</b>
+     * @return 实体对象的列表,符合regex的关联属性也会取出
+     */
+    <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd, Pager pager);
     
     EntityHolder getEntityHolder();
 }
