@@ -1158,6 +1158,22 @@ public class NutDao extends DaoSupport implements Dao {
         return list;
     }
     
+    public <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd,Pager pager) {
+    	Pojo pojo = pojoMaker.makeQueryByJoin(holder.getEntity(classOfT), regex)
+    			.append(Pojos.Items.cnd(cnd))
+    			.addParamsBy("*")
+    			.setPager(pager)
+    			.setAfter(new PojoQueryEntityByJoinCallback(regex));
+    	expert.formatQuery(pojo);
+    	_exec(pojo);
+    	List<T> list = pojo.getList(classOfT);
+    	if (list != null && list.size() > 0) 
+    		for (T t : list) {
+    			_fetchLinks(t, regex, false, true, true, null);
+    		}
+    	return list;
+    }
+    
     protected Object _fetchLinks(Object t, String regex, boolean visitOne, boolean visitMany, boolean visitManyMany, final Condition cnd) {
         EntityOperator opt = _optBy(t);
         if (null == opt)
