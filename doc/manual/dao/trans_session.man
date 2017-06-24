@@ -1,7 +1,7 @@
 #title: NutTxDao简介
 #index:0,1
 -----------------------------------------------------------------------------------------
-TransSession的由来
+NutTxDao的由来
 
 	首先需要强调一下,当前版本(1.r.60)的NutTxDao属于试用性质,预计下个版本达到release.
 	
@@ -17,7 +17,7 @@ TransSession的由来
 	});
 	}}}
 	
-	TransSession试图解决:
+	NutTxDao试图解决:
 	* 嵌套事务及手动控制事务,以增强事务的可控性
 	* 借助JDK7+的try-with-resource语法,协助用户确保事务的完整性
 	

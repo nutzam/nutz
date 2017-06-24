@@ -40,7 +40,7 @@ Nutz核心jar
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.r.60</version>
+			<version>1.r.61.r2</version>
 		</dependency>
 		<!-- mysql驱动 -->
 		<dependency>
