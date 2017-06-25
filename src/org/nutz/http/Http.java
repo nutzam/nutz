@@ -49,7 +49,7 @@ public class Http {
         code_text.put("301", "Moved Permanently");
         code_text.put("302", "Found");
         code_text.put("303", "See Other"); // (since HTTP/1.1)
-        code_text.put("304", "Not Modified ");
+        code_text.put("304", "Not Modified");
         code_text.put("305", "Use Proxy"); // (since HTTP/1.1)
         code_text.put("306", "Switch Proxy");
         code_text.put("307", "Temporary Redirect"); // (since HTTP/1.1)

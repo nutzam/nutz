@@ -213,8 +213,8 @@ public class RawView implements View {
             this.end = end;
         }
 
-        long start;
-        long end = -1;
+        public long start;
+        public long end = -1;
 
     }
 
