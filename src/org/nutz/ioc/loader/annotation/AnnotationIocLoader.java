@@ -20,8 +20,10 @@ import org.nutz.ioc.meta.IocField;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.ioc.meta.IocValue;
 import org.nutz.json.Json;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.MethodParamNamesScaner;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.resource.Scans;
@@ -220,9 +222,61 @@ public class AnnotationIocLoader implements IocLoader {
             if (!Strings.isBlank(iocBean.factory())) {
                 iocObject.setFactory(iocBean.factory());
             }
+            
+            // 看看有没有方法标注了@IocBean
+            for (Method method : methods) {
+                IocBean ib = method.getAnnotation(IocBean.class);
+                if (ib == null)
+                    continue;
+                handleIocBeanMethod(method, ib, beanName);
+            }
         } else {
             // 不再检查其他类.
         }
+    }
+    
+    protected void handleIocBeanMethod(Method method, IocBean ib, String facotryBeanName) {
+        String beanName = ib.name();
+        if (Strings.isBlank(beanName)) {
+            String methodName = method.getName();
+            if (methodName.startsWith("get")) {
+                methodName = methodName.substring(3);
+            } else if (methodName.startsWith("build")) {
+                methodName = methodName.substring(5);
+            }
+            beanName = Strings.lowerFirst(methodName);
+        }
+        if (log.isDebugEnabled())
+            log.debugf("Found @IocBean method : %s define as name=%s", Lang.simpleMethodDesc(method), beanName);
+        IocObject iobj = new IocObject();
+        iobj.setType(method.getReturnType());
+        iobj.setFactory("$"+facotryBeanName+"#"+method.getName());
+
+        List<String> paramNames = MethodParamNamesScaner.getParamNames(method);
+        Class<?>[] paramTypes = method.getParameterTypes();
+        for (int i = 0; i < paramTypes.length; i++) {
+            Class<?> paramType = paramTypes[i];
+            String paramName = (paramNames != null && (paramNames.size() >= (i - 1))) ? paramNames.get(i) : "arg" + i;
+            IocValue ival = new IocValue();
+            Inject inject = paramType.getAnnotation(Inject.class);
+            if (inject == null || Strings.isBlank(inject.value())) {
+                ival.setType(IocValue.TYPE_REFER_TYPE);
+                ival.setValue(paramName + "#" + paramType.getName());
+            } else {
+                ival = Iocs.convert(inject.value(), true);
+            }
+            iobj.addArg(ival);
+        }
+        // 设置Events
+        IocEventSet eventSet = new IocEventSet();
+        iobj.setEvents(eventSet);
+        if (!Strings.isBlank(ib.create()))
+            eventSet.setCreate(ib.create().trim().intern());
+        if (!Strings.isBlank(ib.depose()))
+            eventSet.setDepose(ib.depose().trim().intern());
+        if (!Strings.isBlank(ib.fetch()))
+            eventSet.setFetch(ib.fetch().trim().intern());
+        map.put(beanName, iobj);
     }
 
     public String[] getName() {
