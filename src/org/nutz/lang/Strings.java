@@ -1565,4 +1565,19 @@ public class Strings {
                                                                                  str.length() - 1)
                                                                     .toString();
     }
+    
+    public static Pattern P_IPV4 = Pattern.compile("^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\.(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\.(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\.(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$");
+
+    /**
+     * 判断字符串是否为IPV4
+     *
+     * @param s
+     *            字符串内容
+     * @return 判断结果
+     */
+    public static boolean isIPV4(String s) {
+        if (Strings.isBlank(s))
+            return false;
+        return Strings.isMactchRegex(P_IPV4, s);
+    }
 }
