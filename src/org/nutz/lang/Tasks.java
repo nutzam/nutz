@@ -24,6 +24,16 @@ public abstract class Tasks {
 
     private static ScheduledThreadPoolExecutor taskScheduler = new ScheduledThreadPoolExecutor(getBestPoolSize());
     private static List<Timer> timerList = new ArrayList<Timer>();
+    
+    /**
+     * 通过 cron 表达式来配置任务的启动时间
+     * @param task
+     * @param cronExpression
+     */
+    public static void scheduleAtCron(final Runnable task, String cronExpression) {
+        TimeSchedule timeSchedule = new TimeSchedule(task, cronExpression);
+        timeSchedule.start();
+    }
 
     /**
      * 立即启动，并以固定的频率来运行任务。后续任务的启动时间不受前次任务延时影响。
@@ -147,13 +157,13 @@ public abstract class Tasks {
     }
     /**
      * 在符合条件的时间点启动任务
+     * @see scheduleAtCron
      * @param task 具体待执行的任务
-     * @param expression 运行的时间点
+     * @param expression  cron表达式
      */
-    public static void scheduleAtFixedTime(final Runnable task, String expression) {
-        TimeSchedule timeSchedule = new TimeSchedule(task,expression);
-        timeSchedule.start();
-        
+    @Deprecated
+    public static void scheduleAtFixedTime(final Runnable task, String cronExpression) {
+    	scheduleAtCron(task, cronExpression);
     }
 
     /**
@@ -215,7 +225,8 @@ public abstract class Tasks {
         }
     }
 }
-class TimeSchedule implements Runnable{
+
+class TimeSchedule implements Runnable {
     private final Runnable task;
     private final CronSequenceGenerator cron;
 
