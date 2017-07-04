@@ -1416,7 +1416,9 @@ public abstract class Lang {
      *
      * @param obj
      * @return 对象长度
+     * @deprecated 这玩意很脑残，为啥最后要动态调个 "length"，导致字符串类很麻烦，以后用 Lang.eleSize 函数代替吧
      */
+    @Deprecated
     public static int length(Object obj) {
         if (null == obj)
             return 0;
@@ -1431,6 +1433,40 @@ public abstract class Lang {
             return (Integer) Mirror.me(obj.getClass()).invoke(obj, "length");
         }
         catch (Exception e) {}
+        return 1;
+    }
+
+    /**
+     * 获得一个容器（Map/集合/数组）对象包含的元素数量
+     * <ul>
+     * <li>null : 0
+     * <li>数组
+     * <li>集合
+     * <li>Map
+     * <li>一般 Java 对象。 返回 1
+     * </ul>
+     *
+     * @param obj
+     * @return 对象长度
+     * @since Nutz 1.r.62
+     */
+    public static int eleSize(Object obj) {
+        // 空指针，就是 0
+        if (null == obj)
+            return 0;
+        // 数组
+        if (obj.getClass().isArray()) {
+            return Array.getLength(obj);
+        }
+        // 容器
+        if (obj instanceof Collection<?>) {
+            return ((Collection<?>) obj).size();
+        }
+        // Map
+        if (obj instanceof Map<?, ?>) {
+            return ((Map<?, ?>) obj).size();
+        }
+        // 其他的就是 1 咯
         return 1;
     }
 
