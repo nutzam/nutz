@@ -224,16 +224,6 @@ public abstract class Tasks {
             return 10;
         }
     }
-    
-    //优雅的关闭已启动的任务
-    static {
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            @Override
-            public void run() {
-            	depose();
-            }
-        }));
-    }
 }
 
 class TimeSchedule implements Runnable {
