@@ -12,7 +12,7 @@ public class DoUpdateLinkVisitor extends AbstractLinkVisitor {
 
     public void visit(Object obj, final LinkField lnk) {
         Object value = lnk.getValue(obj);
-        if (Lang.length(value) == 0)
+        if (Lang.eleSize(value) == 0)
             return;
         if (value instanceof Map<?, ?>)
             value = ((Map<?, ?>) value).values();

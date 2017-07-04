@@ -283,6 +283,7 @@ public class LangTest {
         assertEquals(1, Lang.first(l));
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void test_length() {
         assertEquals(0, Lang.length(null));

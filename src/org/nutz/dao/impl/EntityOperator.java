@@ -118,7 +118,7 @@ public class EntityOperator {
             newFM = fm;
             newFM.setIgnoreNull(true);
         }
-        final List<Pojo> re = new ArrayList<Pojo>(Lang.length(obj));
+        final List<Pojo> re = new ArrayList<Pojo>(Lang.eleSize(obj));
         Lang.each(obj, new Each<Object>() {
             public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
                 Pojo pojo = dao.pojoMaker.makeUpdate(en, ele)
@@ -196,7 +196,7 @@ public class EntityOperator {
         if (null == en)
             return null;
 
-        int len = Map.class.isAssignableFrom(obj.getClass()) ? 1 : Lang.length(obj);
+        int len = Map.class.isAssignableFrom(obj.getClass()) ? 1 : Lang.eleSize(obj);
         List<Pojo> re = new ArrayList<Pojo>(len);
         if (len > 0) {
             if (len == 1) {

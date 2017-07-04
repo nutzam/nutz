@@ -810,7 +810,7 @@ public class Mirror<T> {
             catch (NoSuchFieldException e1) {
                 if (obj != null) {
                     if (obj.getClass().isArray() && "length".equals(name)) {
-                        return Lang.length(obj);
+                        return Lang.eleSize(obj);
                     }
                     if (obj instanceof Map) {
                         return ((Map)obj).get(name);

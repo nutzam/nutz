@@ -15,7 +15,7 @@ public class GroupBySet extends OrderBySet implements GroupBy {
 	private Condition having;
 	
 	public GroupBySet(String...names) {
-		if (Lang.length(names) == 0)
+		if (Lang.eleSize(names) == 0)
 			throw new DaoException("NULL for GroupBy");
 		this.names = names;
 	}

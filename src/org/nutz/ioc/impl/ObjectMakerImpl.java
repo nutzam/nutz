@@ -63,7 +63,7 @@ public class ObjectMakerImpl implements ObjectMaker {
             }
 
             // 构造函数参数
-            ValueProxy[] vps = new ValueProxy[Lang.length(iobj.getArgs())];
+            ValueProxy[] vps = new ValueProxy[Lang.eleSize(iobj.getArgs())];
             for (int i = 0; i < vps.length; i++)
                 vps[i] = ing.makeValue(iobj.getArgs()[i]);
             dw.setArgs(vps);

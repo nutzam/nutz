@@ -271,7 +271,7 @@ public class NutSql extends NutStatement implements Sql {
             } else if (val instanceof PItem) {
                 ((PItem) val).joinSql(en, sb);
             } else if (val.getClass().isArray()) {
-                sb.append(Strings.dup("?,", Lang.length(val)));
+                sb.append(Strings.dup("?,", Lang.eleSize(val)));
                 sb.setLength(sb.length() - 1);
             } else if (val instanceof Condition) {
                 sb.append(' ').append(Pojos.formatCondition(en, (Condition) val));
@@ -302,7 +302,7 @@ public class NutSql extends NutStatement implements Sql {
             } else if (val instanceof PItem) {
                 return ((PItem) val).joinAdaptor(en, adaptors, off);
             } else if (val.getClass().isArray()) {
-                int len = Lang.length(val);
+                int len = Lang.eleSize(val);
                 Lang.each(val, new Each<Object>() {
                     public void invoke(int index, Object ele, int length) {
                         adaptors[off + index] = getAdapterBy(ele);
@@ -325,7 +325,7 @@ public class NutSql extends NutStatement implements Sql {
             } else if (val instanceof PItem) {
                 return ((PItem) val).joinParams(en, null, params, off);
             } else if (val.getClass().isArray()) {
-                int len = Lang.length(val);
+                int len = Lang.eleSize(val);
                 Lang.each(val, new Each<Object>() {
                     public void invoke(int index, Object ele, int length) {
                         params[off + index] = ele;
@@ -347,7 +347,7 @@ public class NutSql extends NutStatement implements Sql {
             } else if (val instanceof PItem) {
                 return ((PItem) val).paramCount(en);
             } else if (val.getClass().isArray()) {
-                return Lang.length(val);
+                return Lang.eleSize(val);
             } else if (val instanceof Condition) {
                 return 0;
             } else {

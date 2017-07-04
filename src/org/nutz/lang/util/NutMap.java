@@ -479,7 +479,7 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
             return Lang.list(Castors.me().castTo(v, eleType));
         }
 
-        int len = Lang.length(v);
+        int len = Lang.eleSize(v);
         final List<T> list = new ArrayList<T>(len);
         Lang.each(v, new Each<Object>() {
             public void invoke(int index, Object ele, int length) {
@@ -507,7 +507,7 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
             return Lang.array(Castors.me().castTo(v, eleType));
         }
 
-        int len = Lang.length(v);
+        int len = Lang.eleSize(v);
         final Object arr = Array.newInstance(eleType, len);
         final int[] i = new int[]{0};
         Lang.each(v, new Each<Object>() {

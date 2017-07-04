@@ -20,7 +20,7 @@ public class DoInsertLinkVisitor extends AbstractLinkVisitor {
 
     public void visit(final Object obj, final LinkField lnk) {
         final Object value = lnk.getValue(obj);
-        if (Lang.length(value) == 0)
+        if (Lang.eleSize(value) == 0)
             return;
 
         // 从宿主对象更新关联对象
