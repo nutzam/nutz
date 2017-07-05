@@ -24,47 +24,14 @@ public class JdbcExpertConfigFile {
 
     private Map<String, Object> config;
 
+    private boolean isInit = false;
+    
     private FilePool pool;
     
     private static final Log log = Logs.get();
 
     JdbcExpertConfigFile init() {
-        // 即使初始化失败,也继续执行
-    	String home = config.get("pool-home").toString();
-        try {
-            home = Disks.normalize(home);
-            if (home == null)
-            	home = config.get("pool-home").toString();
-            long max = config.containsKey("pool-max") ? ((Number) config.get("pool-max")).longValue() : 2000;
-            if (home.contains("${app.home}")) {
-                try {
-                    // 这里引用了Mvcs类, 不太舒服,但应该还是有益处的
-                    home = home.replace("${app.home}", Mvcs.getServletContext().getRealPath("/"));
-                }
-                catch (Throwable e) {
-                }
-            }
-            try {
-                pool = new NutFilePool(home, max);
-            }
-            catch (Exception e) {
-                // 看看是不是Mvc环境,尝试在WebContent下创建
-                if (!home.startsWith("~/") || Mvcs.getServletContext() == null)
-                    throw e;
-                try {
-                    String tmp = Mvcs.getServletContext().getRealPath("/") + home.substring(2);
-                    pool = new NutFilePool(tmp, max);
-                    log.info("had created filepool under webapp root path");
-                }
-                catch (Exception e1) {
-                    throw e; // 抛出原本的异常好了,哎...
-                }
-            }
-            pool = new SynchronizedFilePool(pool);
-        } catch (Throwable e) {
-            if (log.isWarnEnabled())
-                log.warnf("NutDao FilePool create fail!! Blob and Clob Support is DISABLE!! Home="+home, e);
-        }
+    	//文件池改为延迟加载
         return this;
     }
 
@@ -92,7 +59,9 @@ public class JdbcExpertConfigFile {
         return config;
     }
 
-    public FilePool getPool() {
+    public synchronized FilePool getPool() {
+    	if (!isInit) 
+			initFilePool();
         if (pool == null) {
             if (log.isWarnEnabled())
                 log.warnf("NutDao FilePool create fail!! Blob and Clob Support is DISABLE!!");
@@ -117,5 +86,43 @@ public class JdbcExpertConfigFile {
 
     public void setPool(FilePool pool) {
         this.pool = pool;
+        isInit = true;
     }
+    
+  //初始化文件池，即使初始化失败,也继续执行
+  	private void initFilePool() {
+  		String home = config.get("pool-home").toString();
+  		try {
+  			home = Disks.normalize(home);
+  			if (home == null)
+  				home = config.get("pool-home").toString();
+  			long max = config.containsKey("pool-max") ? ((Number) config.get("pool-max")).longValue() : 2000;
+  			if (home.contains("${app.home}")) {
+  				try {
+  					// 这里引用了Mvcs类, 不太舒服,但应该还是有益处的
+  					home = home.replace("${app.home}", Mvcs.getServletContext().getRealPath("/"));
+  				} catch (Throwable e) {
+  				}
+  			}
+  			try {
+  				pool = new NutFilePool(home, max);
+  			} catch (Exception e) {
+  				// 看看是不是Mvc环境,尝试在WebContent下创建
+  				if (!home.startsWith("~/") || Mvcs.getServletContext() == null)
+  					throw e;
+  				try {
+  					String tmp = Mvcs.getServletContext().getRealPath("/") + home.substring(2);
+  					pool = new NutFilePool(tmp, max);
+  					log.info("had created filepool under webapp root path");
+  				} catch (Exception e1) {
+  					throw e; // 抛出原本的异常好了,哎...
+  				}
+  			}
+  			pool = new SynchronizedFilePool(pool);
+  		} catch (Throwable e) {
+  			if (log.isWarnEnabled())
+  				log.warnf("NutDao FilePool create fail!! Blob and Clob Support is DISABLE!! Home=" + home, e);
+  		}
+  		isInit = true;
+  	}
 }
