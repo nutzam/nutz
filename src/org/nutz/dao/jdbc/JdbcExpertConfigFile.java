@@ -59,9 +59,12 @@ public class JdbcExpertConfigFile {
         return config;
     }
 
-    public synchronized FilePool getPool() {
-    	if (!isInit) 
-			initFilePool();
+    public FilePool getPool() {
+    	if (!isInit)
+    		synchronized (this) {
+    			if (!isInit)
+    				initFilePool();
+    		}
         if (pool == null) {
             if (log.isWarnEnabled())
                 log.warnf("NutDao FilePool create fail!! Blob and Clob Support is DISABLE!!");
@@ -89,7 +92,7 @@ public class JdbcExpertConfigFile {
         isInit = true;
     }
     
-  //初始化文件池，即使初始化失败,也继续执行
+    //初始化文件池，即使初始化失败,也继续执行
   	private void initFilePool() {
   		String home = config.get("pool-home").toString();
   		try {
