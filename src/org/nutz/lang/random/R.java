@@ -294,14 +294,20 @@ public abstract class R {
         }
         return sb.toString();
     }
-    
+
     /**
      * 设置随机数生成器的实例, 例如 SecureRandom
-     * @param r 随机生成器,不可以是null
+     * 
+     * @param r
+     *            随机生成器,不可以是null
      */
     public static void setR(Random r) {
         if (r == null)
             throw new NullPointerException("Random MUST NOT NULL");
         R.r = r;
+    }
+
+    public static Random get() {
+        return r;
     }
 }
