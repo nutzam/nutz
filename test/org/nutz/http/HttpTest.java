@@ -91,18 +91,18 @@ public class HttpTest {
 //        Response resp = Sender.create(req).send();
 //        System.out.println(resp.getStatus());
 //    }
-    
-    @Test
-    public void test_12306() throws NoSuchAlgorithmException, KeyManagementException {
-        String url = "https://kyfw.12306.cn/otn/leftTicket/queryT?leftTicketDTO.train_date=2015-01-12&leftTicketDTO.from_station=UXP&leftTicketDTO.to_station=SJP&purpose_codes=ADULT";
-        try {
-            Http.disableJvmHttpsCheck();
-            Http.get(url);
-        }catch (Exception e) {
-            fail();
-        }
-    }
-    
+//    
+//    @Test
+//    public void test_12306() throws NoSuchAlgorithmException, KeyManagementException {
+//        String url = "https://kyfw.12306.cn/otn/leftTicket/queryT?leftTicketDTO.train_date=2015-01-12&leftTicketDTO.from_station=UXP&leftTicketDTO.to_station=SJP&purpose_codes=ADULT";
+//        try {
+//            Http.disableJvmHttpsCheck();
+//            Http.get(url);
+//        }catch (Exception e) {
+//            fail();
+//        }
+//    }
+//    
 //    @Test
 //    public void test_360safe() throws Throwable {
 //        Http.disableJvmHttpsCheck();
@@ -135,11 +135,11 @@ public class HttpTest {
 //        System.out.println(re);
 //    }
 //    
-    @Test
-    public void test_weibo_post() {
-        Response resp = Http.post2("http://weibo.com/kuyunhudong", null,10000);
-        System.out.println(resp.getStatus());
-        System.out.println(resp.getContent());
-        System.out.println(resp.getStatus());
-    }
+//    @Test()
+//    public void test_weibo_post() {
+//        Response resp = Http.post2("http://weibo.com/kuyunhudong", null,10000);
+//        System.out.println(resp.getStatus());
+//        System.out.println(resp.getContent());
+//        System.out.println(resp.getStatus());
+//    }
 }
