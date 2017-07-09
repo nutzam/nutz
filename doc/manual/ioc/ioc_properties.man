@@ -91,6 +91,7 @@
     		type : "org.nutz.ioc.impl.PropertiesProxy",
     		fields : {
     			paths : ["myapp.properties"]
+    			//paths : ["custom/"]
     		}
     	},
     	// 数据源

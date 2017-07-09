@@ -73,13 +73,14 @@
 		<doc path="loader_annotation.man"/>
 		<doc path="loader_combo.man"/>
 		<doc path="ioc_annos.man"/>
+		<doc path="ioc_factory.man"></doc>
 		<doc path="ioc_by_hand.man"/>
-		<doc path="scope.man"/>
 		<doc path="inner_object.man"/>
-		<doc path="xml_ioc_loader.man"/>
 		<doc path="ioc_properties.man"></doc>
-		<doc path="ioc_and_java.man"></doc>
 		<doc path="alias.man"></doc>
+		<doc path="scope.man"/>
+		<doc path="ioc_and_java.man"></doc>
+		<doc path="xml_ioc_loader.man"/>
 		<doc path="questions.man"></doc>
 	</doc>
 	<doc path="aop" title="Aop 手册">
