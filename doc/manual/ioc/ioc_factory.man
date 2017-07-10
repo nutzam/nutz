@@ -60,7 +60,7 @@ public class MyBeanFactory {
     //@Inject
     //public PropertiesProxy conf; // 像普通对象那么注入任何你需要的东西,这个conf也可是其他IocBean类,但不能是这个类了,否则死循环了
     @IocBean
-    public PropertiesProxy getPropertiesProxy() {
+    public PropertiesProxy getConf() {
         if ("product".equals(System.getProperty("nutz.runmode"))) {
               return new PropertiesProxy("/etc/nutz/custom");
         } else {
