@@ -29,6 +29,8 @@ public class JdbcExpertConfigFile {
     private FilePool pool;
     
     private static final Log log = Logs.get();
+    
+    private Object lock = new Object();
 
     JdbcExpertConfigFile init() {
     	//文件池改为延迟加载
@@ -61,7 +63,7 @@ public class JdbcExpertConfigFile {
 
     public FilePool getPool() {
     	if (!isInit)
-    		synchronized (this) {
+    		synchronized (lock) {
     			if (!isInit)
     				initFilePool();
     		}
