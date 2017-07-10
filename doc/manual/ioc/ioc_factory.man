@@ -70,7 +70,7 @@ public class MyBeanFactory {
 
     // 生成一个名为dataSource的bean. 命名规则是: IocBean(name=XXX) > 方法名去掉get/build后首字母小写.
     @IocBean
-    public SimpleDataSource getDataSource() {
+    public SimpleDataSource getDataSource(PropertiesProxy conf) {
         SimpleDataSource ds = new SimpleDataSource();
         ds.setJdbcUrl(conf.get("db.url", "jdbc:h2:mem:nutztest"));
         return ds;
