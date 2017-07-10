@@ -8,6 +8,7 @@
 		<doc path="encoding.man"></doc>
 		<doc path="support.man"></doc>
 		<doc path="logging.man"></doc>
+		<doc path="version_upgrade.man"></doc>
 	</doc>
 	<doc path="mvc"	title="Mvc 手册">
 		<doc path="overview.man"/>

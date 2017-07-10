@@ -1,95 +1,32 @@
-#title: 1.r.61 发行注记
+#title: 1.r.62 发行注记
 #index:0,1
 #author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
-1.r.61 {*岗地苹果} 发行注记(20170417)
+1.r.62 {*待定} 发行注记(暂定20170713)
     
-	恩,你比之前快了.
-	
-	启动加速, 指Scans类的初始化过程,当项目里面有上百个jar的时候,老版本需3s,现在仅需50ms
-	
-	运行加速, 指FastClass已经完全重写并默认启用,而且对使用者是透明的
-	
-	乐观锁,由[https://github.com/crskyp crskyp]提供
-	
-	来,体验一下飞一般的速度
-	
-	在此感谢社区,QQ群里以各种方式贡献的童鞋,^_^,未能一一记录,深表歉意
+	更新不?
 
 ---------------------------------------------------------------------------------------------------------
 主要变化:
 
-    * update: 重写了Scans类的初始化过程,性能提升50+倍
-    * update: 内置的asm升级到5.2.0,这次无删减了.
-    * update: 重写FastClass实现,非常接近原生的性能了.
-    * update: Mirror与FastClass的透明化融合
-    * update: 关于 org.nutz.resource.Scans 覆盖问题 [https://github.com/nutzam/nutz/issues/1227 issue_1227]
-    * update: servlet api更新到3.1.0, 运行时继续兼容servlet api 2.5+
-    * fix: ViewProcessor的ViewModel参数判断问题 [https://github.com/nutzam/nutz/issues/1209 issue_1209]
-    * fix: Http.getStatusText根本不工作
-    * fix: Module类没能继承父类的@At方法[https://github.com/nutzam/nutz/issues/1212 issue_1212]
-    * fix: FilePostSender与golang服务器的兼容性问题 [https://github.com/nutzam/nutz/issues/1214 issue_1214]
-    * fix: AbstractContext的putAll方法有bug [https://github.com/nutzam/nutz/issues/1221 issue_1221]
-    * fix: Strings.isEmail()规则不完整 [https://github.com/nutzam/nutz/issues/1215 issue_1215]
-    * fix: Lang.each方法与JDK8闭包的兼容性问题 [https://github.com/nutzam/nutz/issues/1228 issue_1228]
-    * fix: 注入一个类型不合的对象到另外一个对象的属性时,报错信息让人迷惑 [https://github.com/nutzam/nutz/issues/1232 issue_1232]
-    * fix: 腾讯云Mysql数据库被识别为DB2 [https://github.com/nutzam/nutz/issues/1210 issue_1210]
-    * add: 乐观锁(dao.updateWithVersion)
-    * add: 增加 Http的Request HEAD方法的支持 [https://github.com/nutzam/nutz/issues/1206 issue_1206]
-    * add: Http.upload上传文件，支持同一个参数含有多个文件 [https://github.com/nutzam/nutz/issues/1220 issue_1220]
-    * add: 提供不需要@column的机制和驼峰式命名的全局开关 [https://github.com/nutzam/nutz/issues/1217 issue_1217]
-    * add: JsonFormat支持支持粒度更小的空值控制,例如setNullStringAsEmtry [https://github.com/nutzam/nutz/issues/1225 issue_1225]
-    * add: JsonFormat支持时区设置 [https://github.com/nutzam/nutz/issues/1208 issue_1208]
-    * add: Cnd支持JDK序列化 [https://github.com/nutzam/nutz/issues/1207 issue_1207]
-    * add: 新的Daos.queryCount方法
-    * add: Lang添加sha2系列快捷方法
-    * add: SimpleDataSource支持国产的博阳数据库
-    * add: Http.get支持参数map
-    * add: Tmpl类支持更多语法
-    * remove: LazyNutDao
-    * remove: httpdns 有更多更专业的库提供这个功能
+    TODO
     
 
 --------------------------------------------------------------------------------------------------------
 部分新功能介绍
 
-	原Daos.queryCount(String)已废弃,替换为Daos.queryCount(Sql),该方法能适应更多场景.
-	
-	{{{<JAVA>
-	Sql sql = Sqls.create(...);
-	// 原本
-	long count = Daos.queryCount(sql.toString());
-	// 现在
-	long count = Daos.queryCount(sql);
-	}}}
-	
-	乐观锁及其底层方法
-	
-	{{{<JAVA>
-	// 通过@Column(version=true)指定版本控制属性
-	dao.updateWithVersion(pet, null);
-	// 通过编码方式指定版本控制属性
-	dao.updateAndIncrIfMatch(pet, null, "version");
-	}}}
-	
-	fetchByJoin/queryByJoin 一条SQL取出@One关联对象
-	
-	{{{<JAVA>
-	platoon = dao.fetchByJoin(Platoon.class, null, "wendal");
-	}}}
+	TODO
 	
 --------------------------------------------------------------------------------------------------------
 文档更新
 
-	* nutzwx 的入门文档
-	* nutzmongo 的入门文档
-	* 各种小修改,继续整理,准备全面转markdown
+	TODO
 
 --------------------------------------------------------------------------------------------------------
 详细列表:
   
-    * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.61 issue@github]
+    * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.62 issue@github]
 
 欢迎访问[https://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
 
-[https://nutz.cn Nutz社区]已经累计了近4000个帖子, 20000+条回复,平均回复时间少于10分钟哦,白天基本上秒回!
+[https://nutz.cn Nutz社区]已经累计了5000多帖子, 20000+条回复,平均回复时间少于10分钟哦,白天基本上秒回!
