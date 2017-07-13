@@ -29,6 +29,7 @@ import org.nutz.castor.Castors;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Pet;
+import org.nutz.http.Request.METHOD;
 import org.nutz.ioc.meta.IocValue;
 import org.nutz.json.impl.JsonRenderImpl;
 import org.nutz.json.meta.Issue1199;
@@ -1036,5 +1037,15 @@ public class JsonTest {
     @Test
     public void test_json_08() throws IOException {
         assertEquals(8, Json.fromJson(NutMap.class, "{id:08}").getInt("id"));
+    }
+    
+
+    @Test
+    public void test_issue_1285() throws IOException {
+        Map<String, METHOD> map = Json.fromJsonAsMap(METHOD.class, "{post:'POST'}");
+        assertEquals(1, map.size());
+        assertEquals("post", map.keySet().iterator().next());
+        assertEquals(METHOD.valueOf("POST"), map.values().iterator().next());
+        assertEquals(METHOD.valueOf("POST"), map.get("post"));
     }
 }
