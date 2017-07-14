@@ -1047,5 +1047,6 @@ public class JsonTest {
         assertEquals("post", map.keySet().iterator().next());
         assertEquals(METHOD.valueOf("POST"), map.values().iterator().next());
         assertEquals(METHOD.valueOf("POST"), map.get("post"));
+        Json.fromJson(METHOD.class, "'POST'");
     }
 }
