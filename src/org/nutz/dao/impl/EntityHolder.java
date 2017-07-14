@@ -1,26 +1,19 @@
 package org.nutz.dao.impl;
 
-import java.sql.Connection;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.nutz.dao.ConnCallback;
+import javax.sql.DataSource;
+
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityMaker;
-import org.nutz.dao.impl.entity.NutEntity;
-import org.nutz.dao.impl.entity.field.NutMappingField;
+import org.nutz.dao.impl.entity.MapEntityMaker;
 import org.nutz.dao.jdbc.JdbcExpert;
-import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.lang.Lang;
-import org.nutz.lang.Mirror;
-import org.nutz.lang.eject.EjectFromMap;
-import org.nutz.lang.inject.InjectToMap;
-import org.nutz.lang.util.Callback;
 
 /**
  * 封装一些获取实体对象的帮助函数
@@ -36,12 +29,16 @@ public class EntityHolder {
 
     private Map<Class<?>, Entity<?>> map;
     
-    protected Callback<ConnCallback> connCallback;
+    protected DataSource dataSource;
+    
+    protected MapEntityMaker mapEntityMaker;
 
-    public EntityHolder(JdbcExpert expert, Callback<ConnCallback> connCallback) {
+    public EntityHolder(JdbcExpert expert, DataSource dataSource) {
         this.expert = expert;
-        this.connCallback = connCallback;
+        this.dataSource = dataSource;
         this.map = new ConcurrentHashMap<Class<?>, Entity<?>>();
+        mapEntityMaker = new MapEntityMaker();
+        mapEntityMaker.init(dataSource, expert, this);
     }
 
     public void set(Entity<?> en) {
@@ -79,87 +76,8 @@ public class EntityHolder {
         return (Entity<T>) re;
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
     public <T extends Map<String, ?>> Entity<T> makeEntity(String tableName, T map) {
-        final NutEntity<T> en = new NutEntity(map.getClass());
-        en.setTableName(tableName);
-        en.setViewName(tableName);
-        boolean check = false;
-        for (Entry<String, ?> entry : map.entrySet()) {
-            String key = entry.getKey();
-            // 是实体补充描述吗？
-            if (key.startsWith("#")) {
-                en.getMetas().put(key.substring(1), entry.getValue().toString());
-                continue;
-            }
-            // 以 "." 开头的字段，不是实体字段
-            else if (key.startsWith(".")) {
-                continue;
-            }
-
-            // 是实体字段
-            Object value = entry.getValue();
-            Mirror<?> mirror = Mirror.me(value);
-            NutMappingField ef = new NutMappingField(en);
-
-            while (true) {
-                if (key.startsWith("+")) {
-                    ef.setAsAutoIncreasement();
-                    if (mirror != null && mirror.isIntLike())
-                        ef.setAsId();
-                    key = key.substring(1);
-                }
-                else if (key.startsWith("!")) {
-                    ef.setAsNotNull();
-                    key = key.substring(1);
-                }
-                else if (key.startsWith("*")) {
-                    key = key.substring(1);
-                    if (mirror != null && mirror.isIntLike())
-                        ef.setAsId();
-                    else
-                        ef.setAsName();
-                } else {
-                    break;
-                }
-            }
-            ef.setName(key);
-
-            ef.setType(null == value ? Object.class : value.getClass());
-            ef.setColumnName(key);
-
-            // 猜测一下数据库类型
-            Jdbcs.guessEntityFieldColumnType(ef);
-            ef.setAdaptor(expert.getAdaptor(ef));
-            if (mirror != null)
-                ef.setType(mirror.getType());
-            ef.setInjecting(new InjectToMap(key)); // 这里比较纠结,回设的时候应该用什么呢?
-            ef.setEjecting(new EjectFromMap(entry.getKey()));
-
-            if (ef.isAutoIncreasement()
-                && ef.isId()
-                && expert.isSupportAutoIncrement()
-                && !expert.isSupportGeneratedKeys()) {
-                en.addAfterInsertMacro(expert.fetchPojoId(en, ef));
-            }
-
-            en.addMappingField(ef);
-
-            if (mirror != null && !check)
-                check = mirror.isEnum();
-        }
-        en.checkCompositeFields(null);
-
-        // 最后在数据库中验证一下实体各个字段
-        if (check)
-            connCallback.invoke(new ConnCallback() {
-                public void invoke(Connection conn) throws Exception {
-                    expert.setupEntityField(conn, en);
-                }
-            });
-
-        // 搞定返回
-        return en;
+        return mapEntityMaker.make(tableName, map);
     }
 
     /**
