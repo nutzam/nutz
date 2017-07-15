@@ -21,7 +21,8 @@ import org.nutz.lang.Strings;
  * 左闭右开区间 : [T0, T1)
  * 左开右闭区间 : (T0, T1]
  * 全开放的区间 : (T0, T1)
- * 精确等于某值 : (T0) 或 [T0)    # 总之开闭区间无所谓了
+ * 精确等于某值 : (T0] 或 [T0) 或 [T0]
+ * 精确不等于某值 : (T0)
  * </pre>
  * 
  * 比如对于数字:
@@ -30,6 +31,8 @@ import org.nutz.lang.Strings;
  * [4,10]   // >=4 && <=10
  * (6,54]   // >=6 && <54
  * (,78)    // <78
+ * [50]     // == 50
+ * (99)     // !=99
  * </pre>
  * 
  * 对于日期
@@ -181,6 +184,10 @@ public abstract class Region<T extends Comparable<T>> {
         if (null == obj)
             return false;
         if (!isRegion()) {
+            // 左右都是开区间，表示不等于
+            if (this.leftOpen && this.rightOpen) {
+                return left.compareTo(obj) != 0;
+            }
             return left.compareTo(obj) == 0;
         }
         if (null != left) {
