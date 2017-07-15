@@ -12,7 +12,11 @@
 	{{{
 	String.format("XXXXXXXX %s  XXXXXX %s  XXXXXX %s XXXXX", "TxtA","TxtB","TxtA");
 	}}}
-	并且你不设值，会被无情抛错。
+	或者用位置参数
+	{{{
+	String.format("XXXXXXXX %1$s  XXXXXX %2$s  XXXXXX %1$s XXXXX", "TxtA","TxtB");
+	}}}
+	并且你不设值，或者设置的值少于声明的数量, 会被无情抛错。
 -----------------------------------------------------------------------------
 Nutz 的代码模板
 	

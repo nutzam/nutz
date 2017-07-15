@@ -19,10 +19,50 @@ import org.nutz.lang.meta.Email;
  * @author mawm(ming300@gmail.com)
  * @author bonyfish(mc02cxj@gmail.com)
  * @author pw(pangwu86@gmail.com)
+ * @author kerbores(kerbores@gmail.com)
  */
 public class Strings {
 
     protected Strings() {}
+
+    private static Pattern linePattern = Pattern.compile("_(\\w)");
+    private static Pattern humpPattern = Pattern.compile("[A-Z]");
+
+    /**
+     * 蛇形转驼峰
+     * 
+     * @param str
+     *            待转换字符串
+     * @return 转换结果
+     */
+    public static String line2Hump(String str) {
+        str = str.toLowerCase();
+        Matcher matcher = linePattern.matcher(str);
+        StringBuffer sb = new StringBuffer();
+        while (matcher.find()) {
+            matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
+        }
+        matcher.appendTail(sb);
+        return upperFirst(sb.toString());
+    }
+
+    /**
+     * 驼峰转蛇形
+     * 
+     * @param str
+     *            待转换字符串
+     * @return 转换结果
+     */
+    public static String hump2Line(String str) {
+        str = lowerFirst(str);
+        Matcher matcher = humpPattern.matcher(str);
+        StringBuffer sb = new StringBuffer();
+        while (matcher.find()) {
+            matcher.appendReplacement(sb, "_" + matcher.group(0).toLowerCase());
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
+    }
 
     /**
      * 是中文字符吗?
@@ -184,6 +224,7 @@ public class Strings {
      * @return 首字母大写后的新字符串
      * @deprecated 推荐使用 {@link #upperFirst(CharSequence)}
      */
+    @Deprecated
     public static String capitalize(CharSequence s) {
         return upperFirst(s);
     }
@@ -1113,7 +1154,7 @@ public class Strings {
         if (size < SZU) {
             return String.format("%d bytes", size);
         }
-        double n = (double) size / SZU;
+        double n = size / SZU;
         if (n < SZU) {
             return String.format("%5.2f KB", n);
         }

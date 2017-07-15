@@ -69,6 +69,7 @@ import org.nutz.dao.test.meta.issue1168.Issue1168;
 import org.nutz.dao.test.meta.issue1179.Issue1179;
 import org.nutz.dao.test.meta.issue1179.Issue1179Enum;
 import org.nutz.dao.test.meta.issue1254.BookTag;
+import org.nutz.dao.test.meta.issue1284.Issue1284;
 import org.nutz.dao.test.meta.issue396.Issue396Master;
 import org.nutz.dao.test.meta.issue726.Issue726;
 import org.nutz.dao.test.meta.issue901.XPlace;
@@ -994,5 +995,15 @@ public class SimpleDaoTest extends DaoCase {
         list.get(0).setv(".table", "t_pet");
         
         dao.fastInsert(list);
+    }
+    
+    @Test
+    public void test_issue_1284() {
+        dao.create(Issue1284.class, true);
+        Entity<Issue1284> en = dao.getEntity(Issue1284.class);
+        assertFalse(en.getIdField().isAutoIncreasement());
+        Issue1284 bean = new Issue1284();
+        bean.setAge(20);
+        dao.insert(bean);
     }
 }

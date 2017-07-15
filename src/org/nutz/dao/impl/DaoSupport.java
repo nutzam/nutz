@@ -32,7 +32,6 @@ import org.nutz.dao.util.Daos;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
-import org.nutz.lang.util.Callback;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -224,11 +223,7 @@ public class DaoSupport {
 
         if(!isLazy)
         {
-            holder = new EntityHolder(this.expert, new Callback<ConnCallback>() {
-                public void invoke(ConnCallback obj) {
-                    run(obj);
-                }
-            });
+            holder = new EntityHolder(this.expert, dataSource);
             holder.maker = createEntityMaker();
         }
         setRunner(runner);
