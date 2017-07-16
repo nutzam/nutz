@@ -124,7 +124,7 @@ public abstract class Daos {
             if (meta.getColumnName(i).equalsIgnoreCase(colName))
                 return i;
         // TODO 尝试一下meta.getColumnLabel?
-        log.infof("Can not find @Column(%s) in table/view (%s)", colName, meta.getTableName(1));
+        log.debugf("Can not find @Column(%s) in table/view (%s)", colName, meta.getTableName(1));
         throw Lang.makeThrow(SQLException.class, "Can not find @Column(%s)", colName);
     }
 
