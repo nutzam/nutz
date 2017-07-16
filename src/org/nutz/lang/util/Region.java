@@ -85,6 +85,14 @@ public abstract class Region<T extends Comparable<T>> {
         return new DateRegion(String.format(fmt, args));
     }
 
+    public static TimeRegion Time(String str) {
+        return new TimeRegion(str);
+    }
+
+    public static TimeRegion Timef(String fmt, Object... args) {
+        return new TimeRegion(String.format(fmt, args));
+    }
+
     protected Class<T> eleType;
 
     protected T left;

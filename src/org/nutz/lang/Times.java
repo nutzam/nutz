@@ -52,11 +52,8 @@ public abstract class Times {
      * @return 时分秒的数组
      */
     public static int[] T(int sec) {
-        int[] re = new int[3];
-        re[0] = Math.min(23, sec / 3600);
-        re[1] = Math.min(59, (sec - (re[0] * 3600)) / 60);
-        re[2] = Math.min(59, sec - (re[0] * 3600) - (re[1] * 60));
-        return re;
+        TmInfo ti = Ti(sec);
+        return Nums.array(ti.hour, ti.minute, ti.second);
     }
 
     /**
@@ -67,23 +64,83 @@ public abstract class Times {
      * @return 一天中的绝对秒数
      */
     public static int T(String ts) {
+        return Ti(ts).value;
+    }
+
+    /**
+     * 将一个秒数（天中），转换成一个时间对象:
+     * 
+     * @param sec
+     *            秒数
+     * @return 时间对象
+     */
+    public static TmInfo Ti(int sec) {
+        TmInfo ti = new TmInfo();
+        ti.value = sec;
+        ti.hour = Math.min(23, sec / 3600);
+        ti.minute = Math.min(59, (sec - (ti.hour * 3600)) / 60);
+        ti.second = Math.min(59, sec - (ti.hour * 3600) - (ti.minute * 60));
+        return ti;
+    }
+
+    /**
+     * 将一个时间字符串，转换成一个一天中的绝对时间对象
+     * 
+     * @param ts
+     *            时间字符串，符合格式 "HH:mm:ss" 或者 "HH:mm"
+     * @return 时间对象
+     */
+    public static TmInfo Ti(String ts) {
         String[] tss = Strings.splitIgnoreBlank(ts, ":");
         if (null != tss) {
+            TmInfo ti = new TmInfo();
             // 仅仅到分钟
             if (tss.length == 2) {
                 int hh = Integer.parseInt(tss[0]);
                 int mm = Integer.parseInt(tss[1]);
-                return hh * 3600 + mm * 60;
+                ti.value = hh * 3600 + mm * 60;
+                ti.hour = hh;
+                ti.minute = mm;
+                ti.second = 0;
+                return ti;
             }
             // 到秒
             if (tss.length == 3) {
                 int hh = Integer.parseInt(tss[0]);
                 int mm = Integer.parseInt(tss[1]);
                 int ss = Integer.parseInt(tss[2]);
-                return hh * 3600 + mm * 60 + ss;
+                ti.value = hh * 3600 + mm * 60 + ss;
+                ti.hour = hh;
+                ti.minute = mm;
+                ti.second = ss;
+                return ti;
             }
         }
         throw Lang.makeThrow("Wrong format of time string '%s'", ts);
+    }
+
+    /**
+     * 描述了一个时间（一天内）的结构信息
+     */
+    public static class TmInfo {
+        public int value;
+        public int hour;
+        public int minute;
+        public int second;
+
+        public String toString() {
+            return toString(false);
+        }
+
+        public String toString(boolean ignoreZeroSecond) {
+            String str = Strings.alignRight(hour, 2, '0')
+                         + ":"
+                         + Strings.alignRight(minute, 2, '0');
+            if (second == 0 && ignoreZeroSecond) {
+                return str;
+            }
+            return str + ":" + Strings.alignRight(second, 2, '0');
+        }
     }
 
     /**
@@ -95,7 +152,7 @@ public abstract class Times {
         return new Date(System.currentTimeMillis());
     }
 
-    private static Pattern _P_TIME = Pattern.compile("^((\\d{2,4})([/\\\\-])(\\d{1,2})([/\\\\-])(\\d{1,2}))?"
+    private static Pattern _P_TIME = Pattern.compile("^((\\d{2,4})([/\\\\-])?(\\d{1,2})([/\\\\-])?(\\d{1,2}))?"
                                                      + "(([ T])?"
                                                      + "(\\d{1,2})(:)(\\d{1,2})((:)(\\d{1,2}))?"
                                                      + "(([.])"
