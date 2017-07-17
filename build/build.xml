@@ -18,7 +18,7 @@
 
 	<property name="JDBC_EXPERT" value="org/nutz/dao/jdbc/nutz_jdbc_experts.js" />
 
-	<property name="v" value="1.r.61" />
+	<property name="v" value="1.r.62" />
 	<property name="zlang" value="org/nutz/lang/**,org/nutz/castor/**,org/nutz/repo/**,org/nutz/resource/**,org/nutz/*.*" />
 	<property name="zplugin" value="org/nutz/plugin/**" />
 	<property name="zlog" value="org/nutz/log/**" />
