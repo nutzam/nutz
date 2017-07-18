@@ -495,7 +495,7 @@ public abstract class Xmls {
                 String key = _ele.getNodeName();
                 if (lowFirst)
                     key = Strings.lowerFirst(key);
-                Map<String, Object> tmp = asMap(_ele, lowFirst);
+                Map<String, Object> tmp = asMap(_ele, lowFirst, dupAsList);
                 if (!tmp.isEmpty()) {
                     if (dupAsList)
                         map.addv(key, tmp);
