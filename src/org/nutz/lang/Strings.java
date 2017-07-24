@@ -1129,6 +1129,21 @@ public class Strings {
     }
 
     /**
+     * @param off
+     *            数组偏移量
+     * @param len
+     *            寻取的元素数量
+     * @param sp
+     *            分隔符
+     * @param array
+     *            数组
+     * @return 拼接好的字符串
+     */
+    public static <T> String join(int off, int len, String sp, T[] array) {
+        return Lang.concat(off, len, sp, array).toString();
+    }
+
+    /**
      * 使用给定的分隔符, 将一个集合拼接成字符串
      * 
      * @param sp
