@@ -174,7 +174,7 @@
 		@IocBean
 		public class MySuperIdGenerator implements RunMethod {
 
-			@Aop("jedis")
+			@Aop("redis")
         	public Object run(List<Object> fetchParam) {
             	// 用redis实现自增
             	return jedis().incr("ig:"+fetchParam.get(0).toString());
