@@ -76,10 +76,10 @@ public abstract class Times {
      */
     public static TmInfo Ti(int sec) {
         TmInfo ti = new TmInfo();
-        ti.value = sec;
         ti.hour = Math.min(23, sec / 3600);
         ti.minute = Math.min(59, (sec - (ti.hour * 3600)) / 60);
         ti.second = Math.min(59, sec - (ti.hour * 3600) - (ti.minute * 60));
+        ti.value = ti.hour * 3600 + ti.minute * 60 + ti.second;
         return ti;
     }
 
