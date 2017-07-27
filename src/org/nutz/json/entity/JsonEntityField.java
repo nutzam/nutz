@@ -17,6 +17,7 @@ import org.nutz.lang.eject.EjectByGetter;
 import org.nutz.lang.eject.Ejecting;
 import org.nutz.lang.inject.InjectBySetter;
 import org.nutz.lang.inject.Injecting;
+import org.nutz.lang.reflect.ReflectTool;
 
 public class JsonEntityField {
 	
@@ -45,6 +46,8 @@ public class JsonEntityField {
     private Format dataFormat;
     
     private Mirror<?> mirror;
+    
+    private Class<?> declaringClass;
 
     public boolean isForceString() {
         return forceString;
@@ -65,9 +68,10 @@ public class JsonEntityField {
     /**
      * 根据名称获取字段实体, 默认以set优先
      */
-    public static JsonEntityField eval(String name, Method getter, Method setter) {
+    public static JsonEntityField eval(Mirror<?> mirror, String name, Method getter, Method setter) {
         JsonEntityField jef = new JsonEntityField();
-        jef.genericType = getter.getGenericReturnType();
+        jef.declaringClass = mirror.getType();
+        jef.setGenericType(getter.getGenericReturnType());
         jef.name = name;
         jef.ejecting = new EjectByGetter(getter);
         jef.injecting = new InjectBySetter(setter);
@@ -75,9 +79,10 @@ public class JsonEntityField {
         return jef;
     }
 
-    public static JsonEntityField eval(String name, Type type, Ejecting ejecting, Injecting injecting) {
+    public static JsonEntityField eval(Mirror<?> mirror, String name, Type type, Ejecting ejecting, Injecting injecting) {
         JsonEntityField jef = new JsonEntityField();
-        jef.genericType = type;
+        jef.genericType = mirror.getType();
+        jef.setGenericType(type);
         jef.name = name;
         jef.ejecting = ejecting;
         jef.injecting = injecting;
@@ -101,7 +106,8 @@ public class JsonEntityField {
         JsonField jf = fld.getAnnotation(JsonField.class);
 
         JsonEntityField jef = new JsonEntityField();
-        jef.genericType = Lang.getFieldType(mirror, fld);
+        jef.declaringClass = mirror.getType();
+        jef.setGenericType(Lang.getFieldType(mirror, fld));
         jef.name = Strings.sBlank(null == jf ? null : jf.value(), fld.getName());
         jef.ejecting = mirror.getEjecting(fld.getName());
         jef.injecting = mirror.getInjecting(fld.getName());
@@ -186,5 +192,9 @@ public class JsonEntityField {
     
     public Mirror<?> getMirror() {
         return mirror;
+    }
+    
+    public void setGenericType(Type genericType) {
+        this.genericType = ReflectTool.getInheritGenericType(declaringClass, genericType);;
     }
 }

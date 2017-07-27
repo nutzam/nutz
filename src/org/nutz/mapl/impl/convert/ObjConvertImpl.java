@@ -7,7 +7,6 @@ import org.nutz.json.entity.JsonEntity;
 import org.nutz.json.entity.JsonEntityField;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
-import org.nutz.lang.reflect.ReflectTool;
 import org.nutz.lang.util.Context;
 import org.nutz.mapl.Mapl;
 import org.nutz.mapl.MaplConvert;
@@ -203,17 +202,15 @@ public class ObjConvertImpl implements MaplConvert {
             if (jef == null) {
                 continue;
             }
-
-            Type jefType = ReflectTool.getInheritGenericType(obj.getClass(), jef.getGenericType());
             if (isLeaf(val)) {
                 if (val instanceof El) {
                     val = ((El) val).eval(context);
                 }
-                jef.setValue(obj, Mapl.maplistToObj(val, jefType));
+                jef.setValue(obj, Mapl.maplistToObj(val, jef.getGenericType()));
                 continue;
             } else {
                 path.push(key);
-                jef.setValue(obj, Mapl.maplistToObj(val, jefType));
+                jef.setValue(obj, Mapl.maplistToObj(val, jef.getGenericType()));
             }
         }
         return obj;

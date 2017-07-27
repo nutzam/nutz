@@ -2,7 +2,7 @@ package org.nutz.lang;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.nutz.castor.CastorTest;
+import org.nutz.castor.AllCastor;
 import org.nutz.lang.encrypt.AllEncrypts;
 import org.nutz.lang.meta.AllMeta;
 import org.nutz.lang.random.AllRandom;
@@ -23,7 +23,7 @@ import org.nutz.lang.util.XmlsTest;
                      CharSegmentTest.class,
                      TmplTest.class,
                      SegmentsTest.class,
-                     CastorTest.class,
+                     AllCastor.class,
                      AllUtil.class,
                      NumsTest.class,
                      StringsTest.class,
