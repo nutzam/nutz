@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
+import org.nutz.conf.NutConf;
 import org.nutz.lang.born.BornContext;
 import org.nutz.lang.born.Borning;
 import org.nutz.lang.born.BorningException;
@@ -43,6 +44,11 @@ import org.nutz.lang.util.Callback3;
  * @param <T>
  */
 public class Mirror<T> {
+    
+    @SuppressWarnings("rawtypes")
+    static Map<Type, Mirror> mirrorCache = new HashMap<Type, Mirror>();
+    
+    protected BornContext<T> emtryArgsBornContext;
 
     private static class DefaultTypeExtractor implements TypeExtractor {
 
@@ -156,9 +162,16 @@ public class Mirror<T> {
         if (null == type) {
             return null;
         }
-        Mirror<T> mir = (Mirror<T>) Mirror.me(Lang.getTypeClass(type));
-        mir.type = type;
-        return mir;
+        if (NutConf.USE_MIRROR_CACHE) {
+            Mirror<T> mir = mirrorCache.get(type);
+            if (mir == null) {
+                mir = (Mirror<T>) Mirror.me(Lang.getTypeClass(type));
+                mir.type = type;
+                mirrorCache.put(type, mir);
+            }
+            return mir;
+        }
+        return (Mirror<T>) Mirror.me(Lang.getTypeClass(type));
     }
 
     private Class<T> klass;
@@ -983,7 +996,14 @@ public class Mirror<T> {
      * @return 新对象
      */
     public T born(Object... args) {
-        BornContext<T> bc = Borns.eval(klass, args);
+        BornContext<T> bc;
+        if (NutConf.USE_MIRROR_CACHE && args.length == 0) {
+            if (emtryArgsBornContext == null)
+                emtryArgsBornContext = Borns.eval(klass, args);
+            bc = emtryArgsBornContext;
+        }
+        else
+            bc = Borns.eval(klass, args);
         if (null == bc)
             throw new BorningException(klass, args);
 

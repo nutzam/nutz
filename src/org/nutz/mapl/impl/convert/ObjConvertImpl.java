@@ -193,37 +193,26 @@ public class ObjConvertImpl implements MaplConvert {
         Map<String, ?> map = (Map<String, ?>) model;
 
         JsonEntity jen = Json.getEntity(mirror);
-        for (String key : map.keySet()) {
+        for (Entry<String, ?> en : map.entrySet()) {
+            Object val = en.getValue();
+            if (val == null)
+                continue;
+            String key = en.getKey();
             JsonEntityField jef = jen.getField(key);
             if (jef == null) {
                 continue;
             }
 
-            Object val = map.get(jef.getName());
-            if (val == null) {
-                continue;
-            }
-
             Type jefType = ReflectTool.getInheritGenericType(obj.getClass(), jef.getGenericType());
-
             if (isLeaf(val)) {
                 if (val instanceof El) {
                     val = ((El) val).eval(context);
                 }
-                // zzh@2012-09-14: 暂时去掉 createBy 吧
-                // jef.setValue(obj, Castors.me().castTo(jef.createValue(obj,
-                // val, null), Lang.getTypeClass(jef.getGenericType())));
-                // jef.setValue(obj, jef.createValue(obj, val, null));
                 jef.setValue(obj, Mapl.maplistToObj(val, jefType));
                 continue;
             } else {
                 path.push(key);
-                // jef.setValue(obj, Mapl.maplistToObj(val,
-                // me.getGenericsType(0)));
                 jef.setValue(obj, Mapl.maplistToObj(val, jefType));
-                // zzh@2012-09-14: 暂时去掉 createBy 吧
-                // jef.setValue(obj, jef.createValue(obj, val,
-                // me.getGenericsType(0)));
             }
         }
         return obj;
