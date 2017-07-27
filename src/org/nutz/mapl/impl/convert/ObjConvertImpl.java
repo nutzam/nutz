@@ -1,5 +1,17 @@
 package org.nutz.mapl.impl.convert;
 
+import org.nutz.castor.Castors;
+import org.nutz.el.El;
+import org.nutz.json.Json;
+import org.nutz.json.entity.JsonEntity;
+import org.nutz.json.entity.JsonEntityField;
+import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
+import org.nutz.lang.reflect.ReflectTool;
+import org.nutz.lang.util.Context;
+import org.nutz.mapl.Mapl;
+import org.nutz.mapl.MaplConvert;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -8,20 +20,8 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
-
-import org.nutz.castor.Castors;
-import org.nutz.el.El;
-import org.nutz.json.Json;
-import org.nutz.json.entity.JsonEntity;
-import org.nutz.json.entity.JsonEntityField;
-import org.nutz.lang.Lang;
-import org.nutz.lang.Mirror;
-import org.nutz.lang.util.Context;
-import org.nutz.mapl.Mapl;
-import org.nutz.mapl.MaplConvert;
 
 /**
  * 对象转换 将MapList结构转换成对应的对象 TODO 具有循环引用的对象应该会出问题
@@ -202,15 +202,17 @@ public class ObjConvertImpl implements MaplConvert {
             if (jef == null) {
                 continue;
             }
+
+            Type jefType = ReflectTool.getInheritGenericType(obj.getClass(), jef.getGenericType());
             if (isLeaf(val)) {
                 if (val instanceof El) {
                     val = ((El) val).eval(context);
                 }
-                jef.setValue(obj, Mapl.maplistToObj(val, jef.getGenericType()));
+                jef.setValue(obj, Mapl.maplistToObj(val, jefType));
                 continue;
             } else {
                 path.push(key);
-                jef.setValue(obj, Mapl.maplistToObj(val, jef.getGenericType()));
+                jef.setValue(obj, Mapl.maplistToObj(val, jefType));
             }
         }
         return obj;

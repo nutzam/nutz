@@ -1,5 +1,22 @@
 package org.nutz.lang;
 
+import org.nutz.castor.Castors;
+import org.nutz.castor.FailToCastObjectException;
+import org.nutz.dao.entity.annotation.Column;
+import org.nutz.json.Json;
+import org.nutz.lang.reflect.ReflectTool;
+import org.nutz.lang.stream.StringInputStream;
+import org.nutz.lang.stream.StringOutputStream;
+import org.nutz.lang.stream.StringWriter;
+import org.nutz.lang.util.ClassTools;
+import org.nutz.lang.util.Context;
+import org.nutz.lang.util.NutMap;
+import org.nutz.lang.util.NutType;
+import org.nutz.lang.util.SimpleContext;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -42,23 +59,6 @@ import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.nutz.castor.Castors;
-import org.nutz.castor.FailToCastObjectException;
-import org.nutz.dao.entity.annotation.Column;
-import org.nutz.json.Json;
-import org.nutz.lang.stream.StringInputStream;
-import org.nutz.lang.stream.StringOutputStream;
-import org.nutz.lang.stream.StringWriter;
-import org.nutz.lang.util.ClassTools;
-import org.nutz.lang.util.Context;
-import org.nutz.lang.util.NutMap;
-import org.nutz.lang.util.NutType;
-import org.nutz.lang.util.SimpleContext;
 
 /**
  * 这些帮助函数让 Java 的某些常用功能变得更简单
@@ -1182,7 +1182,9 @@ public abstract class Lang {
             }
 
             if (null != v) {
-                Class<?> ft = field.getType();
+                //Class<?> ft = field.getType();
+                //获取泛型基类中的字段真实类型, https://github.com/nutzam/nutz/issues/1288
+                Class<?> ft = ReflectTool.getGenericFieldType(toType, field);
                 Object vv = null;
                 // 集合
                 if (v instanceof Collection) {
@@ -1195,7 +1197,9 @@ public abstract class Lang {
                     else {
                         // 创建
                         Collection newCol;
-                        Class eleType = Mirror.getGenericTypes(field, 0);
+                        //Class eleType = Mirror.getGenericTypes(field, 0);
+                        Class<?> eleType = ReflectTool.getParameterRealGenericClass(toType,
+                                field.getGenericType(),0);
                         if (ft == List.class) {
                             newCol = new ArrayList(c.size());
                         } else if (ft == Set.class) {
@@ -1233,10 +1237,16 @@ public abstract class Lang {
                         }
                     }
                     // 赋值
-                    final Class<?> valType = Mirror.getGenericTypes(field, 1);
+                    //final Class<?> valType = Mirror.getGenericTypes(field, 1);
+                    //map的key和value字段类型
+                    final Class<?> keyType = ReflectTool.getParameterRealGenericClass(toType,
+                            field.getGenericType(),0);
+                    final Class<?> valType =ReflectTool.getParameterRealGenericClass(toType,
+                            field.getGenericType(),1);
                     each(v, new Each<Entry>() {
                         public void invoke(int i, Entry en, int length) {
-                            map.put(en.getKey(), Castors.me().castTo(en.getValue(), valType));
+                            map.put(Castors.me().castTo(en.getKey(), keyType),
+                                    Castors.me().castTo(en.getValue(), valType));
                         }
                     });
                     vv = map;
