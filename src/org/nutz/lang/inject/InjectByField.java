@@ -1,8 +1,9 @@
 package org.nutz.lang.inject;
 
-import java.lang.reflect.Field;
-
 import org.nutz.castor.Castors;
+import org.nutz.lang.reflect.ReflectTool;
+
+import java.lang.reflect.Field;
 
 public class InjectByField implements Injecting {
 
@@ -16,7 +17,9 @@ public class InjectByField implements Injecting {
     public void inject(Object obj, Object value) {
         Object v = null;
         try {
-            v = Castors.me().castTo(value, field.getType());
+            //获取泛型基类中的字段真实类型, https://github.com/nutzam/nutz/issues/1288
+            Class<?> ft = ReflectTool.getGenericFieldType(obj.getClass(), field);
+            v = Castors.me().castTo(value, ft);
             field.set(obj, v);
         }
         catch (Exception e) {

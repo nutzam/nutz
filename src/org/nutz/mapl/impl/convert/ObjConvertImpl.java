@@ -1,5 +1,17 @@
 package org.nutz.mapl.impl.convert;
 
+import org.nutz.castor.Castors;
+import org.nutz.el.El;
+import org.nutz.json.Json;
+import org.nutz.json.entity.JsonEntity;
+import org.nutz.json.entity.JsonEntityField;
+import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
+import org.nutz.lang.reflect.ReflectTool;
+import org.nutz.lang.util.Context;
+import org.nutz.mapl.Mapl;
+import org.nutz.mapl.MaplConvert;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -10,17 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-
-import org.nutz.castor.Castors;
-import org.nutz.el.El;
-import org.nutz.json.Json;
-import org.nutz.json.entity.JsonEntity;
-import org.nutz.json.entity.JsonEntityField;
-import org.nutz.lang.Lang;
-import org.nutz.lang.Mirror;
-import org.nutz.lang.util.Context;
-import org.nutz.mapl.Mapl;
-import org.nutz.mapl.MaplConvert;
 
 /**
  * 对象转换 将MapList结构转换成对应的对象 TODO 具有循环引用的对象应该会出问题
@@ -203,6 +204,8 @@ public class ObjConvertImpl implements MaplConvert {
                 continue;
             }
 
+            Type jefType = ReflectTool.getInheritGenericType(obj.getClass(), jef.getGenericType());
+
             if (isLeaf(val)) {
                 if (val instanceof El) {
                     val = ((El) val).eval(context);
@@ -211,13 +214,13 @@ public class ObjConvertImpl implements MaplConvert {
                 // jef.setValue(obj, Castors.me().castTo(jef.createValue(obj,
                 // val, null), Lang.getTypeClass(jef.getGenericType())));
                 // jef.setValue(obj, jef.createValue(obj, val, null));
-                jef.setValue(obj, Mapl.maplistToObj(val, jef.getGenericType()));
+                jef.setValue(obj, Mapl.maplistToObj(val, jefType));
                 continue;
             } else {
                 path.push(key);
                 // jef.setValue(obj, Mapl.maplistToObj(val,
                 // me.getGenericsType(0)));
-                jef.setValue(obj, Mapl.maplistToObj(val, jef.getGenericType()));
+                jef.setValue(obj, Mapl.maplistToObj(val, jefType));
                 // zzh@2012-09-14: 暂时去掉 createBy 吧
                 // jef.setValue(obj, jef.createValue(obj, val,
                 // me.getGenericsType(0)));
