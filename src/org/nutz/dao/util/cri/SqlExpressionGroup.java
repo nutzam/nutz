@@ -15,6 +15,7 @@ import static org.nutz.dao.util.cri.Exps.lte;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.nutz.dao.Cnd;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.impl.sql.pojo.AbstractPItem;
 import org.nutz.dao.jdbc.ValueAdaptor;
@@ -372,5 +373,21 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
         seg.pojo = this.pojo;
         seg.top = this.top;
         return seg;
+    }
+    
+    /**
+     * 若value为null/空白字符串/空集合/空数组,则本条件不添加.
+     * @see Cnd#and(String, String, Object)
+     */
+    public SqlExpressionGroup andEX(String name, String op, Object value) {
+        return and(Cnd.expEX(name, op, value));
+    }
+    
+    /**
+     * 若value为null/空白字符串/空集合/空数组,则本条件不添加.
+     * @see Cnd#or(String, String, Object)
+     */
+    public SqlExpressionGroup orEX(String name, String op, Object value) {
+        return or(Cnd.expEX(name, op, value));
     }
 }
