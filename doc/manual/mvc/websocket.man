@@ -37,6 +37,6 @@ maven依赖
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz-plugins-websocket</artifactId>
-			<version>1.r.61.r2</version>
+			<version>1.r.62</version>
 		</dependency>
 	}}}
