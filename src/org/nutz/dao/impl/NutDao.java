@@ -709,8 +709,7 @@ public class NutDao extends DaoSupport implements Dao {
                 pojo.append(((Criteria) cnd).where());
                 // MySQL/PgSQL/SqlServer 与 Oracle/H2的结果会不一样,奇葩啊
                 GroupBy gb = ((Criteria) cnd).getGroupBy();
-                if (gb != null)
-                    pojo.append(gb);
+                pojo.append(gb);
             }
             // 否则暴力获取 WHERE 子句
             else {

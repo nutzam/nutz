@@ -1,10 +1,8 @@
 package org.nutz.dao.util.cri;
 
 import org.nutz.dao.Condition;
-import org.nutz.dao.DaoException;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.sql.GroupBy;
-import org.nutz.lang.Lang;
 
 public class GroupBySet extends OrderBySet implements GroupBy {
 
@@ -14,9 +12,9 @@ public class GroupBySet extends OrderBySet implements GroupBy {
 	
 	private Condition having;
 	
+	public GroupBySet() {}
+	
 	public GroupBySet(String...names) {
-		if (Lang.eleSize(names) == 0)
-			throw new DaoException("NULL for GroupBy");
 		this.names = names;
 	}
 	
@@ -26,6 +24,8 @@ public class GroupBySet extends OrderBySet implements GroupBy {
 	}
 	
 	public void joinSql(Entity<?> en, StringBuilder sb) {
+	    if (names == null || names.length == 0)
+	        return;
 		sb.append(" GROUP BY ");
 		for (String name : names) {
 			sb.append(_fmtcolnm(en, name));
