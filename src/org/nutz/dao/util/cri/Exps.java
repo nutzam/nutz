@@ -66,6 +66,14 @@ public abstract class Exps {
         return new SqlRange(name, subSql, args);
     }
 
+    public static SqlValueRange inSql2(String name, String subSql, Object... values) {
+        return new SqlValueRange(name, subSql, values);
+    }
+
+    public static SqlValueRange inSql2(String name, String subSql, Collection<?> collection) {
+        return new SqlValueRange(name, subSql, collection.toArray());
+    }
+
     public static SqlExpression create(String name, String op, Object value) {
         op = Strings.trim(op.toUpperCase());
 
