@@ -24,6 +24,7 @@ import org.nutz.dao.entity.EntityMaker;
 import org.nutz.dao.entity.LinkField;
 import org.nutz.dao.entity.LinkVisitor;
 import org.nutz.dao.entity.MappingField;
+import org.nutz.dao.entity.PkType;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.impl.link.DoClearLinkVisitor;
 import org.nutz.dao.impl.link.DoClearRelationByHostFieldLinkVisitor;
@@ -1065,6 +1066,18 @@ public class NutDao extends DaoSupport implements Dao {
     public <T> T insertOrUpdate(T t, FieldFilter insertFieldFilter, FieldFilter updateFieldFilter) {
         if (t == null)
             return null;
+        Object obj = Lang.first(t);
+        Entity<?> en = getEntity(obj.getClass());
+        if (en.getPkType() == PkType.NAME) {
+            MappingField mf = en.getNameField();
+            Object val = mf.getValue(obj);
+            if (val == null && fetch(obj.getClass(), Cnd.where(mf.getName(), "=", val)) == null) {
+                insert(t, insertFieldFilter);
+            } else {
+                update(t, updateFieldFilter);
+            }
+            return t;
+        }
         if (fetch(t) != null)
             update(t, updateFieldFilter);
         else
