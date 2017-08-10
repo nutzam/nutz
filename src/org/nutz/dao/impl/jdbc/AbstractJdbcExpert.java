@@ -337,7 +337,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         // 字段注释
         if (en.hasColumnComment()) {
             for (MappingField mf : en.getMappingFields()) {
-                if (mf.hasColumnComment()) {
+                if (mf.hasColumnComment() && !mf.isReadonly()) {
                     Sql columnCommentSQL = Sqls.create(Strings.isBlank(commentColumn) ? DEFAULT_COMMENT_COLUMN
                                                                                       : commentColumn);
                     columnCommentSQL.vars()
