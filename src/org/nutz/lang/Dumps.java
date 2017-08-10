@@ -50,7 +50,7 @@ public abstract class Dumps {
                                 m.regionStart(),
                                 m.regionEnd()));
         for (int i = 0; i <= m.groupCount(); i++)
-            sb.append(String.format("%2d: %s\n", i, m.group(i)));
+            sb.append(String.format("%2d:[%3d,%3d) %s\n", i, m.start(i), m.end(i), m.group(i)));
         return sb.toString();
     }
 
