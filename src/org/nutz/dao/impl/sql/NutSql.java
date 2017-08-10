@@ -41,6 +41,7 @@ public class NutSql extends NutStatement implements Sql {
     protected VarIndex paramIndex;
     protected Map<String, ValueAdaptor> customValueAdaptor;
     protected List<PItem> items;
+    protected char[] placeholder;
 
     public NutSql(String source) {
         this(source, null);
@@ -360,7 +361,9 @@ public class NutSql extends NutStatement implements Sql {
      * 若需要定制参数字符和变量字符,覆盖本方法,通过SqlLiteral的构造方法指定之
      */
     protected SqlLiteral literal() {
-        return new SqlLiteral().valueOf(sourceSql);
+        if (placeholder == null)
+            return new SqlLiteral().valueOf(sourceSql);
+        return new SqlLiteral(placeholder[0], placeholder[1]).valueOf(sourceSql);
     }
     
     public Sql setParam(String name, Object value) {
@@ -375,5 +378,11 @@ public class NutSql extends NutStatement implements Sql {
     
     public Record getOutParams() {
         return getContext().attr(Record.class, "OUT");
+    }
+    
+    public Sql changePlaceholder (char param, char var) {
+        placeholder = new char[]{param, var};
+        setSourceSql(getSourceSql());
+        return null;
     }
 }

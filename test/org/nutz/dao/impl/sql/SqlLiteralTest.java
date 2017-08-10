@@ -11,6 +11,8 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.nutz.dao.Cnd;
+import org.nutz.dao.Sqls;
+import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.meta.Pet;
 
 public class SqlLiteralTest {
@@ -184,5 +186,14 @@ public class SqlLiteralTest {
     @Test
     public void test_between() {
         assertEquals(" WHERE age BETWEEN 18 AND 29", Cnd.where("age", "between", new Object[]{18, 29}).toString());
+    }
+    
+    @Test
+    public void test_change_placeholder() {
+        String str = "select * from t_user where name = :name";
+        Sql sql = Sqls.create(str);
+        assertEquals(0, sql.paramIndex().size());
+        sql.changePlaceholder(':', '$');
+        assertEquals(1, sql.paramIndex().size());
     }
 }
