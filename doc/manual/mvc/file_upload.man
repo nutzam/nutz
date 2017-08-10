@@ -11,7 +11,7 @@
     这个适配器专门解析形式为
     {{{<html>
     <form target="hideWin" enctype="multipart/form-data" method="post">
-        <input type="file">
+        <input type="file" name="photo">
         ...
     }}}
     的 HTML 提交表单

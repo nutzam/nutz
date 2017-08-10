@@ -10,28 +10,37 @@ public class JsonFaster {
 
     @Test
     public void json() {
-        nutzJson(10000);
-        fastJson(10000);
+        String jsonStr = "{name:'wendal'}";
+        nutzJson(100000, jsonStr);
+        fastJson(100000, jsonStr);
+        System.gc();
+        
+        int t = 5000*10000;
         
         Stopwatch sw = Stopwatch.begin();
-        nutzJson(50*10000);
+        nutzJson(t, jsonStr);
         sw.stop();
-        System.out.println("Nutz-Json 50w次耗时: " + sw.getDuration());
+        System.out.println("Nutz-Json "+t+"次耗时: " + sw.getDuration());
+        System.gc();
         
-        sw.start();
-        fastJson(50*10000);
-        System.out.println("Fast-Json 50w次耗时: " + sw.getDuration());
+        sw = Stopwatch.begin();
+        //fastJson(t, jsonStr);
+        sw.stop();
+        System.out.println("Fast-Json "+t+"次耗时: " + sw.getDuration());
+        System.gc();
         
         //-------------------------------------------------------------------
-        sw.start();
-        nutzJson(50*10000);
+        sw = Stopwatch.begin();
+        nutzJson(t, jsonStr);
         sw.stop();
-        System.out.println("Nutz-Json 50w次耗时: " + sw.getDuration());
+        System.out.println("Nutz-Json "+t+"次耗时: " + sw.getDuration());
+        System.gc();
         
-        sw.start();
-        fastJson(50*10000);
+        sw = Stopwatch.begin();
+        //fastJson(t, jsonStr);
         sw.stop();
-        System.out.println("Fast-Json 50w次耗时: " + sw.getDuration());
+        System.out.println("Fast-Json "+t+"次耗时: " + sw.getDuration());
+        System.gc();
     }
     
     public void nutzJson(int time) {
@@ -39,7 +48,7 @@ public class JsonFaster {
         obj.setName("wendal");
         for (int i = 0; i < time; i++) {
             String jsonStr = Json.toJson(obj);
-            obj = Json.fromJson(JsonObject.class, jsonStr);
+            Json.fromJson(jsonStr);
         }
     }
     
@@ -49,6 +58,18 @@ public class JsonFaster {
         for (int i = 0; i < time; i++) {
             String jsonStr = JSON.toJSONString(obj);
             obj = JSON.parseObject(jsonStr, JsonObject.class);
+        }
+    }
+    
+    public void nutzJson(int time, String jsonStr) {
+        for (int i = 0; i < time; i++) {
+            Json.fromJson(JsonObject.class, jsonStr);
+        }
+    }
+    
+    public void fastJson(int time, String jsonStr) {
+        for (int i = 0; i < time; i++) {
+            JSON.parseObject(jsonStr, JsonObject.class);
         }
     }
     

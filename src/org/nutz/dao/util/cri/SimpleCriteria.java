@@ -26,20 +26,19 @@ public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy, 
     public SimpleCriteria() {
         where = new SqlExpressionGroup();
         orderBy = new OrderBySet();
+        groupBy = new GroupBySet();
     }
 
     public void joinSql(Entity<?> en, StringBuilder sb) {
         where.joinSql(en, sb);
-        if (groupBy != null)
-        	groupBy.joinSql(en, sb);
+        groupBy.joinSql(en, sb);
         orderBy.joinSql(en, sb);
     }
 
     public void setPojo(Pojo pojo) {
         where.setPojo(pojo);
+        groupBy.setPojo(pojo);
         orderBy.setPojo(pojo);
-        if (groupBy != null)
-        	groupBy.setPojo(pojo);
     }
 
     public void setPager(int pageNumber, int pageSize) {

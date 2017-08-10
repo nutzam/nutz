@@ -501,7 +501,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         return or(Cnd.expEX(name, op, value));
     }
     
-    protected static SqlExpression expEX(String name, String op, Object value) {
+    public static SqlExpression expEX(String name, String op, Object value) {
         if (_ex(value))
             return null;
         return Cnd.exp(name, op, value);

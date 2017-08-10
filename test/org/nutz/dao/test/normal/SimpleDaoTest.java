@@ -70,6 +70,7 @@ import org.nutz.dao.test.meta.issue1179.Issue1179;
 import org.nutz.dao.test.meta.issue1179.Issue1179Enum;
 import org.nutz.dao.test.meta.issue1254.BookTag;
 import org.nutz.dao.test.meta.issue1284.Issue1284;
+import org.nutz.dao.test.meta.issue1297.Issue1297;
 import org.nutz.dao.test.meta.issue396.Issue396Master;
 import org.nutz.dao.test.meta.issue726.Issue726;
 import org.nutz.dao.test.meta.issue901.XPlace;
@@ -1005,5 +1006,21 @@ public class SimpleDaoTest extends DaoCase {
         Issue1284 bean = new Issue1284();
         bean.setAge(20);
         dao.insert(bean);
+    }
+    
+    @Test
+    public void test_issue_insert_or_update() {
+        try {
+            dao.create(Issue1297.class, false);
+            Issue1297 pojo = new Issue1297();
+            pojo.setCt(new Timestamp(System.currentTimeMillis()));
+            pojo.setKeySn("ABC");
+            pojo.setUserid(123);
+            dao.insertOrUpdate(pojo);
+        }
+        catch (RuntimeException e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

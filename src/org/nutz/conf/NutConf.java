@@ -134,4 +134,5 @@ public class NutConf {
     }
     
     public static boolean USE_FASTCLASS = !Lang.isAndroid;
+    public static boolean USE_MIRROR_CACHE = true;
 }

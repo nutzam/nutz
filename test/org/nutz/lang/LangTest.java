@@ -1,11 +1,5 @@
 package org.nutz.lang;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -16,14 +10,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.json.Json;
+import org.nutz.lang.meta.Issue1288User;
 import org.nutz.lang.meta.TestR;
+import org.nutz.lang.util.NutMap;
 
-public class LangTest {
+public class LangTest extends Assert {
 
     /**
      * for issue #584
@@ -403,5 +400,15 @@ public class LangTest {
     	Lang.copyProperties(pet, pet2, null, "age", false, true);
     	assertEquals(pet.getName(), pet2.getName());
     	assertEquals(0, pet2.getAge());
+    }
+    
+    @Test
+    public void test_issue_1288() {
+        NutMap map = new NutMap();
+        map.put("id", new Integer(1));
+        Issue1288User user = Lang.map2Object(map, Issue1288User.class);
+        assertNotNull(user);
+        Long id = user.getId();
+        assertEquals(1L, id.longValue());
     }
 }
