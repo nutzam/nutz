@@ -29,8 +29,7 @@ public class Tag extends SimpleNode<HtmlToken> {
     public static Tag text(String text) {
         Tag tag = new Tag();
         if (null != text) {
-            text = text.replace("&", "&amp;");
-            text = text.replace("<", "&lt;").replace(">", "&gt;");
+            text = Strings.escapeHtml(text);
         }
         tag.set(new HtmlToken().setValue(text));
         return tag;

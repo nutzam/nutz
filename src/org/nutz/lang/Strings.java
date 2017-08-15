@@ -3,9 +3,11 @@ package org.nutz.lang;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1011,21 +1013,32 @@ public class Strings {
         return sb.toString();
     }
 
+    private static Map<String, Object> __html_replace_map = Lang.map("'&[A-Z]?[a-z0-9]{2,};':null,'&':'&amp;','<':'&lt;'");
+    private static Map<String, Object> __html_replace_map_full = Lang.map("'&[A-Z]?[a-z0-9]{2,};':null,'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'");
+
     /**
-     * 将一个字符串出现的HMTL元素进行转义，比如
+     * 将一个字符串出现的HMTL元素进行转义
      * <p>
      * 
-     * <pre>
-     *  escapeHtml("&lt;script&gt;alert("hello world");&lt;/script&gt;") => "&amp;lt;script&amp;gt;alert(&amp;quot;hello world&amp;quot;);&amp;lt;/script&amp;gt;"
-     * </pre>
-     * <p>
      * 转义字符对应如下
      * <ul>
-     * <li>& => &amp;amp;
-     * <li>< => &amp;lt;
-     * <li>>=> &amp;gt;
-     * <li>' => &amp;#x27;
-     * <li>" => &amp;quot;
+     * <li><code>&</code> => &amp;amp;
+     * <li><code><</code> => &amp;lt;
+     * <li><code>></code> => &amp;gt;
+     * <li><code>"</code> => &amp;quot;
+     * </ul>
+     * 
+     * 其中，特殊的 HTML 字符会被保留，比如:
+     * <ul>
+     * <li><code>&amp;copy;</code> : &copy;
+     * <li><code>&amp;reg;</code> : &reg;
+     * <li><code>&amp;trade;</code> : &trade;
+     * <li><code>&amp;amp;</code> : &amp;
+     * <li><code>&amp;lt;</code> : &lt;
+     * <li><code>&amp;gt;</code> : &gt;
+     * <li><code>&#(两个以上数字);</code> 譬如 <code> &amp;#160;</code>
+     * <li>更多的符合请看 <a href="http://tool.chinaz.com/Tools/htmlchar.aspx">HTML
+     * 特殊符号编码对照表</a>
      * </ul>
      *
      * @param cs
@@ -1033,31 +1046,164 @@ public class Strings {
      * @return 转换后字符串
      */
     public static String escapeHtml(CharSequence cs) {
+        return replaceBy(cs, __html_replace_map_full);
+    }
+
+    /**
+     * 将一个字符串出现的HMTL元素进行转义。仅仅替换尽量少的特殊元素
+     * <p>
+     * 
+     * 转义字符对应如下
+     * <ul>
+     * <li><code>&</code> => &amp;amp;
+     * <li><code><</code> => &amp;lt;
+     * </ul>
+     * 
+     * 其中，特殊的 HTML 字符会被保留，比如:
+     * <ul>
+     * <li><code>&amp;copy;</code> : &copy;
+     * <li><code>&amp;reg;</code> : &reg;
+     * <li><code>&amp;trade;</code> : &trade;
+     * <li><code>&amp;amp;</code> : &amp;
+     * <li><code>&amp;lt;</code> : &lt;
+     * <li><code>&amp;gt;</code> : &gt;
+     * <li><code>&#(两个以上数字);</code> 譬如 <code> &amp;#160;</code>
+     * <li>更多的符合请看 <a href="http://tool.chinaz.com/Tools/htmlchar.aspx">HTML
+     * 特殊符号编码对照表</a>
+     * </ul>
+     *
+     * @param cs
+     *            字符串
+     * @return 转换后字符串
+     */
+    public static String escapeHtmlQuick(CharSequence cs) {
+        return replaceBy(cs, __html_replace_map);
+    }
+
+    /**
+     * 根据一个给定的 Map，来替换一段字符串。
+     * <p>
+     * 以替换 HTML 为例，这个 Map 可以是
+     * 
+     * <pre>
+     * {
+     *      // 值为 Null 表示不变
+     *      "&copy;" : null,
+     *      "&#\\d{3,};" : null,  // 也可以用正则表达式
+     *      "&(amp|lt|gt|quot|qpos);" : null,
+     *      // 有值的，就要替换了
+     *      "&" : "&amp;",        // 键不支持正则表达式
+     *      "<" : "&lt;",
+     *      ">" : "&gt;",
+     * }
+     * </pre>
+     * 
+     * 实际上，本函数会根据 Map 生成一个正则表达式，然后进行替换，效率应该还不错 ^_^
+     * <p>
+     * <b>!!!注意</b> 有值的组，键值不支持正则表达式
+     * 
+     * @param str
+     *            原始字符串
+     * @param map
+     *            如何替换的方式
+     * @return 新字符串
+     */
+    public static String replaceBy(CharSequence cs, Map<String, Object> map) {
         if (null == cs)
             return null;
-        char[] cas = cs.toString().toCharArray();
-        StringBuilder sb = new StringBuilder();
-        for (char c : cas) {
-            switch (c) {
-            case '&':
-                sb.append("&amp;");
-                break;
-            case '<':
-                sb.append("&lt;");
-                break;
-            case '>':
-                sb.append("&gt;");
-                break;
-            case '\'':
-                sb.append("&#x27;");
-                break;
-            case '"':
-                sb.append("&quot;");
-                break;
-            default:
-                sb.append(c);
+        String str = cs.toString();
+        if (str.length() == 0)
+            return str;
+
+        if (null == map || map.isEmpty())
+            return str;
+
+        // 准备两个分组
+        List<String> keys1 = new ArrayList<String>(map.size());
+        List<String> keys2 = new ArrayList<String>(map.size());
+        for (Map.Entry<String, Object> en : map.entrySet()) {
+            String key = en.getKey();
+            // 没值，分作第一组
+            if (null == en.getValue()) {
+                keys1.add(key);
+            }
+            // 有值，作为第二组
+            else {
+                keys2.add(key);
             }
         }
+
+        // 准备模式: 0:一组null, 1:一组val, 2: 两组
+        int mode = -1;
+
+        // 准备正则表达式
+        StringBuilder regex = new StringBuilder();
+        if (keys1.size() > 0) {
+            regex.append("(" + Strings.join("|", keys1) + ")");
+            mode = 0;
+        }
+        if (keys2.size() > 0) {
+            if (mode < 0) {
+                mode = 1;
+            } else {
+                mode = 2;
+                regex.append('|');
+            }
+            regex.append("(" + Strings.join("|", keys2) + ")");
+
+        }
+
+        // mode 1,2 的时候才有必要转换吧
+        if (mode <= 0)
+            return str;
+
+        // 编译正则表达式
+        Pattern p = Pattern.compile(regex.toString());
+
+        // 准备返回值
+        StringBuilder sb = new StringBuilder();
+        int pos = 0;
+
+        // 匹配字符串
+        Matcher m = p.matcher(str);
+        while (m.find()) {
+            // 1:一组val
+            if (1 == mode) {
+                // 截取前面的字符串
+                if (m.start() > pos) {
+                    sb.append(str.substring(pos, m.start()));
+                }
+                // 得到 Key，并替换
+                String key = m.group(1);
+                sb.append(map.get(key));
+            }
+            // 2: 两组
+            else {
+                // 如果落到 Null 组了，那么直接 copy
+                if (null != m.group(1)) {
+                    sb.append(str.substring(pos, m.end()));
+                }
+                // 否则
+                else {
+                    // 截取前面的字符串
+                    if (m.start() > pos) {
+                        sb.append(str.substring(pos, m.start()));
+                    }
+                    // 得到 Key，并替换
+                    String key = m.group(m.groupCount());
+                    sb.append(map.get(key));
+                }
+            }
+            // 最后记录一下 pos
+            pos = m.end();
+        }
+
+        // 木有匹配，直接返回
+        if (pos == 0)
+            return str;
+        if (pos < str.length())
+            sb.append(str.substring(pos));
+        // 拼上最后一截并返回
         return sb.toString();
     }
 
