@@ -28,6 +28,7 @@ import org.nutz.castor.Castors;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
+import org.nutz.dao.DB;
 import org.nutz.dao.Dao;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.FieldFilter;
@@ -71,6 +72,8 @@ import org.nutz.dao.test.meta.issue1179.Issue1179Enum;
 import org.nutz.dao.test.meta.issue1254.BookTag;
 import org.nutz.dao.test.meta.issue1284.Issue1284;
 import org.nutz.dao.test.meta.issue1297.Issue1297;
+import org.nutz.dao.test.meta.issue1302.Issue1302Master;
+import org.nutz.dao.test.meta.issue1302.Issue1302UserAction;
 import org.nutz.dao.test.meta.issue396.Issue396Master;
 import org.nutz.dao.test.meta.issue726.Issue726;
 import org.nutz.dao.test.meta.issue901.XPlace;
@@ -1022,5 +1025,17 @@ public class SimpleDaoTest extends DaoCase {
             e.printStackTrace();
             throw e;
         }
+    }
+    
+    @Test
+    public void test_issue_1302() {
+            dao.create(Issue1302Master.class, false);
+            Issue1302Master pojo = new Issue1302Master();
+            pojo.setName(R.UU32());
+            pojo.setAct(Issue1302UserAction.VIEW);
+            dao.insert(pojo);
+            System.out.println(DB.SQLSERVER.ordinal());
+            pojo = dao.fetch(Issue1302Master.class, pojo.getName());
+            assertEquals(Issue1302UserAction.VIEW, pojo.getAct());
     }
 }

@@ -640,12 +640,7 @@ public abstract class Jdbcs {
                 if (null == obj) {
                     stat.setNull(i, Types.INTEGER);
                 } else {
-                    int v;
-                    if (obj instanceof Enum<?>)
-                        v = ((Enum<?>) obj).ordinal();
-                    else
-                        v = Castors.me().castTo(obj, int.class);
-                    stat.setInt(i, v);
+                    stat.setInt(i, Castors.me().castTo(obj, int.class));
                 }
             }
         };
