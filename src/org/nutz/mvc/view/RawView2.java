@@ -11,12 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
 
 public class RawView2 extends RawView {
-
-    private static final Log log = Logs.get();
 
     protected DataInputStream in;
 
@@ -58,9 +54,10 @@ public class RawView2 extends RawView {
             // 暂时只实现了单range
             if (rs.size() != 1) {
                 // TODO 完成多range的下载
-                log.info("multipart/byteranges is NOT support yet");
-                resp.setStatus(416);
-                return;
+                //log.info("multipart/byteranges is NOT support yet");
+                //resp.setStatus(416);
+                //return;
+                rs = rs.subList(0, 1);
             }
             long totolSize = 0;
             for (RangeRange rangeRange : rs) {

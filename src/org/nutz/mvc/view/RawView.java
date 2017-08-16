@@ -141,9 +141,9 @@ public class RawView implements View {
                 // 暂时只实现了单range
                 if (rs.size() != 1) {
                     // TODO 完成多range的下载
-                    log.info("multipart/byteranges is NOT support yet");
-                    resp.setStatus(416);
-                    return;
+                    //log.info("multipart/byteranges is NOT support yet");
+                    //resp.setStatus(416);
+                    rs = rs.subList(0, 1);
                 }
                 long totolSize = 0;
                 for (RangeRange rangeRange : rs) {
