@@ -66,23 +66,25 @@ public class RawView2 extends RawView {
                 OutputStream out = resp.getOutputStream();
                 writeDownloadRange(in, out, rangeRange);
             } else {
-                String k = R.UU32().substring(0, 12);
+                String k = R.UU32().substring(0, 11);
                 resp.setCharacterEncoding(null);
                 resp.setHeader("Content-Type", "multipart/byteranges; boundary="+k);
                 byte[] SLINE = ("--" + k + "\r\n").getBytes();
                 byte[] CLINE = ("Content-Type: " + contentType + "\r\n").getBytes();
                 // 计算ContentLength,蛋疼啊
+                totolSize += "\r\n".getBytes().length;
                 for (RangeRange rangeRange : rs) {
                     totolSize += SLINE.length;
                     totolSize += CLINE.length;
                     totolSize += ("Content-Range: " + rangeRange.toString(maxLen) + "\r\n\r\n").getBytes().length;
                     totolSize +=  "\r\n".getBytes().length;
                 }
-                totolSize += ("--" + k + "--").getBytes().length;
+                totolSize += ("--" + k + "--\r\n").getBytes().length;
                 resp.setHeader("Content-Length", "" + totolSize);
                 
                 RangeRange preRangeRange = null;
                 OutputStream out = resp.getOutputStream();
+                out.write("\r\n".getBytes());
                 for (RangeRange rangeRange : rs) {
                     out.write(SLINE);
                     out.write(CLINE);
@@ -91,7 +93,7 @@ public class RawView2 extends RawView {
                     out.write("\r\n".getBytes());
                     preRangeRange = rangeRange;
                 }
-                out.write(("--" + k + "--").getBytes());
+                out.write(("--" + k + "--\r\n").getBytes());
             }
         }
         finally {
