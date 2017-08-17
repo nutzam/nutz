@@ -66,8 +66,9 @@ public class RawView2 extends RawView {
                 OutputStream out = resp.getOutputStream();
                 writeDownloadRange(in, out, rangeRange);
             } else {
-                String k = R.UU32();
-                resp.setContentType("multipart/byteranges; boundary="+k);
+                String k = R.UU32().substring(0, 12);
+                resp.setCharacterEncoding(null);
+                resp.setHeader("Content-Type", "multipart/byteranges; boundary="+k);
                 byte[] SLINE = ("--" + k + "\r\n").getBytes();
                 byte[] CLINE = ("Content-Type: " + contentType + "\r\n").getBytes();
                 // 计算ContentLength,蛋疼啊
