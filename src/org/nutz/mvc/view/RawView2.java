@@ -70,6 +70,16 @@ public class RawView2 extends RawView {
                 resp.setContentType("multipart/byteranges; boundary="+k);
                 byte[] SLINE = ("--" + k + "\r\n").getBytes();
                 byte[] CLINE = ("Content-Type: " + contentType + "\r\n").getBytes();
+                // 计算ContentLength,蛋疼啊
+                for (RangeRange rangeRange : rs) {
+                    totolSize += SLINE.length;
+                    totolSize += CLINE.length;
+                    totolSize += ("Content-Range: " + rangeRange.toString(maxLen) + "\r\n\r\n").getBytes().length;
+                    totolSize +=  "\r\n".getBytes().length;
+                }
+                totolSize += ("--" + k + "--").getBytes().length;
+                resp.setHeader("Content-Length", "" + totolSize);
+                
                 RangeRange preRangeRange = null;
                 OutputStream out = resp.getOutputStream();
                 for (RangeRange rangeRange : rs) {
