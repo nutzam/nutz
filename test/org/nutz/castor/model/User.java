@@ -7,6 +7,7 @@ import java.util.Map;
 /**
  * create by zhouwenqing 2017/7/26 .
  */
+@SuppressWarnings("rawtypes")
 public class User extends BaseTreeEntity<Long, User> implements Serializable {
 
 
