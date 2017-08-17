@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
+import org.nutz.lang.random.R;
 
 public class RawView2 extends RawView {
 
@@ -51,30 +52,36 @@ public class RawView2 extends RawView {
                 resp.setStatus(416);
                 return;
             }
-            // 暂时只实现了单range
-            if (rs.size() != 1) {
-                // TODO 完成多range的下载
-                //log.info("multipart/byteranges is NOT support yet");
-                //resp.setStatus(416);
-                //return;
-                rs = rs.subList(0, 1);
-            }
             long totolSize = 0;
             for (RangeRange rangeRange : rs) {
                 totolSize += (rangeRange.end - rangeRange.start);
             }
             resp.setStatus(206);
-            resp.setHeader("Content-Length", "" + totolSize);
-            resp.setHeader("Accept-Ranges", "bytes");
-            // 暂时只有单range,so,简单起见吧
-            RangeRange rangeRange = rs.get(0);
-            resp.setHeader("Content-Range",
-                           String.format("bytes %d-%d/%d",
-                                         rangeRange.start,
-                                         rangeRange.end - 1,
-                                         maxLen));
-            OutputStream out = resp.getOutputStream();
-            writeDownloadRange(in, out, rangeRange);
+            if (rs.size() == 1) {
+                // 单个Range的时候简单一些
+                RangeRange rangeRange = rs.get(0);
+                resp.setHeader("Accept-Ranges", "bytes");
+                resp.setHeader("Content-Range", rangeRange.toString(maxLen));
+                resp.setHeader("Content-Length", "" + totolSize);
+                OutputStream out = resp.getOutputStream();
+                writeDownloadRange(in, out, rangeRange);
+            } else {
+                String k = R.UU32();
+                resp.setContentType("multipart/byteranges; boundary="+k);
+                byte[] SLINE = ("--" + k + "\r\n").getBytes();
+                byte[] CLINE = ("Content-Type: " + contentType + "\r\n").getBytes();
+                RangeRange preRangeRange = null;
+                OutputStream out = resp.getOutputStream();
+                for (RangeRange rangeRange : rs) {
+                    out.write(SLINE);
+                    out.write(CLINE);
+                    out.write(("Content-Range: " + rangeRange.toString(maxLen) + "\r\n\r\n").getBytes());
+                    writeDownloadRange(in, out, rangeRange, preRangeRange);
+                    out.write("\r\n".getBytes());
+                    preRangeRange = rangeRange;
+                }
+                out.write(("--" + k + "--").getBytes());
+            }
         }
         finally {
             Streams.safeClose(in);

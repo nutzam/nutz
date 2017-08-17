@@ -1,7 +1,6 @@
 package org.nutz.mvc.view;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +10,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -207,7 +207,7 @@ public class RawView implements View {
         contentTypeMap.put("webp", "image/webp");
     }
 
-    public static class RangeRange {
+    public static class RangeRange implements Comparable<RangeRange> {
         public RangeRange(long start, long end) {
             this.start = start;
             this.end = end;
@@ -216,6 +216,23 @@ public class RawView implements View {
         public long start;
         public long end = -1;
 
+        public String toString(int maxLen) {
+            return String.format("bytes %d-%d/%d", start, end - 1, maxLen);
+        }
+        
+        public boolean equals(Object obj) {
+            if (obj == null || !(obj instanceof RangeRange))
+                return false;
+            return this.start == ((RangeRange)obj).start && this.end == ((RangeRange)obj).end;
+        }
+
+        public int compareTo(RangeRange other) {
+            if (this.start > other.start)
+                return 1;
+            if (this.start < other.start)
+                return -1;
+            return 0;
+        }
     }
 
     public static final boolean parseRange(String rangeStr, List<RangeRange> rs, long maxSize) {
@@ -275,15 +292,26 @@ public class RawView implements View {
                 return false;
             }
         }
+        if (rs.size() > 1)
+            Collections.sort(rs);
         return !rs.isEmpty();
+    }
+    
+    public static void writeDownloadRange(DataInputStream in,
+                                          OutputStream out,
+                                          RangeRange rangeRange) {
+        writeDownloadRange(in, out, rangeRange, null);
     }
 
     public static void writeDownloadRange(DataInputStream in,
                                           OutputStream out,
-                                          RangeRange rangeRange) {
+                                          RangeRange rangeRange,
+                                          RangeRange preRangeRange) {
         try {
             if (rangeRange.start > 0) {
                 long start = rangeRange.start;
+                if (preRangeRange != null)
+                    start -= preRangeRange.end;
                 while (start > 0) {
                     if (start > big4G) {
                         start -= big4G;
@@ -295,14 +323,13 @@ public class RawView implements View {
                 }
             }
             byte[] buf = new byte[8192];
-            BufferedInputStream bin = new BufferedInputStream(in);
             long pos = rangeRange.start;
             int len = 0;
             while (pos < rangeRange.end) {
                 if (rangeRange.end - pos > 8192) {
-                    len = bin.read(buf);
+                    len = in.read(buf);
                 } else {
-                    len = bin.read(buf, 0, (int) (rangeRange.end - pos));
+                    len = in.read(buf, 0, (int) (rangeRange.end - pos));
                 }
                 if (len == -1) {// 有时候,非常巧合的,文件已经读取完,就悲剧开始了...
                     break;
