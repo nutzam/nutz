@@ -7,6 +7,7 @@ import java.util.Date;
 import org.junit.Test;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Times;
+import org.nutz.lang.util.NutMap;
 
 public class TmplTest {
 
@@ -95,6 +96,7 @@ public class TmplTest {
         String sd = Times.format("yyyy-MM-dd'T'HH:mm:ss", d);
         assertEquals(sd, Tmpl.exec("${d<date>}", Lang.mapf("d:%s", ms)));
         assertEquals(Times.sD(d), Tmpl.exec("${d<date:yyyy-MM-dd>}", Lang.mapf("d:'%s'", sd)));
+        assertEquals("", Tmpl.exec("${xyz<date:yyyy-MM-dd>?}", new NutMap()));
     }
 
     @Test
