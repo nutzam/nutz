@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.nutz.lang.Lang;
 
@@ -50,14 +51,16 @@ public class NutMapTest {
         assertEquals("s1", sList2.get(0));
     }
 
+    @SuppressWarnings("unchecked")
+    @Ignore
     @Test
     public void test_add_string2() {
         NutMap nutMap = new NutMap();
         List<String> sList = new ArrayList<String>();
         nutMap.setv("sList", sList);
-        List<String> sList2 = nutMap.getList("sList", String.class);
+        List<String> sList2 = nutMap.getAs("sList", List.class);
         sList2.add("s1");
-        List<String> sList3 = nutMap.getList("sList", String.class);
+        List<String> sList3 = nutMap.getAs("sList", List.class);
         assertEquals("s1", sList3.get(0));
     }
 
@@ -75,16 +78,17 @@ public class NutMapTest {
         assertEquals("s1", sList3.get(0).getString("nm"));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void test_add_nutmap2() {
         NutMap nutMap = new NutMap();
         List<NutMap> sList = new ArrayList<NutMap>();
         nutMap.setv("sList", sList);
         // 获取list，添加内容
-        List<NutMap> sList2 = nutMap.getList("sList", NutMap.class);
+        List<NutMap> sList2 = nutMap.getAs("sList", List.class);
         sList2.add(new NutMap().setv("nm", "s1"));
         // 再获取看看
-        List<NutMap> sList3 = nutMap.getList("sList", NutMap.class);
+        List<NutMap> sList3 = nutMap.getAs("sList", List.class);
         assertEquals("s1", sList3.get(0).getString("nm"));
     }
 
