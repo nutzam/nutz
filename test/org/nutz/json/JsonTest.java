@@ -55,6 +55,67 @@ import org.nutz.lang.util.PType;
 @SuppressWarnings({"unchecked"})
 public class JsonTest {
 
+    @ObjectShape
+    public static enum TT {
+
+        T("t", 1);
+        String name;
+
+        int index;
+
+        /**
+         * @param name
+         * @param index
+         */
+        private TT(String name, int index) {
+            this.name = name;
+            this.index = index;
+        }
+
+        /**
+         * @return the name
+         */
+        public String getName() {
+            return name;
+        }
+
+        /**
+         * @param name
+         *            the name to set
+         */
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        /**
+         * @return the index
+         */
+        public int getIndex() {
+            return index;
+        }
+
+        /**
+         * @param index
+         *            the index to set
+         */
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+    }
+
+    @ObjectShape
+    public static enum K {
+        K, T
+    }
+
+    @Test
+    public void test_enum() {
+        assertEquals("\"K\"", Json.toJson(K.K));
+        String expected = "{\n" + "   \"name\": \"t\",\n" + "   \"index\": 1\n" + "}";
+        assertEquals(expected, Json.toJson(TT.T));
+    }
+
     @Test
     public void test_eval_radix() {
         assertEquals(0700, Json.fromJson(NutMap.class, "{x:0700}").getInt("x"));
@@ -359,7 +420,7 @@ public class JsonTest {
                                                 getFileAsInputStreamReader("org/nutz/json/map.txt"));
         assertEquals("value1", map.get("a1"));
         assertEquals(35, map.get("a2"));
-        assertEquals((double) 4.7, map.get("a3"));
+        assertEquals(4.7, map.get("a3"));
         Map<?, ?> m1 = (Map<?, ?>) map.get("m1");
         assertEquals(12, m1.get("x"));
         assertEquals(45, m1.get("y"));
@@ -919,7 +980,9 @@ public class JsonTest {
         System.out.println(Json.fromJson(str));
         List<Map<String, Pet>> list = (List<Map<String, Pet>>) Json.fromJson(NutType.list(NutType.map(String.class,
                                                                                                       Pet.class)),
-                                                                             str/* 其他源也可以 */);
+                                                                             str/*
+                                                                                 * 其他源也可以
+                                                                                 */);
         System.out.println(list);
         assertEquals(80, list.get(0).get("dongdong").getAge());
     }
@@ -940,7 +1003,7 @@ public class JsonTest {
         assertEquals(a, str);
         System.out.println(str);
     }
-    
+
     @Test
     public void test_date_formt() {
         JsonFormat jf = Json.fromJson(JsonFormat.class, "{dateFormat:'yyyyMMhh'}");
@@ -985,6 +1048,7 @@ public class JsonTest {
     public void test_json_all_string() throws IOException {
         StringWriter sw = new StringWriter();
         new JsonRenderImpl(sw, JsonFormat.compact()) {
+            @Override
             public void render(Object value) throws IOException {
                 if (value != null && value instanceof Number) {
                     getWriter().write(Json.toJson(value.toString()));
@@ -1023,7 +1087,7 @@ public class JsonTest {
         System.out.println(json_str);
         assertEquals("{\"xx\":\"\"}", json_str);
     }
-    
+
     @Test
     public void test_json_nullStringAsEmtry() throws IOException {
         Pet pet = Pet.create(null);
@@ -1032,13 +1096,11 @@ public class JsonTest {
         String json_str = Json.toJson(pet, jsonFormat);
         System.out.println(json_str);
     }
-    
 
     @Test
     public void test_json_08() throws IOException {
         assertEquals(8, Json.fromJson(NutMap.class, "{id:08}").getInt("id"));
     }
-    
 
     @Test
     public void test_issue_1285() throws IOException {
