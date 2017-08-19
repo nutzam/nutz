@@ -31,7 +31,7 @@ import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.http.Request.METHOD;
 import org.nutz.ioc.meta.IocValue;
-import org.nutz.json.Shape.Type;
+import org.nutz.json.JsonShape.Type;
 import org.nutz.json.impl.JsonRenderImpl;
 import org.nutz.json.meta.Issue1199;
 import org.nutz.json.meta.JA;
@@ -56,7 +56,7 @@ import org.nutz.lang.util.PType;
 @SuppressWarnings({"unchecked"})
 public class JsonTest {
 
-    @Shape(Type.OBJECT)
+    @JsonShape(Type.OBJECT)
     public static enum TT {
 
         T("t", 1);
@@ -105,7 +105,7 @@ public class JsonTest {
 
     }
 
-    @Shape
+    @JsonShape
     public static enum K {
         K, T
     }
