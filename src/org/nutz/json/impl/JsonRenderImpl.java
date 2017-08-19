@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.json.JsonRender;
+import org.nutz.json.ObjectShape;
 import org.nutz.json.entity.JsonEntity;
 import org.nutz.json.entity.JsonEntityField;
 import org.nutz.lang.FailToGetValueException;
@@ -43,13 +44,14 @@ public class JsonRenderImpl implements JsonRender {
     private Writer writer;
 
     private Set<Object> memo = new HashSet<Object>();
-    
+
     private boolean compact;
 
     public JsonFormat getFormat() {
         return format;
     }
 
+    @Override
     public void setFormat(JsonFormat format) {
         this.format = format;
         this.compact = format.isCompact();
@@ -59,10 +61,12 @@ public class JsonRenderImpl implements JsonRender {
         return writer;
     }
 
+    @Override
     public void setWriter(Writer writer) {
         this.writer = writer;
     }
 
+    @Override
     public void render(Object obj) throws IOException {
         if (null == obj) {
             appendNull();
@@ -76,7 +80,11 @@ public class JsonRenderImpl implements JsonRender {
             Mirror mr = Mirror.me(obj.getClass());
             // 枚举
             if (mr.isEnum()) {
-                string2Json(((Enum) obj).name());
+                if (mr.getAnnotation(ObjectShape.class) != null && !Lang.obj2map(obj).isEmpty()) {
+                    map2Json(Lang.obj2map(obj));
+                } else {
+                    string2Json(((Enum) obj).name());
+                }
             }
             // 数字，布尔等
             else if (mr.isNumber()) {
@@ -85,11 +93,9 @@ public class JsonRenderImpl implements JsonRender {
                     // TODO 怎样才能应用上JsonFormat中是否忽略控制呢?
                     // 因为此时已经写入了key:
                     writer.write("null");
-                }
-                else
+                } else
                     writer.write(tmp);
-            }
-            else if (mr.isBoolean()) {
+            } else if (mr.isBoolean()) {
                 writer.append(obj.toString());
             }
             // 字符串
@@ -100,7 +106,7 @@ public class JsonRenderImpl implements JsonRender {
             else if (mr.isDateTimeLike()) {
                 boolean flag = true;
                 if (obj instanceof Date) {
-                    String _val = doDateFormat((Date)obj, null);
+                    String _val = doDateFormat((Date) obj, null);
                     if (_val != null) {
                         string2Json(_val);
                         flag = false;
@@ -164,8 +170,7 @@ public class JsonRenderImpl implements JsonRender {
         writer.append(!compact ? ": " : ":");
     }
 
-    protected void appendPair(boolean needPairEnd, String name, Object value)
-            throws IOException {
+    protected void appendPair(boolean needPairEnd, String name, Object value) throws IOException {
         appendPairBegin();
         appendName(name);
         appendPairSep();
@@ -217,8 +222,7 @@ public class JsonRenderImpl implements JsonRender {
         ArrayList<Pair> list = new ArrayList<Pair>(map.size());
         Set<Entry<?, ?>> entrySet = map.entrySet();
         for (Entry entry : entrySet) {
-            String name = null == entry.getKey() ? "null" : entry.getKey()
-                                                                 .toString();
+            String name = null == entry.getKey() ? "null" : entry.getKey().toString();
             Object value = entry.getValue();
             if (!this.isIgnore(name, value))
                 list.add(new Pair(name, value));
@@ -241,8 +245,7 @@ public class JsonRenderImpl implements JsonRender {
                 if (toJsonMethod.getParameterTypes().length == 0) {
                     writer.append(String.valueOf(toJsonMethod.invoke(obj)));
                 } else {
-                    writer.append(String.valueOf(toJsonMethod.invoke(obj,
-                                                                     format)));
+                    writer.append(String.valueOf(toJsonMethod.invoke(obj, format)));
                 }
                 return;
             }
@@ -278,16 +281,13 @@ public class JsonRenderImpl implements JsonRender {
                         if (mirror.isStringLike()) {
                             if (format.isNullStringAsEmpty())
                                 value = "";
-                        }
-                        else if (mirror.isNumber()) {
+                        } else if (mirror.isNumber()) {
                             if (format.isNullNumberAsZero())
                                 value = 0;
-                        }
-                        else if (mirror.isCollection()) {
+                        } else if (mirror.isCollection()) {
                             if (format.isNullListAsEmpty())
                                 value = Collections.EMPTY_LIST;
-                        }
-                        else if (jef.getGenericType() == Boolean.class) {
+                        } else if (jef.getGenericType() == Boolean.class) {
                             if (format.isNullBooleanAsFalse())
                                 value = false;
                         }
@@ -305,8 +305,7 @@ public class JsonRenderImpl implements JsonRender {
                         }
                         // 集合
                         else if (value instanceof Collection) {
-                            Collection col = (Collection) Mirror.me(value)
-                                                                .born();
+                            Collection col = (Collection) Mirror.me(value).born();
                             for (Object ele : (Collection) value) {
                                 col.add(ele.toString());
                             }
@@ -317,13 +316,12 @@ public class JsonRenderImpl implements JsonRender {
                             value = value2string(jef, value);
                         }
                     } else if (jef.hasDataFormat() && value instanceof Date) {
-                        value = jef.getDataFormat().format((Date)value);
+                        value = jef.getDataFormat().format(value);
                     } else if (jef.hasDataFormat() && (mirror != null && mirror.isNumber())) {
                         value = jef.getDataFormat().format(value);
                     }
                 }
-                
-                
+
                 // 加入输出列表 ...
                 list.add(new Pair(name, value));
             }
@@ -374,11 +372,11 @@ public class JsonRenderImpl implements JsonRender {
                     writer.append("\\r");
                     break;
                 case '\f':
-                	writer.append("\\f");
-                	break;
+                    writer.append("\\f");
+                    break;
                 case '\b':
-                	writer.append("\\b");
-                	break;
+                    writer.append("\\b");
+                    break;
                 case '\\':
                     writer.append("\\\\");
                     break;
@@ -387,13 +385,13 @@ public class JsonRenderImpl implements JsonRender {
                         writer.append("\\u");
                         String u = Strings.fillHex(c, 4);
                         if (format.isUnicodeLower())
-                        	writer.write(u.toLowerCase());
+                            writer.write(u.toLowerCase());
                         else
-                        	writer.write(u.toUpperCase());
-                    }
-                    else {
-                        if (c < ' ' || (c >= '\u0080' && c < '\u00a0')
-                                || (c >= '\u2000' && c < '\u2100')) {
+                            writer.write(u.toUpperCase());
+                    } else {
+                        if (c < ' '
+                            || (c >= '\u0080' && c < '\u00a0')
+                            || (c >= '\u2000' && c < '\u2100')) {
                             writer.write("\\u");
                             String hhhh = Integer.toHexString(c);
                             writer.write("0000", 0, 4 - hhhh.length());
@@ -437,37 +435,37 @@ public class JsonRenderImpl implements JsonRender {
     }
 
     protected String value2string(JsonEntityField jef, Object value) {
-        
+
         Format df = jef.getDataFormat();
         if (df == null) {
             Mirror mirror = Mirror.me(value);
             if (value instanceof Date) {
                 df = format.getDateFormat();
-            }else if (mirror.isNumber()) {
+            } else if (mirror.isNumber()) {
                 df = format.getNumberFormat();
             }
         }
         if (df != null) {
             if (df instanceof DateFormat)
-                return doDateFormat((Date)value, (DateFormat)df);
+                return doDateFormat((Date) value, (DateFormat) df);
             return df.format(value);
         }
         return value.toString();
     }
-    
+
     protected void doIntent() throws IOException {
         int idt = format.getIndent();
         for (int i = 0; i < idt; i++)
             writer.write(format.getIndentBy());
     }
-    
+
     protected void appendNull() throws IOException {
         if (format.isNullAsEmtry())
             writer.write("\"\"");
         else
             writer.write("null");
     }
-    
+
     protected String doDateFormat(Date date, DateFormat df) {
         if (df == null)
             df = format.getDateFormat();
