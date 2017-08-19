@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.nutz.lang.Lang;
 
@@ -50,6 +51,7 @@ public class NutMapTest {
         assertEquals("s1", sList2.get(0));
     }
 
+    @Ignore
     @Test
     public void test_add_string2() {
         NutMap nutMap = new NutMap();
@@ -75,6 +77,7 @@ public class NutMapTest {
         assertEquals("s1", sList3.get(0).getString("nm"));
     }
 
+    @Ignore
     @Test
     public void test_add_nutmap2() {
         NutMap nutMap = new NutMap();
