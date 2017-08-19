@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.json.JsonRender;
-import org.nutz.json.Shape;
+import org.nutz.json.JsonShape;
 import org.nutz.json.entity.JsonEntity;
 import org.nutz.json.entity.JsonEntityField;
 import org.nutz.lang.FailToGetValueException;
@@ -81,7 +81,7 @@ public class JsonRenderImpl implements JsonRender {
             Mirror mr = Mirror.me(obj.getClass());
             // 枚举
             if (mr.isEnum()) {
-                Shape shape = Mirror.getAnnotationDeep(mr.getType(), Shape.class);
+                JsonShape shape = Mirror.getAnnotationDeep(mr.getType(), JsonShape.class);
                 if (shape == null) {
                     string2Json(((Enum) obj).name());
                 } else {
