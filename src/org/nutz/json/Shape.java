@@ -13,6 +13,12 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 @Documented
-public @interface ObjectShape {
+public @interface Shape {
+
+    Type value() default Type.NAME;
+
+    public static enum Type {
+        ORDINAL, NAME, OBJECT
+    }
 
 }

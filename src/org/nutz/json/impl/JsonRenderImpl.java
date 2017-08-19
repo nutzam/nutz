@@ -21,13 +21,14 @@ import java.util.regex.Pattern;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.json.JsonRender;
-import org.nutz.json.ObjectShape;
+import org.nutz.json.Shape;
 import org.nutz.json.entity.JsonEntity;
 import org.nutz.json.entity.JsonEntityField;
 import org.nutz.lang.FailToGetValueException;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.NutMap;
 
 /**
  * @author zozoh(zozohtnt@gmail.com)
@@ -80,10 +81,26 @@ public class JsonRenderImpl implements JsonRender {
             Mirror mr = Mirror.me(obj.getClass());
             // 枚举
             if (mr.isEnum()) {
-                if (mr.getAnnotation(ObjectShape.class) != null && !Lang.obj2map(obj).isEmpty()) {
-                    map2Json(Lang.obj2map(obj));
-                } else {
+                Shape shape = Mirror.getAnnotationDeep(mr.getType(), Shape.class);
+                if (shape == null) {
                     string2Json(((Enum) obj).name());
+                } else {
+                    switch (shape.value()) {
+                    case ORDINAL:
+                        writer.append(String.valueOf(((Enum) obj).ordinal()));
+                        break;
+                    case OBJECT:
+                        NutMap map = Lang.obj2nutmap(obj);
+                        if (map.isEmpty()) {
+                            string2Json(((Enum) obj).name());
+                        } else {
+                            map2Json(map);
+                        }
+                        break;
+                    default:
+                        string2Json(((Enum) obj).name());
+                        break;
+                    }
                 }
             }
             // 数字，布尔等
