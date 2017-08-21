@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.nutz.lang.util.Callback2;
 import org.nutz.lang.util.NutMap;
+import org.nutz.lang.util.Tag;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -555,20 +557,43 @@ public abstract class Xmls {
     }
     
     public static String mapToXml(String root, Map<String, Object> map) {
-        StringBuilder sb = new StringBuilder("<"+root+">");
+        StringBuilder sb = new StringBuilder();
+        map2Tag(root, map).toXml(sb, 0);
+        return sb.toString();
+    }
+    
+    protected static Tag map2Tag(String rootName, Map<String, Object> map) {
+        Tag rootTag = Tag.tag(rootName);
         for (Map.Entry<String, Object> en : map.entrySet()) {
             String key = en.getKey();
             Object val = en.getValue();
-            if (null == val)
-                continue;
-            sb.append("\n<").append(key).append('>');
-            sb.append(val.toString());
-            sb.append("</").append(key).append('>');
+            List<Tag> children = obj2tag(key, val);
+            for (Tag child : children) {
+                rootTag.add(child);
+            }
         }
-        sb.append("\n</"+root+">");
-        return sb.toString();
+        return rootTag;
     }
-
+    
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static List<Tag> obj2tag(String nodeName, Object val) {
+        List<Tag> tags = new ArrayList<Tag>();
+        if (null == val)
+            return tags;
+        if (val instanceof Map) {
+            tags.add(map2Tag(nodeName, (Map<String, Object>) val));
+        } else if (val instanceof Collection) {
+            for (Object object : (Collection)val) {
+                for (Tag tag : obj2tag(nodeName, object)) {
+                    tags.add(tag);
+                }
+            }
+        } else {
+            tags.add(Tag.tag(nodeName).setText(val.toString()));
+        }
+        return tags;
+    }
+    
     /**
      * 从一个 XML 元素开始，根据一条 XPath 获取一组元素
      * 
