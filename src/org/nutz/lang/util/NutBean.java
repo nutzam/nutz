@@ -61,6 +61,8 @@ public interface NutBean extends Map<String, Object> {
 
     <T> T getAs(String key, Class<T> classOfT, T dft);
 
+    <T> List<T> getAsList(String key, Class<T> eleType);
+
     /**
      * 将一个字段转换成列表。因为返回的是容器，所以本函数永远不会返回 null
      * 
