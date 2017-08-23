@@ -81,11 +81,6 @@ public class JsonFormat implements Cloneable {
         this.castors = Castors.me();
         this.separator = '\"';
     }
-
-    /**
-     * 缩进
-     */
-    private int indent;
     /**
      * 缩进时用的字符串
      */
@@ -190,22 +185,23 @@ public class JsonFormat implements Cloneable {
         return this;
     }
 
+    @Deprecated
     public int getIndent() {
-        return indent;
+        return 0;
     }
 
+    @Deprecated
     public JsonFormat setIndent(int indent) {
-        this.indent = indent;
         return this;
     }
 
+    @Deprecated
     public JsonFormat increaseIndent() {
-        this.indent++;
         return this;
     }
 
+    @Deprecated
     public JsonFormat decreaseIndent() {
-        this.indent--;
         return this;
     }
 
@@ -437,7 +433,6 @@ public class JsonFormat implements Cloneable {
      */
     public JsonFormat clone() {
         JsonFormat jf = new JsonFormat();
-        jf.indent = this.indent;
         jf.indentBy = this.indentBy;
         jf.compact = this.compact;
         jf.quoteName = this.quoteName;

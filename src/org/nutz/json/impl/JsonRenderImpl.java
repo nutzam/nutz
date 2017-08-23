@@ -47,6 +47,11 @@ public class JsonRenderImpl implements JsonRender {
     private Set<Object> memo = new HashSet<Object>();
 
     private boolean compact;
+    
+    /**
+     * 缩进
+     */
+    private int indent;
 
     public JsonFormat getFormat() {
         return format;
@@ -359,12 +364,12 @@ public class JsonRenderImpl implements JsonRender {
 
     private void decreaseFormatIndent() {
         if (!compact)
-            format.decreaseIndent();
+            indent--;
     }
 
     private void increaseFormatIndent() {
         if (!compact)
-            format.increaseIndent();
+            indent++;
     }
 
     private void string2Json(String s) throws IOException {
@@ -471,8 +476,7 @@ public class JsonRenderImpl implements JsonRender {
     }
 
     protected void doIntent() throws IOException {
-        int idt = format.getIndent();
-        for (int i = 0; i < idt; i++)
+        for (int i = 0; i < indent; i++)
             writer.write(format.getIndentBy());
     }
 
