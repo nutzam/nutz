@@ -465,6 +465,17 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         return null == v ? dft : Castors.me().castTo(v, classOfT);
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public <T> List<T> getAsList(String key, Class<T> eleType) {
+        Object v = get(key);
+        if (null == v)
+            return null;
+        return (List) v;
+    }
+
+    /**
+     * @see #getList(String, Class, List)
+     */
     public <T> List<T> getList(String key, final Class<T> eleType) {
         return getList(key, eleType, new ArrayList<T>());
     }
