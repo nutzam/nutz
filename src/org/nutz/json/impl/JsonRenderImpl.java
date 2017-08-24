@@ -3,7 +3,6 @@ package org.nutz.json.impl;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Array;
-import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.Format;
 import java.util.ArrayList;
@@ -24,6 +23,7 @@ import org.nutz.json.JsonRender;
 import org.nutz.json.JsonShape;
 import org.nutz.json.entity.JsonEntity;
 import org.nutz.json.entity.JsonEntityField;
+import org.nutz.json.entity.JsonCallback;
 import org.nutz.lang.FailToGetValueException;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -261,19 +261,10 @@ public class JsonRenderImpl implements JsonRender {
          */
         Class<?> type = obj.getClass();
         JsonEntity jen = Json.getEntity(Mirror.me(type));
-        Method toJsonMethod = jen.getToJsonMethod();
-        if (toJsonMethod != null) {
-            try {
-                if (toJsonMethod.getParameterTypes().length == 0) {
-                    writer.append(String.valueOf(toJsonMethod.invoke(obj)));
-                } else {
-                    writer.append(String.valueOf(toJsonMethod.invoke(obj, format)));
-                }
+        JsonCallback jsonCallback = jen.getJsonCallback();
+        if (jsonCallback != null) {
+            if (jsonCallback.toJson(obj, format, writer, null))
                 return;
-            }
-            catch (Exception e) {
-                throw Lang.wrapThrow(e);
-            }
         }
         List<JsonEntityField> fields = jen.getFields();
         appendBraceBegin();
