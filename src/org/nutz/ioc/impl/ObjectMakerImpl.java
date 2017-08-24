@@ -93,7 +93,7 @@ public class ObjectMakerImpl implements ObjectMaker {
                     if (iobj.getType() == null)
                         iobj.setType(m.getReturnType());
                 }
-                if (iobj.getType() == null)
+                if (iobj.getType() != null)
                     mirror = ing.getMirrors().getMirror(iobj.getType(), ing.getObjectName());
             } else {
                 mirror = ing.getMirrors().getMirror(iobj.getType(), ing.getObjectName());
