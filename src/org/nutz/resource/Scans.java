@@ -242,11 +242,17 @@ public class Scans {
                     log.debug("Fail to run deep scan!", e);
             }
             // 依然是空?
-            if (list.isEmpty()) {
+            if (list.isEmpty() && !src.endsWith("/")) {
                 try {
-                    InputStream ins = getClass().getClassLoader().getResourceAsStream(src);
-                    if (ins != null) {
-                        list.add(new SimpleResource(src, src, ins));
+                    ClassLoader classLoader = getClass().getClassLoader();
+                    InputStream tmp = classLoader.getResourceAsStream(src + "/");
+                    if (tmp != null) {
+                        tmp.close();
+                    } else {
+                        InputStream ins = classLoader.getResourceAsStream(src);
+                        if (ins != null) {
+                            list.add(new SimpleResource(src, src, ins));
+                        }
                     }
                 }
                 catch (Exception e) {

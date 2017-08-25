@@ -1,13 +1,17 @@
 package org.nutz.json.entity;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.nutz.json.Json;
 import org.nutz.json.JsonEntityFieldMaker;
+import org.nutz.json.JsonException;
 import org.nutz.json.JsonFormat;
 import org.nutz.json.ToJson;
 import org.nutz.lang.Lang;
@@ -15,6 +19,7 @@ import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.born.Borning;
 import org.nutz.lang.born.BorningException;
+import org.nutz.lang.util.NutMap;
 
 /**
  * 记录一个Java如何映射 JSON 字符串的规则
@@ -36,6 +41,8 @@ public class JsonEntity {
     private Method toJsonMethod;
     
     private JsonEntityFieldMaker fieldMaker;
+    
+    private JsonCallback jsonCallback;
 
     public JsonEntity(Mirror<?> mirror) {
         fieldMaker = Json.getDefaultFieldMaker();
@@ -90,6 +97,23 @@ public class JsonEntity {
         catch (Exception e) {
             throw Lang.wrapThrow(e);
         }
+        if (toJsonMethod != null) {
+            final int paramCount = toJsonMethod.getParameterTypes().length;
+            jsonCallback = new JsonCallback() {
+                public boolean toJson(Object obj, JsonFormat jf, Writer writer, NutMap ctx) throws IOException {
+                    try {
+                        if (paramCount == 0)
+                            writer.write((String)toJsonMethod.invoke(obj));
+                        else
+                            writer.write((String)toJsonMethod.invoke(obj, jf));
+                    }
+                    catch (Exception e) {
+                        throw new JsonException(err);
+                    }
+                    return true;
+                }
+            };
+        }
     }
 
     public List<JsonEntityField> getFields() {
@@ -106,8 +130,24 @@ public class JsonEntity {
         return fieldMap.get(name);
     }
     
+    public JsonCallback getJsonCallback() {
+        return jsonCallback;
+    }
+    
+    public void setJsonCallback(JsonCallback jsonCallback) {
+        this.jsonCallback = jsonCallback;
+    }
+    
+    public void setBorning(Borning<?> borning) {
+        this.borning = borning;
+    }
+    
+    @Deprecated
     public Method getToJsonMethod() {
         return toJsonMethod;
     }
-
+    
+    public Map<String, JsonEntityField> getFieldMap() {
+        return fieldMap;
+    }
 }
