@@ -30,10 +30,10 @@ public class TmplTest {
         assertEquals("{x:100,y:99}", Tmpl.exec("${a<json:c>}", Lang.map("a:{x:100,y:99}")));
         assertEquals("{\"x\":100,\"y\":99}",
                      Tmpl.exec("${a<json:cq>}", Lang.map("a:{x:100,y:99}")));
-        assertEquals("", Tmpl.exec("${a<json>?}", Lang.map("")));
+        assertEquals("\"\"", Tmpl.exec("${a<json>?}", Lang.map("")));
         assertEquals("[]", Tmpl.exec("${a<json>?[]}", Lang.map("")));
         assertEquals("{}", Tmpl.exec("${a<json>?-obj-}", Lang.map("")));
-        assertEquals("xyz", Tmpl.exec("${a<json>?-obj-}", Lang.map("a:'xyz'")));
+        assertEquals("\"xyz\"", Tmpl.exec("${a<json>?-obj-}", Lang.map("a:'xyz'")));
         assertEquals("{k:[3, true, \"a\"]}",
                      Tmpl.exec("${a<json:c>?-obj-}", Lang.map("a:{k:[3,true,'a']}")));
     }

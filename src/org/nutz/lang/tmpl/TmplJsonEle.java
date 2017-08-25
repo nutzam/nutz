@@ -2,6 +2,7 @@ package org.nutz.lang.tmpl;
 
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
+import org.nutz.lang.Strings;
 
 public class TmplJsonEle extends TmplDynamicEle {
 
@@ -26,7 +27,11 @@ public class TmplJsonEle extends TmplDynamicEle {
         if (val instanceof CharSequence) {
             if ("-obj-".equals(val))
                 return "{}";
-            return val.toString();
+            String s = Strings.trim(val.toString());
+            if (Strings.isQuoteBy(s, '[', ']'))
+                return s;
+            // zozoh 字符串还是应该转 JSON 吧
+            // return val.toString();
         }
 
         return Json.toJson(val, _fmt);
