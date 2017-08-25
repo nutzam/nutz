@@ -146,4 +146,8 @@ public class JsonEntity {
     public Method getToJsonMethod() {
         return toJsonMethod;
     }
+    
+    public Map<String, JsonEntityField> getFieldMap() {
+        return fieldMap;
+    }
 }
