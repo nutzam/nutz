@@ -21,6 +21,7 @@ import org.nutz.el.opt.logic.LTEOpt;
 import org.nutz.el.opt.logic.LTOpt;
 import org.nutz.el.opt.logic.NEQOpt;
 import org.nutz.el.opt.logic.NotOpt;
+import org.nutz.el.opt.logic.NullableOpt;
 import org.nutz.el.opt.logic.OrOpt;
 import org.nutz.el.opt.logic.QuestionOpt;
 import org.nutz.el.opt.logic.QuestionSelectOpt;
@@ -102,6 +103,9 @@ public class OptParse implements Parse {
             case '=':
                 exp.poll();
                 return new NEQOpt();
+            case '!':
+                exp.poll();
+                return new NullableOpt();
             }
             return new NotOpt();
         case '|':

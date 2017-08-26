@@ -26,6 +26,7 @@ import org.nutz.lang.Maths;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
+import org.nutz.lang.util.NutMap;
 import org.nutz.repo.Base64;
 
 public class El2Test {
@@ -580,5 +581,15 @@ public class El2Test {
     public void test_issue_1307() {
         //assertTrue((Boolean)El.eval("0 == 0"));
         assertTrue((Boolean)El.eval("0 == 0.0"));
+    }
+    
+    @Test
+    public void test_issue_1229() {
+        Context ctx = Lang.context();
+        ctx.set("obj", new NutMap("pet", null));
+        El.eval(ctx, "obj.pet");
+        El.eval(ctx, "!!(obj.pet)");
+        assertTrue((Boolean)El.eval(ctx, "!!(obj.pet.name) == null"));
+        assertTrue((Boolean)El.eval(ctx, "!(!(!!(obj.pet.name) == null))"));
     }
 }
