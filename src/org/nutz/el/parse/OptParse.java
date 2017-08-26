@@ -23,6 +23,7 @@ import org.nutz.el.opt.logic.NEQOpt;
 import org.nutz.el.opt.logic.NotOpt;
 import org.nutz.el.opt.logic.NullableOpt;
 import org.nutz.el.opt.logic.OrOpt;
+import org.nutz.el.opt.logic.OrOpt2;
 import org.nutz.el.opt.logic.QuestionOpt;
 import org.nutz.el.opt.logic.QuestionSelectOpt;
 import org.nutz.el.opt.object.ArrayOpt;
@@ -113,6 +114,10 @@ public class OptParse implements Parse {
             switch(exp.peek()){
             case '|':
                 exp.poll();
+                if (exp.peek() == '|') {
+                    exp.poll();
+                    return new OrOpt2();
+                }
                 return new OrOpt();
             }
             return new BitOr();
