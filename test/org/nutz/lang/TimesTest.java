@@ -16,6 +16,23 @@ public class TimesTest {
         assertEquals(e, Times.sDT(ds[1]));
     }
 
+    @Test
+    public void test_parse_str() {
+        _assert_parseTime("12:59", 12, 59, 0, 0);
+        _assert_parseTime("12:59:03", 12, 59, 3, 0);
+        _assert_parseTime("12:59:03.120", 12, 59, 3, 120);
+    }
+
+    private void _assert_parseTime(String ts, int h, int m, int s, int ms) {
+        Times.TmInfo ti = Times.Ti(ts);
+        assertEquals(h, ti.hour);
+        assertEquals(m, ti.minute);
+        assertEquals(s, ti.second);
+        assertEquals(ms, ti.millisecond);
+        assertEquals(h * 3600 + m * 60 + s, ti.value);
+        assertEquals(h * 3600000 + m * 60000 + s * 1000 + ms, ti.valueInMillisecond);
+    }
+
     /**
      * For issue #524 again
      */

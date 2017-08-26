@@ -76,45 +76,71 @@ public abstract class Times {
      */
     public static TmInfo Ti(int sec) {
         TmInfo ti = new TmInfo();
-        ti.hour = Math.min(23, sec / 3600);
-        ti.minute = Math.min(59, (sec - (ti.hour * 3600)) / 60);
-        ti.second = Math.min(59, sec - (ti.hour * 3600) - (ti.minute * 60));
-        ti.value = ti.hour * 3600 + ti.minute * 60 + ti.second;
+        ti.valueInMillisecond = (int) sec * 1000;
+        ti.__recound_by_valueInMilliSecond();
         return ti;
     }
+
+    /**
+     * 将一个毫秒数（天中），转换成一个时间对象:
+     * 
+     * @param ams
+     *            毫秒数
+     * @return 时间对象
+     */
+    public static TmInfo Tims(long ams) {
+        TmInfo ti = new TmInfo();
+        ti.valueInMillisecond = (int) ams;
+        ti.__recound_by_valueInMilliSecond();
+        return ti;
+    }
+
+    private static final Pattern _p_tm = Pattern.compile("^([0-9]{1,2}):([0-9]{1,2})(:([0-9]{1,2})([.,]([0-9]{1,3}))?)?$");
 
     /**
      * 将一个时间字符串，转换成一个一天中的绝对时间对象
      * 
      * @param ts
-     *            时间字符串，符合格式 "HH:mm:ss" 或者 "HH:mm"
+     *            时间字符串，符合格式
+     *            <ul>
+     *            <li>"HH:mm:ss"
+     *            <li>"HH:mm"
+     *            <li>"HH:mm:ss.SSS"
+     *            <li>"HH:mm:ss,SSS"
+     *            </ul>
      * @return 时间对象
      */
     public static TmInfo Ti(String ts) {
-        String[] tss = Strings.splitIgnoreBlank(ts, ":");
-        if (null != tss) {
+        Matcher m = _p_tm.matcher(ts);
+
+        if (m.find()) {
             TmInfo ti = new TmInfo();
             // 仅仅到分钟
-            if (tss.length == 2) {
-                int hh = Integer.parseInt(tss[0]);
-                int mm = Integer.parseInt(tss[1]);
-                ti.value = hh * 3600 + mm * 60;
-                ti.hour = hh;
-                ti.minute = mm;
+            if (null == m.group(3)) {
+                ti.hour = Integer.parseInt(m.group(1));
+                ti.minute = Integer.parseInt(m.group(2));
                 ti.second = 0;
-                return ti;
+                ti.millisecond = 0;
             }
             // 到秒
-            if (tss.length == 3) {
-                int hh = Integer.parseInt(tss[0]);
-                int mm = Integer.parseInt(tss[1]);
-                int ss = Integer.parseInt(tss[2]);
-                ti.value = hh * 3600 + mm * 60 + ss;
-                ti.hour = hh;
-                ti.minute = mm;
-                ti.second = ss;
-                return ti;
+            else if (null == m.group(5)) {
+                ti.hour = Integer.parseInt(m.group(1));
+                ti.minute = Integer.parseInt(m.group(2));
+                ti.second = Integer.parseInt(m.group(4));
+                ti.millisecond = 0;
             }
+            // 到毫秒
+            else {
+                ti.hour = Integer.parseInt(m.group(1));
+                ti.minute = Integer.parseInt(m.group(2));
+                ti.second = Integer.parseInt(m.group(4));
+                ti.millisecond = Integer.parseInt(m.group(6));
+            }
+            // 计算其他的值
+            ti.value = ti.hour * 3600 + ti.minute * 60 + ti.second;
+            ti.valueInMillisecond = ti.value * 1000 + ti.millisecond;
+            // 返回
+            return ti;
         }
         throw Lang.makeThrow("Wrong format of time string '%s'", ts);
     }
@@ -124,22 +150,50 @@ public abstract class Times {
      */
     public static class TmInfo {
         public int value;
+        public int valueInMillisecond;
         public int hour;
         public int minute;
         public int second;
+        public int millisecond;
+
+        public void offset(int sec) {
+            this.valueInMillisecond += sec * 1000;
+            this.__recound_by_valueInMilliSecond();
+        }
+
+        public void offsetInMillisecond(int ms) {
+            this.valueInMillisecond += ms;
+            this.__recound_by_valueInMilliSecond();
+        }
+
+        private void __recound_by_valueInMilliSecond() {
+            this.value = this.millisecond / 1000;
+            this.millisecond = this.valueInMillisecond - this.value;
+            this.hour = Math.min(23, this.value / 3600);
+            this.minute = Math.min(59, (this.value - (this.hour * 3600)) / 60);
+            this.second = Math.min(59, this.value - (this.hour * 3600) - (this.minute * 60));
+        }
 
         public String toString() {
-            return toString(false);
+            return toString(false, false);
         }
 
         public String toString(boolean ignoreZeroSecond) {
+            return toString(ignoreZeroSecond, false);
+        }
+
+        public String toString(boolean ignoreZeroSecond, boolean alwaysShowMillisecond) {
             String str = Strings.alignRight(hour, 2, '0')
                          + ":"
                          + Strings.alignRight(minute, 2, '0');
-            if (second == 0 && ignoreZeroSecond) {
+            if (ignoreZeroSecond && second == 0 && millisecond == 0) {
                 return str;
             }
-            return str + ":" + Strings.alignRight(second, 2, '0');
+            str += ":" + Strings.alignRight(second, 2, '0');
+            if (!alwaysShowMillisecond && millisecond == 0) {
+                return str;
+            }
+            return str + "," + Strings.alignRight(millisecond, 3, '0');
         }
     }
 
@@ -305,6 +359,18 @@ public abstract class Times {
      */
     public static int ms() {
         return ms(Calendar.getInstance());
+    }
+
+    /**
+     * 返回当前时间在一天中的毫秒数
+     * 
+     * @param str
+     *            时间字符串
+     * 
+     * @return 当前时间在一天中的毫秒数
+     */
+    public static int ms(String str) {
+        return Ti(str).valueInMillisecond;
     }
 
     /**
@@ -548,11 +614,22 @@ public abstract class Times {
      * 
      * @param sec
      *            秒数
-     * @return 格式为 HH:mm:ss 的字符串
+     * @return 格式为 HH:mm 的字符串
      */
     public static String sTmin(int sec) {
         int[] ss = T(sec);
         return Strings.alignRight(ss[0], 2, '0') + ":" + Strings.alignRight(ss[1], 2, '0');
+    }
+
+    /**
+     * 将一个毫秒秒数（天中），转换成一个格式为 HH:mm:ss,SSS 的字符串（精确到毫秒）
+     * 
+     * @param ams
+     *            当天毫秒数
+     * @return 格式为 HH:mm:ss,SSS 的字符串
+     */
+    public static String sTms(long ams) {
+        return Tims(ams).toString(false, true);
     }
 
     /**
