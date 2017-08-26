@@ -575,4 +575,10 @@ public class El2Test {
         Context context = Lang.context();
         El.eval(context, "a.b)*0.30");
     }
+    
+    @Test
+    public void test_issue_1307() {
+        //assertTrue((Boolean)El.eval("0 == 0"));
+        assertTrue((Boolean)El.eval("0 == 0.0"));
+    }
 }

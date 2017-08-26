@@ -195,13 +195,15 @@ public class ObjConvertImpl implements MaplConvert {
         JsonEntity jen = Json.getEntity(mirror);
         Object obj = null;
         JsonCallback callback = jen.getJsonCallback();
-        if (callback != null)
+        if (callback != null) {
             obj = callback.fromJson(model);
-        if (obj == null)
-            obj = mirror.born();
+            if (obj != null)
+                return obj;
+        }
+        obj = mirror.born();
         if (NutConf.USE_EL_IN_OBJECT_CONVERT)
             context.set(fetchPath(), obj);
-        Map<String, ?> map = (Map<String, ?>) model;
+        Map<String, Object> map = (Map<String, Object>) model;
         for (Entry<String, ?> en : map.entrySet()) {
             Object val = en.getValue();
             if (val == null)

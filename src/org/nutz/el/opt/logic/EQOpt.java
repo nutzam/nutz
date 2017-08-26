@@ -1,5 +1,7 @@
 package org.nutz.el.opt.logic;
 
+import java.math.BigDecimal;
+
 import org.nutz.el.opt.TwoTernary;
 
 /**
@@ -24,6 +26,9 @@ public class EQOpt extends TwoTernary {
 
         if (lval == rval) {
             return true;
+        }
+        if (lval instanceof Number && rval instanceof Number) {
+            return new BigDecimal(lval.toString()).compareTo(new BigDecimal(rval.toString())) == 0;
         }
         return lval.equals(rval);
     }
