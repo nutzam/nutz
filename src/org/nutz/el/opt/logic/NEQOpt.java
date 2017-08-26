@@ -5,14 +5,14 @@ package org.nutz.el.opt.logic;
  * @author juqkai(juqkai@gmail.com)
  *
  */
-public class NEQOpt extends EQOpt{
+public class NEQOpt extends AbstractCompareOpt {
     
     public int fetchPriority() {
         return 6;
     }
 
-    public Boolean calculate() {
-        return !super.calculate();
+    public Object calculate() {
+        return compare() != 0;
     }
 
     public String fetchSelf() {
