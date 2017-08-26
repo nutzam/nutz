@@ -15,7 +15,7 @@ public class EQOpt extends TwoTernary {
         return 7;
     }
 
-    public Object calculate() {
+    public Boolean calculate() {
         Object lval = calculateItem(this.left);
         Object rval = calculateItem(this.right);
         if (lval == null && rval == null)
@@ -28,7 +28,11 @@ public class EQOpt extends TwoTernary {
             return true;
         }
         if (lval instanceof Number && rval instanceof Number) {
-            return new BigDecimal(lval.toString()).compareTo(new BigDecimal(rval.toString())) == 0;
+            if (!(lval instanceof BigDecimal))
+                lval = new BigDecimal(lval.toString());
+            if (!(rval instanceof BigDecimal))
+                rval = new BigDecimal(rval.toString());
+            return ((BigDecimal)lval).compareTo((BigDecimal)rval) == 0;
         }
         return lval.equals(rval);
     }
