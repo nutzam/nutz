@@ -263,7 +263,7 @@ public class JsonRenderImpl implements JsonRender {
         JsonEntity jen = Json.getEntity(Mirror.me(type));
         JsonCallback jsonCallback = jen.getJsonCallback();
         if (jsonCallback != null) {
-            if (jsonCallback.toJson(obj, format, writer, null))
+            if (jsonCallback.toJson(obj, format, writer))
                 return;
         }
         List<JsonEntityField> fields = jen.getFields();

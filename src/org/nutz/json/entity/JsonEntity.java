@@ -19,7 +19,6 @@ import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.born.Borning;
 import org.nutz.lang.born.BorningException;
-import org.nutz.lang.util.NutMap;
 
 /**
  * 记录一个Java如何映射 JSON 字符串的规则
@@ -100,7 +99,7 @@ public class JsonEntity {
         if (toJsonMethod != null) {
             final int paramCount = toJsonMethod.getParameterTypes().length;
             jsonCallback = new JsonCallback() {
-                public boolean toJson(Object obj, JsonFormat jf, Writer writer, NutMap ctx) throws IOException {
+                public boolean toJson(Object obj, JsonFormat jf, Writer writer) throws IOException {
                     try {
                         if (paramCount == 0)
                             writer.write((String)toJsonMethod.invoke(obj));
@@ -111,6 +110,9 @@ public class JsonEntity {
                         throw new JsonException(err);
                     }
                     return true;
+                }
+                public Object fromJson(Object obj) {
+                    return null;
                 }
             };
         }
