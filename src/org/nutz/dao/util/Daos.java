@@ -450,7 +450,11 @@ public abstract class Daos {
      *            如果表存在,是否先删后建
      */
     public static void createTablesInPackage(final Dao dao, String packageName, boolean force) {
-        List<Class<?>> list = Scans.me().scanPackage(packageName);
+        List<Class<?>> list = new ArrayList<Class<?>>();
+        for(Class<?> klass: Scans.me().scanPackage(packageName)) {
+            if (klass.getAnnotation(Table.class) != null)
+                list.add(klass);
+        };
         Collections.sort(list, new Comparator<Class<?>>() {
             public int compare(Class<?> prev, Class<?> next) {
                 int links_prev = dao.getEntity(prev).getLinkFields(null).size();
