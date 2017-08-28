@@ -1204,4 +1204,8 @@ public interface Dao {
     <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd, Pager pager);
     
     EntityHolder getEntityHolder();
+    
+    void truncate(Class<?> klass);
+    
+    void truncate(String tableName);
 }

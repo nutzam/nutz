@@ -1203,4 +1203,19 @@ public class NutDao extends DaoSupport implements Dao {
         
         return insert(obj, FieldFilter.create(first.getClass(), actived));
     }
+    
+    @Override
+    public void truncate(Class<?> klass) {
+        Entity<?> en = getEntity(klass);
+        truncate(en.getTableName());
+    }
+    
+    @Override
+    public void truncate(String tableName) {
+        if (!exists(tableName))
+            return;
+        Sql sql = Sqls.createf("TRUNCATE TABLE %s", tableName);
+        _exec(sql);
+        return;
+    }
 }
