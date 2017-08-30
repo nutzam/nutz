@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -30,11 +32,9 @@ import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityIndex;
-import org.nutz.dao.entity.LinkField;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.annotation.Table;
 import org.nutz.dao.impl.NutDao;
-import org.nutz.dao.impl.entity.field.ManyManyLinkField;
 import org.nutz.dao.impl.sql.SqlFormat;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.jdbc.Jdbcs;
@@ -449,26 +449,24 @@ public abstract class Daos {
      * @param force
      *            如果表存在,是否先删后建
      */
-    public static void createTablesInPackage(Dao dao, String packageName, boolean force) {
+    public static void createTablesInPackage(final Dao dao, String packageName, boolean force) {
         List<Class<?>> list = new ArrayList<Class<?>>();
-        OUT: for (Class<?> klass : Scans.me().scanPackage(packageName)) {
-            if (klass.getAnnotation(Table.class) != null) {
-                Entity<?> en = dao.getEntity(klass);
-                List<LinkField> tmp = en.getLinkFields(null);
-                if (tmp != null && tmp.size() > 0) {
-                    for (LinkField lf : tmp) {
-                        if (lf instanceof ManyManyLinkField) {
-                            list.add(0, klass); // 优先建立带@ManyMany的表
-                            continue OUT;
-                        }
-                    }
-                }
+        for(Class<?> klass: Scans.me().scanPackage(packageName)) {
+            if (klass.getAnnotation(Table.class) != null)
                 list.add(klass);
+        };
+        Collections.sort(list, new Comparator<Class<?>>() {
+            public int compare(Class<?> prev, Class<?> next) {
+                int links_prev = dao.getEntity(prev).getLinkFields(null).size();
+                int links_next = dao.getEntity(next).getLinkFields(null).size();
+                if (links_prev == links_next)
+                    return 0;
+                return links_prev > links_next ? 1 : -1;
             }
-        }
-        for (Class<?> klass : list) {
+            
+        });
+        for (Class<?> klass : list)
             dao.create(klass, force);
-        }
     }
 
     /**
