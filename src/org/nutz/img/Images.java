@@ -792,8 +792,9 @@ public class Images {
      *            质量 0.1f ~ 1.0f
      */
     public static void writeJpeg(RenderedImage im, Object targetJpg, float quality) {
+        ImageWriter writer = null;
         try {
-            ImageWriter writer = ImageIO.getImageWritersBySuffix("jpg").next();
+            writer = ImageIO.getImageWritersBySuffix("jpg").next();
             ImageWriteParam param = writer.getDefaultWriteParam();
             param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
             param.setCompressionQuality(quality);
@@ -805,6 +806,14 @@ public class Images {
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);
+        }
+        finally {
+            if (writer != null) {
+                try {
+                    writer.dispose();
+                } catch (Throwable e) {
+                }
+            }
         }
     }
 
@@ -827,15 +836,22 @@ public class Images {
         }
         if (reader == null)
             return null;
-        ImageInputStream input = ImageIO.createImageInputStream(in);
-        reader.setInput(input);
-        // Read the image raster
-        Raster raster = reader.readRaster(0, null);
-        BufferedImage image = createJPEG4(raster);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeJpeg(image, out, 1);
-        out.flush();
-        return read(new ByteArrayInputStream(out.toByteArray()));
+        try {
+            ImageInputStream input = ImageIO.createImageInputStream(in);
+            reader.setInput(input);
+            // Read the image raster
+            Raster raster = reader.readRaster(0, null);
+            BufferedImage image = createJPEG4(raster);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            writeJpeg(image, out, 1);
+            out.flush();
+            return read(new ByteArrayInputStream(out.toByteArray()));
+        } finally {
+            try {
+                reader.dispose();
+            } catch (Throwable e) {
+            }
+        }
     }
 
     /**
