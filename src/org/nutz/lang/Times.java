@@ -183,9 +183,7 @@ public abstract class Times {
         }
 
         public String toString(boolean ignoreZeroSecond, boolean alwaysShowMillisecond) {
-            String str = Strings.alignRight(hour, 2, '0')
-                         + ":"
-                         + Strings.alignRight(minute, 2, '0');
+            String str = toMinuteString();
             if (ignoreZeroSecond && second == 0 && millisecond == 0) {
                 return str;
             }
@@ -194,6 +192,13 @@ public abstract class Times {
                 return str;
             }
             return str + "," + Strings.alignRight(millisecond, 3, '0');
+        }
+
+        public String toMinuteString() {
+            String str = Strings.alignRight(hour, 2, '0')
+                         + ":"
+                         + Strings.alignRight(minute, 2, '0');
+            return str;
         }
     }
 
