@@ -147,4 +147,12 @@ public class AdaptorTestModule extends BaseWebappTest {
     public Object issue1277(@Param("..")Issue1277 issue) {
         return issue;
     }
+    
+
+    @At("/issue1310")
+    @Ok("json")
+    @AdaptBy(type=PairAdaptor.class)
+    public Object issue1310(@Param("::")Issue1277 issue) {
+        return issue;
+    }
 }

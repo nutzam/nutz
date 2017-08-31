@@ -1,26 +1,24 @@
 package org.nutz.mvc.adaptor.injector;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.nutz.lang.Lang;
 import org.nutz.lang.util.NutType;
 import org.nutz.mock.Mock;
 import org.nutz.mock.servlet.MockHttpServletRequest;
+import org.nutz.mvc.adaptor.meta.Pet;
 
 /**
  * 
  * @author juqkai(juqkai@gmail.com)
  *
  */
-public class ObjectNavlPairInjectorTest {
+public class ObjectNavlPairInjectorTest extends Assert {
 
     public static ObjectNavlPairInjector inj() {
         return new ObjectNavlPairInjector("pojo", MvcTestPojo.class);
@@ -205,4 +203,15 @@ public class ObjectNavlPairInjectorTest {
         assertTrue(pojo[0].str.contains("a"));
     }
 
+    @Test
+    public void testEmtryPrefix() throws NoSuchFieldException{
+        //准备数据
+        MockHttpServletRequest req = Mock.servlet.request();
+        req.setParameter("name", "wendal");
+        ObjectNavlPairInjector onpi = inj("", Pet.class);
+        //执行
+        Pet pet =  (Pet) onpi.get(null, req, null, null);
+        assertNotNull(pet);
+        assertEquals("wendal", pet.getName());
+    }
 }

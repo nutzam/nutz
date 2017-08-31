@@ -54,8 +54,10 @@ public class PairAdaptor extends AbstractAdaptor {
             return new ObjectPairInjector(null, type);
         }
         // POJO with prefix
-        else if (pm.startsWith("::") && pm.length() > 2) {
-            return new ObjectNavlPairInjector(pm.substring(2), type);
+        else if (pm.startsWith("::")) {
+            if (pm.length() > 2)
+                return new ObjectNavlPairInjector(pm.substring(2), type);
+            return new ObjectNavlPairInjector(null, type);
         }
         // POJO[]
         else if (clazz.isArray()) {
