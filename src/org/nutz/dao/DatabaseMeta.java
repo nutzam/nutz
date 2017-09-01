@@ -55,6 +55,12 @@ public class DatabaseMeta {
             type = DB.HSQL;
         } else if (proName.contains("derby")) {
             type = DB.DERBY;
+        } else if (proName.contains("gbase")) {
+            type = DB.GBASE;
+        } else if (proName.contains("sysbase")) {
+            type = DB.SYBASE;
+        } else if (proName.contains("dm dbms")) {
+            type = DB.DM;
         } else {
             type = DB.OTHER;
         }
@@ -152,5 +158,9 @@ public class DatabaseMeta {
     
     public boolean isDerby() {
         return DB.DERBY == type;
+    }
+    
+    public boolean isDm() {
+        return DB.DM == type;
     }
 }
