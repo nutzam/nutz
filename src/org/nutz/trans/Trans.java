@@ -55,7 +55,7 @@ public abstract class Trans {
     static void _begain(int level) throws Exception {
         Transaction tn = trans.get();
         if (null == tn) {
-            tn = null == implClass ? new NutTransaction() : Mirror.me(implClass).born();
+            tn = New();
             tn.setLevel(level);
             trans.set(tn);
             count.set(0);
@@ -306,5 +306,13 @@ public abstract class Trans {
         if (t != null)
             t.close();
         Trans.trans.set(null);
+    }
+    
+    public static void set(Transaction t) {
+        Trans.trans.set(t);
+    }
+    
+    public static Transaction New() {
+        return null == implClass ? new NutTransaction() : Mirror.me(implClass).born();
     }
 }
