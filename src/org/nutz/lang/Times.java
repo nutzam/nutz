@@ -167,8 +167,19 @@ public abstract class Times {
         }
 
         private void __recound_by_valueInMilliSecond() {
-            this.value = this.millisecond / 1000;
-            this.millisecond = this.valueInMillisecond - this.value;
+            // 确保毫秒数在一天之内，即 [0, 86399000]
+            if (this.valueInMillisecond >= 86400000) {
+                this.valueInMillisecond = this.valueInMillisecond % 86400000;
+            }
+            // 负数表示后退
+            else if (this.valueInMillisecond < 0) {
+                this.valueInMillisecond = this.valueInMillisecond % 86400000;
+                if (this.valueInMillisecond < 0)
+                    this.valueInMillisecond = 86400000 + this.valueInMillisecond;
+            }
+            // 计算其他值
+            this.value = this.valueInMillisecond / 1000;
+            this.millisecond = this.valueInMillisecond - this.value * 1000;
             this.hour = Math.min(23, this.value / 3600);
             this.minute = Math.min(59, (this.value - (this.hour * 3600)) / 60);
             this.second = Math.min(59, this.value - (this.hour * 3600) - (this.minute * 60));
