@@ -186,30 +186,130 @@ public abstract class Times {
         }
 
         public String toString() {
-            return toString(false, false);
-        }
-
-        public String toString(boolean ignoreZeroSecond) {
-            return toString(ignoreZeroSecond, false);
-        }
-
-        public String toString(boolean ignoreZeroSecond, boolean alwaysShowMillisecond) {
-            String str = toMinuteString();
-            if (ignoreZeroSecond && second == 0 && millisecond == 0) {
-                return str;
+            String fmt = "HH:mm";
+            // 到毫秒
+            if (0 != this.millisecond) {
+                fmt += ":ss.SSS";
             }
-            str += ":" + Strings.alignRight(second, 2, '0');
-            if (!alwaysShowMillisecond && millisecond == 0) {
-                return str;
+            // 到秒
+            else if (0 != this.second) {
+                fmt += ":ss";
             }
-            return str + "," + Strings.alignRight(millisecond, 3, '0');
+            return toString(fmt);
         }
 
-        public String toMinuteString() {
-            String str = Strings.alignRight(hour, 2, '0')
-                         + ":"
-                         + Strings.alignRight(minute, 2, '0');
-            return str;
+        private static Pattern _p_tmfmt = Pattern.compile("a|[HhKkms]{1,2}|S(SS)?");
+
+        /**
+         * <pre>
+         * a    Am/pm marker (AM/PM)
+         * H   Hour in day (0-23)
+         * k   Hour in day (1-24)
+         * K   Hour in am/pm (0-11)
+         * h   Hour in am/pm (1-12)
+         * m   Minute in hour
+         * s   Second in minute
+         * S   Millisecond Number
+         * HH  补零的小时(0-23)
+         * kk  补零的小时(1-24)
+         * KK  补零的半天小时(0-11)
+         * hh  补零的半天小时(1-12)
+         * mm  补零的分钟
+         * ss  补零的秒
+         * SSS 补零的毫秒
+         * </pre>
+         * 
+         * @param fmt
+         *            格式化字符串类似 <code>"HH:mm:ss,SSS"</code>
+         * @return 格式化后的时间
+         */
+        public String toString(String fmt) {
+            StringBuilder sb = new StringBuilder();
+            fmt = Strings.sBlank(fmt, "HH:mm:ss");
+            Matcher m = _p_tmfmt.matcher(fmt);
+            int pos = 0;
+            while (m.find()) {
+                int l = m.start();
+                // 记录之前
+                if (l > pos) {
+                    sb.append(fmt.substring(pos, l));
+                }
+                // 偏移
+                pos = m.end();
+
+                // 替换
+                String s = m.group(0);
+                if ("a".equals(s)) {
+                    sb.append(this.value > 43200 ? "PM" : "AM");
+                }
+                // H Hour in day (0-23)
+                else if ("H".equals(s)) {
+                    sb.append(this.hour);
+                }
+                // k Hour in day (1-24)
+                else if ("k".equals(s)) {
+                    sb.append(this.hour + 1);
+                }
+                // K Hour in am/pm (0-11)
+                else if ("K".equals(s)) {
+                    sb.append(this.hour % 12);
+                }
+                // h Hour in am/pm (1-12)
+                else if ("h".equals(s)) {
+                    sb.append((this.hour % 12) + 1);
+                }
+                // m Minute in hour
+                else if ("m".equals(s)) {
+                    sb.append(this.minute);
+                }
+                // s Second in minute
+                else if ("s".equals(s)) {
+                    sb.append(this.second);
+                }
+                // S Millisecond Number
+                else if ("S".equals(s)) {
+                    sb.append(this.millisecond);
+                }
+                // HH 补零的小时(0-23)
+                else if ("HH".equals(s)) {
+                    sb.append(String.format("%02d", this.hour));
+                }
+                // kk 补零的小时(1-24)
+                else if ("kk".equals(s)) {
+                    sb.append(String.format("%02d", this.hour + 1));
+                }
+                // KK 补零的半天小时(0-11)
+                else if ("KK".equals(s)) {
+                    sb.append(String.format("%02d", this.hour % 12));
+                }
+                // hh 补零的半天小时(1-12)
+                else if ("hh".equals(s)) {
+                    sb.append(String.format("%02d", (this.hour % 12) + 1));
+                }
+                // mm 补零的分钟
+                else if ("mm".equals(s)) {
+                    sb.append(String.format("%02d", this.minute));
+                }
+                // ss 补零的秒
+                else if ("ss".equals(s)) {
+                    sb.append(String.format("%02d", this.second));
+                }
+                // SSS 补零的毫秒
+                else if ("SSS".equals(s)) {
+                    sb.append(String.format("%03d", this.millisecond));
+                }
+                // 不认识
+                else {
+                    sb.append(s);
+                }
+            }
+            // 结尾
+            if (pos < fmt.length()) {
+                sb.append(fmt.substring(pos));
+            }
+
+            // 返回
+            return sb.toString();
         }
     }
 
@@ -645,7 +745,7 @@ public abstract class Times {
      * @return 格式为 HH:mm:ss,SSS 的字符串
      */
     public static String sTms(long ams) {
-        return Tims(ams).toString(false, true);
+        return Tims(ams).toString("HH:mm:ss,SSS");
     }
 
     /**
@@ -1478,7 +1578,7 @@ public abstract class Times {
         long diff = end.getTime() - start.getTime();
         return diff / unit;
     }
-    
+
     /**
      * 取得指定日期过 minute 分钟后的日期 (当 minute 为负数表示指定分钟之前)
      *

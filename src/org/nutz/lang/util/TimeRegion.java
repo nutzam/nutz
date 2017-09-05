@@ -19,7 +19,7 @@ public class TimeRegion extends Region<Integer> {
 
     public String toString(int sec) {
         Times.TmInfo ti = Times.Ti(sec);
-        return ti.toString(true);
+        return ti.toString();
     }
 
 }
