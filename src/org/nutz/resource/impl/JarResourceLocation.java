@@ -13,6 +13,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 
+import org.nutz.conf.NutConf;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.resource.NutResource;
@@ -70,7 +71,19 @@ public class JarResourceLocation extends ResourceLocation {
         JarFile jf = null;
         try {
             this.uri = url.toURI();
-            jarConn = (JarURLConnection) new URL(uriJarPrefix(url.toURI(), "!/")).openConnection();
+        } catch (java.net.URISyntaxException e) {
+            try {
+                url = new URL(url.toString().replace(" ", "%20"));
+                this.uri = url.toURI();
+            } catch (Throwable e2) {
+                if (NutConf.RESOURCE_SCAN_TRACE && log.isDebugEnabled())
+                    log.debug("URL=" + url, e2);
+                else if (log.isTraceEnabled())
+                    log.trace("URL=" + url, e2);
+            }
+        }
+        try {
+            jarConn = (JarURLConnection) new URL(uriJarPrefix(this.uri, "!/")).openConnection();
             jf = jarConn.getJarFile();
             Enumeration<JarEntry> ens = jf.entries();
             while (ens.hasMoreElements()) {
@@ -79,7 +92,9 @@ public class JarResourceLocation extends ResourceLocation {
             }
         }
         catch (Throwable e) {
-            if (log.isTraceEnabled())
+            if (NutConf.RESOURCE_SCAN_TRACE && log.isDebugEnabled())
+                log.debug("URL=" + url, e);
+            else if (log.isTraceEnabled())
                 log.trace("URL=" + url, e);
         }
         finally {
