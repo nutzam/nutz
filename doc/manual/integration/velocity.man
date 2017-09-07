@@ -6,9 +6,9 @@
 将nutz-plugins-views加入到项目中
 
 	手动下载地址: https://jfrog.nutz.cn/artifactory/jcenter/org/nutz/nutz-plugins-views/
-	
+
 	maven项目的依赖项,中央库有.
-	
+
 	{{{<XML>
 		<dependency>
 			<groupId>org.nutz</groupId>
@@ -16,7 +16,21 @@
 			<version>1.r.60</version>
 		</dependency>
 	}}}
-	
+
+	maven引用velocity相关jar包
+	{{{<XML>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
+		</dependency>
+		<dependency>
+    			<groupId>org.apache.velocity</groupId>
+    			<artifactId>velocity-tools</artifactId>
+    			<version>2.0</version>
+		</dependency>
+	}}}
+
 ---------------------------------------------------------------------
 修改MainModule类,添加引用
 
@@ -27,35 +41,111 @@
 	}}}
 
 ---------------------------------------------------------------------
-添加velocity.properties
+在classpath下添加velocity.properties
 
 	{{{
+	#资源加载器或加载器别名
+	resource.loader = webapp
+	#资源加载器类全限定名
+	webapp.resource.loader.class = org.apache.velocity.tools.view.WebappResourceLoader
+	#资源位置
+	webapp.resource.loader.path=/WEB-INF/
+	#编码
 	input.encoding=UTF-8
 	output.encoding=UTF-8
-	resource.loader=webapp
-	webapp.resource.loader.class=org.apache.velocity.tools.view.WebappResourceLoader
-	webapp.resource.loader.path=/
+	#布局文件为准
+	tools.view.servlet.layout.directory = layout/
+	#默认布局文件名称
+	tools.view.servlet.layout.default.template =default.html
+	#默认错误文件名称
+	tools.view.servlet.error.template =Error.vm
+	tools.view.servlet.layout.default.template =Default.vm
+	}}}
+---------------------------------------------------------------------
+web.xml配置
+	{{{<XML>
+	<init-param>
+		<param-name>org.apache.velocity.properties</param-name><!-- 这个不能修改-->
+		<param-value>velocity.properties</param-value> <!-- 对应上一步中配置文件的位置 -->
+	</init-param>
+	}}}
+---------------------------------------------------------------------
+使用方法
+
+	User类
+
+
+	{{{<JAVA>
+	public class User {
+		public int roleId;
+		public String userName;
+
+	public int getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(int roleId) {
+		this.roleId = roleId;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	}
 	}}}
 
-----------------------------------------------------------------------
-用法及默认配置
-
-	入口方法示例
-	
+	MVC类
 	{{{<JAVA>
 	@At("/")
-	@Ok("vm:tmpl.index") // 模板文件的路径为  /WEB-INF/tmpl/index.vm
-	public void index(){}
-	}}}
-	
-	{{{<JAVA>
-	@At("/user")
-	@Ok("vm:/tmpl/user/home") // 模板文件的路径为  /tmpl/user/home.vm
-	public void home(){}
+	@Ok("vm:/tmpl/main.vm")
+	public User main() {
+		User user = new User();
+		user.setUserName("nutz");
+		user.setRoleId(0);
+		return user;
+	}
 	}}}
 
-	可以看到,规则与JspView是一致的,只是后缀变成了vm
-	
+	main.vm文件
+	{{{<HTML>
+	#if($!{obj.roleId} == 0)
+	<li> 管理员 $!{obj.userName}</li>
+	#else
+	<li> 编辑 $!{obj.userName}</li>
+	#end
+	}}}
+
+---------------------------------------------------------------------
+更灵活的使用方法
+
+	MVC类
+	{{{<JAVA>
+	@At("/")
+	@Ok("vm:/tmpl/main.vm")
+	public NutMap main() {
+		NutMap map = new NutMap();
+		map.put("site_name", "Nutz工具箱");
+		User user = new User();
+		user.setRoleId(0);
+		user.setUserName("nutz");
+		map.put("user", user);
+		return map;
+	}
+	}}}
+
+	main.vm文件
+	{{{<HTML>
+	<span> 站点名称：$!{obj.site_name}</span>
+	#if($!{obj.user.roleId} == 0)
+	<li> 管理员 $!{obj.user.userName}</li>
+	#else
+	<li> 编辑 $!{obj.user.userName}</li>
+	#end
+	}}}
 -----------------------------------------------------------------------
 可供参考的实例项目
 
