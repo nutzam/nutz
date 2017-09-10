@@ -1014,6 +1014,8 @@ public class NutDao extends DaoSupport implements Dao {
     	Entity<?> en = getEntity(obj.getClass());
     	List<String> names = new ArrayList<String>();
     	for (MappingField mf : en.getMappingFields()) {
+    	    if (mf.isName() || mf.isPk() || mf.isId())
+    	        continue;
     		Object tmp = mf.getValue(obj);
 			if (ignoreNull && tmp == null) {
 				continue;
