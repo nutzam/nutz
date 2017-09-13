@@ -164,9 +164,9 @@ public class ClassMetaReader {
                                 dis.skipBytes(2);
                                 int varSlot = dis.readUnsignedShort();//这是变量的位置
                                 if (!"this".equals(varName)) //非静态方法,第一个参数是this
-                                    varSlotNameMap.put(varSlot, varName);//varNames.add(varName);
+                                    varSlotNameMap.put(varSlot, varName);
                             }
-
+                            
                             List<String> varNames = new ArrayList<String>(varSlotNameMap.values());
                             if (!names.containsKey(key))
                                 names.put(key, varNames);
