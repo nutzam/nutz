@@ -71,6 +71,7 @@ import org.nutz.dao.test.meta.issue1179.Issue1179;
 import org.nutz.dao.test.meta.issue1179.Issue1179Enum;
 import org.nutz.dao.test.meta.issue1254.BookTag;
 import org.nutz.dao.test.meta.issue1284.Issue1284;
+import org.nutz.dao.test.meta.issue1297.DumpData;
 import org.nutz.dao.test.meta.issue1297.Issue1297;
 import org.nutz.dao.test.meta.issue1302.Issue1302Master;
 import org.nutz.dao.test.meta.issue1302.Issue1302UserAction;
@@ -1025,6 +1026,20 @@ public class SimpleDaoTest extends DaoCase {
             e.printStackTrace();
             throw e;
         }
+        
+        try {
+            dao.create(DumpData.class, true);
+            DumpData dump = new DumpData();
+            dump.setId(R.UU32());
+            dump.setTitle("ABC");
+            dao.insertOrUpdate(dump);
+            dump.setTitle("DDD");
+            dao.insertOrUpdate(dump);
+            assertEquals(1, dao.count(DumpData.class));
+            assertEquals("DDD", dao.fetch(DumpData.class).getTitle());
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
     }
     
     @Test
@@ -1037,5 +1052,26 @@ public class SimpleDaoTest extends DaoCase {
             System.out.println(DB.SQLSERVER.ordinal());
             pojo = dao.fetch(Issue1302Master.class, pojo.getName());
             assertEquals(Issue1302UserAction.VIEW, pojo.getAct());
+    }
+    
+
+    @Test
+    public void test_truncate() {
+            // 建好表,插入10条记录
+            dao.create(Pet.class, false);
+            dao.insert(Pet.create(10));
+            assertTrue(dao.count(Pet.class) > 0);
+            
+            // 干掉
+            dao.truncate(Pet.class);
+            assertTrue(dao.count(Pet.class) == 0);
+            
+            // 再插入10条记录
+            dao.insert(Pet.create(10));
+            assertTrue(dao.count(Pet.class) > 0);
+            
+            //再干掉
+            dao.truncate(dao.getEntity(Pet.class).getTableName());
+            assertTrue(dao.count(Pet.class) == 0);
     }
 }
