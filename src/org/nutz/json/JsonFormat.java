@@ -18,7 +18,7 @@ import org.nutz.lang.util.NutMap;
  *
  */
 public class JsonFormat extends NutMap {
-    
+
     private static final long serialVersionUID = 1L;
     private static char DEFAULT_SEPARATOR = '\"';
 
@@ -82,7 +82,6 @@ public class JsonFormat extends NutMap {
         setCompact(compact);
     }
 
-    
     public static class Function {
         /**
          * 缩进时用的字符串
@@ -142,6 +141,7 @@ public class JsonFormat extends NutMap {
         public static String nullNumberAsZero = "nullNumberAsZero";
         public static String timeZone = "timeZone";
     }
+
     @JsonField(ignore = true)
     private Castors castors;
 
@@ -318,9 +318,9 @@ public class JsonFormat extends NutMap {
      * @return 分隔符
      */
     public char getSeparator() {
-        Object separator = get(Function.separator);
+        Character separator = getAs(Function.separator, Character.class);
         if (separator != null)
-            return (Character)separator;
+            return separator;
         return DEFAULT_SEPARATOR;
     }
 
@@ -376,11 +376,9 @@ public class JsonFormat extends NutMap {
     public JsonFormat setDateFormat(String df) {
         if (df == null) {
             remove(Function.dateFormat);
-        }
-        else if (DATEFORMAT_TIMESTAMP.equals(df)) {
+        } else if (DATEFORMAT_TIMESTAMP.equals(df)) {
             put(Function.dateFormat, new TimeStampDateFormat());
-        }
-        else {
+        } else {
             put(Function.dateFormat, new SimpleDateFormat(df));
         }
         return this;
@@ -435,12 +433,13 @@ public class JsonFormat extends NutMap {
      *
      * @return 该Json输出格式的副本
      */
+    @Override
     public JsonFormat clone() {
         JsonFormat jf = new JsonFormat();
         jf.putAll(this);
         return jf;
     }
-    
+
     public static String DATEFORMAT_TIMESTAMP = "timestamp";
 
     public Pattern getActived() {

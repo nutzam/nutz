@@ -156,8 +156,8 @@ NutDao 是如何连接关联表的
 	Food food = new Food("Fish");
 	
 	List<Pet> pets = new ArrayList<Pet>();
-	pets.add(new Pet("XiaoBai");
-	pets.add(new Pet("XiaoHei");
+	pets.add(new Pet("XiaoBai"));
+	pets.add(new Pet("XiaoHei"));
 	
 	food.setPets(pets);
 	}}}
