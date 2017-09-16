@@ -96,7 +96,9 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
 
             // AdaptorErrorContext 类型的参数不需要生成注入器，记录下参数的下标就好了
             if (AdaptorErrorContext.class.isAssignableFrom(argTypes[i])) {
-                errCtxIndex = i;
+                // 多个 AdaptorErrorContext 类型的参数时，以第一个为准
+                if (errCtxIndex == -1)
+                    errCtxIndex = i;
                 continue;
             }
 
@@ -270,7 +272,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
         int len = Math.min(args.length, null == pathArgs ? 0 : (errCtxIndex > -1 && errCtxIndex < pathArgs.length ? pathArgs.length + 1 : pathArgs.length));
         for (int i = 0; i < args.length; i++) {
             // 如果这个参数是 AdaptorErrorContext 类型的，就跳过
-            if (i == errCtxIndex)
+            if (AdaptorErrorContext.class.isAssignableFrom(argTypes[i]))
                 continue;
 
             Object value = null;
