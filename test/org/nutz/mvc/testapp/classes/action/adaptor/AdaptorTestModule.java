@@ -84,6 +84,20 @@ public class AdaptorTestModule extends BaseWebappTest {
         TestCase.assertNotNull(errCtx.getErrors()[0]);
     }
 
+    // 传入的id,会是一个非法的字符串!!
+    @At({"/err/param/anywhere", "/err/param/anywhere/?"})
+    public void errParamAnyWhere(AdaptorErrorContext errCtx, @Param("id") long id) {
+        TestCase.assertNotNull(errCtx);
+        TestCase.assertNotNull(errCtx.getErrors()[1]);
+    }
+
+    // 传入的id,会是一个非法的字符串!!
+    @At({"/err/param/pathargs/?", "/err/param/pathargs/?/?"})
+    public void errParamWithPathArgs(AdaptorErrorContext errCtx, String a, @Param("id") long id) {
+        TestCase.assertNotNull(errCtx);
+        TestCase.assertNotNull(errCtx.getErrors()[2]);
+    }
+
     @At("/json/type")
     @AdaptBy(type = JsonAdaptor.class)
     public void jsonMapType(Map<String, Double> map) {
@@ -119,7 +133,20 @@ public class AdaptorTestModule extends BaseWebappTest {
     public Object test_param_without_param(String uid, String[] uids, HttpServletRequest req) {
         return uids;
     }
-    
+
+    @At("/object_without_param")
+    @Ok("json:compact")
+    public Object test_object_without_param(Pet pet, HttpServletRequest req) {
+        return pet;
+    }
+
+    @At("/path_args_and_object_without_param/?")
+    @Ok("json:compact")
+    public Object test_path_args_and_object_without_param(String name, Pet pet, HttpServletRequest req) {
+        pet.setName(name);
+        return pet;
+    }
+
     @At("/issue1069")
     @Ok("raw")
     public Object test_issue1069(@Param("..")Issue1069 issue1069) {

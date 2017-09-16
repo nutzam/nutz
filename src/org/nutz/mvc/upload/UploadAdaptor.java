@@ -16,6 +16,7 @@ import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Lang;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.adaptor.PairAdaptor;
 import org.nutz.mvc.adaptor.ParamInjector;
@@ -132,26 +133,23 @@ public class UploadAdaptor extends PairAdaptor {
         if (Map.class.isAssignableFrom(clazz))
             return new MapSelfInjector();
 
-        if (null == param)
-            return super.evalInjectorBy(type, null);
-
-        String paramName = param.value();
+        String pn = null == param ? paramNames[curIndex] : param.value();
 
         // File
         if (File.class.isAssignableFrom(clazz))
-            return new org.nutz.mvc.upload.injector.FileInjector(paramName);
+            return new org.nutz.mvc.upload.injector.FileInjector(pn);
         // FileMeta
         if (FieldMeta.class.isAssignableFrom(clazz))
-            return new org.nutz.mvc.upload.injector.FileMetaInjector(paramName);
+            return new org.nutz.mvc.upload.injector.FileMetaInjector(pn);
         // TempFile
         if (TempFile.class.isAssignableFrom(clazz))
-            return new TempFileInjector(paramName);
+            return new TempFileInjector(pn);
         // InputStream
         if (InputStream.class.isAssignableFrom(clazz))
-            return new InputStreamInjector(paramName);
+            return new InputStreamInjector(pn);
         // Reader
         if (Reader.class.isAssignableFrom(clazz))
-            return new ReaderInjector(paramName);
+            return new ReaderInjector(pn);
         // List
         //if (List.class.isAssignableFrom(clazz)) {
         //    if (!Strings.isBlank(paramName) && paramName.startsWith("::"))
@@ -159,7 +157,7 @@ public class UploadAdaptor extends PairAdaptor {
         //    return new MapListInjector(paramName);
         //}
         if (TempFile[].class.isAssignableFrom(clazz)) {
-            return new TempFileArrayInjector(paramName);
+            return new TempFileArrayInjector(pn);
         }
         // Other
         return super.evalInjectorBy(type, param);
@@ -207,11 +205,11 @@ public class UploadAdaptor extends PairAdaptor {
     }
     
     @Override
-    public void init(Method method) {
+    public void init(ActionInfo ai) {
         if (this.method != null) {
             // 如果ioc配置中设置为单例了,那应该提前报错!! 解决方法 singleton : false
             throw new RuntimeException(new UploadException("Duplicate initialization is not allowed."));
         }
-        super.init(method);
+        super.init(ai);
     }
 }
