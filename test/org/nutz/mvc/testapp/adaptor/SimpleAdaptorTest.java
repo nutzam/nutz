@@ -52,6 +52,24 @@ public class SimpleAdaptorTest extends BaseWebappTest {
     }
 
     @Test
+    public void test_multi_err_ctxs() {
+        get("/adaptor/multi/err/ctxs/a?id=ABC");
+        assertEquals(200, resp.getStatus());
+
+        get("/adaptor/multi/err/ctxs/a/ABC");
+        assertEquals(200, resp.getStatus());
+    }
+
+    @Test
+    public void test_multi_err_ctxs2() {
+        get("/adaptor/multi/err/ctxs2/a/b?id=ABC");
+        assertEquals(200, resp.getStatus());
+
+        get("/adaptor/multi/err/ctxs2/a/b/ABC");
+        assertEquals(200, resp.getStatus());
+    }
+
+    @Test
     public void test_json_map_type() {
         resp = post("/adaptor/json/type", "{'abc': 123456}");
         if (resp.getStatus() != 200) {

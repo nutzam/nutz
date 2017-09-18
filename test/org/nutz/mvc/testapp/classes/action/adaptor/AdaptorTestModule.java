@@ -96,6 +96,28 @@ public class AdaptorTestModule extends BaseWebappTest {
     public void errParamWithPathArgs(AdaptorErrorContext errCtx, String a, @Param("id") long id) {
         TestCase.assertNotNull(errCtx);
         TestCase.assertNotNull(errCtx.getErrors()[2]);
+        TestCase.assertNotNull(a);
+    }
+
+    // 传入的id,会是一个非法的字符串!!
+    @At({"/multi/err/ctxs/?", "/multi/err/ctxs/?/?"})
+    public void multiErrCtxs(AdaptorErrorContext errCtx, String a, AdaptorErrorContext errCtx2, @Param("id") long id, AdaptorErrorContext errCtx3) {
+        TestCase.assertNotNull(errCtx);
+        TestCase.assertNotNull(errCtx.getErrors()[3]);
+        TestCase.assertNotNull(a);
+        TestCase.assertNull(errCtx2);
+        TestCase.assertNull(errCtx3);
+    }
+
+    // 传入的id,会是一个非法的字符串!!
+    @At({"/multi/err/ctxs2/?/?", "/multi/err/ctxs2/?/?/?"})
+    public void multiErrCtxs(String a, AdaptorErrorContext errCtx, AdaptorErrorContext errCtx2, String b, @Param("id") long id, AdaptorErrorContext errCtx3) {
+        TestCase.assertNotNull(errCtx);
+        TestCase.assertNotNull(errCtx.getErrors()[4]);
+        TestCase.assertNotNull(a);
+        TestCase.assertNotNull(b);
+        TestCase.assertNull(errCtx2);
+        TestCase.assertNull(errCtx3);
     }
 
     @At("/json/type")
