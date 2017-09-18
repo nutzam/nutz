@@ -96,7 +96,10 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
 
             // AdaptorErrorContext 类型的参数不需要生成注入器，记录下参数的下标就好了
             if (AdaptorErrorContext.class.isAssignableFrom(argTypes[i])) {
-                errCtxIndex = i;
+                // 多个 AdaptorErrorContext 类型的参数时，以第一个为准
+                if (errCtxIndex == -1)
+                    errCtxIndex = i;
+
                 continue;
             }
 
@@ -266,17 +269,18 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
             throw Lang.wrapThrow(e);
         }
 
-        // AdaptorErrorContext 类型的参数混在路径参数之中或在路径参数之前时，len 需要加 1 才能标识最后一个路径参数的索引位置
-        int len = Math.min(args.length, null == pathArgs ? 0 : (errCtxIndex > -1 && errCtxIndex < pathArgs.length ? pathArgs.length + 1 : pathArgs.length));
+        // 当前路径参数的索引
+        int curPathArgIdx = 0;
+        int len = null == pathArgs ? 0 : pathArgs.length;
         for (int i = 0; i < args.length; i++) {
             // 如果这个参数是 AdaptorErrorContext 类型的，就跳过
-            if (i == errCtxIndex)
+            if (AdaptorErrorContext.class.isAssignableFrom(argTypes[i]))
                 continue;
 
             Object value = null;
-            if (i < len) { // 路径参数
-                // 在 AdaptorErrorContext 类型的参数之后的路径参数所对应的路径参数值的下标需要减 1
-                value = null == pathArgs ? null : pathArgs[errCtxIndex > -1 && errCtxIndex < i ? i - 1 : i];
+            if (curPathArgIdx < len) { // 路径参数
+                value = pathArgs[curPathArgIdx];
+                curPathArgIdx++;
             } else { // 普通参数
                 value = obj;
             }
