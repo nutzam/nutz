@@ -89,6 +89,9 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
         injs = new ParamInjector[argTypes.length];
         defaultValues = new String[argTypes.length];
         errCtxIndex = -1;
+        if (this.paramNames == null || this.paramNames.length != argTypes.length) {
+            this.paramNames = new String[argTypes.length];
+        }
         Annotation[][] annss = method.getParameterAnnotations();
         Type[] types = method.getGenericParameterTypes();
         for (int i = 0; i < annss.length; i++) {
