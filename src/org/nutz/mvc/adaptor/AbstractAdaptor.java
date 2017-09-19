@@ -361,7 +361,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
     
     protected String getParamRealName(int index) {
         if (paramNames == null || paramNames.length <= index)
-            return null;
+            return "arg" + index;
         return paramNames[index];
     }
 }
