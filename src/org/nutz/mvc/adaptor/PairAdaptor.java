@@ -43,6 +43,9 @@ public class PairAdaptor extends AbstractAdaptor {
         // 没有声明 @Param 且 clazz 不是POJO的话，使用方法的参数名称
         // 其它情况就使用 param.value() 的值
         String pm = null == param ? (Mirror.me(clazz).isPojo() ? ".." : getParamRealName(curIndex)) : param.value();
+        if (pm == null) {
+            pm = "arg" + curIndex;
+        }
         String defaultValue = null == param || Params.ParamDefaultTag.equals(param.df()) ? null : param.df();
         String datefmt = null == param ? "" : param.dfmt();
         boolean array_auto_split = null == param || param.array_auto_split();
