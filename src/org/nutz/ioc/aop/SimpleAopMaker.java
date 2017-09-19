@@ -109,7 +109,7 @@ public abstract class SimpleAopMaker<T extends Annotation> extends AbstractLifeC
         if (!checkClass(klass))
             return null;
         List<InterceptorPair> list = new ArrayList<InterceptorPair>();
-        for (Method method : klass.getDeclaredMethods()) {
+        for (Method method : getMethods(ioc, klass)) {
             if (!checkMethod(method))
                 continue;
             T t = method.getAnnotation(_anno());
@@ -148,5 +148,9 @@ public abstract class SimpleAopMaker<T extends Annotation> extends AbstractLifeC
         if (iocName != null)
             return iocName.equals(name);
         return ("$aop_" + _name()).equals(name);
+    }
+    
+    protected Method[] getMethods(Ioc ioc, Class<?> klass) {
+        return klass.getDeclaredMethods();
     }
 }
