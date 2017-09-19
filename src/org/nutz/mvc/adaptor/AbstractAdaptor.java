@@ -82,16 +82,13 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
         init(method, Lang.collection2array(MethodParamNamesScaner.getParamNames(method), String.class));
     }
 
-    private void init(Method method, String[] paramNames) {
+    protected void init(Method method, String[] paramNames) {
         this.method = method;
         this.paramNames = paramNames;
         argTypes = method.getParameterTypes();
         injs = new ParamInjector[argTypes.length];
         defaultValues = new String[argTypes.length];
         errCtxIndex = -1;
-        if (this.paramNames == null || this.paramNames.length != argTypes.length) {
-            this.paramNames = new String[argTypes.length];
-        }
         Annotation[][] annss = method.getParameterAnnotations();
         Type[] types = method.getGenericParameterTypes();
         for (int i = 0; i < annss.length; i++) {
@@ -337,7 +334,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
      */
     protected ParamInjector paramNameInject(Method method, int index) {
         if (!Lang.isAndroid) {
-            String paramName = paramNames[index];
+            String paramName = getParamRealName(index);
             if (paramName != null) {
                 Class<?> type = argTypes[index];
                 if (type.isArray()) {
@@ -360,5 +357,11 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
     	}
 
         return new PathArgInjector(method.getParameterTypes()[index]);
+    }
+    
+    protected String getParamRealName(int index) {
+        if (paramNames == null || paramNames.length <= index)
+            return null;
+        return paramNames[index];
     }
 }

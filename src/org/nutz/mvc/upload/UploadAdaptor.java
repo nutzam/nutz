@@ -133,7 +133,7 @@ public class UploadAdaptor extends PairAdaptor {
         if (Map.class.isAssignableFrom(clazz))
             return new MapSelfInjector();
 
-        String pn = null == param ? paramNames[curIndex] : param.value();
+        String pn = null == param ? getParamRealName(curIndex) : param.value();
 
         // File
         if (File.class.isAssignableFrom(clazz))
