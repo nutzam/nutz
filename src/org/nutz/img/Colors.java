@@ -1,13 +1,14 @@
 package org.nutz.img;
 
+import static java.lang.Integer.parseInt;
+import static org.nutz.lang.Strings.dup;
+
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.nutz.lang.Strings;
-
-import static org.nutz.lang.Strings.dup;
-import static java.lang.Integer.parseInt;
 
 /**
  * 提供快捷的解析颜色值的方法
@@ -31,6 +32,7 @@ public final class Colors {
      * 
      * @deprecated
      */
+    @Deprecated
     public static Color fromString(String str) {
         return as(str);
     }
@@ -128,6 +130,49 @@ public final class Colors {
 
         // 全都匹配不上，返回黑色
         return Color.BLACK;
+    }
+
+    /**
+     * 获取图片指定像素点的RGB值
+     * 
+     * @param srcIm
+     *            源图片
+     * @param x
+     *            横坐标
+     * @param y
+     *            纵坐标
+     * @return RGB值数组
+     */
+    public static int[] getRGB(BufferedImage srcIm, int x, int y) {
+        int pixel = srcIm.getRGB(x, y);
+        int r = (pixel >> 16) & 0xff;
+        int g = (pixel >> 8) & 0xff;
+        int b = pixel & 0xff;
+        return new int[]{r, g, b};
+    }
+
+    /**
+     * 获取图片指定像素点的灰度值
+     * 
+     * @param srcIm
+     *            源图片
+     * @param x
+     *            横坐标
+     * @param y
+     *            纵坐标
+     * @return 灰度值
+     */
+    public static int getGray(BufferedImage srcIm, int x, int y) {
+        int[] rgb = getRGB(srcIm, x, y);
+        int grayValue = (int) (0.3 * rgb[0] + 0.59 * rgb[1] + 0.11 * rgb[2]); // 加权法
+        int newPixel = 255;
+        newPixel = newPixel << 8;
+        newPixel += grayValue;
+        newPixel = newPixel << 8;
+        newPixel += grayValue;
+        newPixel = newPixel << 8;
+        newPixel += grayValue;
+        return newPixel;
     }
 
     private Colors() {}

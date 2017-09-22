@@ -670,11 +670,49 @@ public class Images {
 
         // 添加水印
         Graphics2D gs = im1.createGraphics();
-        gs.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
+        gs.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, opacity));
         gs.drawImage(im2, px, py, null);
         gs.dispose();
 
         return im1;
+    }
+
+    /**
+     * 获取灰度图像
+     * 
+     * @param srcIm
+     *            源图片
+     * @return 灰度图片
+     */
+    public static BufferedImage grayImage(Object srcIm) {
+        BufferedImage srcImage = read(srcIm);
+        BufferedImage grayImage = new BufferedImage(srcImage.getWidth(),
+                                                    srcImage.getHeight(),
+                                                    srcImage.getType());
+        for (int i = 0; i < srcImage.getWidth(); i++) {
+            for (int j = 0; j < srcImage.getHeight(); j++) {
+                grayImage.setRGB(i, j, Colors.getGray(srcImage, i, j));
+            }
+        }
+        return grayImage;
+    }
+
+    /**
+     * 实现两张图片的正片叠底效果
+     * 
+     * @param bgIm
+     *            背景图
+     * @param itemIm
+     *            上层图
+     * @param x
+     *            上层图横坐标
+     * @param y
+     *            下层图横坐标
+     * @return 正片叠底后的图片
+     */
+    public static BufferedImage multiply(Object bgIm, Object itemIm, int x, int y) {
+        // TODO
+        return null;
     }
 
     /**
@@ -811,8 +849,8 @@ public class Images {
             if (writer != null) {
                 try {
                     writer.dispose();
-                } catch (Throwable e) {
                 }
+                catch (Throwable e) {}
             }
         }
     }
@@ -846,11 +884,12 @@ public class Images {
             writeJpeg(image, out, 1);
             out.flush();
             return read(new ByteArrayInputStream(out.toByteArray()));
-        } finally {
+        }
+        finally {
             try {
                 reader.dispose();
-            } catch (Throwable e) {
             }
+            catch (Throwable e) {}
         }
     }
 
