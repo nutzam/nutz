@@ -152,6 +152,22 @@ public final class Colors {
     }
 
     /**
+     * 获取图片指定像素点的亮度值(YUV中的Y)
+     * 
+     * @param srcIm
+     *            源图片
+     * @param x
+     *            横坐标
+     * @param y
+     *            纵坐标
+     * @return 亮度值
+     */
+    public static int getLuminance(BufferedImage srcIm, int x, int y) {
+        int[] rgb = getRGB(srcIm, x, y);
+        return (int) (0.3 * rgb[0] + 0.59 * rgb[1] + 0.11 * rgb[2]); // 加权法
+    }
+
+    /**
      * 获取图片指定像素点的灰度值
      * 
      * @param srcIm
@@ -163,15 +179,11 @@ public final class Colors {
      * @return 灰度值
      */
     public static int getGray(BufferedImage srcIm, int x, int y) {
-        int[] rgb = getRGB(srcIm, x, y);
-        int grayValue = (int) (0.3 * rgb[0] + 0.59 * rgb[1] + 0.11 * rgb[2]); // 加权法
-        int newPixel = 255;
-        newPixel = newPixel << 8;
-        newPixel += grayValue;
-        newPixel = newPixel << 8;
-        newPixel += grayValue;
-        newPixel = newPixel << 8;
-        newPixel += grayValue;
+        int grayValue = getLuminance(srcIm, x, y);
+        int newPixel = 0;
+        newPixel = (grayValue << 16) & 0x00ff0000 | (newPixel & 0xff00ffff);
+        newPixel = (grayValue << 8) & 0x0000ff00 | (newPixel & 0xffff00ff);
+        newPixel = (grayValue) & 0x000000ff | (newPixel & 0xffffff00);
         return newPixel;
     }
 
