@@ -715,6 +715,33 @@ public class Images {
         return null;
     }
 
+    public static final int CHANNEL_RED = 0;
+    public static final int CHANNEL_GREEN = 1;
+    public static final int CHANNEL_BLUE = 2;
+
+    /**
+     * 获取三原色通道图片
+     * 
+     * @param srcIm
+     *            源图片
+     * @param channel
+     *            通道编号，0:red 1:green 2:blue
+     * @return 单一通道图片
+     */
+    public static BufferedImage channelImage(Object srcIm, int channel) {
+        BufferedImage srcImage = read(srcIm);
+        BufferedImage rcImage = new BufferedImage(srcImage.getWidth(),
+                                                  srcImage.getHeight(),
+                                                  srcImage.getType());
+        for (int i = 0; i < srcImage.getWidth(); i++) {
+            for (int j = 0; j < srcImage.getHeight(); j++) {
+                int r = Colors.getRGB(srcImage, i, j)[channel];
+                rcImage.setRGB(i, j, new Color(r, r, r).getRGB());
+            }
+        }
+        return rcImage;
+    }
+
     /**
      * 将一个图片文件读入内存
      * 
