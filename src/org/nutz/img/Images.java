@@ -711,8 +711,34 @@ public class Images {
      * @return 正片叠底后的图片
      */
     public static BufferedImage multiply(Object bgIm, Object itemIm, int x, int y) {
-        // TODO
-        return null;
+
+        BufferedImage viewportImage = read(bgIm);
+        BufferedImage itemImage = read(itemIm);
+        BufferedImage muImage = new BufferedImage(viewportImage.getWidth(),
+                                                  viewportImage.getHeight(),
+                                                  viewportImage.getType());
+        // 背景图为视口范围，上层图不能超过视口进行绘制, 只有重合部分进行计算叠底
+        int xMin = x;
+        int xMax = x + itemImage.getWidth();
+        int yMin = y;
+        int yMax = y + itemImage.getHeight();
+        for (int i = 0; i < viewportImage.getWidth(); i++) {
+            for (int j = 0; j < viewportImage.getHeight(); j++) {
+                int rgb = 0;
+                // 判断是否重合
+                if (i >= xMin && i < xMax && j >= yMin && j < yMax) {
+                    // 获取两个图rgb值
+                    int vpRGB = viewportImage.getRGB(i, j);
+                    int imRGB = itemImage.getRGB(i - x, j - y);
+                    rgb = Colors.getMultiply(vpRGB, imRGB);
+                } else {
+                    rgb = viewportImage.getRGB(i, j);
+                }
+                muImage.setRGB(i, j, rgb);
+            }
+        }
+
+        return muImage;
     }
 
     public static final int CHANNEL_RED = 0;

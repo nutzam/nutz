@@ -145,6 +145,17 @@ public final class Colors {
      */
     public static int[] getRGB(BufferedImage srcIm, int x, int y) {
         int pixel = srcIm.getRGB(x, y);
+        return getRGB(pixel);
+    }
+
+    /**
+     * 获取像素点的RGB值(三元素数组)）
+     * 
+     * @param pixel
+     *            像素RGB值
+     * @return RGB值数组
+     */
+    public static int[] getRGB(int pixel) {
         int r = (pixel >> 16) & 0xff;
         int g = (pixel >> 8) & 0xff;
         int b = pixel & 0xff;
@@ -185,6 +196,24 @@ public final class Colors {
         newPixel = (grayValue << 8) & 0x0000ff00 | (newPixel & 0xffff00ff);
         newPixel = (grayValue) & 0x000000ff | (newPixel & 0xffffff00);
         return newPixel;
+    }
+
+    /**
+     * 获取两个像素点正片叠底后的像素值
+     * 
+     * @param pixel1
+     *            像素点1
+     * @param pixel2
+     *            像素点1
+     * @return 新像素点值
+     */
+    public static int getMultiply(int pixel1, int pixel2) {
+        int[] rgb1 = getRGB(pixel1);
+        int[] rgb2 = getRGB(pixel2);
+        int r = rgb1[0] * rgb2[0] / 255;
+        int g = rgb1[1] * rgb2[1] / 255;
+        int b = rgb1[2] * rgb2[2] / 255;
+        return new Color(r, g, b).getRGB();
     }
 
     private Colors() {}
