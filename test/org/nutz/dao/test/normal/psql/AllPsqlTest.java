@@ -5,4 +5,4 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({PsqlJsonTest.class, PsqlArrayTest.class})
-public class Psql {}
+public class AllPsqlTest {}
