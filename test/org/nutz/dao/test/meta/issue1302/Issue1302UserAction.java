@@ -42,7 +42,8 @@ public enum Issue1302UserAction {
      * @return 用户行为
      */
     public static Issue1302UserAction fromInt(int priority) {
-        return USER_ACTION_MAP.getOrDefault(priority, UNKNOWN);
+        Issue1302UserAction action = USER_ACTION_MAP.get(priority);
+        return action != null ? action : UNKNOWN;
     }
 
     public String getDesc() {
