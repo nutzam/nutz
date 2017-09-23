@@ -121,9 +121,11 @@
 	</doc>
 	<doc path="http" title="Http轻客户端">
 		<doc path="overview.man"></doc>
+		<doc path="httpdns.man"></doc>
 	</doc>
 	<doc path="img" title="图像处理小军刀">
 		<doc path="overview.man"></doc>
+		<doc path="advanced.man"></doc>
 	</doc>
 	<doc path="nosql" title="NoSQL相关">
 		<doc path="jedis.man"></doc>

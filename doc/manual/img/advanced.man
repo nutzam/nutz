@@ -1,0 +1,138 @@
+#title: 更高级的方法
+#author:wendal(wendal1985@gmail.com), pangwu86(pangwu86@gmail.com)
+#index:0,1
+------------------------------------------------------------------------
+所谓的高级
+
+    其实就是针对一些图片实际使用场景而封装的方法，因为生成结果是图片不方便验证结果，所以请自行肉眼判断
+    
+------------------------------------------------------------------------
+添加水印
+
+    添加位置默认提供9个选择:
+
+    # Images.WATERMARK_TOP_LEFT 
+    # Images.WATERMARK_TOP_CENTER 
+    # Images.WATERMARK_TOP_RIGHT
+    # Images.WATERMARK_CENTER_LEFT
+    # Images.WATERMARK_CENTER
+    # Images.WATERMARK_CENTER_RIGHT
+    # Images.WATERMARK_BOTTOM_LEFT
+    # Images.WATERMARK_BOTTOM_CENTER
+    # Images.WATERMARK_BOTTOM_RIGHT
+
+
+    例如：上面中间添加图片水印, 75%透明度，10像素边距
+
+    {{{<JAVA>
+    img = Images.addWatermark(bgImg, watermarkImg,  0.75f, Images.WATERMARK_TOP_CENTER, 10);
+    }}}
+
+    效果如图：
+
+    <watermark.jpg>
+
+
+------------------------------------------------------------------------
+生成头像
+
+    根据文字生成图片的小工具，适用于一些生成头像的场景。这里根据文字长度做了一点限制，2字以内显示，超过只显示第一个文字。
+
+    直接生成黑底白字
+
+    {{{<JAVA>
+    img = Images.createAvatar("王小二");
+    }}}
+
+    效果如图：
+    
+    <a1.jpg>
+
+    手动设置图片大小，文字/背景色，字体，字体样式, 字体大小等
+
+    {{{<JAVA>
+    img = Images.createAvatar("小二", 256, "rgba(255,0,0,1)", "rgb(0,0,255)", "微软雅黑", 64, Font.ITALIC);
+    }}}
+
+    效果如图：
+    
+    <a2.jpg>
+
+------------------------------------------------------------------------
+灰度图
+
+    变灰度图的原理就是将每个像素的RGB值设置成一样，这样整个图片只有黑白与中间的过渡色了。
+
+    {{{<JAVA>
+    img = Images.grayImage(srcImg);
+    }}}
+
+    原图：
+    
+    <zn.jpg>
+
+    灰度图：
+
+    <znGray.jpg>
+
+------------------------------------------------------------------------
+三原色通道
+
+    熟悉PS的同学应该知道通道这个概念， 这里提供了直接生成各个通道的图片的方法
+
+    <znChannel.png>
+
+
+    通道的选项：
+
+    * Images.CHANNEL_RED
+    * Images.CHANNEL_GREEN
+    * Images.CHANNEL_BLUE
+
+    {{{<JAVA>
+    img = Images.channelImage(srcImg, Images.CHANNEL_RED);
+    }}}
+
+    红色通道图：
+
+    <znRed.jpg>
+
+    绿色通道图：
+
+    <znGreen.jpg>
+
+    蓝色通道图：
+
+    <znBlue.jpg>
+
+
+------------------------------------------------------------------------
+正片叠底效果
+
+    这算是比较高级的图像处理了，PS中可以通过修改图层上的设置而达到效果。
+
+    具体的实现原理可以看下这个文章 [http://www.68ps.com/jc/big_ps_zz.asp?id=130 《图层混合模式“正片叠底”颜色计算公式的详解》]，讲的还算通俗。
+
+    下面这个图可以说是最佳示例了：
+
+    <zpdd.jpg>
+
+
+    {{{<JAVA>
+    img = Images.multiply(bgImg, itemImg, 0, 0);
+    }}}
+
+    使用场景么，一般可用于两张图片融合，比如给金将军加个太阳什么的
+
+    将军图：
+
+    <zn.jpg>
+
+    太阳图：
+
+    <sun.jpg>
+
+    正片叠底后的效果：
+
+    <znSun.jpg>
+
