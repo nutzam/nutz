@@ -40,6 +40,23 @@
 	 * POJO 类中{*必须}存在一个属性，本 POJO 将通过该属性同目标  [primary_key.man POJO 类的主键] 关联
 	 * 该属性必须同目标 POJO （{#A00;Master}）的主键类型相同
 	 * {#F00;*注意}，这里是大小写敏感的。
+
+	 补充：
+	 在一对一映射中，有可能会存在两边对应字段名称不同的情况，所以可以通过附加 key 来说明
+	 {{{<JAVA>
+     	@Table("t_pet")
+     	public class Pet extends Pojo {
+
+     		@Column
+     		public int masterId;
+
+     		@One(field = "masterId", key = "id")
+     		// 1.r.59之前需要写target参数
+     		// @One(target = Master.class, field = "masterId", key = "id")
+     		public Master master;
+
+     	}
+     	}}}
 -------------------------------------------------------------------------------------------------------------
 插入操作
 
