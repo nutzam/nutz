@@ -742,8 +742,66 @@ public class Images {
     }
 
     /**
-     * 指定的像素点为背景色参考，在指定范围内的颜色将设置为透明。 <br>
-     * 该方法适合背景与前景相差特别大的图片，切背景颜色基本一致的情况。
+     * 根据亮度值（灰度值）来自动计算哪些像素需要扣掉。
+     * 
+     * <br>
+     * 
+     * 适合前后亮度差别特别明显的图片，比如背景全黑。
+     * 
+     * @param srcIm
+     *            源图片
+     * @return 抠图后图片对象
+     */
+    public static BufferedImage cutoutByLuminance(Object srcIm) {
+        return cutoutByChannel(srcIm, -1);
+    }
+
+    /**
+     * 根据指定通道的亮度值（灰度值）来自动计算哪些像素需要扣掉。
+     * 
+     * @param srcIm
+     *            源图片
+     * @param channel
+     *            通道编号，0:red 1:green 2:blue 其他:亮度
+     * @return 抠图后图片对象
+     */
+    public static BufferedImage cutoutByChannel(Object srcIm, int channel) {
+        BufferedImage srcImage = read(srcIm);
+        BufferedImage resultImage = new BufferedImage(srcImage.getWidth(),
+                                                      srcImage.getHeight(),
+                                                      BufferedImage.TYPE_4BYTE_ABGR);
+        // 开始绘制
+        for (int i = 0; i < srcImage.getWidth(); i++) {
+            for (int j = 0; j < srcImage.getHeight(); j++) {
+                int pixel = srcImage.getRGB(i, j);
+                int alpha = 0;
+                switch (channel) {
+                case CHANNEL_RED:
+                    alpha = Colors.getRGB(pixel)[0];
+                    break;
+                case CHANNEL_GREEN:
+                    alpha = Colors.getRGB(pixel)[1];
+                    break;
+                case CHANNEL_BLUE:
+                    alpha = Colors.getRGB(pixel)[2];
+                    break;
+                default:
+                    alpha = Colors.getLuminance(srcImage, i, j);
+                    break;
+                }
+                pixel = (alpha << 24) & 0xff000000 | (pixel & 0x00ffffff);
+                resultImage.setRGB(i, j, pixel);
+            }
+        }
+
+        return resultImage;
+    }
+
+    /**
+     * 指定的像素点为背景色参考，在指定范围内的颜色将设置为透明。
+     * 
+     * </br>
+     * 该方法适合背景与前景相差特别大的图片，背景颜色基本一致，前景背景有明显分隔界限的图片。
      * 
      * 
      * @param srcIm
@@ -776,7 +834,11 @@ public class Images {
                     alpha = 0;
                 }
                 // 范围大一点点的，可能就需要半透明来处理了
-                else if (inRangeColor(srgb, crgb, (int) (range * 1.2))) {
+                else if (inRangeColor(srgb, crgb, (int) (range * 1.5))) {
+                    alpha = 64;
+                }
+                // 范围大一点点的，可能就需要半透明来处理了
+                else if (inRangeColor(srgb, crgb, range * 2)) {
                     alpha = 128;
                 }
                 // 不在范围的原样输出吧
