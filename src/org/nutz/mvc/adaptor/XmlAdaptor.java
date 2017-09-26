@@ -1,20 +1,20 @@
 package org.nutz.mvc.adaptor;
 
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.nutz.lang.Lang;
+import org.nutz.lang.Strings;
 import org.nutz.lang.Xmls;
 import org.nutz.mvc.adaptor.injector.VoidInjector;
 import org.nutz.mvc.adaptor.injector.XmlInjector;
 import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.impl.AdaptorErrorContext;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 
 /**
  * 假设，整个获得的输入流，是一个 XML 字符串
@@ -22,6 +22,22 @@ import java.lang.reflect.Type;
  * @author howe(howechiang@gmail.com)
  */
 public class XmlAdaptor extends PairAdaptor {
+    
+    protected boolean lowerFirst;
+    
+    protected boolean dupAsList;
+    
+    protected List<String> alwaysAsList;
+    
+    public XmlAdaptor() {
+    }
+    
+    public XmlAdaptor(boolean lowerFirst, boolean dupAsList, String alwaysAsList) {
+        super();
+        this.lowerFirst = lowerFirst;
+        this.dupAsList = dupAsList;
+        this.alwaysAsList = Arrays.asList(Strings.splitIgnoreBlank(alwaysAsList));
+    }
 
     protected ParamInjector evalInjector(Type type, Param param) {
         if (param == null || "..".equals(param.value())) {
@@ -36,36 +52,10 @@ public class XmlAdaptor extends PairAdaptor {
     public Object getReferObject(ServletContext sc,
                                  HttpServletRequest req,
                                  HttpServletResponse resp, String[] pathArgs) {
-        // Read all as String
         try {
-            //TODO URL传来的参数会丢失
-            return Xmls.xmlToMap(getStringFromInputStream(req.getInputStream()));
+            return Xmls.xmlToMap(req.getInputStream(), lowerFirst, dupAsList, alwaysAsList);
         } catch (Exception e) {
             throw Lang.wrapThrow(e);
         }
-    }
-
-    private String getStringFromInputStream(InputStream is) {
-
-        BufferedReader br = null;
-        StringBuilder sb = new StringBuilder();
-        String line;
-        try {
-            br = new BufferedReader(new InputStreamReader(is));
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return sb.toString();
     }
 }

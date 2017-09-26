@@ -552,6 +552,23 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         }
         return this;
     }
+    
+    /**
+     * 为 Map 增加一个名值对。如果同名已经有值了，那么会将两个值合并成一个列表
+     * 
+     * @param key
+     * @param value
+     */
+    @SuppressWarnings("unchecked")
+    public NutMap addv2(String key, Object value) {
+        List<Object> list = (List<Object>) get(key);
+        if (null == list) {
+            list = new LinkedList<Object>();
+            put(key, list);
+        }
+        list.add(value);
+        return this;
+    }
 
     /**
      * 向某个键增加一组值，如果原来就有值，是集合的话，会被合并，否则原来的值用列表包裹后再加入新值

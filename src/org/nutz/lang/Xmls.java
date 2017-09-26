@@ -490,24 +490,35 @@ public abstract class Xmls {
         return asMap(ele, lowFirst, false);
     }
     public static NutMap asMap(Element ele, final boolean lowFirst, final boolean dupAsList) {
+        return asMap(ele, lowFirst, dupAsList, null);
+    }
+    public static NutMap asMap(Element ele, final boolean lowerFirst, final boolean dupAsList, final List<String> alwaysAsList) {
         final NutMap map = new NutMap();
         eachChildren(ele, new Each<Element>() {
             public void invoke(int index, Element _ele, int length)
                     throws ExitLoop, ContinueLoop, LoopException {
                 String key = _ele.getNodeName();
-                if (lowFirst)
+                if (lowerFirst)
                     key = Strings.lowerFirst(key);
-                Map<String, Object> tmp = asMap(_ele, lowFirst, dupAsList);
+                Map<String, Object> tmp = asMap(_ele, lowerFirst, dupAsList, alwaysAsList);
                 if (!tmp.isEmpty()) {
-                    if (dupAsList)
+                    if (alwaysAsList != null && alwaysAsList.contains(key)) {
+                        map.addv2(key, map);
+                    }
+                    else if (dupAsList) {
                         map.addv(key, tmp);
-                    else
+                    }
+                    else {
                         map.setv(key, tmp);
+                    }
                     return;
                 }
                 String val = getText(_ele);
                 if (!Strings.isBlank(val)) {
-                    if (dupAsList)
+                    if (alwaysAsList != null && alwaysAsList.contains(key)) {
+                        map.addv2(key, map);
+                    }
+                    else if (dupAsList)
                         map.addv(key, val);
                     else
                         map.setv(key, val);
@@ -536,6 +547,14 @@ public abstract class Xmls {
      */
     public static NutMap xmlToMap(String xml) {
         return Xmls.asMap(Xmls.xml(Lang.ins(xml)).getDocumentElement());
+    }
+    
+    public static NutMap xmlToMap(InputStream ins) {
+        return Xmls.asMap(Xmls.xml(ins).getDocumentElement());
+    }
+    
+    public static NutMap xmlToMap(InputStream ins, final boolean lowerFirst, final boolean dupAsList, final List<String> alwaysAsList) {
+        return Xmls.asMap(Xmls.xml(ins).getDocumentElement(), lowerFirst, dupAsList, alwaysAsList);
     }
 
     /**
