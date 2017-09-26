@@ -741,6 +741,42 @@ public class Images {
         return muImage;
     }
 
+    public static BufferedImage alphaProcess(Object srcIm, int x, int y, int range) {
+        BufferedImage srcImage = read(srcIm);
+        BufferedImage resultImage = new BufferedImage(srcImage.getWidth(),
+                                                      srcImage.getHeight(),
+                                                      BufferedImage.TYPE_4BYTE_ABGR);
+        // 获取选样点
+        int[] srgb = Colors.getRGB(srcImage.getRGB(x, y));
+
+        // 开始绘制
+        for (int i = 0; i < srcImage.getWidth(); i++) {
+            for (int j = 0; j < srcImage.getHeight(); j++) {
+                int pixel = srcImage.getRGB(i, j);
+                int[] crgb = Colors.getRGB(pixel);
+                int alpha = inRangeColor(srgb, crgb, range) ? 0 : 255;
+                pixel = (alpha << 24) & 0xff000000 | (pixel & 0x00ffffff);
+                resultImage.setRGB(i, j, pixel);
+            }
+        }
+
+        return resultImage;
+    }
+
+    private static boolean inRangeColor(int[] srgb, int[] crgb, int range) {
+        // r
+        if (crgb[0] >= srgb[0] - range && crgb[0] <= srgb[0] + range) {
+            // g
+            if (crgb[1] >= srgb[01] - range && crgb[1] <= srgb[1] + range) {
+                // b
+                if (crgb[2] >= srgb[2] - range && crgb[2] <= srgb[2] + range) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public static final int CHANNEL_RED = 0;
     public static final int CHANNEL_GREEN = 1;
     public static final int CHANNEL_BLUE = 2;

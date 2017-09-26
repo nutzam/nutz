@@ -179,6 +179,22 @@ public final class Colors {
     }
 
     /**
+     * 获取图片指定像素点的亮度值(YUV中的Y) 类型为double
+     * 
+     * @param srcIm
+     *            源图片
+     * @param x
+     *            横坐标
+     * @param y
+     *            纵坐标
+     * @return 亮度值
+     */
+    public static double getLuminanceDouble(BufferedImage srcIm, int x, int y) {
+        int[] rgb = getRGB(srcIm, x, y);
+        return 0.3 * rgb[0] + 0.59 * rgb[1] + 0.11 * rgb[2]; // 加权法
+    }
+
+    /**
      * 获取图片指定像素点的灰度值
      * 
      * @param srcIm
