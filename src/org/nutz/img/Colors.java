@@ -5,6 +5,7 @@ import static org.nutz.lang.Strings.dup;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -160,6 +161,11 @@ public final class Colors {
         int g = (pixel >> 8) & 0xff;
         int b = pixel & 0xff;
         return new int[]{r, g, b};
+    }
+
+    public static int getAlpha(int pixel) {
+        ColorModel cm = ColorModel.getRGBdefault();
+        return cm.getAlpha(pixel);
     }
 
     /**

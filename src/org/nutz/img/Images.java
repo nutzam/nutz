@@ -741,7 +741,23 @@ public class Images {
         return muImage;
     }
 
-    public static BufferedImage alphaProcess(Object srcIm, int x, int y, int range) {
+    /**
+     * 指定的像素点为背景色参考，在指定范围内的颜色将设置为透明。 <br>
+     * 该方法适合背景与前景相差特别大的图片，切背景颜色基本一致的情况。
+     * 
+     * 
+     * @param srcIm
+     *            源图片
+     * @param x
+     *            采样像素点横坐标
+     * @param y
+     *            采样像素点纵坐标
+     * @param range
+     *            采样像素可允许色差范围，数值越大去掉的颜色范围越多
+     * @return 抠图后图片对象
+     * 
+     */
+    public static BufferedImage cutoutByPixel(Object srcIm, int x, int y, int range) {
         BufferedImage srcImage = read(srcIm);
         BufferedImage resultImage = new BufferedImage(srcImage.getWidth(),
                                                       srcImage.getHeight(),
@@ -754,7 +770,19 @@ public class Images {
             for (int j = 0; j < srcImage.getHeight(); j++) {
                 int pixel = srcImage.getRGB(i, j);
                 int[] crgb = Colors.getRGB(pixel);
-                int alpha = inRangeColor(srgb, crgb, range) ? 0 : 255;
+                int alpha = 255;
+                // 范围内的都干掉
+                if (inRangeColor(srgb, crgb, range)) {
+                    alpha = 0;
+                }
+                // 范围大一点点的，可能就需要半透明来处理了
+                else if (inRangeColor(srgb, crgb, (int) (range * 1.2))) {
+                    alpha = 128;
+                }
+                // 不在范围的原样输出吧
+                else {
+                    alpha = Colors.getAlpha(pixel);
+                }
                 pixel = (alpha << 24) & 0xff000000 | (pixel & 0x00ffffff);
                 resultImage.setRGB(i, j, pixel);
             }
