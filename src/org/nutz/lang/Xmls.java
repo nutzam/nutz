@@ -503,7 +503,7 @@ public abstract class Xmls {
                 Map<String, Object> tmp = asMap(_ele, lowerFirst, dupAsList, alwaysAsList);
                 if (!tmp.isEmpty()) {
                     if (alwaysAsList != null && alwaysAsList.contains(key)) {
-                        map.addv2(key, map);
+                        map.addv2(key, tmp);
                     }
                     else if (dupAsList) {
                         map.addv(key, tmp);
