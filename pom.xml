@@ -119,25 +119,25 @@
 				<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-servlets</artifactId>
-			<version>9.4.3.v20170317</version>
+			<version>9.4.7.v20170914</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-webapp</artifactId>
-			<version>9.4.3.v20170317</version>
+			<version>9.4.7.v20170914</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.websocket</groupId>
 			<artifactId>websocket-server</artifactId>
-			<version>9.4.3.v20170317</version>
+			<version>9.4.7.v20170914</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty.websocket</groupId>
 			<artifactId>javax-websocket-server-impl</artifactId>
-			<version>9.4.3.v20170317</version>
+			<version>9.4.7.v20170914</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
@@ -149,13 +149,13 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>apache-jsp</artifactId>
-			<version>9.4.3.v20170317</version>
+			<version>9.4.7.v20170914</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>apache-jstl</artifactId>
-			<version>9.4.3.v20170317</version>
+			<version>9.4.7.v20170914</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
