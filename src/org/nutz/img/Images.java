@@ -707,7 +707,7 @@ public class Images {
      * @param x
      *            上层图横坐标
      * @param y
-     *            下层图横坐标
+     *            上层图横坐标
      * @return 正片叠底后的图片
      */
     public static BufferedImage multiply(Object bgIm, Object itemIm, int x, int y) {
