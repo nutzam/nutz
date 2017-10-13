@@ -1,5 +1,17 @@
 package org.nutz.mapl.impl.convert;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.Stack;
+
 import org.nutz.castor.Castors;
 import org.nutz.conf.NutConf;
 import org.nutz.el.El;
@@ -13,22 +25,11 @@ import org.nutz.lang.util.Context;
 import org.nutz.mapl.Mapl;
 import org.nutz.mapl.MaplConvert;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.Stack;
-
 /**
- * 对象转换 将MapList结构转换成对应的对象 TODO 具有循环引用的对象应该会出问题
+ * 对象转换 将MapList结构转换成对应的对象
  * 
  * @author juqkai(juqkai@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 public class ObjConvertImpl implements MaplConvert {
 
@@ -129,20 +130,33 @@ public class ObjConvertImpl implements MaplConvert {
             return re;
         }
 
-        Type type = me.getGenericsType(1);
+        // 获取泛型信息
+        Type[] ts = me.getGenericsTypes();
+        Type keyType = null;
+        Type valueType = null;
+        if (ts != null && ts.length == 2) {
+            keyType = ts[0];
+            valueType = ts[1];
+        }
         for (Object key : map.keySet()) {
             Object val = map.get(key);
             // 转换Key
-            if (!isLeaf(key)) {
+            if (isLeaf(key)) {
+                // 如果Map的key的类型不是String,那就转换一下吧
+                if (keyType != null && !String.class.equals(keyType)) {
+                    key = Castors.me().castTo(key, Lang.getTypeClass(keyType));
+                }
+            }
+            else {
                 key = inject(key, me.getGenericsType(0));
             }
             // 转换val并填充
             if (isLeaf(val)) {
-                re.put(key, Castors.me().castTo(val, Lang.getTypeClass(type)));
+                re.put(key, Castors.me().castTo(val, Lang.getTypeClass(valueType)));
                 continue;
             }
             path.push(key.toString());
-            re.put(key, inject(val, type));
+            re.put(key, inject(val, valueType));
         }
         return re;
     }
