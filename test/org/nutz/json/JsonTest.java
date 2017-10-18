@@ -32,6 +32,7 @@ import org.nutz.dao.test.meta.Pet;
 import org.nutz.http.Request.METHOD;
 import org.nutz.ioc.meta.IocValue;
 import org.nutz.json.JsonShape.Type;
+import org.nutz.json.generic.IntKeyMap;
 import org.nutz.json.impl.JsonRenderImpl;
 import org.nutz.json.meta.Issue1199;
 import org.nutz.json.meta.JA;
@@ -1111,5 +1112,13 @@ public class JsonTest {
         assertEquals(METHOD.valueOf("POST"), map.values().iterator().next());
         assertEquals(METHOD.valueOf("POST"), map.get("post"));
         Json.fromJson(METHOD.class, "'POST'");
+    }
+    
+    @Test
+    public void test_map_use_int_key_issue_1332() {
+        String str = "{abc : {1:1}}";
+        IntKeyMap map = Json.fromJson(IntKeyMap.class, str);
+        System.out.println(map);
+        assertTrue(map.getAbc().containsKey(1));
     }
 }

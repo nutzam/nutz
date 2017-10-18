@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.nutz.castor.Castors;
+import org.nutz.el.El;
 import org.nutz.lang.Each;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -895,5 +896,13 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         }
         // 其他的统统为不匹配
         return false;
+    }
+    
+    public Object eval(String el) {
+        return El.eval(Lang.context(this), el);
+    }
+    
+    public int evalInt(String el) {
+        return (Integer)El.eval(Lang.context(this), el);
     }
 }
