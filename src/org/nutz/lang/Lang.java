@@ -1,22 +1,5 @@
 package org.nutz.lang;
 
-import org.nutz.castor.Castors;
-import org.nutz.castor.FailToCastObjectException;
-import org.nutz.dao.entity.annotation.Column;
-import org.nutz.json.Json;
-import org.nutz.lang.reflect.ReflectTool;
-import org.nutz.lang.stream.StringInputStream;
-import org.nutz.lang.stream.StringOutputStream;
-import org.nutz.lang.stream.StringWriter;
-import org.nutz.lang.util.ClassTools;
-import org.nutz.lang.util.Context;
-import org.nutz.lang.util.NutMap;
-import org.nutz.lang.util.NutType;
-import org.nutz.lang.util.SimpleContext;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -56,9 +39,27 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Queue;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.nutz.castor.Castors;
+import org.nutz.castor.FailToCastObjectException;
+import org.nutz.dao.entity.annotation.Column;
+import org.nutz.json.Json;
+import org.nutz.lang.reflect.ReflectTool;
+import org.nutz.lang.stream.StringInputStream;
+import org.nutz.lang.stream.StringOutputStream;
+import org.nutz.lang.stream.StringWriter;
+import org.nutz.lang.util.Context;
+import org.nutz.lang.util.NutMap;
+import org.nutz.lang.util.NutType;
+import org.nutz.lang.util.SimpleContext;
 
 /**
  * 这些帮助函数让 Java 的某些常用功能变得更简单
@@ -2075,27 +2076,12 @@ public abstract class Lang {
     }
 
     /**
-     * 当前运行的 Java 虚拟机是 JDK6 的话，则返回 true
+     * 当前运行的 Java 虚拟机是 JDK6 及更高版本的话，则返回 true
      *
      * @return true 如果当前运行的 Java 虚拟机是 JDK6
      */
     public static boolean isJDK6() {
-        InputStream is = null;
-        try {
-            String classFileName = Lang.class.getName().replace('.', '/') + ".class";
-            is = ClassTools.getClassLoader().getResourceAsStream(classFileName);
-            if (is == null)
-                is = ClassTools.getClassLoader().getResourceAsStream("/" + classFileName);
-            if (is != null && is.available() > 8) {
-                is.skip(7);
-                return is.read() > 49;
-            }
-        }
-        catch (Throwable e) {}
-        finally {
-            Streams.safeClose(is);
-        }
-        return false;
+        return JdkTool.getMajorVersion() >= 6;
     }
 
     /**
@@ -2799,6 +2785,31 @@ public abstract class Lang {
         }
         catch (IOException e) {
             return null;
+        }
+    }
+    
+    public static class JdkTool {
+        public static String getVersionLong() {
+            Properties sys = System.getProperties();
+            return sys.getProperty("java.version");
+        }
+        public static int getMajorVersion() {
+            String ver = getVersionLong();
+            if (Strings.isBlank(ver))
+                return 6;
+            String[] tmp = ver.split("\\.");
+            if (tmp.length < 2)
+                return 6;
+            int t = Integer.parseInt(tmp[0]);
+            if (t > 1)
+                return t;
+            return Integer.parseInt(tmp[1]);
+        }
+        public static boolean isEarlyAccess() {
+            String ver = getVersionLong();
+            if (Strings.isBlank(ver))
+                return false;
+            return ver.contains("-ea");
         }
     }
 }
