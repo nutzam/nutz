@@ -3,6 +3,8 @@ package org.nutz.filepool;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
@@ -174,5 +176,28 @@ public class NutFilePool implements FilePool {
             Files.makeDir(f);
         return f;
     }
-
+    
+    /**
+     * 公共FilePool的缓存池
+     */
+    protected static Map<String, FilePool> pools = new HashMap<String, FilePool>();
+    /**
+     * 获取指定路径下的FilePool,如果没有就新建一个
+     * @param path 临时文件夹
+     * @param limit 最大文件数量
+     * @return 已有或新建的FilePool同步实例
+     */
+    public static FilePool getOrCreatePool(String path, long limit) {
+        FilePool pool = pools.get(path);
+        if (pool == null) {
+            pool = new NutFilePool(path, limit);
+            pool = new SynchronizedFilePool(pool);
+            pools.put(path, pool);
+        }
+        return pool;
+    }
+    
+    public static void clearPools() {
+        pools.clear();
+    }
 }

@@ -20,7 +20,7 @@ public class UploadingContext {
     private static final Log log = Logs.get();
 
     public static UploadingContext create(String poolPath) {
-        return create(new NutFilePool(poolPath));
+        return create(NutFilePool.getOrCreatePool(poolPath, 0));
     }
 
     public static UploadingContext create(FilePool pool) {
@@ -28,7 +28,7 @@ public class UploadingContext {
     }
 
     public UploadingContext(String poolPath) {
-        this(new NutFilePool(poolPath, 2000));
+        this(NutFilePool.getOrCreatePool(poolPath, 2000));
     }
 
     public UploadingContext(FilePool pool) {

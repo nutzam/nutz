@@ -88,13 +88,13 @@ public class UploadAdaptor extends PairAdaptor {
     }
 
     public UploadAdaptor(String path, int buffer, String charset, int poolSize) {
-        context = new UploadingContext(new NutFilePool(path, poolSize));
+        context = new UploadingContext(NutFilePool.getOrCreatePool(path, poolSize));
         context.setBufferSize(buffer);
         context.setCharset(charset);
     }
 
     public UploadAdaptor(String path, int buffer, String charset, int poolSize, int maxFileSize) {
-        context = new UploadingContext(new NutFilePool(path, poolSize));
+        context = new UploadingContext(NutFilePool.getOrCreatePool(path, poolSize));
         context.setBufferSize(buffer);
         context.setCharset(charset);
         context.setMaxFileSize(maxFileSize);
