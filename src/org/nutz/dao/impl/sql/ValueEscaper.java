@@ -34,7 +34,7 @@ public class ValueEscaper {
      */
     public ValueEscaper add(char c, String s) {
         charStack.push(c);
-        escapeStack.push(s);
+        escapeStack.add(s);
         return this;
     }
 
@@ -45,7 +45,7 @@ public class ValueEscaper {
      */
     public ValueEscaper ready() {
         chars = charStack.toArray();
-        escapes = escapeStack.toArray();
+        escapes = escapeStack.toArray(new String[0]);
         return this;
     }
 

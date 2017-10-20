@@ -49,7 +49,7 @@ class VarIndexImpl implements VarIndex {
                 re.push(i);
             i++;
         }
-        return re.toArray();
+        return re.toIntArray();
     }
 
     public List<String> getOrders() {
@@ -68,7 +68,7 @@ class VarIndexImpl implements VarIndex {
         LinkedIntArray lia = indexes.get(name);
         if (null == lia)
             return null;
-        return lia.toArray();
+        return lia.toIntArray();
     }
 
     public Set<String> names() {

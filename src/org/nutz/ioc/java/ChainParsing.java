@@ -91,12 +91,12 @@ public class ChainParsing {
             // (...) in func
             else if (c == '(') {
                 String funcName = Strings.trim(clearStringBuffer());
-                argss.push(new LinkedArray<ChainNode>(ChainNode.class, 5));
+                argss.add(new LinkedArray<ChainNode>(5));
                 ends.push(')');
                 i++;
                 parse();
                 ends.popLast();
-                ChainNode[] args = argss.popLast().toArray();
+                ChainNode[] args = argss.remove(argss.size() - 1).toArray(new ChainNode[0]);
                 int pos = funcName.lastIndexOf('.');
                 // 嗯... 看来是静态方法调用 ...
                 if (pos > 0) {
@@ -208,7 +208,7 @@ public class ChainParsing {
     private void addNode(ChainNode node) {
         // For arguments
         if (argss.size() > 0) {
-            argss.last().push(node);
+            argss.last().add(node);
         }
         // First time
         else if (last == null) {
