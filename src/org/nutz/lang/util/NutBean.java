@@ -103,6 +103,8 @@ public interface NutBean extends Map<String, Object> {
 
     NutBean addv(String key, Object value);
 
+    NutBean addv2(String key, Object value);
+
     NutBean setv(String key, Object value);
 
     void unset(String key);
