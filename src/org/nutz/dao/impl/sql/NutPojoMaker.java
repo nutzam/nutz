@@ -42,13 +42,13 @@ public class NutPojoMaker implements PojoMaker {
         pojo.append(Pojos.Items.insertFields());
         pojo.append(Pojos.Items.insertValues());
         if (expert.isSupportAutoIncrement()) {
-        	MappingField mf = en.getIdField();
-        	if (mf != null && mf.isAutoIncreasement()) {
-        	    if (expert.isSupportGeneratedKeys()) {
+            MappingField mf = en.getIdField();
+            if (mf != null && mf.isAutoIncreasement()) {
+                if (expert.isSupportGeneratedKeys()) {
                     pojo.setAfter(new GeneratedKeys());
                     pojo.getContext().attr("RETURN_GENERATED_KEYS", true);
-        	    }
-        	}
+                }
+            }
         }
         return pojo;
     }
@@ -69,7 +69,7 @@ public class NutPojoMaker implements PojoMaker {
         pojo.append(Pojos.Items.entityViewName());
         return pojo;
     }
-    
+
     public Pojo makeQuery(String tableName) {
         return makeQuery(tableName, "*");
     }
@@ -107,29 +107,32 @@ public class NutPojoMaker implements PojoMaker {
     }
 
     static class GeneratedKeys implements PojoCallback {
-    	
-    	public Object invoke(Connection conn, ResultSet rs, final Pojo pojo, Statement stmt) throws SQLException {
-			final ResultSet _rs = stmt.getGeneratedKeys();
-			Object obj = pojo.getOperatingObject();
-			if (obj instanceof Map) {
-			    obj = Arrays.asList(obj);
-			}
-			Lang.each(obj, new Each<Object>() {
-				public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop, LoopException {
-					try {
-						if (!_rs.next())
-							throw new ExitLoop();
-						Object key = _rs.getObject(1);
-						pojo.getEntity().getIdField().setValue(ele, key);
-					} catch (SQLException e) {
-						throw new DaoException(e);
-					}
-				}
-			});
-			return pojo.getOperatingObject();
-		}
+
+        public Object invoke(Connection conn, ResultSet rs, final Pojo pojo, Statement stmt)
+                throws SQLException {
+            final ResultSet _rs = stmt.getGeneratedKeys();
+            Object obj = pojo.getOperatingObject();
+            if (obj instanceof Map) {
+                obj = Arrays.asList(obj);
+            }
+            Lang.each(obj, new Each<Object>() {
+                public void invoke(int index, Object ele, int length)
+                        throws ExitLoop, ContinueLoop, LoopException {
+                    try {
+                        if (!_rs.next())
+                            throw new ExitLoop();
+                        Object key = _rs.getObject(1);
+                        pojo.getEntity().getIdField().setValue(ele, key);
+                    }
+                    catch (SQLException e) {
+                        throw new DaoException(e);
+                    }
+                }
+            });
+            return pojo.getOperatingObject();
+        }
     }
-    
+
     @Override
     public Pojo makeQueryByJoin(final Entity<?> en, String regex) {
         final Pojo pojo = Pojos.pojo(expert, en, SqlType.SELECT);
@@ -149,23 +152,24 @@ public class NutPojoMaker implements PojoMaker {
         en.visitOne(null, regex, new LinkVisitor() {
             public void visit(Object obj, LinkField lnk) {
                 Entity<?> lnkEntity = lnk.getLinkedEntity();
-                String LJ = String.format("LEFT JOIN %s ON %s.%s = %s.%s", 
-                                          lnkEntity.getTableName(), 
-                                          en.getTableName(), lnk.getHostField().getColumnNameInSql(),
-                                          lnkEntity.getTableName(), lnk.getLinkedField().getColumnNameInSql());
+                String LJ = String.format("LEFT JOIN %s ON %s.%s = %s.%s",
+                                          lnkEntity.getTableName(),
+                                          en.getTableName(),
+                                          lnk.getHostField().getColumnNameInSql(),
+                                          lnkEntity.getTableName(),
+                                          lnk.getLinkedField().getColumnNameInSql());
                 pojo.append(Pojos.Items.wrap(LJ));
                 index[0]++;
             }
         });
         return pojo;
     }
-    
-    @SuppressWarnings("serial")
+
     protected static class QueryJoinFeilds extends NoParamsPItem {
-        
+
         protected Entity<?> en;
         protected boolean main;
-        
+
         public QueryJoinFeilds(Entity<?> en, boolean main) {
             this.en = en;
             this.main = main;
@@ -180,7 +184,10 @@ public class NutPojoMaker implements PojoMaker {
 
             for (MappingField ef : efs) {
                 if (fm == null || fm.match(ef.getName())) {
-                    sb.append(en.getTableName()).append(".").append(ef.getColumnNameInSql()).append(" as ");
+                    sb.append(en.getTableName())
+                      .append(".")
+                      .append(ef.getColumnNameInSql())
+                      .append(" as ");
                     if (!main)
                         sb.append(en.getTableName()).append("_z_");
                     sb.append(ef.getColumnNameInSql()).append(',');
