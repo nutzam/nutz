@@ -195,6 +195,8 @@ public class NutLoading implements Loading {
                     continue;
                 if (Mirror.getAnnotationDeep(method, At.class) == null)
                     continue;
+                if (method.getDeclaringClass() != module) // fix issue #1337，不显示继承父类入口函数       
+                    continue;
                 // 增加到映射中
                 ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);
                 info.setViewMakers(makers);
