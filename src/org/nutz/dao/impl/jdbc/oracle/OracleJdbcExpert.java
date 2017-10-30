@@ -1,14 +1,5 @@
 package org.nutz.dao.impl.jdbc.oracle;
 
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.nutz.dao.DB;
 import org.nutz.dao.Dao;
 import org.nutz.dao.Sqls;
@@ -28,7 +19,26 @@ import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Pojos;
 import org.nutz.lang.Mirror;
 
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class OracleJdbcExpert extends AbstractJdbcExpert {
+
+	//指定oracle表空间的TableMeta' key
+    private static final String META_TABLESPACE = "oracle-tablespace";
+	
+	//oracle 创建表时指定表空间的默认sql
+    private static String CTS = "tablespace %s\n" +
+            "  pctfree 10\n" +
+            "  initrans 1\n" +
+            "  maxtrans 255\n" +
+            "  storage\n" +
+            "  (\n" +
+            "    initial 64K\n" +
+            "    minextents 1\n" +
+            "    maxextents unlimited\n" +
+            "  )";
 
     private static String CSEQ = "CREATE SEQUENCE ${T}_${F}_SEQ  MINVALUE 1"
                                  + " MAXVALUE 999999999999 INCREMENT BY 1 START"
@@ -43,6 +53,7 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
                                  + " SELECT ${T}_${F}_seq.nextval into :new.${F} FROM dual;"
                                  + " END IF;"
                                  + " END ${T}_${F}_ST;";
+
 
     public OracleJdbcExpert(JdbcExpertConfigFile conf) {
         super(conf);
@@ -87,6 +98,11 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
 
         // 结束表字段设置
         sb.setCharAt(sb.length() - 1, ')');
+
+		//指定表空间
+        if(en.hasMeta(META_TABLESPACE)){
+            sb.append(String.format(CTS, en.getMeta(META_TABLESPACE)));
+        }
 
         List<Sql> sqls = new ArrayList<Sql>();
         sqls.add(Sqls.create(sb.toString()));
