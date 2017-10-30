@@ -1332,6 +1332,99 @@ public class Images {
     }
 
     /**
+     * 文字生成图片，黑底白字。
+     * 
+     * @param content
+     *            文字内容
+     * @return 图像
+     */
+    public static BufferedImage createText(String content) {
+        return createText(content, 0, 0, null, null, null, 0, Font.PLAIN);
+    }
+
+    /**
+     * 文字生成图片
+     * 
+     * @param content
+     *            文字内容
+     * @param width
+     *            图片宽度，默认256
+     * @param height
+     *            图片高度，默认256
+     * @param fontColor
+     *            文字颜色 默认白色
+     * @param bgColor
+     *            背景颜色 默认黑色
+     * @param fontName
+     *            字体名称 需运行环境中已有该字体名称
+     * @param fontSize
+     *            字体大小
+     * @param fontStyle
+     *            字体样式 Font.PLAIN || Font.BOLD || Font.ITALIC
+     * @return 图像
+     */
+    public static BufferedImage createText(String content,
+                                           int width,
+                                           int height,
+                                           String fontColor,
+                                           String bgColor,
+                                           String fontName,
+                                           int fontSize,
+                                           int fontStyle) {
+        // 处理下参数
+        if (Strings.isBlank(content)) {
+            return null;
+        }
+        if (width <= 0) {
+            width = 256;
+        }
+        if (height <= 0) {
+            height = 256;
+        }
+        if (Strings.isBlank(fontColor)) {
+            fontColor = "#FFF";
+        }
+        if (Strings.isBlank(bgColor)) {
+            bgColor = "#000";
+        }
+        if (fontSize <= 0) {
+            fontSize = height / 2;
+        }
+        if (fontStyle < 0 || fontStyle > 2) {
+            fontStyle = Font.BOLD;
+        }
+        // 准备
+        BufferedImage im;
+        Graphics2D gc;
+        Color colorFont = Colors.as(fontColor);
+        Color colorBg = Colors.as(bgColor);
+        // 判断图片格式
+        int imageType = BufferedImage.TYPE_INT_RGB;
+        if (colorFont.getAlpha() < 255 || colorBg.getAlpha() < 255) {
+            imageType = BufferedImage.TYPE_INT_ARGB;
+        }
+        // 生成背景
+        im = new BufferedImage(width, height, imageType);
+        gc = im.createGraphics();
+        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        gc.setBackground(colorBg);
+        gc.clearRect(0, 0, width, height);
+        // 写入文字
+        Font cFont = getFont(fontName, fontStyle, fontSize);
+        gc.setColor(colorFont);
+        gc.setFont(cFont);
+        FontMetrics cFontM = gc.getFontMetrics(cFont);
+        int cW = cFontM.stringWidth(content);
+        int ascent = cFontM.getAscent(); // 取得Ascent
+        int descent = cFontM.getDescent(); // 取得Descent
+        int x, y;
+        x = width / 2 - cW / 2;
+        y = (height - (ascent + descent)) / 2 + ascent;
+        gc.drawString(content, x, y);
+        return im;
+    }
+
+    /**
      * 根据名字生成头像，英文采用第一个字母，中文2个字使用2个字，超过2个字采用第一个字
      * 
      * @param name
@@ -1372,57 +1465,13 @@ public class Images {
         if (Strings.isBlank(name)) {
             return null;
         }
-        if (size <= 0) {
-            size = 256;
-        }
-        if (Strings.isBlank(fontColor)) {
-            fontColor = "#FFF";
-        }
-        if (Strings.isBlank(bgColor)) {
-            bgColor = "#000";
-        }
-        if (fontSize <= 0) {
-            fontSize = size / 2;
-        }
-        if (fontStyle < 0 || fontStyle > 2) {
-            fontStyle = Font.BOLD;
-        }
-
         // 分析要写入的文字
         String content = name;
         if (name.length() > 2) {
             content = ("" + name.charAt(0));
         }
         content = content.toUpperCase();
-        // 准备参数
-        BufferedImage im;
-        Graphics2D gc;
-        Color colorFont = Colors.as(fontColor);
-        Color colorBg = Colors.as(bgColor);
-        // 判断图片格式
-        int imageType = BufferedImage.TYPE_INT_RGB;
-        if (colorFont.getAlpha() < 255 || colorBg.getAlpha() < 255) {
-            imageType = BufferedImage.TYPE_INT_ARGB;
-        }
-        // 生成背景
-        im = new BufferedImage(size, size, imageType);
-        gc = im.createGraphics();
-        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        gc.setBackground(colorBg);
-        gc.clearRect(0, 0, size, size);
-        // 写入文字
-        Font cFont = getFont(fontName, fontStyle, fontSize);
-        gc.setColor(colorFont);
-        gc.setFont(cFont);
-        FontMetrics cFontM = gc.getFontMetrics(cFont);
-        int cW = cFontM.stringWidth(content);
-        int ascent = cFontM.getAscent(); // 取得Ascent
-        int descent = cFontM.getDescent(); // 取得Descent
-        int x, y;
-        x = size / 2 - cW / 2;
-        y = (size - (ascent + descent)) / 2 + ascent;
-        gc.drawString(content, x, y);
-        return im;
+        return createText(content, size, size, fontColor, bgColor, fontName, fontSize, fontStyle);
     }
 
 }
