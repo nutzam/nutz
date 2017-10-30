@@ -25,7 +25,10 @@ import java.util.List;
 
 public class OracleJdbcExpert extends AbstractJdbcExpert {
 
+	//指定oracle表空间的TableMeta' key
     private static final String META_TABLESPACE = "oracle-tablespace";
+	
+	//oracle 创建表时指定表空间的默认sql
     private static String CTS = "tablespace %s\n" +
             "  pctfree 10\n" +
             "  initrans 1\n" +
@@ -96,6 +99,7 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         // 结束表字段设置
         sb.setCharAt(sb.length() - 1, ')');
 
+		//指定表空间
         if(en.hasMeta(META_TABLESPACE)){
             sb.append(String.format(CTS, en.getMeta(META_TABLESPACE)));
         }
