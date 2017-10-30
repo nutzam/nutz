@@ -8,4 +8,8 @@ public abstract class Issue1212BaseAction {
     @At
     @Ok("http:200")
     public void sayhi(){}
+    
+    @At
+    @Ok("http:200")
+    public void saybye(){}
 }
