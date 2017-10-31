@@ -2,7 +2,6 @@ package org.nutz.mvc.impl;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +26,7 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.ActionChainMaker;
 import org.nutz.mvc.ActionInfo;
+import org.nutz.mvc.EntryMethodDeterminer;
 import org.nutz.mvc.Loading;
 import org.nutz.mvc.LoadingException;
 import org.nutz.mvc.MessageLoader;
@@ -36,10 +36,10 @@ import org.nutz.mvc.SessionProvider;
 import org.nutz.mvc.Setup;
 import org.nutz.mvc.UrlMapping;
 import org.nutz.mvc.ViewMaker;
-import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.ChainBy;
 import org.nutz.mvc.annotation.IocBy;
 import org.nutz.mvc.annotation.Localization;
+import org.nutz.mvc.annotation.Modules;
 import org.nutz.mvc.annotation.SessionBy;
 import org.nutz.mvc.annotation.SetupBy;
 import org.nutz.mvc.annotation.UrlMappingBy;
@@ -188,12 +188,20 @@ public class NutLoading implements Loading {
         /*
          * 分析所有的子模块
          */
+        EntryMethodDeterminer determiner; // fix issue #1337
+        try {
+            Modules ann = mainModule.getAnnotation(Modules.class);
+            Class<? extends EntryMethodDeterminer> determinerClass = ann.entryMethodDeterminer();
+            determiner = Mirror.me(determinerClass).born();
+        } catch (Throwable e) {
+            determiner = new NutEntryMethodDeterminer();
+        }
+        if (log.isDebugEnabled())
+            log.debugf("Use %s as EntryMethodDeterminer", determiner.getClass().getName());
         for (Class<?> module : modules) {
             ActionInfo moduleInfo = Loadings.createInfo(module).mergeWith(mainInfo);
             for (Method method : module.getMethods()) {
-                if (!Modifier.isPublic(method.getModifiers()) || method.isBridge())
-                    continue;
-                if (Mirror.getAnnotationDeep(method, At.class) == null)
+                if (!determiner.isEntryMethod(module, method))
                     continue;
                 // 增加到映射中
                 ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);

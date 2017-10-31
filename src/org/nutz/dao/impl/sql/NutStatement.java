@@ -195,7 +195,7 @@ public abstract class NutStatement implements DaoStatement {
         StringBuilder sb = new StringBuilder(sql);
         // 准备打印参数表
         Object[][] mtrx = this.getParamMatrix();
-        SqlFormat format = Daos.getSqlFormat().clone();
+        SqlFormat format = Daos.getSqlFormat();
         if (null != mtrx && mtrx.length > 0 && mtrx[0].length > 0) {
             if (format.isPrintParam()) {
                 // 计算每列最大宽度，以及获取列参数的内容

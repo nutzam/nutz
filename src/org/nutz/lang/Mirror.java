@@ -1889,10 +1889,7 @@ public class Mirror<T> {
                         }
                     }
                 }
-            }
-            catch (Exception e) {
-                break;
-            }
+            } catch (Exception e) {}
             klass = klass.getSuperclass();
         }
         for (Class klass2 : method.getDeclaringClass().getInterfaces()) {
@@ -1901,31 +1898,23 @@ public class Mirror<T> {
                 t = tmp.getAnnotation(annotationClass);
                 if (t != null)
                     return t;
-            }
-            catch (Exception e) {}
+            } catch (Exception e) {}
         }
         return null;
     }
 
     public static <T extends Annotation> T getAnnotationDeep(Class<?> type, Class<T> annotationClass) {
-        T t = type.getAnnotation(annotationClass);
+        Class<?> cc = type;
+        T t;
+        do {
+            t = cc.getAnnotation(annotationClass);
+            cc = cc.getSuperclass();
+        } while (null == t && cc != Object.class);
         if (t != null)
             return t;
-        Class<?> klass = type.getSuperclass();
-        while (klass != null && klass != Object.class) {
+        for (Class<?> klass : type.getInterfaces()) {
             try {
                 t = klass.getAnnotation(annotationClass);
-                if (t != null)
-                    return t;
-            }
-            catch (Exception e) {
-                break;
-            }
-            klass = klass.getSuperclass();
-        }
-        for (Class<?> klass2 : type.getInterfaces()) {
-            try {
-                t = klass2.getAnnotation(annotationClass);
                 if (t != null)
                     return t;
             }
