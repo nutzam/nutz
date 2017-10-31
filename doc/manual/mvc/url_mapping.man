@@ -276,5 +276,55 @@ web.xml 中的映射 - url-pattern
 		
 		这种映射方式基本是不会发生的，因为你需要让 Nutz.Mvc 控制一批 URL 而不是单个 URL。所以，你如果选择了这种模式
 		我就没话讲了，在 Nutz.Mvc 中你就全部匹配吧，惩罚你，哼！
+----------------------------------------------------------------------------------------------
+Nutz 中的Mvc注解继承
 
-
+	自1.r.55 起，Nutz中加入了注解继承功能，举个栗子:
+	{{{<JAVA>
+	// 父类
+	@Ok("jsp")
+	public abstract class RestfulAction{
+	    @At @GET
+	    public void list() {
+	    	
+	    }
+	    @At @GET @Ok("json")
+	    public QueryResult search() {
+	    	return null;
+	    }
+	}
+	// 子类
+	@At("/items") //父类的@Ok("jsp")在这里生效
+	public class MyAction extends RestfulAction {
+	    @Override
+	    public void list() {} //父类的@At @GET在这里生效
+	    @Override
+	    public QueryResult search() {} //父类的@At @GET @Ok("json")在这里生效
+	}
+	}}}
+	看到了吧，是不是很容易，父类的所有Mvc注解，都对应的在子类上生效，这个功能的初衷是可以让你少写那么一点配置信息，毕竟整天搬砖都是CRUD，虽然Nutz已经足够简便了，但配置写多了也会吐 ^_^
+	注意：{#FF0000;*这个版本中，子类还是要复写一下父类的方法，才能获得对应的入口方法映射，复写哪个，就会获得哪个}
+	------------------------------------------------------------------------------------------
+	自1.r.61起，wendal 加入了默认继承所有父类入口方法的功能，比如上面的例子，父类不变，子类这样写
+	{{{<JAVA>
+	@At("/items")
+	public class MyAction extends RestfulAction {
+	}
+	}}}
+	即可继承两个入口方法：
+	1. /items/list
+	2. /items/search
+	------------------------------------------------------------------------------------------
+	鉴于默认继承的特性，杀伤力太大，所以1.r.63中，增加了入口方法决断机制
+	你只要自己实现一个org.nutz.mvc.EntryDeterminer，然后在MainModule上申明下注解@Determiner使用它就好了，比如这样：
+	{{{<JAVA>
+	@Determiner(MyDeterminer.class)
+	public class MainModule {}
+	}}}
+	当然，EntryDeterminer也支持从Ioc中获取，像这样
+	{{{<JAVA>
+	@Determiner(value = MyDeterminer.class, args = {"ioc:myDeterminer"})
+	public class MainModule {}
+	}}}
+	其中 "myDeterminer" 就是你这个决断期在 Ioc 容器中的名字。
+	
