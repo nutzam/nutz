@@ -6,6 +6,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.nutz.mvc.EntryMethodDeterminer;
+import org.nutz.mvc.impl.NutEntryMethodDeterminer;
+
 /**
  * 声明了一个应用所有的模块
  * 
@@ -44,4 +47,9 @@ public @interface Modules {
      * @return 用哪些动态加载器加载模块
      */
     String[] by() default {};
+    
+    /**
+     * 入口方法判断器
+     */
+    Class<? extends EntryMethodDeterminer> entryMethodDeterminer() default NutEntryMethodDeterminer.class;
 }
