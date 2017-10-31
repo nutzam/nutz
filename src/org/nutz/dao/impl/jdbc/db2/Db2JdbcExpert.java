@@ -16,6 +16,9 @@ import org.nutz.dao.util.Pojos;
 
 public class Db2JdbcExpert extends AbstractJdbcExpert {
 
+	//表空间key
+    private static final String META_TABLESPACE = "db2-tablespace";
+
     public Db2JdbcExpert(JdbcExpertConfigFile conf) {
         super(conf);
     }
@@ -54,6 +57,11 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
         }
         // 结束表字段设置
         sb.setCharAt(sb.length() - 1, ')');
+
+        //指定表空间
+        if(en.hasMeta(META_TABLESPACE)){
+            sb.append(String.format(" IN %s", en.getMeta(META_TABLESPACE)) );
+        }
 
         // 执行创建语句
         dao.execute(Sqls.create(sb.toString()));
