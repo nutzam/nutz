@@ -83,6 +83,7 @@ import org.nutz.dao.test.meta.issue928.BeanWithSet;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.blob.SimpleBlob;
 import org.nutz.dao.util.blob.SimpleClob;
+import org.nutz.dao.util.cri.SimpleCriteria;
 import org.nutz.json.Json;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
@@ -1073,5 +1074,18 @@ public class SimpleDaoTest extends DaoCase {
             //再干掉
             dao.truncate(dao.getEntity(Pet.class).getTableName());
             assertTrue(dao.count(Pet.class) == 0);
+    }
+    
+    @Test
+    public void test_issue1342() {
+        if (!dao.meta().isMySql())
+            return;
+        if (dao.exists("t_issue_1342"))
+            dao.drop("t_issue_1342");
+        dao.execute(Sqls.create("create table t_issue_1342(id INT AUTO_INCREMENT,order_day DATETIME NOT NULL, PRIMARY KEY(id, order_day)) "
+                + "PARTITION BY RANGE(YEAR(order_day)) ("
+                + "PARTITION p_2017 VALUES LESS THAN (2017),"
+                + "PARTITION p_catchall VALUES LESS THAN MAXVALUE)"));
+        dao.query("t_issue_1342", new SimpleCriteria("partition(p_2017)"));
     }
 }

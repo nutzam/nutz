@@ -22,14 +22,23 @@ public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy, 
     private GroupBySet groupBy;
 
     private Pager pager;
+    
+    private String anything;
 
     public SimpleCriteria() {
         where = new SqlExpressionGroup();
         orderBy = new OrderBySet();
         groupBy = new GroupBySet();
     }
+    
+    public SimpleCriteria(String anything) {
+        this();
+        this.anything = anything;
+    }
 
     public void joinSql(Entity<?> en, StringBuilder sb) {
+        if (anything != null)
+            sb.append(anything);
         where.joinSql(en, sb);
         groupBy.joinSql(en, sb);
         orderBy.joinSql(en, sb);
