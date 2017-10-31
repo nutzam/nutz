@@ -3,7 +3,8 @@ package org.nutz.dao.impl.sql.callback;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
@@ -16,7 +17,7 @@ import org.nutz.dao.sql.SqlCallback;
 public class QueryBooleanCallback implements SqlCallback {
 
     public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
-        ArrayList<Boolean> list = new ArrayList<Boolean>();
+        List<Boolean> list = new LinkedList<Boolean>();
         if (null != rs && rs.next())
             list.add(rs.getBoolean(1));
         boolean[] array = new boolean[list.size()];
