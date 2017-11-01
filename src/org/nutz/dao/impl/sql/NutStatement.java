@@ -259,21 +259,23 @@ public abstract class NutStatement implements DaoStatement {
         if (mtrx.length > 0) {
             for (; i < mtrx[0].length; i++) {
                 sb.append(ss[i]);
-                Object obj = param2obj(mtrx[0][i]);
-                sb.append(Sqls.formatFieldValue(obj));
+                Object tmp = mtrx[0][i];
+                if (tmp == null) {
+                    sb.append("NULL");
+                }
+                else if (tmp instanceof Number || tmp instanceof Boolean) {
+                    sb.append(tmp.toString());
+                } else {
+                    sb.append(Sqls.formatFieldValue(param2String(tmp)));
+                }
             }
         }
         for (; i < ss.length; i++)
         	sb.append(ss[i]);
         return sb.toString();
     }
-    
-    protected String param2String(Object obj) {
-        obj = param2obj(obj);
-        return obj instanceof String ? (String)obj : Castors.me().castToString(obj);
-    }
 
-    protected Object param2obj(Object obj) {
+    protected String param2String(Object obj) {
         if (obj == null)
             return "NULL";
         if (obj instanceof CharSequence)
@@ -307,7 +309,7 @@ public abstract class NutStatement implements DaoStatement {
             } else if (obj instanceof Reader) {
                 obj = "*Reader@" + obj.hashCode();
             }
-            return obj;
+            return Castors.me().castToString(obj);
         }
     }
 
