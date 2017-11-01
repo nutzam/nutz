@@ -53,6 +53,7 @@ import org.nutz.dao.test.meta.Abc;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.ColDefineUser;
 import org.nutz.dao.test.meta.DynamicTable;
+import org.nutz.dao.test.meta.IssuePkVersion;
 import org.nutz.dao.test.meta.Master;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.PetObj;
@@ -1087,5 +1088,25 @@ public class SimpleDaoTest extends DaoCase {
                 + "PARTITION p_2017 VALUES LESS THAN (2017),"
                 + "PARTITION p_catchall VALUES LESS THAN MAXVALUE)"));
         dao.query("t_issue_1342", new SimpleCriteria("partition(p_2017)"));
+    }
+    
+    @Test
+    public void test_pk_version() {
+        dao.create(IssuePkVersion.class, true);
+        for (int i = 0; i < 10; i++) {
+            IssuePkVersion v = new IssuePkVersion();
+            v.setName("abc_" + i);
+            v.setAge(i);
+            v.setPrice(i*100);
+            v.setVersion(0);
+            dao.insert(v);
+        }
+        assertEquals(10, dao.count(IssuePkVersion.class));
+        IssuePkVersion ve = dao.fetchx(IssuePkVersion.class, "abc_1", 1);
+        assertNotNull(ve);
+        ve.setPrice(99);
+        dao.updateWithVersion(ve);
+        ve = dao.fetchx(IssuePkVersion.class, "abc_1", 1);
+        assertEquals(99, ve.getPrice());
     }
 }
