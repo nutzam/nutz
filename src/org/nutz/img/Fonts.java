@@ -208,9 +208,9 @@ public class Fonts {
     }
 
     private static Font find(String[] fnames, int style, int size) {
-        for (String font : fnames) {
-            if (fontMap.getBoolean(font, false)) {
-                return new Font(font, style, size);
+        for (String name : fnames) {
+            if (exist(name)) {
+                return new Font(name, style, size);
             }
         }
         return null;
