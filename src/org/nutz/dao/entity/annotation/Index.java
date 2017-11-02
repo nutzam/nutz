@@ -20,7 +20,7 @@ public @interface Index {
     /**
      * 索引的名称
      */
-    String name();
+    String name() default "";
 
     /**
      * 按顺序给出索引的字段名（推荐，用 Java 的字段名）
