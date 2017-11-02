@@ -62,6 +62,7 @@ import org.nutz.dao.test.meta.PojoWithNull;
 import org.nutz.dao.test.meta.SimplePOJO;
 import org.nutz.dao.test.meta.Soldier;
 import org.nutz.dao.test.meta.Tank;
+import org.nutz.dao.test.meta.TestMysqlIndex;
 import org.nutz.dao.test.meta.UseBlobClob;
 import org.nutz.dao.test.meta.issue1074.PojoSql;
 import org.nutz.dao.test.meta.issue1163.Issue1163Master;
@@ -1108,5 +1109,13 @@ public class SimpleDaoTest extends DaoCase {
         dao.updateWithVersion(ve);
         ve = dao.fetchx(IssuePkVersion.class, "abc_1", 1);
         assertEquals(99, ve.getPrice());
+    }
+    
+    @Test
+    public void test_mysql_migration() {
+        dao.create(TestMysqlIndex.class, true);
+        
+        System.out.println("==================================");
+        Daos.migration(dao, TestMysqlIndex.class, true, false, true);
     }
 }
