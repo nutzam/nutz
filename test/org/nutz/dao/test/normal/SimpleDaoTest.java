@@ -1113,6 +1113,8 @@ public class SimpleDaoTest extends DaoCase {
     
     @Test
     public void test_mysql_migration() {
+        if (!dao.meta().isMySql())
+            return;
         dao.create(TestMysqlIndex.class, true);
         
         System.out.println("==================================");
