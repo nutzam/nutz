@@ -1,9 +1,11 @@
 package org.nutz.lang.random;
 
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.UUID;
 
+import org.nutz.img.Colors;
 import org.nutz.lang.Strings;
 
 /**
@@ -305,6 +307,24 @@ public abstract class R {
         if (r == null)
             throw new NullPointerException("Random MUST NOT NULL");
         R.r = r;
+    }
+
+    /**
+     * 获取一个随机颜色
+     * 
+     * @return 颜色
+     */
+    public static Color color() {
+        return Colors.randomColor();
+    }
+
+    /**
+     * 获取一个随机颜色，格式为“rgb(12, 25, 33)”
+     * 
+     * @return rgb格式字符串
+     */
+    public static String colorRGB() {
+        return Colors.toRGB(Colors.randomColor());
     }
 
     public static Random get() {

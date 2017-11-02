@@ -43,6 +43,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.OS;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
+import org.nutz.lang.random.R;
 import org.nutz.lang.util.NutMap;
 import org.nutz.repo.Base64;
 
@@ -1310,6 +1311,18 @@ public class Images {
         }
     }
 
+    private static Font randomFont(int style, int size) {
+        Font font = null;
+        while (font == null) {
+            try {
+                int index = R.random(0, commonFonts.length - 1);
+                font = getFont(commonFonts[index], style, size);
+            }
+            catch (Exception e) {}
+        }
+        return font;
+    }
+
     private static Font getFont(String name, int style, int size) {
         if (Strings.isBlank(name)) {
             // 尝试微软雅黑，黑体，宋体等常见字体
@@ -1472,6 +1485,86 @@ public class Images {
         }
         content = content.toUpperCase();
         return createText(content, size, size, fontColor, bgColor, fontName, fontSize, fontStyle);
+    }
+
+    /**
+     * 根据指定文字内容，生成验证码，字体颜色随机变化。
+     * 
+     * @param content
+     *            文字内容
+     * @return 图像
+     */
+    public static BufferedImage createCaptcha(String content) {
+        return createCaptcha(content, 0, 0, null, "FFF");
+    }
+
+    /**
+     * 根据指定文字内容，生成验证码
+     * 
+     * @param content
+     *            文字内容
+     * @param width
+     *            图片宽度
+     * @param height
+     *            图片高度
+     * @param fontColor
+     *            文字颜色 默认黑色
+     * @param bgColor
+     *            背景颜色 默认白色
+     * @return 图像
+     */
+    public static BufferedImage createCaptcha(String content,
+                                              int width,
+                                              int height,
+                                              String fontColor,
+                                              String bgColor) {
+        // 处理下参数
+        if (Strings.isBlank(content)) {
+            return null;
+        }
+        // 计算文字
+        if (width <= 0) {
+            width = content.length() * 20 + 20;
+        }
+        if (height <= 0) {
+            height = 30;
+        }
+        Color userColor = Strings.isBlank(fontColor) ? null : Colors.as(fontColor);
+        // 准备
+        BufferedImage im;
+        Graphics2D gc;
+        Color colorBg = Strings.isBlank(bgColor) ? Colors.randomColor() : Colors.as(bgColor);
+        // 生成背景
+        im = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        gc = im.createGraphics();
+        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        gc.setBackground(colorBg);
+        gc.clearRect(0, 0, width, height);
+        // 加入干扰线
+        for (int i = 0; i < 7; i++) {
+            gc.setColor(userColor == null ? Colors.randomColor(10, 250) : userColor);
+            int x = R.random(0, width);
+            int y = R.random(0, height);
+            int x1 = R.random(0, width);
+            int y1 = R.random(0, height);
+            gc.drawLine(x, y, x1, y1);
+        }
+        int x = 10;
+        // 写入文字
+        for (int i = 0; i < content.length(); i++) {
+            Font textFont = randomFont(R.random(0, 3), R.random(height - 10, height - 5));
+            gc.setColor(userColor == null ? Colors.randomColor(10, 250) : userColor);
+            gc.setFont(textFont);
+            // 设置字体旋转角度
+            int degree = R.random(0, 64) % 30;
+            // 正向角度
+            gc.rotate(degree * Math.PI / 180, x, 20);
+            gc.drawString(content.charAt(i) + "", x, 20);
+            // 反向角度
+            gc.rotate(-degree * Math.PI / 180, x, 20);
+            x += 20;
+        }
+        return im;
     }
 
 }

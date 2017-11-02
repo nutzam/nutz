@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.nutz.lang.Strings;
+import org.nutz.lang.random.R;
 
 /**
  * 提供快捷的解析颜色值的方法
@@ -131,6 +132,53 @@ public final class Colors {
 
         // 全都匹配不上，返回黑色
         return Color.BLACK;
+    }
+
+    /**
+     * Color转换为 “rgb(12, 25, 33)” 格式字符串
+     * 
+     * @param color
+     *            颜色
+     * @return 文字格式
+     */
+    public static String toRGB(Color color) {
+        return String.format("rgb(%d, %d, %d)", color.getRed(), color.getGreen(), color.getBlue());
+    }
+
+    /**
+     * 获取一个制定范围内的颜色
+     * 
+     * @param min
+     *            最小取值，范围0-255
+     * @param max
+     *            最大取值，范围0-255
+     * @return 颜色
+     */
+    public static Color randomColor(int min, int max) {
+        if (min > 255) {
+            min = 255;
+        }
+        if (min < 0) {
+            min = 0;
+        }
+        if (max > 255) {
+            max = 255;
+        }
+        if (max < 0) {
+            max = 0;
+        }
+        return new Color(min + R.random(0, max - min),
+                         min + R.random(0, max - min),
+                         min + R.random(0, max - min));
+    }
+
+    /**
+     * 获取一个随机颜色
+     * 
+     * @return 颜色
+     */
+    public static Color randomColor() {
+        return randomColor(0, 255);
     }
 
     /**
