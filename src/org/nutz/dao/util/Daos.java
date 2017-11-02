@@ -801,7 +801,9 @@ public abstract class Daos {
         List<String> delIndexs = new ArrayList<String>();
         List<EntityIndex> indexs = en.getIndexes();
         for (EntityIndex index : indexs) {
-            sqls.add(dao.getJdbcExpert().createIndexSql(en, index));
+            if (!indexsHis.contains(index.getName())) {
+                sqls.add(dao.getJdbcExpert().createIndexSql(en, index));
+            }
         }
         if (!Lang.isEmpty(sqls)) {
             uis.setSqlsAdd(sqls.toArray(new Sql[0]));
