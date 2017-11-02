@@ -34,6 +34,7 @@ import org.nutz.ioc.meta.IocValue;
 import org.nutz.json.JsonShape.Type;
 import org.nutz.json.generic.IntKeyMap;
 import org.nutz.json.impl.JsonRenderImpl;
+import org.nutz.json.meta.EnumWithFields;
 import org.nutz.json.meta.Issue1199;
 import org.nutz.json.meta.JA;
 import org.nutz.json.meta.JB;
@@ -1120,5 +1121,10 @@ public class JsonTest {
         IntKeyMap map = Json.fromJson(IntKeyMap.class, str);
         System.out.println(map);
         assertTrue(map.getAbc().containsKey(1));
+    }
+    
+    @Test
+    public void test_t() {
+        System.out.println(Json.toJson(new NutMap("abc", EnumWithFields.STAY_PUSH)));
     }
 }
