@@ -589,7 +589,7 @@ public class Images {
             twistRank = 1;
         }
         BufferedImage bufImg = read(srcIm);
-        double period = R.random(0, 10) + 3;// 波形的幅度倍数，越大扭曲的程序越高，一般为3
+        double period = R.random(0, 7) + 3;// 波形的幅度倍数，越大扭曲的程序越高，一般为3
         double phase = R.random(0, 6);// 波形的起始相位，取值区间（0-2＊PI）
         int width = bufImg.getWidth();
         int height = bufImg.getHeight();
@@ -613,17 +613,17 @@ public class Images {
     }
 
     // 扭曲相关计算, 后面的参数有两种组合
-    // 1. width, x, y
-    // 2. height, y, x
+    // 1. height, x, y
+    // 2. width, y, x
     private static int pos4twist(double rank,
                                  double phase,
                                  double period,
-                                 int wOrH,
+                                 int hOrW,
                                  int xOrY,
                                  int yOrX) {
-        double dyOrX = Math.PI * rank * xOrY / wOrH + phase;
+        double dyOrX = Math.PI * rank * yOrX / hOrW + phase;
         double dxOrY = Math.sin(dyOrX);
-        return yOrX + (int) (dxOrY * period);
+        return xOrY + (int) (dxOrY * period);
     }
 
     public static final int WATERMARK_TOP_LEFT = 1;
