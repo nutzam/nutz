@@ -1,11 +1,13 @@
 package org.nutz.lang.random;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.UUID;
 
 import org.nutz.img.Colors;
+import org.nutz.img.Fonts;
 import org.nutz.lang.Strings;
 
 /**
@@ -325,6 +327,19 @@ public abstract class R {
      */
     public static String colorRGB() {
         return Colors.toRGB(Colors.randomColor());
+    }
+
+    /**
+     * 获取一个随机字体，不能保证非英文字符产生乱码问题
+     * 
+     * @param style
+     *            字体样式 支持：Font.PLAIN Font.BOLD Font.ITALIC
+     * @param size
+     *            字体大小
+     * @return 字体
+     */
+    public static Font font(int style, int size) {
+        return Fonts.random(style, size);
     }
 
     public static Random get() {
