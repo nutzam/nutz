@@ -573,6 +573,55 @@ public class Images {
         return flipImage;
     }
 
+    /**
+     * 扭曲图片
+     * 
+     * @param srcIm
+     *            源图片
+     * @param twistRank
+     *            扭曲程度，默认为1，数值越大扭曲程度越高
+     * @param bgColor
+     *            扭曲后露出的底图填充色，一般选择要源图片的背景色
+     * @return 被扭曲后的图片
+     */
+    public static BufferedImage twist(Object srcIm, double twistRank, String bgColor) {
+        BufferedImage bufImg = read(srcIm);
+        double period = R.random(0, 7) + 3;// 波形的幅度倍数，越大扭曲的程序越高，一般为3
+        double phase = R.random(0, 6);// 波形的起始相位，取值区间（0-2＊PI）
+        int width = bufImg.getWidth();
+        int height = bufImg.getHeight();
+
+        BufferedImage tarIm = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D gc = tarIm.createGraphics();
+        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        gc.setBackground(Strings.isBlank(bgColor) ? Colors.randomColor() : Colors.as(bgColor));
+        gc.clearRect(0, 0, width, height);
+
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                int nX = x4twist(twistRank, phase, period, height, i, j);
+                int nY = j;
+                if (nX >= 0 && nX < width && nY >= 0 && nY < height) {
+                    tarIm.setRGB(nX, nY, bufImg.getRGB(i, j));
+                }
+            }
+        }
+        return tarIm;
+    }
+
+    // 扭曲相关计算
+    private static int x4twist(double rank, double phase, double period, int height, int x, int y) {
+        double dx = Math.PI * rank * y / height + phase;
+        double dy = Math.sin(dx);
+        return x + (int) (dy * period);
+    }
+
+    private static int y4twist(double rank, double phase, double period, int width, int x, int y) {
+        double dy = Math.PI * rank * x / width + phase;
+        double dx = Math.sin(dy);
+        return y + (int) (dx * period);
+    }
+
     public static final int WATERMARK_TOP_LEFT = 1;
     public static final int WATERMARK_TOP_CENTER = 2;
     public static final int WATERMARK_TOP_RIGHT = 3;
@@ -1357,7 +1406,6 @@ public class Images {
             return null;
         }
         boolean isChinese = Strings.isChineseCharacter(content.charAt(0));
-        // 计算文字
         if (width <= 0) {
             // 中文字体的话，间距需要多一些
             width = content.length() * (isChinese ? 25 : 20) + 20;
@@ -1366,46 +1414,47 @@ public class Images {
             height = 30;
         }
         Color userColor = Strings.isBlank(fontColor) ? null : Colors.as(fontColor);
-        // 准备
-        BufferedImage im;
-        Graphics2D gc;
         Color colorBg = Strings.isBlank(bgColor) ? Colors.randomColor() : Colors.as(bgColor);
+
         // 生成背景
-        im = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        gc = im.createGraphics();
+        BufferedImage im = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D gc = im.createGraphics();
         gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         gc.setBackground(colorBg);
         gc.clearRect(0, 0, width, height);
+
         // 加入干扰线
         for (int i = 0; i < 7; i++) {
-            gc.setColor(userColor == null ? Colors.randomColor(10, 250) : userColor);
+            gc.setColor(userColor == null ? Colors.randomColor(5, 250) : userColor);
             int x = R.random(0, width);
             int y = R.random(0, height);
             int x1 = R.random(0, width);
             int y1 = R.random(0, height);
             gc.drawLine(x, y, x1, y1);
         }
-        int x = 10;
-        int y = isChinese ? 22 : 20;
+
         // 写入文字
+        int rx = 10;
+        int ry = isChinese ? 22 : 20;
         for (int i = 0; i < content.length(); i++) {
             int fontStyle = R.random(0, 3);
             int fontSize = R.random(height - 10, height - 5);
             Font textFont = Strings.isBlank(fontName) ? Fonts.random(fontStyle, fontSize)
-                                                      : Fonts.get(fontName,
-                                                                      fontStyle,
-                                                                      fontSize);
+                                                      : Fonts.get(fontName, fontStyle, fontSize);
             gc.setColor(userColor == null ? Colors.randomColor(10, 250) : userColor);
             gc.setFont(textFont);
             // 设置字体旋转角度
             int degree = R.random(0, 64) % 30;
             // 正向角度
-            gc.rotate(degree * Math.PI / 180, x, y);
-            gc.drawString(content.charAt(i) + "", x, y);
+            gc.rotate(degree * Math.PI / 180, rx, ry);
+            gc.drawString(content.charAt(i) + "", rx, ry);
             // 反向角度
-            gc.rotate(-degree * Math.PI / 180, x, y);
-            x += isChinese ? 25 : 20;
+            gc.rotate(-degree * Math.PI / 180, rx, ry);
+            rx += isChinese ? 25 : 20;
         }
+
+        // 图像扭曲
+
         return im;
     }
 
