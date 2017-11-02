@@ -14,6 +14,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Stopwatch;
 import org.nutz.lang.born.Borning;
+import org.nutz.lang.util.Disks;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
@@ -27,7 +28,7 @@ public class FastClassFactoryTest extends Assert {
 
     @Test
     public void testInvokeObjectMethodObjectArray() throws Throwable {
-        DefaultClassDefiner.debugDir = "/nutz_fastclass/";
+        DefaultClassDefiner.debugDir = Disks.normalize("~/nutz_fastclass/");
         FastMethod fc = FastMethodFactory.make(Pet.class.getConstructor());
         fc = FastMethodFactory.make(Pet.class.getConstructor());
         //net.sf.cglib.reflect.FastClass fc2 = net.sf.cglib.reflect.FastClass.create(Pet.class);
