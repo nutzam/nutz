@@ -1495,7 +1495,7 @@ public class Images {
      * @return 图像
      */
     public static BufferedImage createCaptcha(String content) {
-        return createCaptcha(content, 0, 0, null, "FFF");
+        return createCaptcha(content, 0, 0, null, "FFF", null);
     }
 
     /**
@@ -1517,14 +1517,17 @@ public class Images {
                                               int width,
                                               int height,
                                               String fontColor,
-                                              String bgColor) {
+                                              String bgColor,
+                                              String fontName) {
         // 处理下参数
         if (Strings.isBlank(content)) {
             return null;
         }
+        boolean isChinese = Strings.isChineseCharacter(content.charAt(0));
         // 计算文字
         if (width <= 0) {
-            width = content.length() * 20 + 20;
+            // 中文字体的话，间距需要多一些
+            width = content.length() * (isChinese ? 25 : 20) + 20;
         }
         if (height <= 0) {
             height = 30;
@@ -1550,19 +1553,23 @@ public class Images {
             gc.drawLine(x, y, x1, y1);
         }
         int x = 10;
+        int y = isChinese ? 22 : 20;
         // 写入文字
         for (int i = 0; i < content.length(); i++) {
-            Font textFont = randomFont(R.random(0, 3), R.random(height - 10, height - 5));
+            int fontStyle = R.random(0, 3);
+            int fontSize = R.random(height - 10, height - 5);
+            Font textFont = Strings.isBlank(fontName) ? randomFont(fontStyle, fontSize)
+                                                      : getFont(fontName, fontStyle, fontSize);
             gc.setColor(userColor == null ? Colors.randomColor(10, 250) : userColor);
             gc.setFont(textFont);
             // 设置字体旋转角度
             int degree = R.random(0, 64) % 30;
             // 正向角度
-            gc.rotate(degree * Math.PI / 180, x, 20);
-            gc.drawString(content.charAt(i) + "", x, 20);
+            gc.rotate(degree * Math.PI / 180, x, y);
+            gc.drawString(content.charAt(i) + "", x, y);
             // 反向角度
-            gc.rotate(-degree * Math.PI / 180, x, 20);
-            x += 20;
+            gc.rotate(-degree * Math.PI / 180, x, y);
+            x += isChinese ? 25 : 20;
         }
         return im;
     }
