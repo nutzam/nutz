@@ -299,7 +299,12 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
             sb.append("Create Index ");
         if (index.getName().contains("$"))
             sb.append(TableName.render(new CharSegment(index.getName())));
-        else
+        else if (index.getName().isEmpty()) {
+            sb.append(index.isUnique() ? "UX_" : "IX_");
+            sb.append(en.getTableName());
+            for (EntityField field : index.getFields())
+                sb.append("_").append(field.getName());
+        } else
             sb.append(index.getName());
         sb.append(" ON ").append(en.getTableName()).append("(");
         for (EntityField field : index.getFields()) {
