@@ -602,7 +602,7 @@ public class Images {
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                int nX = x4twist(twistRank, phase, period, height, i, j);
+                int nX = pos4twist(twistRank, phase, period, height, i, j);
                 int nY = j;
                 if (nX >= 0 && nX < width && nY >= 0 && nY < height) {
                     tarIm.setRGB(nX, nY, bufImg.getRGB(i, j));
@@ -612,17 +612,18 @@ public class Images {
         return tarIm;
     }
 
-    // 扭曲相关计算
-    private static int x4twist(double rank, double phase, double period, int height, int x, int y) {
-        double dx = Math.PI * rank * y / height + phase;
-        double dy = Math.sin(dx);
-        return x + (int) (dy * period);
-    }
-
-    private static int y4twist(double rank, double phase, double period, int width, int x, int y) {
-        double dy = Math.PI * rank * x / width + phase;
-        double dx = Math.sin(dy);
-        return y + (int) (dx * period);
+    // 扭曲相关计算, 后面的参数有两种组合
+    // 1. width, x, y
+    // 2. height, y, x
+    private static int pos4twist(double rank,
+                                 double phase,
+                                 double period,
+                                 int wOrH,
+                                 int xOrY,
+                                 int yOrX) {
+        double dyOrX = Math.PI * rank * xOrY / wOrH + phase;
+        double dxOrY = Math.sin(dyOrX);
+        return yOrX + (int) (dxOrY * period);
     }
 
     public static final int WATERMARK_TOP_LEFT = 1;
