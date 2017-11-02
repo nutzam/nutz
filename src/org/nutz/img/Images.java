@@ -585,8 +585,11 @@ public class Images {
      * @return 被扭曲后的图片
      */
     public static BufferedImage twist(Object srcIm, double twistRank, String bgColor) {
+        if (twistRank <= 0) {
+            twistRank = 1;
+        }
         BufferedImage bufImg = read(srcIm);
-        double period = R.random(0, 7) + 3;// 波形的幅度倍数，越大扭曲的程序越高，一般为3
+        double period = R.random(0, 10) + 3;// 波形的幅度倍数，越大扭曲的程序越高，一般为3
         double phase = R.random(0, 6);// 波形的起始相位，取值区间（0-2＊PI）
         int width = bufImg.getWidth();
         int height = bufImg.getHeight();
@@ -1454,7 +1457,7 @@ public class Images {
         }
 
         // 图像扭曲
-
+        im = twist(im, 1, bgColor);
         return im;
     }
 
