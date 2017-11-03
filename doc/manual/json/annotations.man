@@ -3,11 +3,12 @@
 #author: wendal(wendal1985@gmail.com)
 -------------------------------------------------------------------------------------------------
 
-共3个注解
+共4个注解
 
 	|| {#080;@JsonField}		|| 属性或方法 || 控制是否忽略该属性,控制输出及日期格式 ||
 	|| {#080;@JsonIgnore}		|| 属性或方法 || 专门用于控制忽略特定数值 ||
 	|| {#080;@ToJson}	        || 方法           || 自定义本对象转换为Json字符串的逻辑||
+	|| {#080;@JsonShape}		|| 枚举类 || 用于控制枚举类型的转换格式 ||
 
 ---------------------------------------------------------------------------	
 JsonField的ignore配置详解
@@ -173,6 +174,86 @@ ToJson注解
 		}
 		return "{age:" + age + ", name: null}"; // 我就喜欢返回个null,有值也返回null,咋的,就是这么任性
 	}
+	}}}
+
+----------------------------------------------
+
+JsonShape注解
+
+	这个注解可以让你控制枚举类型的输出格式, 某些情况下对于复杂枚举对象我们需要输出枚举的属性字段就可以使用这个注解.
+	
+	注解值为Type类型枚举,有ORDINAL, NAME, OBJECT
+
+	ORDINAL	输出枚举的有ORDINAL
+
+	NAME 输出枚举的NAME
+
+	OBJECT 对于简单枚举类说输出的是枚举的NAME,因为我们也不知道怎么把简单枚举转换成object造型;对于复杂枚举将输出枚举的详细属性
+
+	具体使用请参考一下测试用例
+	
+	{{{<Java>
+	@JsonShape(Type.OBJECT)
+    public static enum TT {
+
+        T("t", 1);
+        String name;
+
+        int index;
+
+        /**
+         * @param name
+         * @param index
+         */
+        private TT(String name, int index) {
+            this.name = name;
+            this.index = index;
+        }
+
+        /**
+         * @return the name
+         */
+        public String getName() {
+            return name;
+        }
+
+        /**
+         * @param name
+         *            the name to set
+         */
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        /**
+         * @return the index
+         */
+        public int getIndex() {
+            return index;
+        }
+
+        /**
+         * @param index
+         *            the index to set
+         */
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+    }
+
+    @JsonShape
+    public static enum K {
+        K, T
+    }
+
+    @Test
+    public void test_enum() {
+        assertEquals("\"K\"", Json.toJson(K.K));
+        String expected = "{\n" + "   \"name\": \"t\",\n" + "   \"index\": 1\n" + "}";
+        assertEquals(expected, Json.toJson(TT.T));
+    }
+
 	}}}
 
 ----------------------------------------------
