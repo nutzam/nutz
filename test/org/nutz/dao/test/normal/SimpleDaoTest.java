@@ -1119,5 +1119,10 @@ public class SimpleDaoTest extends DaoCase {
         
         System.out.println("==================================");
         Daos.migration(dao, TestMysqlIndex.class, true, false, true);
+        System.out.println("==================================");
+        Daos.migration(dao, TestMysqlIndex.class, true, false, true);
+        Daos.migration(dao, TestMysqlIndex.class, true, false, true);
+        Daos.migration(dao, TestMysqlIndex.class, true, false, true);
+        System.out.println("==================================");
     }
 }

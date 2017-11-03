@@ -6,12 +6,15 @@ import org.nutz.dao.entity.annotation.Table;
 import org.nutz.dao.entity.annotation.TableIndexes;
 
 @Table("t_test_mysql_index")
-@TableIndexes(@Index(fields = "test1",name = "index_test1"))
+@TableIndexes({@Index(fields = "test1",name = "index_test1"), @Index(fields="age")})
 public class TestMysqlIndex {
 
     private String test1;
     @Name
     private String name;
+    
+    private int age;
+    
     public String getTest1() {
         return test1;
     }
@@ -23,6 +26,12 @@ public class TestMysqlIndex {
     }
     public void setName(String name) {
         this.name = name;
+    }
+    public int getAge() {
+        return age;
+    }
+    public void setAge(int age) {
+        this.age = age;
     }
     
     

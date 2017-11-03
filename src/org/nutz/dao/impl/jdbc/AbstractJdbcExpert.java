@@ -14,7 +14,6 @@ import java.util.Set;
 import org.nutz.dao.Dao;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.Sqls;
-import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.entity.EntityIndex;
@@ -297,15 +296,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
             sb.append("Create UNIQUE Index ");
         else
             sb.append("Create Index ");
-        if (index.getName().contains("$"))
-            sb.append(TableName.render(new CharSegment(index.getName())));
-        else if (index.getName().isEmpty()) {
-            sb.append(index.isUnique() ? "UX_" : "IX_");
-            sb.append(en.getTableName());
-            for (EntityField field : index.getFields())
-                sb.append("_").append(field.getName());
-        } else
-            sb.append(index.getName());
+        sb.append(index.getName(en));
         sb.append(" ON ").append(en.getTableName()).append("(");
         for (EntityField field : index.getFields()) {
             if (field instanceof MappingField) {

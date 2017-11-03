@@ -305,7 +305,7 @@ public class NutEntity<T> implements Entity<T> {
      */
     public void addIndex(EntityIndex index) {
         indexes.add(index);
-        indexMap.put(index.getName(), index);
+        indexMap.put(index.getName(this), index);
     }
 
     public Context wrapAsContext(Object obj) {

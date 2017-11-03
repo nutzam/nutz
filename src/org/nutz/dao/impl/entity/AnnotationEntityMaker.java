@@ -552,7 +552,7 @@ public class AnnotationEntityMaker implements EntityMaker {
                     throw Lang.makeThrow("Fail to find field '%s' in '%s' by @Index(%s:%s)",
                                          indexName,
                                          en.getType().getName(),
-                                         index.getName(),
+                                         index.getName(en),
                                          Lang.concat(idx.fields()));
                 }
                 index.addField(ef);

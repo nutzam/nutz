@@ -801,21 +801,26 @@ public abstract class Daos {
         List<String> delIndexs = new ArrayList<String>();
         List<EntityIndex> indexs = en.getIndexes();
         for (EntityIndex index : indexs) {
-            if (!indexsHis.contains(index.getName())) {
+            String indexName = index.getName(en);
+            // 索引存在, 不要动
+            if (indexsHis.contains(indexName)) {
+                indexsHis.remove(indexName);
+            }
+            // 不存在,则新增
+            else {
                 sqls.add(dao.getJdbcExpert().createIndexSql(en, index));
             }
         }
-        if (!Lang.isEmpty(sqls)) {
-            uis.setSqlsAdd(sqls.toArray(new Sql[0]));
-        }
+        uis.setSqlsAdd(sqls.toArray(new Sql[sqls.size()]));
+        // 剩余的,就是要删除的
         Iterator<String> iterator = indexsHis.iterator();
         List<Sql> delSqls = new ArrayList<Sql>();
         while (iterator.hasNext()) {
-            String index = iterator.next();
-            if (delIndexs.contains(index) || Lang.equals("PRIMARY", index)) {
+            String indexName = iterator.next();
+            if (delIndexs.contains(indexName) || Lang.equals("PRIMARY", indexName)) {
                 continue;
             }
-            MappingField mf = en.getColumn(index);
+            MappingField mf = en.getColumn(indexName);
             if (mf != null) {
                 if (mf.isName())
                     continue;
@@ -823,16 +828,14 @@ public abstract class Daos {
             if (dao.meta().isSqlServer()) {
                 delSqls.add(Sqls.createf("DROP INDEX %s.%s",
                                          getTableName(dao, en, t),
-                                         index));
+                                         indexName));
             } else {
                 delSqls.add(Sqls.createf("ALTER TABLE %s DROP INDEX %s",
                                          getTableName(dao, en, t),
-                                         index));
+                                         indexName));
             }
         }
-        if (!Lang.isEmpty(delSqls)) {
-            uis.setSqlsDel(Lang.collection2array(delSqls));
-        }
+        uis.setSqlsDel(delSqls.toArray(new Sql[delSqls.size()]));
         return uis;
     }
 
