@@ -6,6 +6,7 @@ import java.util.Date;
 
 import org.junit.Test;
 import org.nutz.lang.Times;
+import org.nutz.lang.util.NutType;
 
 /**
  * @author kerbores@gmail.com
@@ -31,6 +32,9 @@ public class GenericTypeTest {
         int id;
         String name;
         Date birth;
+        public B() {
+            // TODO Auto-generated constructor stub
+        }
         /**
          * @param id
          * @param name
@@ -69,7 +73,7 @@ public class GenericTypeTest {
         A a = new A();
         a.setData(new B(1, "test", Times.now()));
         String s = Json.toJson(a);
-        A<B> a1 = Json.fromJson(A.class, s);
+        A<B> a1 = (A<B>) Json.fromJson(new NutType(A.class, B.class), s);
         assertEquals(B.class, a1.getData().getClass());
     }
 
