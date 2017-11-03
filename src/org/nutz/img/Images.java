@@ -1439,7 +1439,7 @@ public class Images {
 
         // 写入文字
         int rx = 10;
-        int ry = isChinese ? 22 : 20;
+        int ry = isChinese ? height - 8 : height - 10;
         for (int i = 0; i < content.length(); i++) {
             int fontStyle = R.random(0, 3);
             int fontSize = R.random(height - 10, height - 5);
@@ -1454,7 +1454,7 @@ public class Images {
             gc.drawString(content.charAt(i) + "", rx, ry);
             // 反向角度
             gc.rotate(-degree * Math.PI / 180, rx, ry);
-            rx += isChinese ? 25 : 20;
+            rx += (isChinese ? 5 : 0) + width / (content.length() + 2);
         }
 
         // 图像扭曲
