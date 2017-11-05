@@ -12,6 +12,8 @@ import org.nutz.ioc.annotation.InjectName;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
+import org.nutz.lang.util.NutMap;
+import org.nutz.mvc.ViewModel;
 import org.nutz.mvc.adaptor.JsonAdaptor;
 import org.nutz.mvc.adaptor.PairAdaptor;
 import org.nutz.mvc.adaptor.meta.Pet;
@@ -203,5 +205,14 @@ public class AdaptorTestModule extends BaseWebappTest {
     @AdaptBy(type=PairAdaptor.class)
     public Object issue1310(@Param("::")Issue1277 issue) {
         return issue;
+    }
+    
+    
+    @At("/issue13xx")
+    @Ok("re")
+    public String re_view_with_NutMap(@Param("..")NutMap map, ViewModel viewModel) {
+        viewModel.put("id", 1); // 如果正确, 应该会输出 {id:1}
+        map.put("id", 2); // 如果走了NutMap的话,应该输出 {id:2}
+        return "json";
     }
 }
