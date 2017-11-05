@@ -147,4 +147,6 @@ public interface NutConfig {
     ViewMaker[] getViewMakers();
     
     void setViewMakers(ViewMaker[] makers);
+    
+    void setMainModule(Class<?> mainModule);
 }
