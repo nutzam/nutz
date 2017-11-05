@@ -1623,4 +1623,14 @@ public abstract class Times {
         cal.add(Calendar.HOUR, hour);
         return cal.getTime();
     }
+
+    /**
+     * Unix时间戳转Date日期
+     *
+     * @param timestamp 时间戳
+     * @return 日期
+     */
+    public static Date ts2D(long timestamp) {
+        return new Date(Long.parseLong(timestamp * 1000 + ""));
+    }
 }
