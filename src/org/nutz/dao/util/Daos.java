@@ -1032,6 +1032,41 @@ public abstract class Daos {
 
     /** varchar 字段的默认字段长度 */
     public static int DEFAULT_VARCHAR_WIDTH = 128;
+    
+    /** Table&View名称生成器 */
+    public static interface NameMaker {
+        String make(Class<?> klass);
+    }
+    /** 默认的Table名称生成器 */
+    private static NameMaker tableNameMaker = new NameMaker() {
+        @Override
+        public String make(Class<?> klass) {
+            return Strings.lowerWord(klass.getSimpleName(), '_');
+        }
+    };
+    /** 默认的View名称生成器 */
+    private static NameMaker viewNameMaker = new NameMaker() {
+        @Override
+        public String make(Class<?> klass) {
+            return Strings.lowerWord(klass.getSimpleName(), '_');
+        }
+    };
+
+    public static NameMaker getTableNameMaker() {
+        return tableNameMaker;
+    }
+
+    public static void setTableNameMaker(NameMaker tableNameMaker) {
+        Daos.tableNameMaker = tableNameMaker;
+    }
+
+    public static NameMaker getViewNameMaker() {
+        return viewNameMaker;
+    }
+
+    public static void setViewNameMaker(NameMaker viewNameMaker) {
+        Daos.viewNameMaker = viewNameMaker;
+    }
 }
 
 class ExtDaoInvocationHandler implements InvocationHandler {
