@@ -62,6 +62,10 @@ public class SimpleDataSource implements DataSource {
     public void setJdbcUrl(String jdbcUrl) {
         this.jdbcUrl = jdbcUrl;
     }
+    
+    public void setUrl(String url) {
+        this.jdbcUrl = url;
+    }
 
     //加载Nutz所支持的数据库的驱动!!
     static {
