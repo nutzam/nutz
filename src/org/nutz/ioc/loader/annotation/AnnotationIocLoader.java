@@ -41,6 +41,10 @@ public class AnnotationIocLoader implements IocLoader {
     private HashMap<String, IocObject> map = new HashMap<String, IocObject>();
     
     protected String[] packages;
+    
+    public AnnotationIocLoader() {
+        packages = new String[0];
+    }
 
     public AnnotationIocLoader(String... packages) {
         for (String packageZ : packages) {
@@ -60,7 +64,7 @@ public class AnnotationIocLoader implements IocLoader {
         this.packages = packages;
     }
 
-    protected void addClass(Class<?> classZ) {
+    public void addClass(Class<?> classZ) {
         if (classZ.isInterface()
             || classZ.isMemberClass()
             || classZ.isEnum()
