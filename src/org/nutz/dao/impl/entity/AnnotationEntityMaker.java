@@ -112,13 +112,14 @@ public class AnnotationEntityMaker implements EntityMaker {
          */
         String tableName = null;
         if (null == ti.annTable) {
-        	tableName = Strings.lowerWord(type.getSimpleName(), '_');
+        	tableName = Daos.getTableNameMaker().make(type);
         	if (null == ti.annView)
         	    log.warnf("No @Table found, fallback to use table name='%s' for type '%s'", tableName, type.getName());
         } else {
-        	tableName = ti.annTable.value();
+        	tableName = ti.annTable.value().isEmpty() ? Daos.getTableNameMaker().make(type) : ti.annTable.value();
         }
-        String viewName = null == ti.annView ? tableName : ti.annView.value();
+        String viewName = null == ti.annView ? tableName : 
+            (ti.annView.value().isEmpty() ? Daos.getViewNameMaker().make(type) : ti.annView.value());
         en.setTableName(tableName);
         en.setViewName(viewName);
 
