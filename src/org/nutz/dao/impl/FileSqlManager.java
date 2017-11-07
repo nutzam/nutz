@@ -38,6 +38,9 @@ public class FileSqlManager implements SqlManager {
     
     protected String pairBegin = "/*";
     protected String pairEnd = "*/";
+    
+    public FileSqlManager() {
+    }
 
     public FileSqlManager(String... paths) {
         this.paths = paths;
