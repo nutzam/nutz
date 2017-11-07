@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -959,5 +960,113 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
 
     public int evalInt(String el) {
         return (Integer) El.eval(Lang.context(this), el);
+    }
+
+    /**
+     * 指定key进行自增操作，并返回结果
+     * 
+     * @param key
+     *            键
+     * @return 自增后结果
+     */
+    public int intIncrement(String key) {
+        return intIncrement(key, 1);
+    }
+
+    /**
+     * 指定key进行增操作，并返回结果
+     * 
+     * @param key
+     *            键
+     * @param number
+     *            数值
+     * @return 增后结果
+     */
+    public int intIncrement(String key, int number) {
+        int val = getInt(key, 0);
+        val += number;
+        setv(key, val);
+        return val;
+    }
+
+    /**
+     * 指定key进行自减操作，并返回结果
+     * 
+     * @param key
+     *            键
+     * @return 自减后结果
+     */
+    public int intDecrement(String key) {
+        return intDecrement(key, 1);
+    }
+
+    /**
+     * 指定key进行减操作，并返回结果
+     * 
+     * @param key
+     *            键
+     * @param number
+     *            数值
+     * @return 减后结果
+     */
+    public int intDecrement(String key, int number) {
+        int val = getInt(key, 0);
+        val -= number;
+        setv(key, val);
+        return val;
+    }
+
+    /**
+     * 指定key进行自增操作，并返回结果
+     * 
+     * @param key
+     *            键
+     * @return 自增后结果
+     */
+    public long longIncrement(String key) {
+        return longIncrement(key, 1);
+    }
+
+    /**
+     * 指定key进行增操作，并返回结果
+     * 
+     * @param key
+     *            键
+     * @param number
+     *            数值
+     * @return 增后结果
+     */
+    public long longIncrement(String key, long number) {
+        long val = getLong(key, 0);
+        val += number;
+        setv(key, val);
+        return val;
+    }
+
+    /**
+     * 指定key进行自减操作，并返回结果
+     * 
+     * @param key
+     *            键
+     * @return 自减后结果
+     */
+    public long longDecrement(String key) {
+        return longDecrement(key, 1);
+    }
+
+    /**
+     * 指定key进行减操作，并返回结果
+     * 
+     * @param key
+     *            键
+     * @param number
+     *            数值
+     * @return 减后结果
+     */
+    public long longDecrement(String key, long number) {
+        long val = getLong(key, 0);
+        val -= number;
+        setv(key, val);
+        return val;
     }
 }
