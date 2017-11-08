@@ -247,4 +247,20 @@ public interface NutBean extends Map<String, Object> {
      * @return 是否匹配
      */
     boolean match(Map<String, Object> map);
+
+    int intIncrement(String key);
+
+    int intIncrement(String key, int number);
+
+    int intDecrement(String key);
+
+    int intDecrement(String key, int number);
+
+    long longIncrement(String key);
+
+    long longIncrement(String key, long number);
+
+    long longDecrement(String key);
+
+    long longDecrement(String key, long number);
 }
