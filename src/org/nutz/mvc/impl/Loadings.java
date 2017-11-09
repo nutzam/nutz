@@ -83,9 +83,9 @@ public abstract class Loadings {
         evalActionFilters(ai, Mirror.getAnnotationDeep(method, Filters.class));
         evalOk(ai, Mirror.getAnnotationDeep(method, Ok.class));
         evalFail(ai, Mirror.getAnnotationDeep(method, Fail.class));
+        evalHttpMethod(ai, method, Mirror.getAnnotationDeep(method, At.class));
         evalAt(ai, Mirror.getAnnotationDeep(method, At.class), method.getName());
         evalActionChainMaker(ai, Mirror.getAnnotationDeep(method, Chain.class));
-        evalHttpMethod(ai, method, Mirror.getAnnotationDeep(method, At.class));
         ai.setMethod(method);
         return ai;
     }
@@ -217,8 +217,9 @@ public abstract class Loadings {
             ai.getHttpMethods().add("PUT");
         if (Mirror.getAnnotationDeep(method, DELETE.class) != null)
             ai.getHttpMethods().add("DELETE");
-        for (String m : at.methods()) {
-            ai.getHttpMethods().add(m.toUpperCase());
+        if (at != null) {
+            for (String m : at.methods())
+                ai.getHttpMethods().add(m.toUpperCase());
         }
     }
 
@@ -240,6 +241,9 @@ public abstract class Loadings {
                 ai.setPathKey(at.key());
             if (at.top())
                 ai.setPathTop(true);
+        } else if (!Lang.isEmpty(ai.getHttpMethods())) {
+            // 没有@At但有GET POST等
+            ai.setPaths(Lang.array("/" + def.toLowerCase()));
         }
     }
 
