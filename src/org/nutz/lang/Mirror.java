@@ -1923,4 +1923,23 @@ public class Mirror<T> {
         return null;
     }
 
+    public static boolean isAnnotationExists(Method method, Class<? extends Annotation>... classes) {
+        if (!Lang.isEmptyArray(classes)) {
+            for (Class<? extends Annotation> klass : classes) {
+                if (getAnnotationDeep(method, klass) != null)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isAnnotationExists(Class<?> type, Class<? extends Annotation>... classes) {
+        if (!Lang.isEmptyArray(classes)) {
+            for (Class<? extends Annotation> klass : classes) {
+                if (getAnnotationDeep(type, klass) != null)
+                    return true;
+            }
+        }
+        return false;
+    }
 }

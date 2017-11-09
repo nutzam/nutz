@@ -26,6 +26,7 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.ActionFilter;
 import org.nutz.mvc.ActionInfo;
+import org.nutz.mvc.EntryDeterminer;
 import org.nutz.mvc.HttpAdaptor;
 import org.nutz.mvc.ModuleScanner;
 import org.nutz.mvc.Mvcs;
@@ -90,7 +91,10 @@ public abstract class Loadings {
         return ai;
     }
 
-    public static Set<Class<?>> scanModules(Ioc ioc, Class<?> mainModule) {
+    private static EntryDeterminer determiner = null;
+
+    public static Set<Class<?>> scanModules(Ioc ioc, Class<?> mainModule, EntryDeterminer determiner) {
+        Loadings.determiner = determiner;
         Modules ann = mainModule.getAnnotation(Modules.class);
         boolean scan = null == ann ? true : ann.scanPackage();
         // 准备扫描列表
@@ -338,7 +342,7 @@ public abstract class Loadings {
             || Modifier.isInterface(classModify))
             return false;
         for (Method method : classZ.getMethods())
-            if (Mirror.getAnnotationDeep(method, At.class) != null)
+            if (determiner.isEntry(classZ, method))
                 return true;
         return false;
     }

@@ -1,9 +1,7 @@
 package org.nutz.mvc.impl;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
 
 import org.nutz.lang.Mirror;
 import org.nutz.mvc.EntryDeterminer;
@@ -41,10 +39,7 @@ public class NutEntryDeterminer implements EntryDeterminer {
     public boolean isEntry(Class<?> module, Method method) {
         if (!Modifier.isPublic(method.getModifiers()) || method.isBridge())
             return false;
-        for (Class<? extends Annotation> klass : Arrays.asList(At.class, GET.class, POST.class, PUT.class, DELETE.class))
-            if (Mirror.getAnnotationDeep(method, klass) != null)
-                return true;
-        return false;
+        return Mirror.isAnnotationExists(method, At.class, GET.class, POST.class, PUT.class, DELETE.class);
     }
 
 }

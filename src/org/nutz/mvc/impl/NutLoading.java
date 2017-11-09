@@ -173,11 +173,15 @@ public class NutLoading implements Loading {
          */
         ActionInfo mainInfo = Loadings.createInfo(mainModule);
 
+        // fix issue #1337
+        Determiner ann = mainModule.getAnnotation(Determiner.class);
+        EntryDeterminer determiner = null == ann ? new NutEntryDeterminer() : Loadings.evalObj(config, ann.value(), ann.args());
+
         /*
          * 准备要加载的模块列表
          */
         // TODO 为什么用Set呢? 用List不是更快吗?
-        Set<Class<?>> modules = Loadings.scanModules(ioc, mainModule);
+        Set<Class<?>> modules = Loadings.scanModules(ioc, mainModule, determiner);
 
         if (modules.isEmpty()) {
             if (log.isWarnEnabled())
@@ -188,9 +192,6 @@ public class NutLoading implements Loading {
         /*
          * 分析所有的子模块
          */
-        // fix issue #1337
-        Determiner ann = mainModule.getAnnotation(Determiner.class);
-        EntryDeterminer determiner = null == ann ? new NutEntryDeterminer() : Loadings.evalObj(config, ann.value(), ann.args());
         if (log.isDebugEnabled())
             log.debugf("Use %s as EntryMethodDeterminer", determiner.getClass().getName());
         for (Class<?> module : modules) {
