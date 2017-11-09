@@ -217,9 +217,10 @@ public abstract class Loadings {
             ai.getHttpMethods().add("PUT");
         if (Mirror.getAnnotationDeep(method, DELETE.class) != null)
             ai.getHttpMethods().add("DELETE");
-        if (at != null)
+        if (at != null) {
             for (String m : at.methods())
                 ai.getHttpMethods().add(m.toUpperCase());
+        }
     }
 
     public static void evalActionChainMaker(ActionInfo ai, Chain cb) {
