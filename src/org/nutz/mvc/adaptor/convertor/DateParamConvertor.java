@@ -23,7 +23,7 @@ public class DateParamConvertor implements ParamConvertor {
             if (Strings.isBlank(locale))
                 dfmt = new SimpleDateFormat(datefmt);
             else
-                dfmt = new SimpleDateFormat(datefmt, Locale.forLanguageTag(locale));
+                dfmt = new SimpleDateFormat(datefmt, new Locale(locale));
         }
     }
 

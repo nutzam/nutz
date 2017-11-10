@@ -148,7 +148,7 @@ public class TimesTest {
     public void long_long_time() throws ParseException {
         String fmt = "EEE MMM dd yyyy HH:mm:ss 'GMT'Z (z)";
         String time = "Thu May 25 2017 07:16:32 GMT+0800 (CST)";
-        new SimpleDateFormat(fmt, Locale.forLanguageTag("en")).parse(time);
-        Times.parse(new SimpleDateFormat(fmt, Locale.forLanguageTag("en")), time);
+        new SimpleDateFormat(fmt, new Locale("en")).parse(time);
+        Times.parse(new SimpleDateFormat(fmt, new Locale("en")), time);
     }
 }
