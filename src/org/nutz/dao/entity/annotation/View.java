@@ -14,9 +14,9 @@ import java.lang.annotation.Target;
  * 那么在你的类上声明本注解，就可以做到这一点
  * <p>
  * 和注解 '@Table' 一样，注解的值可以支持动态表名
- * 
+ *
  * @author zozoh(zozohtnt@gmail.com)
- * 
+ *
  * @see org.nutz.dao.entity.annotation.Table
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -24,4 +24,10 @@ import java.lang.annotation.Target;
 @Documented
 public @interface View {
     String value() default "";
+
+    /** 视图前缀 */
+    String prefix() default "";
+
+    /** 视图后缀 */
+    String suffix() default "";
 }

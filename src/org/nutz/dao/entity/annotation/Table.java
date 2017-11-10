@@ -8,17 +8,17 @@ import java.lang.annotation.Target;
 
 /**
  * 声明的一个 POJO 所对应的数据表名。
- * 
+ *
  * <h4>动态数据表名的支持</h4><br>
- * 
+ *
  * 注解支持字符串模板的写法，在你希望放置动态表名变量的位置插入 ${变量名}，比如：
- * 
+ *
  * <pre>
  * &#064;Table(&quot;t_tab_${cid}&quot;)
  * public class MyPojo{
  *     ...
  * </pre>
- * 
+ *
  * 那么 ${cid} 会在运行时被 Nutz.Dao 替换。
  * <p>
  * 如何为动态表名设置参数，请参看 <b>org.nutz.dao.TableName</b> 的文档说明
@@ -51,11 +51,11 @@ import java.lang.annotation.Target;
  * <div class="hr"></div></li>
  * </ul>
  * </ol>
- * 
+ *
  * @author zozoh
- * 
+ *
  * @see org.nutz.dao.TableName
- * 
+ *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
@@ -64,4 +64,9 @@ public @interface Table {
 
     String value() default "";
 
+    /** 表名前缀 */
+    String prefix() default "";
+
+    /** 表名后缀 */
+    String suffix() default "";
 }
