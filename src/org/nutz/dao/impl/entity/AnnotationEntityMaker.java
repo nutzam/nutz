@@ -116,7 +116,7 @@ public class AnnotationEntityMaker implements EntityMaker {
         	if (null == ti.annView)
         	    log.warnf("No @Table found, fallback to use table name='%s' for type '%s'", tableName, type.getName());
         } else {
-        	tableName = ti.annTable.value().isEmpty() ? Daos.getTableNameMaker().make(type) : ti.annTable.value();
+        	    tableName = ti.annTable.value().isEmpty() ? Daos.getTableNameMaker().make(type) : ti.annTable.value();
             if (!ti.annTable.prefix().isEmpty()) {
                 tableName = ti.annTable.prefix() + tableName;
             }
@@ -129,16 +129,12 @@ public class AnnotationEntityMaker implements EntityMaker {
         if (null == ti.annView) {
             viewName = tableName;
         } else {
-            if (ti.annView.value().isEmpty()) {
-                viewName = Daos.getViewNameMaker().make(type);
-            } else {
-                viewName = ti.annView.value();
-                if (!ti.annView.prefix().isEmpty()) {
-                    viewName = ti.annView.prefix() + viewName;
-                }
-                if (!ti.annView.suffix().isEmpty()) {
-                    viewName = viewName + ti.annView.suffix();
-                }
+            viewName = ti.annView.value().isEmpty() ? Daos.getViewNameMaker().make(type) : ti.annView.value();
+            if (!ti.annView.prefix().isEmpty()) {
+                viewName = ti.annView.prefix() + viewName;
+            }
+            if (!ti.annView.suffix().isEmpty()) {
+                viewName = viewName + ti.annView.suffix();
             }
         }
 
