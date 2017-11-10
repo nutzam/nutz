@@ -1,5 +1,6 @@
 package org.nutz.dao.impl;
 
+import java.io.Closeable;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -20,7 +21,7 @@ import org.nutz.log.Logs;
  * 
  * @author wendal(wendal1985@gmail.com)
  */
-public class SimpleDataSource implements DataSource {
+public class SimpleDataSource implements DataSource, Closeable {
 
 	private static final Log log = Logs.get();
 	
