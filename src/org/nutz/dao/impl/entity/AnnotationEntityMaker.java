@@ -60,7 +60,7 @@ import org.nutz.trans.Trans;
 
 /**
  * 根据一个 Class 对象生成 Entity 的实例
- * 
+ *
  * @author zozoh(zozohtnt@gmail.com)
  */
 public class AnnotationEntityMaker implements EntityMaker {
@@ -72,10 +72,10 @@ public class AnnotationEntityMaker implements EntityMaker {
     private JdbcExpert expert;
 
     private EntityHolder holder;
-    
+
     protected AnnotationEntityMaker() {
 	}
-    
+
     public void init(DataSource datasource, JdbcExpert expert, EntityHolder holder) {
     	this.datasource = datasource;
         this.expert = expert;
@@ -117,9 +117,31 @@ public class AnnotationEntityMaker implements EntityMaker {
         	    log.warnf("No @Table found, fallback to use table name='%s' for type '%s'", tableName, type.getName());
         } else {
         	tableName = ti.annTable.value().isEmpty() ? Daos.getTableNameMaker().make(type) : ti.annTable.value();
+            if (!ti.annTable.prefix().isEmpty()) {
+                tableName = ti.annTable.prefix() + tableName;
+            }
+            if (!ti.annTable.suffix().isEmpty()) {
+                tableName = tableName + ti.annTable.suffix();
+            }
         }
-        String viewName = null == ti.annView ? tableName : 
-            (ti.annView.value().isEmpty() ? Daos.getViewNameMaker().make(type) : ti.annView.value());
+
+        String viewName = null;
+        if (null == ti.annView) {
+            viewName = tableName;
+        } else {
+            if (ti.annView.value().isEmpty()) {
+                viewName = Daos.getViewNameMaker().make(type);
+            } else {
+                viewName = ti.annView.value();
+                if (!ti.annView.prefix().isEmpty()) {
+                    viewName = ti.annView.prefix() + viewName;
+                }
+                if (!ti.annView.suffix().isEmpty()) {
+                    viewName = viewName + ti.annView.suffix();
+                }
+            }
+        }
+
         en.setTableName(tableName);
         en.setViewName(viewName);
 
@@ -314,7 +336,7 @@ public class AnnotationEntityMaker implements EntityMaker {
 
     /**
      * 向父类递归查找实体的配置
-     * 
+     *
      * @param type
      *            实体类型
      * @return 实体表描述
@@ -333,7 +355,7 @@ public class AnnotationEntityMaker implements EntityMaker {
 
     /**
      * 根据 '@Next' 和 '@Prev' 的信息，生成一个 FieldMacroInfo 对象
-     * 
+     *
      * @param els
      *            表达式
      * @param sqls
@@ -371,7 +393,16 @@ public class AnnotationEntityMaker implements EntityMaker {
         }else{
             columnName = info.annColumn.value();
         }
-        
+
+        if (null != info.annColumn) {
+            if (!info.annColumn.prefix().isEmpty()) {
+                columnName = info.annColumn.prefix() + columnName;
+            }
+            if (!info.annColumn.suffix().isEmpty()) {
+                columnName = columnName + info.annColumn.suffix();
+            }
+        }
+
         ef.setColumnName(columnName);
         // 字段的注释
         boolean hasColumnComment = null != info.columnComment;
@@ -384,7 +415,7 @@ public class AnnotationEntityMaker implements EntityMaker {
                 ef.setColumnComment(comment);
             }
         }
-        
+
         //wjw(2017-04-10),add,version
         if(null != info.annColumn && info.annColumn.version()){
         	ef.setAsVersion();
@@ -487,7 +518,7 @@ public class AnnotationEntityMaker implements EntityMaker {
             ef.setColumnName(ef.getColumnName().toUpperCase());
         if (Daos.FORCE_WRAP_COLUMN_NAME || (info.annColumn != null && info.annColumn.wrap())) {
             ef.setColumnNameInSql(expert.wrapKeywork(columnName, true));
-        } 
+        }
         else if (Daos.CHECK_COLUMN_NAME_KEYWORD) {
             ef.setColumnNameInSql(expert.wrapKeywork(columnName, false));
         }
