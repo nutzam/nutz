@@ -129,6 +129,12 @@ public abstract class Pojos {
 			switch (en.getPkType()) {
 			case ID:
 				Number id = null != obj ? ((Number) en.getIdField().getValue(obj)) : null;
+				if (id == null && (en.getNameField() != null)) {
+					String name = (String) en.getNameField().getValue(obj);
+					if (!Strings.isBlank(name)) {
+						return cndName(en, name);
+					}
+				}
 				return cndId(en, id);
 			case NAME:
 				String name = null != obj ? Strings.sNull(en.getNameField().getValue(obj), null) : null;
