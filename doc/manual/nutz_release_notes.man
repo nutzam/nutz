@@ -1,92 +1,32 @@
-#title: 1.r.62 发行注记
+#title: 1.r.63 发行注记
 #index:0,1
 #author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
-1.r.62 {*黄皮} 发行注记(20170718)
+1.r.63 {*待定} 发行注记(20171116)
     
-	黄皮,有点酸有点甜,但不是初恋的味道, 俺这种广州土著就很喜欢吃.去年7月北京之行,
-	给同事带去的一箱黄皮和荔枝,结果,荔枝一边倒的好评, 黄皮是毁誉参半. 
-	
-	新功能新特性也是这样,有人更喜欢它的甜,也有人更在意它的酸.
-	
-	这个版本, 新特性主要是"@IocBean/@Inject的扩展", 不到100行的代码, 对ioc的扩展性的提升蛮大的.
-	
-	兼容性方面, 应该100%兼容1.r.61.r2, 一如既往的放心升级吧,现在还新增了"版本升级"的文档,收集升级中可能遇到的问题.
-	
-	我们迎来了新的提交者[https://github.com/qinerg qinerg],他给nutz提交了几个修改,并在nutzmore添加了event和undertow等插件
-	
-	感谢elkan1788,hzl7652,tanqimin,l4dfire,qinerg,SkyMonkya,flakycov,jiyuefeng在github上提交的issue/pr,
-	及论坛上新增的几百个帖子的作者,还有QQ群里的基友们, 各位都在以各种的方式推动着nutz的前进.
+	TODO
 
 ---------------------------------------------------------------------------------------------------------
 主要变化:
 
-	* add: [https://github.com/nutzam/nutz/issues/1280 支持把@IocBean标注在方法上,作为工厂方法] by wendal
-	* add: [https://github.com/nutzam/nutz/issues/1267 MVC的Param中增加对自定义时间格式的解析] by [https://github.com/elkan1788 elkan1788]
-    * add: [https://github.com/nutzam/nutz/issues/1149 Daos.migration要支持Oracle和SqlServer的索引新增 ] by [https://github.com/hzl7652 hzl7652] , [https://github.com/tanqimin tanqimin],wendal 
-    * add: [https://github.com/nutzam/nutz/pull/1256 dao支持nst] by [https://github.com/l4dfire l4dfire]
-    * add: [https://github.com/nutzam/nutz/issues/1268 Images支持图片水平、垂直翻转] by pangwu86
-    * add: [https://github.com/nutzam/nutz/issues/1262 Images工具类加上水印] by pangwu86
-    * fix: [https://github.com/nutzam/nutz/issues/1250 PropertiesProxy.print方法不work] by wendal
-    * fix: [https://github.com/nutzam/nutz/issues/1261 json转换08会报错] by [https://github.com/qinerg qinerg]
-    * fix: [https://github.com/nutzam/nutz/issues/1261 ChainPasing解析] by [https://github.com/qinerg qinerg]
-    * fix: [https://github.com/nutzam/nutz/issues/1271 使用Http工具类获取网页时出错] by [https://github.com/qinerg qinerg]
-    * fix: [https://github.com/nutzam/nutz/issues/1276 通过map进行插入操作时,设置主键和自增应该顺序无关] by wendal
-    * fix: [https://github.com/nutzam/nutz/issues/1277 MVC @Param 对象属性默认值df无效] by [https://github.com/SkyMonkya SkyMonkya]
-    * fix: [https://github.com/nutzam/nutz/issues/1283 HttpTest.test_weibo_post is flaky] by [https://github.com/flakycov flakycov]
-    * change: [https://github.com/nutzam/nutz/pull/1249 重写H2下获得表索引方法] by [https://github.com/jiyuefeng jiyuefeng]
-    * change: [https://github.com/nutzam/nutz/issues/1282 Dao初始化时引用的FilePool改为懒汉式] by [https://github.com/qinerg qinerg]
+	待整理
     
 
 --------------------------------------------------------------------------------------------------------
 部分新功能介绍
 
-	新增@IocBean实例工厂方法, 可以代替ioc js, 集成第三方类的时候更方便了, 详情查阅文档 [ioc/ioc_factory.man 工厂方法]
-	
-	{{{
-@IocBean // 首先,它自己必须加@IocBean, 可以使用@IocBean/@Inject的全部功能.
-public class MyBeanFactory {
-
-    @IocBean
-    public PropertiesProxy getConf() {
-        if ("product".equals(System.getProperty("nutz.runmode"))) {
-            return new PropertiesProxy("/etc/nutz/custom");
-        } else {
-        	return new PropertiesProxy("custom/");
-        }
-    }
-
-    // 生成一个名为dataSource的bean. 命名规则是: IocBean(name=XXX) > 方法名去掉get/build后首字母小写.
-    @IocBean
-    public SimpleDataSource getDataSource(@Inject("refer:conf")PropertiesProxy conf) {
-        SimpleDataSource ds = new SimpleDataSource();
-        ds.setJdbcUrl(conf.get("db.url", "jdbc:h2:mem:nutztest"));
-        return ds;
-    }
-    
-    @IocBean 
-    public Dao buildDao(DataSource dataSource) { // 带参数, 默认是按类型注入
-        return new NutDao(dataSource);
-    }
-	}}}
+	待整理
 	
 --------------------------------------------------------------------------------------------------------
 文档更新
 
-	基于Wikipedia的要求, nutz的文档已全部应用 [http://zh.wikipedia.org/wiki/Wikipedia:CC-BY-SA-3.0协议文本 知识共享 署名-相同方式共享 3.0协议] 及
-	[http://zh.wikipedia.org/wiki/Wikipedia:GNU自由文档许可证文本 GNU自由文档许可证], 上述协议并不影响大家的使用,请放心.
-
-	* add: [http://nutzam.com/core/img/overview.html Images图片水平/垂直翻转/添加水印]的文档 by pangwu86
-	* add: [http://nutzam.com/core/basic/version_upgrade.html 版本升级]的章节
-	* add: [http://nutzam.com/core/ioc/ioc_factory.html Ioc工厂方法]独立为一个章节,并添加@IocBean实例工厂方法的说明
-	* add: [http://nutzam.com/core/weixin/weixin_api.html 微信API]
-	* add: [http://nutzam.com/core/weixin/weixin_login.html 微信登录]
+	* 待整理
 
 --------------------------------------------------------------------------------------------------------
 详细列表:
   
-    * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.62 issue@github]
+    * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.63 issue@github]
 
 欢迎访问[https://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
 
-[https://nutz.cn Nutz社区]已经累计了5000多帖子, 20000+条回复,平均回复时间少于10分钟哦,白天基本上秒回!
+[https://nutz.cn Nutz社区]已经累计了6000多帖子, 30000+条回复,平均回复时间少于10分钟哦,白天基本上秒回!
