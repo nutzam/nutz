@@ -510,8 +510,9 @@ public class AnnotationEntityMaker implements EntityMaker {
         ef.setEjecting(info.ejecting);
 
         // 强制大小?
-        if (Daos.FORCE_UPPER_COLUMN_NAME)
+        if (Daos.FORCE_UPPER_COLUMN_NAME) {
             ef.setColumnName(ef.getColumnName().toUpperCase());
+        }
         if (Daos.FORCE_WRAP_COLUMN_NAME || (info.annColumn != null && info.annColumn.wrap())) {
             ef.setColumnNameInSql(expert.wrapKeywork(columnName, true));
         }

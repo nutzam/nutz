@@ -14,6 +14,7 @@ import org.nutz.dao.impl.entity.field.NutMappingField;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
+import org.nutz.dao.util.Daos;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.eject.EjectFromMap;
 import org.nutz.lang.inject.InjectToMap;
@@ -71,7 +72,21 @@ public class MapEntityMaker {
                 }
             }
             ef.setName(key);
-            ef.setColumnName(key);
+            String columnName = key;
+            // 强制大写?
+            if (Daos.FORCE_UPPER_COLUMN_NAME) {
+                ef.setColumnName(columnName.toUpperCase());
+            }
+            else {
+            	ef.setColumnName(columnName);
+            }
+            // 强制包裹?
+            if (Daos.FORCE_WRAP_COLUMN_NAME) {
+                ef.setColumnNameInSql(expert.wrapKeywork(columnName, true));
+            }
+            else if (Daos.CHECK_COLUMN_NAME_KEYWORD) {
+                ef.setColumnNameInSql(expert.wrapKeywork(columnName, false));
+            }
 
             // 类型是啥呢?
             if (map.containsKey("." + key + ".type")) {
