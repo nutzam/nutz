@@ -27,9 +27,11 @@ import org.nutz.log.Logs;
 
 public class MysqlJdbcExpert extends AbstractJdbcExpert {
 
-    private static final String META_ENGINE = "mysql-engine";
+    protected static final String META_ENGINE = "mysql-engine";
 
-    private static final String META_CHARSET = "mysql-charset";
+    protected static final String META_CHARSET = "mysql-charset";
+    
+    protected static final String META_INTLEN = "mysql-intlen";
 
     private static final Log log = Logs.get();
 
@@ -61,19 +63,23 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
     public String evalFieldType(MappingField mf) {
         if (mf.getCustomDbType() != null)
             return mf.getCustomDbType();
+        int intLen = 4;
+        if (mf.getEntity().hasMeta(META_INTLEN)) {
+        	intLen = ((Number)mf.getEntity().getMeta(META_INTLEN)).intValue();
+        }
         // Mysql 的精度是按照 bit
         if (mf.getColumnType() == ColType.INT) {
             int width = mf.getWidth();
             if (width <= 0) {
                 return "INT(32)";
             } else if (width <= 2) {
-                return "TINYINT(" + (width * 4) + ")";
+                return "TINYINT(" + (width * intLen) + ")";
             } else if (width <= 4) {
-                return "MEDIUMINT(" + (width * 4) + ")";
+                return "MEDIUMINT(" + (width * intLen) + ")";
             } else if (width <= 8) {
-                return "INT(" + (width * 4) + ")";
+                return "INT(" + (width * intLen) + ")";
             }
-            return "BIGINT(" + (width * 4) + ")";
+            return "BIGINT(" + (width * intLen) + ")";
         }
         if (mf.getColumnType() == ColType.BINARY) {
             return "MediumBlob"; // 默认用16M的应该可以了吧?
