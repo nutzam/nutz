@@ -55,7 +55,7 @@ public class FileSqlManager implements SqlManager {
         for (String path : paths) {
             List<NutResource> list = Scans.me().scan(path, regex);
             for (NutResource res : list) {
-                int c = _count();
+                int c = sqls.size();
                 log.debugf("load >> %s from root=%s", res.getName(), path);
                 try {
                     add(res.getReader());
@@ -63,7 +63,7 @@ public class FileSqlManager implements SqlManager {
                 catch (IOException e) {
                     log.warnf("fail to load %s from root=%s", res.getName(), path, e);
                 }
-                log.debugf("load %d sql >> %s from root=%s", (_count() - c), res.getName(), path);
+                log.debugf("load %d sql >> %s from root=%s", (sqls.size() - c), res.getName(), path);
             }
         }
     }
@@ -158,10 +158,6 @@ public class FileSqlManager implements SqlManager {
         _check_inited();
         return sqls.size();
     }
-    
-    public int _count() {
-        return sqls.size();
-    }
 
     public String[] keys() {
         _check_inited();
@@ -232,4 +228,8 @@ public class FileSqlManager implements SqlManager {
             }
         }
     }
+    
+    public void clear() {
+		sqls.clear();
+	}
 }

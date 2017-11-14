@@ -78,4 +78,5 @@ public interface SqlManager {
      */
     void remove(String key);
 
+    void clear();
 }
