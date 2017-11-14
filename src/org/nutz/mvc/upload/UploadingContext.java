@@ -73,6 +73,8 @@ public class UploadingContext {
      * 一个正则表达式，描述了可以允许的文件内容类型
      */
     private String contentTypeFilter;
+    
+    private Pattern nameFilterPattern;
 
     public String getCharset() {
         return charset;
@@ -131,6 +133,8 @@ public class UploadingContext {
 
     public UploadingContext setNameFilter(String nameFilter) {
         this.nameFilter = nameFilter;
+        if (!Strings.isBlank(nameFilter))
+        	this.nameFilterPattern = Pattern.compile(nameFilter);
         return this;
     }
 
@@ -138,7 +142,9 @@ public class UploadingContext {
         if (null == nameFilter || Strings.isBlank(name) 
                 || "\"\"".equals(name)) //用户不选择文件时,文件名会是"" 两个双引号
             return true;
-        return Pattern.matches(nameFilter, name.toLowerCase());
+        if (nameFilterPattern == null)
+        	return Pattern.matches(nameFilter, name.toLowerCase());
+        return nameFilterPattern.matcher(name.toLowerCase()).find();
     }
 
     public String getContentTypeFilter() {
