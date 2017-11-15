@@ -10,7 +10,7 @@ Nutz核心jar
 	<dependency>
 		<groupId>org.nutz</groupId>
 		<artifactId>nutz</artifactId>
-		<version>1.r.62</version>
+		<version>1.r.63</version>
 	</dependency>
 	}}}
 	
@@ -46,7 +46,7 @@ Nutz核心jar
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.40</version>
+			<version>5.1.44</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -58,7 +58,7 @@ Nutz核心jar
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
-			<version>1.0.27</version>
+			<version>1.1.5</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
