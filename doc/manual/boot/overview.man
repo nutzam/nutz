@@ -1,0 +1,66 @@
+# 简介
+
+## 什么是Nutz Boot?
+
+简称NB!
+
+进一步简化Nutz项目的配置复杂度,将最佳实践模块化
+
+可以理解为 nutz(核心)+nutzmore(插件集)+nutz-web(jetty启动器)的重新组合并优化
+
+一键生成NB的项目: [https://get.nutz.io NB构建器]
+
+### 目标
+
+* 将nutz易用性再提升个一个层次
+* 默认配置应满足80%以上的需求
+* 默认依赖应满足80%以上的场景
+
+### 几个术语
+
+* AppContext 全局上下文
+* Starter,一个自管理的服务
+
+## 全局上下文AppContext
+
+由于nutzboot启动的程序不一定是web程序,所以需要非web上下文,用于存储公用对象,例如ioc容器和配置信息
+
+### AppContext具有的基本特征
+
+* 随处可取
+* 持有一个Ioc容器
+* 持有配置信息
+* 管理starter的生命周期
+* 可测试,可替换
+
+## 何为starter
+
+"一种服务": 预配置,依赖关系完整,自我管理.
+
+* 预配置: 默认值应足够好,在大部分情况下不需要修改
+* 依赖关系完整: pom.xml只需要加上starter的依赖,相关jar应该完整,不需要再额外添加
+* 自我管理: starter应该有自己的生命周期
+
+## 来点感性认识
+
+{{{<JAVA>
+package io.nutz.demo.simple;
+
+import org.nutz.boot.NbApp;
+import org.nutz.ioc.loader.annotation.*;
+import org.nutz.mvc.annotation.*;
+
+@IocBean
+public class MainLauncher {
+
+    @Ok("raw")
+    @At("/time/now")
+    public long now() {
+        return System.currentTimeMillis();
+    }
+
+    public static void main(String[] args) throws Exception {
+        new NbApp(MainLauncher.class).run();
+    }
+}
+}}}
