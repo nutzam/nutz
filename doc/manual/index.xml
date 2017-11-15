@@ -142,6 +142,9 @@
 		<doc path="daocache.man"></doc>
 		<doc path="jedis.man"></doc>
 	</doc>
+	<doc path="boot" title="NutzBoot">
+		<doc path="overview.man"></doc>
+	</doc>
 	<doc path="testing" title="单元测试">
 		<doc path="junit_testing.man"></doc>
 	</doc>
