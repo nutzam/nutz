@@ -158,6 +158,7 @@
 		<doc path="be_committer.man"/>
 	</doc>
 	<doc path="history" title="版本历史">
+		<doc path="1_r_63.man"/>
 		<doc path="1_r_62.man"/>
 		<doc path="1_r_61.man"/>
 		<doc path="1_r_60.man"/>
