@@ -34,7 +34,7 @@
 	<property environment="env" />
 	<property name="OUTPUT" value="." />
 
-	<property name="nutz-version" value="1.r.62" />
+	<property name="nutz-version" value="1.r.63" />
 	<tstamp>
 		<format property="now-date" locale="en" pattern="yyyyMMdd_hhmmaa" timezone="Asia/Shanghai" />
 	</tstamp>
