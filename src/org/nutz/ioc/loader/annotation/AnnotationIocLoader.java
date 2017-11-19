@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.nutz.castor.Castors;
 import org.nutz.ioc.IocException;
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.IocLoading;
@@ -52,11 +52,16 @@ public class AnnotationIocLoader implements IocLoader {
                 addClass(classZ);
         }
         if (map.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            for (Map.Entry<String, IocObject> en : map.entrySet()) {
+                sb.append(String.format(" - %-40s : %s\n", en.getKey(), en.getValue().getType().getName()));
+            }
+            sb.setLength(sb.length() - 1);
             if (log.isInfoEnabled())
-                log.infof("Found %s classes in %s base-packages!\nbeans = %s",
+                log.infof("Found %s classes in %s\n%s",
                           map.size(),
-                          packages.length,
-                          Castors.me().castToString(map.keySet()));
+                          Arrays.toString(packages),
+                          sb);
         } else {
             log.warn("NONE Annotation-Class found!! Check your ioc configure!! packages="
                      + Arrays.toString(packages));

@@ -173,8 +173,8 @@ public class ComboIocLoader extends AbstractLifeCycle implements IocLoader {
             if (iocLoaders.contains(loader))
                 return;
             iocLoaders.add(loader);
-            if (log.isInfoEnabled())
-                log.infof("add loader : %s : \n     - %s",
+            if (log.isDebugEnabled())
+                log.debugf("add loader : %s : \n     - %s",
                           loader.getClass(),
                           Lang.concat("\n     - ", loader.getName()));
         }
