@@ -1,0 +1,61 @@
+#title:NutzBoot快速入门
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+
+--------------------------------------------------------------------
+基本的环境要求
+
+	* JDK8 是的,NB的项目最低要求是JDK8,严重建议用最新版
+	* IDE 即eclipse,netbeans,idea中的一款
+
+--------------------------------------------------------------------
+使用Maker自助创建
+
+	* 请访问 https://get.nutz.io 按提示生成压缩包,并下载
+	* 解压后,使用eclipse/idea/netbeans按Maven项目导入
+	* 等jar下载完成后,找到MainLauncher,里面有main方法,启动即可
+--------------------------------------------------------------------
+NB的项目的几个要素
+	
+	* 一个Launcher类,必须是public的,不能是抽象类
+	* Launcher类的package起码是二级的,例如 net.wendal, iot.bigbig.erp是允许的,但不带package或者只有一级(net,demo,xxx)是不允许的
+	* Launcher通常带一个main方法用于启动
+	* 依赖starter的类,例如@At,@IocBean,@Remote的类,必须位于Launcher类的package或者子package
+	
+	包结构如下, 位于src/main/java 目录
+	
+	{{{
+	- net
+		- nutz
+			- MainLauncher.java
+			- service
+				- TimeService.java
+				- impl
+					- TimeServiceImpl.java
+			- module
+				- TimeModule.java
+				- NtpModule.java
+			- util
+				- Toolkit.java
+	}}}
+	
+	配置文件, 位于src/main/resources 目录
+	
+	{{{
+	- application.properties
+	- log4j.properties
+	- logback.xml
+	}}}
+	
+--------------------------------------------------------------------
+接下来怎么做?
+
+	* 请多尝试几次不同starter的组合
+	* 部分starter需要特定的支持,例如redis/mongodb/ssdb数据库等需要自行启动
+	* 查阅各starter可配置的参数
+
+--------------------------------------------------------------------
+一点小小的提醒
+
+	* [https://zh.wikipedia.org/wiki/%E5%BE%AE%E6%9C%8D%E5%8B%99 wiki百科上的微服务]
+	* 做一个巨大的,包含复杂业务逻辑,包罗万象的单一jar的"微服务"是徒劳的,不如写个war

@@ -1,8 +1,10 @@
-# 简介
+#title:NutzBoot简介
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+--------------------------------------------------------------------
+什么是Nutz Boot?
 
-## 什么是Nutz Boot?
-
-简称NB!
+简称NB! 基于Nutz的微服务方案
 
 进一步简化Nutz项目的配置复杂度,将最佳实践模块化
 
@@ -10,30 +12,33 @@
 
 一键生成NB的项目: [https://get.nutz.io NB构建器]
 
-### 目标
+--------------------------------------------------------------------
+NutzBoot的目标
 
 * 将nutz易用性再提升个一个层次
 * 默认配置应满足80%以上的需求
 * 默认依赖应满足80%以上的场景
 
-### 几个术语
+--------------------------------------------------------------------
+几个术语
 
 * AppContext 全局上下文
 * Starter,一个自管理的服务
 
-## 全局上下文AppContext
+	全局上下文AppContext
 
-由于nutzboot启动的程序不一定是web程序,所以需要非web上下文,用于存储公用对象,例如ioc容器和配置信息
+		由于nutzboot启动的程序不一定是web程序,所以需要非web上下文,用于存储公用对象,例如ioc容器和配置信息
 
-### AppContext具有的基本特征
+	AppContext具有的基本特征
 
-* 随处可取
-* 持有一个Ioc容器
-* 持有配置信息
-* 管理starter的生命周期
-* 可测试,可替换
+		* 随处可取
+		* 持有一个Ioc容器
+		* 持有配置信息
+		* 管理starter的生命周期
+		* 可测试,可替换
 
-## 何为starter
+--------------------------------------------------------------------
+何为starter
 
 "一种服务": 预配置,依赖关系完整,自我管理.
 
@@ -41,26 +46,43 @@
 * 依赖关系完整: pom.xml只需要加上starter的依赖,相关jar应该完整,不需要再额外添加
 * 自我管理: starter应该有自己的生命周期
 
-## 来点感性认识
+--------------------------------------------------------------------
+差不多是最简单的demo
 
-{{{<JAVA>
-package io.nutz.demo.simple;
+	{{{<JAVA>
+	package io.nutz.demo.simple;
+	
+	import org.nutz.boot.NbApp;
+	import org.nutz.ioc.loader.annotation.*;
+	import org.nutz.mvc.annotation.*;
+	
+	@IocBean
+	public class MainLauncher {
+	
+	    @Ok("raw")
+	    @At("/time/now")
+	    public long now() {
+	        return System.currentTimeMillis();
+	    }
+	
+	    public static void main(String[] args) throws Exception {
+	        new NbApp(MainLauncher.class).run();
+	    }
+	}
+	}}}
 
-import org.nutz.boot.NbApp;
-import org.nutz.ioc.loader.annotation.*;
-import org.nutz.mvc.annotation.*;
+--------------------------------------------------------------------
+NutzBoot与Nutz.Mvc+Nutz.Dao的区别
 
-@IocBean
-public class MainLauncher {
+	* Nutz.Mvc+Nutz.Dao是大家常用的组合, 通常跑在web容器内,发布为war
 
-    @Ok("raw")
-    @At("/time/now")
-    public long now() {
-        return System.currentTimeMillis();
-    }
+	* NutzBoot是独立的程序,不需要额外的容器,它自身就是一个容器, 然后包含其他容器,例如jetty或tomcat, 发布为jar
+	
+	* NutzBoot的程序不一定是web程序,可以是dubbo服务端,mq消费者等无UI程序
+	
+--------------------------------------------------------------------
+Nutz.Mvc及其他starter跟我自己配有什么区别?
 
-    public static void main(String[] args) throws Exception {
-        new NbApp(MainLauncher.class).run();
-    }
-}
-}}}
+	* 95%以上的代码互通. 例如在Nutz.Mvc的写法,绝大部分可用
+	* starter固化了最佳实践,我们的目标是满足80%以上的默认需求,剩余的可配置
+	

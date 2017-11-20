@@ -144,6 +144,8 @@
 	</doc>
 	<doc path="boot" title="NutzBoot">
 		<doc path="overview.man"></doc>
+		<doc path="helloworld.man"></doc>
+		<doc path="write_starter.man"></doc>
 	</doc>
 	<doc path="testing" title="单元测试">
 		<doc path="junit_testing.man"></doc>

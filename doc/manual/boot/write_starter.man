@@ -1,0 +1,89 @@
+#title: 如何编写starter
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+--------------------------------------------------------------------
+首先的首先
+
+	如果你写了一个很棒的starter,恳请告知我们,报个issue即可,码云或者github均可
+	
+	https://gitee.com/nutz/nutzboot
+	
+	https://github.com/nutzam/nutzboot
+	
+--------------------------------------------------------------------
+基本结构
+
+	与NB项目一样, starter也是maven项目
+	
+	{{{
+	- src
+		- main
+			- java
+				- net
+					- wendal
+						- time
+							- TimeStarter.java
+			- resources
+				- META-INF
+					- nutz
+						- org.nutz.boot.starter.NbStarter // 这是一个文本文件
+	}}}
+	
+	org.nutz.boot.starter.NbStarter文件的内容,就是一行一个类全名,可以是无数个.
+	
+	{{{
+	net.wendal.time.TimeStarter
+	}}}
+	
+--------------------------------------------------------------------
+Starter类怎么写?
+
+	首先,她是public的,非抽象的
+	{{{
+	public class TimeStarter {
+	}
+	}}}
+
+	然后,她通常需要读取一些环境数据,依赖ioc注入
+	{{{
+	@IocBean
+	public class TimeStarter {
+		@Inject("refer:$ioc")
+		protect Ioc ioc; // 获取ioc容器
+		@Inject
+		protect PropertiesProxy conf; // 获取配置信息
+		@Inject
+		protect AppContext appContext; // 获取全局上下文
+	}
+	}}}
+	以上是能注入的全部东西了,然而appContext对象内还有几个有用的实例.
+	
+	获取上述对象后,你可以做到:
+	
+	* 获取ioc容器内的任意对象,从而触发一些行为,例如数据库连接池的初始化
+	* 往ioc容器放入新的对象
+	* 获取,修改,移除配置信息
+	* 通过AppContext(其实Ioc和配置信息也是从它来的),你可以访问到其他starter
+	
+	那,我这个starter对外提供什么呢?
+	
+	* 她可以不对外提供任何东西,静静地看着你装逼
+	* 返回一个IocLoader,只需实现IocLoaderProvider接口,例如JedisStarter就是这样干的
+	* 声明为一个"服务器",例如JettyStarter,她启动了一个web容器,这时候你需要实现ServerFace
+	* 声明为一个"Filter",例如NutFilterStarter,她返回一个类似web.xml里面的filter定义,需要实现WebFilterFace接口
+	* 声明为一个"Servlet",例如DruidStatViewStarter,它返回一个servlet定义,需要实现WebServletFace
+	* 监听session开关?web容器的初始化? 实现WebEventListenerFace就行
+	
+---------------------------------------------------------------------
+NB的生命周期
+
+	* 读取日志配置信息
+	* 获取配置信息
+	* 初始化AppContext,Ioc容器等一切必要的基础设施
+	* 根据org.nutz.boot.starter.NbStarter读取starter类的列表,并将它们加入到ioc容器中
+	* 遍历starter,看看是否实现了IocLoaderProvider接口,获取IocLoader,加入ioc上下文
+	* 逐一执行各个"服务器"starter
+	* 等待程序结束
+	* 逐一关闭各个"服务器"starter
+	* 执行收尾工作
+	
