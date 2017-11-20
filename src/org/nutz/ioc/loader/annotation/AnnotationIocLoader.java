@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.nutz.ioc.IocException;
 import org.nutz.ioc.IocLoader;
@@ -47,24 +46,13 @@ public class AnnotationIocLoader implements IocLoader {
     }
 
     public AnnotationIocLoader(String... packages) {
-        for (String packageZ : packages) {
-            for (Class<?> classZ : Scans.me().scanPackage(packageZ))
+        for (String pkg : packages) {
+        	log.infof(" > scan '%s'", pkg);
+            for (Class<?> classZ : Scans.me().scanPackage(pkg))
                 addClass(classZ);
         }
-        if (map.size() > 0) {
-            StringBuilder sb = new StringBuilder();
-            for (Map.Entry<String, IocObject> en : map.entrySet()) {
-                sb.append(String.format(" - %-40s : %s\n", en.getKey(), en.getValue().getType().getName()));
-            }
-            sb.setLength(sb.length() - 1);
-            if (log.isInfoEnabled())
-                log.infof("Found %s classes in %s\n%s",
-                          map.size(),
-                          Arrays.toString(packages),
-                          sb);
-        } else {
-            log.warn("NONE Annotation-Class found!! Check your ioc configure!! packages="
-                     + Arrays.toString(packages));
+        if (map.isEmpty()) {
+            log.warnf("NONE @IocBean found!! Check your ioc configure!! packages=%s", Arrays.toString(packages));
         }
         this.packages = packages;
     }
@@ -81,9 +69,6 @@ public class AnnotationIocLoader implements IocLoader {
             return;
         IocBean iocBean = classZ.getAnnotation(IocBean.class);
         if (iocBean != null) {
-            if (log.isDebugEnabled())
-                log.debugf("Found @IocBean : %s", classZ);
-
             // 采用 @IocBean->name
             String beanName = iocBean.name();
             if (Strings.isBlank(beanName)) {
@@ -109,6 +94,8 @@ public class AnnotationIocLoader implements IocLoader {
             IocObject iocObject = new IocObject();
             iocObject.setType(classZ);
             map.put(beanName, iocObject);
+            
+            log.infof("   > add '%-40s' - %s", beanName, classZ.getName());
 
             iocObject.setSingleton(iocBean.singleton());
             if (!Strings.isBlank(iocBean.scope()))
