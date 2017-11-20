@@ -41,7 +41,7 @@ public class ResourceBundleMessageLoader implements MessageLoader {
 				name = name.substring(0, name.length() - ".properties".length());
 				String langType = Mvcs.DEFAULT_MSGS;
 				if (name.contains("_")) {
-					langType = name.substring(name.indexOf('_'));
+					langType = name.substring(name.indexOf('_')+1);
 				}
 				Properties properties = new Properties();
 				properties.load(nr.getInputStream());
