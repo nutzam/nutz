@@ -11,7 +11,7 @@
 	可以做很多事情， 而且比“甜甜”的 Ruby 也差不了太多。
 
 	你可以查看 [https://github.com/nutzam/nutz/tree/master/src/org/nutz/lang org.nutz.lang] [https://git.oschina.net/nutz/nutz/tree/master/src/org/nutz/lang Git@OSC镜像] 下
-	的源代码。为了便于你学习，我将里面部分最常用的用法列在文档你，便于快速学习查看。
+	的源代码。为了便于你学习，我将里面部分最常用的用法列在文档里，便于快速学习查看。
 
 	我希望在 80% 以上的情况下，这些函数能让你有效的缩短你代码的体积，并且增加代码的可读性。
 
