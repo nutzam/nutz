@@ -406,9 +406,13 @@ public abstract class Daos {
                     mf = en.getField(head.name());
                 _value_places.append("?");
                 values.add(head.value());
-                ValueAdaptor adaptor = Jdbcs.getAdaptorBy(head.value());
-                if (mf != null && mf.getAdaptor() != null)
-                    adaptor = mf.getAdaptor();
+                ValueAdaptor adaptor = head.adaptor();
+                if (adaptor == null) {
+                    if (mf != null && mf.getAdaptor() != null)
+                        adaptor = mf.getAdaptor();
+                    else
+                    	adaptor = Jdbcs.getAdaptorBy(head.value());
+                }
                 adaptors.add(adaptor);
             }
 
