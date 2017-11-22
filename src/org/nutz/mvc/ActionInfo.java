@@ -94,7 +94,7 @@ public class ActionInfo {
         okView = null == okView ? parent.okView : okView;
         failView = null == failView ? parent.failView : failView;
         filterInfos = null == filterInfos ? parent.filterInfos : filterInfos;
-        injectName = null == injectName ? parent.injectName : injectName;
+        //injectName = null == injectName ? parent.injectName : injectName;
         moduleType = null == moduleType ? parent.moduleType : moduleType;
         chainName = null == chainName ? parent.chainName : chainName;
         
