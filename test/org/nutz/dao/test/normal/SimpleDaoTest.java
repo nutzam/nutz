@@ -43,6 +43,7 @@ import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.impl.SimpleDataSource;
 import org.nutz.dao.impl.sql.NutStatement;
 import org.nutz.dao.jdbc.JdbcExpert;
+import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.DaoStatement;
@@ -1124,5 +1125,11 @@ public class SimpleDaoTest extends DaoCase {
         Daos.migration(dao, TestMysqlIndex.class, true, false, true);
         Daos.migration(dao, TestMysqlIndex.class, true, false, true);
         System.out.println("==================================");
+    }
+    
+    @Test
+    public void test_insert_chain_with_adaptor() {
+        dao.create(Pet.class, true);
+        dao.insert("t_pet", Chain.make("name", "wendal").adaptor(Jdbcs.Adaptor.asString));
     }
 }

@@ -103,7 +103,7 @@ public class MapEntityMaker {
             }
             // 适配器类型是啥呢?
             if (map.containsKey("." + key + ".adaptor")) {
-                ef.setAdaptor((ValueAdaptor) map.get("." + key + ".adapter"));
+                ef.setAdaptor((ValueAdaptor) map.get("." + key + ".adaptor"));
             } else {
                 ef.setAdaptor(expert.getAdaptor(ef));
             }
