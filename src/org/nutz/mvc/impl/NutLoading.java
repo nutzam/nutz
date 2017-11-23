@@ -195,12 +195,12 @@ public class NutLoading implements Loading {
         if (log.isDebugEnabled())
             log.debugf("Use %s as EntryMethodDeterminer", determiner.getClass().getName());
         for (Class<?> module : modules) {
-            ActionInfo moduleInfo = Loadings.createInfo(module).mergeWith(mainInfo);
+            ActionInfo moduleInfo = Loadings.createInfo(module).mergeWith(mainInfo, true);
             for (Method method : module.getMethods()) {
                 if (!determiner.isEntry(module, method))
                     continue;
                 // 增加到映射中
-                ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);
+                ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo, false);
                 info.setViewMakers(makers);
                 mapping.add(maker, info, config);
                 atMethods++;
