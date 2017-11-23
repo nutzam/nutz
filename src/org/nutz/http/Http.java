@@ -24,6 +24,9 @@ import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
+/**
+ * 类 http client 工具类
+ */
 public class Http {
 
     /**
@@ -49,7 +52,7 @@ public class Http {
         code_text.put("301", "Moved Permanently");
         code_text.put("302", "Found");
         code_text.put("303", "See Other"); // (since HTTP/1.1)
-        code_text.put("304", "Not Modified ");
+        code_text.put("304", "Not Modified");
         code_text.put("305", "Use Proxy"); // (since HTTP/1.1)
         code_text.put("306", "Switch Proxy");
         code_text.put("307", "Temporary Redirect"); // (since HTTP/1.1)
@@ -98,7 +101,7 @@ public class Http {
     }
 
     public static String getStatusText(int statusCode, String dft) {
-        return Strings.sNull(code_text.get(statusCode), dft);
+        return Strings.sNull(code_text.get(""+statusCode), dft);
     }
 
     public static class multipart {
@@ -153,11 +156,27 @@ public class Http {
      * @return http响应
      */
     public static Response get(String url, int timeout) {
-        return Sender.create(Request.get(url)).setTimeout(timeout).send();
+        return get(url, timeout, Sender.Default_Conn_Timeout);
+    }
+    
+    public static Response get(String url, int timeout, int connTimeout) {
+        return Sender.create(Request.get(url)).setTimeout(timeout).setConnTimeout(connTimeout).send();
+    }
+    
+    public static Response get(String url, Map<String, Object> params, int timeout) {
+        return get(url, params, timeout, Sender.Default_Conn_Timeout);
+    }
+    
+    public static Response get(String url, Map<String, Object> params, int timeout, int connTimeout) {
+        return Sender.create(Request.get(url).setParams(params)).setTimeout(timeout).setConnTimeout(connTimeout).send();
     }
     
     public static Response get(String url, Header header, int timeout) {
-        return Sender.create(Request.get(url).setHeader(header)).setTimeout(timeout).send();
+        return get(url, header, timeout, Sender.Default_Conn_Timeout);
+    }
+    
+    public static Response get(String url, Header header, int timeout, int connTimeout) {
+        return Sender.create(Request.get(url).setHeader(header)).setTimeout(timeout).setConnTimeout(connTimeout).send();
     }
 
     /**
@@ -172,10 +191,11 @@ public class Http {
      * @return http响应
      */
     public static String post(String url, Map<String, Object> params, int timeout) {
-        return Sender.create(Request.create(url, METHOD.POST, params, null))
-                     .setTimeout(timeout)
-                     .send()
-                     .getContent();
+        return post(url, params, timeout, Sender.Default_Conn_Timeout);
+    }
+    
+    public static String post(String url, Map<String, Object> params, int timeout, int connTimeout) {
+        return Sender.create(Request.create(url, METHOD.POST, params, null)).setTimeout(timeout).setConnTimeout(connTimeout).send().getContent();
     }
 
     /**
@@ -190,12 +210,20 @@ public class Http {
      * @return http响应
      */
     public static Response post2(String url, Map<String, Object> params, int timeout) {
+        return post2(url, params, timeout, Sender.Default_Conn_Timeout);
+    }
+    
+    public static Response post2(String url, Map<String, Object> params, int timeout, int connTimeout) {
         return Sender.create(Request.create(url, METHOD.POST, params, null))
-                     .setTimeout(timeout)
+                     .setTimeout(timeout).setConnTimeout(connTimeout)
                      .send();
     }
 
     public static Response post3(String url, Object body, Header header, int timeout) {
+    	return post3(url, body, header, timeout, Sender.Default_Conn_Timeout);
+    }
+    
+    public static Response post3(String url, Object body, Header header, int timeout, int connTimeout) {
         Request req = Request.create(url, METHOD.POST).setHeader(header);
         if (body != null) {
             if (body instanceof InputStream) {
@@ -208,13 +236,20 @@ public class Http {
         }
         return Sender.create(req).setTimeout(timeout).send();
     }
+    
+    public static Response upload(String url,
+            Map<String, Object> params,
+            Header header,
+            int timeout) {
+    	return upload(url, params, header, timeout, Sender.Default_Conn_Timeout);
+    }
 
     public static Response upload(String url,
                                   Map<String, Object> params,
                                   Header header,
-                                  int timeout) {
+                                  int timeout, int connTimeout) {
         Request req = Request.create(url, METHOD.POST, params, header);
-        return new FilePostSender(req).setTimeout(timeout).send();
+        return new FilePostSender(req).setTimeout(timeout).setConnTimeout(connTimeout).send();
     }
 
     public static String encode(Object s) {
@@ -238,6 +273,13 @@ public class Http {
         return Sender.create(Request.create(url, METHOD.POST, params, null).setEnc(inenc))
                      .send()
                      .getContent(reenc);
+    }
+    
+    public static Response postXML(String url, String xml, int timeout) {
+        Request req = Request.create(url, METHOD.POST);
+        req.setData(xml);
+        req.getHeader().set("Content-Type", "application/xml");
+        return Sender.create(req).setTimeout(timeout).send();
     }
 
     protected static ProxySwitcher proxySwitcher;
@@ -372,7 +414,6 @@ public class Http {
     
     public static HashMap<String, String> DEFAULT_HEADERS = new HashMap<String, String>();
     static {
-
         DEFAULT_HEADERS.put("User-Agent", "Nutz.Robot " + Nutz.version());
         DEFAULT_HEADERS.put("Accept-Encoding", "gzip,deflate");
         DEFAULT_HEADERS.put("Accept", "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5");

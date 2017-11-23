@@ -30,7 +30,7 @@ public class FileSqlManager implements SqlManager {
     
     private static final Log log = Logs.get();
     
-    Map<String, String> sqls = Collections.synchronizedMap(new LinkedHashMap<String, String>());
+    protected Map<String, String> sqls = Collections.synchronizedMap(new LinkedHashMap<String, String>());
 
     protected String[] paths;
     
@@ -38,17 +38,24 @@ public class FileSqlManager implements SqlManager {
     
     protected String pairBegin = "/*";
     protected String pairEnd = "*/";
+    
+    protected String regex = ".(sql|sqlx|sqls)$";
+    
+    protected boolean inited;
+    
+    public FileSqlManager() {
+        paths = new String[]{};
+    }
 
     public FileSqlManager(String... paths) {
         this.paths = paths;
-        refresh();
     }
 
     public void refresh() {
         for (String path : paths) {
-            List<NutResource> list = Scans.me().scan(path, ".(sql|sqlx|sqls)$");
+            List<NutResource> list = Scans.me().scan(path, regex);
             for (NutResource res : list) {
-                int c = count();
+                int c = sqls.size();
                 log.debugf("load >> %s from root=%s", res.getName(), path);
                 try {
                     add(res.getReader());
@@ -56,7 +63,7 @@ public class FileSqlManager implements SqlManager {
                 catch (IOException e) {
                     log.warnf("fail to load %s from root=%s", res.getName(), path, e);
                 }
-                log.debugf("load %d sql >> %s from root=%s", (count() - c), res.getName(), path);
+                log.debugf("load %d sql >> %s from root=%s", (sqls.size() - c), res.getName(), path);
             }
         }
     }
@@ -125,6 +132,7 @@ public class FileSqlManager implements SqlManager {
     }
     
     public String get(String key) throws SqlNotFoundException {
+        _check_inited();
         String sql = sqls.get(key);
         if (sql == null)
             throw new SqlNotFoundException(key);
@@ -132,6 +140,7 @@ public class FileSqlManager implements SqlManager {
     }
 
     public Sql create(String key) throws SqlNotFoundException {
+        _check_inited();
         return Sqls.create(get(key));
     }
 
@@ -146,10 +155,12 @@ public class FileSqlManager implements SqlManager {
     }
 
     public int count() {
+        _check_inited();
         return sqls.size();
     }
 
     public String[] keys() {
+        _check_inited();
         Set<String> keys = sqls.keySet();
         return keys.toArray(new String[keys.size()]);
     }
@@ -162,6 +173,7 @@ public class FileSqlManager implements SqlManager {
     }
 
     public void remove(String key) {
+        _check_inited();
         sqls.remove(key);
     }
     
@@ -173,17 +185,51 @@ public class FileSqlManager implements SqlManager {
         return allowDuplicate;
     }
     
-    /**
-     * 废弃的方法,仅为兼容性保留空方法
-     */
-    @Deprecated
+    public void setPaths(String[] paths) {
+        this.paths = paths;
+    }
+    
     public String getRegex() {
-        return null;
+        return regex;
     }
 
-    @Deprecated
     public FileSqlManager setRegex(String regex) {
-        log.warn("SqlManager regex is Deprecated!! it will be ignore!!");
+        this.regex = regex;
         return this;
     }
+    
+    public void setPairBegin(String pairBegin) {
+        this.pairBegin = pairBegin;
+    }
+    
+    public void setPairEnd(String pairEnd) {
+        this.pairEnd = pairEnd;
+    }
+    
+    public String getPairBegin() {
+        return pairBegin;
+    }
+    
+    public String getPairEnd() {
+        return pairEnd;
+    }
+    
+    public String[] getPaths() {
+        return paths;
+    }
+    
+    protected void _check_inited() {
+        if (!inited) {
+            synchronized (this) {
+                if (!inited) {
+                    refresh();
+                    inited = true;
+                }
+            }
+        }
+    }
+    
+    public void clear() {
+		sqls.clear();
+	}
 }

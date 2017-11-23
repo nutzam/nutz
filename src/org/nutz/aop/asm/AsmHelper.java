@@ -14,27 +14,30 @@ final class AsmHelper implements Opcodes{
             mv.visitMethodInsn(    INVOKESTATIC,
                                 "java/lang/Boolean",
                                 VALUE_OF,
-                                "(Z)Ljava/lang/Boolean;");
+                                "(Z)Ljava/lang/Boolean;",
+                                false);
         } else if (type.equals(Type.BYTE_TYPE)) {
-            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Byte", VALUE_OF, "(B)Ljava/lang/Byte;");
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Byte", VALUE_OF, "(B)Ljava/lang/Byte;", false);
         } else if (type.equals(Type.CHAR_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
                                 "java/lang/Character",
                                 VALUE_OF,
-                                "(C)Ljava/lang/Character;");
+                                "(C)Ljava/lang/Character;",
+                                false);
         } else if (type.equals(Type.SHORT_TYPE)) {
-            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Short", VALUE_OF, "(S)Ljava/lang/Short;");
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Short", VALUE_OF, "(S)Ljava/lang/Short;", false);
         } else if (type.equals(Type.INT_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
                                 "java/lang/Integer",
                                 VALUE_OF,
-                                "(I)Ljava/lang/Integer;");
+                                "(I)Ljava/lang/Integer;",
+                                false);
         } else if (type.equals(Type.LONG_TYPE)) {
-            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Long", VALUE_OF, "(J)Ljava/lang/Long;");
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Long", VALUE_OF, "(J)Ljava/lang/Long;", false);
         } else if (type.equals(Type.FLOAT_TYPE)) {
-            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Float", VALUE_OF, "(F)Ljava/lang/Float;");
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Float", VALUE_OF, "(F)Ljava/lang/Float;", false);
         } else if (type.equals(Type.DOUBLE_TYPE)) {
-            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Double", VALUE_OF, "(D)Ljava/lang/Double;");
+            mv.visitMethodInsn(INVOKESTATIC, "java/lang/Double", VALUE_OF, "(D)Ljava/lang/Double;", false);
         } else {
             return false;
         }
@@ -46,42 +49,50 @@ final class AsmHelper implements Opcodes{
             mv.visitMethodInsn(    INVOKESTATIC,
                                 ORG_NUTZ_AOP_ASM_HELPER,
                                 VALUE_OF,
-                                "(Ljava/lang/Boolean;)Z");
+                                "(Ljava/lang/Boolean;)Z",
+                                false);
         } else if (type.equals(Type.BYTE_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
                                 ORG_NUTZ_AOP_ASM_HELPER,
                                 VALUE_OF,
-                                "(Ljava/lang/Byte;)B");
+                                "(Ljava/lang/Byte;)B",
+                                false);
         } else if (type.equals(Type.CHAR_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
                                 ORG_NUTZ_AOP_ASM_HELPER,
                                 VALUE_OF,
-                                "(Ljava/lang/Character;)C");
+                                "(Ljava/lang/Character;)C",
+                                false);
         } else if (type.equals(Type.SHORT_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
                                 ORG_NUTZ_AOP_ASM_HELPER,
                                 VALUE_OF,
-                                "(Ljava/lang/Short;)S");
+                                "(Ljava/lang/Short;)S",
+                                false);
         } else if (type.equals(Type.INT_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
                                 ORG_NUTZ_AOP_ASM_HELPER,
                                 VALUE_OF,
-                                "(Ljava/lang/Integer;)I");
+                                "(Ljava/lang/Integer;)I",
+                                false);
         } else if (type.equals(Type.LONG_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
                                 ORG_NUTZ_AOP_ASM_HELPER,
                                 VALUE_OF,
-                                "(Ljava/lang/Long;)J");
+                                "(Ljava/lang/Long;)J",
+                                false);
         } else if (type.equals(Type.FLOAT_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
                                 ORG_NUTZ_AOP_ASM_HELPER,
                                 VALUE_OF,
-                                "(Ljava/lang/Float;)F");
+                                "(Ljava/lang/Float;)F",
+                                false);
         } else if (type.equals(Type.DOUBLE_TYPE)) {
             mv.visitMethodInsn(    INVOKESTATIC,
                                 ORG_NUTZ_AOP_ASM_HELPER,
                                 VALUE_OF,
-                                "(Ljava/lang/Double;)D");
+                                "(Ljava/lang/Double;)D",
+                                false);
         }
     }
 

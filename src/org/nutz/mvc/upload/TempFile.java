@@ -24,9 +24,8 @@ public class TempFile {
     }
 
     /**
-     * 使用 getInputStream替代
+     * 建议使用 getInputStream替代
      */
-    @Deprecated
     public File getFile() {
         return file;
     }

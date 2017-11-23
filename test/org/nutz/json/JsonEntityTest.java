@@ -86,13 +86,13 @@ public class JsonEntityTest {
             public JsonEntityField make(Mirror<?> mirror, Method method) {
                 if (method.getName().equals("setName")) {
                     String fn = Strings.lowerFirst(method.getName().substring(3));
-                    return JsonEntityField.eval("another_name", method.getParameterTypes()[0], mirror.getEjecting(fn), new InjectBySetter(method));
+                    return JsonEntityField.eval(mirror, "another_name", method.getParameterTypes()[0], mirror.getEjecting(fn), new InjectBySetter(method));
                 }
                 return null;
             }
             @Override
             public JsonEntityField make(Mirror<?> mirror, Field field) {
-                return JsonEntityField.eval("test_" + field.getName(), field.getType(), mirror.getEjecting(field), mirror.getInjecting(field.getName()));
+                return JsonEntityField.eval(mirror, "test_" + field.getName(), field.getType(), mirror.getEjecting(field), mirror.getInjecting(field.getName()));
             }
         });
         String json = Json.toJson(obj, JsonFormat.compact());

@@ -18,7 +18,7 @@ class TmplDateEle extends TmplDynamicEle {
         Date d = Castors.me().castTo(val, Date.class);
         if (null != d)
             return Times.format(fmt, d);
-        return null;
+        return null == val ? null : val.toString();
     }
 
 }

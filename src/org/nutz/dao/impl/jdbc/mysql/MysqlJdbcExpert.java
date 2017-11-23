@@ -27,10 +27,12 @@ import org.nutz.log.Logs;
 
 public class MysqlJdbcExpert extends AbstractJdbcExpert {
 
-    private static final String META_ENGINE = "mysql-engine";
+    protected static final String META_ENGINE = "mysql-engine";
 
-    private static final String META_CHARSET = "mysql-charset";
+    protected static final String META_CHARSET = "mysql-charset";
     
+    protected static final String META_INTLEN = "mysql-intlen";
+
     private static final Log log = Logs.get();
 
     public MysqlJdbcExpert(JdbcExpertConfigFile conf) {
@@ -45,9 +47,7 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
         Pager pager = pojo.getContext().getPager();
         // 需要进行分页
         if (null != pager && pager.getPageNumber() > 0)
-            pojo.append(Pojos.Items.wrapf(" LIMIT %d, %d",
-                                          pager.getOffset(),
-                                          pager.getPageSize()));
+            pojo.append(Pojos.Items.wrapf(" LIMIT %d, %d", pager.getOffset(), pager.getPageSize()));
     }
 
     public void formatQuery(Sql sql) {
@@ -63,19 +63,23 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
     public String evalFieldType(MappingField mf) {
         if (mf.getCustomDbType() != null)
             return mf.getCustomDbType();
+        int intLen = 4;
+        if (mf.getEntity().hasMeta(META_INTLEN)) {
+        	intLen = ((Number)mf.getEntity().getMeta(META_INTLEN)).intValue();
+        }
         // Mysql 的精度是按照 bit
         if (mf.getColumnType() == ColType.INT) {
             int width = mf.getWidth();
             if (width <= 0) {
                 return "INT(32)";
             } else if (width <= 2) {
-                return "TINYINT(" + (width * 4) + ")";
+                return "TINYINT(" + (width * intLen) + ")";
             } else if (width <= 4) {
-                return "MEDIUMINT(" + (width * 4) + ")";
+                return "MEDIUMINT(" + (width * intLen) + ")";
             } else if (width <= 8) {
-                return "INT(" + (width * 4) + ")";
+                return "INT(" + (width * intLen) + ")";
             }
-            return "BIGINT(" + (width * 4) + ")";
+            return "BIGINT(" + (width * intLen) + ")";
         }
         if (mf.getColumnType() == ColType.BINARY) {
             return "MediumBlob"; // 默认用16M的应该可以了吧?
@@ -88,9 +92,7 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
     }
 
     public boolean createEntity(Dao dao, Entity<?> en) {
-        StringBuilder sb = new StringBuilder("CREATE TABLE "
-                                             + en.getTableName()
-                                             + "(");
+        StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
         // 创建字段
         for (MappingField mf : en.getMappingFields()) {
             if (mf.isReadonly())
@@ -133,9 +135,7 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
             }
 
             if (mf.hasColumnComment()) {
-                sb.append(" COMMENT '")
-                  .append(mf.getColumnComment())
-                  .append("'");
+                sb.append(" COMMENT '").append(mf.getColumnComment()).append("'");
             }
 
             sb.append(',');
@@ -186,10 +186,10 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
     }
 
     public Pojo fetchPojoId(Entity<?> en, MappingField idField) {
-//        String autoSql = "SELECT @@@@IDENTITY";
-//        Pojo autoInfo = new SqlFieldMacro(idField, autoSql);
-//        autoInfo.setEntity(en);
-//        return autoInfo;
+        // String autoSql = "SELECT @@@@IDENTITY";
+        // Pojo autoInfo = new SqlFieldMacro(idField, autoSql);
+        // autoInfo.setEntity(en);
+        // return autoInfo;
         return null;
     }
 
@@ -201,7 +201,7 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
             return super.getAdaptor(ef);
         }
     }
-    
+
     @Override
     public void checkDataSource(Connection conn) throws SQLException {
         if (log.isDebugEnabled()) {
@@ -237,16 +237,16 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
             pstmt.setString(1, dbName);
             rs = pstmt.executeQuery();
             if (rs.next())
-                log.debug("Mysql : '"+rs.getString(1) + "' engine=MyISAM");
+                log.debug("Mysql : '" + rs.getString(1) + "' engine=MyISAM");
             rs.close();
             pstmt.close();
         }
     }
-    
+
     public boolean canCommentWhenAddIndex() {
         return true;
     }
-    
+
     protected Sql createRelation(Dao dao, LinkField lf) {
         Sql sql = super.createRelation(dao, lf);
         if (sql == null)

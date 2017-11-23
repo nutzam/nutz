@@ -1,13 +1,13 @@
 package org.nutz.dao.entity;
 
-import java.sql.ResultSet;
-import java.util.List;
-import java.util.Map;
-
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.util.Context;
+
+import java.sql.ResultSet;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 描述了一个实体
@@ -279,4 +279,9 @@ public interface Entity<T> {
     boolean isComplete();
     
     T born(ResultSet rs);
+
+    /**
+     * @return 实体version字段映射
+     */
+    MappingField getVersionField();
 }

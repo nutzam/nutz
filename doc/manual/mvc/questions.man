@@ -43,3 +43,15 @@ java.io.EOFException
 	{{{
 	JAVA_OPTS="$JAVA_OPTS -Dfile.encoding=utf-8 -Djava.security.egd=file:/dev/urandom"
 	}}}
+	
+--------------------------------------------------------------------------------------
+IE下ajax当下载
+
+
+	原因: 新版的@Ok("json")的Content-Type设置为"application/json", 在IE下会有毛病.
+
+	解决版本: 在MainModule添加@SetupBy(MainSetup.class), 然后MainSetup类实现Setup接口,在init方法内内添加下列代码
+	
+	{{{<JAVA>
+	UTF8JsonView.CT = "text/plain";
+	}}}

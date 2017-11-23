@@ -6,7 +6,7 @@
 	<absolute-ordering>
 		<name>dummy</name>
 	</absolute-ordering>
-	<display-name>Nutz Web Demo</display-name>
+	<display-name>NutzWebDemo</display-name>
 	<filter>
 		<filter-name>nutz</filter-name>
 		<filter-class>org.nutz.mvc.NutFilter</filter-class>

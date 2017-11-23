@@ -53,7 +53,8 @@ class AopInvokeAdpter extends AopMethodAdapter {
             mv.visitMethodInsn(    INVOKESPECIAL,
                                 enhancedSuperName,
                                 method.getName(),
-                                Type.getMethodDescriptor(method));
+                                Type.getMethodDescriptor(method),
+                                false);
             {
                 returnType = Type.getReturnType(method);
                 if (returnType.equals(Type.VOID_TYPE))

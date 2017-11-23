@@ -126,3 +126,18 @@
 	{{{<JAVA>
 	Sender.create(req).setSSLSocketFactory(Http.nopSSLSocketFactory()).send();
 	}}}
+	
+----------------------------------------------------------------------
+Cookie的用法
+
+	发送cookie
+
+	{{{<JAVA>
+        Request req = Request.create("https://nutz.cn", METHOD.GET);
+        Cookie cookie = new Cookie();
+        cookie.set("sid", "aabbcceeddff");
+        ...
+        Sender sender = Sender.create(req);
+        sender.setInterceptor(cookie);
+        sender.send();
+	}}}

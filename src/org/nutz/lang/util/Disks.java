@@ -320,4 +320,34 @@ public abstract class Disks {
             }
         });
     }
+
+    /**
+     * 将多个路径拼合成一个路径，他会自动去除重复的 "/"
+     * 
+     * <pre>
+     * appendPath("a","b")  => "a/b"
+     * appendPath("/a","b/c")  => "/a/b/c"
+     * appendPath("/a/","/b/c")  => "/a/b/c"
+     * </pre>
+     * 
+     * @param phs
+     *            路径数组
+     * @return 拼合后的路径
+     */
+    public static String appendPath(String... phs) {
+        String[] paths = Lang.without(phs, null);
+        if (null != paths && paths.length > 0) {
+            // zozoh: 嗯下面的逻辑木有必要了吧
+            // if (null == paths[0])
+            // paths[0] = "/";
+            String str = Lang.concat("/", paths).toString();
+            String[] ss = Strings.splitIgnoreBlank(str, "/");
+            str = Lang.concat("/", ss).toString();
+            if (paths[0].startsWith("/")) {
+                return "/" + str;
+            }
+            return str;
+        }
+        return null;
+    }
 }

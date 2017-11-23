@@ -68,7 +68,7 @@ public class NutDaoRunner implements DaoRunner {
                 break;
             }
             // 看来需要开启事务了
-            if (useTrans) {
+            if (useTrans && ((DaoInterceptorChain) callback).getAutoTransLevel() > 0) {
                 Trans.exec(((DaoInterceptorChain) callback).getAutoTransLevel(), new Atom() {
                     public void run() {
                         _run(dataSource, callback);

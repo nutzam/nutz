@@ -22,6 +22,8 @@ import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.AbstractLifeCycle;
+import org.nutz.lang.util.LifeCycle;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -31,7 +33,7 @@ import org.nutz.log.Logs;
  * @author wendal(wendal1985@gmail.com)
  * 
  */
-public class ComboIocLoader implements IocLoader {
+public class ComboIocLoader extends AbstractLifeCycle implements IocLoader {
 
     private static final Log log = Logs.get();
 
@@ -171,10 +173,6 @@ public class ComboIocLoader implements IocLoader {
             if (iocLoaders.contains(loader))
                 return;
             iocLoaders.add(loader);
-            if (log.isInfoEnabled())
-                log.infof("add loader : %s : \n     - %s",
-                          loader.getClass(),
-                          Lang.concat("\n     - ", loader.getName()));
         }
     }
 
@@ -197,5 +195,19 @@ public class ComboIocLoader implements IocLoader {
         }
         sb.append("}");
         return sb.toString();
+    }
+    
+    public void init() throws Exception {
+        for (IocLoader loader : iocLoaders) {
+            if (loader instanceof LifeCycle)
+                ((LifeCycle) loader).init();
+        }
+    }
+    
+    public void depose() throws Exception {
+        for (IocLoader loader : iocLoaders) {
+            if (loader instanceof LifeCycle)
+                ((LifeCycle) loader).depose();
+        }
     }
 }

@@ -1,31 +1,20 @@
 package org.nutz.el.opt.logic;
 
-import org.nutz.el.opt.TwoTernary;
-
 /**
  * 等于
  * 
  * @author juqkai(juqkai@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  *
  */
-public class EQOpt extends TwoTernary {
+public class EQOpt extends AbstractCompareOpt {
+    
     public int fetchPriority() {
         return 7;
     }
 
-    public Object calculate() {
-        Object lval = calculateItem(this.left);
-        Object rval = calculateItem(this.right);
-        if (lval == null && rval == null)
-            return true;
-
-        if (lval == null || rval == null)
-            return false;
-
-        if (lval == rval) {
-            return true;
-        }
-        return lval.equals(rval);
+    public Boolean calculate() {
+        return compare() == 0;
     }
 
     public String fetchSelf() {

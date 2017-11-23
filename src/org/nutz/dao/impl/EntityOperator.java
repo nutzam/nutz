@@ -8,12 +8,17 @@ import org.nutz.dao.Chain;
 import org.nutz.dao.Condition;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.MappingField;
+import org.nutz.dao.impl.sql.pojo.AbstractPItem;
+import org.nutz.dao.impl.sql.pojo.ConditionPItem;
 import org.nutz.dao.impl.sql.pojo.InsertByChainPItem;
+import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.PojoMaker;
 import org.nutz.dao.sql.SqlType;
 import org.nutz.dao.util.Pojos;
+import org.nutz.dao.util.cri.Static;
 import org.nutz.lang.Each;
 import org.nutz.lang.ExitLoop;
 import org.nutz.lang.Lang;
@@ -76,6 +81,28 @@ public class EntityOperator {
         pojoList.add(pojo);
         return pojo;
     }
+    
+    public Pojo addUpdateByPkAndCnd(Condition cnd) {
+        return addUpdateByPkAndCnd(entity, myObj, cnd);
+    }
+    
+    public Pojo addUpdateByPkAndCnd(final Entity<?> en, final Object obj, final Condition cnd) {
+        if (null == en)
+            return null;
+
+        Pojo pojo = dao.pojoMaker.makeUpdate(en, null)
+                                    .append(Pojos.Items.cndAuto(en, Lang.first(obj)))
+                                    .setOperatingObject(obj);
+        pojo.append(new Static(" AND "));
+        if (cnd instanceof Criteria) {
+            // 只取它的where条件
+            pojo.append(((Criteria)cnd).where().setTop(false));
+        } else {
+            pojo.append(new ConditionPItem(cnd).setTop(false));
+        }
+        pojoList.add(pojo);
+        return pojo;
+    }
 
     public List<Pojo> addUpdateForIgnoreNull(    final Entity<?> en,
                                                 final Object obj,
@@ -91,7 +118,7 @@ public class EntityOperator {
             newFM = fm;
             newFM.setIgnoreNull(true);
         }
-        final List<Pojo> re = new ArrayList<Pojo>(Lang.length(obj));
+        final List<Pojo> re = new ArrayList<Pojo>(Lang.eleSize(obj));
         Lang.each(obj, new Each<Object>() {
             public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
                 Pojo pojo = dao.pojoMaker.makeUpdate(en, ele)
@@ -104,6 +131,19 @@ public class EntityOperator {
         pojoList.addAll(re);
 
         return re;
+    }
+    
+    public Pojo addUpdateAndIncrIfMatch(final Entity<?> en, final Object obj, String fieldName) {
+        if (null == en)
+            return null;
+        MappingField mf = en.getField(fieldName);
+        Pojo pojo = dao.pojoMaker.makeUpdate(en, null)
+                                    .append(new Static("," + mf.getColumnNameInSql() + "=" + mf.getColumnNameInSql() + "+1"))
+                                    .append(Pojos.Items.cndAuto(en, Lang.first(obj)))
+                                    .setOperatingObject(obj);
+        pojo.append(new Static("AND")).append(((AbstractPItem)Pojos.Items.cndColumn(mf, null)).setTop(false));
+        pojoList.add(pojo);
+        return pojo;
     }
 
     public Pojo addUpdate(Condition cnd) {
@@ -156,7 +196,7 @@ public class EntityOperator {
         if (null == en)
             return null;
 
-        int len = Map.class.isAssignableFrom(obj.getClass()) ? 1 : Lang.length(obj);
+        int len = Map.class.isAssignableFrom(obj.getClass()) ? 1 : Lang.eleSize(obj);
         List<Pojo> re = new ArrayList<Pojo>(len);
         if (len > 0) {
             if (len == 1) {

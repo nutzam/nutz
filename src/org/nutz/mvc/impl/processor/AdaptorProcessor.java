@@ -2,17 +2,14 @@ package org.nutz.mvc.impl.processor;
 
 import java.util.List;
 
-import org.nutz.mvc.ActionContext;
-import org.nutz.mvc.ActionInfo;
-import org.nutz.mvc.HttpAdaptor;
-import org.nutz.mvc.NutConfig;
+import org.nutz.mvc.*;
 import org.nutz.mvc.adaptor.PairAdaptor;
 
 /**
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
- * 
+ * @author MingzFan(Mingz.Fan@gmail.com)
  */
 public class AdaptorProcessor extends AbstractProcessor {
 
@@ -37,7 +34,10 @@ public class AdaptorProcessor extends AbstractProcessor {
         HttpAdaptor re = evalObj(config, ai.getAdaptorInfo());
         if (null == re)
             re = new PairAdaptor();
-        re.init(ai.getMethod());
+        if (re instanceof HttpAdaptor2)
+            ((HttpAdaptor2) re).init(ai);
+        else
+            re.init(ai.getMethod());
         return re;
     }
 }

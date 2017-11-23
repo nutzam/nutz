@@ -19,24 +19,50 @@ public abstract class AbstractLog implements Log {
     protected static final int LEVEL_INFO = 20;
     protected static final int LEVEL_DEBUG = 10;
     protected static final int LEVEL_TRACE = 0;
-    
+
+    public static int level(String str) {
+        if (null != str) {
+            if ("F".equals(str) || "fatal".equals(str))
+                return LEVEL_FATAL;
+
+            if ("E".equals(str) || "error".equals(str))
+                return LEVEL_ERROR;
+
+            if ("W".equals(str) || "warn".equals(str))
+                return LEVEL_WARN;
+
+            if ("I".equals(str) || "info".equals(str))
+                return LEVEL_INFO;
+
+            if ("D".equals(str) || "debug".equals(str))
+                return LEVEL_DEBUG;
+
+            if ("T".equals(str) || "trace".equals(str))
+                return LEVEL_TRACE;
+        }
+
+        return LEVEL_INFO;
+    }
+
     protected abstract void log(int level, Object message, Throwable tx);
-    
-    protected void log(int level, LogInfo info){
+
+    protected void log(int level, LogInfo info) {
         log(level, info.message, info.e);
     }
 
     private static final LogInfo LOGINFO_ERROR = new LogInfo();
     private static final LogInfo LOGINFO_NULL = new LogInfo();
-    static{
+    static {
         LOGINFO_ERROR.message = "!!!!Log Fail!!";
         LOGINFO_NULL.message = "null";
     }
-    
+
     /**
      * 产生一个LogInfo对象,以支持以下调用方式:
-     * <p/><code>log.warn(e)</code>
-     * <p/><code>log.warnf("User(name=%s) login fail",username,e)</code>
+     * <p/>
+     * <code>log.warn(e)</code>
+     * <p/>
+     * <code>log.warnf("User(name=%s) login fail",username,e)</code>
      */
     private LogInfo makeInfo(Object obj, Object... args) {
         if (obj == null)
@@ -44,17 +70,16 @@ public abstract class AbstractLog implements Log {
         try {
             LogInfo info = new LogInfo();
             if (obj instanceof Throwable) {
-                info.e = (Throwable)obj;
+                info.e = (Throwable) obj;
                 info.message = info.e.getMessage();
-            }
-            else if (args == null || args.length == 0) {
+            } else if (args == null || args.length == 0) {
                 info.message = obj.toString();
             }
-//            //map to another mehtod
-//            else if (args.length == 1 && args[0] instanceof Throwable) {
-//                info.message = obj.toString();
-//                info.e = (Throwable)args[0];
-//            }
+            // //map to another mehtod
+            // else if (args.length == 1 && args[0] instanceof Throwable) {
+            // info.message = obj.toString();
+            // info.e = (Throwable)args[0];
+            // }
             else {
                 info.message = String.format(obj.toString(), args);
                 if (args[args.length - 1] instanceof Throwable)
@@ -62,9 +87,13 @@ public abstract class AbstractLog implements Log {
             }
             return info;
         }
-        catch (Throwable e) { //即使格式错误也继续log
+        catch (Throwable e) { // 即使格式错误也继续log
             if (isWarnEnabled())
-                warn("String format fail in log , fmt = "+ obj + " , args = " +Arrays.toString(args),e);
+                warn("String format fail in log , fmt = "
+                     + obj
+                     + " , args = "
+                     + Arrays.toString(args),
+                     e);
             return LOGINFO_ERROR;
         }
     }
@@ -154,9 +183,9 @@ public abstract class AbstractLog implements Log {
     }
 
     protected String tag = "";
-    
+
     public Log setTag(String tag) {
-    	this.tag = tag;
-    	return this;
+        this.tag = tag;
+        return this;
     }
 }

@@ -1,7 +1,5 @@
 package org.nutz.lang.reflect;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,6 +14,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Stopwatch;
 import org.nutz.lang.born.Borning;
+import org.nutz.lang.util.Disks;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
@@ -28,14 +27,16 @@ public class FastClassFactoryTest extends Assert {
     public void tearDown() throws Exception {}
 
     @Test
-    public void testInvokeObjectMethodObjectArray() throws InvocationTargetException {
-        DefaultClassDefiner.debugDir = "/nutz_fastclass/";
-        FastClass fc = FastClassFactory.get(Pet.class);
+    public void testInvokeObjectMethodObjectArray() throws Throwable {
+        DefaultClassDefiner.debugDir = Disks.normalize("~/nutz_fastclass/");
+        FastMethod fc = FastMethodFactory.make(Pet.class.getConstructor());
+        fc = FastMethodFactory.make(Pet.class.getConstructor());
         //net.sf.cglib.reflect.FastClass fc2 = net.sf.cglib.reflect.FastClass.create(Pet.class);
         Mirror<Pet> mirror = Mirror.me(Pet.class);
         Borning<Pet> mb = mirror.getBorning();
         for (int i = 0; i < 10000; i++) {
-            fc.born();
+            if (null == fc.invoke(null))
+                throw new RuntimeException();
         }
         for (int i = 0; i < 10000; i++) {
             new Pet();
@@ -65,7 +66,7 @@ public class FastClassFactoryTest extends Assert {
 
         sw = Stopwatch.begin();
         for (int i = 0; i < 1000000; i++) {
-            pet = (Pet) fc.born();
+            pet = (Pet) fc.invoke(null);
         }
 
         sw.stop();
@@ -107,8 +108,8 @@ public class FastClassFactoryTest extends Assert {
 //        System.out.println("cglib born   :"+sw);
 //        Lang.quiteSleep(1000);
 //        System.gc();
-
-        System.out.println(pet.hashCode());
+        if (pet != null)
+            System.out.println(FastClassFactory.get(Pet.class.getMethod("hashCode")).invoke(pet));
     }
 
     @Test

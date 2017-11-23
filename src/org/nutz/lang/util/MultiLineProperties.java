@@ -88,6 +88,7 @@ public class MultiLineProperties implements Map<String, String> {
                 if (value.contains("\\u")) {
                     value = Strings.unicodeDecode(value);
                 }
+                value = value.replace("\\:", ":").replace("\\=", "=");
                 maps.put(Strings.trim(name), value);
             } else if (c == ':') {
                 String name = s.substring(0, pos);
@@ -195,6 +196,7 @@ public class MultiLineProperties implements Map<String, String> {
             }
             writer.write(NL);
         }
+        writer.flush();
     }
 
 }

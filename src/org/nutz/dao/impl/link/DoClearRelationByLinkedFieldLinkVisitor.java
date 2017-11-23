@@ -23,7 +23,7 @@ public class DoClearRelationByLinkedFieldLinkVisitor extends AbstractLinkVisitor
         if (lnk instanceof ManyManyLinkField) {
             final ManyManyLinkField mm = (ManyManyLinkField) lnk;
             Object value = mm.getValue(obj);
-            if (Lang.length(value) == 0)
+            if (Lang.eleSize(value) == 0)
                 return;
 
             final Pojo pojo = opt.maker().makeDelete(mm.getRelationName());

@@ -112,6 +112,12 @@ public class NutIoc implements Ioc2 {
             this.mirrors = new DefaultMirrorFactory(this);
         else
             this.mirrors = mirrors;
+        try {
+            this.loader.init();
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         log.info("... NutIoc init complete");
     }
 
@@ -256,6 +262,12 @@ public class NutIoc implements Ioc2 {
                       getClass().getName(),
                       hashCode(),
                       Times.sDTms2(this.createTime));
+        try {
+            this.loader.depose();
+        }
+        catch (Exception e) {
+            log.warn("something happen when depose IocLoader", e);
+        }
         context.depose();
         deposed = true;
         if (log.isInfoEnabled())

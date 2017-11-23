@@ -107,8 +107,9 @@ public class SqlFieldMacro extends NutPojo {
                 sql.vars().set("table", getEntity().getTableName());
             else if ("field".equals(name))
                 sql.vars().set("field", entityField.getColumnName());
-            else
-                sql.vars().set(name, getEntity().getField(name).getValue(getOperatingObject()));
+            else {
+                sql.vars().set(name, getFieldVale(name, getOperatingObject()));
+            }
         }
 
         for (String name : sql.paramIndex().names()) {
@@ -119,7 +120,16 @@ public class SqlFieldMacro extends NutPojo {
             else if ("field".equals(name))
                 sql.params().set("field", entityField.getColumnName());
             else
-                sql.params().set(name, getEntity().getField(name).getValue(getOperatingObject()));
+                sql.params().set(name, getFieldVale(name, getOperatingObject()));
+        }
+    }
+    
+    protected Object getFieldVale(String name, Object obj) {
+        MappingField mf = getEntity().getField(name);
+        if (mf == null) {
+            return getEntity().getMirror().getEjecting(name).eject(obj);
+        } else {
+            return mf.getValue(obj);
         }
     }
 }

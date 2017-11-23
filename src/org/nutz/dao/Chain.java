@@ -1,7 +1,6 @@
 package org.nutz.dao;
 
 import java.lang.reflect.Field;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.nutz.dao.entity.Entity;
@@ -12,6 +11,7 @@ import org.nutz.json.Json;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Callback2;
+import org.nutz.lang.util.NutMap;
 
 /**
  * 名值链。
@@ -364,10 +364,12 @@ public abstract class Chain {
             return false;
         }
         public Map<String, Object> toMap() {
-            Map<String, Object> map = new LinkedHashMap<String, Object>();
+            NutMap map = new NutMap();
             Entry current = head;
             while (current != null) {
                 map.put(current.name, current.value);
+                if (current.adaptor != null)
+                	map.put("."+current.name+".adaptor", current.adaptor);
                 current = current.next;
             }
             return map;

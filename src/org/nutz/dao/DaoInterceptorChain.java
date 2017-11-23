@@ -224,4 +224,12 @@ public class DaoInterceptorChain implements ConnCallback {
     public String getId() {
         return id;
     }
+    
+    /**
+     * 替换当前执行的DaoStatement
+     * @param daoStatement
+     */
+    public void setDaoStatement(DaoStatement daoStatement) {
+        this.daoStatement = daoStatement;
+    }
 }

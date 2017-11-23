@@ -31,6 +31,7 @@ public class ObjectPairInjector implements ParamInjector {
     protected Field[] fields;
     protected ParamConvertor[] converters;
     protected Borning<?> borning;
+    protected String[] defaultValues;
 
     public ObjectPairInjector(String prefix, Type type) {
         prefix = Strings.isBlank(prefix) ? "" : Strings.trim(prefix);
@@ -47,8 +48,14 @@ public class ObjectPairInjector implements ParamInjector {
             Param param = f.getAnnotation(Param.class);
             String nm = null == param ? f.getName() : param.value();
             String datefmt = null == param ? null : param.dfmt();
+            String locale = null == param ? null : param.locale();
             this.names[i] = prefix + nm;
-            this.converters[i] = Params.makeParamConvertor(f.getType(), datefmt);
+            this.converters[i] = Params.makeParamConvertor(f.getType(), datefmt, locale);
+            if (param != null && !Params.ParamDefaultTag.equals(param.df())) {
+                if (defaultValues == null)
+                    defaultValues = new String[fields.length];
+                defaultValues[i] = param.df();
+            }
         }
     }
 
@@ -60,6 +67,8 @@ public class ObjectPairInjector implements ParamInjector {
         Object obj = borning.born();
         for (int i = 0; i < injs.length; i++) {
             Object param = converters[i].convert(pe.extractor(names[i]));
+            if (param == null && defaultValues != null && defaultValues[i] != null)
+                param = defaultValues[i];
             if (null != param)
                 injs[i].inject(obj, param);
         }

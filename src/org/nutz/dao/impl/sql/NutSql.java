@@ -15,7 +15,6 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.impl.sql.pojo.AbstractPItem;
 import org.nutz.dao.impl.sql.pojo.StaticPItem;
-import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.DaoStatement;
@@ -42,6 +41,7 @@ public class NutSql extends NutStatement implements Sql {
     protected VarIndex paramIndex;
     protected Map<String, ValueAdaptor> customValueAdaptor;
     protected List<PItem> items;
+    protected char[] placeholder;
 
     public NutSql(String source) {
         this(source, null);
@@ -272,7 +272,7 @@ public class NutSql extends NutStatement implements Sql {
             } else if (val instanceof PItem) {
                 ((PItem) val).joinSql(en, sb);
             } else if (val.getClass().isArray()) {
-                sb.append(Strings.dup("?,", Lang.length(val)));
+                sb.append(Strings.dup("?,", Lang.eleSize(val)));
                 sb.setLength(sb.length() - 1);
             } else if (val instanceof Condition) {
                 sb.append(' ').append(Pojos.formatCondition(en, (Condition) val));
@@ -298,22 +298,22 @@ public class NutSql extends NutStatement implements Sql {
                 }
             }
             if (val == null) {
-                adaptors[off] = Jdbcs.getAdaptorBy(null);
+                adaptors[off] = getAdapterBy(null);
                 return off + 1;
             } else if (val instanceof PItem) {
                 return ((PItem) val).joinAdaptor(en, adaptors, off);
             } else if (val.getClass().isArray()) {
-                int len = Lang.length(val);
+                int len = Lang.eleSize(val);
                 Lang.each(val, new Each<Object>() {
                     public void invoke(int index, Object ele, int length) {
-                        adaptors[off + index] = Jdbcs.getAdaptorBy(ele);
+                        adaptors[off + index] = getAdapterBy(ele);
                     }
                 });
                 return off + len;
                 // } else if (val instanceof Condition) {
 
             } else {
-                adaptors[off] = Jdbcs.getAdaptorBy(val);
+                adaptors[off] = getAdapterBy(val);
                 return off + 1;
             }
         }
@@ -326,7 +326,7 @@ public class NutSql extends NutStatement implements Sql {
             } else if (val instanceof PItem) {
                 return ((PItem) val).joinParams(en, null, params, off);
             } else if (val.getClass().isArray()) {
-                int len = Lang.length(val);
+                int len = Lang.eleSize(val);
                 Lang.each(val, new Each<Object>() {
                     public void invoke(int index, Object ele, int length) {
                         params[off + index] = ele;
@@ -348,7 +348,7 @@ public class NutSql extends NutStatement implements Sql {
             } else if (val instanceof PItem) {
                 return ((PItem) val).paramCount(en);
             } else if (val.getClass().isArray()) {
-                return Lang.length(val);
+                return Lang.eleSize(val);
             } else if (val instanceof Condition) {
                 return 0;
             } else {
@@ -361,7 +361,9 @@ public class NutSql extends NutStatement implements Sql {
      * 若需要定制参数字符和变量字符,覆盖本方法,通过SqlLiteral的构造方法指定之
      */
     protected SqlLiteral literal() {
-        return new SqlLiteral().valueOf(sourceSql);
+        if (placeholder == null)
+            return new SqlLiteral().valueOf(sourceSql);
+        return new SqlLiteral(placeholder[0], placeholder[1]).valueOf(sourceSql);
     }
     
     public Sql setParam(String name, Object value) {
@@ -376,5 +378,11 @@ public class NutSql extends NutStatement implements Sql {
     
     public Record getOutParams() {
         return getContext().attr(Record.class, "OUT");
+    }
+    
+    public Sql changePlaceholder (char param, char var) {
+        placeholder = new char[]{param, var};
+        setSourceSql(getSourceSql());
+        return null;
     }
 }

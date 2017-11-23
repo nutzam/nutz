@@ -61,6 +61,8 @@ public interface NutBean extends Map<String, Object> {
 
     <T> T getAs(String key, Class<T> classOfT, T dft);
 
+    <T> List<T> getAsList(String key, Class<T> eleType);
+
     /**
      * 将一个字段转换成列表。因为返回的是容器，所以本函数永远不会返回 null
      * 
@@ -100,6 +102,8 @@ public interface NutBean extends Map<String, Object> {
     <T> T[] getArray(String key, Class<T> eleType);
 
     NutBean addv(String key, Object value);
+
+    NutBean addv2(String key, Object value);
 
     NutBean setv(String key, Object value);
 
@@ -243,4 +247,20 @@ public interface NutBean extends Map<String, Object> {
      * @return 是否匹配
      */
     boolean match(Map<String, Object> map);
+
+    int intIncrement(String key);
+
+    int intIncrement(String key, int number);
+
+    int intDecrement(String key);
+
+    int intDecrement(String key, int number);
+
+    long longIncrement(String key);
+
+    long longIncrement(String key, long number);
+
+    long longDecrement(String key);
+
+    long longDecrement(String key, long number);
 }

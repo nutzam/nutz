@@ -1,0 +1,111 @@
+#title: 集成Redis(Jedis库)
+#index:0,1
+#author:wendal(wendal1985@gmail.com)
+
+-----------------------------------------------
+简介
+
+	详细说明请查阅插件的README
+	
+	[https://github.com/nutzam/nutzmore/tree/master/nutz-integration-jedis nutz-integration-jedis]
+	[https://git.oschina.net/nutz/nutzmore/tree/master/nutz-integration-jedis Git@OSC镜像]
+	
+	jedis是redis的java客户端,请注意区别.
+	
+	本插件在当前版本(1.r.60.r4), 已完成单机和集群操作的集成.
+	
+	提供多种使用方式
+	* aop -- 自动管理Jedis实例的开启和关闭,推荐使用
+	* 注入JedisPool -- JedisPool就是连接池本身,使用try-with-resources或try-finally方式使用
+	* 注入RedisService -- 封装Jedis的大部分方法,同时自动管理Jedis实例的开启和关闭. 建议直接注入,而不是继承它.
+	
+----------------------------------------------
+依赖
+
+	* jedis 2.8+
+	* 依赖名为conf类型为PropertiesProxy的ioc bean,配置信息从它读取
+
+-----------------------------------------------
+基本配置
+
+	本插件通过@IocBy加载
+	
+	{{{<JAVA>
+	@IocBy(args = {
+	           "*js","ioc/",
+               "*anno", "net.wendal.nutzbook",
+               "*jedis" // 加载jedis
+               })
+	}}}
+	
+	在conf的扫描路径内,添加一个redis.properties. 以下均为默认值,不写也行.
+	
+	{{{
+	redis.host=localhost
+	redis.port=6379
+	redis.timeout=2000
+	#redis.password=wendal.net
+	redis.database=0
+	#redis.mode=cluster
+	}}}
+
+-----------------------------------------------
+通过aop方式使用
+
+	必须是ioc bean对象哦,不然@Aop不会生效
+	
+	{{{<JAVA>
+	import static org.nutz.integration.jedis.RedisInterceptor.jedis;
+
+	@Aop("redis") //拦截器的名字叫redis
+	public void addTopic(Topic topic) {
+	    // 通过调用jedis()获取上下文的Jedis对象,无需手动关闭或回收.
+		jedis().set("topic:"+R.UU32(), Json.toJson(topic,JsonFormat.full()));
+	}
+	}}}
+	
+-----------------------------------------------
+通过注入JedisAgent使用
+	
+	JedisAgent封装了JedisPool和JedisCluster,通过getResource取出Jedis实例进行操作, 操作完成后,需要调用其close方法关闭.
+	
+	{{{<JAVA>
+	@Inject JedisAgent jedisAgent;
+	//@Inject JedisCluster jedisCluster;
+	//@Inject JedisPool jedisPool;
+	
+	// JDK 7+ , 可利用try-with-resources特性, 让JDK自动回收(会自定义调用close方法)
+	public void setxxx(xxx yyy) {
+		try (Jedis jedis = jedisAgent.getResource()) {
+			jedis.set("wendal", "https://nutz.cn");
+		}
+	}
+	// JDK 6, 按部就班的老办法try-finally
+	public void setxxx(xxx yyy) {
+	    Jedis jedis = null;
+		try { 
+		    jedis = jedisAgent.getResource();
+			jedis.set("wendal", "https://nutz.cn");
+		} finally {
+			Streams.safeClose(jedis);
+		}
+	}
+	}}}
+	
+	也可以注入JedisPool(单机版jedis)或JedisCluster(集群版redis). 推荐使用JedisAgent.
+	
+-----------------------------------------------
+注入RedisService使用
+
+	RedisService继承了Jedis类的大部分方法, 所有方法均自动开启和关闭Jedis实例,除pipeline外的大部分方法均可正常使用. 
+	
+	若涉及到pipeline, 可注入JedisPool取出原生Jedis进行操作.
+	
+	{{{<JAVA>
+	@Inject RedisService redisService;
+	
+	public void setxxx(xxx yyy) {
+	    redisService.set("wendal", "https://nutz.cn");
+	    
+	}
+	}}}

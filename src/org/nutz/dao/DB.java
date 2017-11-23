@@ -52,6 +52,10 @@ public enum DB {
      */
     SYBASE,
     /**
+     * DM
+     */
+    DM,
+    /**
      * 其他数据库
      */
     OTHER

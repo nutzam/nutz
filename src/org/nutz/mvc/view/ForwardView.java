@@ -38,7 +38,9 @@ public class ForwardView extends AbstractPathView {
             throws Exception {
         String path = evalPath(req, obj);
         String args = "";
-        if (path != null && path.contains("?")) { //将参数部分分解出来
+        if (path == null)
+            path = "";
+        else if (path.contains("?")) { //将参数部分分解出来
             args = path.substring(path.indexOf('?'));
             path = path.substring(0, path.indexOf('?'));
         }

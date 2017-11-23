@@ -7,6 +7,7 @@ import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import org.nutz.castor.Castors;
+import org.nutz.lang.util.NutMap;
 
 /**
  * 描述Json输出的格式
@@ -16,7 +17,10 @@ import org.nutz.castor.Castors;
  * @author 有心猴(belialofking@163.com)
  *
  */
-public class JsonFormat implements Cloneable {
+public class JsonFormat extends NutMap {
+
+    private static final long serialVersionUID = 1L;
+    private static char DEFAULT_SEPARATOR = '\"';
 
     /**
      * 紧凑模式 -- 无换行,忽略null值
@@ -75,73 +79,71 @@ public class JsonFormat implements Cloneable {
      *            true: 使用紧凑模式输出，false: 不使用紧凑模式输出
      */
     public JsonFormat(boolean compact) {
-        this.compact = compact;
-        this.indentBy = "   ";
-        this.quoteName = true;
-        this.castors = Castors.me();
-        this.separator = '\"';
+        setCompact(compact);
     }
 
-    /**
-     * 缩进
-     */
-    private int indent;
-    /**
-     * 缩进时用的字符串
-     */
-    private String indentBy;
-    /**
-     * 是否使用紧凑模式输出
-     */
-    private boolean compact;
-    /**
-     * 是否给字段添加双引号
-     */
-    private boolean quoteName;
-    /**
-     * 是否忽略null值
-     */
-    private boolean ignoreNull;
-    /**
-     * 仅输出的字段的正则表达式
-     */
-    private Pattern actived;
-    /**
-     * 不输出的字段的正则表达式
-     */
-    private Pattern locked;
-    /**
-     * 用到的类型转换器
-     */
+    public static class Function {
+        /**
+         * 缩进时用的字符串
+         */
+        public static String indentBy = "indentBy";
+        /**
+         * 是否使用紧凑模式输出
+         */
+        public static String compact = "compact";
+        /**
+         * 是否给字段添加双引号
+         */
+        public static String quoteName = "quoteName";
+        /**
+         * 是否忽略null值
+         */
+        public static String ignoreNull = "ignoreNull";
+        /**
+         * 仅输出的字段的正则表达式
+         */
+        public static String actived = "actived";
+        /**
+         * 不输出的字段的正则表达式
+         */
+        public static String locked = "locked";
+        /**
+         * 用到的类型转换器
+         */
+        public static String castors = "castors";
+        /**
+         * 分隔符
+         */
+        public static String separator = "separator";
+        /**
+         * 是否自动将值应用Unicode编码
+         */
+        public static String autoUnicode = "autoUnicode";
+        /**
+         * unicode编码用大写还是小写
+         */
+        public static String unicodeLower = "unicodeLower";
+        /**
+         * 日期格式
+         */
+        public static String dateFormat = "dateFormat";
+        /**
+         * 数字格式
+         */
+        public static String numberFormat = "numberFormat";
+        /**
+         * 遇到空值的时候写入字符串
+         */
+        public static String nullAsEmtry = "nullAsEmtry";
+        public static String nullListAsEmpty = "nullListAsEmpty";
+        public static String nullStringAsEmpty = "nullStringAsEmpty";
+        public static String nullBooleanAsFalse = "nullBooleanAsFalse";
+        public static String nullNumberAsZero = "nullNumberAsZero";
+        public static String timeZone = "timeZone";
+    }
+
     @JsonField(ignore = true)
     private Castors castors;
-    /**
-     * 分隔符
-     */
-    private char separator;
-    /**
-     * 是否自动将值应用Unicode编码
-     */
-    private boolean autoUnicode;
-    /**
-     * unicode编码用大写还是小写
-     */
-    private boolean unicodeLower;
-    /**
-     * 日期格式
-     */
-    private DateFormat dateFormat;
-    /**
-     * 数字格式
-     */
-    private NumberFormat numberFormat;
-    
-    /**
-     * 遇到空值的时候写入字符串
-     */
-    private boolean nullAsEmtry;
-    
-    private TimeZone timeZone;
 
     /**
      * 判断该字段是否是指定输出方式中的字段
@@ -151,10 +153,10 @@ public class JsonFormat implements Cloneable {
      * @return true: 该字段在忽略字段中，false: 该字段不在忽略字段中
      */
     public boolean ignore(String name) {
-        if (null != actived)
-            return !actived.matcher(name).find();
-        if (null != locked)
-            return locked.matcher(name).find();
+        if (null != getActived())
+            return !getActived().matcher(name).find();
+        if (null != getLocked())
+            return getLocked().matcher(name).find();
         return false;
     }
 
@@ -167,7 +169,7 @@ public class JsonFormat implements Cloneable {
      * @return true: 使用紧凑模式输出，false: 不使用紧凑模式输出
      */
     public boolean isCompact() {
-        return compact;
+        return getBoolean(Function.compact, false);
     }
 
     /**
@@ -178,26 +180,27 @@ public class JsonFormat implements Cloneable {
      * @return 该Json输出格式
      */
     public JsonFormat setCompact(boolean compact) {
-        this.compact = compact;
+        put(Function.compact, compact);
         return this;
     }
 
+    @Deprecated
     public int getIndent() {
-        return indent;
+        return 0;
     }
 
+    @Deprecated
     public JsonFormat setIndent(int indent) {
-        this.indent = indent;
         return this;
     }
 
+    @Deprecated
     public JsonFormat increaseIndent() {
-        this.indent++;
         return this;
     }
 
+    @Deprecated
     public JsonFormat decreaseIndent() {
-        this.indent--;
         return this;
     }
 
@@ -207,7 +210,7 @@ public class JsonFormat implements Cloneable {
      * @return 缩进时用的字符串
      */
     public String getIndentBy() {
-        return indentBy;
+        return getString(Function.indentBy, "   ");
     }
 
     /**
@@ -218,7 +221,7 @@ public class JsonFormat implements Cloneable {
      * @return 该Json输出格式
      */
     public JsonFormat setIndentBy(String indentBy) {
-        this.indentBy = indentBy;
+        put(Function.indentBy, indentBy);
         return this;
     }
 
@@ -228,7 +231,7 @@ public class JsonFormat implements Cloneable {
      * @return 是否给字段添加双引号
      */
     public boolean isQuoteName() {
-        return quoteName;
+        return getBoolean(Function.quoteName, true); // 默认为true
     }
 
     /**
@@ -239,7 +242,7 @@ public class JsonFormat implements Cloneable {
      * @return 该Json输出格式
      */
     public JsonFormat setQuoteName(boolean quoteName) {
-        this.quoteName = quoteName;
+        put(Function.quoteName, quoteName);
         return this;
     }
 
@@ -249,7 +252,7 @@ public class JsonFormat implements Cloneable {
      * @return 是否忽略null的值
      */
     public boolean isIgnoreNull() {
-        return ignoreNull;
+        return getBoolean(Function.ignoreNull, false);
     }
 
     /**
@@ -260,7 +263,7 @@ public class JsonFormat implements Cloneable {
      * @return 该Json输出格式
      */
     public JsonFormat setIgnoreNull(boolean ignoreNull) {
-        this.ignoreNull = ignoreNull;
+        put(Function.ignoreNull, ignoreNull);
         return this;
     }
 
@@ -272,7 +275,7 @@ public class JsonFormat implements Cloneable {
      * @return 该Json输出格式
      */
     public JsonFormat setActived(String regex) {
-        this.actived = Pattern.compile(regex);
+        put(Function.actived, Pattern.compile(regex));
         return this;
     }
 
@@ -284,7 +287,7 @@ public class JsonFormat implements Cloneable {
      * @return 该Json输出格式
      */
     public JsonFormat setLocked(String regex) {
-        this.locked = Pattern.compile(regex);
+        put(Function.locked, Pattern.compile(regex));
         return this;
     }
 
@@ -305,7 +308,7 @@ public class JsonFormat implements Cloneable {
      * @return 该Json输出格式
      */
     public JsonFormat setSeparator(char separator) {
-        this.separator = separator;
+        put(Function.separator, separator);
         return this;
     }
 
@@ -315,7 +318,10 @@ public class JsonFormat implements Cloneable {
      * @return 分隔符
      */
     public char getSeparator() {
-        return separator;
+        Character separator = getAs(Function.separator, Character.class);
+        if (separator != null)
+            return separator;
+        return DEFAULT_SEPARATOR;
     }
 
     /**
@@ -326,7 +332,7 @@ public class JsonFormat implements Cloneable {
      * @return 该Json输出格式
      */
     public JsonFormat setAutoUnicode(boolean autoUnicode) {
-        this.autoUnicode = autoUnicode;
+        put(Function.autoUnicode, autoUnicode);
         return this;
     }
 
@@ -336,7 +342,7 @@ public class JsonFormat implements Cloneable {
      * @return true: 自动将值应用unicode编码，false: 不自动将值应用unicode编码
      */
     public boolean isAutoUnicode() {
-        return autoUnicode;
+        return getBoolean(Function.autoUnicode, false);
     }
 
     /**
@@ -345,7 +351,7 @@ public class JsonFormat implements Cloneable {
      * @return true: unicode编码用大写，false: unicode编码用小写
      */
     public boolean isUnicodeLower() {
-        return unicodeLower;
+        return getBoolean(Function.unicodeLower, false);
     }
 
     /**
@@ -356,7 +362,7 @@ public class JsonFormat implements Cloneable {
      * @return 该Json输出格式
      */
     public JsonFormat setUnicodeLower(boolean unicodeLower) {
-        this.unicodeLower = unicodeLower;
+        put(Function.unicodeLower, unicodeLower);
         return this;
     }
 
@@ -369,13 +375,11 @@ public class JsonFormat implements Cloneable {
      */
     public JsonFormat setDateFormat(String df) {
         if (df == null) {
-            this.dateFormat = null;
-        }
-        else if (DATEFORMAT_TIMESTAMP.equals(df)) {
-            this.dateFormat = new TimeStampDateFormat();
-        }
-        else {
-            this.dateFormat = new SimpleDateFormat(df);
+            remove(Function.dateFormat);
+        } else if (DATEFORMAT_TIMESTAMP.equals(df)) {
+            put(Function.dateFormat, new TimeStampDateFormat());
+        } else {
+            put(Function.dateFormat, new SimpleDateFormat(df));
         }
         return this;
     }
@@ -388,7 +392,7 @@ public class JsonFormat implements Cloneable {
      * @return 该Json输出格式
      */
     public JsonFormat setDateFormat(DateFormat df) {
-        this.dateFormat = df;
+        put(Function.dateFormat, df);
         return this;
     }
 
@@ -398,7 +402,8 @@ public class JsonFormat implements Cloneable {
      * @return 日期格式
      */
     public DateFormat getDateFormat() {
-        return dateFormat == null ? null : (DateFormat) dateFormat.clone();
+        DateFormat df = getAs(Function.dateFormat, DateFormat.class);
+        return df == null ? null : (DateFormat) df.clone();
     }
 
     /**
@@ -407,7 +412,8 @@ public class JsonFormat implements Cloneable {
      * @return 数字格式
      */
     public NumberFormat getNumberFormat() {
-        return numberFormat == null ? null : (NumberFormat) numberFormat.clone();
+        NumberFormat nf = getAs(Function.numberFormat, NumberFormat.class);
+        return nf == null ? null : (NumberFormat) nf.clone();
     }
 
     /**
@@ -418,7 +424,7 @@ public class JsonFormat implements Cloneable {
      * @return 该Json输出格式
      */
     public JsonFormat setNumberFormat(NumberFormat numberFormat) {
-        this.numberFormat = numberFormat;
+        put(Function.numberFormat, numberFormat);
         return this;
     }
 
@@ -427,57 +433,84 @@ public class JsonFormat implements Cloneable {
      *
      * @return 该Json输出格式的副本
      */
+    @Override
     public JsonFormat clone() {
         JsonFormat jf = new JsonFormat();
-        jf.indent = this.indent;
-        jf.indentBy = this.indentBy;
-        jf.compact = this.compact;
-        jf.quoteName = this.quoteName;
-        jf.ignoreNull = this.ignoreNull;
-        jf.actived = this.actived;
-        jf.locked = this.locked;
-        jf.castors = this.castors;
-        jf.separator = this.separator;
-        jf.autoUnicode = this.autoUnicode;
-        jf.unicodeLower = this.unicodeLower;
-        jf.dateFormat = this.dateFormat;
-        jf.numberFormat = this.numberFormat;
-        jf.nullAsEmtry = this.nullAsEmtry;
+        jf.putAll(this);
         return jf;
     }
-    
+
     public static String DATEFORMAT_TIMESTAMP = "timestamp";
 
     public Pattern getActived() {
-        return actived;
+        return getAs(Function.actived, Pattern.class);
     }
 
-    public void setActived(Pattern actived) {
-        this.actived = actived;
+    public JsonFormat setActived(Pattern actived) {
+        put(Function.actived, actived);
+        return this;
     }
 
     public Pattern getLocked() {
-        return locked;
+        return getAs(Function.locked, Pattern.class);
     }
 
-    public void setLocked(Pattern locked) {
-        this.locked = locked;
+    public JsonFormat setLocked(Pattern locked) {
+        put(Function.locked, locked);
+        return this;
     }
 
     public boolean isNullAsEmtry() {
-        return nullAsEmtry;
+        return getBoolean(Function.nullAsEmtry, false);
     }
 
     public JsonFormat setNullAsEmtry(boolean nullAsEmtry) {
-        this.nullAsEmtry = nullAsEmtry;
+        put(Function.nullAsEmtry, nullAsEmtry);
         return this;
     }
 
     public TimeZone getTimeZone() {
-        return timeZone;
+        return getAs(Function.timeZone, TimeZone.class);
     }
 
-    public void setTimeZone(TimeZone timeZone) {
-        this.timeZone = timeZone;
+    public JsonFormat setTimeZone(TimeZone timeZone) {
+        put(Function.timeZone, timeZone);
+        return this;
+    }
+
+    public boolean isNullListAsEmpty() {
+        return getBoolean(Function.nullListAsEmpty, false);
+    }
+
+    public JsonFormat setNullListAsEmpty(boolean nullListAsEmpty) {
+        put(Function.nullListAsEmpty, nullListAsEmpty);
+        return this;
+    }
+
+    public boolean isNullStringAsEmpty() {
+        return getBoolean(Function.nullStringAsEmpty, false);
+    }
+
+    public JsonFormat setNullStringAsEmpty(boolean nullStringAsEmpty) {
+        put(Function.nullStringAsEmpty, nullStringAsEmpty);
+        return this;
+    }
+
+    public boolean isNullBooleanAsFalse() {
+        return getBoolean(Function.nullBooleanAsFalse, false);
+    }
+
+    public JsonFormat setNullBooleanAsFalse(boolean nullBooleanAsFalse) {
+        put(Function.nullBooleanAsFalse, nullBooleanAsFalse);
+        return this;
+    }
+
+    public boolean isNullNumberAsZero() {
+        return getBoolean(Function.nullNumberAsZero, false);
+    }
+
+    public JsonFormat setNullNumberAsZero(boolean nullNumberAsZero) {
+        put(Function.nullNumberAsZero, nullNumberAsZero);
+        return this;
     }
 }

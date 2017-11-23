@@ -29,7 +29,7 @@ public class SqlLiteral implements Cloneable, Serializable {
     private char varChar;
 
     public SqlLiteral() {
-        this('@', '$');
+        this('@', '$'); // TODO 变成静态属性供用户设置?
     }
     public SqlLiteral(char paramChar, char varChar) {
         this.paramChar = paramChar;

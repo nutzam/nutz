@@ -1,15 +1,11 @@
 package org.nutz.lang.inject;
 
+import org.nutz.castor.Castors;
+import org.nutz.lang.reflect.ReflectTool;
+
 import java.lang.reflect.Field;
 
-import org.nutz.castor.Castors;
-import org.nutz.lang.Lang;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
-
 public class InjectByField implements Injecting {
-    
-    private static final Log log = Logs.get();
 
     private Field field;
 
@@ -21,19 +17,14 @@ public class InjectByField implements Injecting {
     public void inject(Object obj, Object value) {
         Object v = null;
         try {
-            v = Castors.me().castTo(value, field.getType());
+            //获取泛型基类中的字段真实类型, https://github.com/nutzam/nutz/issues/1288
+            Class<?> ft = ReflectTool.getGenericFieldType(obj.getClass(), field);
+            v = Castors.me().castTo(value, ft);
             field.set(obj, v);
         }
         catch (Exception e) {
-            if (log.isInfoEnabled())
-                log.info("Fail to set value by field", e);
-            throw Lang.makeThrow(    "Fail to set '%s'[ %s ] to field %s.'%s' because [%s]: %s",
-                                    value,
-                                     v,
-                                    field.getDeclaringClass().getName(),
-                                    field.getName(),
-                                    Lang.unwrapThrow(e),
-                                    Lang.unwrapThrow(e).getMessage());
+            String msg = String.format("Fail to set field[%s#%s] using value[%s]", field.getDeclaringClass().getName(), field.getName(), value);
+            throw new RuntimeException(msg, e);
         }
     }
 }

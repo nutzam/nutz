@@ -1,6 +1,7 @@
 package org.nutz.repo.cache.simple;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Collection;
 import java.util.Map;
 import java.util.ArrayList;
@@ -102,5 +103,9 @@ public class LRUCache<K, V> {
 	public synchronized Collection<Map.Entry<K, V>> getAll() {
 		return new ArrayList<Map.Entry<K, V>>(map.entrySet());
 	}
+	
+	public synchronized List<V> getValues() {
+        return new ArrayList<V>(map.values());
+    }
 
 } // end class LRUCache

@@ -43,7 +43,8 @@
         public class PetBean {
             ...
         }}}
-         * 将对应到数据表 "pet_bean"
+         * 将对应到数据表 "pet_bean" (since 1.r.63)
+         * (since 1.r.63) 你也可以通过Daos.setTableNameMaker来设置你自己的Table名称生成器，同理，setViewNameMaker设置View名称生成器。它们将在你没有指定具体表名/视图名时，根据当前class对象生成名称
          * @Table("t_pet") 将对应到 "t_pet"
 
     描述字段

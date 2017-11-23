@@ -1,9 +1,12 @@
 package org.nutz.el;
 
+import java.util.Map;
 import java.util.Queue;
 
 import org.nutz.el.arithmetic.ShuntingYard;
 import org.nutz.el.arithmetic.RPN;
+import org.nutz.lang.Lang;
+import org.nutz.lang.segment.CharSegment;
 import org.nutz.lang.util.Context;
 
 public class El {
@@ -58,4 +61,28 @@ public class El {
     
     //@ JKTODO 删除原来的EL包,并修改当前为EL
     //@ JKTODO 自己实现一个QUEUE接口, 主要是实现队列,头部检测,头部第几个元素检测
+
+    
+    public static String render(String seg, Context ctx) {
+        return render(new CharSegment(seg), ctx);
+    }
+    
+    public static String render(CharSegment seg, Context ctx) {
+        Context main = Lang.context();
+        for (String key : seg.keys()) {
+            main.putAll(key, new El(key).eval(ctx));
+        }
+        return seg.render(main).toString();
+    }
+    
+    public static String render(CharSegment seg, Map<String, El> els, Context ctx) {
+        Context main = Lang.context();
+        for (String key : seg.keys()) {
+            El el = els.get(key);
+            if (el == null)
+                el = new El(key);
+            main.putAll(key, el.eval(ctx));
+        }
+        return seg.render(main).toString();
+    }
 }

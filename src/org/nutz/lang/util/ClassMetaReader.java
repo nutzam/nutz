@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Streams;
@@ -154,16 +155,19 @@ public class ClassMetaReader {
                         int code_attribute_length = dis.readInt();
                         if ("LocalVariableTable".equals(codeAttrName)) {//形参在LocalVariableTable属性中
                             int local_variable_table_length = dis.readUnsignedShort();
-                            List<String> varNames = new ArrayList<String>(local_variable_table_length);
+                            //按本地变量表的Slot属性升序排列，保证形参名称的位置与所对应参数的位置一致
+                            TreeMap<Integer, String> varSlotNameMap = new TreeMap<Integer, String>();
                             for (int l = 0; l < local_variable_table_length; l++) {
                                 dis.skipBytes(2);
                                 dis.skipBytes(2);
                                 String varName = strs.get(dis.readUnsignedShort());
                                 dis.skipBytes(2);
-                                dis.skipBytes(2);
+                                int varSlot = dis.readUnsignedShort();//这是变量的位置
                                 if (!"this".equals(varName)) //非静态方法,第一个参数是this
-                                    varNames.add(varName);
+                                    varSlotNameMap.put(varSlot, varName);
                             }
+                            
+                            List<String> varNames = new ArrayList<String>(varSlotNameMap.values());
                             if (!names.containsKey(key))
                                 names.put(key, varNames);
                         } 

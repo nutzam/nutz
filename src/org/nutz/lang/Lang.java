@@ -39,6 +39,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Queue;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -51,10 +52,10 @@ import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.json.Json;
+import org.nutz.lang.reflect.ReflectTool;
 import org.nutz.lang.stream.StringInputStream;
 import org.nutz.lang.stream.StringOutputStream;
 import org.nutz.lang.stream.StringWriter;
-import org.nutz.lang.util.ClassTools;
 import org.nutz.lang.util.Context;
 import org.nutz.lang.util.NutMap;
 import org.nutz.lang.util.NutType;
@@ -436,7 +437,6 @@ public abstract class Lang {
      *            可变参数
      * @return 数组对象
      */
-    @SuppressWarnings("unchecked")
     public static <T> T[] array(T... eles) {
         return eles;
     }
@@ -525,7 +525,6 @@ public abstract class Lang {
      *            可变参数
      * @return 列表对象
      */
-    @SuppressWarnings("unchecked")
     public static <T> ArrayList<T> list(T... eles) {
         ArrayList<T> list = new ArrayList<T>(eles.length);
         for (T ele : eles)
@@ -540,7 +539,6 @@ public abstract class Lang {
      *            可变参数
      * @return 集合对象
      */
-    @SuppressWarnings("unchecked")
     public static <T> Set<T> set(T... eles) {
         Set<T> set = new HashSet<T>();
         for (T ele : eles)
@@ -881,7 +879,6 @@ public abstract class Lang {
      *            数组 （数目可变）
      * @return 集合对象
      */
-    @SuppressWarnings("unchecked")
     public static <C extends Collection<T>, T> C fill(C coll, T[]... objss) {
         for (T[] objs : objss)
             for (T obj : objs)
@@ -1186,7 +1183,9 @@ public abstract class Lang {
             }
 
             if (null != v) {
-                Class<?> ft = field.getType();
+                //Class<?> ft = field.getType();
+                //获取泛型基类中的字段真实类型, https://github.com/nutzam/nutz/issues/1288
+                Class<?> ft = ReflectTool.getGenericFieldType(toType, field);
                 Object vv = null;
                 // 集合
                 if (v instanceof Collection) {
@@ -1199,7 +1198,9 @@ public abstract class Lang {
                     else {
                         // 创建
                         Collection newCol;
-                        Class eleType = Mirror.getGenericTypes(field, 0);
+                        //Class eleType = Mirror.getGenericTypes(field, 0);
+                        Class<?> eleType = ReflectTool.getParameterRealGenericClass(toType,
+                                field.getGenericType(),0);
                         if (ft == List.class) {
                             newCol = new ArrayList(c.size());
                         } else if (ft == Set.class) {
@@ -1237,10 +1238,16 @@ public abstract class Lang {
                         }
                     }
                     // 赋值
-                    final Class<?> valType = Mirror.getGenericTypes(field, 1);
+                    //final Class<?> valType = Mirror.getGenericTypes(field, 1);
+                    //map的key和value字段类型
+                    final Class<?> keyType = ReflectTool.getParameterRealGenericClass(toType,
+                            field.getGenericType(),0);
+                    final Class<?> valType =ReflectTool.getParameterRealGenericClass(toType,
+                            field.getGenericType(),1);
                     each(v, new Each<Entry>() {
                         public void invoke(int i, Entry en, int length) {
-                            map.put(en.getKey(), Castors.me().castTo(en.getValue(), valType));
+                            map.put(Castors.me().castTo(en.getKey(), keyType),
+                                    Castors.me().castTo(en.getValue(), valType));
                         }
                     });
                     vv = map;
@@ -1266,8 +1273,10 @@ public abstract class Lang {
         if (null == str)
             return null;
         str = Strings.trim(str);
-        if ((str.length() > 0 && str.charAt(0) == '{') && str.endsWith("}"))
+        if (!Strings.isEmpty(str)
+            && (Strings.isQuoteBy(str, '{', '}') || Strings.isQuoteBy(str, '(', ')'))) {
             return Json.fromJson(NutMap.class, str);
+        }
         return Json.fromJson(NutMap.class, "{" + str + "}");
     }
 
@@ -1418,7 +1427,9 @@ public abstract class Lang {
      *
      * @param obj
      * @return 对象长度
+     * @deprecated 这玩意很脑残，为啥最后要动态调个 "length"，导致字符串类很麻烦，以后用 Lang.eleSize 函数代替吧
      */
+    @Deprecated
     public static int length(Object obj) {
         if (null == obj)
             return 0;
@@ -1433,6 +1444,40 @@ public abstract class Lang {
             return (Integer) Mirror.me(obj.getClass()).invoke(obj, "length");
         }
         catch (Exception e) {}
+        return 1;
+    }
+
+    /**
+     * 获得一个容器（Map/集合/数组）对象包含的元素数量
+     * <ul>
+     * <li>null : 0
+     * <li>数组
+     * <li>集合
+     * <li>Map
+     * <li>一般 Java 对象。 返回 1
+     * </ul>
+     *
+     * @param obj
+     * @return 对象长度
+     * @since Nutz 1.r.62
+     */
+    public static int eleSize(Object obj) {
+        // 空指针，就是 0
+        if (null == obj)
+            return 0;
+        // 数组
+        if (obj.getClass().isArray()) {
+            return Array.getLength(obj);
+        }
+        // 容器
+        if (obj instanceof Collection<?>) {
+            return ((Collection<?>) obj).size();
+        }
+        // Map
+        if (obj instanceof Map<?, ?>) {
+            return ((Map<?, ?>) obj).size();
+        }
+        // 其他的就是 1 咯
         return 1;
     }
 
@@ -2031,27 +2076,12 @@ public abstract class Lang {
     }
 
     /**
-     * 当前运行的 Java 虚拟机是 JDK6 的话，则返回 true
+     * 当前运行的 Java 虚拟机是 JDK6 及更高版本的话，则返回 true
      *
      * @return true 如果当前运行的 Java 虚拟机是 JDK6
      */
     public static boolean isJDK6() {
-        InputStream is = null;
-        try {
-            String classFileName = Lang.class.getName().replace('.', '/') + ".class";
-            is = ClassTools.getClassLoader().getResourceAsStream(classFileName);
-            if (is == null)
-                is = ClassTools.getClassLoader().getResourceAsStream("/" + classFileName);
-            if (is != null && is.available() > 8) {
-                is.skip(7);
-                return is.read() > 49;
-            }
-        }
-        catch (Throwable e) {}
-        finally {
-            Streams.safeClose(is);
-        }
-        return false;
+        return JdkTool.getMajorVersion() >= 6;
     }
 
     /**
@@ -2596,6 +2626,8 @@ public abstract class Lang {
      * @return 来源ip
      */
     public static String getIP(HttpServletRequest request) {
+        if (request == null)
+            return "";
         String ip = request.getHeader("X-Forwarded-For");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
@@ -2623,6 +2655,8 @@ public abstract class Lang {
                 }
             }
         }
+        if (Strings.isBlank(ip))
+            return "";
         if (isIPv4Address(ip) || isIPv6Address(ip)) {
             return ip;
         }
@@ -2681,7 +2715,7 @@ public abstract class Lang {
     }
 
     public static StringBuilder execOutput(String cmd) throws IOException {
-        return execOutput(Lang.array(cmd), Encoding.CHARSET_UTF8);
+        return execOutput(Strings.splitIgnoreBlank(cmd, " "), Encoding.CHARSET_UTF8);
     }
 
     public static StringBuilder execOutput(String cmd, Charset charset) throws IOException {
@@ -2751,6 +2785,31 @@ public abstract class Lang {
         }
         catch (IOException e) {
             return null;
+        }
+    }
+    
+    public static class JdkTool {
+        public static String getVersionLong() {
+            Properties sys = System.getProperties();
+            return sys.getProperty("java.version");
+        }
+        public static int getMajorVersion() {
+            String ver = getVersionLong();
+            if (Strings.isBlank(ver))
+                return 6;
+            String[] tmp = ver.split("\\.");
+            if (tmp.length < 2)
+                return 6;
+            int t = Integer.parseInt(tmp[0]);
+            if (t > 1)
+                return t;
+            return Integer.parseInt(tmp[1]);
+        }
+        public static boolean isEarlyAccess() {
+            String ver = getVersionLong();
+            if (Strings.isBlank(ver))
+                return false;
+            return ver.contains("-ea");
         }
     }
 }

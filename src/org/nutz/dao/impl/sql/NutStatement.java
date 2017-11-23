@@ -12,6 +12,10 @@ import java.util.List;
 import org.nutz.castor.Castors;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.impl.entity.field.NutMappingField;
+import org.nutz.dao.jdbc.JdbcExpert;
+import org.nutz.dao.jdbc.Jdbcs;
+import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.sql.SqlContext;
 import org.nutz.dao.sql.SqlType;
@@ -31,7 +35,7 @@ public abstract class NutStatement implements DaoStatement {
 
     private SqlType sqlType;
     
-    private boolean forceExecQuery;
+    protected JdbcExpert expert;
     
     public NutStatement() {
         this.context = new SqlContext();
@@ -191,7 +195,7 @@ public abstract class NutStatement implements DaoStatement {
         StringBuilder sb = new StringBuilder(sql);
         // 准备打印参数表
         Object[][] mtrx = this.getParamMatrix();
-        SqlFormat format = Daos.getSqlFormat().clone();
+        SqlFormat format = Daos.getSqlFormat();
         if (null != mtrx && mtrx.length > 0 && mtrx[0].length > 0) {
             if (format.isPrintParam()) {
                 // 计算每列最大宽度，以及获取列参数的内容
@@ -255,21 +259,23 @@ public abstract class NutStatement implements DaoStatement {
         if (mtrx.length > 0) {
             for (; i < mtrx[0].length; i++) {
                 sb.append(ss[i]);
-                Object obj = param2obj(mtrx[0][i]);
-                sb.append(Sqls.formatFieldValue(obj));
+                Object tmp = mtrx[0][i];
+                if (tmp == null) {
+                    sb.append("NULL");
+                }
+                else if (tmp instanceof Number || tmp instanceof Boolean) {
+                    sb.append(tmp.toString());
+                } else {
+                    sb.append(Sqls.formatFieldValue(param2String(tmp)));
+                }
             }
         }
         for (; i < ss.length; i++)
         	sb.append(ss[i]);
         return sb.toString();
     }
-    
-    protected String param2String(Object obj) {
-        obj = param2obj(obj);
-        return obj instanceof String ? (String)obj : Castors.me().castToString(obj);
-    }
 
-    protected Object param2obj(Object obj) {
+    protected String param2String(Object obj) {
         if (obj == null)
             return "NULL";
         if (obj instanceof CharSequence)
@@ -303,19 +309,34 @@ public abstract class NutStatement implements DaoStatement {
             } else if (obj instanceof Reader) {
                 obj = "*Reader@" + obj.hashCode();
             }
-            return obj;
+            return Castors.me().castToString(obj);
         }
     }
 
     public void forceExecQuery() {
-    	this.forceExecQuery = true;
+    	this.sqlType = SqlType.SELECT;
     }
     
     public boolean isForceExecQuery() {
-    	return forceExecQuery;
+    	return isSelect();
     }
 
     public String toString() {
         return toStatement(this.getParamMatrix(), this.toPreparedStatement());
+    }
+    
+    public void setExpert(JdbcExpert expert) {
+        this.expert = expert;
+    }
+    
+    protected ValueAdaptor getAdapterBy(Object value) {
+        if (value == null)
+            return Jdbcs.Adaptor.asNull;
+        if (expert == null)
+            return Jdbcs.getAdaptorBy(value);
+        NutMappingField mf = new NutMappingField(entity);
+        mf.setType(value.getClass());
+        Jdbcs.guessEntityFieldColumnType(mf);
+        return expert.getAdaptor(mf);
     }
 }

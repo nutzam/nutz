@@ -137,6 +137,12 @@ public class _Infos {
         if (info.annName != null)
             if (!Mirror.me(field.getType()).isStringLike())
                 throw Lang.makeThrow(DaoException.class, "Field(%s) annotation @Name , but not String type!!", field);
+        //检查@Version属性类型，必须是int、long、short
+        if (info.annColumn != null && info.annColumn.version()){
+        	Mirror<?> mirror =Mirror.me(field.getType());
+        	if (!mirror.isInt() && !mirror.isShort() && !mirror.isLong())
+        		throw Lang.makeThrow(DaoException.class, "Field(%s) define version=true , but not  int\\long\\short type!", field);
+        }
         
         return info;
     }

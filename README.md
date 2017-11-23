@@ -8,6 +8,7 @@
 [![codecov.io](http://codecov.io/github/nutzam/nutz/coverage.svg?branch=master)](http://codecov.io/github/nutzam/nutz?branch=master)
 [![GitHub release](https://img.shields.io/github/release/nutzam/nutz.svg)](https://github.com/nutzam/nutz/releases)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![Skywalking Tracing](https://img.shields.io/badge/Skywalking%20Tracing-enable-brightgreen.svg)](https://github.com/OpenSkywalking/skywalking)
 
 ## 项目目标
 
@@ -38,16 +39,17 @@ Nutz遵循Apache协议,完全开源,文档齐全,永远免费(商用也是)
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.r.60</version>
+			<version>1.r.62</version>
 		</dependency>
 ```
+
 
 详情: https://nutzam.com/core/basic/maven.html
 
 ## Gradle 依赖
 
 ```gradle
-compile(group: 'org.nutz', name: 'nutz', version:'1.r.60')
+compile(group: 'org.nutz', name: 'nutz', version:'1.r.62')
 ```
 
 

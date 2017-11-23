@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
+import org.nutz.conf.NutConf;
 import org.nutz.lang.born.BornContext;
 import org.nutz.lang.born.Borning;
 import org.nutz.lang.born.BorningException;
@@ -43,6 +44,11 @@ import org.nutz.lang.util.Callback3;
  * @param <T>
  */
 public class Mirror<T> {
+    
+    @SuppressWarnings("rawtypes")
+    static Map<Type, Mirror> mirrorCache = new HashMap<Type, Mirror>();
+    
+    protected BornContext<T> emtryArgsBornContext;
 
     private static class DefaultTypeExtractor implements TypeExtractor {
 
@@ -156,9 +162,16 @@ public class Mirror<T> {
         if (null == type) {
             return null;
         }
-        Mirror<T> mir = (Mirror<T>) Mirror.me(Lang.getTypeClass(type));
-        mir.type = type;
-        return mir;
+        if (NutConf.USE_MIRROR_CACHE) {
+            Mirror<T> mir = mirrorCache.get(type);
+            if (mir == null) {
+                mir = (Mirror<T>) Mirror.me(Lang.getTypeClass(type));
+                mir.type = type;
+                mirrorCache.put(type, mir);
+            }
+            return mir;
+        }
+        return (Mirror<T>) Mirror.me(Lang.getTypeClass(type));
     }
 
     private Class<T> klass;
@@ -810,7 +823,7 @@ public class Mirror<T> {
             catch (NoSuchFieldException e1) {
                 if (obj != null) {
                     if (obj.getClass().isArray() && "length".equals(name)) {
-                        return Lang.length(obj);
+                        return Lang.eleSize(obj);
                     }
                     if (obj instanceof Map) {
                         return ((Map)obj).get(name);
@@ -983,7 +996,14 @@ public class Mirror<T> {
      * @return 新对象
      */
     public T born(Object... args) {
-        BornContext<T> bc = Borns.eval(klass, args);
+        BornContext<T> bc;
+        if (NutConf.USE_MIRROR_CACHE && args.length == 0) {
+            if (emtryArgsBornContext == null)
+                emtryArgsBornContext = Borns.eval(klass, args);
+            bc = emtryArgsBornContext;
+        }
+        else
+            bc = Borns.eval(klass, args);
         if (null == bc)
             throw new BorningException(klass, args);
 
@@ -1869,10 +1889,7 @@ public class Mirror<T> {
                         }
                     }
                 }
-            }
-            catch (Exception e) {
-                break;
-            }
+            } catch (Exception e) {}
             klass = klass.getSuperclass();
         }
         for (Class klass2 : method.getDeclaringClass().getInterfaces()) {
@@ -1881,31 +1898,23 @@ public class Mirror<T> {
                 t = tmp.getAnnotation(annotationClass);
                 if (t != null)
                     return t;
-            }
-            catch (Exception e) {}
+            } catch (Exception e) {}
         }
         return null;
     }
 
     public static <T extends Annotation> T getAnnotationDeep(Class<?> type, Class<T> annotationClass) {
-        T t = type.getAnnotation(annotationClass);
+        Class<?> cc = type;
+        T t;
+        do {
+            t = cc.getAnnotation(annotationClass);
+            cc = cc.getSuperclass();
+        } while (null == t && cc != Object.class);
         if (t != null)
             return t;
-        Class<?> klass = type.getSuperclass();
-        while (klass != null && klass != Object.class) {
+        for (Class<?> klass : type.getInterfaces()) {
             try {
                 t = klass.getAnnotation(annotationClass);
-                if (t != null)
-                    return t;
-            }
-            catch (Exception e) {
-                break;
-            }
-            klass = klass.getSuperclass();
-        }
-        for (Class<?> klass2 : type.getInterfaces()) {
-            try {
-                t = klass2.getAnnotation(annotationClass);
                 if (t != null)
                     return t;
             }
@@ -1914,4 +1923,23 @@ public class Mirror<T> {
         return null;
     }
 
+    public static boolean isAnnotationExists(Method method, Class<? extends Annotation>... classes) {
+        if (!Lang.isEmptyArray(classes)) {
+            for (Class<? extends Annotation> klass : classes) {
+                if (getAnnotationDeep(method, klass) != null)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isAnnotationExists(Class<?> type, Class<? extends Annotation>... classes) {
+        if (!Lang.isEmptyArray(classes)) {
+            for (Class<? extends Annotation> klass : classes) {
+                if (getAnnotationDeep(type, klass) != null)
+                    return true;
+            }
+        }
+        return false;
+    }
 }

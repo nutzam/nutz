@@ -5,18 +5,16 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.nutz.lang.Mirror;
 
-public class DynamicConstructorBorning<T> implements Borning<T> {
-
-    private Constructor<T> c;
+public class DynamicConstructorBorning<T> extends AbstractConstructorBorning implements Borning<T> {
 
     public DynamicConstructorBorning(Constructor<T> c) {
-        this.c = c;
-        this.c.setAccessible(true);
+        super(c);
     }
 
+    @SuppressWarnings("unchecked")
     public T born(Object... args) {
         try {
-            return c.newInstance(Mirror.evalArgToRealArray(args));
+            return (T) call(Mirror.evalArgToRealArray(args));
         } catch (InvocationTargetException e1) {
 			throw new BorningException(e1.getTargetException(), c.getDeclaringClass(), args);
 		} catch (Exception e) {

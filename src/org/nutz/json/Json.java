@@ -227,7 +227,7 @@ public class Json {
     public static void toJson(Writer writer, Object obj, JsonFormat format) {
         try {
             if (format == null)
-                format = deft.clone();
+                format = deft;
             JsonRender jr;
             Class<? extends JsonRender> jrCls = getJsonRenderCls();
             if (jrCls == null)

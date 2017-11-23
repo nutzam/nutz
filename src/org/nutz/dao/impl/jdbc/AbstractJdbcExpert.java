@@ -14,7 +14,6 @@ import java.util.Set;
 import org.nutz.dao.Dao;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.Sqls;
-import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.entity.EntityIndex;
@@ -115,7 +114,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         }
         catch (Exception e) {
             if (log.isDebugEnabled())
-                log.debugf("Table '%s' doesn't exist!", en.getViewName());
+                log.debugf("Table '%s' doesn't exist! class=%s", en.getViewName(), en.getType().getName());
         }
         // Close ResultSet and Statement
         finally {
@@ -297,10 +296,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
             sb.append("Create UNIQUE Index ");
         else
             sb.append("Create Index ");
-        if (index.getName().contains("$"))
-            sb.append(TableName.render(new CharSegment(index.getName())));
-        else
-            sb.append(index.getName());
+        sb.append(index.getName(en));
         sb.append(" ON ").append(en.getTableName()).append("(");
         for (EntityField field : index.getFields()) {
             if (field instanceof MappingField) {
@@ -337,7 +333,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         // 字段注释
         if (en.hasColumnComment()) {
             for (MappingField mf : en.getMappingFields()) {
-                if (mf.hasColumnComment()) {
+                if (mf.hasColumnComment() && !mf.isReadonly()) {
                     Sql columnCommentSQL = Sqls.create(Strings.isBlank(commentColumn) ? DEFAULT_COMMENT_COLUMN
                                                                                       : commentColumn);
                     columnCommentSQL.vars()

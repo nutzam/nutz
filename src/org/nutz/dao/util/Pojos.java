@@ -129,6 +129,12 @@ public abstract class Pojos {
 			switch (en.getPkType()) {
 			case ID:
 				Number id = null != obj ? ((Number) en.getIdField().getValue(obj)) : null;
+				if (id == null && (en.getNameField() != null)) {
+					String name = (String) en.getNameField().getValue(obj);
+					if (!Strings.isBlank(name)) {
+						return cndName(en, name);
+					}
+				}
 				return cndId(en, id);
 			case NAME:
 				String name = null != obj ? Strings.sNull(en.getNameField().getValue(obj), null) : null;
@@ -234,14 +240,18 @@ public abstract class Pojos {
 														Pattern.CASE_INSENSITIVE);
 
 	public static String formatCondition(Entity<?> en, Condition cnd) {
-		if (null != cnd) {
-			String str = Strings.trim(cnd.toSql(en));
-			if (!ptn.matcher(str).find())
-				return "WHERE " + str;
-			return str;
-		}
-		return "";
+		return formatCondition(en, cnd, true);
 	}
+	
+	public static String formatCondition(Entity<?> en, Condition cnd, boolean top) {
+        if (null != cnd) {
+            String str = Strings.trim(cnd.toSql(en));
+            if (top && !ptn.matcher(str).find())
+                return "WHERE " + str;
+            return str;
+        }
+        return "";
+    }
 
 	public static Pojo pojo(JdbcExpert expert, Entity<?> en, SqlType type) {
 		Pojo pojo = expert.createPojo(type);

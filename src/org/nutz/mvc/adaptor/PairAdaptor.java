@@ -1,6 +1,7 @@
 package org.nutz.mvc.adaptor;
 
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.adaptor.injector.ArrayInjector;
@@ -28,7 +29,7 @@ public class PairAdaptor extends AbstractAdaptor {
         // TODO 这里的实现感觉很丑, 感觉可以直接用type进行验证与传递
         // TODO 这里将Type的影响局限在了 github issue #30 中提到的局部范围
         Class<?> clazz = Lang.getTypeClass(type);
-        if (clazz == null) {
+        if (null == clazz) {
             if (log.isWarnEnabled())
                 log.warnf("!!Fail to get Type Class : type=%s , param=%s", type, param);
             return null;
@@ -38,14 +39,16 @@ public class PairAdaptor extends AbstractAdaptor {
         if (type instanceof ParameterizedType)
             paramTypes = ((ParameterizedType) type).getActualTypeArguments();
 
-        if (null == param)
-            return null;// 让超类来处理吧,我不管了!!
-
-        String defaultValue = null;
-        if (param.df() != null && !ParamDefailtTag.equals(param.df()))
-            defaultValue = param.df();
-        String pm = param.value();
-        String datefmt = param.dfmt();
+        // 没有声明 @Param 且 clazz 是POJO的话，使用".."
+        // 没有声明 @Param 且 clazz 不是POJO的话，使用方法的参数名称
+        // 其它情况就使用 param.value() 的值
+        String pm = null == param ? (Mirror.me(clazz).isPojo() ? ".." : getParamRealName(curIndex)) : param.value();
+        if (pm == null) {
+            pm = "arg" + curIndex;
+        }
+        String defaultValue = null == param || Params.ParamDefaultTag.equals(param.df()) ? null : param.df();
+        String datefmt = null == param ? "" : param.dfmt();
+        boolean array_auto_split = null == param || param.array_auto_split();
         // POJO
         if ("..".equals(pm)) {
             if (Map.class.isAssignableFrom(clazz)) {
@@ -54,8 +57,10 @@ public class PairAdaptor extends AbstractAdaptor {
             return new ObjectPairInjector(null, type);
         }
         // POJO with prefix
-        else if (pm.startsWith("::") && pm.length() > 2) {
-            return new ObjectNavlPairInjector(pm.substring(2), type);
+        else if (pm != null && pm.startsWith("::")) {
+            if (pm.length() > 2)
+                return new ObjectNavlPairInjector(pm.substring(2), type);
+            return new ObjectNavlPairInjector(null, type);
         }
         // POJO[]
         else if (clazz.isArray()) {
@@ -64,7 +69,7 @@ public class PairAdaptor extends AbstractAdaptor {
                                      type,
                                      paramTypes,
                                      defaultValue,
-                                     param.array_auto_split());
+                                     array_auto_split);
         }
 
         // Name-value

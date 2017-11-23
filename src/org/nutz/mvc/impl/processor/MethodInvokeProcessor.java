@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.reflect.FastClassFactory;
+import org.nutz.lang.reflect.FastMethod;
 import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.Mvcs;
 
@@ -15,6 +16,8 @@ import org.nutz.mvc.Mvcs;
  *
  */
 public class MethodInvokeProcessor extends AbstractProcessor{
+    
+    protected FastMethod fm;
 	
 	public void process(ActionContext ac) throws Throwable {
         Object module = ac.getModule();
@@ -23,8 +26,10 @@ public class MethodInvokeProcessor extends AbstractProcessor{
         try {
         	if (Mvcs.disableFastClassInvoker)
         		ac.setMethodReturn(method.invoke(module, args));
-        	else
-        		ac.setMethodReturn(FastClassFactory.invoke(module, method, args));
+        	else {
+        	    _check(method);
+        		ac.setMethodReturn(fm.invoke(module, args));
+        	}
             doNext(ac);
         } 
         catch (IllegalAccessException e) {
@@ -37,4 +42,14 @@ public class MethodInvokeProcessor extends AbstractProcessor{
             throw e.getCause();
         }
     }
+	
+	protected void _check(Method method) {
+	    if (fm != null)
+	        return;
+	    synchronized (this) {
+            if (fm != null)
+                return;
+            fm = FastClassFactory.get(method);
+        }
+	}
 }

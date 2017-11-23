@@ -17,6 +17,12 @@ public interface EntityIndex {
     /**
      * @return 索引名称
      */
+    String getName(Entity<?> en);
+    
+    /**
+     * @return 索引名称
+     */
+    @Deprecated
     String getName();
 
     /**

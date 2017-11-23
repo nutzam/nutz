@@ -1,0 +1,109 @@
+#title: MongoDB的薄封装(nutzmongo库)
+#index:0,1
+#author:wendal(wendal1985@gmail.com)
+
+-----------------------------------------------
+简介
+
+	MongoDB 驱动的薄封装, 主要是封装`Pojo<->BasicDbObject`的转换, 支持mongodb java driver 3.0+
+	
+	项目地址: https://github.com/nutzam/nutzmongo
+
+-----------------------------------------------
+添加依赖
+
+	maven 的配置
+	{{{<XML>
+		<dependency>
+			<groupId>org.nutz</groupId>
+			<artifactId>nutzmongo</artifactId>
+			<version>1.r.60</version>
+		</dependency>
+		<!-- 其他依赖 -->
+	}}}
+	
+	直接下载jar 
+	
+	* 正式版本: https://jfrog.nutz.cn/artifactory/jcenter/org/nutz/nutzmongo/
+	* 快照版本: https://jfrog.nutz.cn/artifactory/snapshots/org/nutz/nutzmongo/
+
+-----------------------------------------------
+声明Ioc Bean
+
+	{{{<JS>
+	var ioc={
+	    // 单机
+		zMongo : {
+			args : ["127.0.0.1", 27017], // 或者不写参数，默认就是127.0.0.1和27017
+			factory : "org.nutz.mongo.ZMongo#me"
+		},
+		// 集群
+		//zMongo : {
+		//	args : ["mongodb://root:mypass@192.168.2.199:3717,192.168.2.200:3717/admin?replicaSet=mgset"], // 基于Mongo URI创建ZMongo
+		//	factory : "org.nutz.mongo.ZMongo#uri"
+		//},
+		zMoDB : {
+			args : ["nutzbook"], // 数据库名称
+			factory : "$zMongo#db"
+		},
+		// 集合,可以在这里声明,也可以走@Inject注入
+		zMoCoUser : {
+			args : ["user"],
+			factory : "$zMoDB#c"
+		}
+		/* // 还可以声明几个常用的集合,也可以在Service中生成
+		,zMoCoTopic : {
+			args : ["topic", false],
+			factory : "$zMoDB#cc"
+		},
+		zMoCoReply : {
+			args : ["reply", false],
+			factory : "$zMoDB#cc"
+		}
+		*/
+	}
+	}}}
+
+-----------------------------------------------
+Service中的注入和使用
+
+	{{{<JAVA>
+	@IocBean
+	public class XXXService {
+		// 按需注入几个核心对象
+		@Inject 
+		protected ZMongo zmongo;  //注意大小写与配置的名字一致
+		@Inject
+		protected ZMoDB zMoDB; // 当前数据
+		
+		@Inject ZMoCo zMoCoUser; // 按js里面的配置取
+		
+		@Inject("java:$zMoDB.c('role')") // 也可以直接取. 当然了,也可以代码调用zMoDB.c(集合名词)来动态获取
+		ZMoCo zMoCoRole;
+		
+		public void insert(User...users) {
+			zMoCoUser.insert(ZMo.toDocArray(users));
+		}
+		
+		public List<User> query(ZMoDoc cnd) {
+			List<User> list = new ArrayList<User>();
+			DBCursor cursor = MoCoUser.find(cnd);
+			if(cursor.hasNext()) {
+       			DBObject obj = cursor.next();
+       			list.add(ZMo.me().fromDocToObj(obj, User.class));
+    		}
+    		return list;
+		}
+		
+		// ZMoCo还有很多方法哦，请挖掘
+	}
+	}}}
+	
+--------------------------------------------------------------------
+关于日志
+
+	nutzmongo内的日志大部分是ZMoCo输出的, 走的也是nutz的Log接口. 若使用log4j, 下面是参考配置
+	
+	{{{
+	
+	}}}

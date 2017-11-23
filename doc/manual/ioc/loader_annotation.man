@@ -121,23 +121,25 @@
 	看，简单不？ 你的构造函数有多少个参数，你就一并在 "args" 属性里声明就好了， 那么你都能注入什么呢？
 
 	它注入的值同字段注入的值描述方式相同，请继续看下面一节，我们有更详细的解释
+	
+	若没有声明args,那么就会找无参构造方法哦
 
 --------------------------------------------------------------------------------------------------------
 为对象的字段注入
 	
-	这个更加简单，比如:
+	比如:
 	{{{<Java>
 	@IocBean
 	public class MyObject {
 		
-		@Inject("abcc")
-		private String name;
-		
-		@Inject("true")
-		private boolean live;
+		@Inject("daoSlave") // 等价于 refer:daoSlave
+		private Dao dao;
 		
 		@Inject("refer:another")
 		private AnotherObject obj;
+		
+		@Inject // 先按名字找,然后按类型找
+		private UserService users;
 		
 		...
 		
@@ -213,37 +215,7 @@
 	字符串，或者布尔值怎么办？ 呵呵，抱歉，截止到现在，我们还没有解决这个问题，不过很快我们会给出一个设计，
 	并且我可以负责的说，给出新的设计一定会兼容现在的这个用法的。
 
---------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------
 工厂方法
 
-	{{{<Java>
-	@IocBean(factory="net.wendal.mqtt.MqttAbcServiceFactory#create", args={"refer:dao"})
-	public class AbcService extends Service {
-		...
-		
-	}
-	
-	// 无任何注解
-	public class MqttAbcServiceFactory {
-		public static AbcService create(Dao dao) {
-			return new XXXXAbcService(dao);
-		}
-	}
-	}}}
-	
-	通过其他bean生成此bean, 类似于spring的factory-bean功能
-	
-	{{{<Java>
-	@IocBean(factory="$snakerConfigure#build")
-	public class SnakerService{}
-	
-	
-	@IocBean(name="snakerConfigure")
-	public class SnakerConfigure {
-		public SnakerService build() {
-			return ....;
-		}
-	}
-	}}}
-	
-	
+	工厂方法已经移入独立的章节

@@ -115,9 +115,27 @@ public interface Sql extends DaoStatement {
      */
     Sql duplicate();
 
+    /**
+     * 设置原始SQL,将重新解析里面的占位符
+     * @param sql
+     */
     void setSourceSql(String sql);
     
+    /**
+     * 获取原始SQL
+     */
     String getSourceSql();
     
+    /**
+     * 获取存储过程的出参
+     */
     Record getOutParams();
+    
+    /**
+     * 修改原有的占位符(默认是$和@),并重新解析.仅作用于当前SQL对象
+     * @param param 参数占位符,默认是@
+     * @param var 变量占位符,默认是$
+     * @return 当前SQL对象
+     */
+    Sql changePlaceholder(char param, char var);
 }

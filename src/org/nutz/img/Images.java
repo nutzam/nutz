@@ -1,7 +1,11 @@
 package org.nutz.img;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
@@ -37,6 +41,8 @@ import javax.imageio.stream.ImageOutputStream;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
+import org.nutz.lang.Strings;
+import org.nutz.lang.random.R;
 import org.nutz.repo.Base64;
 
 /**
@@ -193,7 +199,8 @@ public class Images {
                                           String taPath,
                                           int w,
                                           int h,
-                                          Color bgColor) throws IOException {
+                                          Color bgColor)
+            throws IOException {
         File srcIm = Files.findFile(srcPath);
         if (null == srcIm)
             throw Lang.makeThrow("Fail to find image file '%s'!", srcPath);
@@ -237,14 +244,14 @@ public class Images {
         // 原图太宽，计算当原图与画布同高时，原图的等比宽度
         if (oR > nR) {
             nW = w;
-            nH = (int) (((float) w) / oR);
+            nH = (int) ((w) / oR);
             x = 0;
             y = (h - nH) / 2;
         }
         // 原图太高
         else if (oR < nR) {
             nH = h;
-            nW = (int) (((float) h) * oR);
+            nW = (int) ((h) * oR);
             x = (w - nW) / 2;
             y = 0;
         }
@@ -376,6 +383,21 @@ public class Images {
         return clipScale(srcIm, taIm, w, h);
     }
 
+    public static BufferedImage clipScale(Object srcIm, int[] startPoint, int[] endPoint) {
+        // 计算给定坐标后的图片的尺寸
+        int width = endPoint[0] - startPoint[0];
+        int height = endPoint[1] - startPoint[1];
+
+        BufferedImage old = read(srcIm);
+        BufferedImage im = Images.clipScale(old.getSubimage(startPoint[0],
+                                                            startPoint[1],
+                                                            width,
+                                                            height),
+                                            width,
+                                            height);
+        return im;
+    }
+
     /**
      * 根据给定的起始坐标点与结束坐标点来剪切一个图片，令其符合给定的尺寸，并将其保存成目标图像文件
      * <p>
@@ -396,17 +418,8 @@ public class Images {
      */
     public static BufferedImage clipScale(Object srcIm, File taIm, int[] startPoint, int[] endPoint)
             throws IOException {
-        // 计算给定坐标后的图片的尺寸
-        int width = endPoint[0] - startPoint[0];
-        int height = endPoint[1] - startPoint[1];
-
         BufferedImage old = read(srcIm);
-        BufferedImage im = Images.clipScale(old.getSubimage(startPoint[0],
-                                                            startPoint[1],
-                                                            width,
-                                                            height),
-                                            width, height);
-
+        BufferedImage im = clipScale(old, startPoint, endPoint);
         write(im, taIm);
         return old;
     }
@@ -432,7 +445,8 @@ public class Images {
     public static BufferedImage clipScale(String srcPath,
                                           String taPath,
                                           int[] startPoint,
-                                          int[] endPoint) throws IOException {
+                                          int[] endPoint)
+            throws IOException {
         File srcIm = Files.findFile(srcPath);
         if (null == srcIm)
             throw Lang.makeThrow("Fail to find image file '%s'!", srcPath);
@@ -494,6 +508,445 @@ public class Images {
     }
 
     /**
+     * 水平翻转一张图片
+     * 
+     * @param srcIm
+     *            源图片
+     * @return 被转换后的图像
+     */
+    public static BufferedImage flipHorizontal(Object srcIm) {
+        BufferedImage im1 = read(srcIm);
+        int w = im1.getWidth();
+        int h = im1.getHeight();
+        BufferedImage flipImage = new BufferedImage(w, h, im1.getType());
+        Graphics2D gs = flipImage.createGraphics();
+        gs.drawImage(im1, 0, 0, w, h, w, 0, 0, h, null);
+        gs.dispose();
+        return flipImage;
+    }
+
+    /**
+     * 水平翻转一张图片
+     * 
+     * @param srcIm
+     *            源图片
+     * @param tarIm
+     *            目标图片
+     * @return 被转换后的图像
+     */
+    public static BufferedImage flipHorizontal(Object srcIm, File tarIm) {
+        BufferedImage flipImage = flipHorizontal(srcIm);
+        Images.write(flipImage, tarIm);
+        return flipImage;
+    }
+
+    /**
+     * 垂直翻转一张图片
+     * 
+     * @param srcIm
+     *            源图片
+     * @return 被转换后的图像
+     */
+    public static BufferedImage flipVertical(Object srcIm) {
+        BufferedImage im1 = read(srcIm);
+        int w = im1.getWidth();
+        int h = im1.getHeight();
+        BufferedImage flipImage = new BufferedImage(w, h, im1.getType());
+        Graphics2D gs = flipImage.createGraphics();
+        gs.drawImage(im1, 0, 0, w, h, 0, h, w, 0, null);
+        gs.dispose();
+        return flipImage;
+    }
+
+    /**
+     * 垂直翻转一张图片
+     * 
+     * @param srcIm
+     *            源图片
+     * @param tarIm
+     *            目标图片
+     * @return 被转换后的图像
+     */
+    public static BufferedImage flipVertical(Object srcIm, File tarIm) {
+        BufferedImage flipImage = flipVertical(srcIm);
+        Images.write(flipImage, tarIm);
+        return flipImage;
+    }
+
+    /**
+     * 扭曲图片
+     * 
+     * @param srcIm
+     *            源图片
+     * @param twistRank
+     *            扭曲程度，默认为1，数值越大扭曲程度越高
+     * @param bgColor
+     *            扭曲后露出的底图填充色，一般选择要源图片的背景色
+     * @return 被扭曲后的图片
+     */
+    public static BufferedImage twist(Object srcIm, double twistRank, String bgColor) {
+        if (twistRank <= 0) {
+            twistRank = 1;
+        }
+        BufferedImage bufImg = read(srcIm);
+        double period = R.random(0, 7) + 3;// 波形的幅度倍数，越大扭曲的程序越高，一般为3
+        double phase = R.random(0, 6);// 波形的起始相位，取值区间（0-2＊PI）
+        int width = bufImg.getWidth();
+        int height = bufImg.getHeight();
+
+        BufferedImage tarIm = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D gc = tarIm.createGraphics();
+        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        gc.setBackground(Strings.isBlank(bgColor) ? Colors.randomColor() : Colors.as(bgColor));
+        gc.clearRect(0, 0, width, height);
+
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                int nX = pos4twist(twistRank, phase, period, height, i, j);
+                int nY = j;
+                if (nX >= 0 && nX < width && nY >= 0 && nY < height) {
+                    tarIm.setRGB(nX, nY, bufImg.getRGB(i, j));
+                }
+            }
+        }
+        return tarIm;
+    }
+
+    // 扭曲相关计算, 后面的参数有两种组合
+    // 1. height, x, y
+    // 2. width, y, x
+    private static int pos4twist(double rank,
+                                 double phase,
+                                 double period,
+                                 int hOrW,
+                                 int xOrY,
+                                 int yOrX) {
+        double dyOrX = Math.PI * rank * yOrX / hOrW + phase;
+        double dxOrY = Math.sin(dyOrX);
+        return xOrY + (int) (dxOrY * period);
+    }
+
+    public static final int WATERMARK_TOP_LEFT = 1;
+    public static final int WATERMARK_TOP_CENTER = 2;
+    public static final int WATERMARK_TOP_RIGHT = 3;
+    public static final int WATERMARK_CENTER_LEFT = 4;
+    public static final int WATERMARK_CENTER = 5;
+    public static final int WATERMARK_CENTER_RIGHT = 6;
+    public static final int WATERMARK_BOTTOM_LEFT = 7;
+    public static final int WATERMARK_BOTTOM_CENTER = 8;
+    public static final int WATERMARK_BOTTOM_RIGHT = 9;
+
+    /**
+     * 为图片添加水印，可以设定透明度与水印的位置
+     * <p>
+     * 水印位置默认支持9种，分别是：
+     * 
+     * TOP_LEFT | TOP_CENTER | TOP_RIGHT CENTER_LEFT | CENTER | CENTER_RIGHT
+     * BOTTOM_LEFT | BOTTOM_CENTER | BOTTOM_RIGHT
+     * 
+     * 
+     * @param srcIm
+     *            源图片
+     * @param markIm
+     *            水印图片
+     * @param opacity
+     *            透明度, 要求大于0小于1, 默认为0.5f
+     * @param pos
+     *            共9个位置，请使用 Images.WATERMARK_{XXX} 进行设置，默认为
+     *            Images.WATERMARK_CENTER
+     * @param margin
+     *            水印距离四周的边距 默认为0
+     * @return
+     */
+    public static BufferedImage addWatermark(Object srcIm,
+                                             Object markIm,
+                                             float opacity,
+                                             int pos,
+                                             int margin) {
+        BufferedImage im1 = read(srcIm);
+        BufferedImage im2 = read(markIm);
+
+        int cw = im1.getWidth();
+        int ch = im1.getHeight();
+        int mw = im2.getWidth();
+        int mh = im2.getHeight();
+
+        if (opacity > 1 || opacity <= 0) {
+            opacity = 0.5f;
+        }
+        if (pos > 9 || pos <= 0) {
+            pos = 5;
+        }
+
+        // 计算水印位置
+        int px = 0;
+        int py = 0;
+        switch (pos) {
+        case WATERMARK_TOP_LEFT:
+            px = margin;
+            py = margin;
+            break;
+        case WATERMARK_TOP_CENTER:
+            px = (cw - mw) / 2;
+            py = margin;
+            break;
+        case WATERMARK_TOP_RIGHT:
+            px = cw - mw - margin;
+            py = margin;
+            break;
+        case WATERMARK_CENTER_LEFT:
+            px = margin;
+            py = (ch - mh) / 2;
+            break;
+        case WATERMARK_CENTER:
+            px = (cw - mw) / 2;
+            py = (ch - mh) / 2;
+            break;
+        case WATERMARK_CENTER_RIGHT:
+            px = cw - mw - margin;
+            py = (ch - mh) / 2;
+            break;
+        case WATERMARK_BOTTOM_LEFT:
+            px = margin;
+            py = ch - mh - margin;
+            break;
+        case WATERMARK_BOTTOM_CENTER:
+            px = (cw - mw) / 2;
+            py = ch - mh - margin;
+            break;
+        case WATERMARK_BOTTOM_RIGHT:
+            px = cw - mw - margin;
+            py = ch - mh - margin;
+            break;
+        }
+
+        // 添加水印
+        Graphics2D gs = im1.createGraphics();
+        gs.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, opacity));
+        gs.drawImage(im2, px, py, null);
+        gs.dispose();
+
+        return im1;
+    }
+
+    /**
+     * 获取灰度图像
+     * 
+     * @param srcIm
+     *            源图片
+     * @return 灰度图片
+     */
+    public static BufferedImage grayImage(Object srcIm) {
+        BufferedImage srcImage = read(srcIm);
+        BufferedImage grayImage = new BufferedImage(srcImage.getWidth(),
+                                                    srcImage.getHeight(),
+                                                    srcImage.getType());
+        for (int i = 0; i < srcImage.getWidth(); i++) {
+            for (int j = 0; j < srcImage.getHeight(); j++) {
+                grayImage.setRGB(i, j, Colors.getGray(srcImage, i, j));
+            }
+        }
+        return grayImage;
+    }
+
+    /**
+     * 实现两张图片的正片叠底效果
+     * 
+     * @param bgIm
+     *            背景图
+     * @param itemIm
+     *            上层图
+     * @param x
+     *            上层图横坐标
+     * @param y
+     *            上层图横坐标
+     * @return 正片叠底后的图片
+     */
+    public static BufferedImage multiply(Object bgIm, Object itemIm, int x, int y) {
+
+        BufferedImage viewportImage = read(bgIm);
+        BufferedImage itemImage = read(itemIm);
+        BufferedImage muImage = new BufferedImage(viewportImage.getWidth(),
+                                                  viewportImage.getHeight(),
+                                                  viewportImage.getType());
+        // 背景图为视口范围，上层图不能超过视口进行绘制, 只有重合部分进行计算叠底
+        int xMin = x;
+        int xMax = x + itemImage.getWidth();
+        int yMin = y;
+        int yMax = y + itemImage.getHeight();
+        for (int i = 0; i < viewportImage.getWidth(); i++) {
+            for (int j = 0; j < viewportImage.getHeight(); j++) {
+                int rgb = 0;
+                // 判断是否重合
+                if (i >= xMin && i < xMax && j >= yMin && j < yMax) {
+                    // 获取两个图rgb值
+                    int vpRGB = viewportImage.getRGB(i, j);
+                    int imRGB = itemImage.getRGB(i - x, j - y);
+                    rgb = Colors.getMultiply(vpRGB, imRGB);
+                } else {
+                    rgb = viewportImage.getRGB(i, j);
+                }
+                muImage.setRGB(i, j, rgb);
+            }
+        }
+
+        return muImage;
+    }
+
+    /**
+     * 根据亮度值（灰度值）来自动计算哪些像素需要扣掉。
+     * 
+     * <br>
+     * 
+     * 适合前后亮度差别特别明显的图片，比如背景全黑。
+     * 
+     * @param srcIm
+     *            源图片
+     * @return 抠图后图片对象
+     */
+    public static BufferedImage cutoutByLuminance(Object srcIm) {
+        return cutoutByChannel(srcIm, -1);
+    }
+
+    /**
+     * 根据指定通道的亮度值（灰度值）来自动计算哪些像素需要扣掉。
+     * 
+     * @param srcIm
+     *            源图片
+     * @param channel
+     *            通道编号，0:red 1:green 2:blue 其他:亮度
+     * @return 抠图后图片对象
+     */
+    public static BufferedImage cutoutByChannel(Object srcIm, int channel) {
+        BufferedImage srcImage = read(srcIm);
+        BufferedImage resultImage = new BufferedImage(srcImage.getWidth(),
+                                                      srcImage.getHeight(),
+                                                      BufferedImage.TYPE_4BYTE_ABGR);
+        // 开始绘制
+        for (int i = 0; i < srcImage.getWidth(); i++) {
+            for (int j = 0; j < srcImage.getHeight(); j++) {
+                int pixel = srcImage.getRGB(i, j);
+                int alpha = 0;
+                switch (channel) {
+                case CHANNEL_RED:
+                    alpha = Colors.getRGB(pixel)[0];
+                    break;
+                case CHANNEL_GREEN:
+                    alpha = Colors.getRGB(pixel)[1];
+                    break;
+                case CHANNEL_BLUE:
+                    alpha = Colors.getRGB(pixel)[2];
+                    break;
+                default:
+                    alpha = Colors.getLuminance(srcImage, i, j);
+                    break;
+                }
+                pixel = (alpha << 24) & 0xff000000 | (pixel & 0x00ffffff);
+                resultImage.setRGB(i, j, pixel);
+            }
+        }
+
+        return resultImage;
+    }
+
+    /**
+     * 指定的像素点为背景色参考，在指定范围内的颜色将设置为透明。
+     * 
+     * </br>
+     * ！！！ 该方法适合背景与前景相差特别大的图片，最好是背景颜色基本一致，前景背景有明显分隔界限。
+     * 
+     * 
+     * @param srcIm
+     *            源图片
+     * @param x
+     *            采样像素点横坐标
+     * @param y
+     *            采样像素点纵坐标
+     * @param range
+     *            采样像素可允许色差范围，数值越大去掉的颜色范围越多
+     * @return 抠图后图片对象
+     * 
+     */
+    public static BufferedImage cutoutByPixel(Object srcIm, int x, int y, int range) {
+        BufferedImage srcImage = read(srcIm);
+        BufferedImage resultImage = new BufferedImage(srcImage.getWidth(),
+                                                      srcImage.getHeight(),
+                                                      BufferedImage.TYPE_4BYTE_ABGR);
+        // 获取选样点
+        int[] srgb = Colors.getRGB(srcImage.getRGB(x, y));
+
+        // 开始绘制
+        for (int i = 0; i < srcImage.getWidth(); i++) {
+            for (int j = 0; j < srcImage.getHeight(); j++) {
+                int pixel = srcImage.getRGB(i, j);
+                int[] crgb = Colors.getRGB(pixel);
+                int alpha = 255;
+                // 范围内的都干掉
+                if (inRangeColor(srgb, crgb, range)) {
+                    alpha = 0;
+                }
+                // 范围大一点点的，可能就需要半透明来处理了
+                else if (inRangeColor(srgb, crgb, (int) (range * 1.5))) {
+                    alpha = 64;
+                }
+                // 范围大一点点的，可能就需要半透明来处理了
+                else if (inRangeColor(srgb, crgb, range * 2)) {
+                    alpha = 128;
+                }
+                // 不在范围的原样输出吧
+                else {
+                    alpha = Colors.getAlpha(pixel);
+                }
+                pixel = (alpha << 24) & 0xff000000 | (pixel & 0x00ffffff);
+                resultImage.setRGB(i, j, pixel);
+            }
+        }
+
+        return resultImage;
+    }
+
+    private static boolean inRangeColor(int[] srgb, int[] crgb, int range) {
+        // r
+        if (crgb[0] >= srgb[0] - range && crgb[0] <= srgb[0] + range) {
+            // g
+            if (crgb[1] >= srgb[01] - range && crgb[1] <= srgb[1] + range) {
+                // b
+                if (crgb[2] >= srgb[2] - range && crgb[2] <= srgb[2] + range) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static final int CHANNEL_RED = 0;
+    public static final int CHANNEL_GREEN = 1;
+    public static final int CHANNEL_BLUE = 2;
+
+    /**
+     * 获取三原色通道图片
+     * 
+     * @param srcIm
+     *            源图片
+     * @param channel
+     *            通道编号，0:red 1:green 2:blue
+     * @return 单一通道图片
+     */
+    public static BufferedImage channelImage(Object srcIm, int channel) {
+        BufferedImage srcImage = read(srcIm);
+        BufferedImage rcImage = new BufferedImage(srcImage.getWidth(),
+                                                  srcImage.getHeight(),
+                                                  srcImage.getType());
+        for (int i = 0; i < srcImage.getWidth(); i++) {
+            for (int j = 0; j < srcImage.getHeight(); j++) {
+                int r = Colors.getRGB(srcImage, i, j)[channel];
+                rcImage.setRGB(i, j, new Color(r, r, r).getRGB());
+            }
+        }
+        return rcImage;
+    }
+
+    /**
      * 将一个图片文件读入内存
      * 
      * @param img
@@ -502,6 +955,9 @@ public class Images {
      */
     public static BufferedImage read(Object img) {
         try {
+            if (img instanceof BufferedImage) {
+                return (BufferedImage) img;
+            }
             if (img instanceof CharSequence) {
                 return ImageIO.read(Files.checkFile(img.toString()));
             }
@@ -513,7 +969,7 @@ public class Images {
 
             if (img instanceof InputStream) {
                 File tmp = File.createTempFile("nutz_img", ".jpg");
-                Files.write(tmp, (InputStream) img);
+                Files.write(tmp, img);
                 try {
                     return read(tmp);
                 }
@@ -605,8 +1061,9 @@ public class Images {
      *            质量 0.1f ~ 1.0f
      */
     public static void writeJpeg(RenderedImage im, Object targetJpg, float quality) {
+        ImageWriter writer = null;
         try {
-            ImageWriter writer = ImageIO.getImageWritersBySuffix("jpg").next();
+            writer = ImageIO.getImageWritersBySuffix("jpg").next();
             ImageWriteParam param = writer.getDefaultWriteParam();
             param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
             param.setCompressionQuality(quality);
@@ -618,6 +1075,14 @@ public class Images {
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);
+        }
+        finally {
+            if (writer != null) {
+                try {
+                    writer.dispose();
+                }
+                catch (Throwable e) {}
+            }
         }
     }
 
@@ -633,22 +1098,30 @@ public class Images {
         Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("JPEG");
         ImageReader reader = null;
         while (readers.hasNext()) {
-            reader = (ImageReader) readers.next();
+            reader = readers.next();
             if (reader.canReadRaster()) {
                 break;
             }
         }
         if (reader == null)
             return null;
-        ImageInputStream input = ImageIO.createImageInputStream(in);
-        reader.setInput(input);
-        // Read the image raster
-        Raster raster = reader.readRaster(0, null);
-        BufferedImage image = createJPEG4(raster);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        writeJpeg(image, out, 1);
-        out.flush();
-        return read(new ByteArrayInputStream(out.toByteArray()));
+        try {
+            ImageInputStream input = ImageIO.createImageInputStream(in);
+            reader.setInput(input);
+            // Read the image raster
+            Raster raster = reader.readRaster(0, null);
+            BufferedImage image = createJPEG4(raster);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            writeJpeg(image, out, 1);
+            out.flush();
+            return read(new ByteArrayInputStream(out.toByteArray()));
+        }
+        finally {
+            try {
+                reader.dispose();
+            }
+            catch (Throwable e) {}
+        }
     }
 
     /**
@@ -743,15 +1216,250 @@ public class Images {
 
         return Base64.encodeToString(bImage, false);
     }
-    
+
     /**
      * 在一个RGB画布上重新绘制Image,解决CMYK图像偏色的问题
      */
     public static BufferedImage redraw(BufferedImage img, Color bg) {
-        BufferedImage rgbImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+        BufferedImage rgbImage = new BufferedImage(img.getWidth(),
+                                                   img.getHeight(),
+                                                   BufferedImage.TYPE_3BYTE_BGR);
         Graphics2D g2d = rgbImage.createGraphics();
         g2d.drawImage(img, 0, 0, bg, null);
         g2d.dispose();
         return rgbImage;
     }
+
+    /**
+     * 文字生成图片，黑底白字。
+     * 
+     * @param content
+     *            文字内容
+     * @return 图像
+     */
+    public static BufferedImage createText(String content) {
+        return createText(content, 0, 0, null, null, null, 0, Font.PLAIN);
+    }
+
+    /**
+     * 文字生成图片
+     * 
+     * @param content
+     *            文字内容
+     * @param width
+     *            图片宽度，默认256
+     * @param height
+     *            图片高度，默认256
+     * @param fontColor
+     *            文字颜色 默认白色
+     * @param bgColor
+     *            背景颜色 默认黑色
+     * @param fontName
+     *            字体名称 需运行环境中已有该字体名称
+     * @param fontSize
+     *            字体大小
+     * @param fontStyle
+     *            字体样式 Font.PLAIN || Font.BOLD || Font.ITALIC
+     * @return 图像
+     */
+    public static BufferedImage createText(String content,
+                                           int width,
+                                           int height,
+                                           String fontColor,
+                                           String bgColor,
+                                           String fontName,
+                                           int fontSize,
+                                           int fontStyle) {
+        // 处理下参数
+        if (Strings.isBlank(content)) {
+            return null;
+        }
+        if (width <= 0) {
+            width = 256;
+        }
+        if (height <= 0) {
+            height = 256;
+        }
+        if (Strings.isBlank(fontColor)) {
+            fontColor = "#FFF";
+        }
+        if (Strings.isBlank(bgColor)) {
+            bgColor = "#000";
+        }
+        if (fontSize <= 0) {
+            fontSize = height / 2;
+        }
+        if (fontStyle < 0 || fontStyle > 2) {
+            fontStyle = Font.BOLD;
+        }
+        // 准备
+        BufferedImage im;
+        Graphics2D gc;
+        Color colorFont = Colors.as(fontColor);
+        Color colorBg = Colors.as(bgColor);
+        // 判断图片格式
+        int imageType = BufferedImage.TYPE_INT_RGB;
+        if (colorFont.getAlpha() < 255 || colorBg.getAlpha() < 255) {
+            imageType = BufferedImage.TYPE_INT_ARGB;
+        }
+        // 生成背景
+        im = new BufferedImage(width, height, imageType);
+        gc = im.createGraphics();
+        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        gc.setBackground(colorBg);
+        gc.clearRect(0, 0, width, height);
+        // 写入文字
+        Font cFont = Fonts.get(fontName, fontStyle, fontSize);
+        gc.setColor(colorFont);
+        gc.setFont(cFont);
+        FontMetrics cFontM = gc.getFontMetrics(cFont);
+        int cW = cFontM.stringWidth(content);
+        int ascent = cFontM.getAscent(); // 取得Ascent
+        int descent = cFontM.getDescent(); // 取得Descent
+        int x, y;
+        x = width / 2 - cW / 2;
+        y = (height - (ascent + descent)) / 2 + ascent;
+        gc.drawString(content, x, y);
+        return im;
+    }
+
+    /**
+     * 根据名字生成头像，英文采用第一个字母，中文2个字使用2个字，超过2个字采用第一个字
+     * 
+     * @param name
+     *            名字
+     * @return 头像
+     */
+    public static BufferedImage createAvatar(String name) {
+        return createAvatar(name, 0, null, null, null, 0, Font.BOLD);
+    }
+
+    /**
+     * 根据名字生成头像，英文采用第一个字母，中文2个字使用2个字，超过2个字采用第一个字
+     * 
+     * @param name
+     *            名字
+     * @param size
+     *            图片大小，默认256
+     * @param fontColor
+     *            文字颜色 默认白色
+     * @param bgColor
+     *            背景颜色 默认黑色
+     * @param fontName
+     *            字体名称 需运行环境中已有该字体名称
+     * @param fontSize
+     *            字体大小
+     * @param fontStyle
+     *            字体样式 Font.PLAIN || Font.BOLD || Font.ITALIC
+     * @return 头像
+     */
+    public static BufferedImage createAvatar(String name,
+                                             int size,
+                                             String fontColor,
+                                             String bgColor,
+                                             String fontName,
+                                             int fontSize,
+                                             int fontStyle) {
+        // 检查输入项目
+        if (Strings.isBlank(name)) {
+            return null;
+        }
+        // 分析要写入的文字
+        String content = name;
+        if (name.length() > 2) {
+            content = ("" + name.charAt(0));
+        }
+        content = content.toUpperCase();
+        return createText(content, size, size, fontColor, bgColor, fontName, fontSize, fontStyle);
+    }
+
+    /**
+     * 根据指定文字内容，生成验证码，字体颜色随机变化。
+     * 
+     * @param content
+     *            文字内容
+     * @return 图像
+     */
+    public static BufferedImage createCaptcha(String content) {
+        return createCaptcha(content, 0, 0, null, "FFF", null);
+    }
+
+    /**
+     * 根据指定文字内容，生成验证码
+     * 
+     * @param content
+     *            文字内容
+     * @param width
+     *            图片宽度
+     * @param height
+     *            图片高度
+     * @param fontColor
+     *            文字颜色 默认黑色
+     * @param bgColor
+     *            背景颜色 默认白色
+     * @return 图像
+     */
+    public static BufferedImage createCaptcha(String content,
+                                              int width,
+                                              int height,
+                                              String fontColor,
+                                              String bgColor,
+                                              String fontName) {
+        // 处理下参数
+        if (Strings.isBlank(content)) {
+            return null;
+        }
+        boolean isChinese = Strings.isChineseCharacter(content.charAt(0));
+        if (width <= 0) {
+            // 中文字体的话，间距需要多一些
+            width = content.length() * (isChinese ? 25 : 20) + 20;
+        }
+        if (height <= 0) {
+            height = 30;
+        }
+        Color userColor = Strings.isBlank(fontColor) ? null : Colors.as(fontColor);
+        Color colorBg = Strings.isBlank(bgColor) ? Colors.randomColor() : Colors.as(bgColor);
+
+        // 生成背景
+        BufferedImage im = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D gc = im.createGraphics();
+        gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        gc.setBackground(colorBg);
+        gc.clearRect(0, 0, width, height);
+
+        // 加入干扰线
+        for (int i = 0; i < 7; i++) {
+            gc.setColor(userColor == null ? Colors.randomColor(5, 250) : userColor);
+            int x = R.random(0, width);
+            int y = R.random(0, height);
+            int x1 = R.random(0, width);
+            int y1 = R.random(0, height);
+            gc.drawLine(x, y, x1, y1);
+        }
+
+        // 写入文字
+        int rx = 10;
+        int ry = isChinese ? height - 8 : height - 10;
+        for (int i = 0; i < content.length(); i++) {
+            int fontStyle = R.random(0, 3);
+            int fontSize = R.random(height - 10, height - 5);
+            Font textFont = Strings.isBlank(fontName) ? Fonts.random(fontStyle, fontSize)
+                                                      : Fonts.get(fontName, fontStyle, fontSize);
+            gc.setColor(userColor == null ? Colors.randomColor(10, 250) : userColor);
+            gc.setFont(textFont);
+            // 设置字体旋转角度
+            int degree = R.random(0, 64) % 30;
+            // 正向角度
+            gc.rotate(degree * Math.PI / 180, rx, ry);
+            gc.drawString(content.charAt(i) + "", rx, ry);
+            // 反向角度
+            gc.rotate(-degree * Math.PI / 180, rx, ry);
+            rx += (isChinese ? 5 : 0) + width / (content.length() + 2);
+        }
+
+        // 图像扭曲
+        im = twist(im, 1, bgColor);
+        return im;
+    }
+
 }

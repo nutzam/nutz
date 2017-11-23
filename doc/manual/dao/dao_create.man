@@ -104,4 +104,6 @@ PRIMARY KEY (id)
 	@TableIndexes({@Index(name="name_age", fields={"name", "age"}, unique=false)})
 	}}}
 	
+	自1.r.63起，索引的名称可以自动帮你生成，上面的例子，如果name不填的话，默认"IX_TableName_name_age"，及"前缀_表名_字段名"
+	其中，唯一索引前缀为"UX_"，非唯一索引前缀为"IX_"
 	

@@ -6,7 +6,7 @@
 
 	创建一个拦截器类,在方法执行前后打印一句日志
 		{{{<JAVA>
-        package aop;
+        package net.wendal.nutzbook.aop;
         import org.nutz.aop.ClassAgent;
         import org.nutz.aop.ClassDefiner;
         import org.nutz.aop.DefaultClassDefiner;
@@ -82,7 +82,7 @@
 		
 	将上一个例子,改造为Ioc形式
 		{{{<JAVA>
-        package aop;
+        package net.wendal.nutzbook.aop;
         import org.nutz.ioc.aop.Aop;
         import org.nutz.ioc.loader.annotation.IocBean;
         
@@ -110,7 +110,7 @@
             }
         }
         //另外一个类文件
-        package aop;
+        package net.wendal.nutzbook.aop;
         import org.nutz.ioc.loader.annotation.IocBean;
         import org.nutz.aop.InterceptorChain;
         import org.nutz.aop.MethodInterceptor;

@@ -1,5 +1,6 @@
 package org.nutz.dao.impl;
 
+import java.io.Closeable;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -20,7 +21,7 @@ import org.nutz.log.Logs;
  * 
  * @author wendal(wendal1985@gmail.com)
  */
-public class SimpleDataSource implements DataSource {
+public class SimpleDataSource implements DataSource, Closeable {
 
 	private static final Log log = Logs.get();
 	
@@ -62,22 +63,26 @@ public class SimpleDataSource implements DataSource {
     public void setJdbcUrl(String jdbcUrl) {
         this.jdbcUrl = jdbcUrl;
     }
+    
+    public void setUrl(String url) {
+        this.jdbcUrl = url;
+    }
 
     //加载Nutz所支持的数据库的驱动!!
     static {
         String[] drivers = {"org.h2.Driver",
                             "com.ibm.db2.jcc.DB2Driver",
                             "org.hsqldb.jdbcDriver",
-                            "org.gjt.mm.mysql.Driver",
                             "oracle.jdbc.OracleDriver",
                             "org.postgresql.Driver",
                             "net.sourceforge.jtds.jdbc.Driver",
                             "com.microsoft.sqlserver.jdbc.SQLServerDriver",
                             "org.sqlite.JDBC",
-                            "com.mysql.jdbc.Driver"};
+                            "com.mysql.jdbc.Driver",
+                            "com.beyondb.jdbc.BeyondbDriver"};
         for (String driverClassName : drivers) {
             try {
-                Lang.loadClass(driverClassName);
+                Class.forName(driverClassName);
             } catch (Throwable e) {}
         }
     }

@@ -2,6 +2,7 @@ package org.nutz.lang.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -40,5 +41,16 @@ public class XmlsTest extends Assert {
 
         assertEquals("wendal", map.get("name").toString());
     }
-
+    
+    @Test
+    public void test_dup_as_list() {
+        String xmlStr = "<root><user><pet><name>wendal</name></pet><pet><name>zozoh</name></pet></user></root>";
+        Document doc = Xmls.xml(new ByteArrayInputStream(xmlStr.getBytes()));
+        Element root = doc.getDocumentElement();
+        NutMap map = Xmls.asMap(root, true, true);
+        System.out.println(map);
+        NutMap user = map.getAs("user", NutMap.class);
+        Object pets = user.get("pet");
+        assertTrue(pets instanceof Collection || pets.getClass().isArray());
+    }
 }

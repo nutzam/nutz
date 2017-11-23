@@ -26,14 +26,17 @@ public class CookieInjector implements ParamInjector {
 					  HttpServletRequest req,
 					  HttpServletResponse resp,
 					  Object refer) {
+        Cookie[] _cookies = req.getCookies();
+        if (_cookies == null)
+            _cookies = new Cookie[0];
 		if ("_map".equals(name)) {
 			Map<String, String> cookies = new LinkedHashMap<String, String>();
-			for (Cookie cookie : req.getCookies()) {
+			for (Cookie cookie : _cookies) {
 				cookies.put(cookie.getName(), cookie.getValue());
 			}
 			return cookies;
 		}
-		for (Cookie cookie : req.getCookies()) {
+		for (Cookie cookie : _cookies) {
 			if (cookie.getName().equalsIgnoreCase(name))
 				return Castors.me().castTo(cookie.getValue(), type);
 		}

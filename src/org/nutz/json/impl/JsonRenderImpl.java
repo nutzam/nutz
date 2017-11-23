@@ -3,11 +3,11 @@ package org.nutz.json.impl;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Array;
-import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -20,12 +20,15 @@ import java.util.regex.Pattern;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.json.JsonRender;
+import org.nutz.json.JsonShape;
 import org.nutz.json.entity.JsonEntity;
 import org.nutz.json.entity.JsonEntityField;
+import org.nutz.json.entity.JsonCallback;
 import org.nutz.lang.FailToGetValueException;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.NutMap;
 
 /**
  * @author zozoh(zozohtnt@gmail.com)
@@ -42,13 +45,19 @@ public class JsonRenderImpl implements JsonRender {
     private Writer writer;
 
     private Set<Object> memo = new HashSet<Object>();
-    
+
     private boolean compact;
+    
+    /**
+     * 缩进
+     */
+    private int indent;
 
     public JsonFormat getFormat() {
         return format;
     }
 
+    @Override
     public void setFormat(JsonFormat format) {
         this.format = format;
         this.compact = format.isCompact();
@@ -58,10 +67,12 @@ public class JsonRenderImpl implements JsonRender {
         return writer;
     }
 
+    @Override
     public void setWriter(Writer writer) {
         this.writer = writer;
     }
 
+    @Override
     public void render(Object obj) throws IOException {
         if (null == obj) {
             appendNull();
@@ -75,7 +86,27 @@ public class JsonRenderImpl implements JsonRender {
             Mirror mr = Mirror.me(obj.getClass());
             // 枚举
             if (mr.isEnum()) {
-                string2Json(((Enum) obj).name());
+                JsonShape shape = Mirror.getAnnotationDeep(mr.getType(), JsonShape.class);
+                if (shape == null) {
+                    string2Json(((Enum) obj).name());
+                } else {
+                    switch (shape.value()) {
+                    case ORDINAL:
+                        writer.append(String.valueOf(((Enum) obj).ordinal()));
+                        break;
+                    case OBJECT:
+                        NutMap map = Lang.obj2nutmap(obj);
+                        if (map.isEmpty()) {
+                            string2Json(((Enum) obj).name());
+                        } else {
+                            map2Json(map);
+                        }
+                        break;
+                    default:
+                        string2Json(((Enum) obj).name());
+                        break;
+                    }
+                }
             }
             // 数字，布尔等
             else if (mr.isNumber()) {
@@ -84,11 +115,9 @@ public class JsonRenderImpl implements JsonRender {
                     // TODO 怎样才能应用上JsonFormat中是否忽略控制呢?
                     // 因为此时已经写入了key:
                     writer.write("null");
-                }
-                else
+                } else
                     writer.write(tmp);
-            }
-            else if (mr.isBoolean()) {
+            } else if (mr.isBoolean()) {
                 writer.append(obj.toString());
             }
             // 字符串
@@ -99,7 +128,7 @@ public class JsonRenderImpl implements JsonRender {
             else if (mr.isDateTimeLike()) {
                 boolean flag = true;
                 if (obj instanceof Date) {
-                    String _val = doDateFormat((Date)obj, null);
+                    String _val = doDateFormat((Date) obj, null);
                     if (_val != null) {
                         string2Json(_val);
                         flag = false;
@@ -163,8 +192,7 @@ public class JsonRenderImpl implements JsonRender {
         writer.append(!compact ? ": " : ":");
     }
 
-    protected void appendPair(boolean needPairEnd, String name, Object value)
-            throws IOException {
+    protected void appendPair(boolean needPairEnd, String name, Object value) throws IOException {
         appendPairBegin();
         appendName(name);
         appendPairSep();
@@ -216,8 +244,7 @@ public class JsonRenderImpl implements JsonRender {
         ArrayList<Pair> list = new ArrayList<Pair>(map.size());
         Set<Entry<?, ?>> entrySet = map.entrySet();
         for (Entry entry : entrySet) {
-            String name = null == entry.getKey() ? "null" : entry.getKey()
-                                                                 .toString();
+            String name = null == entry.getKey() ? "null" : entry.getKey().toString();
             Object value = entry.getValue();
             if (!this.isIgnore(name, value))
                 list.add(new Pair(name, value));
@@ -234,20 +261,10 @@ public class JsonRenderImpl implements JsonRender {
          */
         Class<?> type = obj.getClass();
         JsonEntity jen = Json.getEntity(Mirror.me(type));
-        Method toJsonMethod = jen.getToJsonMethod();
-        if (toJsonMethod != null) {
-            try {
-                if (toJsonMethod.getParameterTypes().length == 0) {
-                    writer.append(String.valueOf(toJsonMethod.invoke(obj)));
-                } else {
-                    writer.append(String.valueOf(toJsonMethod.invoke(obj,
-                                                                     format)));
-                }
+        JsonCallback jsonCallback = jen.getJsonCallback();
+        if (jsonCallback != null) {
+            if (jsonCallback.toJson(obj, format, writer))
                 return;
-            }
-            catch (Exception e) {
-                throw Lang.wrapThrow(e);
-            }
         }
         List<JsonEntityField> fields = jen.getFields();
         appendBraceBegin();
@@ -259,21 +276,38 @@ public class JsonRenderImpl implements JsonRender {
             String name = jef.getName();
             try {
                 Object value = jef.getValue(obj);
-
                 // 判断是否应该被忽略
-                if (!this.isIgnore(name, value)) {
-                    Mirror mirror = null;
-                    // 以前曾经输出过 ...
-                    if (null != value) {
-                        // zozoh: 循环引用的默认行为，应该为 null，以便和其他语言交换数据
-                        mirror = Mirror.me(value);
-                        if (mirror.isPojo()) {
-                            if (memo.contains(value))
-                                value = null;
+                if (this.isIgnore(name, value))
+                    continue;
+                Mirror mirror = jef.getMirror();
+                // 以前曾经输出过 ...
+                if (null != value) {
+                    // zozoh: 循环引用的默认行为，应该为 null，以便和其他语言交换数据
+                    if (mirror.isPojo()) {
+                        if (memo.contains(value))
+                            value = null;
+                    }
+                }
+                if (null == value) {
+                    // 处理各种类型的空值
+                    if (mirror != null) {
+                        if (mirror.isStringLike()) {
+                            if (format.isNullStringAsEmpty())
+                                value = "";
+                        } else if (mirror.isNumber()) {
+                            if (format.isNullNumberAsZero())
+                                value = 0;
+                        } else if (mirror.isCollection()) {
+                            if (format.isNullListAsEmpty())
+                                value = Collections.EMPTY_LIST;
+                        } else if (jef.getGenericType() == Boolean.class) {
+                            if (format.isNullBooleanAsFalse())
+                                value = false;
                         }
                     }
+                } else {
                     // 如果是强制输出为字符串的
-                    if (null != value && jef.isForceString()) {
+                    if (jef.isForceString()) {
                         // 数组
                         if (value.getClass().isArray()) {
                             String[] ss = new String[Array.getLength(value)];
@@ -284,8 +318,7 @@ public class JsonRenderImpl implements JsonRender {
                         }
                         // 集合
                         else if (value instanceof Collection) {
-                            Collection col = (Collection) Mirror.me(value)
-                                                                .born();
+                            Collection col = (Collection) Mirror.me(value).born();
                             for (Object ele : (Collection) value) {
                                 col.add(ele.toString());
                             }
@@ -295,15 +328,15 @@ public class JsonRenderImpl implements JsonRender {
                         else {
                             value = value2string(jef, value);
                         }
-                    } else if (jef.hasDataFormat() && null != value && value instanceof Date) {
-                        value = jef.getDataFormat().format((Date)value);
-                    } else if (jef.hasDataFormat() && null != value && (mirror != null && mirror.isNumber())) {
+                    } else if (jef.hasDataFormat() && value instanceof Date) {
+                        value = jef.getDataFormat().format(value);
+                    } else if (jef.hasDataFormat() && (mirror != null && mirror.isNumber())) {
                         value = jef.getDataFormat().format(value);
                     }
-
-                    // 加入输出列表 ...
-                    list.add(new Pair(name, value));
                 }
+
+                // 加入输出列表 ...
+                list.add(new Pair(name, value));
             }
             catch (FailToGetValueException e) {}
         }
@@ -322,12 +355,12 @@ public class JsonRenderImpl implements JsonRender {
 
     private void decreaseFormatIndent() {
         if (!compact)
-            format.decreaseIndent();
+            indent--;
     }
 
     private void increaseFormatIndent() {
         if (!compact)
-            format.increaseIndent();
+            indent++;
     }
 
     private void string2Json(String s) throws IOException {
@@ -352,11 +385,11 @@ public class JsonRenderImpl implements JsonRender {
                     writer.append("\\r");
                     break;
                 case '\f':
-                	writer.append("\\f");
-                	break;
+                    writer.append("\\f");
+                    break;
                 case '\b':
-                	writer.append("\\b");
-                	break;
+                    writer.append("\\b");
+                    break;
                 case '\\':
                     writer.append("\\\\");
                     break;
@@ -365,13 +398,13 @@ public class JsonRenderImpl implements JsonRender {
                         writer.append("\\u");
                         String u = Strings.fillHex(c, 4);
                         if (format.isUnicodeLower())
-                        	writer.write(u.toLowerCase());
+                            writer.write(u.toLowerCase());
                         else
-                        	writer.write(u.toUpperCase());
-                    }
-                    else {
-                        if (c < ' ' || (c >= '\u0080' && c < '\u00a0')
-                                || (c >= '\u2000' && c < '\u2100')) {
+                            writer.write(u.toUpperCase());
+                    } else {
+                        if (c < ' '
+                            || (c >= '\u0080' && c < '\u00a0')
+                            || (c >= '\u2000' && c < '\u2100')) {
                             writer.write("\\u");
                             String hhhh = Integer.toHexString(c);
                             writer.write("0000", 0, 4 - hhhh.length());
@@ -415,37 +448,36 @@ public class JsonRenderImpl implements JsonRender {
     }
 
     protected String value2string(JsonEntityField jef, Object value) {
-        
+
         Format df = jef.getDataFormat();
         if (df == null) {
             Mirror mirror = Mirror.me(value);
             if (value instanceof Date) {
                 df = format.getDateFormat();
-            }else if (mirror.isNumber()) {
+            } else if (mirror.isNumber()) {
                 df = format.getNumberFormat();
             }
         }
         if (df != null) {
             if (df instanceof DateFormat)
-                return doDateFormat((Date)value, (DateFormat)df);
+                return doDateFormat((Date) value, (DateFormat) df);
             return df.format(value);
         }
         return value.toString();
     }
-    
+
     protected void doIntent() throws IOException {
-        int idt = format.getIndent();
-        for (int i = 0; i < idt; i++)
+        for (int i = 0; i < indent; i++)
             writer.write(format.getIndentBy());
     }
-    
+
     protected void appendNull() throws IOException {
         if (format.isNullAsEmtry())
             writer.write("\"\"");
         else
             writer.write("null");
     }
-    
+
     protected String doDateFormat(Date date, DateFormat df) {
         if (df == null)
             df = format.getDateFormat();

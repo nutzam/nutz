@@ -1,13 +1,16 @@
 package org.nutz.img;
 
+import static java.lang.Integer.parseInt;
+import static org.nutz.lang.Strings.dup;
+
 import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.nutz.lang.Strings;
-
-import static org.nutz.lang.Strings.dup;
-import static java.lang.Integer.parseInt;
+import org.nutz.lang.random.R;
 
 /**
  * 提供快捷的解析颜色值的方法
@@ -31,6 +34,7 @@ public final class Colors {
      * 
      * @deprecated
      */
+    @Deprecated
     public static Color fromString(String str) {
         return as(str);
     }
@@ -128,6 +132,158 @@ public final class Colors {
 
         // 全都匹配不上，返回黑色
         return Color.BLACK;
+    }
+
+    /**
+     * Color转换为 “rgb(12, 25, 33)” 格式字符串
+     * 
+     * @param color
+     *            颜色
+     * @return 文字格式
+     */
+    public static String toRGB(Color color) {
+        return String.format("rgb(%d, %d, %d)", color.getRed(), color.getGreen(), color.getBlue());
+    }
+
+    /**
+     * 获取一个制定范围内的颜色
+     * 
+     * @param min
+     *            最小取值，范围0-255
+     * @param max
+     *            最大取值，范围0-255
+     * @return 颜色
+     */
+    public static Color randomColor(int min, int max) {
+        if (min > 255) {
+            min = 255;
+        }
+        if (min < 0) {
+            min = 0;
+        }
+        if (max > 255) {
+            max = 255;
+        }
+        if (max < 0) {
+            max = 0;
+        }
+        return new Color(min + R.random(0, max - min),
+                         min + R.random(0, max - min),
+                         min + R.random(0, max - min));
+    }
+
+    /**
+     * 获取一个随机颜色
+     * 
+     * @return 颜色
+     */
+    public static Color randomColor() {
+        return randomColor(0, 255);
+    }
+
+    /**
+     * 获取图片指定像素点的RGB值
+     * 
+     * @param srcIm
+     *            源图片
+     * @param x
+     *            横坐标
+     * @param y
+     *            纵坐标
+     * @return RGB值数组
+     */
+    public static int[] getRGB(BufferedImage srcIm, int x, int y) {
+        int pixel = srcIm.getRGB(x, y);
+        return getRGB(pixel);
+    }
+
+    /**
+     * 获取像素点的RGB值(三元素数组)）
+     * 
+     * @param pixel
+     *            像素RGB值
+     * @return RGB值数组
+     */
+    public static int[] getRGB(int pixel) {
+        int r = (pixel >> 16) & 0xff;
+        int g = (pixel >> 8) & 0xff;
+        int b = pixel & 0xff;
+        return new int[]{r, g, b};
+    }
+
+    public static int getAlpha(int pixel) {
+        ColorModel cm = ColorModel.getRGBdefault();
+        return cm.getAlpha(pixel);
+    }
+
+    /**
+     * 获取图片指定像素点的亮度值(YUV中的Y)
+     * 
+     * @param srcIm
+     *            源图片
+     * @param x
+     *            横坐标
+     * @param y
+     *            纵坐标
+     * @return 亮度值
+     */
+    public static int getLuminance(BufferedImage srcIm, int x, int y) {
+        int[] rgb = getRGB(srcIm, x, y);
+        return (int) (0.3 * rgb[0] + 0.59 * rgb[1] + 0.11 * rgb[2]); // 加权法
+    }
+
+    /**
+     * 获取图片指定像素点的亮度值(YUV中的Y) 类型为double
+     * 
+     * @param srcIm
+     *            源图片
+     * @param x
+     *            横坐标
+     * @param y
+     *            纵坐标
+     * @return 亮度值
+     */
+    public static double getLuminanceDouble(BufferedImage srcIm, int x, int y) {
+        int[] rgb = getRGB(srcIm, x, y);
+        return 0.3 * rgb[0] + 0.59 * rgb[1] + 0.11 * rgb[2]; // 加权法
+    }
+
+    /**
+     * 获取图片指定像素点的灰度值
+     * 
+     * @param srcIm
+     *            源图片
+     * @param x
+     *            横坐标
+     * @param y
+     *            纵坐标
+     * @return 灰度值
+     */
+    public static int getGray(BufferedImage srcIm, int x, int y) {
+        int grayValue = getLuminance(srcIm, x, y);
+        int newPixel = 0;
+        newPixel = (grayValue << 16) & 0x00ff0000 | (newPixel & 0xff00ffff);
+        newPixel = (grayValue << 8) & 0x0000ff00 | (newPixel & 0xffff00ff);
+        newPixel = (grayValue) & 0x000000ff | (newPixel & 0xffffff00);
+        return newPixel;
+    }
+
+    /**
+     * 获取两个像素点正片叠底后的像素值
+     * 
+     * @param pixel1
+     *            像素点1
+     * @param pixel2
+     *            像素点1
+     * @return 新像素点值
+     */
+    public static int getMultiply(int pixel1, int pixel2) {
+        int[] rgb1 = getRGB(pixel1);
+        int[] rgb2 = getRGB(pixel2);
+        int r = rgb1[0] * rgb2[0] / 255;
+        int g = rgb1[1] * rgb2[1] / 255;
+        int b = rgb1[2] * rgb2[2] / 255;
+        return new Color(r, g, b).getRGB();
     }
 
     private Colors() {}

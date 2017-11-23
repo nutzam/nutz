@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.nutz.lang.util.Callback2;
 import org.nutz.lang.util.NutMap;
+import org.nutz.lang.util.Tag;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -485,21 +487,41 @@ public abstract class Xmls {
      * @return 一个 Map 对象
      */
     public static NutMap asMap(Element ele, final boolean lowFirst) {
+        return asMap(ele, lowFirst, false);
+    }
+    public static NutMap asMap(Element ele, final boolean lowFirst, final boolean dupAsList) {
+        return asMap(ele, lowFirst, dupAsList, null);
+    }
+    public static NutMap asMap(Element ele, final boolean lowerFirst, final boolean dupAsList, final List<String> alwaysAsList) {
         final NutMap map = new NutMap();
         eachChildren(ele, new Each<Element>() {
             public void invoke(int index, Element _ele, int length)
                     throws ExitLoop, ContinueLoop, LoopException {
                 String key = _ele.getNodeName();
-                if (lowFirst)
+                if (lowerFirst)
                     key = Strings.lowerFirst(key);
-                Map<String, Object> tmp = asMap(_ele, lowFirst);
+                Map<String, Object> tmp = asMap(_ele, lowerFirst, dupAsList, alwaysAsList);
                 if (!tmp.isEmpty()) {
-                    map.setv(key, tmp);
+                    if (alwaysAsList != null && alwaysAsList.contains(key)) {
+                        map.addv2(key, tmp);
+                    }
+                    else if (dupAsList) {
+                        map.addv(key, tmp);
+                    }
+                    else {
+                        map.setv(key, tmp);
+                    }
                     return;
                 }
                 String val = getText(_ele);
                 if (!Strings.isBlank(val)) {
-                    map.setv(key, val);
+                    if (alwaysAsList != null && alwaysAsList.contains(key)) {
+                        map.addv2(key, map);
+                    }
+                    else if (dupAsList)
+                        map.addv(key, val);
+                    else
+                        map.setv(key, val);
                 }
             }
         });
@@ -526,6 +548,14 @@ public abstract class Xmls {
     public static NutMap xmlToMap(String xml) {
         return Xmls.asMap(Xmls.xml(Lang.ins(xml)).getDocumentElement());
     }
+    
+    public static NutMap xmlToMap(InputStream ins) {
+        return Xmls.asMap(Xmls.xml(ins).getDocumentElement());
+    }
+    
+    public static NutMap xmlToMap(InputStream ins, final boolean lowerFirst, final boolean dupAsList, final List<String> alwaysAsList) {
+        return Xmls.asMap(Xmls.xml(ins).getDocumentElement(), lowerFirst, dupAsList, alwaysAsList);
+    }
 
     /**
      * 将一个 Map 转换成 XML 类似:
@@ -542,20 +572,47 @@ public abstract class Xmls {
      * @return XML 字符串
      */
     public static String mapToXml(Map<String, Object> map) {
-        StringBuilder sb = new StringBuilder("<xml>");
+        return mapToXml("xml", map);
+    }
+    
+    public static String mapToXml(String root, Map<String, Object> map) {
+        StringBuilder sb = new StringBuilder();
+        map2Tag(root, map).toXml(sb, 0);
+        return sb.toString();
+    }
+    
+    protected static Tag map2Tag(String rootName, Map<String, Object> map) {
+        Tag rootTag = Tag.tag(rootName);
         for (Map.Entry<String, Object> en : map.entrySet()) {
             String key = en.getKey();
             Object val = en.getValue();
-            if (null == val)
-                continue;
-            sb.append("\n<").append(key).append('>');
-            sb.append(val.toString());
-            sb.append("</").append(key).append('>');
+            List<Tag> children = obj2tag(key, val);
+            for (Tag child : children) {
+                rootTag.add(child);
+            }
         }
-        sb.append("\n</xml>");
-        return sb.toString();
+        return rootTag;
     }
-
+    
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static List<Tag> obj2tag(String nodeName, Object val) {
+        List<Tag> tags = new ArrayList<Tag>();
+        if (null == val)
+            return tags;
+        if (val instanceof Map) {
+            tags.add(map2Tag(nodeName, (Map<String, Object>) val));
+        } else if (val instanceof Collection) {
+            for (Object object : (Collection)val) {
+                for (Tag tag : obj2tag(nodeName, object)) {
+                    tags.add(tag);
+                }
+            }
+        } else {
+            tags.add(Tag.tag(nodeName).setText(val.toString()));
+        }
+        return tags;
+    }
+    
     /**
      * 从一个 XML 元素开始，根据一条 XPath 获取一组元素
      * 
@@ -585,4 +642,6 @@ public abstract class Xmls {
             throw Lang.wrapThrow(e);
         }
     }
+    
+    public static String HEAD = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
 }

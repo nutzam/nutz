@@ -2,13 +2,19 @@ package org.nutz.dao.test.entity;
 
 import static org.junit.Assert.*;
 
-import org.junit.Test;
+import java.sql.Timestamp;
 
+import org.junit.Test;
+import org.nutz.dao.Cnd;
 import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.Record;
 import org.nutz.dao.impl.entity.field.ManyManyLinkField;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Tank;
+import org.nutz.dao.test.meta.issue1286.Issue1286;
+import org.nutz.http.Request.METHOD;
+import org.nutz.lang.random.R;
 
 public class DynamicEntityParsingTest extends DaoCase {
 
@@ -25,4 +31,15 @@ public class DynamicEntityParsingTest extends DaoCase {
         pojos.dropPlatoon(1);
     }
 
+    @Test
+    public void test_issue_1286() {
+        dao.create(Issue1286.class, true);
+        Record record = new Record();
+        record.set(".table", "t_issue_1286");
+        record.set("*+id", 0).set("name", R.UU32()).set("method", METHOD.POST).set("t", null);
+        record.set(".t.type", Timestamp.class);
+        dao.insert(record);
+        record = dao.fetch("t_issue_1286", Cnd.NEW());
+        assertEquals("POST", record.get("method"));
+    }
 }

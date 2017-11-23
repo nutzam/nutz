@@ -5,10 +5,10 @@
 --------------------------------------------------------------------------------------------------------
 使用Json
 
-    NutIoc 包含一个 JsonLoader，通常同学们*不*会这么用!!!
+    NutIoc 包含一个 JsonLoader或者N个IocLoader或者一个ComboIocLoader
 
     {{{<JAVA>
-    Ioc ioc = new NutIoc(new JsonLoader("path/to/mybeans.js"));
+    Ioc ioc = new NutIoc(new JsonLoader("path/to/mybeans.js")); //示意
     }}}
     
     JsonLoader 从一个 JS 文件中加载一组 IocBean 的配置信息，这个JS文件的格式通常为

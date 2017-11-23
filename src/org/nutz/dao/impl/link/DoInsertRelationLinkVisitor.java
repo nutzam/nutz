@@ -32,7 +32,7 @@ public class DoInsertRelationLinkVisitor extends AbstractLinkVisitor {
 
             Object value = lnk.getValue(obj);
             
-            final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>(Lang.length(value));
+            final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>(Lang.eleSize(value));
             Lang.each(value, new Each<Object>() {
                 public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
                     list.add(new RelationObjectMap(mm, obj, ele));

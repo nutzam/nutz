@@ -97,7 +97,7 @@
     // 根据特定条件更新特定字段
     dao.update(Person.class, Chain.make("dead",true), Cnd.where("age",">",150));
     // 常用的+1更新
-    dao.update(Person.class, Chain.makeSpecial("age", "+1").and("location", "yvr"), Cnd.where("name","=", "wendal"));
+    dao.update(Person.class, Chain.makeSpecial("age", "+1").add("location", "yvr"), Cnd.where("name","=", "wendal"));
     }}}
 -----------------------------------------------------------------------------------------------------------------
 删除 Delete
@@ -216,7 +216,7 @@
 	
 	局限性
 		* 不生成外键,我们也不推荐用外键
-		* 只能解决一般建表需求,复制的表结构请通过自定义sql完成
+		* 只能解决一般建表需求,复杂的表结构请通过自定义sql完成
 	
 ----------------------------------------------------------------------------------------------------------------
 批量建表,扫描某个package下的bean,为带@Table注解的类建表

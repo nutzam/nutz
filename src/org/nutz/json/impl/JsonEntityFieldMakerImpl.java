@@ -26,7 +26,7 @@ public class JsonEntityFieldMakerImpl extends AbstractJsonEntityFieldMaker {
     }
 
     @Override
-    public JsonEntityField make(Mirror<?> mirror, final Method method) {
+    public JsonEntityField make(final Mirror<?> mirror, final Method method) {
         final JsonField jf = method.getAnnotation(JsonField.class);
         // 忽略方法
         if (null == jf || jf.ignore())
@@ -50,7 +50,7 @@ public class JsonEntityFieldMakerImpl extends AbstractJsonEntityFieldMaker {
                                          method);
                 }
                 // 加入字段表
-                JsonEntityField ef = JsonEntityField.eval(Strings.sBlank(jf.value(), name),
+                JsonEntityField ef = JsonEntityField.eval(mirror, Strings.sBlank(jf.value(), name),
                                                           getter,
                                                           setter);
                 result[0] = ef;

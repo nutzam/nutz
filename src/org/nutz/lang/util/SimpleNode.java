@@ -434,4 +434,9 @@ public class SimpleNode<T> implements Node<T> {
     public String toString(int level) {
         return toString();
     }
+    
+    @Override
+    public void toXml(StringBuilder sb, int level) {
+        sb.append(toString(level));
+    }
 }

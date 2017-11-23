@@ -12,28 +12,23 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import javax.servlet.ServletContext;
 
-import org.nutz.Nutz;
 import org.nutz.castor.Castors;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Stopwatch;
 import org.nutz.lang.Streams;
 import org.nutz.lang.util.ClassTools;
 import org.nutz.lang.util.Disks;
@@ -42,9 +37,12 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.resource.impl.ErrorResourceLocation;
 import org.nutz.resource.impl.FileResource;
+import org.nutz.resource.impl.FileSystemResourceLocation;
 import org.nutz.resource.impl.JarResource;
+import org.nutz.resource.impl.JarResourceLocation;
 import org.nutz.resource.impl.ResourceLocation;
 import org.nutz.resource.impl.SimpleResource;
+import org.nutz.resource.impl.WebClassesResourceLocation;
 
 /**
  * 资源扫描的帮助函数集
@@ -58,7 +56,7 @@ public class Scans {
 
     private static final Log log = Logs.get();
 
-    private static final Scans me = new Scans();
+    private static Scans me = new Scans();
 
     private Map<String, ResourceLocation> locations = new LinkedHashMap<String, ResourceLocation>();
 
@@ -73,37 +71,34 @@ public class Scans {
      * 调用一次就可以了
      */
 	public Scans init(final ServletContext sc) {
-        // 获取classes文件夹的路径
-        String classesPath = sc.getRealPath("/WEB-INF/classes/");
-        if (classesPath != null) {
-            addResourceLocation(ResourceLocation.file(new File(classesPath)));
-        } else {
-            if (log.isWarnEnabled())
-                log.warn("/WEB-INF/classes/ NOT found?!");
-        }
+	    Stopwatch sw = Stopwatch.begin();
+        // 获取classes文件夹的路径, 优先级为125
+	    String classesPath = sc.getRealPath("/WEB-INF/classes");
+	    if (classesPath == null)
+	        addResourceLocation(new WebClassesResourceLocation(sc));
+	    else {
+	        ResourceLocation rc = ResourceLocation.file(new File(classesPath));
+	        if (rc instanceof FileSystemResourceLocation)
+	            ((FileSystemResourceLocation)rc).priority = 125;
+	        addResourceLocation(rc);
+	    }
 
-        // 获取lib文件夹中的全部jar
+        // 获取lib文件夹中的全部jar, 优先级是50
         Set<String> jars = sc.getResourcePaths("/WEB-INF/lib/");
         if (jars != null) {// 这个文件夹不一定存在,尤其是Maven的WebApp项目
-            String[] _jars = jars.toArray(new String[jars.size()]);
-            for (int i = 0; i < _jars.length; i++) {
-                _jars[i] = sc.getRealPath(_jars[i]);
-            }
-            if (!USE_CONCURRENCY || !addConcurrency(_jars)) {
-                log.info("fallback to one by one Scans.init");
-                for (String path : jars) {
-                    if (!path.toLowerCase().endsWith(".jar"))
-                        continue;
-                    addResourceLocation(ResourceLocation.jar(sc.getRealPath(path)));
+            for (String path : jars) {
+                if (!path.endsWith(".jar"))
+                    continue;
+                try {
+                    addResourceLocation(new JarResourceLocation(sc.getResource(path)));
+                }
+                catch (Exception e) {
+                    log.debug("parse jar fail >> " + e.getMessage());
                 }
             }
         }
-        else {
-            if (log.isWarnEnabled())
-                log.warn("/WEB-INF/lib/ NOT found?!");
-        }
-        if (log.isDebugEnabled())
-            log.debug("Locations for Scans:\n" + locations);
+        sw.stop();
+        printLocations(sw);
         return this;
     }
 
@@ -118,7 +113,7 @@ public class Scans {
                                     "folder or file like '%s' no found in %s",
                                     regex,
                                     Castors.me().castToString(paths));
-        return new ArrayList<NutResource>((new LinkedHashSet<NutResource>(list)));
+        return list;
     }
 
     public void registerLocation(Class<?> klass) {
@@ -160,7 +155,7 @@ public class Scans {
         try {
             String str = url.toString();
             if (str.endsWith(".jar")) {
-                return ResourceLocation.jar(str);
+                return new JarResourceLocation(url);
             } else if (str.contains("jar!")) {
             	if (str.startsWith("jar:file:")) {
             		str = str.substring("jar:file:".length());
@@ -169,6 +164,8 @@ public class Scans {
             } else if (str.startsWith("file:")) {
                 return ResourceLocation.file(new File(url.getFile()));
             } else {
+                if (str.startsWith("jar:file:"))
+                    return ResourceLocation.jar(str.substring(str.indexOf('!')));
                 if (log.isDebugEnabled())
                     log.debug("Unkown URL " + url);
                 //return ResourceLocation.file(new File(url.toURI()));
@@ -210,10 +207,10 @@ public class Scans {
         if (srcFile.exists()) {
             if (srcFile.isDirectory()) {
                 Disks.visitFile(srcFile,
-                                new ResourceFileVisitor(list, src),
+                                new ResourceFileVisitor(list, src, 250),
                                 new ResourceFileFilter(pattern));
             } else {
-                list.add(new FileResource(src, srcFile));
+                list.add(new FileResource(src, srcFile).setPriority(250));
             }
         }
         for (ResourceLocation location : locations.values()) {
@@ -245,17 +242,39 @@ public class Scans {
                     log.debug("Fail to run deep scan!", e);
             }
             // 依然是空?
-            if (list.isEmpty()) {
+            if (list.isEmpty() && !src.endsWith("/")) {
                 try {
-                    InputStream ins = getClass().getClassLoader().getResourceAsStream(src);
-                    if (ins != null) {
-                        list.add(new SimpleResource(src, src, ins));
+                    ClassLoader classLoader = getClass().getClassLoader();
+                    InputStream tmp = classLoader.getResourceAsStream(src + "/");
+                    if (tmp != null) {
+                        tmp.close();
+                    } else {
+                        InputStream ins = classLoader.getResourceAsStream(src);
+                        if (ins != null) {
+                            list.add(new SimpleResource(src, src, ins));
+                        }
                     }
                 }
                 catch (Exception e) {
                 }
             }
         }
+        List<NutResource> _list = new ArrayList<NutResource>();
+        OUT: for (NutResource nr : list) {
+            Iterator<NutResource> it = _list.iterator();
+            while (it.hasNext()) {
+                NutResource nr2 = it.next();
+                if (nr.equals(nr2)) {
+                    if (nr.priority > nr2.priority) {
+                        it.remove();
+                    } else {
+                        continue OUT;
+                    }
+                }
+            }
+            _list.add(nr);
+        }
+        list = _list;
         Collections.sort(list);
         if (log.isDebugEnabled())
             log.debugf("Found %s resource by src( %s ) , regex( %s )", list.size(), src, regex);
@@ -347,7 +366,7 @@ public class Scans {
         }
         return zis;
     }
-
+    
     public static final Scans me() {
         return me;
     }
@@ -425,29 +444,37 @@ public class Scans {
 
     public static class ResourceFileVisitor implements FileVisitor {
         public void visit(File f) {
-            list.add(new FileResource(base, f));
+            list.add(new FileResource(base, f).setPriority(priority));
         }
 
         String base;
         List<NutResource> list;
+        int priority;
 
-        public ResourceFileVisitor(List<NutResource> list, String base) {
+        public ResourceFileVisitor(List<NutResource> list, String base, int priority) {
             super();
             this.list = list;
             this.base = base;
+            this.priority = priority;
         }
     }
 
-    private Scans() {
+    protected Scans() {
         if (Lang.isAndroid) {
             if (log.isInfoEnabled())
                 log.info("Running in Android , so nothing I can scan , just disable myself");
             return;
         }
+        Stopwatch sw = Stopwatch.begin();
         // 当前文件夹
-        addResourceLocation(ResourceLocation.file(new File(".")));
+        try {
+            FileSystemResourceLocation rc = new FileSystemResourceLocation(new File(".").getAbsoluteFile().getCanonicalFile());
+            rc.priority = 200;
+            addResourceLocation(rc);
+        } catch (Throwable e) {
+        }
         // 推测一下nutz自身所在的位置
-        registerLocation(Nutz.class);
+        //registerLocation(Nutz.class);
         ClassLoader cloader = ClassTools.getClassLoader();
         for (String referPath : referPaths) {
             try {
@@ -455,13 +482,24 @@ public class Scans {
                 while (urls.hasMoreElements()) {
                     URL url = urls.nextElement();
                     String url_str = url.toString();
-                    if (!url_str.contains("jar!"))
+                    if (url_str.contains("jar!")) {
+                        String tmp = url_str.substring(0, url_str.lastIndexOf("jar!") + 3);
+                        if (tmp.startsWith("jar:"))
+                            tmp = tmp.substring("jar:".length());
+                        if (tmp.startsWith("file:/"))
+                            tmp = tmp.substring("file:/".length());
+                        if (tmp.contains("tomcat"))
+                            continue;
+                        if (tmp.contains("Java"))
+                            continue;
+                        //jars.add(tmp);
+                    }
+                    else
                         registerLocation(new URL(url_str.substring(0, url_str.length() - referPath.length())));
                 }
             }
             catch (IOException e) {}
         }
-
         // 把ClassPath也扫描一下
         try {
             String classpath = System.getProperties().getProperty("java.class.path");
@@ -474,47 +512,26 @@ public class Scans {
             }
         }
         catch (Throwable e) {
-            // TODO: handle exception
         }
-
-        if (log.isDebugEnabled())
-            log.debug("Locations for Scans:\n" + locations.values());
+        sw.stop();
+        printLocations(sw);
     }
     
-    public boolean addConcurrency(String[] _jars) {
-        ExecutorService es = Executors.newFixedThreadPool(8);
-        List<Future<ResourceLocation>> tmps = new ArrayList<Future<ResourceLocation>>(_jars.length);
-        for (int i = 0; i < _jars.length; i++) {
-            final String path = _jars[i];
-            if (path == null || !path.toLowerCase().endsWith(".jar"))
-                continue;
-            tmps.add(es.submit(new Callable<ResourceLocation>() {
-                public ResourceLocation call() {
-                    return ResourceLocation.jar(path);
-                }
-            }));
-        }
-        es.shutdown();
-        try {
-            es.awaitTermination(5, TimeUnit.MINUTES);
-            for (Future<ResourceLocation> f : tmps) {
-                try {
-                    if (f.get() != null)
-                        addResourceLocation(f.get());
-                }
-                catch (ExecutionException e) {
-                }
-            }
-            return true;
-        }
-        catch (InterruptedException e) {
-            return false;
-        }
-    }
     
     public void addResourceLocation(ResourceLocation loc) {
         locations.put(loc.id(), loc);
     }
     
-    public static boolean USE_CONCURRENCY = true;
+    protected void printLocations(Stopwatch sw) {
+        if (log.isDebugEnabled()) {
+            log.debugf("Locations count=%d time use %sms", locations.size(), sw.du());
+        }
+        if (log.isTraceEnabled()) {
+            StringBuilder sb = new StringBuilder();
+            for (ResourceLocation rc : locations.values()) {
+                sb.append('\t').append(rc.toString()).append("\r\n");
+            }
+            log.trace("Locations for Scans:\n" + sb);
+        }
+    }
 }

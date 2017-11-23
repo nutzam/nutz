@@ -26,6 +26,7 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.ActionFilter;
 import org.nutz.mvc.ActionInfo;
+import org.nutz.mvc.EntryDeterminer;
 import org.nutz.mvc.HttpAdaptor;
 import org.nutz.mvc.ModuleScanner;
 import org.nutz.mvc.Mvcs;
@@ -83,14 +84,17 @@ public abstract class Loadings {
         evalActionFilters(ai, Mirror.getAnnotationDeep(method, Filters.class));
         evalOk(ai, Mirror.getAnnotationDeep(method, Ok.class));
         evalFail(ai, Mirror.getAnnotationDeep(method, Fail.class));
+        evalHttpMethod(ai, method, Mirror.getAnnotationDeep(method, At.class));
         evalAt(ai, Mirror.getAnnotationDeep(method, At.class), method.getName());
         evalActionChainMaker(ai, Mirror.getAnnotationDeep(method, Chain.class));
-        evalHttpMethod(ai, method, Mirror.getAnnotationDeep(method, At.class));
         ai.setMethod(method);
         return ai;
     }
 
-    public static Set<Class<?>> scanModules(Ioc ioc, Class<?> mainModule) {
+    private static EntryDeterminer determiner = null;
+
+    public static Set<Class<?>> scanModules(Ioc ioc, Class<?> mainModule, EntryDeterminer determiner) {
+        Loadings.determiner = determiner;
         Modules ann = mainModule.getAnnotation(Modules.class);
         boolean scan = null == ann ? true : ann.scanPackage();
         // 准备扫描列表
@@ -156,7 +160,7 @@ public abstract class Loadings {
             catch (NullPointerException e) {
                 // Android上无法拿到getProtectionDomain,just pass
             }
-            Scans.me().registerLocation(type);
+            //Scans.me().registerLocation(type);
         }
 
         // 执行扫描
@@ -217,8 +221,9 @@ public abstract class Loadings {
             ai.getHttpMethods().add("PUT");
         if (Mirror.getAnnotationDeep(method, DELETE.class) != null)
             ai.getHttpMethods().add("DELETE");
-        for (String m : at.methods()) {
-            ai.getHttpMethods().add(m.toUpperCase());
+        if (at != null) {
+            for (String m : at.methods())
+                ai.getHttpMethods().add(m.toUpperCase());
         }
     }
 
@@ -240,6 +245,9 @@ public abstract class Loadings {
                 ai.setPathKey(at.key());
             if (at.top())
                 ai.setPathTop(true);
+        } else if (!Lang.isEmpty(ai.getHttpMethods())) {
+            // 没有@At但有GET POST等
+            ai.setPaths(Lang.array("/" + def.toLowerCase()));
         }
     }
 
@@ -334,7 +342,7 @@ public abstract class Loadings {
             || Modifier.isInterface(classModify))
             return false;
         for (Method method : classZ.getMethods())
-            if (Mirror.getAnnotationDeep(method, At.class) != null)
+            if (determiner.isEntry(classZ, method))
                 return true;
         return false;
     }

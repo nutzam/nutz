@@ -1,0 +1,74 @@
+#title: 微信Api的集成
+#index:0,1
+#author:wendal(wendal1985@gmail.com)
+--------------------------------------------------------------------------------------------------------
+如何集成?
+
+    需要2样东西: @IocBy配置和一个properties文件
+    
+    IocBy配置, 当然就是MainModule类了
+    {{{<JAVA>
+    @IocBy(args={"*js", "ioc/",
+                 "*anno", "net.wendal.nutzbook",
+                 "*weixin", // 仅需要添加这一行,引用的是org.nutz.plugins.weixin.WeixinIocLoader
+                 "*jedis",
+                 "*async",
+                 "*tx"})
+    }}}
+    
+    weixin.properties的参数值,在微信公众号内均可以找到. 请确保这个properties文件被conf扫描到.
+    
+    {{{<Properties>
+    weixin.token=1234567890
+    weixin.appid=wx10927e35a365fe1c
+    weixin.appsecret=c29accd1784e636d6478eac9b6b3aYYY
+    #weixin.encodingAesKey=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    #weixin.openid=XXX
+    #weixin.redis.key=wxmp:access_token
+    #weixin.atstore=jedis
+    }}}
+    
+    其中:
+    * token是被动响应所需要的自定义值
+    * appid是微信为你的公众号分配的唯一的不可变的id
+    * c29accd1784e636d6478eac9b6b3aYYY也是微信生成的
+    * encodingAesKey是加密key, 测试号是不存在的,正式注册的微信公众号才有
+    * openid是公众号的id
+    * atstore是AccessToken的存储媒介,默认是memory,即内存存储.
+    
+    示例调用
+    
+    {{{<JAVA>
+    @IocBean
+    public class MyWeixinService {
+        private static final Log log = Logs.get();
+        @Inject protect WxApi2 wxApi2;
+        
+        public void getMenu() {
+            WxResp resp = wxApi2.menu_get();
+            if (resp.ok()) {
+                if (log.isDebugEnable())
+                    log.debugf("menu = %s",Json.toJson(resp.get("menu")));
+            } else {
+                log.info("something happen : " + Json.toJson(resp));
+            }
+        }
+    
+    }
+    }}}
+    
+-----------------------------------------------------------------------------
+AccessToken的存储
+
+	微信的AccessToken的默认有效期是2小时,需要定期刷新,nutzwx内置了WxAccessTokenStore的实现类.
+	
+	默认情况下, 使用的是memory模式,实现类是MemoryAccessTokenStore,保存在内存,每次重启就会丢失.
+	
+	通过配置文件中的weixin.atstore进行设置, 可选模式有:
+	* memory 内存模式
+	* dao 通过NutDao保存到数据库
+	* jedis 通过nutz-integration-jedis提供的JedisAgent类存储到redis单机或集群
+	* jedisPool 通过JedisPool存储到redis单机
+	
+	其中,jedis/jedisPool模式下,存储到redis的键名称,通过weixin.redis.key设置,一般不需要设置,除非需要多个微信公众号一起使用
+	

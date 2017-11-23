@@ -20,7 +20,8 @@ var ioc = {
 		"sqlite" : "org.nutz.dao.impl.jdbc.sqlite.SQLiteJdbcExpert",
 		".+derby.+" : "org.nutz.dao.impl.jdbc.derby.DerbyJdbcExpert",
 		"gbase.*" : "org.nutz.dao.impl.jdbc.gbase.GBaseJdbcExpert",
-		"sybase.*" : "org.nutz.dao.impl.jdbc.sybase.SybaseIQJdbcExpert"
+		"sybase.*" : "org.nutz.dao.impl.jdbc.sybase.SybaseIQJdbcExpert",
+		"dm dbms.*" : "org.nutz.dao.impl.jdbc.dm.DmJdbcExpert"
 	// ~ 映射结束
 	},
 

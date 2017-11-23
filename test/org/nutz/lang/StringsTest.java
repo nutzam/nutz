@@ -15,6 +15,24 @@ import org.junit.Test;
 public class StringsTest {
 
     @Test
+    public void test_replaceBy() {
+        assertEquals("xB-", Strings.replaceBy("ABC", Lang.map("{A:'x',C:'-'}")));
+        assertEquals("AB-x", Strings.replaceBy("ABCA", Lang.map("{A:'x',C:'-',AB:null}")));
+        assertEquals("AB-AD-x",
+                     Strings.replaceBy("ABCADCA", Lang.map("{A:'x',C:'-',D:'$','A[BD]':null}")));
+    }
+
+    @Test
+    public void test_line_2_hump() {
+        assertEquals(Strings.line2Hump("f_parent_no_leader"), "FParentNoLeader");
+    }
+
+    @Test
+    public void test_hump_2_line() {
+        assertEquals(Strings.hump2Line("fParentNoLeader"), "f_parent_no_leader");
+    }
+
+    @Test
     public void test_split_with_escape_quote() {
         String[] list = Strings.split("a \"nm:\\\"A\\\"\"", false, ' ');
         assertEquals(2, list.length);
@@ -429,8 +447,8 @@ public class StringsTest {
     public void test_escape_html() {
         assertEquals("&lt;/article&gt;Oops &lt;script&gt;alert(&quot;hello world&quot;);&lt;/script&gt;",
                      Strings.escapeHtml("</article>Oops <script>alert(\"hello world\");</script>"));
-        assertEquals("alert(&#x27;hello world&#x27;);",
-                     Strings.escapeHtml("alert('hello world');"));
+        assertEquals("alert('hello world');", Strings.escapeHtml("alert('hello world');"));
+        assertEquals("&lt;b&gt;&amp;XYZ&lt;/b&gt;", Strings.escapeHtml("<b>&amp;XYZ</b>"));
     }
 
     @Test
