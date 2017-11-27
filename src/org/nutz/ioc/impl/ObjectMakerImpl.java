@@ -13,7 +13,6 @@ import org.nutz.ioc.ValueProxy;
 import org.nutz.ioc.meta.IocEventSet;
 import org.nutz.ioc.meta.IocField;
 import org.nutz.ioc.meta.IocObject;
-import org.nutz.ioc.trigger.MethodEventTrigger;
 import org.nutz.ioc.weaver.DefaultWeaver;
 import org.nutz.ioc.weaver.FieldInjector;
 import org.nutz.lang.Lang;
@@ -22,6 +21,8 @@ import org.nutz.lang.Strings;
 import org.nutz.lang.born.Borning;
 import org.nutz.lang.born.MethodBorning;
 import org.nutz.lang.born.MethodCastingBorning;
+import org.nutz.lang.reflect.FastClassFactory;
+import org.nutz.lang.reflect.FastMethod;
 
 /**
  * 在这里，需要考虑 AOP
@@ -155,8 +156,7 @@ public class ObjectMakerImpl implements ObjectMaker {
     }
 
     @SuppressWarnings({"unchecked"})
-    private static IocEventTrigger<Object> createTrigger(Mirror<?> mirror,
-                                                         String str) {
+    private static IocEventTrigger<Object> createTrigger(Mirror<?> mirror, final String str) {
         if (Strings.isBlank(str))
             return null;
         if (str.contains(".")) {
@@ -168,12 +168,20 @@ public class ObjectMakerImpl implements ObjectMaker {
                 throw Lang.wrapThrow(e);
             }
         }
-        try {
-            return new MethodEventTrigger(mirror.findMethod(str));
-        }
-        catch (NoSuchMethodException e) {
-            throw Lang.wrapThrow(e);
-        }
+        return new IocEventTrigger<Object>() {
+        	protected FastMethod fm;
+			public void trigger(Object obj) {
+				try {
+					if (fm == null) {
+						Method method = Mirror.me(obj).findMethod(str);
+						fm = FastClassFactory.get(method);
+					}
+					fm.invoke(obj);
+				} catch (Exception e) {
+					throw Lang.wrapThrow(e);
+				}
+			}
+        };
     }
 
 }
