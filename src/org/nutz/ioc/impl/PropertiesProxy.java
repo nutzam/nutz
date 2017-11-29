@@ -17,8 +17,10 @@ import java.util.Properties;
 import org.nutz.castor.Castors;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
+import org.nutz.lang.inject.Injecting;
 import org.nutz.lang.util.Disks;
 import org.nutz.lang.util.FileVisitor;
 import org.nutz.lang.util.MultiLineProperties;
@@ -363,9 +365,23 @@ public class PropertiesProxy extends MultiLineProperties {
         return super.get(key);
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public <T> T make(Class<T> klass, String prefix) {
-    	Map map = this;
-    	return (T) Mapl.maplistToObj(Lang.filter(map, prefix, null, null, null), klass);
-    }
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public <T> T makeDeep(Class<T> klass, String prefix) {
+		Map map = this;
+		return (T) Mapl.maplistToObj(Lang.filter(map, prefix, null, null, null), klass);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public <T> T make(Class<T> klass, String prefix) {
+		Map map = this;
+		Mirror<T> mirror = Mirror.me(klass);
+		T t = mirror.born();
+		map = Lang.filter(map, prefix, null, null, null);
+		for (Entry<String, Object> en : ((Map<String, Object>) map).entrySet()) {
+			String name = en.getKey();
+			Injecting setter = mirror.getInjecting(name);
+			setter.inject(t, en.getValue());
+		}
+		return t;
+	}
 }
