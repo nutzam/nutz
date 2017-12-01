@@ -132,7 +132,7 @@ public class PropertiesProxy extends MultiLineProperties {
                         Streams.safeClose(bf);
                     }
                 }
-                putAll(p);
+                putAllTrim(p);
             }
         }
         catch (IOException e) {

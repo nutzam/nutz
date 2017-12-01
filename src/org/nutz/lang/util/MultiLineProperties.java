@@ -23,8 +23,6 @@ import org.nutz.lang.Strings;
  */
 public class MultiLineProperties implements Map<String, String> {
     
-
-
     public MultiLineProperties(Reader reader) throws IOException {
         this();
         load(reader);
@@ -89,7 +87,7 @@ public class MultiLineProperties implements Map<String, String> {
                     value = Strings.unicodeDecode(value);
                 }
                 value = value.replace("\\:", ":").replace("\\=", "=");
-                maps.put(Strings.trim(name), value);
+                putTrim(name, value);
             } else if (c == ':') {
                 String name = s.substring(0, pos);
                 StringBuffer sb = new StringBuffer();
@@ -100,13 +98,17 @@ public class MultiLineProperties implements Map<String, String> {
                         break;
                     sb.append("\r\n" + ss);
                 }
-                maps.put(Strings.trim(name), sb.toString());
+                putTrim(name, sb.toString());
                 if (null == ss)
                     return;
             } else {
                 maps.put(Strings.trim(s), null);
             }
         }
+    }
+    
+    public void putTrim(String key, String value) {
+    	maps.put(Strings.trim(key), Strings.trim(value));
     }
 
     public synchronized void clear() {
@@ -151,9 +153,17 @@ public class MultiLineProperties implements Map<String, String> {
         return maps.put(key, value);
     }
 
+
     @SuppressWarnings({"unchecked", "rawtypes"})
     public synchronized void putAll(Map t) {
         maps.putAll(t);
+    }
+
+    @SuppressWarnings({"rawtypes"})
+    public synchronized void putAllTrim(Map t) {
+        for (Object key : t.keySet()) {
+        	putTrim(Strings.sNull(key), Strings.sNull(t.get(key)));
+        }
     }
 
     public synchronized String remove(Object key) {
