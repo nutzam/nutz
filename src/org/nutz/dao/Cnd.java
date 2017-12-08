@@ -1,5 +1,6 @@
 package org.nutz.dao;
 
+import java.io.*;
 import java.lang.reflect.Array;
 import java.util.Collection;
 
@@ -524,5 +525,29 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      */
     public static Nesting nst(Dao dao){
     	return new SimpleNesting(dao);
+    }
+
+    /**
+     * 克隆当前Cnd实例
+     * @return 一模一样的兄弟
+     */
+    public Cnd clone() {
+        Cnd cnd = null;
+        ByteArrayOutputStream bos = null;
+        ObjectOutputStream out = null;
+        try {
+            bos = new ByteArrayOutputStream();
+            out = new ObjectOutputStream(bos);
+            out.writeObject(this);
+            ByteArrayInputStream bais = new ByteArrayInputStream(bos.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            cnd = (Cnd) ois.readObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return cnd;
     }
 }
