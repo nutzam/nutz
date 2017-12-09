@@ -19,20 +19,21 @@ import org.nutz.dao.util.cri.NestExps;
 import org.nutz.dao.util.cri.SimpleCriteria;
 import org.nutz.dao.util.cri.SqlExpression;
 import org.nutz.dao.util.cri.SqlExpressionGroup;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.segment.CharSegment;
 import org.nutz.lang.util.Callback2;
 
 /**
  * 是 Condition 的一个实现，这个类给你比较方便的方法来构建 Condition 接口的实例。
- * 
+ *
  * <h4>在 Dao 接口中使用</h4><br>
- * 
+ *
  * 比如一个通常的查询:
  * <p>
  * List<Pet> pets = dao.query(Pet.class,
  * Cnd.where("name","LIKE","B%").asc("name"), null);
- * 
+ *
  * <h4>链式赋值示例</h4><br>
  * Cnd.where("id", ">", 34).and("name","LIKE","T%").asc("name"); <br>
  * 相当于<br>
@@ -41,18 +42,18 @@ import org.nutz.lang.util.Callback2;
  * Cnd.orderBy().desc("id"); <br>
  * 相当于<br>
  * ORDER BY id DESC
- * 
+ *
  * <p/> <b>带括号的条件语句<b/> where (name="wendal" or age<18) and location != "地球" <p/>
  * <code>Cnd.where(Cnd.exps("name", "=", "wendal").or("age", "<", 18)).and("location", "!=", "地球")</code>
- * 
+ *
  * <p/><b>静态条件,直接拼入sql,不做任何转义. Oracle的日期传Date对象,而非用to_date等数据库方法</b><p/>
  * <code>Cnd.where(new Static("ct < to_date('2015-06-26')")).and(...........) </code>
  * <p/>
- * 
+ *
  * <p/><b>between用法</b><p/>
  * <code>Cnd.where("age", "between", new Object[]{19,29}).and(...........) </code>
  * <p/>
- * 
+ *
  * <h4 style=color:red>你还需要知道的是:</h4><br>
  * <ul>
  * <li>你设置的字段名，是 java 的字段名 -- 如果 Entity 里有，那么会被转换成数据库字段名
@@ -60,9 +61,9 @@ import org.nutz.lang.util.Callback2;
  * <li>你的值，如果是字符串，或者其他类字符串对象（某种 CharSequence），那么在转换成 SQL 时，会正确被单引号包裹
  * <li>你的值如果是不可理解的自定义对象，会被转化成字符串处理
  * </ul>
- * 
+ *
  * @author zozoh(zozohtnt@gmail.com)
- * 
+ * @author 蛋蛋 [TopCoderMyDream@gmail.com]
  * @see org.nutz.dao.Condition
  */
 public class Cnd implements OrderBy, Criteria, GroupBy {
@@ -77,7 +78,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      */
     public static Condition format(String format, Object... args) {
         return Strings.isBlank(format) ? null : new SimpleCondition(format,
-                                                                    args);
+                args);
     }
 
     /***
@@ -98,7 +99,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      */
     public static Condition wrap(String sql, Object value) {
         return Strings.isBlank(sql) ? null
-                                   : new SimpleCondition(new CharSegment(sql).setBy(value));
+                : new SimpleCondition(new CharSegment(sql).setBy(value));
     }
 
     /**
@@ -109,9 +110,9 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      * @return 条件表达式
      */
     public static SqlExpression exp(String name, String op, Object value) {
-    	if(value!=null && value instanceof Nesting){
-    		return NestExps.create(name, op, (Nesting) value);
-    	}
+        if(value!=null && value instanceof Nesting){
+            return NestExps.create(name, op, (Nesting) value);
+        }
         return Exps.create(name, op, value);
     }
 
@@ -228,7 +229,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         cri.asc(name);
         return this;
     }
-    
+
     /**
      * 按Java属性/字段属性进行降序. <b>不进行SQL特殊字符抹除<b/> cnd.desc("age")
      * @param name Java属性/字段属性
@@ -452,9 +453,9 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         cri.setPager(pager);
         return this;
     }
-    
+
     protected static FieldMatcher dftFromFieldMatcher = new FieldMatcher().setIgnoreNull(true).setIgnoreZero(true);
-    
+
     /**
      * 用默认规则(忽略零值和空值)生成Cnd实例
      * @param dao Dao实例,不能为null
@@ -464,13 +465,13 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     public static Cnd from(Dao dao, Object obj) {
         return from(dao, obj, dftFromFieldMatcher);
     }
-    
+
     /**
      * 根据一个对象生成Cnd条件, FieldMatcher详细控制.<p/>
      * <code>assertEquals(" WHERE name='wendal' AND age=0", Cnd.from(dao, pet, FieldMatcher.make("age|name", null, true).setIgnoreDate(true)).toString());</code>
      * @param dao Dao实例
      * @param obj 基对象,不可以是Class,字符串,数值和Boolean
-     * @param matcher 过滤字段属性, 可配置哪些字段可用/不可用/是否忽略空值/是否忽略0值/是否忽略java.util.Date类及其子类的对象/是否忽略@Id所标注的主键属性/是否忽略 \@Name 所标注的主键属性/是否忽略 \@Pk 所引用的复合主键 
+     * @param matcher 过滤字段属性, 可配置哪些字段可用/不可用/是否忽略空值/是否忽略0值/是否忽略java.util.Date类及其子类的对象/是否忽略@Id所标注的主键属性/是否忽略 \@Name 所标注的主键属性/是否忽略 \@Pk 所引用的复合主键
      * @return Cnd条件
      */
     public static Cnd from(Dao dao, Object obj, FieldMatcher matcher) {
@@ -484,7 +485,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
             return Cnd.where(exps);
         return null;
     }
-    
+
     /**
      * 若value为null/空白字符串/空集合/空数组,则本条件不添加.
      * @see Cnd#and(String, String, Object)
@@ -492,7 +493,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     public Cnd andEX(String name, String op, Object value) {
         return and(Cnd.expEX(name, op, value));
     }
-    
+
     /**
      * 若value为null/空白字符串/空集合/空数组,则本条件不添加.
      * @see Cnd#or(String, String, Object)
@@ -500,7 +501,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     public Cnd orEX(String name, String op, Object value) {
         return or(Cnd.expEX(name, op, value));
     }
-    
+
     public static SqlExpression expEX(String name, String op, Object value) {
         if (_ex(value))
             return null;
@@ -514,15 +515,23 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
                 || (value instanceof Collection && ((Collection)value).isEmpty())
                 || (value.getClass().isArray() && Array.getLength(value) == 0);
     }
-    
+
     public GroupBy getGroupBy() {
         return cri.getGroupBy();
     }
-    
+
     /**
      * 构造一个可嵌套条件，需要dao支持才能映射类与表和属性与列
      */
     public static Nesting nst(Dao dao){
-    	return new SimpleNesting(dao);
+        return new SimpleNesting(dao);
+    }
+
+    /**
+     * 克隆当前Cnd实例
+     * @return 一模一样的兄弟
+     */
+    public Cnd clone() {
+        return Lang.fromBytes(Lang.toBytes(this),Cnd.class);
     }
 }
