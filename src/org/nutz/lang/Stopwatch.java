@@ -145,8 +145,8 @@ public class Stopwatch {
         String prefix = String.format("Total: %d%s : [%s]=>[%s]",
                                       this.getDuration(),
                                       (nano ? "ns" : "ms"),
-                                      Times.sDTms(new Date(from)),
-                                      Times.sDTms(new Date(to)));
+                                      Times.sDTms2(new Date(from)),
+                                      Times.sDTms2(new Date(to)));
         if (tags == null)
             return prefix;
         StringBuilder sb = new StringBuilder(prefix).append("\r\n");
