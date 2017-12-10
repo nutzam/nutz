@@ -37,6 +37,23 @@ import org.nutz.mvc.adaptor.injector.ObjectNaviNode;
 public class MaplTest {
 
     /**
+     * Issue #1355
+     */
+    @Test
+    public void test_issue_1355() {
+        Object dest;
+
+//        dest = Json.fromJson("{a: ['x',['A','B']]}");
+//        assertEquals("x", Mapl.cell(dest, "'a[0]"));
+        
+        dest = Json.fromJson("{a: [[],['A','B']]}");
+        assertEquals("A", Mapl.cell(dest, "'a[1][0]"));
+
+        dest = Json.fromJson("{'a.b': {c:'ABC'}}");
+        assertEquals("ABC", Mapl.cell(dest, "'a.b'.c"));
+    }
+
+    /**
      * Issue #978
      */
     @Test
@@ -429,14 +446,15 @@ public class MaplTest {
         req.put("s2.s2[0]", "test");
         System.out.println(Json.toJson(req.fetchNewobj()));
     }
-    
+
     @Test
     public void test_complex_prefix() throws Exception {
         String params = "draw=1&columns%5B0%5D%5Bdata%5D=userId&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=true&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=loginname&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=nickname&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=true&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&order%5B0%5D%5Bcolumn%5D=0&order%5B0%5D%5Bdir%5D=asc&start=0&length=10&search%5Bvalue%5D=&search%5Bregex%5D=false";
-        //String params = "columns%5B0%5D%5Bdata%5D=userId&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true";
+        // String params =
+        // "columns%5B0%5D%5Bdata%5D=userId&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true";
         NutMap map = new NutMap();
         for (String kv : params.split("&")) {
-            //System.out.println(kv);
+            // System.out.println(kv);
             String[] tmp = kv.split("=");
             String key = URLDecoder.decode(tmp[0], "UTF-8");
             String value = URLDecoder.decode(tmp.length > 1 ? tmp[1] : "", "UTF-8");
