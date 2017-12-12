@@ -12,8 +12,6 @@ import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.json.Json;
 import org.nutz.lang.Lang;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
 
 /**
  * 从一个 Map 对象中读取配置信息，支持 Parent
@@ -22,8 +20,6 @@ import org.nutz.log.Logs;
  * @author wendal(wendal1985@gmail.com)
  */
 public class MapLoader implements IocLoader {
-    
-    private static final Log log = Logs.get();
 
     protected Map<String, Map<String, Object>> map;
 
@@ -63,8 +59,6 @@ public class MapLoader implements IocLoader {
         Map<String, Object> m = getMap(name);
         if (null == m)
             throw new ObjectLoadException("Object '" + name + "' without define!");
-        if(log.isDebugEnabled())
-            log.debug("Loading define for name="+name);
         // If has parent
         Object p = m.get("parent");
         if (null != p) {
