@@ -46,6 +46,30 @@ public abstract class Disks {
     }
 
     /**
+     * 一个 Vistor 模式的目录深层遍历, 包含目录也会返回
+     * 
+     * @param f
+     *            要遍历的目录或者文件，如果是目录，深层遍历，否则，只访问一次文件
+     * @param fv
+     *            对文件要进行的操作
+     * @param filter
+     *            遍历目录时，哪些文件应该被忽略
+     * @return 遍历的文件（目录）个数
+     */
+    public static int visitFileWithDir(File f, FileVisitor fv, FileFilter filter) {
+        int re = 0;
+        fv.visit(f);
+        re++;
+        if (f.isDirectory()) {
+            File[] fs = null == filter ? f.listFiles() : f.listFiles(filter);
+            if (fs != null)
+                for (File theFile : fs)
+                    re += visitFileWithDir(theFile, fv, filter);
+        }
+        return re;
+    }
+
+    /**
      * 将两个文件对象比较，得出相对路径
      * 
      * @param base
@@ -303,12 +327,14 @@ public abstract class Disks {
         if (null == d)
             return;
         visitFile(d, new FileVisitor() {
+            @Override
             public void visit(File f) {
                 if (f.isDirectory())
                     return;
                 fv.visit(f);
             }
         }, new FileFilter() {
+            @Override
             public boolean accept(File f) {
                 if (f.isDirectory())
                     return deep;
