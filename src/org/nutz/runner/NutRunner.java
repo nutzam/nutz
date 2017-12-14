@@ -48,6 +48,11 @@ public abstract class NutRunner implements Runnable {
     protected int sleepAfterError;
 
     /**
+     * 后台线程
+     */
+    protected boolean daemonThread;
+
+    /**
      * 启动于
      */
     protected Date upAt;
@@ -64,10 +69,15 @@ public abstract class NutRunner implements Runnable {
      *            本启动器的名称
      */
     public NutRunner(String rname) {
+        this(rname, false);
+    }
+
+    public NutRunner(String rname, boolean isDaemon) {
         this.rnm = rname;
         this.count = 0;
         this.sleepAfterError = 30;
         this.lock = new NutLock();
+        this.daemonThread = isDaemon;
     }
 
     /**
@@ -85,11 +95,17 @@ public abstract class NutRunner implements Runnable {
     /**
      * 主逻辑,用户代码不应该覆盖.
      */
+    @Override
     public void run() {
         if (log == null) {
             log = Logs.get().setTag(rnm);
         }
-        myThread = Thread.currentThread();
+        if (daemonThread) {
+            myThread = new Thread(this);
+            myThread.setDaemon(true);
+        } else {
+            myThread = Thread.currentThread();
+        }
 
         beforeStart(this);
         doIt();
@@ -185,6 +201,7 @@ public abstract class NutRunner implements Runnable {
     /**
      * 返回格式为 [名称:总启动次数] 最后启动时间:最后休眠时间 - 休眠间隔
      */
+    @Override
     public String toString() {
         return String.format("[%s:%d] %s/%s - %d",
                              rnm,
@@ -210,6 +227,15 @@ public abstract class NutRunner implements Runnable {
      */
     public boolean isRunning() {
         return null == downAt;
+    }
+
+    /**
+     * 是否为后台进程
+     * 
+     * @return true
+     */
+    public boolean isDaemon() {
+        return daemonThread;
     }
 
     /**
