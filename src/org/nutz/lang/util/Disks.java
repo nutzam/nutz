@@ -348,6 +348,44 @@ public abstract class Disks {
     }
 
     /**
+     * 遍历文件夹下以特定后缀结尾的文件与文件夹 不包括.开头的文件
+     * 
+     * @param path
+     *            根路径
+     * @param regex
+     *            文件名的正则表达式
+     * @param deep
+     *            是否深层遍历
+     * @param fv
+     *            你所提供的访问器,当然就是你自己的逻辑咯
+     */
+    public static final void visitFileWithDir(String path,
+                                              final String regex,
+                                              final boolean deep,
+                                              final FileVisitor fv) {
+        File d = Files.findFile(path);
+        if (null == d)
+            return;
+        visitFileWithDir(d, new FileVisitor() {
+            @Override
+            public void visit(File f) {
+                fv.visit(f);
+            }
+        }, new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                if (f.isDirectory())
+                    return deep;
+                if (f.isHidden())
+                    return false;
+                if (Strings.isEmpty(regex))
+                    return true;
+                return f.getName().matches(regex);
+            }
+        });
+    }
+
+    /**
      * 将多个路径拼合成一个路径，他会自动去除重复的 "/"
      * 
      * <pre>
