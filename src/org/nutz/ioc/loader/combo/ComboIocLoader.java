@@ -38,6 +38,8 @@ public class ComboIocLoader extends AbstractLifeCycle implements IocLoader {
     private static final Log log = Logs.get();
 
     private List<IocLoader> iocLoaders = new ArrayList<IocLoader>();
+    
+    protected Map<String, IocObject> iobjs = new HashMap<String, IocObject>();
 
     /**
      * 这个构造方法需要一组特殊的参数
@@ -143,29 +145,36 @@ public class ComboIocLoader extends AbstractLifeCycle implements IocLoader {
     }
 
     public IocObject load(IocLoading loading, String name) throws ObjectLoadException {
-
-        for (IocLoader iocLoader : iocLoaders)
-            if (iocLoader.has(name)) {
-                IocObject iocObject = iocLoader.load(loading, name);
-                if (log.isDebugEnabled()) {
-                    // TODO 弄成更好看的格式,方便debug
-                    String printName;
-                    if (iocLoader instanceof AnnotationIocLoader) {
-                        String packages = Arrays.toString(((AnnotationIocLoader)iocLoader).getPackages());
-                        printName = "AnnotationIocLoader(packages="+packages+")";
-                    } else if (JsonLoader.class.equals(iocLoader.getClass())
-                            && ((JsonLoader)iocLoader).getPaths() != null) {
-                        String paths = Arrays.toString(((JsonLoader)iocLoader).getPaths());
-                        printName = "JsonLoader(paths="+paths+")";
-                    } else {
-                        printName = iocLoader.getClass().getSimpleName() + "@" + iocLoader.hashCode();
-                    }
-                    log.debugf("Found IocObject(%s) in %s",
-                               name, printName);
-                }
+        IocObject iocObject = iobjs.get(name);
+        if (iocObject != null)
+            return iocObject;
+        for (IocLoader loader : iocLoaders)
+            if (loader.has(name)) {
+                iocObject = loader.load(loading, name);
+                printFoundIocBean(name, loader);
+                iobjs.put(name, iocObject);
                 return iocObject;
             }
         throw new ObjectLoadException("Object '" + name + "' without define!");
+    }
+    
+    public Set<String> getNamesByTypes(IocLoading loading, Class<?> klass) {
+       Set<String> names = new HashSet<String>();
+       for (IocLoader loader : iocLoaders) {
+           for (String name : loader.getName()) {
+               if (names.contains(name))
+                   continue;
+               try {
+                   IocObject iobj = loader.load(loading, name);
+                   if (iobj.getType() != null && klass.isAssignableFrom(iobj.getType()))
+                       names.add(name);
+               }
+               catch (ObjectLoadException e) {
+                   // nop
+               }
+           }
+       }
+       return names;
     }
 
     public void addLoader(IocLoader loader) {
@@ -173,6 +182,22 @@ public class ComboIocLoader extends AbstractLifeCycle implements IocLoader {
             if (iocLoaders.contains(loader))
                 return;
             iocLoaders.add(loader);
+        }
+    }
+    
+    protected void printFoundIocBean(String name, IocLoader loader) {
+        if (log.isDebugEnabled()) {
+            String printName;
+            if (loader instanceof AnnotationIocLoader) {
+                String packages = Arrays.toString(((AnnotationIocLoader)loader).getPackages());
+                printName = "AnnotationIocLoader(packages="+packages+")";
+            } else if (loader instanceof JsonLoader && ((JsonLoader)loader).getPaths() != null) {
+                String paths = Arrays.toString(((JsonLoader)loader).getPaths());
+                printName = "JsonLoader(paths="+paths+")";
+            } else {
+                printName = loader.getClass().getSimpleName() + "@" + loader.hashCode();
+            }
+            log.debugf("Found IocObject(%s) in %s", name, printName);
         }
     }
 
@@ -209,5 +234,9 @@ public class ComboIocLoader extends AbstractLifeCycle implements IocLoader {
             if (loader instanceof LifeCycle)
                 ((LifeCycle) loader).depose();
         }
+    }
+    
+    public void clear() {
+        iobjs.clear();
     }
 }

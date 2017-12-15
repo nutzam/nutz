@@ -124,7 +124,7 @@ public class NutIoc implements Ioc2 {
     /**
      * @return 一个新创建的 IocLoading 对象
      */
-    private IocLoading createLoading() {
+    protected IocLoading createLoading() {
         if (null == supportedTypes) {
             synchronized (this) {
                 if (null == supportedTypes) {
@@ -269,6 +269,7 @@ public class NutIoc implements Ioc2 {
             log.warn("something happen when depose IocLoader", e);
         }
         context.depose();
+        loader.clear();
         deposed = true;
         if (log.isInfoEnabled())
             log.infof("%s@%s is deposed. startup date [%s]",
@@ -348,17 +349,7 @@ public class NutIoc implements Ioc2 {
     }
 
     public String[] getNamesByType(Class<?> klass, IocContext context) {
-        List<String> names = new ArrayList<String>();
-        for (String name : getNames()) {
-            try {
-                IocObject iobj = loader.load(createLoading(), name);
-                if (iobj != null
-                    && iobj.getType() != null
-                    && klass.isAssignableFrom(iobj.getType()))
-                    names.add(name);
-            }
-            catch (Exception e) {}
-        }
+        List<String> names = new ArrayList<String>(loader.getNamesByTypes(createLoading(), klass));
         IocContext cntx;
         if (null == context || context == this.context)
             cntx = this.context;
