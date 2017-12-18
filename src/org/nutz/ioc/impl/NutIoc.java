@@ -2,6 +2,8 @@ package org.nutz.ioc.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -122,6 +124,15 @@ public class NutIoc implements Ioc2 {
         }
         for (String beanName : this.loader.getNamesByTypes(createLoading(), IocEventListener.class)) {
             listeners.add(get(IocEventListener.class, beanName));
+        }
+        if (listeners.size() > 0) {
+            Collections.sort(listeners, new Comparator<IocEventListener>() {
+                public int compare(IocEventListener prev, IocEventListener next) {
+                    if (prev.getOrder() == next.getOrder())
+                        return 0;
+                    return prev.getOrder() > next.getOrder() ? -1 : 1;
+                }
+            });
         }
         log.info("... NutIoc init complete");
     }
