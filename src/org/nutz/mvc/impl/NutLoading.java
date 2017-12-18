@@ -347,15 +347,14 @@ public class NutLoading implements Loading {
                     makers.add(Mirror.me(vms.value()[i]).born());
                 }
             }
-        } else {
-            if (ioc != null) {
-                String[] names = ioc.getNames();
-                Arrays.sort(names);
-                for (String name : ioc.getNames()) {
-                    if (name != null && name.startsWith(ViewMaker.IOCNAME)) {
-                        log.debug("add ViewMaker from Ioc by name=" + name);
-                        makers.add(ioc.get(ViewMaker.class, name));
-                    }
+        }
+        if (ioc != null) {
+            String[] names = ioc.getNames();
+            Arrays.sort(names);
+            for (String name : ioc.getNames()) {
+                if (name != null && name.startsWith(ViewMaker.IOCNAME)) {
+                    log.debug("add ViewMaker from Ioc by name=" + name);
+                    makers.add(ioc.get(ViewMaker.class, name));
                 }
             }
         }
