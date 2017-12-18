@@ -1,5 +1,8 @@
 package org.nutz.ioc.weaver;
 
+import java.util.List;
+
+import org.nutz.ioc.IocEventListener;
 import org.nutz.ioc.IocEventTrigger;
 import org.nutz.ioc.IocMaking;
 import org.nutz.ioc.ObjectWeaver;
@@ -33,6 +36,10 @@ public class DefaultWeaver implements ObjectWeaver {
      * 字段注入器列表
      */
     private FieldInjector[] fields;
+    
+    protected List<IocEventListener> listeners;
+    
+    protected String beanName;
 
     public void setCreate(IocEventTrigger<Object> create) {
         this.create = create;
@@ -49,6 +56,10 @@ public class DefaultWeaver implements ObjectWeaver {
     public void setFields(FieldInjector[] fields) {
         this.fields = fields;
     }
+    
+    public void setListeners(List<IocEventListener> listeners) {
+        this.listeners = listeners;
+    }
 
     public <T> T fill(IocMaking ing, T obj) {
         // 设置字段的值
@@ -64,12 +75,31 @@ public class DefaultWeaver implements ObjectWeaver {
             args[i] = this.args[i].get(ing);
 
         // 创建实例
-        return borning.born(args);
+        Object obj = borning.born(args);
+        if (shallTrigger(obj)) {
+            for (IocEventListener listener : listeners) {
+                obj = listener.afterBorn(obj, beanName);
+            }
+        }
+        return obj;
     }
 
     public Object onCreate(Object obj) {
         if (null != create && null != obj)
             create.trigger(obj);
+        if (shallTrigger(obj)) {
+            for (IocEventListener listener : listeners) {
+                obj = listener.afterCreate(obj, beanName);
+            }
+        }
         return obj;
+    }
+    
+    protected boolean shallTrigger(Object obj) {
+        return obj != null && listeners != null && !(obj instanceof IocEventListener) && listeners.size() > 0;
+    }
+    
+    public void setBeanName(String beanName) {
+        this.beanName = beanName;
     }
 }

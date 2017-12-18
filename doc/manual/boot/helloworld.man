@@ -59,3 +59,8 @@ NB的项目的几个要素
 
 	* [https://zh.wikipedia.org/wiki/%E5%BE%AE%E6%9C%8D%E5%8B%99 wiki百科上的微服务]
 	* 做一个巨大的,包含复杂业务逻辑,包罗万象的单一jar的"微服务"是徒劳的,不如写个war
+	
+更多文档
+---------------------------------------------------------------------
+
+	NutzBoot的源码目录里面还有doc文件夹,敬请查阅 [https://gitee.com/nutz/nutzboot/tree/dev/doc](https://gitee.com/nutz/nutzboot/tree/dev/doc)

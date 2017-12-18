@@ -2,6 +2,8 @@ package org.nutz.ioc.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -10,6 +12,7 @@ import java.util.Set;
 
 import org.nutz.ioc.Ioc2;
 import org.nutz.ioc.IocContext;
+import org.nutz.ioc.IocEventListener;
 import org.nutz.ioc.IocException;
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.IocLoading;
@@ -77,6 +80,8 @@ public class NutIoc implements Ioc2 {
      * </ul>
      */
     private Set<String> supportedTypes;
+    
+    protected List<IocEventListener> listeners = new ArrayList<IocEventListener>();
 
     public NutIoc(IocLoader loader) {
         this(loader, new ScopeContext(DEF_SCOPE), DEF_SCOPE);
@@ -95,7 +100,6 @@ public class NutIoc implements Ioc2 {
                      IocContext context,
                      String defaultScope,
                      MirrorFactory mirrors) {
-        log.info("NutIoc init begin ...");
         this.createTime = new Date();
         this.maker = maker;
         this.defaultScope = defaultScope;
@@ -118,13 +122,25 @@ public class NutIoc implements Ioc2 {
         catch (Exception e) {
             throw new RuntimeException(e);
         }
+        for (String beanName : this.loader.getNamesByTypes(createLoading(), IocEventListener.class)) {
+            listeners.add(get(IocEventListener.class, beanName));
+        }
+        if (listeners.size() > 0) {
+            Collections.sort(listeners, new Comparator<IocEventListener>() {
+                public int compare(IocEventListener prev, IocEventListener next) {
+                    if (prev.getOrder() == next.getOrder())
+                        return 0;
+                    return prev.getOrder() > next.getOrder() ? -1 : 1;
+                }
+            });
+        }
         log.info("... NutIoc init complete");
     }
 
     /**
      * @return 一个新创建的 IocLoading 对象
      */
-    private IocLoading createLoading() {
+    protected IocLoading createLoading() {
         if (null == supportedTypes) {
             synchronized (this) {
                 if (null == supportedTypes) {
@@ -205,7 +221,6 @@ public class NutIoc implements Ioc2 {
                                 throw new IocException(name, "NULL TYPE object '%s'", name);
                             else
                                 iobj.setType(type);
-
                         // 检查对象级别
                         if (Strings.isBlank(iobj.getScope()))
                             iobj.setScope(defaultScope);
@@ -269,6 +284,7 @@ public class NutIoc implements Ioc2 {
             log.warn("something happen when depose IocLoader", e);
         }
         context.depose();
+        loader.clear();
         deposed = true;
         if (log.isInfoEnabled())
             log.infof("%s@%s is deposed. startup date [%s]",
@@ -291,6 +307,8 @@ public class NutIoc implements Ioc2 {
 
     public void addValueProxyMaker(ValueProxyMaker vpm) {
         vpms.add(0, vpm);// 优先使用最后加入的ValueProxyMaker
+        supportedTypes = null;
+        loader.clear();
     }
 
     public IocContext getIocContext() {
@@ -322,7 +340,7 @@ public class NutIoc implements Ioc2 {
                 log.trace("Link contexts");
             cntx = new ComboContext(context, this.context);
         }
-        return new IocMaking(this, mirrors, cntx, maker, vpms, name);
+        return new IocMaking(this, mirrors, cntx, maker, vpms, name, listeners);
     }
 
     @Override
@@ -348,17 +366,7 @@ public class NutIoc implements Ioc2 {
     }
 
     public String[] getNamesByType(Class<?> klass, IocContext context) {
-        List<String> names = new ArrayList<String>();
-        for (String name : getNames()) {
-            try {
-                IocObject iobj = loader.load(createLoading(), name);
-                if (iobj != null
-                    && iobj.getType() != null
-                    && klass.isAssignableFrom(iobj.getType()))
-                    names.add(name);
-            }
-            catch (Exception e) {}
-        }
+        List<String> names = new ArrayList<String>(loader.getNamesByTypes(createLoading(), klass));
         IocContext cntx;
         if (null == context || context == this.context)
             cntx = this.context;
@@ -410,4 +418,5 @@ public class NutIoc implements Ioc2 {
                                + klass.getName(),
                                "none ioc bean match class=" + klass.getName());
     }
+    
 }

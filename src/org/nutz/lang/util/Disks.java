@@ -46,6 +46,30 @@ public abstract class Disks {
     }
 
     /**
+     * 一个 Vistor 模式的目录深层遍历, 包含目录也会返回
+     * 
+     * @param f
+     *            要遍历的目录或者文件，如果是目录，深层遍历，否则，只访问一次文件
+     * @param fv
+     *            对文件要进行的操作
+     * @param filter
+     *            遍历目录时，哪些文件应该被忽略
+     * @return 遍历的文件（目录）个数
+     */
+    public static int visitFileWithDir(File f, FileVisitor fv, FileFilter filter) {
+        int re = 0;
+        fv.visit(f);
+        re++;
+        if (f.isDirectory()) {
+            File[] fs = null == filter ? f.listFiles() : f.listFiles(filter);
+            if (fs != null)
+                for (File theFile : fs)
+                    re += visitFileWithDir(theFile, fv, filter);
+        }
+        return re;
+    }
+
+    /**
      * 将两个文件对象比较，得出相对路径
      * 
      * @param base
@@ -303,12 +327,52 @@ public abstract class Disks {
         if (null == d)
             return;
         visitFile(d, new FileVisitor() {
+            @Override
             public void visit(File f) {
                 if (f.isDirectory())
                     return;
                 fv.visit(f);
             }
         }, new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                if (f.isDirectory())
+                    return deep;
+                if (f.isHidden())
+                    return false;
+                if (Strings.isEmpty(regex))
+                    return true;
+                return f.getName().matches(regex);
+            }
+        });
+    }
+
+    /**
+     * 遍历文件夹下以特定后缀结尾的文件与文件夹 不包括.开头的文件
+     * 
+     * @param path
+     *            根路径
+     * @param regex
+     *            文件名的正则表达式
+     * @param deep
+     *            是否深层遍历
+     * @param fv
+     *            你所提供的访问器,当然就是你自己的逻辑咯
+     */
+    public static final void visitFileWithDir(String path,
+                                              final String regex,
+                                              final boolean deep,
+                                              final FileVisitor fv) {
+        File d = Files.findFile(path);
+        if (null == d)
+            return;
+        visitFileWithDir(d, new FileVisitor() {
+            @Override
+            public void visit(File f) {
+                fv.visit(f);
+            }
+        }, new FileFilter() {
+            @Override
             public boolean accept(File f) {
                 if (f.isDirectory())
                     return deep;

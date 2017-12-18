@@ -101,7 +101,7 @@ public class ChainParsingTest {
         String s = "@Name.substring(0, 6)";
         ChainNode cn = N(s);
         assertEquals(s, cn.toString());
-        IocMaking ing = new IocMaking(null, null, null, null, null, "123456789");
+        IocMaking ing = new IocMaking(null, null, null, null, null, "123456789", null);
         assertEquals("123456", cn.eval(ing));
     }
 
@@ -113,6 +113,7 @@ public class ChainParsingTest {
         IocMaking ing = new IocMaking(null,
                                       null,
                                       new ScopeContext("app"),
+                                      null,
                                       null,
                                       null,
                                       null);

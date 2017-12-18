@@ -60,7 +60,7 @@ public abstract class Loadings {
         evalPathMap(ai, Mirror.getAnnotationDeep(type, PathMap.class));
         evalOk(ai, Mirror.getAnnotationDeep(type, Ok.class));
         evalFail(ai, Mirror.getAnnotationDeep(type, Fail.class));
-        evalAt(ai, Mirror.getAnnotationDeep(type, At.class), type.getSimpleName());
+        evalAt(ai, Mirror.getAnnotationDeep(type, At.class), type.getSimpleName(), false);
         evalActionChainMaker(ai, Mirror.getAnnotationDeep(type, Chain.class));
         evalModule(ai, type);
         if (Mvcs.DISPLAY_METHOD_LINENUMBER) {
@@ -85,7 +85,7 @@ public abstract class Loadings {
         evalOk(ai, Mirror.getAnnotationDeep(method, Ok.class));
         evalFail(ai, Mirror.getAnnotationDeep(method, Fail.class));
         evalHttpMethod(ai, method, Mirror.getAnnotationDeep(method, At.class));
-        evalAt(ai, Mirror.getAnnotationDeep(method, At.class), method.getName());
+        evalAt(ai, Mirror.getAnnotationDeep(method, At.class), method.getName(), true);
         evalActionChainMaker(ai, Mirror.getAnnotationDeep(method, Chain.class));
         ai.setMethod(method);
         return ai;
@@ -233,7 +233,7 @@ public abstract class Loadings {
         }
     }
 
-    public static void evalAt(ActionInfo ai, At at, String def) {
+    public static void evalAt(ActionInfo ai, At at, String def, boolean isMethod) {
         if (null != at) {
             if (null == at.value() || at.value().length == 0) {
                 ai.setPaths(Lang.array("/" + def.toLowerCase()));
@@ -245,8 +245,8 @@ public abstract class Loadings {
                 ai.setPathKey(at.key());
             if (at.top())
                 ai.setPathTop(true);
-        } else if (!Lang.isEmpty(ai.getHttpMethods())) {
-            // 没有@At但有GET POST等
+        } else if (isMethod) {
+            // 由于EntryDeterminer机制的存在，action方法上可能没有@At，这时候给一个默认的入口路径
             ai.setPaths(Lang.array("/" + def.toLowerCase()));
         }
     }

@@ -197,9 +197,9 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /*------------------------------------------------------------------*/
 
-    private SimpleCriteria cri;
+    protected SimpleCriteria cri;
 
-    Cnd() {
+    protected Cnd() {
         cri = new SimpleCriteria();
     }
 

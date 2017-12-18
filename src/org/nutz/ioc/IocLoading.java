@@ -42,10 +42,6 @@ public class IocLoading {
                 ifld.setValue(object2value(en.getValue()));
                 iobj.addField(ifld);
             }
-//            if (log.isWarnEnabled()) // TODO 移除这种兼容性
-//                log.warn("Using *Declared* ioc-define (without type or events)!!! Pls use Standard Ioc-Define!!"
-//                            + " Bean will define as:\n"
-//                            + Json.toJson(iobj));
         } else {
             Object v = map.get("type");
             // type
