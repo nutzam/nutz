@@ -48,6 +48,7 @@ public class ObjectMakerImpl implements ObjectMaker {
         try {
             // 准备对象的编织方式
             DefaultWeaver dw = new DefaultWeaver();
+            dw.setListeners(ing.getListeners());
             op.setWeaver(dw);
 
             // 构造函数参数

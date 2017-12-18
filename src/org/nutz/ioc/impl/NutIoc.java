@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.nutz.ioc.Ioc2;
 import org.nutz.ioc.IocContext;
+import org.nutz.ioc.IocEventListener;
 import org.nutz.ioc.IocException;
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.IocLoading;
@@ -77,6 +78,8 @@ public class NutIoc implements Ioc2 {
      * </ul>
      */
     private Set<String> supportedTypes;
+    
+    protected List<IocEventListener> listeners = new ArrayList<IocEventListener>();
 
     public NutIoc(IocLoader loader) {
         this(loader, new ScopeContext(DEF_SCOPE), DEF_SCOPE);
@@ -95,7 +98,6 @@ public class NutIoc implements Ioc2 {
                      IocContext context,
                      String defaultScope,
                      MirrorFactory mirrors) {
-        log.info("NutIoc init begin ...");
         this.createTime = new Date();
         this.maker = maker;
         this.defaultScope = defaultScope;
@@ -117,6 +119,9 @@ public class NutIoc implements Ioc2 {
         }
         catch (Exception e) {
             throw new RuntimeException(e);
+        }
+        for (String beanName : this.loader.getNamesByTypes(createLoading(), IocEventListener.class)) {
+            listeners.add(get(IocEventListener.class, beanName));
         }
         log.info("... NutIoc init complete");
     }
@@ -205,7 +210,6 @@ public class NutIoc implements Ioc2 {
                                 throw new IocException(name, "NULL TYPE object '%s'", name);
                             else
                                 iobj.setType(type);
-
                         // 检查对象级别
                         if (Strings.isBlank(iobj.getScope()))
                             iobj.setScope(defaultScope);
@@ -292,6 +296,8 @@ public class NutIoc implements Ioc2 {
 
     public void addValueProxyMaker(ValueProxyMaker vpm) {
         vpms.add(0, vpm);// 优先使用最后加入的ValueProxyMaker
+        supportedTypes = null;
+        loader.clear();
     }
 
     public IocContext getIocContext() {
@@ -323,7 +329,7 @@ public class NutIoc implements Ioc2 {
                 log.trace("Link contexts");
             cntx = new ComboContext(context, this.context);
         }
-        return new IocMaking(this, mirrors, cntx, maker, vpms, name);
+        return new IocMaking(this, mirrors, cntx, maker, vpms, name, listeners);
     }
 
     @Override
@@ -401,4 +407,5 @@ public class NutIoc implements Ioc2 {
                                + klass.getName(),
                                "none ioc bean match class=" + klass.getName());
     }
+    
 }

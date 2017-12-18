@@ -20,13 +20,16 @@ public class IocMaking {
     private List<ValueProxyMaker> vpms;
 
     private MirrorFactory mirrors;
+    
+    private List<IocEventListener> listeners;
 
     public IocMaking(    Ioc ioc,
                         MirrorFactory mirrors,
                         IocContext context,
                         ObjectMaker maker,
                         List<ValueProxyMaker> vpms,
-                        String objName) {
+                        String objName,
+                        List<IocEventListener> listeners) {
         this.objectName = objName;
         this.objectMaker = maker;
         this.ioc = ioc;
@@ -55,8 +58,12 @@ public class IocMaking {
         return mirrors;
     }
 
+    public List<IocEventListener> getListeners() {
+        return listeners;
+    }
+
     public IocMaking clone(String objectName) {
-        return new IocMaking(ioc, mirrors, context, objectMaker, vpms, objectName);
+        return new IocMaking(ioc, mirrors, context, objectMaker, vpms, objectName, listeners);
     }
 
     public ValueProxy makeValue(IocValue iv) {
@@ -70,5 +77,4 @@ public class IocMaking {
                                 Json.toJson(iv.getValue()),
                                 objectName);
     }
-
 }
