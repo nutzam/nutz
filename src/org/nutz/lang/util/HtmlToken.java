@@ -16,6 +16,8 @@ public class HtmlToken {
     private List<Pair<String>> attributes;
 
     public String getTagName() {
+        if (null == name)
+            return null;
         return name.toUpperCase();
     }
 
