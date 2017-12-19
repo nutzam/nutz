@@ -183,7 +183,7 @@ public abstract class Loadings {
         return modules;
     }
 
-    protected static void scanModuleInPackage(Set<Class<?>> modules, String packageName) {
+    public static void scanModuleInPackage(Set<Class<?>> modules, String packageName) {
         if (log.isDebugEnabled())
             log.debugf(" > scan '%s'", packageName);
 
