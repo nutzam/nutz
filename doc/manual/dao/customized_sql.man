@@ -193,27 +193,26 @@ Sql 对象 -- org.nutz.dao.sql.Sql
 常用回调
 
 	Sqls.callback.XXX 提供了80%以上场景所需要的回调类型,在编写自定义回调之前,建议您先看看有没有现成的
-	
-	|   名称               |   结果类型        | 备注                 |
-	|---------------|---------------|--------------|
-    |bool           | Boolean       |              |
-    |bools          | boolean[]     |1.r.62及之前的版本是LinkedArray|
-    |doubleValue    | Double        |              |
-    |entities       | `List<Pojo>`  |取决于Entity对应的Pojo类  |
-    |entity         | Pojo          |取决于Entity对应的Pojo类   |
-    |floatValue     | Float         |              |
-    |integer        | Integer       |              |
-    |ints           | int[]         |              |
-    |longValue      | Long          |              |
-    |longs          | long[]        |              |
-    |map            | NutMap        |与Record类型,但区分大小写 |
-    |maps           | List<NutMap>  |              |
-    |record         | Record        |字段名均为小写 |
-    |records        | `List<Record>`|              |
-    |str            | String        |              |
-    |strList        | List<String>  |              |
-    |strs           | `String[]`    |              |
-    |timestamp      | TimeStamp     |              |
+
+    ||   名称               ||   结果类型        || 备注                 ||
+    ||bool           || Boolean       ||              ||
+    ||bools          || `boolean[]`     ||1.r.62及之前的版本是LinkedArray||
+    ||doubleValue    || Double        ||              ||
+    ||entities       || `List<Pojo>`  ||取决于Entity对应的Pojo类  ||
+    ||entity         || Pojo          ||取决于Entity对应的Pojo类   ||
+    ||floatValue     || Float         ||              ||
+    ||integer        || Integer       ||              ||
+    ||ints           || `int[]`         ||              ||
+    ||longValue      || Long          ||              ||
+    ||longs          || `long[]`        ||              ||
+    ||map            || NutMap        ||与Record类型,但区分大小写 ||
+    ||maps           || `List<NutMap>`  ||              ||
+    ||record         || Record        ||字段名均为小写 ||
+    ||records        || `List<Record>`||              ||
+    ||str            || String        ||              ||
+    ||strList        || `List<String>`  ||              ||
+    ||strs           || `String[]`    ||              ||
+    ||timestamp      || TimeStamp     ||              ||
 ----------------------------------------------------------------------------------------------------
 Nutz.Dao SQL 文件的格式
 
