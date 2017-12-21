@@ -23,7 +23,7 @@ public class CrossOriginFilter implements ActionFilter {
     protected String credentials;
 
     public CrossOriginFilter() {
-        this("*", "GET, POST, PUT, DELETE, OPTIONS, PATCH", "Origin, Content-Type, Accept", "true");
+        this("*", "GET, POST, PUT, DELETE, OPTIONS, PATCH", "Origin, Content-Type, Accept, X-Requested-With", "true");
     }
 
     public CrossOriginFilter(String origin, String methods, String headers, String credentials) {
