@@ -854,7 +854,7 @@ public abstract class Jdbcs {
          * 上面的都不是？ 那就当作字符串好了，反正可以 toString
          */
         else {
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()&& ef.getEntity() != null && ef.getEntity().getType() != null)
                 log.debugf("take field '%s(%s)'(%s) as VARCHAR(%d)",
                            ef.getName(),
                            Lang.getTypeClass(ef.getType()).getName(),
