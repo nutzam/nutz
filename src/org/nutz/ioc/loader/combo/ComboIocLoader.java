@@ -145,9 +145,6 @@ public class ComboIocLoader extends AbstractLifeCycle implements IocLoader {
     }
 
     public IocObject load(IocLoading loading, String name) throws ObjectLoadException {
-        IocObject iocObject = iobjs.get(name);
-        if (iocObject != null)
-            return iocObject;
         for (IocLoader loader : iocLoaders)
             if (loader.has(name)) {
                 iocObject = loader.load(loading, name);
