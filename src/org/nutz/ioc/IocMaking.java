@@ -28,8 +28,7 @@ public class IocMaking {
                         IocContext context,
                         ObjectMaker maker,
                         List<ValueProxyMaker> vpms,
-                        String objName,
-                        List<IocEventListener> listeners) {
+                        String objName) {
         this.objectName = objName;
         this.objectMaker = maker;
         this.ioc = ioc;
@@ -63,7 +62,12 @@ public class IocMaking {
     }
 
     public IocMaking clone(String objectName) {
-        return new IocMaking(ioc, mirrors, context, objectMaker, vpms, objectName, listeners);
+        return new IocMaking(ioc, mirrors, context, objectMaker, vpms, objectName).setListeners(listeners);
+    }
+    
+    public IocMaking setListeners(List<IocEventListener> listeners) {
+        this.listeners = listeners;
+        return this;
     }
 
     public ValueProxy makeValue(IocValue iv) {

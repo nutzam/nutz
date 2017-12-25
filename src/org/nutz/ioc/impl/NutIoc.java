@@ -81,7 +81,9 @@ public class NutIoc implements Ioc2 {
      */
     private Set<String> supportedTypes;
     
-    protected List<IocEventListener> listeners = new ArrayList<IocEventListener>();
+    protected List<IocEventListener> listeners;
+    
+    protected ThreadLocal<Object> listenerH = new ThreadLocal<Object>();
 
     public NutIoc(IocLoader loader) {
         this(loader, new ScopeContext(DEF_SCOPE), DEF_SCOPE);
@@ -121,18 +123,6 @@ public class NutIoc implements Ioc2 {
         }
         catch (Exception e) {
             throw new RuntimeException(e);
-        }
-        for (String beanName : this.loader.getNamesByTypes(createLoading(), IocEventListener.class)) {
-            listeners.add(get(IocEventListener.class, beanName));
-        }
-        if (listeners.size() > 0) {
-            Collections.sort(listeners, new Comparator<IocEventListener>() {
-                public int compare(IocEventListener prev, IocEventListener next) {
-                    if (prev.getOrder() == next.getOrder())
-                        return 0;
-                    return prev.getOrder() > next.getOrder() ? -1 : 1;
-                }
-            });
         }
         log.info("... NutIoc init complete");
     }
@@ -228,7 +218,25 @@ public class NutIoc implements Ioc2 {
                         // 根据对象定义，创建对象，maker 会自动的缓存对象到 context 中
                         if (log.isDebugEnabled())
                             log.debugf("\t >> Make...'%s'<%s>", name, type == null ? "" : type);
-                        op = maker.make(ing, iobj);
+                        if (iobj.getType() != null && IocEventListener.class.isAssignableFrom(iobj.getType())) {
+                            if (listenerH.get() != null) {
+                                op = maker.make(ing, iobj);
+                            }
+                            else {
+                                try {
+                                    listenerH.set(Boolean.TRUE);
+                                    op = maker.make(ing, iobj);
+                                }
+                                finally {
+                                    listenerH.remove();
+                                }
+                            }
+                        }
+                        else {
+                            _checkIocEventListeners();
+                            ing.setListeners(listeners);
+                            op = maker.make(ing, iobj);
+                        }
                     }
                     // 处理异常
                     catch (IocException e) {
@@ -340,7 +348,7 @@ public class NutIoc implements Ioc2 {
                 log.trace("Link contexts");
             cntx = new ComboContext(context, this.context);
         }
-        return new IocMaking(this, mirrors, cntx, maker, vpms, name, listeners);
+        return new IocMaking(this, mirrors, cntx, maker, vpms, name);
     }
 
     @Override
@@ -419,4 +427,22 @@ public class NutIoc implements Ioc2 {
                                "none ioc bean match class=" + klass.getName());
     }
     
+    protected void _checkIocEventListeners() {
+        if (listeners != null)
+            return;
+        List<IocEventListener> listeners = new ArrayList<IocEventListener>();
+        for (String beanName : this.loader.getNamesByTypes(createLoading(), IocEventListener.class)) {
+            listeners.add(get(IocEventListener.class, beanName));
+        }
+        if (listeners.size() > 0) {
+            Collections.sort(listeners, new Comparator<IocEventListener>() {
+                public int compare(IocEventListener prev, IocEventListener next) {
+                    if (prev.getOrder() == next.getOrder())
+                        return 0;
+                    return prev.getOrder() > next.getOrder() ? -1 : 1;
+                }
+            });
+        }
+        this.listeners = listeners;
+    }
 }
