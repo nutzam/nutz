@@ -164,6 +164,7 @@ final class JsonTokenScan {
                 char c2 = parseSp();
                 if (c == c2 && NutConf.JSON_APPEND_ILLEGAL_ESCAPE)
                     sb.append('\\');
+                c = c2;
                 break;
             }
             sb.append(c);
