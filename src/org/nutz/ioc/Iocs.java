@@ -125,7 +125,8 @@ public abstract class Iocs {
     
     public static IocObject wrap(Object obj) {
         IocObject iobj = new IocObject();
-        //iobj.setType(obj.getClass());
+        if (obj != null)
+            iobj.setType(obj.getClass());
         iobj.setFactory(Iocs.class.getName() + "#self");
         IocValue ival = new IocValue(null, new StaticValue(obj));
         iobj.addArg(ival);
