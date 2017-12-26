@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.nutz.conf.NutConf;
 import org.nutz.json.JsonException;
 import org.nutz.json.JsonParser;
 import org.nutz.lang.Lang;
@@ -160,7 +161,9 @@ final class JsonTokenScan {
         while ((c = nextChar()) != endEnd) {
             switch (c) {
             case '\\':
-                c = parseSp();
+                char c2 = parseSp();
+                if (c == c2 && NutConf.JSON_APPEND_ILLEGAL_ESCAPE)
+                    sb.append('\\');
                 break;
             }
             sb.append(c);
@@ -393,6 +396,9 @@ final class JsonTokenScan {
         case 'f':
             return '\f';
         default:
+            // 容忍非法转义
+            if (NutConf.JSON_ALLOW_ILLEGAL_ESCAPE)
+                return c;
             throw unexpectChar(c);
         }
     }

@@ -137,4 +137,6 @@ public class NutConf {
     public static boolean USE_MIRROR_CACHE = true;
     public static boolean USE_EL_IN_OBJECT_CONVERT = false;
     public static boolean RESOURCE_SCAN_TRACE = false;
+    public static boolean JSON_ALLOW_ILLEGAL_ESCAPE = true;
+    public static boolean JSON_APPEND_ILLEGAL_ESCAPE = false;
 }
