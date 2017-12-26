@@ -21,9 +21,10 @@ public class AndOpt extends TwoTernary {
 
         if (!(lval instanceof Boolean)) {
             // throw new ElException("操作数类型错误!");
-            return Castors.me().castTo(lval, Boolean.class);
-        }
-        if (!(Boolean) lval) {
+            if (!Castors.me().castTo(lval, Boolean.class)) {
+                return false;
+            }
+        } else if (!(Boolean) lval) {
             return false;
         }
 
@@ -34,10 +35,7 @@ public class AndOpt extends TwoTernary {
             // throw new ElException("操作数类型错误!");
             return Castors.me().castTo(rval, Boolean.class);
         }
-        if (!(Boolean) rval) {
-            return false;
-        }
-        return true;
+        return (Boolean) rval;
     }
 
     public String fetchSelf() {

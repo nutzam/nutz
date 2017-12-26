@@ -20,9 +20,10 @@ public class OrOpt extends TwoTernary {
         if (null != lval) {
             if (!(lval instanceof Boolean)) {
                 // throw new ElException("操作数类型错误!");
-                return Castors.me().castTo(lval, Boolean.class);
-            }
-            if ((Boolean) lval) {
+                if (Castors.me().castTo(lval, Boolean.class)) {
+                    return true;
+                }
+            } else if ((Boolean) lval) {
                 return true;
             }
         }
