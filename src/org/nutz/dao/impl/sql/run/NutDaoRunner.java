@@ -31,8 +31,9 @@ public class NutDaoRunner implements DaoRunner {
     
     public void run(final DataSource dataSource, final ConnCallback callback) {
         if (callback instanceof DaoInterceptorChain) {
+            DaoInterceptorChain chain = (DaoInterceptorChain)callback;
             // 看看是不是应该强制使用事务
-            DaoStatement[] sts = ((DaoInterceptorChain)callback).getDaoStatements();
+            DaoStatement[] sts = chain.getDaoStatements();
             boolean useTrans = false;
             boolean isAllSelect = true;
             for (DaoStatement st : sts) {
@@ -53,7 +54,7 @@ public class NutDaoRunner implements DaoRunner {
                     if (isAllSelect)
                         useTrans = false;
                     else {
-                        ((DaoInterceptorChain) callback).setAutoTransLevel(Connection.TRANSACTION_READ_UNCOMMITTED);
+                        chain.setAutoTransLevel(Connection.TRANSACTION_READ_UNCOMMITTED);
                         useTrans = true;
                     }
                 }
@@ -68,8 +69,8 @@ public class NutDaoRunner implements DaoRunner {
                 break;
             }
             // 看来需要开启事务了
-            if (useTrans && ((DaoInterceptorChain) callback).getAutoTransLevel() > 0) {
-                Trans.exec(((DaoInterceptorChain) callback).getAutoTransLevel(), new Atom() {
+            if (useTrans && chain.getAutoTransLevel() > 0) {
+                Trans.exec(chain.getAutoTransLevel(), new Atom() {
                     public void run() {
                         _run(dataSource, callback);
                     }
