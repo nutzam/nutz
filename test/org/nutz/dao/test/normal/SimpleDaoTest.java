@@ -40,6 +40,7 @@ import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.impl.DaoExecutor;
 import org.nutz.dao.impl.NutDao;
+import org.nutz.dao.impl.NutTxDao;
 import org.nutz.dao.impl.SimpleDataSource;
 import org.nutz.dao.impl.sql.NutStatement;
 import org.nutz.dao.jdbc.JdbcExpert;
@@ -1131,5 +1132,23 @@ public class SimpleDaoTest extends DaoCase {
     public void test_insert_chain_with_adaptor() {
         dao.create(Pet.class, true);
         dao.insert("t_pet", Chain.make("name", "wendal").adaptor(Jdbcs.Adaptor.asString));
+    }
+    
+    @Test
+    public void test_nutz_tx_dao() throws Throwable {
+        for (int i = 0; i < 1000; i++) {
+            NutTxDao tx = new NutTxDao(dao);
+            try {
+                tx.beginRC();
+                tx.query(Pet.class, null);
+                tx.commit();
+            } catch (Throwable e) {
+                tx.rollback();
+                throw e;
+            }
+            finally {
+                tx.close();
+            }
+        }
     }
 }
