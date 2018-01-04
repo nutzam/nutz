@@ -91,10 +91,7 @@ public abstract class Loadings {
         return ai;
     }
 
-    private static EntryDeterminer determiner = null;
-
     public static Set<Class<?>> scanModules(Ioc ioc, Class<?> mainModule, EntryDeterminer determiner) {
-        Loadings.determiner = determiner;
         Modules ann = mainModule.getAnnotation(Modules.class);
         boolean scan = null == ann ? true : ann.scanPackage();
         // 准备扫描列表
@@ -136,7 +133,7 @@ public abstract class Loadings {
                 Collection<Class<?>> col = ms.scan();
                 if (null != col)
                     for (Class<?> type : col) {
-                        if (isModule(type)) {
+                        if (isModule(type, determiner)) {
                             modules.add(type);
                         }
                     }
@@ -145,7 +142,7 @@ public abstract class Loadings {
             // 扫描包，扫描出的类直接计入结果
             if (ann.packages() != null && ann.packages().length > 0) {
                 for (String packageName : ann.packages()) {
-                    scanModuleInPackage(modules, packageName);
+                    scanModuleInPackage(modules, packageName, determiner);
                 }
             }
         }
@@ -167,11 +164,11 @@ public abstract class Loadings {
         for (Class<?> type : forScans) {
             // 扫描子包
             if (scan) {
-                scanModuleInPackage(modules, type.getPackage().getName());
+                scanModuleInPackage(modules, type.getPackage().getName(), determiner);
             }
             // 仅仅加载自己
             else {
-                if (isModule(type)) {
+                if (isModule(type, determiner)) {
                     if (log.isDebugEnabled())
                         log.debugf(" > Found @At : '%s'", type.getName());
                     modules.add(type);
@@ -183,22 +180,22 @@ public abstract class Loadings {
         return modules;
     }
 
-    public static void scanModuleInPackage(Set<Class<?>> modules, String packageName) {
+    public static void scanModuleInPackage(Set<Class<?>> modules, String packageName, EntryDeterminer determiner) {
         if (log.isDebugEnabled())
             log.debugf(" > scan '%s'", packageName);
 
         List<Class<?>> subs = Scans.me().scanPackage(packageName);
-        checkModule(modules, subs);
+        checkModule(modules, subs, determiner);
     }
 
     /**
      * @param modules
      * @param subs
      */
-    private static void checkModule(Set<Class<?>> modules, List<Class<?>> subs) {
+    private static void checkModule(Set<Class<?>> modules, List<Class<?>> subs, EntryDeterminer determiner) {
         for (Class<?> sub : subs) {
             try {
-                if (isModule(sub)) {
+                if (isModule(sub, determiner)) {
                     if (log.isDebugEnabled())
                         log.debugf("   >> add '%s'", sub.getName());
                     modules.add(sub);
@@ -335,7 +332,7 @@ public abstract class Loadings {
         return Mirror.me(type).born((Object[]) args);
     }
 
-    public static boolean isModule(Class<?> classZ) {
+    public static boolean isModule(Class<?> classZ, EntryDeterminer determiner) {
         int classModify = classZ.getModifiers();
         if (!Modifier.isPublic(classModify)
             || Modifier.isAbstract(classModify)
