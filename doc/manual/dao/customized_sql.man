@@ -39,7 +39,7 @@ Nutz.Dao 自定义 SQL 的概述
 		/* delete.data */
 		DELETE FROM $table WHERE name LIKE @name
 		/* update.data */
-		UPDATE FROM $table SET name=@name WHERE id=@id
+		UPDATE $table SET name=@name WHERE id=@id
 		}}}
 		在你的 Java 代码中：
 		{{{
@@ -279,7 +279,7 @@ Nutz.Dao SQL 文件的格式
 	是的，你的 Sql 对象也可以使用 Condition，但是这个 Condition 要如何同你自定义的 SQL 拼装在一起呢，
 	这里，我提供了一个特殊的变量占位符 -- 条件变量占位符 $condition
 	--------------------------------------------------------------------------------------------
-	特殊的占位符 -- {#00A;*${condition}}
+	特殊的占位符 -- {#00A;*$condition}
 		唯一需要说明的是，在你写作的 SQL 中，需要声明一个特殊的占位符，比如下面的代码输出所有 id 大
 		于 35 的 Pet 对象的名称
 		{{{<JAVA>
