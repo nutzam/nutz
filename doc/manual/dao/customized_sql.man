@@ -129,6 +129,10 @@ Sql 对象 -- org.nutz.dao.sql.Sql
 		这就完了吗？我怎么取得查询的结果呢。是的，同 UPDATE, DELETE, INSERT 不同， SELECT 是需要返回
 		结果的，但是 Nutz.Dao 也不太清楚怎样为你自定义的 SELECT 语句返回结果，于是，就需要你设置回调。
 
+		Tips:
+			如果运行的 sql 语句是类似 "show columns from tableName from dbName" 这样的语句，
+			请在调用 dao.execute 方法前调用 sql.forceExecQuery 方法来强制让 nutz 用 select 方式运行该 sql 语句。
+
 	回调的用处
 		接上例，你需要这么改造一下你的函数：
 		{{{<JAVA>
