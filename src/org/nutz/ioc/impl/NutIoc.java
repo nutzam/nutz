@@ -1,5 +1,6 @@
 package org.nutz.ioc.impl;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -383,6 +384,25 @@ public class NutIoc implements Ioc2 {
         for (String name : cntx.names()) {
             ObjectProxy op = cntx.fetch(name);
             if (op.getObj() != null && klass.isAssignableFrom(op.getObj().getClass()))
+                names.add(name);
+        }
+        return new LinkedHashSet<String>(names).toArray(new String[names.size()]);
+    }
+    
+    public String[] getNamesByAnnotation(Class<? extends Annotation> klass) {
+        return this.getNamesByAnnotation(klass, null);
+    }
+
+    public String[] getNamesByAnnotation(Class<? extends Annotation> klass, IocContext context) {
+        List<String> names = new ArrayList<String>(loader.getNamesByAnnotation(createLoading(), klass));
+        IocContext cntx;
+        if (null == context || context == this.context)
+            cntx = this.context;
+        else
+            cntx = new ComboContext(context, this.context);
+        for (String name : cntx.names()) {
+            ObjectProxy op = cntx.fetch(name);
+            if (op.getObj() != null && klass.getAnnotation(klass) != null)
                 names.add(name);
         }
         return new LinkedHashSet<String>(names).toArray(new String[names.size()]);
