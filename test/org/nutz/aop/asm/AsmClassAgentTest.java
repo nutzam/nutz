@@ -29,15 +29,17 @@ import org.nutz.aop.javassist.meta.Vegetarian.BEH;
 import org.nutz.aop.matcher.MethodMatcherFactory;
 import org.nutz.json.Json;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.random.R;
 
 public class AsmClassAgentTest {
 
     @Test
     public void test_duplicate_class_exception() throws Exception {
         int[] cc = new int[4];
-        ClassAgent ca = getNewClassAgent();
+        AsmClassAgent ca = getNewClassAgent();
         ca.addInterceptor(MethodMatcherFactory.matcher(".*"), new MethodCounter(cc));
-        ClassAgent ca2 = getNewClassAgent();
+        AsmClassAgent ca2 = getNewClassAgent();
+        ca2.id = ca.id;
         ca2.addInterceptor(MethodMatcherFactory.matcher(".*"), new MethodCounter(cc));
 
         ClassDefiner cd = Nutzs.cd();
@@ -159,8 +161,9 @@ public class AsmClassAgentTest {
         assertEquals("[2, 2, 0, 0]", Json.toJson(cpro));
     }
 
-    public ClassAgent getNewClassAgent() {
-        ClassAgent classAgent = new AsmClassAgent();
+    public AsmClassAgent getNewClassAgent() {
+        AsmClassAgent classAgent = new AsmClassAgent();
+        classAgent.id = R.UU32();
         classAgent.addInterceptor(MethodMatcherFactory.matcher(".*"), new LoggingMethodInterceptor());
         return classAgent;
     }

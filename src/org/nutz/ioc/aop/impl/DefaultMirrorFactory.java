@@ -10,6 +10,7 @@ import org.nutz.aop.ClassDefiner;
 import org.nutz.aop.DefaultClassDefiner;
 import org.nutz.aop.MethodInterceptor;
 import org.nutz.aop.asm.AsmClassAgent;
+import org.nutz.conf.NutConf;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.aop.MirrorFactory;
 import org.nutz.ioc.aop.config.AopConfigration;
@@ -17,6 +18,7 @@ import org.nutz.ioc.aop.config.InterceptorPair;
 import org.nutz.ioc.aop.config.impl.AnnotationAopConfigration;
 import org.nutz.ioc.aop.config.impl.ComboAopConfigration;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.random.R;
 import org.nutz.lang.util.AbstractLifeCycle;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -40,9 +42,13 @@ public class DefaultMirrorFactory extends AbstractLifeCycle implements MirrorFac
     private static final Object lock = new Object();
     
     public ThreadLocal<Object> L = new ThreadLocal<Object>();
+    
+    private String id;
 
     public DefaultMirrorFactory(Ioc ioc) {
         this.ioc = ioc;
+        if (NutConf.AOP_USE_CLASS_ID)
+            id  = R.UU32().substring(4);
     }
 
     public <T> Mirror<T> getMirror(Class<T> type, String name) {
@@ -81,7 +87,8 @@ public class DefaultMirrorFactory extends AbstractLifeCycle implements MirrorFac
             if (cd == null) {
                 cd = DefaultClassDefiner.defaultOne();
             }
-            ClassAgent agent = new AsmClassAgent();
+            AsmClassAgent agent = new AsmClassAgent();
+            agent.id = id;
             for (InterceptorPair interceptorPair : interceptorPairs)
                 agent.addInterceptor(interceptorPair.getMethodMatcher(),
                                      interceptorPair.getMethodInterceptor());

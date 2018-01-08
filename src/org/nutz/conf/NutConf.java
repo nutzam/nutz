@@ -133,10 +133,32 @@ public class NutConf {
         conf = null;
     }
     
+    /**
+     * 是否启用FastClass机制,会提高反射的性能,如果需要热部署,应关闭. 性能影响低于10%
+     */
     public static boolean USE_FASTCLASS = !Lang.isAndroid && Lang.JdkTool.getMajorVersion() <= 8;
+    /**
+     * 是否缓存Mirror,配合FastClass机制使用,会提高反射的性能,如果需要热部署,应关闭.  性能影响低于10%
+     */
     public static boolean USE_MIRROR_CACHE = true;
+    /**
+     * Map.map2object时的EL支持,很少会用到,所以默认关闭. 若启用, Json.fromJson会有30%左右的性能损失
+     */
     public static boolean USE_EL_IN_OBJECT_CONVERT = false;
+    /**
+     * 调试Scans类的开关.鉴于Scans已经非常靠谱,这个开关基本上没用处了
+     */
     public static boolean RESOURCE_SCAN_TRACE = false;
+    /**
+     * 是否允许非法的Json转义符,属于兼容性配置
+     */
     public static boolean JSON_ALLOW_ILLEGAL_ESCAPE = true;
+    /**
+     * 若允许非法的Json转义符,是否把转义符附加进目标字符串
+     */
     public static boolean JSON_APPEND_ILLEGAL_ESCAPE = false;
+    /**
+     * Aop类是否每个Ioc容器都唯一,设置这个开关是因为wendal还不确定会有什么影响,暂时关闭状态.
+     */
+    public static boolean AOP_USE_CLASS_ID = false;
 }

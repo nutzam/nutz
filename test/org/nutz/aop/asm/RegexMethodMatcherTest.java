@@ -13,12 +13,14 @@ import org.nutz.aop.interceptor.LoggingMethodInterceptor;
 import org.nutz.aop.matcher.MethodMatcherFactory;
 import org.nutz.aop.matcher.RegexMethodMatcher;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.random.R;
 
 public class RegexMethodMatcherTest {
 
     @Test
     public void testRegexMethodMatcherStringStringInt() throws Throwable {
         AsmClassAgent agent = new AsmClassAgent();
+        agent.id = R.UU32();
         MyL interceptor = new MyL();
         agent.addInterceptor(new RegexMethodMatcher(null, "nonArgsVoid", 0), interceptor);
         agent.addInterceptor(MethodMatcherFactory.matcher(".*"), new LoggingMethodInterceptor());

@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -25,12 +24,8 @@ import org.nutz.lang.Mirror;
 public abstract class AbstractClassAgent implements ClassAgent {
 
     private ArrayList<Pair> pairs = new ArrayList<Pair>();
-    
-    /**
-     * 这个属性仅限测试时重置类名用
-     */
-    @Deprecated
-    public static AtomicLong t;
+
+    public String id;
 
     public ClassAgent addInterceptor(MethodMatcher matcher, MethodInterceptor listener) {
         if (null != listener)
@@ -41,7 +36,7 @@ public abstract class AbstractClassAgent implements ClassAgent {
     public <T> Class<T> define(ClassDefiner cd, Class<T> klass) {
         if (klass.getName().endsWith(CLASSNAME_SUFFIX))
             return klass;
-        String newName = klass.getName() + (t == null ? "" : "$" + t.get()) +  CLASSNAME_SUFFIX;
+        String newName = klass.getName() + (id == null ? "" : "$" + id) +  CLASSNAME_SUFFIX;
         return define(cd, klass, newName);
     }
     
