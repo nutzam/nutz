@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.nutz.Nutzs;
+import org.nutz.conf.NutConf;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.impl.NutIoc;
@@ -14,19 +15,25 @@ public class AopJsonIocTest {
 
     @Test
     public void test_simple() {
-    	Nutzs.cd();
-        IocLoader il = new JsonLoader("org/nutz/ioc/json/aop.js");
-        Ioc ioc = new NutIoc(il);
-        StringBuilder sb = ioc.get(StringBuilder.class, "sb");
-        Mammal fox = ioc.get(Mammal.class, "fox");
+    	NutConf.AOP_USE_CLASS_ID = true;
+    	try {
 
-        assertEquals("Fox", fox.getName());
-        assertEquals("B:getName0;A:getName0;", sb.toString());
-        sb.delete(0, sb.length());
-        fox.getName();
-        fox.getName();
-        assertEquals("B:getName0;A:getName0;B:getName0;A:getName0;", sb.toString());
+            IocLoader il = new JsonLoader("org/nutz/ioc/json/aop.js");
+            Ioc ioc = new NutIoc(il);
+            StringBuilder sb = ioc.get(StringBuilder.class, "sb");
+            Mammal fox = ioc.get(Mammal.class, "fox");
 
-    	ioc.depose();
+            assertEquals("Fox", fox.getName());
+            assertEquals("B:getName0;A:getName0;", sb.toString());
+            sb.delete(0, sb.length());
+            fox.getName();
+            fox.getName();
+            assertEquals("B:getName0;A:getName0;B:getName0;A:getName0;", sb.toString());
+
+            ioc.depose();
+    	}
+    	finally {
+    	    NutConf.AOP_USE_CLASS_ID = false;
+        }
     }
 }
