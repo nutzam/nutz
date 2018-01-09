@@ -12,6 +12,7 @@ import org.nutz.lang.util.NutType;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mapl.Mapl;
+import org.nutz.repo.org.objectweb.asm.Opcodes;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
 
@@ -161,4 +162,6 @@ public class NutConf {
      * Aop类是否每个Ioc容器都唯一,设置这个开关是因为wendal还不确定会有什么影响,暂时关闭状态.
      */
     public static boolean AOP_USE_CLASS_ID = false;
+
+    public static int AOP_CLASS_LEVEL = Opcodes.V1_6;
 }

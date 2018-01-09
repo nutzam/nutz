@@ -6,10 +6,7 @@ import java.util.List;
 import org.nutz.aop.AbstractClassAgent;
 import org.nutz.aop.ClassDefiner;
 import org.nutz.aop.MethodInterceptor;
-import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
-import org.nutz.log.Logs;
-import org.nutz.repo.org.objectweb.asm.Opcodes;
 
 /**
  * 
@@ -17,17 +14,9 @@ import org.nutz.repo.org.objectweb.asm.Opcodes;
  *
  */
 public class AsmClassAgent extends AbstractClassAgent {
-
-    static int CLASS_LEVEL = Opcodes.V1_5;
     
     static final String MethodArray_FieldName = "_$$Nut_methodArray";
     static final String MethodInterceptorList_FieldName = "_$$Nut_methodInterceptorList";
-
-    static {
-        if (Lang.isJDK6())
-            CLASS_LEVEL = Opcodes.V1_6;
-        Logs.get().debugf("AsmClassAgent will define class in Version %s",CLASS_LEVEL);
-    }
 
     @SuppressWarnings("unchecked")
     protected <T> Class<T> generate(ClassDefiner cd,
