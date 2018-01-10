@@ -187,6 +187,10 @@ public abstract class Loadings {
         List<Class<?>> subs = Scans.me().scanPackage(packageName);
         checkModule(modules, subs, determiner);
     }
+    
+    public static void scanModuleInPackage(Set<Class<?>> modules, String packageName) {
+        scanModuleInPackage(modules, packageName, new NutEntryDeterminer());
+    }
 
     /**
      * @param modules
@@ -342,5 +346,9 @@ public abstract class Loadings {
             if (determiner.isEntry(classZ, method))
                 return true;
         return false;
+    }
+    
+    public static boolean isModule(Class<?> classZ) {
+        return isModule(classZ, new NutEntryDeterminer());
     }
 }
