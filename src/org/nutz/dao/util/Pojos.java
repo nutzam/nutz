@@ -152,7 +152,7 @@ public abstract class Pojos {
 				if (Map.class.isAssignableFrom(en.getType())) {
 					return null; // Map形式的话,不一定需要主键嘛
 				}
-				throw Lang.makeThrow("Don't know how to make fetch key %s:'%s'", en.getType()
+				throw Lang.makeThrow("Don't know how to make fetch key %s:'%s', need any of @Id/@Name/@Pk", en.getType()
 																					.getName(), obj);
 			}
 		}
