@@ -10,7 +10,7 @@ Nutz核心jar
 	<dependency>
 		<groupId>org.nutz</groupId>
 		<artifactId>nutz</artifactId>
-		<version>1.r.62</version>
+		<version>1.r.63.r2</version>
 	</dependency>
 	}}}
 	
@@ -40,7 +40,7 @@ Nutz核心jar
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.r.62</version>
+			<version>1.r.63.r2</version>
 		</dependency>
 		<!-- mysql驱动 -->
 		<dependency>
@@ -58,7 +58,7 @@ Nutz核心jar
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
-			<version>1.0.27</version>
+			<version>1.1.5</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -86,11 +86,14 @@ Nutz核心jar
 	<repositories>
 		<repository>
 			<id>nutz</id>
-			<url>https://jfrog.nutz.cn/artifactory/jcenter</url>
+			<url>http://jfrog.nutz.cn/artifactory/libs-release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 		<repository>
 			<id>nutz-snapshots</id>
-			<url>https://jfrog.nutz.cn/artifactory/snapshots</url>
+			<url>http://jfrog.nutz.cn/artifactory/snapshots</url>
 			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>always</updatePolicy>
