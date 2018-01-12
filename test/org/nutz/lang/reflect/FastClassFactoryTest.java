@@ -1,15 +1,20 @@
 package org.nutz.lang.reflect;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.nutz.aop.DefaultClassDefiner;
+import org.nutz.conf.NutConf;
 import org.nutz.dao.Dao;
 import org.nutz.dao.impl.DaoSupport;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.meta.Pet;
+import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Stopwatch;
@@ -119,6 +124,20 @@ public class FastClassFactoryTest extends Assert {
         FastClass fc = FastClassFactory.get(DaoSupport.class);
         fc = FastClassFactory.get(NutDao.class);
         fc.invoke(new NutDao(), "execute", new Class[]{Sql.class}, new Object[]{null});
+    }
+    
+    @Test
+    public void test_issue_1382() {
+        try {
+            Map<Object, Object> map = new HashMap<Object, Object>();
+            map.put("a", 1);
+            map.put("b", 2);
+            map.put("c", 3);
+            System.out.println(Json.toJson(map.entrySet()));
+        }
+        finally {
+            
+        }
     }
 
     public static void main(String[] args) throws Exception {
