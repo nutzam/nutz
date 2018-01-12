@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.nutz.lang.Lang;
+import org.nutz.lang.Nums;
 import org.nutz.lang.Strings;
 
 /**
@@ -136,35 +137,40 @@ public class MaplRebuild {
             if (!map.containsKey(k)) {
                 map.put(k, new ArrayList<Object>());
             }
-            int index = fetchIndex(key.substring(key.indexOf('['), key.length()));
+            int[] index = fetchIndex(key.substring(key.indexOf('['), key.length()));
             injectList((List<Object>) map.get(k), i, index);
             return map;
         }
+        // 键值：这里有个特殊考虑，如果当前对象是个列表，那么键值必然是一个下标
         if (obj instanceof List) {
             try {
                 int index = Integer.parseInt(keys[i]);
-                injectList((List<Object>) obj, i, index);
+                injectList((List<Object>) obj, i, Nums.array(index));
                 return obj;
             }
             catch (Exception e) {
                 throw new RuntimeException("路径格式不正确!");
             }
         }
+        // 当做普通的 map 好了
         return injectMap(obj, i);
     }
 
-    private int fetchIndex(String val) {
-        int index = 0;
+    private int[] fetchIndex(String val) {
+        // []格式的路径, 即索引放在arrayIndex里面的.
         if (val.indexOf(']') == 1) {
-            // []格式的路径, 即索引放在arrayIndex里面的.
             if (arrayIndex.size() > arrayItem) {
-                index = arrayIndex.get(arrayItem++);
+                return Nums.array(arrayIndex.get(arrayItem++));
             }
-        } else {
-            // [1]格式, 路径上自带索引
-            index = Integer.parseInt(val.substring(1, val.length() - 1));
+            // 默认返回 0
+            return Nums.array(0);
         }
-        return index;
+        // [1]格式, 路径上自带索引，可以是多个，譬如[1][3][0]
+        String[] ss = val.substring(1, val.length() - 1).split("\\]\\[");
+        int[] re = new int[ss.length];
+        for (int i = 0; i < ss.length; i++)
+            re[i] = Integer.parseInt(ss[i]);
+        return re;
     }
 
     /**
@@ -220,45 +226,70 @@ public class MaplRebuild {
      * 注入List
      * 
      * @param list
-     * @param i
+     *            列表
+     * @param keyIndex
+     *            当前 Key 路径的列表
+     * @param eleIndexes
+     *            注入的元素下标列表
      */
     @SuppressWarnings("unchecked")
-    private void injectList(List<Object> list, int i, int index) {
+    private void injectList(List<Object> list, int keyIndex, int[] eleIndexes) {
+        // 下标列表如果是多个，那么预先处理一下列表
+        int i_last = eleIndexes.length - 1;
+        for (int i = 0; i < i_last; i++) {
+            int index = eleIndexes[i];
+            Object ele = list.get(index);
+            // 是列表？嗯很好很好
+            if (ele instanceof List) {
+                list = (List<Object>) ele;
+            }
+            // 不是列表啊，不能忍
+            else {
+                throw Lang.makeThrow("invalid keyPath '%s' in key:%d eleIndex:%d",
+                                     Strings.join(".", keys),
+                                     keyIndex,
+                                     i);
+            }
+        }
+
+        // 得到要处理的下标
+        int eleIndex = eleIndexes[i_last];
+
         // 添加模式
         if (model == Model.add) {
-            if (i == keys.length - 1) {
+            if (keyIndex == keys.length - 1) {
                 if (val instanceof Collection) {
                     list.addAll((Collection<? extends Object>) val);
                 } else {
-                    list.add(index, val);
+                    list.add(eleIndex, val);
                 }
                 return;
             }
-            if (list.size() <= index) {
-                list.add(index, new LinkedHashMap<String, Object>());
+            if (list.size() <= eleIndex) {
+                list.add(eleIndex, new LinkedHashMap<String, Object>());
             }
         } else if (model == Model.del) {
-            if (i == keys.length - 1) {
-                if (list.size() > index) {
-                    list.remove(index);
+            if (keyIndex == keys.length - 1) {
+                if (list.size() > eleIndex) {
+                    list.remove(eleIndex);
                 }
                 return;
             }
-            if (list.size() <= index) {
+            if (list.size() <= eleIndex) {
                 return;
             }
         } else if (model == Model.cell) {
-            if (i == keys.length - 1) {
-                if (list.size() > index) {
-                    cellObj = list.get(index);
+            if (keyIndex == keys.length - 1) {
+                if (list.size() > eleIndex) {
+                    cellObj = list.get(eleIndex);
                 }
                 return;
             }
-            if (list.size() <= index) {
+            if (list.size() <= eleIndex) {
                 return;
             }
         }
-        inject((Map<String, Object>) list.get(index), i + 1);
+        inject((Map<String, Object>) list.get(eleIndex), keyIndex + 1);
     }
 
 }

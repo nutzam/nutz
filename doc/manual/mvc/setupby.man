@@ -10,7 +10,7 @@
 ----------------------------------------------------------
 如何使用@SetupBy
 
-	首先, 实现Setup接口.这个接口就2个方法,分别对应启动(init)和关闭(depose)
+	首先, 实现Setup接口.这个接口就2个方法,分别对应启动(init)和关闭(destroy)
 	
 	{{{<JAVA>
 	public void init(NutConfig nc) {
@@ -31,7 +31,7 @@
 	那关闭的时候呢?
 	
 	{{{<JAVA>
-	public void depose(NutConfig nc) {
+	public void destroy(NutConfig nc) {
 		Ioc ioc = nc.getIoc(); // 可以拿到Ioc容器
 		Dao dao = ioc.get(Dao.class);
 		

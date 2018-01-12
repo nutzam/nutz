@@ -30,8 +30,6 @@ public class NutTxDao extends NutDao implements Closeable {
 
     protected String id;
 
-    protected Savepoint sp;
-
     protected boolean debug;
 
     /**
@@ -76,6 +74,7 @@ public class NutTxDao extends NutDao implements Closeable {
                 }
             }
         });
+        sps = new NutMap();
     }
 
     /**
@@ -164,12 +163,7 @@ public class NutTxDao extends NutDao implements Closeable {
         if (debug)
             log.debugf("rollback id=%s", id);
         try {
-            Savepoint sp = null;
-            if (this.id.equals(id))
-                sp = this.sp;
-            else if (sps != null) {
-                sp = sps.getAs(id, Savepoint.class);
-            }
+            Savepoint sp = sps.getAs(id, Savepoint.class);
             if (sp != null)
                 conn.rollback(sp);
             else
@@ -182,14 +176,7 @@ public class NutTxDao extends NutDao implements Closeable {
 
     public NutTxDao setSavepoint(String spId) {
         try {
-            Savepoint sp = conn.setSavepoint(spId);
-            if (id.equals(spId))
-                this.sp = sp;
-            else {
-                if (sps == null)
-                    sps = new NutMap();
-                sps.put(spId, sp);
-            }
+            sps.put(spId, conn.setSavepoint());
         }
         catch (SQLException e) {
             throw new DaoException(e);

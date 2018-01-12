@@ -110,11 +110,7 @@ public class Nutzs {
      * 调用此方法将改变AOP类名命名规则
      * @return
      */
-    @SuppressWarnings("deprecation")
     public static ClassDefiner cd() {
-        if (AbstractClassAgent.t == null)
-            AbstractClassAgent.t = new AtomicLong(8);
-        AbstractClassAgent.t.incrementAndGet();
         return AccessController.doPrivileged(new PrivilegedAction<DefaultClassDefiner>() {
             public DefaultClassDefiner run() {
                 return new DefaultClassDefiner();

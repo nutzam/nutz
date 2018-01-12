@@ -60,7 +60,7 @@ public abstract class Loadings {
         evalPathMap(ai, Mirror.getAnnotationDeep(type, PathMap.class));
         evalOk(ai, Mirror.getAnnotationDeep(type, Ok.class));
         evalFail(ai, Mirror.getAnnotationDeep(type, Fail.class));
-        evalAt(ai, Mirror.getAnnotationDeep(type, At.class), type.getSimpleName());
+        evalAt(ai, Mirror.getAnnotationDeep(type, At.class), type.getSimpleName(), false);
         evalActionChainMaker(ai, Mirror.getAnnotationDeep(type, Chain.class));
         evalModule(ai, type);
         if (Mvcs.DISPLAY_METHOD_LINENUMBER) {
@@ -85,16 +85,13 @@ public abstract class Loadings {
         evalOk(ai, Mirror.getAnnotationDeep(method, Ok.class));
         evalFail(ai, Mirror.getAnnotationDeep(method, Fail.class));
         evalHttpMethod(ai, method, Mirror.getAnnotationDeep(method, At.class));
-        evalAt(ai, Mirror.getAnnotationDeep(method, At.class), method.getName());
+        evalAt(ai, Mirror.getAnnotationDeep(method, At.class), method.getName(), true);
         evalActionChainMaker(ai, Mirror.getAnnotationDeep(method, Chain.class));
         ai.setMethod(method);
         return ai;
     }
 
-    private static EntryDeterminer determiner = null;
-
     public static Set<Class<?>> scanModules(Ioc ioc, Class<?> mainModule, EntryDeterminer determiner) {
-        Loadings.determiner = determiner;
         Modules ann = mainModule.getAnnotation(Modules.class);
         boolean scan = null == ann ? true : ann.scanPackage();
         // 准备扫描列表
@@ -136,7 +133,7 @@ public abstract class Loadings {
                 Collection<Class<?>> col = ms.scan();
                 if (null != col)
                     for (Class<?> type : col) {
-                        if (isModule(type)) {
+                        if (isModule(type, determiner)) {
                             modules.add(type);
                         }
                     }
@@ -145,7 +142,7 @@ public abstract class Loadings {
             // 扫描包，扫描出的类直接计入结果
             if (ann.packages() != null && ann.packages().length > 0) {
                 for (String packageName : ann.packages()) {
-                    scanModuleInPackage(modules, packageName);
+                    scanModuleInPackage(modules, packageName, determiner);
                 }
             }
         }
@@ -167,11 +164,11 @@ public abstract class Loadings {
         for (Class<?> type : forScans) {
             // 扫描子包
             if (scan) {
-                scanModuleInPackage(modules, type.getPackage().getName());
+                scanModuleInPackage(modules, type.getPackage().getName(), determiner);
             }
             // 仅仅加载自己
             else {
-                if (isModule(type)) {
+                if (isModule(type, determiner)) {
                     if (log.isDebugEnabled())
                         log.debugf(" > Found @At : '%s'", type.getName());
                     modules.add(type);
@@ -183,22 +180,26 @@ public abstract class Loadings {
         return modules;
     }
 
-    protected static void scanModuleInPackage(Set<Class<?>> modules, String packageName) {
+    public static void scanModuleInPackage(Set<Class<?>> modules, String packageName, EntryDeterminer determiner) {
         if (log.isDebugEnabled())
             log.debugf(" > scan '%s'", packageName);
 
         List<Class<?>> subs = Scans.me().scanPackage(packageName);
-        checkModule(modules, subs);
+        checkModule(modules, subs, determiner);
+    }
+    
+    public static void scanModuleInPackage(Set<Class<?>> modules, String packageName) {
+        scanModuleInPackage(modules, packageName, new NutEntryDeterminer());
     }
 
     /**
      * @param modules
      * @param subs
      */
-    private static void checkModule(Set<Class<?>> modules, List<Class<?>> subs) {
+    private static void checkModule(Set<Class<?>> modules, List<Class<?>> subs, EntryDeterminer determiner) {
         for (Class<?> sub : subs) {
             try {
-                if (isModule(sub)) {
+                if (isModule(sub, determiner)) {
                     if (log.isDebugEnabled())
                         log.debugf("   >> add '%s'", sub.getName());
                     modules.add(sub);
@@ -233,7 +234,7 @@ public abstract class Loadings {
         }
     }
 
-    public static void evalAt(ActionInfo ai, At at, String def) {
+    public static void evalAt(ActionInfo ai, At at, String def, boolean isMethod) {
         if (null != at) {
             if (null == at.value() || at.value().length == 0) {
                 ai.setPaths(Lang.array("/" + def.toLowerCase()));
@@ -245,8 +246,8 @@ public abstract class Loadings {
                 ai.setPathKey(at.key());
             if (at.top())
                 ai.setPathTop(true);
-        } else if (!Lang.isEmpty(ai.getHttpMethods())) {
-            // 没有@At但有GET POST等
+        } else if (isMethod) {
+            // 由于EntryDeterminer机制的存在，action方法上可能没有@At，这时候给一个默认的入口路径
             ai.setPaths(Lang.array("/" + def.toLowerCase()));
         }
     }
@@ -335,7 +336,7 @@ public abstract class Loadings {
         return Mirror.me(type).born((Object[]) args);
     }
 
-    public static boolean isModule(Class<?> classZ) {
+    public static boolean isModule(Class<?> classZ, EntryDeterminer determiner) {
         int classModify = classZ.getModifiers();
         if (!Modifier.isPublic(classModify)
             || Modifier.isAbstract(classModify)
@@ -345,5 +346,9 @@ public abstract class Loadings {
             if (determiner.isEntry(classZ, method))
                 return true;
         return false;
+    }
+    
+    public static boolean isModule(Class<?> classZ) {
+        return isModule(classZ, new NutEntryDeterminer());
     }
 }

@@ -18,16 +18,21 @@
 
 Nutz遵循Apache协议,完全开源,文档齐全,永远免费(商用也是)
 
+完整的Mvc,Ioc,Dao,Aop, 快速开发Web/桌面/嵌入式应用,无强制依赖
+
 ## 项目各种资源地址
 
 *   [项目官网](https://nutzam.com)
 *   [Nutz社区](https://nutz.cn/) 秒回, 就是这么爽
+*   [NutzBoot](https://nutz.io) 可靠的企业级微服务框架,提供自动配置,嵌入式web服务,分布式会话,RPC等一篮子解决方案 
 *   在线文档
     *   [官网](https://nutzam.com/core/nutz_preface.html) Nutz手册,涵盖方方面面
     *   [w3cschool上的文档](http://www.w3cschool.cn/nutz/) [由vincent109维护](https://github.com/vincent109)
 *   [各种插件](http://github.com/nutzam/nutzmore) 您能想到的都有哦(基本上`^_^`)
 *   [好玩的Nutzbook](http://nutzbook.wendal.net) 几分钟搭建一个demo有何不可? 入门从这里开始
 *	[在线javadoc](https://nutzam.com/javadoc/) 注释就是这么全
+*	[NutzWk](https://github.com/Wizzercn/NutzWk) 基于Nutz的Java开源企业级开发框架
+*	[Nutz-Onekey](https://github.com/Kerbores/NUTZ-ONEKEY) NUTZ一键脚手架
 
 ## Nutz生态系统
 
@@ -39,18 +44,22 @@ Nutz遵循Apache协议,完全开源,文档齐全,永远免费(商用也是)
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.r.62</version>
+			<version>1.r.63.r2</version>
 		</dependency>
 ```
 
 
-详情: https://nutzam.com/core/basic/maven.html
+详情: [https://nutzam.com/core/basic/maven.html](https://nutzam.com/core/basic/maven.html)
 
 ## Gradle 依赖
 
 ```gradle
-compile(group: 'org.nutz', name: 'nutz', version:'1.r.62')
+compile(group: 'org.nutz', name: 'nutz', version:'1.r.63.r2')
 ```
+
+## 采用Nutz的公司
+
+请看链接 [采用公司](https://github.com/nutzam/nutz/issues/819)
 
 
 ## Sponsorship

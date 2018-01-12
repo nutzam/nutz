@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -302,7 +303,7 @@ public class NutSql extends NutStatement implements Sql {
                 return off + 1;
             } else if (val instanceof PItem) {
                 return ((PItem) val).joinAdaptor(en, adaptors, off);
-            } else if (val.getClass().isArray()) {
+            } else if (val.getClass().isArray() || Collection.class.isAssignableFrom(val.getClass())) {
                 int len = Lang.eleSize(val);
                 Lang.each(val, new Each<Object>() {
                     public void invoke(int index, Object ele, int length) {

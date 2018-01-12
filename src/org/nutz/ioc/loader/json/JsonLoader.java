@@ -58,7 +58,7 @@ public class JsonLoader extends MapLoader {
         this.paths = paths;
     }
 
-    private void loadFromReader(Reader reader) {
+    protected void loadFromReader(Reader reader) {
         String s = Lang.readAll(reader);
         Map<String, Map<String, Object>> map = (Map<String, Map<String, Object>>) Json.fromJson(s);
         if (null != map && map.size() > 0)

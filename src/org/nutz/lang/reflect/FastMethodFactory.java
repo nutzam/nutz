@@ -37,6 +37,12 @@ public class FastMethodFactory implements Opcodes {
         FastMethod fm = cache.get(className);
         if (fm != null)
             return fm;
+        // fix issue #1382 : 非public类的方法,统统做成FallbackFastMethod
+        if (!Modifier.isPublic(klass.getModifiers())) {
+            fm = new FallbackFastMethod(method);
+            cache.put(className, fm);
+            return fm;
+        }
         try {
             fm = (FastMethod) klass.getClassLoader().loadClass(className).newInstance();
             cache.put(className, fm);

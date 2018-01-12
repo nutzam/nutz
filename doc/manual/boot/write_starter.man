@@ -68,10 +68,10 @@ Starter类怎么写?
 	那,我这个starter对外提供什么呢?
 	
 	* 她可以不对外提供任何东西,静静地看着你装逼
-	* 返回一个IocLoader,只需实现IocLoaderProvider接口,例如[https://gitee.com/nutz/nutzboot/blob/dev/nutzboot-starter-redis/src/main/java/org/nutz/boot/starter/redis/JedisStarter.java JedisStarter]就是这样干的
-	* 声明为一个"服务器",例如[https://gitee.com/nutz/nutzboot/blob/dev/nutzboot-starter-jetty/src/main/java/org/nutz/boot/starter/jetty/JettyStarter.java JettyStarter],她启动了一个web容器,这时候你需要实现ServerFace
-	* 声明为一个"Filter",例如[https://gitee.com/nutz/nutzboot/blob/dev/nutzboot-starter-nutz-mvc/src/main/java/org/nutz/boot/starter/nutz/mvc/NutFilterStarter.java NutFilterStarter],她返回一个类似web.xml里面的filter定义,需要实现WebFilterFace接口
-	* 声明为一个"Servlet",例如[https://gitee.com/nutz/nutzboot/blob/dev/nutzboot-starter-jdbc/src/main/java/org/nutz/boot/starter/jdbc/DruidWebStatServletStarter.java DruidStatViewStarter],它返回一个servlet定义,需要实现WebServletFace
+	* 返回一个IocLoader,只需实现IocLoaderProvider接口,例如[https://gitee.com/nutz/nutzboot/blob/dev/nutzboot-starter/nutzboot-starter-redis/src/main/java/org/nutz/boot/starter/redis/JedisStarter.java JedisStarter]就是这样干的
+	* 声明为一个"服务器",例如[https://gitee.com/nutz/nutzboot/blob/dev/nutzboot-starter/nutzboot-starter-jetty/src/main/java/org/nutz/boot/starter/jetty/JettyStarter.java JettyStarter],她启动了一个web容器,这时候你需要实现ServerFace
+	* 声明为一个"Filter",例如[https://gitee.com/nutz/nutzboot/blob/dev/nutzboot-starter/nutzboot-starter-nutz-mvc/src/main/java/org/nutz/boot/starter/nutz/mvc/NutFilterStarter.java NutFilterStarter],她返回一个类似web.xml里面的filter定义,需要实现WebFilterFace接口
+	* 声明为一个"Servlet",例如[https://gitee.com/nutz/nutzboot/blob/dev/nutzboot-starter/nutzboot-starter-jdbc/src/main/java/org/nutz/boot/starter/jdbc/DruidWebStatServletStarter.java DruidStatViewStarter],它返回一个servlet定义,需要实现WebServletFace
 	* 监听session开关?web容器的初始化? 实现WebEventListenerFace就行
 	
 ---------------------------------------------------------------------

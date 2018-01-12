@@ -1,5 +1,7 @@
 package org.nutz.ioc;
 
+import java.lang.annotation.Annotation;
+
 /**
  * 容器更高级的方法
  * 
@@ -42,4 +44,6 @@ public interface Ioc2 extends Ioc {
     String[] getNamesByType(Class<?> klass, IocContext context);
     
     <T> T getByType(Class<T> type, IocContext context);
+    
+    String[] getNamesByAnnotation(Class<? extends Annotation> klass, IocContext context);
 }

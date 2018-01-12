@@ -39,7 +39,7 @@ Nutz.Dao 自定义 SQL 的概述
 		/* delete.data */
 		DELETE FROM $table WHERE name LIKE @name
 		/* update.data */
-		UPDATE FROM $table SET name=@name WHERE id=@id
+		UPDATE $table SET name=@name WHERE id=@id
 		}}}
 		在你的 Java 代码中：
 		{{{
@@ -129,6 +129,10 @@ Sql 对象 -- org.nutz.dao.sql.Sql
 		这就完了吗？我怎么取得查询的结果呢。是的，同 UPDATE, DELETE, INSERT 不同， SELECT 是需要返回
 		结果的，但是 Nutz.Dao 也不太清楚怎样为你自定义的 SELECT 语句返回结果，于是，就需要你设置回调。
 
+		Tips:
+			如果运行的 sql 语句是类似 "show columns from tableName from dbName" 这样的语句，
+			请在调用 dao.execute 方法前调用 sql.forceExecQuery 方法来强制让 nutz 用 select 方式运行该 sql 语句。
+
 	回调的用处
 		接上例，你需要这么改造一下你的函数：
 		{{{<JAVA>
@@ -193,27 +197,26 @@ Sql 对象 -- org.nutz.dao.sql.Sql
 常用回调
 
 	Sqls.callback.XXX 提供了80%以上场景所需要的回调类型,在编写自定义回调之前,建议您先看看有没有现成的
-	
-	|   名称               |   结果类型        | 备注                 |
-	|---------------|---------------|--------------|
-    |bool           | Boolean       |              |
-    |bools          | boolean[]     |1.r.62及之前的版本是LinkedArray|
-    |doubleValue    | Double        |              |
-    |entities       | `List<Pojo>`  |取决于Entity对应的Pojo类  |
-    |entity         | Pojo          |取决于Entity对应的Pojo类   |
-    |floatValue     | Float         |              |
-    |integer        | Integer       |              |
-    |ints           | int[]         |              |
-    |longValue      | Long          |              |
-    |longs          | long[]        |              |
-    |map            | NutMap        |与Record类型,但区分大小写 |
-    |maps           | List<NutMap>  |              |
-    |record         | Record        |字段名均为小写 |
-    |records        | `List<Record>`|              |
-    |str            | String        |              |
-    |strList        | List<String>  |              |
-    |strs           | `String[]`    |              |
-    |timestamp      | TimeStamp     |              |
+
+    ||   名称               ||   结果类型        || 备注                 ||
+    ||bool           || Boolean       ||              ||
+    ||bools          || `boolean[]`     ||1.r.62及之前的版本是LinkedArray||
+    ||doubleValue    || Double        ||              ||
+    ||entities       || `List<Pojo>`  ||取决于Entity对应的Pojo类  ||
+    ||entity         || Pojo          ||取决于Entity对应的Pojo类   ||
+    ||floatValue     || Float         ||              ||
+    ||integer        || Integer       ||              ||
+    ||ints           || `int[]`         ||              ||
+    ||longValue      || Long          ||              ||
+    ||longs          || `long[]`        ||              ||
+    ||map            || NutMap        ||与Record类型,但区分大小写 ||
+    ||maps           || `List<NutMap>`  ||              ||
+    ||record         || Record        ||字段名均为小写 ||
+    ||records        || `List<Record>`||              ||
+    ||str            || String        ||              ||
+    ||strList        || `List<String>`  ||              ||
+    ||strs           || `String[]`    ||              ||
+    ||timestamp      || TimeStamp     ||              ||
 ----------------------------------------------------------------------------------------------------
 Nutz.Dao SQL 文件的格式
 
@@ -280,7 +283,7 @@ Nutz.Dao SQL 文件的格式
 	是的，你的 Sql 对象也可以使用 Condition，但是这个 Condition 要如何同你自定义的 SQL 拼装在一起呢，
 	这里，我提供了一个特殊的变量占位符 -- 条件变量占位符 $condition
 	--------------------------------------------------------------------------------------------
-	特殊的占位符 -- {#00A;*${condition}}
+	特殊的占位符 -- {#00A;*$condition}
 		唯一需要说明的是，在你写作的 SQL 中，需要声明一个特殊的占位符，比如下面的代码输出所有 id 大
 		于 35 的 Pet 对象的名称
 		{{{<JAVA>

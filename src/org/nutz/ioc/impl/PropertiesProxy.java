@@ -26,6 +26,7 @@ import org.nutz.lang.util.FileVisitor;
 import org.nutz.lang.util.MultiLineProperties;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.mapl.Mapl;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
 
@@ -363,18 +364,24 @@ public class PropertiesProxy extends MultiLineProperties {
     public String get(String key) {
         return super.get(key);
     }
-    
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public <T> T make(Class<T> klass, String prefix) {
-        Mirror<T> mirror = Mirror.me(klass);
-        T t = mirror.born();
-        Map map = toMap();
-        map = Lang.filter(map, prefix, null, null, null);
-        for (Entry<String, Object> en : ((Map<String, Object>)map).entrySet()) {
-            String name = en.getKey();
-            Injecting setter = mirror.getInjecting(name);
-            setter.inject(t, en.getValue());
-        }
-        return t;
-    }
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public <T> T makeDeep(Class<T> klass, String prefix) {
+		Map map = this;
+		return (T) Mapl.maplistToObj(Lang.filter(map, prefix, null, null, null), klass);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public <T> T make(Class<T> klass, String prefix) {
+		Map map = this;
+		Mirror<T> mirror = Mirror.me(klass);
+		T t = mirror.born();
+		map = Lang.filter(map, prefix, null, null, null);
+		for (Entry<String, Object> en : ((Map<String, Object>) map).entrySet()) {
+			String name = en.getKey();
+			Injecting setter = mirror.getInjecting(name);
+			setter.inject(t, en.getValue());
+		}
+		return t;
+	}
 }

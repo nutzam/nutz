@@ -246,7 +246,7 @@ public interface DaoStatement extends Serializable {
     DaoStatement setPager(Pager pager);
     
     /**
-     * 如果sql的类型无法被nutz识别,而这个sql有的确是个查询,那么调用这个方法, 这样就强制nutz按select的方式执行
+     * 如果sql的类型无法被nutz识别,而这个sql又的确是个查询,那么调用这个方法, 这样就强制nutz按select的方式执行
      */
     void forceExecQuery();
     

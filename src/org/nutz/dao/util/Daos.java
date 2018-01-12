@@ -469,8 +469,20 @@ public abstract class Daos {
             }
             
         });
+        ArrayList<Exception> es = new ArrayList<Exception>();
         for (Class<?> klass : list)
-            dao.create(klass, force);
+            try {
+                dao.create(klass, force);
+            }
+            catch (Exception e) {
+                es.add(new RuntimeException("class=" + klass.getName(), e));
+            }
+        if (es.size() > 0) {
+            for (Exception exception : es) {
+                log.debug(exception.getMessage(), exception);
+            }
+            throw (RuntimeException)es.get(0);
+        }
     }
 
     /**

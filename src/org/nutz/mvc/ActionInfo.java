@@ -59,7 +59,7 @@ public class ActionInfo {
         httpMethods = new HashSet<String>();
     }
 
-    public ActionInfo mergeWith(ActionInfo parent) {
+    public ActionInfo mergeWith(ActionInfo parent, boolean fromMain) {
         // 组合路径 - 与父路径做一个笛卡尔积
         if (!pathTop && null != paths && null != parent.paths && parent.paths.length > 0) {
             List<String> myPaths = new ArrayList<String>(paths.length * parent.paths.length);
@@ -94,8 +94,10 @@ public class ActionInfo {
         okView = null == okView ? parent.okView : okView;
         failView = null == failView ? parent.failView : failView;
         filterInfos = null == filterInfos ? parent.filterInfos : filterInfos;
-        //injectName = null == injectName ? parent.injectName : injectName;
-        moduleType = null == moduleType ? parent.moduleType : moduleType;
+        if (!fromMain) {
+            injectName = null == injectName ? parent.injectName : injectName;
+            moduleType = null == moduleType ? parent.moduleType : moduleType;
+        }
         chainName = null == chainName ? parent.chainName : chainName;
         
         // 继承元数据信息

@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import org.nutz.aop.AopCallback;
+import org.nutz.conf.NutConf;
 import org.nutz.repo.org.objectweb.asm.ClassWriter;
 import org.nutz.repo.org.objectweb.asm.MethodVisitor;
 import org.nutz.repo.org.objectweb.asm.Opcodes;
@@ -33,7 +34,7 @@ class ClassY implements Opcodes {
         this.myName = myName.replace('.', '/');
         this.enhancedSuperName = klass.getName().replace('.', '/');
         this.cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-        cw.visit(    AsmClassAgent.CLASS_LEVEL,
+        cw.visit(    NutConf.AOP_CLASS_LEVEL,
                     ACC_PUBLIC,
                     this.myName,
                     null,
