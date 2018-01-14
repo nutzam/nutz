@@ -1650,4 +1650,18 @@ public abstract class Times {
     public static Date ts2D(long timestamp) {
         return new Date(Long.parseLong(timestamp * 1000 + ""));
     }
+
+    /**
+     * Date日期转Unix时间戳
+     *
+     * @param date 日期
+     * @return 时间戳
+     */
+    public static long d2TS(Date date) {
+        if (Lang.isEmpty(date)) {
+            return getTS();
+        } else {
+            return Long.parseLong(Times.sDT2TS(Times.sDT(date), DF_DATE_TIME));
+        }
+    }
 }
