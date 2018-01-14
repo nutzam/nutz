@@ -81,30 +81,7 @@ public class SimpleDaoTest extends DaoCase {
     }
 
 
-    /**
-     * 按包自动创建表
-     */
-    @Test
-    public void test_dao_createTablesInPackage() {
 
-        final Set<Class<?>> filters=new HashSet<Class<?>>();
-        filters.add(SystemUser.class);
-        Daos.createTablesInPackage(dao, SystemUser.class, true, new TablesFilter() {
-            @Override
-            public boolean match(Class<?> klass, Table table) {
-                if (filters.contains(klass)) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        });
-        //此表应该不存在
-        assertTrue(!dao.exists(SystemUser.class));
-        Daos.createTablesInPackage(dao,SystemUser.class,true);
-        //此表存在
-        assertTrue(dao.exists(SystemUser.class));
-    }
 
 
     /**
@@ -1145,5 +1122,33 @@ public class SimpleDaoTest extends DaoCase {
                 tx.close();
             }
         }
+    }
+
+    /**
+     * 按包自动创建表
+     */
+    @Test
+    public void test_dao_createTablesInPackage() {
+        if(dao.exists(SystemUser.class)){
+            //存在则删除
+            dao.drop(SystemUser.class);
+        }
+        final Set<Class<?>> filters=new HashSet<Class<?>>();
+        filters.add(SystemUser.class);
+        Daos.createTablesInPackage(dao, SystemUser.class, true, new TablesFilter() {
+            @Override
+            public boolean match(Class<?> klass, Table table) {
+                if (filters.contains(klass)) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        });
+        //此表应该不存在
+        assertTrue(!dao.exists(SystemUser.class));
+        Daos.createTablesInPackage(dao,SystemUser.class,true);
+        //此表存在
+        assertTrue(dao.exists(SystemUser.class));
     }
 }
