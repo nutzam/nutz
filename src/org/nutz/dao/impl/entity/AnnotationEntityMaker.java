@@ -588,6 +588,16 @@ public class AnnotationEntityMaker implements EntityMaker {
             }
             en.addIndex(index);
         }
+        for (Field field : en.getMirror().getFields()) {
+            Index idx = field.getAnnotation(Index.class);
+            if (idx == null)
+                continue;
+            NutEntityIndex index = new NutEntityIndex();
+            index.setUnique(idx.unique());
+            index.setName(idx.name());
+            index.addField(en.getField(field.getName()));
+            en.addIndex(index);
+        }
     }
 
     private void _checkupEntityFieldsWithDatabase(NutEntity<?> en) {
