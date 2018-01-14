@@ -1,35 +1,6 @@
 package org.nutz.dao.util;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import javax.sql.DataSource;
-
-import org.nutz.dao.Chain;
-import org.nutz.dao.Condition;
-import org.nutz.dao.ConnCallback;
-import org.nutz.dao.Dao;
-import org.nutz.dao.DaoException;
-import org.nutz.dao.FieldFilter;
-import org.nutz.dao.FieldMatcher;
-import org.nutz.dao.Sqls;
-import org.nutz.dao.TableName;
+import org.nutz.dao.*;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityIndex;
 import org.nutz.dao.entity.MappingField;
@@ -42,6 +13,7 @@ import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
+import org.nutz.dao.util.tables.TablesFilter;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.random.R;
@@ -52,6 +24,14 @@ import org.nutz.resource.Scans;
 import org.nutz.trans.Molecule;
 import org.nutz.trans.Trans;
 
+import javax.sql.DataSource;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.sql.*;
+import java.util.*;
+import java.util.Date;
+
 /**
  * Dao 的帮助函数
  *
@@ -59,6 +39,7 @@ import org.nutz.trans.Trans;
  * @author wendal(wendal1985@gmail.com)
  * @author cqyunqin
  * @author rekoe(koukou890@qq.com)
+ * @author threefish(306955302@qq.com)
  */
 public abstract class Daos {
 
@@ -256,7 +237,7 @@ public abstract class Daos {
         };
         return Trans.exec(molecule);
     }
-    
+
     public static StringBuilder dataDict(DataSource ds, String... packages) {
         return dataDict(new NutDao(ds), packages);
     }
@@ -349,7 +330,7 @@ public abstract class Daos {
         dao.execute(sql2);
         return sql2.getLong();
     }
-    
+
     /**
      * 查询某sql的结果条数
      * @param dao 用于执行该count方法的dao实例
@@ -459,6 +440,74 @@ public abstract class Daos {
             if (klass.getAnnotation(Table.class) != null)
                 list.add(klass);
         };
+        createTables(dao,list,force);
+    }
+
+    /**
+     * 为特定package下带@Table注解的类调用dao.create(XXX.class, force), 批量建表
+     *
+     * @param dao
+     *            Dao实例
+     * @param oneClzInPackage
+     *            使用package中某一个class文件, 可以防止写错pkgName
+     * @param force
+     *            如果表存在,是否先删后建
+     */
+    public static void createTablesInPackage(Dao dao, Class<?> oneClzInPackage, boolean force) {
+        createTablesInPackage(dao, oneClzInPackage.getPackage().getName(), force);
+    }
+
+    /**
+     * 为特定package下带@Table注解的类调用dao.create(XXX.class, force),
+     * 批量建表,优先建立带@ManyMany的表
+     *
+     * @param dao
+     *            Dao实例
+     * @param oneClzInPackage
+     *            使用package中某一个class文件, 可以防止写错pkgName
+     * @param force
+     *            如果表存在,是否先删后建
+     * @param filter
+     *            定义过滤器排除不需要自动创建的表
+     */
+    public static void createTablesInPackage(final Dao dao,  Class<?> oneClzInPackage, boolean force,TablesFilter filter) {
+        createTablesInPackage(dao, oneClzInPackage.getPackage().getName(), force,filter);
+    }
+    /**
+     * 为特定package下带@Table注解的类调用dao.create(XXX.class, force),
+     * 批量建表,优先建立带@ManyMany的表
+     *
+     * @param dao
+     *            Dao实例
+     * @param packageName
+     *            package名称,自动包含子类
+     * @param force
+     *            如果表存在,是否先删后建
+     * @param filter
+     *            定义过滤器排除不需要自动创建的表
+     */
+    public static void createTablesInPackage(final Dao dao, String packageName, boolean force,TablesFilter filter) {
+        List<Class<?>> list = new ArrayList<Class<?>>();
+        for(Class<?> klass: Scans.me().scanPackage(packageName)) {
+            Table table = klass.getAnnotation(Table.class);
+            if (table != null && filter.match(klass,table))
+                list.add(klass);
+        };
+        createTables(dao,list,force);
+    }
+
+    /**
+     *
+     * 批量建表,优先建立带@ManyMany的表
+     *
+     * @param dao
+     *            Dao实例
+     * @param list
+     *            需要自动创建的表
+     * @param force
+     *            如果表存在,是否先删后建
+     */
+    private static void createTables(final Dao dao, List<Class<?>> list, boolean force){
         Collections.sort(list, new Comparator<Class<?>>() {
             public int compare(Class<?> prev, Class<?> next) {
                 int links_prev = dao.getEntity(prev).getLinkFields(null).size();
@@ -467,7 +516,7 @@ public abstract class Daos {
                     return 0;
                 return links_prev > links_next ? 1 : -1;
             }
-            
+
         });
         ArrayList<Exception> es = new ArrayList<Exception>();
         for (Class<?> klass : list)
@@ -483,20 +532,6 @@ public abstract class Daos {
             }
             throw (RuntimeException)es.get(0);
         }
-    }
-
-    /**
-     * 为特定package下带@Table注解的类调用dao.create(XXX.class, force), 批量建表
-     *
-     * @param dao
-     *            Dao实例
-     * @param oneClzInPackage
-     *            使用package中某一个class文件, 可以防止写错pkgName
-     * @param force
-     *            如果表存在,是否先删后建
-     */
-    public static void createTablesInPackage(Dao dao, Class<?> oneClzInPackage, boolean force) {
-        createTablesInPackage(dao, oneClzInPackage.getPackage().getName(), force);
     }
 
     private static Class<?>[] iz = new Class<?>[]{Dao.class};
@@ -1043,12 +1078,12 @@ public abstract class Daos {
 
     /** 是否把字段名给变成大写 */
     public static boolean FORCE_UPPER_COLUMN_NAME = false;
-    
+
     public static boolean FORCE_HUMP_COLUMN_NAME = false;
 
     /** varchar 字段的默认字段长度 */
     public static int DEFAULT_VARCHAR_WIDTH = 128;
-    
+
     /** Table&View名称生成器 */
     public static interface NameMaker {
         String make(Class<?> klass);

@@ -1,43 +1,13 @@
 package org.nutz.dao.test.normal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeMap;
-
-import javax.sql.DataSource;
-
 import org.junit.Test;
 import org.nutz.Nutz;
 import org.nutz.castor.Castors;
-import org.nutz.dao.Chain;
-import org.nutz.dao.Cnd;
-import org.nutz.dao.Condition;
-import org.nutz.dao.DB;
-import org.nutz.dao.Dao;
-import org.nutz.dao.DaoException;
-import org.nutz.dao.FieldFilter;
-import org.nutz.dao.FieldMatcher;
-import org.nutz.dao.Sqls;
-import org.nutz.dao.TableName;
+import org.nutz.dao.*;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.Record;
+import org.nutz.dao.entity.annotation.Table;
 import org.nutz.dao.impl.DaoExecutor;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.impl.NutTxDao;
@@ -50,22 +20,7 @@ import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
-import org.nutz.dao.test.meta.A;
-import org.nutz.dao.test.meta.Abc;
-import org.nutz.dao.test.meta.Base;
-import org.nutz.dao.test.meta.ColDefineUser;
-import org.nutz.dao.test.meta.DynamicTable;
-import org.nutz.dao.test.meta.IssuePkVersion;
-import org.nutz.dao.test.meta.Master;
-import org.nutz.dao.test.meta.Pet;
-import org.nutz.dao.test.meta.PetObj;
-import org.nutz.dao.test.meta.Platoon;
-import org.nutz.dao.test.meta.PojoWithNull;
-import org.nutz.dao.test.meta.SimplePOJO;
-import org.nutz.dao.test.meta.Soldier;
-import org.nutz.dao.test.meta.Tank;
-import org.nutz.dao.test.meta.TestMysqlIndex;
-import org.nutz.dao.test.meta.UseBlobClob;
+import org.nutz.dao.test.meta.*;
 import org.nutz.dao.test.meta.issue1074.PojoSql;
 import org.nutz.dao.test.meta.issue1163.Issue1163Master;
 import org.nutz.dao.test.meta.issue1163.Issue1163Pet;
@@ -88,6 +43,8 @@ import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.blob.SimpleBlob;
 import org.nutz.dao.util.blob.SimpleClob;
 import org.nutz.dao.util.cri.SimpleCriteria;
+import org.nutz.dao.util.meta.SystemUser;
+import org.nutz.dao.util.tables.TablesFilter;
 import org.nutz.json.Json;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
@@ -96,6 +53,17 @@ import org.nutz.lang.random.R;
 import org.nutz.lang.util.NutMap;
 import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
+
+import javax.sql.DataSource;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 public class SimpleDaoTest extends DaoCase {
 
@@ -111,6 +79,10 @@ public class SimpleDaoTest extends DaoCase {
             dao.insert(pet);
         }
     }
+
+
+
+
 
     /**
      * for issue #675 提供一个直接返回对象的方法
@@ -847,13 +819,13 @@ public class SimpleDaoTest extends DaoCase {
         user.setSalt(R.UU32());
         user.setPassword(Lang.sha1("abc" + user.getSalt()));
         dao.insert(user);
-        
+
         NutMap map = new NutMap(".table", "t_test_user");
         map.put("+*id", 0);
         map.put("name", "wendal");
         dao.insert(map);
         assertNotNull(map.get("id"));
-        
+
         map = new NutMap(".table", "t_test_user");
         map.put("*+id", 0);
         map.put("name", "wendal2");
@@ -991,9 +963,9 @@ public class SimpleDaoTest extends DaoCase {
         } finally {
             Daos.FORCE_WRAP_COLUMN_NAME = false;
         }
-        
+
     }
-    
+
     @Test
     public void test_fast_insert_maps() {
         List<NutMap> list = new ArrayList<NutMap>();
@@ -1003,10 +975,10 @@ public class SimpleDaoTest extends DaoCase {
             list.add(pet);
         }
         list.get(0).setv(".table", "t_pet");
-        
+
         dao.fastInsert(list);
     }
-    
+
     @Test
     public void test_issue_1284() {
         dao.create(Issue1284.class, true);
@@ -1016,7 +988,7 @@ public class SimpleDaoTest extends DaoCase {
         bean.setAge(20);
         dao.insert(bean);
     }
-    
+
     @Test
     public void test_issue_insert_or_update() {
         try {
@@ -1031,7 +1003,7 @@ public class SimpleDaoTest extends DaoCase {
             e.printStackTrace();
             throw e;
         }
-        
+
         try {
             dao.create(DumpData.class, true);
             DumpData dump = new DumpData();
@@ -1046,7 +1018,7 @@ public class SimpleDaoTest extends DaoCase {
             // TODO: handle exception
         }
     }
-    
+
     @Test
     public void test_issue_1302() {
             dao.create(Issue1302Master.class, false);
@@ -1058,7 +1030,7 @@ public class SimpleDaoTest extends DaoCase {
             pojo = dao.fetch(Issue1302Master.class, pojo.getName());
             assertEquals(Issue1302UserAction.VIEW, pojo.getAct());
     }
-    
+
 
     @Test
     public void test_truncate() {
@@ -1066,20 +1038,20 @@ public class SimpleDaoTest extends DaoCase {
             dao.create(Pet.class, false);
             dao.insert(Pet.create(10));
             assertTrue(dao.count(Pet.class) > 0);
-            
+
             // 干掉
             dao.truncate(Pet.class);
             assertTrue(dao.count(Pet.class) == 0);
-            
+
             // 再插入10条记录
             dao.insert(Pet.create(10));
             assertTrue(dao.count(Pet.class) > 0);
-            
+
             //再干掉
             dao.truncate(dao.getEntity(Pet.class).getTableName());
             assertTrue(dao.count(Pet.class) == 0);
     }
-    
+
     @Test
     public void test_issue1342() {
         if (!dao.meta().isMySql())
@@ -1092,7 +1064,7 @@ public class SimpleDaoTest extends DaoCase {
                 + "PARTITION p_catchall VALUES LESS THAN MAXVALUE)"));
         dao.query("t_issue_1342", new SimpleCriteria("partition(p_2017)"));
     }
-    
+
     @Test
     public void test_pk_version() {
         dao.create(IssuePkVersion.class, true);
@@ -1112,13 +1084,13 @@ public class SimpleDaoTest extends DaoCase {
         ve = dao.fetchx(IssuePkVersion.class, "abc_1", 1);
         assertEquals(99, ve.getPrice());
     }
-    
+
     @Test
     public void test_mysql_migration() {
         if (!dao.meta().isMySql())
             return;
         dao.create(TestMysqlIndex.class, true);
-        
+
         System.out.println("==================================");
         Daos.migration(dao, TestMysqlIndex.class, true, false, true);
         System.out.println("==================================");
@@ -1127,13 +1099,13 @@ public class SimpleDaoTest extends DaoCase {
         Daos.migration(dao, TestMysqlIndex.class, true, false, true);
         System.out.println("==================================");
     }
-    
+
     @Test
     public void test_insert_chain_with_adaptor() {
         dao.create(Pet.class, true);
         dao.insert("t_pet", Chain.make("name", "wendal").adaptor(Jdbcs.Adaptor.asString));
     }
-    
+
     @Test
     public void test_nutz_tx_dao() throws Throwable {
         for (int i = 0; i < 1000; i++) {
@@ -1150,5 +1122,33 @@ public class SimpleDaoTest extends DaoCase {
                 tx.close();
             }
         }
+    }
+
+    /**
+     * 按包自动创建表
+     */
+    @Test
+    public void test_dao_createTablesInPackage() {
+        if(dao.exists(SystemUser.class)){
+            //存在则删除
+            dao.drop(SystemUser.class);
+        }
+        final Set<Class<?>> filters=new HashSet<Class<?>>();
+        filters.add(SystemUser.class);
+        Daos.createTablesInPackage(dao, SystemUser.class, true, new TablesFilter() {
+            @Override
+            public boolean match(Class<?> klass, Table table) {
+                if (filters.contains(klass)) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        });
+        //此表应该不存在
+        assertTrue(!dao.exists(SystemUser.class));
+        Daos.createTablesInPackage(dao,SystemUser.class,true);
+        //此表存在
+        assertTrue(dao.exists(SystemUser.class));
     }
 }
