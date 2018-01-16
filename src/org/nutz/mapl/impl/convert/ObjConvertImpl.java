@@ -236,6 +236,13 @@ public class ObjConvertImpl implements MaplConvert {
                     path.push(key);
                 }
             }
+            if (jef.getMirror().isDateTimeLike() && jef.getDataFormat() != null) {
+                try {
+                    jef.setValue(obj, jef.getDataFormat().parseObject(String.valueOf(val)));
+                    continue;
+                } catch (Throwable e) {
+                }
+            }
             jef.setValue(obj, Mapl.maplistToObj(val, jef.getGenericType()));
         }
         return obj;
