@@ -236,6 +236,7 @@ public class ObjConvertImpl implements MaplConvert {
                     path.push(key);
                 }
             }
+            // fix issue 1386
             if (jef.getMirror().isDateTimeLike() && jef.getDataFormat() != null) {
                 try {
                     jef.setValue(obj, jef.getDataFormat().parseObject(String.valueOf(val)));
