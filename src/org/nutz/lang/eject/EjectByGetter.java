@@ -30,6 +30,8 @@ public class EjectByGetter implements Ejecting {
             if (NutConf.USE_FASTCLASS) {
                 if (fm == null)
                     fm = FastClassFactory.get(getter);
+                if (fm == null)
+                	return getter.invoke(obj);
                 return fm.invoke(obj);
             }
             return getter.invoke(obj);

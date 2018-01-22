@@ -4,9 +4,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 import org.nutz.json.JsonField;
 import org.nutz.json.JsonIgnore;
@@ -133,6 +135,9 @@ public class JsonEntityField {
                     jef.dataFormat = new DecimalFormat(dataFormat);
                 }else if(jfmirror.isDateTimeLike()){
                     jef.dataFormat = new SimpleDateFormat(dataFormat);
+                    if (!Strings.isBlank(jf.timeZone())) {
+                        ((DateFormat)jef.dataFormat).setTimeZone(TimeZone.getTimeZone(jf.timeZone()));
+                    }
                 }
             }
         }

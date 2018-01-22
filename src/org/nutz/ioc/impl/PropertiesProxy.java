@@ -379,7 +379,14 @@ public class PropertiesProxy extends MultiLineProperties {
 		map = Lang.filter(map, prefix, null, null, null);
 		for (Entry<String, Object> en : ((Map<String, Object>) map).entrySet()) {
 			String name = en.getKey();
-			Injecting setter = mirror.getInjecting(name);
+			Injecting setter = null;
+            try {
+                setter = mirror.getInjecting(name);
+            }
+            catch (Exception e) {
+                log.debugf("no such field(name=%s) at object class=%s, skip", name, t.getClass().getName());
+                continue;
+            }
 			setter.inject(t, en.getValue());
 		}
 		return t;

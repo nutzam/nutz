@@ -2,6 +2,7 @@ package org.nutz.mapl.impl.convert;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -234,6 +235,14 @@ public class ObjConvertImpl implements MaplConvert {
                     }
                 } else {
                     path.push(key);
+                }
+            }
+            // fix issue 1386
+            if (jef.getMirror().isDateTimeLike() && jef.getDataFormat() != null) {
+                try {
+                    jef.setValue(obj, ((DateFormat)jef.getDataFormat()).parse(String.valueOf(val)));
+                    continue;
+                } catch (Throwable e) {
                 }
             }
             jef.setValue(obj, Mapl.maplistToObj(val, jef.getGenericType()));
