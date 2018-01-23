@@ -104,18 +104,12 @@ public abstract class Sender implements Callable<Response> {
         Response rep = null;
         if (reHeaders != null) {
             rep = new Response(conn, reHeaders);
+            String encoding = conn.getContentEncoding();
             if (rep.isOK()) {
                 InputStream is1 = conn.getInputStream();
                 InputStream is2 = null;
-                String encoding = conn.getContentEncoding();
                 // 如果采用了压缩,则需要处理否则都是乱码
-                if (encoding != null && encoding.contains("gzip")) {
-                    is2 = new GZIPInputStream(is1);
-                } else if (encoding != null && encoding.contains("deflate")) {
-                    is2 = new InflaterInputStream(is1, new Inflater(true));
-                } else {
-                    is2 = is1;
-                }
+                is2 = detectStreamEncode(encoding, is1);
 
                 BufferedInputStream is = new BufferedInputStream(is2);
                 rep.setStream(is);
@@ -123,11 +117,11 @@ public abstract class Sender implements Callable<Response> {
 
             else {
                 try {
-                    rep.setStream(conn.getInputStream());
+                    rep.setStream(detectStreamEncode(encoding, conn.getInputStream()));
                 }
                 catch (IOException e) {
                     try {
-                        rep.setStream(conn.getErrorStream());
+                        rep.setStream(detectStreamEncode(encoding, conn.getErrorStream()));
                     }
                     catch (Exception e1) {
                         rep.setStream(new VoidInputStream());
@@ -138,6 +132,16 @@ public abstract class Sender implements Callable<Response> {
         if (this.interceptor != null)
             this.interceptor.afterResponse(request, conn, rep);
         return rep;
+    }
+    
+    protected InputStream detectStreamEncode(String encoding, InputStream ins) throws IOException {
+        if (encoding != null && encoding.contains("gzip")) {
+            return new GZIPInputStream(ins);
+        } else if (encoding != null && encoding.contains("deflate")) {
+            return new InflaterInputStream(ins, new Inflater(true));
+        } else {
+            return ins;
+        }
     }
 
     protected Map<String, String> getResponseHeader() throws IOException {
