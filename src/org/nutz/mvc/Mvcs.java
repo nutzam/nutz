@@ -61,22 +61,6 @@ public abstract class Mvcs {
     }
 
     /**
-     * 取得国际化信息
-     *
-     * @param key
-     * @return
-     */
-    public static String getLocaleMessageStr(String key) {
-        String localizationKey = getLocalizationKey() == null ? getDefaultLocalizationKey() : getLocalizationKey();
-        Map<String, Object> localization = getLocaleMessage(localizationKey);
-        if (null != localization) {
-            Object value = localization.get(key);
-            return value == null ? "" : String.valueOf(value);
-        }
-        return null;
-    }
-
-    /**
      * 获取当前请求对象的字符串表
      *
      * @param req
