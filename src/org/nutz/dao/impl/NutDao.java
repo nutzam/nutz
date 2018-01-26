@@ -1186,11 +1186,6 @@ public class NutDao extends DaoSupport implements Dao {
                 .setAfter(_pojo_fetchInt);
         expert.formatQuery(pojo);
         _exec(pojo);
-        List<T> list = pojo.getList(classOfT);
-        if (list != null && list.size() > 0) 
-            for (T t : list) {
-                _fetchLinks(t, regex, false, true, true, null);
-            }
         return pojo.getInt(0);
     }
     
