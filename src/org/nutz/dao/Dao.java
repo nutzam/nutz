@@ -1203,6 +1203,8 @@ public interface Dao {
      */
     <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd, Pager pager);
     
+    <T> int countByJoin(Class<T> classOfT, String regex, Condition cnd);
+    
     EntityHolder getEntityHolder();
     
     void truncate(Class<?> klass);

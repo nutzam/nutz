@@ -138,17 +138,14 @@ public class NutPojoMaker implements PojoMaker {
         final Pojo pojo = Pojos.pojo(expert, en, SqlType.SELECT);
         pojo.setEntity(en);
         pojo.append(new QueryJoinFeilds(en, true));
-        final int[] index = new int[1];
         en.visitOne(null, regex, new LinkVisitor() {
             public void visit(Object obj, LinkField lnk) {
                 pojo.append(Pojos.Items.wrap(","));
                 pojo.append(new QueryJoinFeilds(lnk.getLinkedEntity(), false));
-                index[0]++;
             }
         });
         pojo.append(Pojos.Items.wrap("FROM"));
         pojo.append(Pojos.Items.entityViewName());
-        index[0] = 0;
         en.visitOne(null, regex, new LinkVisitor() {
             public void visit(Object obj, LinkField lnk) {
                 Entity<?> lnkEntity = lnk.getLinkedEntity();
@@ -159,14 +156,36 @@ public class NutPojoMaker implements PojoMaker {
                                           lnkEntity.getTableName(),
                                           lnk.getLinkedField().getColumnNameInSql());
                 pojo.append(Pojos.Items.wrap(LJ));
-                index[0]++;
             }
         });
         return pojo;
     }
 
+    @Override
+    public Pojo makeCountByJoin(final Entity<?> en, String regex) {
+        final Pojo pojo = Pojos.pojo(expert, en, SqlType.SELECT);
+        pojo.setEntity(en);
+        pojo.append(Pojos.Items.wrap("count(1)"));
+        pojo.append(Pojos.Items.wrap("FROM"));
+        pojo.append(Pojos.Items.entityViewName());
+        en.visitOne(null, regex, new LinkVisitor() {
+            public void visit(Object obj, LinkField lnk) {
+                Entity<?> lnkEntity = lnk.getLinkedEntity();
+                String LJ = String.format("LEFT JOIN %s ON %s.%s = %s.%s",
+                                          lnkEntity.getTableName(),
+                                          en.getTableName(),
+                                          lnk.getHostField().getColumnNameInSql(),
+                                          lnkEntity.getTableName(),
+                                          lnk.getLinkedField().getColumnNameInSql());
+                pojo.append(Pojos.Items.wrap(LJ));
+            }
+        });
+        return pojo;
+    }
+    
     protected static class QueryJoinFeilds extends NoParamsPItem {
 
+        private static final long serialVersionUID = 1L;
         protected Entity<?> en;
         protected boolean main;
 

@@ -1178,6 +1178,21 @@ public class NutDao extends DaoSupport implements Dao {
     		}
     	return list;
     }
+
+    public <T> int countByJoin(Class<T> classOfT, String regex, Condition cnd) {
+        Pojo pojo = pojoMaker.makeCountByJoin(holder.getEntity(classOfT), regex)
+                .append(Pojos.Items.cnd(cnd))
+                .addParamsBy("*")
+                .setAfter(_pojo_fetchInt);
+        expert.formatQuery(pojo);
+        _exec(pojo);
+        List<T> list = pojo.getList(classOfT);
+        if (list != null && list.size() > 0) 
+            for (T t : list) {
+                _fetchLinks(t, regex, false, true, true, null);
+            }
+        return pojo.getInt(0);
+    }
     
     protected Object _fetchLinks(Object t, String regex, boolean visitOne, boolean visitMany, boolean visitManyMany, final Condition cnd) {
         EntityOperator opt = _optBy(t);

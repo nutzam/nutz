@@ -55,6 +55,10 @@ import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
 
 import javax.sql.DataSource;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -935,6 +939,8 @@ public class SimpleDaoTest extends DaoCase {
         // @One分页测试，总共3个，分页的为2个
         assertEquals(3,dao.queryByJoin(Platoon.class, null, null).size());
         assertEquals(2,dao.queryByJoin(Platoon.class, null, null,new Pager(1, 2)).size());
+
+        assertEquals(3,dao.countByJoin(Platoon.class, null, null));
     }
 
     @Test
@@ -1150,5 +1156,18 @@ public class SimpleDaoTest extends DaoCase {
         Daos.createTablesInPackage(dao,SystemUser.class,true);
         //此表存在
         assertTrue(dao.exists(SystemUser.class));
+    }
+    
+    @Test
+    public void test_cnd_clone() throws IOException {
+        try {
+            Cnd cnd = Cnd.NEW().and("abc", "=", 123);
+            Cnd.byCri(cnd.getCri());
+            Cnd.byCri(cnd.getCri());
+        }
+        catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }

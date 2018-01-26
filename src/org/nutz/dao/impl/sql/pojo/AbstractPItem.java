@@ -11,7 +11,7 @@ public abstract class AbstractPItem implements PItem {
 
     private static final long serialVersionUID = 1L;
 
-    protected Pojo pojo;
+    protected volatile Pojo pojo;
     
     protected boolean top = true;
 
