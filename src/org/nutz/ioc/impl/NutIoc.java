@@ -11,6 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.nutz.ioc.Ioc;
 import org.nutz.ioc.Ioc2;
 import org.nutz.ioc.IocContext;
 import org.nutz.ioc.IocEventListener;
@@ -464,5 +465,17 @@ public class NutIoc implements Ioc2 {
             });
         }
         this.listeners = listeners;
+    }
+
+    public Ioc addBean(String name, Object obj) {
+        if (obj == null)
+            throw new RuntimeException("can't add bean=null!!");
+        if (Strings.isBlank(name))
+            throw new RuntimeException("can't add bean name is blank!!");
+        if (obj instanceof ObjectProxy)
+            getIocContext().save("app", name, (ObjectProxy)obj);
+        else
+            getIocContext().save("app", name, new ObjectProxy(obj));
+        return this;
     }
 }

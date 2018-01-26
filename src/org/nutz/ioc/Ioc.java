@@ -65,4 +65,6 @@ public interface Ioc {
     String[] getNamesByAnnotation(Class<? extends Annotation> klass);
     
     <K> K getByType(Class<K> klass);
+    
+    Ioc addBean(String name, Object obj);
 }
