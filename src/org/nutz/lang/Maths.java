@@ -14,11 +14,13 @@ public abstract class Maths {
     /**
      * 返回最大的一个
      * 
-     * @param nums 需要比较的数组
+     * @param nums
+     *            需要比较的数组
      * @return 最大值
      */
     public static int max(int... nums) {
         return takeOne(new CompareSomeThing() {
+            @Override
             public boolean compare(int arg0, int arg1) {
                 return arg0 > arg1;
             }
@@ -28,11 +30,13 @@ public abstract class Maths {
     /**
      * 返回最小的一个
      * 
-     * @param nums 需要比较的数组
+     * @param nums
+     *            需要比较的数组
      * @return 最小值
      */
     public static int min(int... nums) {
         return takeOne(new CompareSomeThing() {
+            @Override
             public boolean compare(int arg0, int arg1) {
                 return arg0 < arg1;
             }
@@ -120,7 +124,8 @@ public abstract class Maths {
     /**
      * 获得字符数组的全排列
      * 
-     * @param arr 字符数组
+     * @param arr
+     *            字符数组
      * @return 全排列
      */
     public static String[] permutation(char... arr) {
@@ -130,7 +135,8 @@ public abstract class Maths {
     /**
      * 按照指定长度, 获得字符数组的全排列
      * 
-     * @param arr 字符数组
+     * @param arr
+     *            字符数组
      * @return 全排列
      */
     public static String[] permutation(int length, char... arr) {
@@ -141,6 +147,36 @@ public abstract class Maths {
         char[] b = new char[length]; // 辅助空间，保存待输出组合数
         getCombination(slist, arr, length, 0, b, 0);
         return slist.toArray(new String[]{});
+    }
+
+    /**
+     * 坐标点旋转计算方法。
+     * 
+     * 坐标点（x1,y1）绕另一个坐标点（x2，y2）旋转角度（a）后的新坐标
+     * 
+     * 
+     * @param x1
+     *            被计算点横坐标
+     * @param y1
+     *            被计算点纵坐标
+     * @param x2
+     *            圆心横坐标
+     * @param y2
+     *            圆心纵坐标
+     * @param a
+     *            角度
+     * @return （x3，y3）
+     */
+    public static int[] rotateXY(int x1, int y1, int x2, int y2, double a) {
+        double l = (a * Math.PI) / 180;
+
+        double cosv = Math.cos(l);
+        double sinv = Math.sin(l);
+
+        int newX = (int) ((x1 - x2) * cosv - (y1 - y2) * sinv + x2);
+        int newY = (int) ((x1 - x2) * sinv + (y1 - y2) * cosv + y2);
+
+        return new int[]{newX, newY};
     }
 
     // --------------------------- 以下为几个辅助方法
