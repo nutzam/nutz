@@ -27,19 +27,38 @@
 
 ---------------------------------------------------------------------------------------------------------
 主要变化
-
-        * 发行注记改由胖五负责，并会配上题图
-    
---------------------------------------------------------------------------------------------------------
-文档更新
-
-        待写
+          
+    距离上次发布仅一个月，内容主要是小Feature和Bug修改，请放心升级
+      * add: 坐标点旋转计算方法
+      * add: Ioc接口添加addBean方法
+      * add: 增加web环境下 国际化 相关帮助函数
+      * add: Mvcs增加辅助函数直接取得国际化信息配合NutzCodeInsight实现国际化配置代码折叠提示
+      * add: 通过Daos辅助函数自动创建表时,对不需要自动创建得表进行过滤的功能
+      * add: Times.d2TS(Date日期转Unix时间戳)
+      * add: 添加两个老的scanModuleInPackage和isModule方法,兼容老代码
+      * add: Aop类与NutIoc容器一对一绑定的功能,但默认禁用
+      * add: 根据类上的注解获取ioc对象的name列表
+      * add: CrossOriginFilter添加X-Requested-With,与jetty的CrossOriginFilter一致
+      * fix: countByJoin没做对
+      * fix: Json.fromJson 处理date类型时区的问题
+      * fix: queryByJoin要进行分页查询的时候dao.count没有关联查询的方法
+      * fix: Column不支持@Index 
+      * fix: boot文档里面有链接错误
+      * fix: map.entrySet() 得到的对象无法 Json.toJson
+      * fix: 建表的时候, 如果某个类报错, 应该继续建其他类,最后再抛出异常
+      * fix: JsonAopConfigrationTest失败
+      * fix: 为NutTxDao添加个testcase
+      * fix: 容忍非法转义,可配置
+      * fix: AndOpt和OrOpt，修改强制类型转换时，没有考虑右值的问题
+      * fix: Jdbcs.guess方法有NPE的可能性
+      * fix: https://gitee.com/nutz/nutz/issues/IHHHK
+      
+              
+    还有就是发行注记改由胖五负责，并配上题图
 
 --------------------------------------------------------------------------------------------------------
 详细列表
  
     * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.65 Issue@github]
-
     * 欢迎访问[https://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
-
     * [https://nutz.cn Nutz社区]已经累计了6000多帖子, 30000+条回复,平均回复时间少于10分钟哦,白天基本上秒回!
