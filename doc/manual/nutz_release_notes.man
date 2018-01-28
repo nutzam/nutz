@@ -38,7 +38,7 @@
 --------------------------------------------------------------------------------------------------------
 详细列表
  
-    * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.65 issue@github]
+    * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.65 Issue@github]
 
     * 欢迎访问[https://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
 
