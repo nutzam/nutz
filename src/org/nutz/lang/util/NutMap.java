@@ -115,11 +115,10 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         if (keys.length == 0)
             return new NutMap();
         NutMap re = new NutMap();
-        for (Map.Entry<String, Object> en : this.entrySet()) {
-            String key = en.getKey();
-            if (Lang.contains(keys, key)) {
-                re.put(key, en.getValue());
-            }
+        for (String key : keys) {
+            Object val = this.get(key);
+            if (null != val)
+                re.put(key, val);
         }
         return re;
     }
