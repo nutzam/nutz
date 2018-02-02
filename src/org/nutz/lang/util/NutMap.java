@@ -27,7 +27,6 @@ import org.nutz.lang.born.Borning;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-@SuppressWarnings("serial")
 public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
 
     public static NutMap WRAP(Map<String, Object> map) {
