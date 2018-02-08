@@ -58,6 +58,26 @@ import org.nutz.lang.util.PType;
 @SuppressWarnings({"unchecked"})
 public class JsonTest {
 
+    class Issue1393 {
+        final String name;
+        final int age;
+
+        public Issue1393(String name, int age) {
+            this.name = name;
+            this.age = age;
+        }
+    }
+
+    /**
+     * for issue https://github.com/nutzam/nutz/issues/1393
+     */
+    @Test
+    public void test_final_field() {
+        Issue1393 obj = new Issue1393("test1", 99);
+        String json = Json.toJson(obj, JsonFormat.compact());
+        assertEquals("{\"name\":\"test1\",\"age\":99}", json);
+    }
+
     @JsonShape(Type.OBJECT)
     public static enum TT {
 
@@ -1114,7 +1134,7 @@ public class JsonTest {
         assertEquals(METHOD.valueOf("POST"), map.get("post"));
         Json.fromJson(METHOD.class, "'POST'");
     }
-    
+
     @Test
     public void test_map_use_int_key_issue_1332() {
         String str = "{abc : {1:1}}";
@@ -1122,7 +1142,7 @@ public class JsonTest {
         System.out.println(map);
         assertTrue(map.getAbc().containsKey(1));
     }
-    
+
     @Test
     public void test_t() {
         System.out.println(Json.toJson(new NutMap("abc", EnumWithFields.STAY_PUSH)));
