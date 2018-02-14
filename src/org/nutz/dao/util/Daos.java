@@ -492,7 +492,7 @@ public abstract class Daos {
             Table table = klass.getAnnotation(Table.class);
             if (table != null && filter.match(klass,table))
                 list.add(klass);
-        };
+        }
         createTables(dao,list,force);
     }
 
@@ -735,13 +735,18 @@ public abstract class Daos {
                                  final boolean del,
                                  final boolean checkIndex,
                                  final Object tableName) {
+        
+    }
+    public static void migration(Dao dao,
+                                 final Entity<?> en,
+                                 final boolean add,
+                                 final boolean del,
+                                 final boolean checkIndex,
+                                 final Object tableName) {
         final JdbcExpert expert = dao.getJdbcExpert();
         if (tableName != null && Strings.isNotBlank(tableName.toString())) {
             dao = ext(dao, tableName);
         }
-        final Entity<?> en = dao.getEntity(klass);
-        if (!dao.exists(klass))
-            return;
         final List<Sql> sqls = new ArrayList<Sql>();
         final Set<String> _indexs = new HashSet<String>();
         dao.run(new ConnCallback() {
