@@ -342,7 +342,7 @@ public abstract class Disks {
                     return false;
                 if (Strings.isEmpty(regex))
                     return true;
-                return f.getName().matches(regex);
+                return Regex.match(regex, f.getName());
             }
         });
     }

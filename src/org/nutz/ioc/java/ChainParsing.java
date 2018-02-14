@@ -4,6 +4,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.LinkedArray;
 import org.nutz.lang.util.LinkedCharArray;
+import org.nutz.lang.util.Regex;
 
 public class ChainParsing {
 
@@ -154,11 +155,11 @@ public class ChainParsing {
                 addNode(new NullNode());
             }
             // boolean
-            else if (s.matches("^(true|false)$")) {
+            else if (Regex.match("^(true|false)$", s)) {
                 addNode(new BooleanNode(s));
             }
             // number
-            else if (s.matches("^([-]?[0-9]+)?([.][0-9]+)?([fL]?)$")) {
+            else if (Regex.match("^([-]?[0-9]+)?([.][0-9]+)?([fL]?)$", s)) {
                 addNode(new NumberNode(s));
             }
             // the chain is empty

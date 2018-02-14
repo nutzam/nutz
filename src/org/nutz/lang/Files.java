@@ -22,6 +22,7 @@ import java.util.zip.ZipFile;
 import org.nutz.lang.util.Callback;
 import org.nutz.lang.util.ClassTools;
 import org.nutz.lang.util.Disks;
+import org.nutz.lang.util.Regex;
 import org.nutz.log.Logs;
 
 /**
@@ -345,7 +346,7 @@ public class Files {
         Enumeration<? extends ZipEntry> en = zip.entries();
         while (en.hasMoreElements()) {
             ZipEntry ze = en.nextElement();
-            if (null == regex || ze.getName().matches(regex))
+            if (null == regex || Regex.match(regex, ze.getName()))
                 list.add(ze);
         }
         return list.toArray(new ZipEntry[list.size()]);

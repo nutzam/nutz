@@ -9,6 +9,7 @@ import java.util.Map;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.util.Disks;
+import org.nutz.lang.util.Regex;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -44,7 +45,7 @@ public class NutFilePool implements FilePool {
         while (last.isDirectory()) {
             subs = last.list(new FilenameFilter() {
                 public boolean accept(File dir, String name) {
-                    return name.matches("^([\\d|A-F]{2})([.][a-zA-Z]{1,})?$");
+                    return Regex.match("^([\\d|A-F]{2})([.][a-zA-Z]{1,})?$", name);
                 }
             });
             if (null != subs && subs.length > 0) {

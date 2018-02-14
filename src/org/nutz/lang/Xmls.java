@@ -24,6 +24,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.nutz.lang.util.Callback2;
 import org.nutz.lang.util.NutMap;
+import org.nutz.lang.util.Regex;
 import org.nutz.lang.util.Tag;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -356,7 +357,7 @@ public abstract class Xmls {
             if (nd instanceof Element) {
                 if (null == regex)
                     return false;
-                if (((Element) nd).getTagName().matches(regex))
+                if (Regex.match(regex, ((Element) nd).getTagName()))
                     return true;
             }
         }

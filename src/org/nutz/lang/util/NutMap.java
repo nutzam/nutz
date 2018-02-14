@@ -895,7 +895,7 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
 
             final String s = mtc.toString();
             if (s.startsWith("^")) {
-                regex = Pattern.compile(s);
+                regex = Regex.getPattern(s);
             }
             // 不是正则表达式，那么精确匹配字符串
             else {
