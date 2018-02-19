@@ -53,9 +53,17 @@ public abstract class Exps {
     public static IntRange inInt(String name, int... ids) {
         return new IntRange(name, ids);
     }
+    
+    public static IntRange inInt(String name, Integer[] ids) {
+    	return new IntRange(name, ids);
+    }
 
     public static LongRange inLong(String name, long... ids) {
         return new LongRange(name, ids);
+    }
+    
+    public static LongRange inLong(String name, Long[] ids) {
+    	return new LongRange(name, ids);
     }
 
     public static NameRange inStr(String name, String... names) {
