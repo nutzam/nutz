@@ -14,6 +14,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -1146,5 +1148,11 @@ public class JsonTest {
     @Test
     public void test_t() {
         System.out.println(Json.toJson(new NutMap("abc", EnumWithFields.STAY_PUSH)));
+    }
+    
+    @Test
+    public void test_new_toJson() {
+        System.out.println(Json.toJson(new NutMap("name", "t").addv("index", 1)));
+        System.out.println(Json.toJson(new NutMap("date", LocalDateTime.now())));
     }
 }

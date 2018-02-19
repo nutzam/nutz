@@ -9,11 +9,26 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.nutz.json.entity.JsonEntity;
+import org.nutz.json.handler.JsonArrayHandler;
+import org.nutz.json.handler.JsonBooleanHandler;
+import org.nutz.json.handler.JsonClassHandler;
+import org.nutz.json.handler.JsonDateTimeHandler;
+import org.nutz.json.handler.JsonEnumHandler;
+import org.nutz.json.handler.JsonIterableHandler;
+import org.nutz.json.handler.JsonJsonRenderHandler;
+import org.nutz.json.handler.JsonLocalDateLikeHandler;
+import org.nutz.json.handler.JsonMapHandler;
+import org.nutz.json.handler.JsonMirrorHandler;
+import org.nutz.json.handler.JsonNumberHandler;
+import org.nutz.json.handler.JsonPojoHandler;
+import org.nutz.json.handler.JsonStringLikeHandler;
 import org.nutz.json.impl.JsonEntityFieldMakerImpl;
 import org.nutz.json.impl.JsonRenderImpl;
 import org.nutz.lang.Files;
@@ -440,5 +455,37 @@ public class Json {
     }
     public static JsonEntityFieldMaker getDefaultFieldMaker() {
         return deftMaker;
+    }
+    protected static List<JsonTypeHandler> handlers = new ArrayList<JsonTypeHandler>();
+    public static void addTypeHandler(JsonTypeHandler handler) {
+        if (!handlers.contains(handler))
+            handlers.add(0, handler);
+    }
+    public static List<JsonTypeHandler> getTypeHandlers() {
+        return Collections.unmodifiableList(handlers);
+    }
+    
+    /**
+     * 
+     */
+    static {
+        handlers.add(new JsonJsonRenderHandler());
+        handlers.add(new JsonClassHandler());
+        handlers.add(new JsonMirrorHandler());
+        handlers.add(new JsonEnumHandler());
+        handlers.add(new JsonNumberHandler());
+        handlers.add(new JsonBooleanHandler());
+        handlers.add(new JsonStringLikeHandler());
+        handlers.add(new JsonDateTimeHandler());
+        try {
+            Class.forName("java.time.temporal.TemporalAccessor");
+            handlers.add(new JsonLocalDateLikeHandler());
+        }
+        catch (Throwable e) {
+        }
+        handlers.add(new JsonMapHandler());
+        handlers.add(new JsonIterableHandler());
+        handlers.add(new JsonArrayHandler());
+        handlers.add(new JsonPojoHandler());
     }
 }
