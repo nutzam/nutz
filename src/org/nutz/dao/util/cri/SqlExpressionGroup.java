@@ -86,12 +86,36 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
         return and(inLong(name, ids));
     }
 
+    public SqlExpressionGroup andInArray(String name, long[] ids) {
+    	return and(inLong(name, ids));
+    }
+    
+    public SqlExpressionGroup andInList(String name, List<Long> ids) {
+    	return and(inLong(name, ids.toArray(new Long[ids.size()])));
+    }
+    
     public SqlExpressionGroup andInIntArray(String name, int... ids) {
         return and(inInt(name, ids));
+    }
+    
+    public SqlExpressionGroup andInIntArray2(String name, int[] ids) {
+    	return and(inInt(name, ids));
+    }
+    
+    public SqlExpressionGroup andInIntList(String name, List<Integer> ids) {
+    	return and(inInt(name, ids.toArray(new Integer[ids.size()])));
     }
 
     public SqlExpressionGroup andIn(String name, String... names) {
         return and(inStr(name, names));
+    }
+    
+    public SqlExpressionGroup andInStrArray(String name, String[] names) {
+    	return and(inStr(name, names));
+    }
+    
+    public SqlExpressionGroup andInStrList(String name, List<String> names) {
+    	return and(inStr(name, names.toArray(new String[names.size()])));
     }
 
     public SqlExpressionGroup andInBySql(String name, String subSql, Object... args) {
@@ -113,13 +137,37 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     public SqlExpressionGroup andNotIn(String name, long... ids) {
         return and(inLong(name, ids).not());
     }
-
+    
+    public SqlExpressionGroup andNotInArray(String name, long[] ids) {
+    	return and(inLong(name, ids).not());
+    }
+    
+    public SqlExpressionGroup andNotInList(String name, List<Long> ids) {
+    	return and(inLong(name, ids.toArray(new Long[ids.size()])).not());
+    }
+    
     public SqlExpressionGroup andNotIn(String name, int... ids) {
         return and(inInt(name, ids).not());
+    }
+    
+    public SqlExpressionGroup andNotInArray(String name, int[] ids) {
+    	return and(inInt(name, ids).not());
+    }
+    
+    public SqlExpressionGroup andNotInIntList(String name, List<Integer> ids) {
+    	return and(inInt(name, ids.toArray(new Integer[ids.size()])).not());
     }
 
     public SqlExpressionGroup andNotIn(String name, String... names) {
         return and(inStr(name, names).not());
+    }
+    
+    public SqlExpressionGroup andNotInArray(String name, String[] names) {
+    	return and(inStr(name, names).not());
+    }
+    
+    public SqlExpressionGroup andNotInStrList(String name, List<String> names) {
+    	return and(inStr(name, names.toArray(new String[names.size()])).not());
     }
 
     public SqlExpressionGroup andLike(String name, String value) {

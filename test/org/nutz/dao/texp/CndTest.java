@@ -12,6 +12,7 @@ import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.util.cri.SqlExpression;
@@ -200,7 +201,158 @@ public class CndTest extends DaoCase {
         
         byte[] buf = Lang.toBytes(c);
         c = Lang.fromBytes(buf, Cnd.class);
-        
         assertEquals(" WHERE (f2=1) AND NOT (f3=1)", c.toString());
+    }
+    
+    /**
+     *  Criteria 接口测试int[]数组
+     */
+    @Test
+    public void test_in_by_criteria_int_array () {
+    	int[] ids = {1,2,3};
+    	Criteria cri = Cnd.cri();
+    	cri.where().andInIntArray2("nm", ids);
+    	assertEquals(" WHERE nm IN (1,2,3)", cri.toString());
+    }
+    
+    /**
+     *  Criteria 接口测试List&lt;Integer&gt;
+     */
+    @Test
+    public void test_in_by_criteria_int_list () {
+    	 List<Integer> ids = new ArrayList<Integer>();
+    	 ids.add(1);
+    	 ids.add(2);
+    	 ids.add(3);
+    	Criteria cri = Cnd.cri();
+    	cri.where().andInIntList("nm", ids);
+    	assertEquals(" WHERE nm IN (1,2,3)", cri.toString());
+    }
+    
+    /**
+     *  Criteria 接口测试long[]数组
+     */
+    @Test
+    public void test_in_by_criteria_long_array () {
+    	long[] ids = {1L,2L,3L};
+    	Criteria cri = Cnd.cri();
+    	cri.where().andInArray("nm", ids);
+    	assertEquals(" WHERE nm IN (1,2,3)", cri.toString());
+    }
+    
+    /**
+     *  Criteria 接口测试List&lt;Long&gt;
+     */
+    @Test
+    public void test_in_by_criteria_long_list () {
+    	List<Long> ids = new ArrayList<Long>();
+    	ids.add(1L);
+    	ids.add(2L);
+    	ids.add(3L);
+    	Criteria cri = Cnd.cri();
+    	cri.where().andInList("nm", ids);
+    	assertEquals(" WHERE nm IN (1,2,3)", cri.toString());
+    }
+    
+    /**
+     *  Criteria 接口测试String[]数组
+     */
+    @Test
+    public void test_in_by_criteria_string_array () {
+    	String[] ids = {"bj","sh","gz","sz"};
+    	Criteria cri = Cnd.cri();
+    	cri.where().andInStrArray("nm", ids);
+    	assertEquals(" WHERE nm IN ('bj','sh','gz','sz')", cri.toString());
+    }
+    
+    /**
+     *  Criteria 接口测试List&lt;String&gt;
+     */
+    @Test
+    public void test_in_by_criteria_string_list () {
+    	List<String> ids = new ArrayList<String>();
+    	ids.add("bj");
+    	ids.add("sh");
+    	ids.add("gz");
+    	ids.add("sz");
+    	Criteria cri = Cnd.cri();
+    	cri.where().andInStrList("nm", ids);
+    	assertEquals(" WHERE nm IN ('bj','sh','gz','sz')", cri.toString());
+    }
+    
+    /**
+     *  Criteria 接口测试int[]数组
+     */
+    @Test
+    public void test_not_in_by_criteria_int_array () {
+    	int[] ids = {1,2,3};
+    	Criteria cri = Cnd.cri();
+    	cri.where().andNotInArray("nm", ids);
+    	assertEquals(" WHERE nm NOT IN (1,2,3)", cri.toString());
+    }
+    
+    /**
+     *  Criteria 接口测试List&lt;Integer&gt;
+     */
+    @Test
+    public void test_not_in_by_criteria_int_list () {
+    	 List<Integer> ids = new ArrayList<Integer>();
+    	 ids.add(1);
+    	 ids.add(2);
+    	 ids.add(3);
+    	Criteria cri = Cnd.cri();
+    	cri.where().andNotInIntList("nm", ids);
+    	assertEquals(" WHERE nm NOT IN (1,2,3)", cri.toString());
+    }
+    
+    /**
+     *  Criteria 接口测试int[]数组
+     */
+    @Test
+    public void test_not_in_by_criteria_long_array () {
+    	int[] ids = {1,2,3};
+    	Criteria cri = Cnd.cri();
+    	cri.where().andNotInArray("nm", ids);
+    	assertEquals(" WHERE nm NOT IN (1,2,3)", cri.toString());
+    }
+    
+    /**
+     *  Criteria 接口测试List&lt;Integer&gt;
+     */
+    @Test
+    public void test_not_in_by_criteria_long_list () {
+    	List<Integer> ids = new ArrayList<Integer>();
+    	ids.add(1);
+    	ids.add(2);
+    	ids.add(3);
+    	Criteria cri = Cnd.cri();
+    	cri.where().andNotInIntList("nm", ids);
+    	assertEquals(" WHERE nm NOT IN (1,2,3)", cri.toString());
+    }
+    
+    /**
+     *  Criteria 接口测试String[]数组
+     */
+    @Test
+    public void test_not_in_by_criteria_string_array () {
+    	String[] ids = {"bj","sh","gz","sz"};
+    	Criteria cri = Cnd.cri();
+    	cri.where().andNotInArray("nm", ids);
+    	assertEquals(" WHERE nm NOT IN ('bj','sh','gz','sz')", cri.toString());
+    }
+    
+    /**
+     *  Criteria 接口测试List&lt;String&gt;
+     */
+    @Test
+    public void test_not_in_by_criteria_string_list () {
+    	List<String> ids = new ArrayList<String>();
+    	ids.add("bj");
+    	ids.add("sh");
+    	ids.add("gz");
+    	ids.add("sz");
+    	Criteria cri = Cnd.cri();
+    	cri.where().andNotInStrList("nm", ids);
+    	assertEquals(" WHERE nm NOT IN ('bj','sh','gz','sz')", cri.toString());
     }
 }
