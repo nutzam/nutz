@@ -2,7 +2,6 @@ package org.nutz.json.handler;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.lang.reflect.Type;
 import java.util.Iterator;
 
 import org.nutz.json.JsonFormat;
@@ -15,10 +14,9 @@ import org.nutz.lang.Mirror;
  * @author wendal
  *
  */
-public class JsonIterableHandler implements JsonTypeHandler {
+public class JsonIterableHandler extends JsonTypeHandler {
 
-    public boolean supportFromJson(Type type) {
-        // TODO Auto-generated method stub
+    public boolean supportFromJson(Mirror<?> mirror, Object obj) {
         return false;
     }
 
@@ -41,12 +39,6 @@ public class JsonIterableHandler implements JsonTypeHandler {
                 break;
         }
         writer.append(']');
-    }
-
-    @Override
-    public Object fromJson(Object data, Type type) throws Exception {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override

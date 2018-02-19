@@ -1,7 +1,7 @@
 package org.nutz.json.handler;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
+import java.util.Map;
 
 import org.nutz.json.JsonFormat;
 import org.nutz.json.JsonRender;
@@ -16,10 +16,10 @@ import org.nutz.lang.util.NutMap;
  * @author wendal
  *
  */
-public class JsonEnumHandler implements JsonTypeHandler {
+public class JsonEnumHandler extends JsonTypeHandler {
 
-    public boolean supportFromJson(Type type) {
-        return Lang.getTypeClass(type).isEnum();
+    public boolean supportFromJson(Mirror<?> mirror, Object obj) {
+        return mirror.isEnum();
     }
 
     public boolean supportToJson(Mirror<?> mirror, Object obj, JsonFormat jf) {
@@ -56,14 +56,15 @@ public class JsonEnumHandler implements JsonTypeHandler {
         }
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public Object fromJson(Object data, Type type) throws Exception {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean shallCheckMemo() {
-        return false;
+    public Object fromJson(Object obj, Mirror<?> mirror) throws Exception {
+        String name;
+        if (obj instanceof Map) {
+            name = (String) ((Map)obj).get("name");
+        }
+        else
+            name = String.valueOf(obj);
+        return Enum.valueOf((Class)mirror.getType(), name);
     }
 }

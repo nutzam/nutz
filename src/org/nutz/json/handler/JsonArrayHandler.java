@@ -3,8 +3,8 @@ package org.nutz.json.handler;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 
+import org.nutz.castor.Castors;
 import org.nutz.json.JsonFormat;
 import org.nutz.json.JsonRender;
 import org.nutz.json.JsonTypeHandler;
@@ -15,11 +15,11 @@ import org.nutz.lang.Mirror;
  * @author wendal
  *
  */
-public class JsonArrayHandler implements JsonTypeHandler {
+public class JsonArrayHandler extends JsonTypeHandler {
 
     @Override
-    public boolean supportFromJson(Type type) {
-        return false;
+    public boolean supportFromJson(Mirror<?> mirror, Object obj) {
+        return mirror.isArray();
     }
 
     @Override
@@ -45,13 +45,12 @@ public class JsonArrayHandler implements JsonTypeHandler {
     }
 
     @Override
-    public Object fromJson(Object data, Type type) throws Exception {
-        // TODO Auto-generated method stub
-        return null;
+    public Object fromJson(Object obj, Mirror<?> mirror) throws Exception {
+        return Castors.me().castTo(obj, mirror.getType());
     }
 
     @Override
     public boolean shallCheckMemo() {
-        return false;
+        return true;
     }
 }

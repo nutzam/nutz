@@ -1,8 +1,8 @@
 package org.nutz.json.handler;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 
+import org.nutz.castor.Castors;
 import org.nutz.json.JsonFormat;
 import org.nutz.json.JsonRender;
 import org.nutz.json.JsonTypeHandler;
@@ -13,10 +13,10 @@ import org.nutz.lang.Mirror;
  * @author wendal
  *
  */
-public class JsonNumberHandler implements JsonTypeHandler {
+public class JsonNumberHandler extends JsonTypeHandler {
 
-    public boolean supportFromJson(Type type) {
-        return Mirror.me(type).isNumber();
+    public boolean supportFromJson(Mirror<?> mirror, Object obj) {
+        return mirror.isNumber();
     }
 
     public boolean supportToJson(Mirror<?> mirror, Object obj, JsonFormat jf) {
@@ -34,13 +34,7 @@ public class JsonNumberHandler implements JsonTypeHandler {
     }
 
     @Override
-    public Object fromJson(Object data, Type type) throws Exception {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean shallCheckMemo() {
-        return false;
+    public Object fromJson(Object obj, Mirror<?> mirror) throws Exception {
+        return Castors.me().castTo(obj, mirror.getType());
     }
 }

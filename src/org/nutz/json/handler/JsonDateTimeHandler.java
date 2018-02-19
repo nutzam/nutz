@@ -1,10 +1,10 @@
 package org.nutz.json.handler;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.util.Date;
 
+import org.nutz.castor.Castors;
 import org.nutz.json.JsonFormat;
 import org.nutz.json.JsonRender;
 import org.nutz.json.JsonTypeHandler;
@@ -15,10 +15,10 @@ import org.nutz.lang.Mirror;
  * @author wendal
  *
  */
-public class JsonDateTimeHandler implements JsonTypeHandler {
+public class JsonDateTimeHandler extends JsonTypeHandler {
 
-    public boolean supportFromJson(Type type) {
-        return Mirror.me(type).isDateTimeLike();
+    public boolean supportFromJson(Mirror<?> mirror, Object obj) {
+        return mirror.isDateTimeLike();
     }
 
     public boolean supportToJson(Mirror<?> mirror, Object obj, JsonFormat jf) {
@@ -40,9 +40,8 @@ public class JsonDateTimeHandler implements JsonTypeHandler {
     }
 
     @Override
-    public Object fromJson(Object data, Type type) throws Exception {
-        // TODO Auto-generated method stub
-        return null;
+    public Object fromJson(Object obj, Mirror<?> mirror) throws Exception {
+        return Castors.me().castTo(obj, mirror.getType());
     }
 
     protected String doDateFormat(JsonFormat format, Date date, DateFormat df) {
@@ -54,10 +53,5 @@ public class JsonDateTimeHandler implements JsonTypeHandler {
             return df.format(date);
         }
         return null;
-    }
-
-    @Override
-    public boolean shallCheckMemo() {
-        return false;
     }
 }

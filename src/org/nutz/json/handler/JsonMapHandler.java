@@ -1,7 +1,6 @@
 package org.nutz.json.handler;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.Map;
 
 import org.nutz.json.JsonFormat;
@@ -14,14 +13,14 @@ import org.nutz.lang.Mirror;
  * @author wendal
  *
  */
-public class JsonMapHandler implements JsonTypeHandler {
+public class JsonMapHandler extends JsonTypeHandler {
 
-    public boolean supportFromJson(Type type) {
-        return false;
+    public boolean supportFromJson(Mirror<?> mirror, Object obj) {
+        return mirror.isMap();
     }
 
     public boolean supportToJson(Mirror<?> mirror, Object obj, JsonFormat jf) {
-        return obj instanceof Map;
+        return mirror.isMap();
     }
 
     @SuppressWarnings("rawtypes")
@@ -29,7 +28,7 @@ public class JsonMapHandler implements JsonTypeHandler {
         r.map2Json((Map) currentObj);
     }
 
-    public Object fromJson(Object data, Type type) throws Exception {
+    public Object fromJson(Object obj, Mirror<?> mirror) throws Exception {
         return null;
     }
 

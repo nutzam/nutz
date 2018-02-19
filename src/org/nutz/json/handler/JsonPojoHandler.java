@@ -2,7 +2,6 @@ package org.nutz.json.handler;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,9 +24,9 @@ import org.nutz.lang.Mirror;
  * @author wendal
  *
  */
-public class JsonPojoHandler implements JsonTypeHandler {
+public class JsonPojoHandler extends JsonTypeHandler {
 
-    public boolean supportFromJson(Type type) {
+    public boolean supportFromJson(Mirror<?> mirror, Object obj) {
         return false;
     }
 
@@ -126,7 +125,7 @@ public class JsonPojoHandler implements JsonTypeHandler {
         r.writeItem(list);
     }
 
-    public Object fromJson(Object data, Type type) throws Exception {
+    public Object fromJson(Object obj, Mirror<?> mirror) throws Exception {
         // TODO Auto-generated method stub
         return null;
     }
