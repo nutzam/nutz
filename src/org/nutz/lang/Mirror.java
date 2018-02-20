@@ -1633,7 +1633,7 @@ public class Mirror<T> {
     
     public boolean isLocalDateTimeLike() {
         try {
-            return TemporalAccessor.class.isAssignableFrom(klass);
+            return NutConf.HAS_LOCAL_DATE_TIME && TemporalAccessor.class.isAssignableFrom(klass);
         }
         catch (Exception e) {
             return false;

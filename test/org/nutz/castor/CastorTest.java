@@ -514,7 +514,7 @@ public class CastorTest {
     @Test
     public void test_locale_date_time() {
         {
-            LocalDateTime dt = LocalDateTime.now();
+            LocalDateTime dt = Castors.me().castTo("2018-02-20 21:11:51", LocalDateTime.class);
             String tmp = Castors.me().castToString(dt);
             LocalDateTime dt2 = Castors.me().castTo(tmp, LocalDateTime.class);
             assertEquals(dt, dt2);
