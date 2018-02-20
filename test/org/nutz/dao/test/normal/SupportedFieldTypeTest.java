@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.junit.Test;
 
@@ -17,6 +18,7 @@ import org.nutz.dao.test.DaoCase;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.meta.Email;
+import org.nutz.lang.random.R;
 
 public class SupportedFieldTypeTest extends DaoCase {
 
@@ -107,6 +109,8 @@ public class SupportedFieldTypeTest extends DaoCase {
         @Column
         public Double double_obj;
 
+        @Column
+        public LocalDateTime localdt;
     }
 
     @Test
@@ -213,7 +217,16 @@ public class SupportedFieldTypeTest extends DaoCase {
         EntityTypes exp = new EntityTypes();
         exp.name = "JJ";
         dao.insert(exp);
-        assertTrue(true);
+        assertNotNull(dao.fetch(EntityTypes.class, "JJ"));
+    }
+    
+    @Test
+    public void check_insert_local_date_time() {
+        EntityTypes exp = new EntityTypes();
+        exp.name = R.UU32();
+        exp.localdt = LocalDateTime.now();
+        dao.insert(exp);
+        assertNotNull(dao.fetch(EntityTypes.class, exp.name));
     }
 
 }
