@@ -6,18 +6,10 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 
+import org.nutz.castor.Castor;
 import org.nutz.lang.Lang;
 
-public class LocalDatetime2String extends DateTimeCastor<TemporalAccessor, String> {
-    private String format = "yyyy-MM-dd HH:mm:ss";
-
-    public String getFormat() {
-        return format;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
-    }
+public class LocalDatetime2String extends Castor<TemporalAccessor, String> {
     
     @Override
     public String cast(TemporalAccessor src, Class<?> toType, String... args) {
