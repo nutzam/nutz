@@ -1155,4 +1155,11 @@ public class JsonTest {
         System.out.println(Json.toJson(new NutMap("name", "t").addv("index", 1)));
         System.out.println(Json.toJson(new NutMap("date", LocalDateTime.now())));
     }
+    
+
+    @Test
+    public void test_locale_fromJson() {
+        LocalDateTime dt = Json.fromJson(LocalDateTime.class, "'2018-02-20 21:53:39'");
+        System.out.println(dt);
+    }
 }
