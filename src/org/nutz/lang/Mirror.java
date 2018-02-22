@@ -9,6 +9,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -1628,6 +1629,15 @@ public class Mirror<T> {
                || java.util.Date.class.isAssignableFrom(klass)
                || java.sql.Date.class.isAssignableFrom(klass)
                || java.sql.Time.class.isAssignableFrom(klass);
+    }
+    
+    public boolean isLocalDateTimeLike() {
+        try {
+            return NutConf.HAS_LOCAL_DATE_TIME && TemporalAccessor.class.isAssignableFrom(klass);
+        }
+        catch (Exception e) {
+            return false;
+        }
     }
 
     public String toString() {

@@ -8,7 +8,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.nutz.aop.DefaultClassDefiner;
-import org.nutz.conf.NutConf;
 import org.nutz.dao.Dao;
 import org.nutz.dao.impl.DaoSupport;
 import org.nutz.dao.impl.NutDao;

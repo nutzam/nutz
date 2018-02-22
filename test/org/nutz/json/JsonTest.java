@@ -14,6 +14,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -46,6 +48,7 @@ import org.nutz.json.meta.JX;
 import org.nutz.json.meta.Msg;
 import org.nutz.json.meta.MyDate2StringCastor;
 import org.nutz.json.meta.OuterClass;
+import org.nutz.json.meta.PojoWithLocalDateTime;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
@@ -1146,5 +1149,23 @@ public class JsonTest {
     @Test
     public void test_t() {
         System.out.println(Json.toJson(new NutMap("abc", EnumWithFields.STAY_PUSH)));
+    }
+    
+    @Test
+    public void test_new_toJson() {
+        System.out.println(Json.toJson(new NutMap("name", "t").addv("index", 1)));
+        System.out.println(Json.toJson(new NutMap("date", LocalDateTime.now())));
+    }
+    
+
+    @Test
+    public void test_locale_fromJson() {
+        LocalDateTime dt = Json.fromJson(LocalDateTime.class, "'2018-02-20 21:53:39'");
+        System.out.println(dt);
+        assertNotNull(dt);
+        
+        PojoWithLocalDateTime pojo = Json.fromJson(PojoWithLocalDateTime.class, "{localdt:'2018-02-20 21:53:39'}");
+        System.out.println(pojo.localdt);
+        assertNotNull(pojo.localdt);
     }
 }

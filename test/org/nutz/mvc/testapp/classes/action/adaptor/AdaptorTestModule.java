@@ -2,6 +2,7 @@ package org.nutz.mvc.testapp.classes.action.adaptor;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -214,5 +215,12 @@ public class AdaptorTestModule extends BaseWebappTest {
         viewModel.put("id", 1); // 如果正确, 应该会输出 {id:1}
         map.put("id", 2); // 如果走了NutMap的话,应该输出 {id:2}
         return "json";
+    }
+    
+    @Ok("raw")
+    @At("/jdk8/localdt")
+    public String localdatetime(@Param("date")LocalDateTime localDateTime) {
+        System.out.println(localDateTime);
+        return localDateTime.toString();
     }
 }

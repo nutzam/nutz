@@ -22,6 +22,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -253,7 +256,8 @@ public abstract class Jdbcs {
             return Jdbcs.Adaptor.asBinaryStream;
         if (mirror.isOf(Reader.class))
             return Jdbcs.Adaptor.asReader;
-
+        if (mirror.isLocalDateTimeLike())
+            return Jdbcs.Adaptor.asLocalDateTime;
         // 默认情况
         return Jdbcs.Adaptor.asString;
     }
@@ -760,6 +764,25 @@ public abstract class Jdbcs {
                 }
             }
         };
+        
+        
+        public static final ValueAdaptor asLocalDateTime = new ValueAdaptor() {
+            
+            public Object get(ResultSet rs, String colName) throws SQLException {
+                Timestamp ts = rs.getTimestamp(colName);
+                return null == ts ? null : LocalDateTime.ofInstant(Instant.ofEpochMilli(ts.getTime()), ZoneId.systemDefault());
+            }
+
+            public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
+                Timestamp v;
+                if (null == obj) {
+                    stat.setNull(i, Types.TIMESTAMP);
+                } else {
+                    v = Timestamp.valueOf((LocalDateTime)obj);
+                    stat.setTimestamp(i, v);
+                }
+            }
+        };
     }
 
     /**
@@ -814,7 +837,7 @@ public abstract class Jdbcs {
             ef.setColumnType(ColType.TIME);
         }
         // 日期时间
-        else if (mirror.isOf(Calendar.class) || mirror.is(java.util.Date.class)) {
+        else if (mirror.isOf(Calendar.class) || mirror.is(java.util.Date.class) || mirror.isLocalDateTimeLike()) {
             ef.setColumnType(ColType.DATETIME);
         }
         // 大数

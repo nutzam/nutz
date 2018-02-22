@@ -164,4 +164,14 @@ public class NutConf {
     public static boolean AOP_USE_CLASS_ID = false;
 
     public static int AOP_CLASS_LEVEL = Opcodes.V1_6;
+
+    public static boolean HAS_LOCAL_DATE_TIME;
+    static {
+        try {
+            Class.forName("java.time.temporal.TemporalAccessor");
+            HAS_LOCAL_DATE_TIME = true;
+        }
+        catch (Throwable e) {
+        }
+    }
 }
