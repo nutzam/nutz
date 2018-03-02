@@ -59,7 +59,7 @@ public class NutSql extends NutStatement implements Sql {
     }
 
     public void setSourceSql(String sql) {
-        this.sourceSql = sql;
+        this.sourceSql = sql.trim();
         SqlLiteral literal = literal();
         this.varIndex = literal.getVarIndexes();
         this.paramIndex = literal.getParamIndexes();
@@ -83,12 +83,13 @@ public class NutSql extends NutStatement implements Sql {
                 }
             }
         }
+        this.items = new ArrayList<PItem>();
         for (int i = 0; i < tmp.length; i++) {
             if (tmp[i] == null) {
                 tmp[i] = new StaticPItem(ss[i], true);
             }
+            items.add(tmp[i]);
         }
-        this.items = Arrays.asList(tmp);
     }
 
     protected int _params_count() {
