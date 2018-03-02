@@ -1,7 +1,5 @@
 package org.nutz.dao.test.sqls;
 
-import static org.junit.Assert.*;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
-
 import org.nutz.Nutzs;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.SqlNotFoundException;
@@ -32,6 +29,10 @@ import org.nutz.dao.test.meta.issue1176.Issue1176;
 import org.nutz.dao.util.cri.Exps;
 import org.nutz.dao.util.cri.SqlExpression;
 import org.nutz.trans.Atom;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class CustomizedSqlsTest extends DaoCase {
 
@@ -156,7 +157,7 @@ public class CustomizedSqlsTest extends DaoCase {
     
     @Test
     public void test_cnd_pager() {
-        pojos.init();
+        pojos.initPet();
         Sql sql = Sqls.create("select * from t_pet $condition");
         sql.setCondition(Cnd.where("name", "=", "wendal"));
         Pager pager = dao.createPager(1, 20);
@@ -167,6 +168,7 @@ public class CustomizedSqlsTest extends DaoCase {
     @Test
     public void test_in() {
         Sqls.setSqlBorning(NutSql.class);
+        pojos.initPet();
         dao.clear(Pet.class);
         dao.insert(Pet.create(4));
         List<Pet> pets = dao.query(Pet.class, null, dao.createPager(1, 2));
