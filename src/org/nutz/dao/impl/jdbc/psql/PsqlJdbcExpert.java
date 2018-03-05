@@ -1,6 +1,11 @@
 package org.nutz.dao.impl.jdbc.psql;
 
 import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Arrays;
 import java.util.List;
 
 import org.nutz.dao.DB;
@@ -20,8 +25,12 @@ import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Pojos;
 import org.nutz.lang.Lang;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public class PsqlJdbcExpert extends AbstractJdbcExpert {
+
+    private static final Log log = Logs.get();
 
     public PsqlJdbcExpert(JdbcExpertConfigFile conf) {
         super(conf);
@@ -171,5 +180,40 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
         if (force || keywords.contains(columnName.toUpperCase()))
             return "\"" + columnName + "\"";
         return null;
+    }
+
+    @Override
+    public void checkDataSource(Connection conn) throws SQLException {
+        if (log.isDebugEnabled()) {
+            String sql = "SELECT * FROM information_schema.character_sets";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            if (rs.next()) {
+                for (String name : Arrays.asList("character_set_catalog",
+                                                 "character_set_schema",
+                                                 "character_set_name",
+                                                 "character_repertoire",
+                                                 "form_of_use",
+                                                 "default_collate_catalog",
+                                                 "default_collate_schema",
+                                                 "default_collate_name")) {
+                    log.debugf("Postgresql : %s=%s", name, rs.getString(name));
+                }
+            }
+            rs.close();
+            // 打印当前数据库名称
+            rs = stmt.executeQuery("SELECT CURRENT_DATABASE()");
+            if (rs.next()) {
+                log.debug("Postgresql : database=" + rs.getString(1));
+            }
+            rs.close();
+            // 打印当前连接用户名
+            rs = stmt.executeQuery("SELECT CURRENT_USER");
+            if (rs.next()) {
+                log.debug("Postgresql : user=" + rs.getString(1));
+            }
+            rs.close();
+            stmt.close();
+        }
     }
 }
