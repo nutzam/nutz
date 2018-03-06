@@ -956,7 +956,12 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
     }
 
     public int evalInt(String el) {
-        return (Integer) El.eval(Lang.context(this), el);
+        Object obj = El.eval(Lang.context(this), el);
+        if (obj == null)
+            return 0;
+        if (obj instanceof Number)
+            return ((Number)obj).intValue();
+        return Integer.parseInt(obj.toString());
     }
 
     /**
