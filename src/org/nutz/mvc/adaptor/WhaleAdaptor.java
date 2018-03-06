@@ -18,6 +18,7 @@ import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.Mvcs;
+import org.nutz.mvc.adaptor.injector.MapPairInjector;
 import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.upload.FastUploading;
 import org.nutz.mvc.upload.FieldMeta;
@@ -78,8 +79,16 @@ public class WhaleAdaptor extends PairAdaptor {
         }
 
         // Map
-        if (Map.class.isAssignableFrom(clazz))
-            return new MapSelfInjector();
+        if (Map.class.isAssignableFrom(clazz)) {
+            final Class<?> klass = clazz;
+            return new ParamInjector() {
+                public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
+                    if (refer != null)
+                        return refer;
+                    return new MapPairInjector(klass).get(sc, req, resp, refer);
+                }
+            };
+        }
 
         String pn = null == param ? getParamRealName(curIndex) : param.value();
 
