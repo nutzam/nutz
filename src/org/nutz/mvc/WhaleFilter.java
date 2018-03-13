@@ -80,7 +80,7 @@ public class WhaleFilter implements Filter {
     
     public void init(InputStream ins) throws Exception {
         props.load(ins);
-        if (props.contains("log.adapter")) {
+        if (props.containsKey("log.adapter")) {
             LogAdapter la = (LogAdapter) Class.forName(props.getProperty("log.adapter")).newInstance();
             Logs.setAdapter(la);
         }
