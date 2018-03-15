@@ -11,8 +11,13 @@ public class String2Long extends String2Number<Long> {
 
     @Override
     protected Long valueOf(String str) {
-        Nums.Radix ni = Nums.evalRadix(str);
-        return Long.valueOf(ni.val, ni.radix);
+        try {
+            Nums.Radix ni = Nums.evalRadix(str);
+            return Long.valueOf(ni.val, ni.radix);
+        }
+        catch (NumberFormatException e) {
+            return Long.valueOf(str);
+        }
     }
 
 }
