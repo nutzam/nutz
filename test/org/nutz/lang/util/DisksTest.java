@@ -37,6 +37,18 @@ public class DisksTest {
 
         path = Disks.getRelativePath("D:/uu.txt", "D:/abc.gif");
         assertEquals("abc.gif", path);
+        
+        path = Disks.getRelativePath("/a/b/x.html", "/a/b/f.html");
+        assertEquals("f.html", path);
+        
+        path = Disks.getRelativePath("/a/x.html", "/a/b/f.html");
+        assertEquals("b/f.html", path);
+        
+        path = Disks.getRelativePath("/a/b/", "/a/b/f.html");
+        assertEquals("f.html", path);
+        
+        path = Disks.getRelativePath("/a/b/x.html", "/a/b/f.html");
+        assertEquals("f.html", path);
     }
 
     @Test
