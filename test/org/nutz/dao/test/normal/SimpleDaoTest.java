@@ -42,6 +42,7 @@ import org.nutz.dao.test.meta.issue928.BeanWithSet;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.blob.SimpleBlob;
 import org.nutz.dao.util.blob.SimpleClob;
+import org.nutz.dao.util.cri.Exps;
 import org.nutz.dao.util.cri.SimpleCriteria;
 import org.nutz.dao.util.meta.SystemUser;
 import org.nutz.dao.util.tables.TablesFilter;
@@ -55,10 +56,7 @@ import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
 
 import javax.sql.DataSource;
-
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -1169,5 +1167,31 @@ public class SimpleDaoTest extends DaoCase {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+    
+    @Test
+    public void test_cnd_clone2() {
+        // 序列化的方式, 不要考究SQL条件的合理性
+        dao.insert(Pet.create(30));
+        Cnd cnd = Cnd.where("age", ">", 15).and(Cnd.exps("age", ">", 0).and("age", "<", 16));
+        cnd.asc("age");
+        int t = dao.count(Pet.class, cnd);
+        assertNotNull(Lang.toBytes(cnd));
+        Stopwatch sw = Stopwatch.begin();
+        cnd.clone();
+        sw.stop();
+        System.out.println(sw);
+        assertEquals(t, dao.count(Pet.class, cnd.clone()));
+        
+        // 仅拷贝where条件
+        Cnd cndCloned = cnd.cloneWhere();
+        assertEquals(t, dao.count(Pet.class, cndCloned));
+        
+        // 修改原来的cnd条件, 使其互相矛盾,结果肯定是0
+        cnd.and("age", "<", 0);
+        assertEquals(0, dao.count(Pet.class, cnd));
+        
+        // 克隆的cndCloned应该不受影响
+        assertEquals(t, dao.count(Pet.class, cndCloned));
     }
 }
