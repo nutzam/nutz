@@ -43,13 +43,18 @@ public class NutSql extends NutStatement implements Sql {
     protected Map<String, ValueAdaptor> customValueAdaptor;
     protected List<PItem> items;
     protected char[] placeholder;
+    
+    public NutSql() {
+        this(null, null);
+    }
 
     public NutSql(String source) {
         this(source, null);
     }
 
     public NutSql(String source, SqlCallback callback) {
-        this.setSourceSql(source);
+        if (source != null)
+            this.setSourceSql(source);
         this.callback = callback;
         this.vars = new SimpleVarSet();
         this.rows = new ArrayList<VarSet>();
