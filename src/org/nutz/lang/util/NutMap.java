@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -503,7 +504,16 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         Object v = get(key);
         if (null == v)
             return null;
-        return (List) v;
+        List list = (List) v;
+        ListIterator it = list.listIterator();
+        while (it.hasNext()) {
+            Object ele = it.next();
+            if (null != ele && !eleType.isAssignableFrom(ele.getClass())) {
+                Object ele2 = Castors.me().castTo(ele, eleType);
+                it.set(ele2);
+            }
+        }
+        return list;
     }
 
     /**
@@ -960,7 +970,7 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         if (obj == null)
             return 0;
         if (obj instanceof Number)
-            return ((Number)obj).intValue();
+            return ((Number) obj).intValue();
         return Integer.parseInt(obj.toString());
     }
 
