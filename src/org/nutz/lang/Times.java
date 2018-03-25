@@ -1177,18 +1177,13 @@ public abstract class Times {
      * @return timestamp 时间戳字符串
      */
     public static String sDT2TS(String str, DateFormat df) {
-        String timestamp = null;
-        Date date;
         try {
-            date = df.parse(str);
-            long l = date.getTime();
-            String tmp = String.valueOf(l);
-            timestamp = tmp.substring(0, 10);
+            return "" + (df.parse(str).getTime() / 1000);
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-        return timestamp;
+        return "0";
     }
 
     /**
@@ -1663,7 +1658,7 @@ public abstract class Times {
         if (Lang.isEmpty(date)) {
             return getTS();
         } else {
-            return Long.parseLong(Times.sDT2TS(Times.sDT(date), DF_DATE_TIME));
+            return date.getTime() / 1000;
         }
     }
 }

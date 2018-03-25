@@ -36,7 +36,7 @@ tomcat编码
 	set JAVA_OPTS=-Dfile.encoding=UTF-8
 	}}}
 	
-	打开conf\server.conf, 在8080端口所属的Connector节点,添加URIEncoding,可解决大部分GET请求中文乱码的问题
+	打开`conf\server.xml`, 在8080端口所属的Connector节点,添加URIEncoding,可解决大部分GET请求中文乱码的问题
 	
 	{{{
 	URIEncoding="UTF-8"
