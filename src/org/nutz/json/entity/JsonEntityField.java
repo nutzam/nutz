@@ -210,4 +210,12 @@ public class JsonEntityField {
     public void setGenericType(Type genericType) {
         this.genericType = ReflectTool.getInheritGenericType(declaringClass, genericType);;
     }
+    
+    public void setInjecting(Injecting injecting) {
+        this.injecting = injecting;
+    }
+    
+    public void setEjecting(Ejecting ejecting) {
+        this.ejecting = ejecting;
+    }
 }
