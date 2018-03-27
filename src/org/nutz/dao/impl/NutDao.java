@@ -1073,15 +1073,15 @@ public class NutDao extends DaoSupport implements Dao {
         Object obj = Lang.first(t);
         Entity<?> en = getEntity(obj.getClass());
         boolean shall_update = false;
-        if (en.getPkType() == PkType.NAME) {
-            MappingField mf = en.getNameField();
+        MappingField mf = en.getNameField();
+        if (mf != null) {
             Object val = mf.getValue(obj);
-            if (val == null || fetch(en.getType(), Cnd.where(mf.getName(), "=", val)) == null) {
+            if (val != null && fetch(en.getType(), Cnd.where(mf.getName(), "=", val)) != null) {
                 shall_update = true;
             }
         }
-        else if (en.getPkType() == PkType.ID) {
-            MappingField mf = en.getIdField();
+        else if (en.getIdField() != null) {
+            mf = en.getIdField();
             Object val = mf.getValue(obj);
             if (val != null && fetch(t) != null) {
                 shall_update = true;
