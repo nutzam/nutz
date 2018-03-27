@@ -56,6 +56,8 @@ public abstract class NutRunner implements Runnable {
      * 睡眠于，如果本值不为 null，表示本线程正在睡眠，否则为运行中
      */
     protected Date downAt;
+    
+    protected boolean debug = true;
 
     /**
      * 新建一个启动器
@@ -151,7 +153,8 @@ public abstract class NutRunner implements Runnable {
                     // 修改一下本线程的时间
                     upAt = Times.now();
                     downAt = null;
-                    log.debugf("%s [%d] : up", rnm, ++count);
+                    if (debug && log.isDebugEnabled())
+                        log.debugf("%s [%d] : up", rnm, ++count);
 
                     // 执行业务
                     interval = exec();
@@ -161,7 +164,8 @@ public abstract class NutRunner implements Runnable {
 
                     // 等待一个周期
                     downAt = Times.now();
-                    log.debugf("%s [%d] : wait %ds(%dms)", rnm, count, interval / 1000, interval);
+                    if (debug && log.isDebugEnabled())
+                        log.debugf("%s [%d] : wait %ds(%dms)", rnm, count, interval / 1000, interval);
                     lock.wait(interval);
                 }
                 catch (InterruptedException e) {
@@ -289,4 +293,11 @@ public abstract class NutRunner implements Runnable {
         myThread.stop(err);
     }
 
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
+    
+    public boolean isDebug() {
+        return debug;
+    }
 }
