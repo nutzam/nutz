@@ -13,6 +13,7 @@ import org.nutz.json.JsonException;
 import org.nutz.json.JsonParser;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Nums;
+import org.nutz.lang.util.NutMap;
 import org.nutz.mapl.MaplCompile;
 
 /**
@@ -173,7 +174,7 @@ final class JsonTokenScan {
     }
 
     protected Map<String, Object> readMap() {
-        Map<String, Object> map = new LinkedHashMap<String, Object>();
+        Map<String, Object> map = new NutMap();
         boolean hasComma = false;
         OUT: while (true) {
             nextToken();
