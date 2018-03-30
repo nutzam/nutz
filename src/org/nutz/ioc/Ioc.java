@@ -67,4 +67,6 @@ public interface Ioc {
     <K> K getByType(Class<K> klass);
     
     Ioc addBean(String name, Object obj);
+    
+    Class<?> getType(String name) throws ObjectLoadException;
 }

@@ -19,6 +19,7 @@ import org.nutz.ioc.IocException;
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.IocLoading;
 import org.nutz.ioc.IocMaking;
+import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.ObjectMaker;
 import org.nutz.ioc.ObjectProxy;
 import org.nutz.ioc.ValueProxyMaker;
@@ -489,5 +490,21 @@ public class NutIoc implements Ioc2 {
         else
             getIocContext().save("app", name, new ObjectProxy(obj));
         return this;
+    }
+    
+    public Class<?> getType(String beanName) throws ObjectLoadException {
+        return getType(beanName, null);
+    }
+    
+    public Class<?> getType(String beanName, IocContext context) throws ObjectLoadException {
+        IocContext cntx;
+        if (null == context || context == this.context)
+            cntx = this.context;
+        else
+            cntx = new ComboContext(context, this.context);
+        ObjectProxy op = cntx.fetch(beanName);
+        if (op != null && op.getObj() != null)
+            return op.getObj().getClass();
+        return loader.getType(createLoading(), beanName);
     }
 }

@@ -46,4 +46,6 @@ public interface Ioc2 extends Ioc {
     <T> T getByType(Class<T> type, IocContext context);
     
     String[] getNamesByAnnotation(Class<? extends Annotation> klass, IocContext context);
+    
+    Class<?> getType(String beanName, IocContext context) throws ObjectLoadException;
 }
