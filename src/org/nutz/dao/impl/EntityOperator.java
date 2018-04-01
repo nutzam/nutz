@@ -9,6 +9,7 @@ import org.nutz.dao.Condition;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
+import org.nutz.dao.entity.PkType;
 import org.nutz.dao.impl.sql.pojo.AbstractPItem;
 import org.nutz.dao.impl.sql.pojo.ConditionPItem;
 import org.nutz.dao.impl.sql.pojo.InsertByChainPItem;
@@ -89,17 +90,20 @@ public class EntityOperator {
     public Pojo addUpdateByPkAndCnd(final Entity<?> en, final Object obj, final Condition cnd) {
         if (null == en)
             return null;
-
-        Pojo pojo = dao.pojoMaker.makeUpdate(en, null)
-                                    .append(Pojos.Items.cndAuto(en, Lang.first(obj)))
-                                    .setOperatingObject(obj);
-        pojo.append(new Static(" AND "));
+        Pojo pojo = dao.pojoMaker.makeUpdate(en, null);
+        
+        boolean pureCnd = en.getPkType() == PkType.UNKNOWN;
+        if (!pureCnd) {
+            pojo.append(Pojos.Items.cndAuto(en, Lang.first(obj)));
+            pojo.append(new Static(" AND "));
+        }
         if (cnd instanceof Criteria) {
             // 只取它的where条件
-            pojo.append(((Criteria)cnd).where().setTop(false));
+            pojo.append(((Criteria)cnd).where().setTop(pureCnd));
         } else {
-            pojo.append(new ConditionPItem(cnd).setTop(false));
+            pojo.append(new ConditionPItem(cnd).setTop(pureCnd));
         }
+        pojo.setOperatingObject(obj);
         pojoList.add(pojo);
         return pojo;
     }

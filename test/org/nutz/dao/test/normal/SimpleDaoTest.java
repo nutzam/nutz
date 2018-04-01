@@ -1194,4 +1194,22 @@ public class SimpleDaoTest extends DaoCase {
         // 克隆的cndCloned应该不受影响
         assertEquals(t, dao.count(Pet.class, cndCloned));
     }
+    
+    @Test
+    public void test_issue_1294() {
+        dao.clear(Pet.class);
+        dao.insert(Pet.create("wendal"));
+        Record re = new Record();
+        re.put(".table", "t_pet");
+        re.put("*name", "wendal");
+        re.put("age", 30);
+        dao.update(re, Cnd.where("age", ">", -100));
+        assertEquals(30, dao.fetch(Pet.class).getAge());
+        
+        re = new Record();
+        re.put(".table", "t_pet");
+        re.put("age", 31);
+        dao.update(re, Cnd.where("age", ">", -100));
+        assertEquals(31, dao.fetch(Pet.class).getAge());
+    }
 }
