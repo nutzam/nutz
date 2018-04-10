@@ -605,7 +605,7 @@ public class Mirror<T> {
         do {
             ann = cc.getAnnotation(annType);
             cc = cc.getSuperclass();
-        } while (null == ann && cc != Object.class);
+        } while (null == ann && null != cc && cc != Object.class);
         return ann;
     }
 
