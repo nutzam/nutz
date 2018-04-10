@@ -11,12 +11,14 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.nutz.NutzEnum;
 import org.nutz.dao.DB;
 import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.Name;
 import org.nutz.dao.test.meta.Pet;
+import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.lang.born.Borning;
 import org.nutz.lang.meta.Email;
 import org.nutz.lang.meta.Issue392Bean;
@@ -644,4 +646,21 @@ public class MirrorTest {
         Mirror.me(IssueVarStringMethodC.class).born(args.toArray());
         Mirror.me(IssueVarStringMethodC.class).findMethod("make", args.toArray(new String[0]));
     }
+
+    @Test
+    public void test_annotation_NPE() throws Exception {
+
+
+        IocBean annotation = Mirror.me(test.class).getAnnotation(IocBean.class);
+
+        Assert.assertNull(annotation);
+
+    }
+
+
+    public @interface test {
+
+    }
+
+
 }
