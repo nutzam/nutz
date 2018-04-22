@@ -15,6 +15,7 @@ import org.nutz.dao.impl.SimpleDataSource;
 import org.nutz.dao.impl.sql.NutStatement;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.jdbc.Jdbcs;
+import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.DaoStatement;
@@ -50,17 +51,22 @@ import org.nutz.json.Json;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Stopwatch;
+import org.nutz.lang.Streams;
 import org.nutz.lang.random.R;
 import org.nutz.lang.util.NutMap;
 import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
 
 import javax.sql.DataSource;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
@@ -428,7 +434,7 @@ public class SimpleDaoTest extends DaoCase {
     }
 
     @Test
-    public void test_use_blob_clob() {
+    public void test_use_blob_clob() throws FileNotFoundException, IOException, SQLException {
         dao.create(UseBlobClob.class, true);
         UseBlobClob use = new UseBlobClob();
         use.setName("wendal");
@@ -439,6 +445,12 @@ public class SimpleDaoTest extends DaoCase {
         use.setX(new SimpleBlob(Files.findFile("log4j.properties")));
         use.setY(new SimpleClob(Files.findFile("log4j.properties")));
         dao.update(use);
+        
+        use = dao.fetch(UseBlobClob.class, "wendal");
+        assertNotNull(use.getX());
+        assertNotNull(use.getY());
+        
+        assertTrue(Streams.equals(use.getX().getBinaryStream(), new FileInputStream(Files.findFile("log4j.properties"))));
     }
 
     @Test
@@ -1211,5 +1223,30 @@ public class SimpleDaoTest extends DaoCase {
         re.put("age", 31);
         dao.update(re, Cnd.where("age", ">", -100));
         assertEquals(31, dao.fetch(Pet.class).getAge());
+    }
+    
+    @Test
+    public void test_issue_xxx() {
+        final Object[] re = new Object[1];
+        ValueAdaptor va = new ValueAdaptor() {
+            
+            @Override
+            public void set(PreparedStatement stat, Object obj, int index) throws SQLException {
+                re[0] = obj;
+                stat.setString(index, "ABC");
+            }
+            
+            @Override
+            public Object get(ResultSet rs, String colName) throws SQLException {
+                // TODO Auto-generated method stub
+                return null;
+            }
+        };
+        List<String> name = Arrays.asList("wendal");
+        Sql sql = Sqls.create("select * from t_pet where name=@name");
+        sql.setParam("name", name);
+        sql.setValueAdaptor("name", va);
+        dao.execute(sql);
+        assertEquals(name, re[0]);
     }
 }

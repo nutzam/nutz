@@ -16,7 +16,7 @@ import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
 import org.nutz.dao.entity.annotation.ColType;
 import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
-import org.nutz.dao.impl.jdbc.BlobValueAdaptor2;
+import org.nutz.dao.impl.jdbc.BlobValueAdaptor3;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
@@ -166,7 +166,7 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
     @Override
     public ValueAdaptor getAdaptor(MappingField ef) {
         if (ef.getTypeMirror().isOf(Blob.class)) {
-            return new BlobValueAdaptor2(Jdbcs.getFilePool());
+            return new BlobValueAdaptor3(Jdbcs.getFilePool());
         } else if (ColType.PSQL_JSON == ef.getColumnType()) {
             return new PsqlJsonAdaptor();
         } else if (ColType.PSQL_ARRAY == ef.getColumnType()) {
