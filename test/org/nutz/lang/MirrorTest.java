@@ -301,14 +301,14 @@ public class MirrorTest {
     }
 
     @Test
-    public void testBornByInnerNullDynamicAges() {
+    public void testBornByInnerNullDynamicArgs() {
         DD ds = Mirror.me(DD.class).born(23);
         assertEquals(23, ds.id);
         assertEquals(0, ds.values.length);
     }
 
     @Test
-    public void testBornByInnerOuterDynamicAges() {
+    public void testBornByInnerOuterDynamicArgs() {
         DD ds = Mirror.me(DD.class).born(23);
         assertEquals(23, ds.id);
         assertEquals(0, ds.values.length);
