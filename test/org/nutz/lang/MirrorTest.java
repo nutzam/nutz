@@ -162,7 +162,7 @@ public class MirrorTest {
     }
 
     @Test
-    public void testGetWrpperClass() {
+    public void testGetWrapperClass() {
         assertEquals(Boolean.class, Mirror.me(Boolean.class).getWrapperClass());
         assertEquals(Boolean.class, Mirror.me(boolean.class).getWrapperClass());
         assertEquals(Integer.class, Mirror.me(Integer.class).getWrapperClass());
@@ -270,14 +270,14 @@ public class MirrorTest {
     }
 
     @Test
-    public void testBornByStaticDynamiceArgs() {
+    public void testBornByStaticDynamicArgs() {
         DS ds = Mirror.me(DS.class).born(23, new String[]{"TT", "FF"});
         assertEquals(23, ds.id);
         assertEquals("FF", ds.values[1]);
     }
 
     @Test
-    public void testBornByStaticNullDynamiceArgs() {
+    public void testBornByStaticNullDynamicArgs() {
         DS ds = Mirror.me(DS.class).born(23);
         assertEquals(23, ds.id);
         assertEquals(0, ds.values.length);
@@ -294,21 +294,21 @@ public class MirrorTest {
     }
 
     @Test
-    public void testBornByInnerDynamiceArgs() {
+    public void testBornByInnerDynamicArgs() {
         DD ds = Mirror.me(DD.class).born(23, new String[]{"TT", "FF"});
         assertEquals(23, ds.id);
         assertEquals("FF", ds.values[1]);
     }
 
     @Test
-    public void testBornByInnerNullDynamiceArgs() {
+    public void testBornByInnerNullDynamicArgs() {
         DD ds = Mirror.me(DD.class).born(23);
         assertEquals(23, ds.id);
         assertEquals(0, ds.values.length);
     }
 
     @Test
-    public void testBornByInnerOuterDynamiceArgs() {
+    public void testBornByInnerOuterDynamicArgs() {
         DD ds = Mirror.me(DD.class).born(23);
         assertEquals(23, ds.id);
         assertEquals(0, ds.values.length);
@@ -541,7 +541,7 @@ public class MirrorTest {
     }
 
     @Test
-    public void test_borning_of_constractor() {
+    public void test_borning_of_constructor() {
         Borning<TBOC> b = Mirror.me(TBOC.class).getBorning("H2");
         TBOC tb = b.born("H2");
         assertEquals(DB.H2, tb.db);
