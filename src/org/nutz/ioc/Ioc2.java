@@ -34,7 +34,7 @@ public interface Ioc2 extends Ioc {
     IocContext getIocContext();
 
     /**
-     * 增加 ValuePfoxyMaker
+     * 增加 ValueProxyMaker
      * 
      * @see org.nutz.ioc.ValueProxy
      * @see org.nutz.ioc.ValueProxyMaker
