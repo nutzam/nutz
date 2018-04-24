@@ -103,7 +103,7 @@ public abstract class Exps {
             Class<?> type = value.getClass();
             SqlExpression re;
             int len = Lang.eleSize(value);
-            if (len < 1) { // 如果空数组/空集合,则返回 @sinec 1.r.57
+            if (len < 1) { // 如果空数组/空集合,则返回 @since 1.r.57
                 re = new Static("1 != 1");
             }
             // 数组

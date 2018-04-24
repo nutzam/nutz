@@ -13,5 +13,5 @@ public @interface Async {
 
 	boolean enable() default true;
 	//String es() default "";
-	//int poolsize() default -1;
+	//int pool size() default -1;
 }

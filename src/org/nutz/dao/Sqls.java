@@ -14,6 +14,7 @@ import org.nutz.lang.born.Borning;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
+@SuppressWarnings("ALL")
 public abstract class Sqls {
 
     private static final ValueEscaper ES_FLD_VAL = new ValueEscaper();

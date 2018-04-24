@@ -1471,7 +1471,7 @@ public class Mirror<T> {
     }
 
     /**
-     * @return 当前对象是否为小数 (float, dobule)
+     * @return 当前对象是否为小数 (float, double)
      */
     public boolean isDecimal() {
         return isFloat() || isDouble();

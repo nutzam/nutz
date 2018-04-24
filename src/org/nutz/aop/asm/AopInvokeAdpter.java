@@ -31,11 +31,11 @@ class AopInvokeAdpter extends AopMethodAdapter {
         mv.visitCode();
 
         for (int i = 0; i < methodArray.length; i++) {
-            // start of fuck linenumber
+            // start of fuck line number
             Label tmp = new Label();
             mv.visitLabel(tmp);
             mv.visitLineNumber(i+1, tmp);
-            // end of Linenumber
+            // end of line number
             Method method = methodArray[i];
             mv.visitVarInsn(ILOAD, 1);
             visitX(i);
