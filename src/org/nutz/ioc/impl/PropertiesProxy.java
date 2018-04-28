@@ -140,6 +140,16 @@ public class PropertiesProxy extends MultiLineProperties {
         }
     }
 
+    public List<String> getKeysWithPrefix(String prefix) {
+        List<String> list = new ArrayList<String>();
+        for (String key : getKeys()) {
+            if (key != null && key.startsWith(prefix)) {
+                list.add(key);
+            }
+        }
+        return list;
+    }
+
     /**
      * 加载指定文件/文件夹的Properties文件
      * 

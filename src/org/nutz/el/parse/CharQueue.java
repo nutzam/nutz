@@ -11,10 +11,10 @@ public interface CharQueue {
      */
     char peek();
     /**
-     * 不删除字符的情况下读取第ofset个字符,
-     * @param ofset 偏移量
+     * 不删除字符的情况下读取第offset个字符,
+     * @param offset 偏移量
      */
-    char peek(int ofset);
+    char peek(int offset);
     /**
      * 读取字符,并删除字符
      */

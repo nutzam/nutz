@@ -91,7 +91,7 @@ public class NutDaoExecutor implements DaoExecutor {
                 }
             }
         }
-        // If any SQLException happend, throw out the SQL string
+        // If any SQLException happened, throw out the SQL string
         catch (SQLException e) {
             if (log.isDebugEnabled()) {
             	log.debug("SQLException", e);

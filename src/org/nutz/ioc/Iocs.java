@@ -56,7 +56,7 @@ public abstract class Iocs {
         if (me.getType() == null)
             me.setType(it.getType());
 
-        // don't need merge signleon
+        // don't need merge singleton
 
         // merge events
         if (me.getEvents() == null) {
