@@ -66,7 +66,7 @@ public class PropertiesProxyTest {
     @Test
     public void testPrefix() throws Exception {
 
-        PropertiesProxy proxy = new PropertiesProxy(true, "/config/prefix.properties");
+        PropertiesProxy proxy = new PropertiesProxy(true, "config/prefix.properties");
 
         assertPrefix(proxy, "test");
         assertPrefix(proxy, "test.");
