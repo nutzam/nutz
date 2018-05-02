@@ -494,19 +494,22 @@ public abstract class Xmls {
         return asMap(ele, lowFirst, dupAsList, null);
     }
     public static NutMap asMap(Element ele, final boolean lowerFirst, final boolean dupAsList, final List<String> alwaysAsList) {
+        return asMap(ele, new XmlParserOpts(lowerFirst, dupAsList, alwaysAsList, false));
+    }
+    public static NutMap asMap(Element ele, final XmlParserOpts opts) {
         final NutMap map = new NutMap();
         eachChildren(ele, new Each<Element>() {
             public void invoke(int index, Element _ele, int length)
                     throws ExitLoop, ContinueLoop, LoopException {
                 String key = _ele.getNodeName();
-                if (lowerFirst)
+                if (opts.lowerFirst)
                     key = Strings.lowerFirst(key);
-                Map<String, Object> tmp = asMap(_ele, lowerFirst, dupAsList, alwaysAsList);
+                Map<String, Object> tmp = asMap(_ele, opts.lowerFirst, opts.dupAsList, opts.alwaysAsList);
                 if (!tmp.isEmpty()) {
-                    if (alwaysAsList != null && alwaysAsList.contains(key)) {
+                    if (opts.alwaysAsList != null && opts.alwaysAsList.contains(key)) {
                         map.addv2(key, tmp);
                     }
-                    else if (dupAsList) {
+                    else if (opts.dupAsList) {
                         map.addv(key, tmp);
                     }
                     else {
@@ -515,11 +518,11 @@ public abstract class Xmls {
                     return;
                 }
                 String val = getText(_ele);
-                if (!Strings.isBlank(val)) {
-                    if (alwaysAsList != null && alwaysAsList.contains(key)) {
+                if (opts.keeyBlankNode || !Strings.isBlank(val)) {
+                    if (opts.alwaysAsList != null && opts.alwaysAsList.contains(key)) {
                         map.addv2(key, map);
                     }
-                    else if (dupAsList)
+                    else if (opts.dupAsList)
                         map.addv(key, val);
                     else
                         map.setv(key, val);
@@ -645,4 +648,48 @@ public abstract class Xmls {
     }
     
     public static String HEAD = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+    
+    public static class XmlParserOpts {
+        private boolean lowerFirst;
+        private boolean dupAsList;
+        private List<String> alwaysAsList;
+        private boolean keeyBlankNode;
+        public XmlParserOpts() {
+        }
+        
+        
+        public XmlParserOpts(boolean lowerFirst, boolean dupAsList, List<String> alwaysAsList, boolean keeyBlankNode) {
+            super();
+            this.lowerFirst = lowerFirst;
+            this.dupAsList = dupAsList;
+            this.alwaysAsList = alwaysAsList;
+            this.keeyBlankNode = keeyBlankNode;
+        }
+
+
+        public boolean isLowerFirst() {
+            return lowerFirst;
+        }
+        public void setLowerFirst(boolean lowerFirst) {
+            this.lowerFirst = lowerFirst;
+        }
+        public boolean isDupAsList() {
+            return dupAsList;
+        }
+        public void setDupAsList(boolean dupAsList) {
+            this.dupAsList = dupAsList;
+        }
+        public List<String> getAlwaysAsList() {
+            return alwaysAsList;
+        }
+        public void setAlwaysAsList(List<String> alwaysAsList) {
+            this.alwaysAsList = alwaysAsList;
+        }
+        public boolean isKeeyBlankNode() {
+            return keeyBlankNode;
+        }
+        public void setKeeyBlankNode(boolean keeyBlankNode) {
+            this.keeyBlankNode = keeyBlankNode;
+        }
+    }
 }
