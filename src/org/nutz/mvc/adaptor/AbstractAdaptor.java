@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
 import javax.servlet.ServletContext;
@@ -42,6 +43,7 @@ import org.nutz.mvc.adaptor.injector.ServletContextInjector;
 import org.nutz.mvc.adaptor.injector.SessionAttrInjector;
 import org.nutz.mvc.adaptor.injector.SessionInjector;
 import org.nutz.mvc.adaptor.injector.ViewModelInjector;
+import org.nutz.mvc.adaptor.injector.VoidInjector;
 import org.nutz.mvc.annotation.Attr;
 import org.nutz.mvc.annotation.Cookie;
 import org.nutz.mvc.annotation.IocObj;
@@ -345,6 +347,8 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
                             null,
                             true);
                 }
+                if (Modifier.isInterface(type.getModifiers()))
+                    return new VoidInjector();
                 return new NameInjector(paramName,
                         null,
                         argTypes[index],
