@@ -21,6 +21,7 @@ import org.nutz.lang.Mirror;
 import org.nutz.lang.util.MethodParamNamesScaner;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.HttpAdaptor2;
 import org.nutz.mvc.Scope;
@@ -247,9 +248,12 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
             errCtx = (AdaptorErrorContext) Mirror.me(argTypes[errCtxIndex])
                     .born(argTypes.length);
 
-        Object obj;
+        Object obj = req.getAttribute(ActionContext.REFER_OBJECT);
         try {
-            obj = getReferObject(sc, req, resp, pathArgs);
+            if (obj == null) {
+                obj = getReferObject(sc, req, resp, pathArgs);
+                req.setAttribute(ActionContext.REFER_OBJECT, obj);
+            }
         }
         catch (Throwable e) {
             if (errCtx != null) {
