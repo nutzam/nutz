@@ -3,7 +3,6 @@ package org.nutz.mvc.view;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,10 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.castor.Castors;
 import org.nutz.http.Http;
+import org.nutz.lang.Each;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.NutMap;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -27,19 +28,19 @@ public class HttpServerResponse implements Cloneable {
 
     private String statusText;
 
-    private Map<String, String> header;
+    private NutMap header;
 
     private byte[] body;
 
     public HttpServerResponse() {
-        this.header = new HashMap<String, String>();
+        this.header = new NutMap();
     }
 
     public HttpServerResponse clone() {
         HttpServerResponse re = new HttpServerResponse();
         re.statusCode = statusCode;
         re.statusText = statusText;
-        re.header = new HashMap<String, String>();
+        re.header = new NutMap();
         if (header != null)
             re.header.putAll(header);
         re.body = body;
@@ -73,7 +74,7 @@ public class HttpServerResponse implements Cloneable {
                     int p2 = line.indexOf(':');
                     String key = Strings.trim(line.substring(0, p2));
                     String val = Strings.trim(line.substring(p2 + 1));
-                    header.put(key, val);
+                    header.addv(key, val);
 
                     // 指向下一行
                     pos = end + 1;
@@ -150,15 +151,24 @@ public class HttpServerResponse implements Cloneable {
             }
     }
 
-    public void render(HttpServletResponse resp) {
+    public void render(final HttpServletResponse resp) {
         resp.setStatus(statusCode);
 
         // 标记是否需要sendError
         boolean flag = statusCode >= 400;
 
         if (null != header && header.size() > 0) {
-            for (Map.Entry<String, String> en : header.entrySet()) {
-                resp.setHeader(en.getKey(), en.getValue());
+            // 如果 Header 的值为数组，那么就设置成多个
+            for (Map.Entry<String, Object> en : header.entrySet()) {
+                final String key = en.getKey();
+                Object val = en.getValue();
+                Lang.each(val, new Each<Object>() {
+                    public void invoke(int index, Object ele, int length) {
+                        if (null != ele)
+                            resp.addHeader(key, ele.toString());
+                    }
+                });
+                // resp.setHeader(en.getKey(), en.getValue());
             }
             flag = false;
         }
