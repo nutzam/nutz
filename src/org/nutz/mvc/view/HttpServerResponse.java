@@ -49,6 +49,10 @@ public class HttpServerResponse implements Cloneable {
 
     private static final Pattern _P = Pattern.compile("^HTTP/1.\\d\\s+(\\d+)(\\s+(.*))?$");
 
+    public NutMap header() {
+        return this.header;
+    }
+
     public void updateBy(String str) {
         try {
             // 如果以 HTTP/1.x 开头，则认为是要输出 HTTP 头
