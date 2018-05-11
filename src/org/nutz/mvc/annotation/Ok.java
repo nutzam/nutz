@@ -10,6 +10,9 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Documented
 public @interface Ok {
-
-    public String value();
+    
+    /**
+    * 修改默认值为raw
+    */
+    String value() default "raw"; 
 }
