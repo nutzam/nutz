@@ -1,6 +1,34 @@
 package org.nutz.dao.util;
 
-import org.nutz.dao.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.sql.DataSource;
+
+import org.nutz.dao.Chain;
+import org.nutz.dao.Condition;
+import org.nutz.dao.ConnCallback;
+import org.nutz.dao.Dao;
+import org.nutz.dao.DaoException;
+import org.nutz.dao.FieldFilter;
+import org.nutz.dao.FieldMatcher;
+import org.nutz.dao.Sqls;
+import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityIndex;
 import org.nutz.dao.entity.MappingField;
@@ -23,14 +51,6 @@ import org.nutz.log.Logs;
 import org.nutz.resource.Scans;
 import org.nutz.trans.Molecule;
 import org.nutz.trans.Trans;
-
-import javax.sql.DataSource;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.sql.*;
-import java.util.*;
-import java.util.Date;
 
 /**
  * Dao 的帮助函数
@@ -619,32 +639,9 @@ public abstract class Daos {
                 flag = true;
                 continue;
             }
-            if (matcher.isIgnoreId() && mf.isId())
+            if (!matcher.match(mf, obj))
                 continue;
-            if (matcher.isIgnoreName() && mf.isName())
-                continue;
-            if (matcher.isIgnorePk() && mf.isCompositePk())
-                continue;
-            Object val = mf.getValue(obj);
-            if (val == null) {
-                if (matcher.isIgnoreNull())
-                    continue;
-            } else {
-                if (matcher.isIgnoreZero()
-                    && val instanceof Number
-                    && ((Number) val).doubleValue() == 0.0) {
-                    continue;
-                }
-                if (matcher.isIgnoreDate() && val instanceof Date) {
-                    continue;
-                }
-                if (matcher.isIgnoreBlankStr()
-                    && val instanceof CharSequence
-                    && Strings.isBlank((CharSequence) val)) {
-                    continue;
-                }
-            }
-            callback.invoke(mf, val);
+            callback.invoke(mf, mf.getValue(obj));
             flag = true;
         }
         return flag;
