@@ -78,9 +78,7 @@ public class HttpServerResponse implements Cloneable {
                     int p2 = line.indexOf(':');
                     String key = Strings.trim(line.substring(0, p2));
                     String val = Strings.trim(line.substring(p2 + 1));
-                    if (!Strings.isBlank(key) && !Strings.isBlank(val)) {
-                        header.addv(key.toUpperCase(), val);
-                    }
+                    header.addv(key, val);
 
                     // 指向下一行
                     pos = end + 1;
