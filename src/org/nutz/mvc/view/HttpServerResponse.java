@@ -31,6 +31,8 @@ public class HttpServerResponse implements Cloneable {
     private NutMap header;
 
     private byte[] body;
+    
+    private boolean upperHeaderName;
 
     public HttpServerResponse() {
         this.header = new NutMap();
@@ -78,7 +80,12 @@ public class HttpServerResponse implements Cloneable {
                     int p2 = line.indexOf(':');
                     String key = Strings.trim(line.substring(0, p2));
                     String val = Strings.trim(line.substring(p2 + 1));
-                    header.addv(key, val);
+                    if (!Strings.isBlank(key) && !Strings.isBlank(val)) {
+                        if (upperHeaderName) {
+                            key = key.toUpperCase();
+                        }
+                        header.addv(key, val);
+                    }
 
                     // 指向下一行
                     pos = end + 1;
@@ -198,6 +205,10 @@ public class HttpServerResponse implements Cloneable {
                 log.debugf("sendError(%d) failed -- %s", statusCode, e.getMessage());
             }
         }
+    }
+
+    public void setUpperHeaderName(boolean upperHeaderName) {
+        this.upperHeaderName = upperHeaderName;
     }
 
 }
