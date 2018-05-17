@@ -57,6 +57,7 @@ import org.nutz.dao.sql.PojoCallback;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.Pojos;
+import org.nutz.dao.util.cri.SimpleCriteria;
 import org.nutz.dao.util.cri.SqlExpressionGroup;
 import org.nutz.lang.ContinueLoop;
 import org.nutz.lang.Each;
@@ -707,6 +708,11 @@ public class NutDao extends DaoSupport implements Dao {
             pojo.setEntity(en);
             // 高级条件接口，直接得到 WHERE 子句
             if (cnd instanceof Criteria) {
+                if (cnd instanceof SimpleCriteria) {
+                    String beforeWhere = ((SimpleCriteria)cnd).getBeforeWhere();
+                    if (!Strings.isBlank(beforeWhere))
+                        pojo.addParamsBy(Pojos.Items.wrap(beforeWhere));
+                }
                 pojo.append(((Criteria) cnd).where());
                 // MySQL/PgSQL/SqlServer 与 Oracle/H2的结果会不一样,奇葩啊
                 GroupBy gb = ((Criteria) cnd).getGroupBy();
