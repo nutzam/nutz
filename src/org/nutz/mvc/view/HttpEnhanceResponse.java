@@ -20,7 +20,7 @@ import org.nutz.lang.util.NutMap;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
-public class HttpServerResponse implements Cloneable {
+public class HttpEnhanceResponse implements Cloneable {
 
     private static final Log log = Logs.get();
 
@@ -34,12 +34,12 @@ public class HttpServerResponse implements Cloneable {
     
     private boolean upperHeaderName;
 
-    public HttpServerResponse() {
+    public HttpEnhanceResponse() {
         this.header = new NutMap();
     }
 
-    public HttpServerResponse clone() {
-        HttpServerResponse re = new HttpServerResponse();
+    public HttpEnhanceResponse clone() {
+        HttpEnhanceResponse re = new HttpEnhanceResponse();
         re.statusCode = statusCode;
         re.statusText = statusText;
         re.header = new NutMap();
