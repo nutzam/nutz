@@ -1,5 +1,6 @@
 package org.nutz.mvc.view;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -33,6 +34,8 @@ public class HttpEnhanceResponse implements Cloneable {
     private byte[] body;
     
     private boolean upperHeaderName;
+    
+    private String ifNoneMatch;
 
     public HttpEnhanceResponse() {
         this.header = new NutMap();
@@ -84,6 +87,7 @@ public class HttpEnhanceResponse implements Cloneable {
                         if (upperHeaderName) {
                             key = key.toUpperCase();
                         }
+                        System.out.println("FF " + key + "=" + val);
                         header.addv(key, val);
                     }
 
@@ -179,12 +183,24 @@ public class HttpEnhanceResponse implements Cloneable {
                             resp.addHeader(key, ele.toString());
                     }
                 });
-                // resp.setHeader(en.getKey(), en.getValue());
             }
             flag = false;
         }
+        
+        // 重定向链接不应该带body的, 3XX系列的响应都是这样
+        if (statusCode > 300 && statusCode < 399) {
+            return;
+        }
 
         if (body != null) {
+            // 检查是否符合304
+            String etag = Lang.sha1(new ByteArrayInputStream(body));
+            if (!Strings.isBlank(ifNoneMatch) && etag.equalsIgnoreCase(ifNoneMatch)) {
+                statusCode = 304;
+                resp.setStatus(304);
+                return;
+            }
+            resp.setHeader("ETag", etag);
             resp.setContentLength(body.length);
             OutputStream out;
             try {
@@ -211,4 +227,7 @@ public class HttpEnhanceResponse implements Cloneable {
         this.upperHeaderName = upperHeaderName;
     }
 
+    public void setIfNoneMatch(String ifNoneMatch) {
+        this.ifNoneMatch = ifNoneMatch;
+    }
 }
