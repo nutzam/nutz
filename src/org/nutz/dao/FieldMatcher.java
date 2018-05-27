@@ -235,7 +235,7 @@ public class FieldMatcher {
      */
     public FieldMatcher setActived(String actived) {
         if (actived != null)
-            this.actived = Pattern.compile(actived);
+            this.actived = Regex.getPattern(actived);
         else
             this.actived = null;
         return this;
@@ -248,7 +248,7 @@ public class FieldMatcher {
      */
     public FieldMatcher setLocked(String locked) {
         if (locked != null)
-            this.locked = Pattern.compile(locked);
+            this.locked = Regex.getPattern(locked);
         else
             this.locked = null;
         return this;

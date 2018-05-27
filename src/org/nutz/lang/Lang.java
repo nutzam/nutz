@@ -60,6 +60,7 @@ import org.nutz.lang.stream.StringWriter;
 import org.nutz.lang.util.Context;
 import org.nutz.lang.util.NutMap;
 import org.nutz.lang.util.NutType;
+import org.nutz.lang.util.Regex;
 import org.nutz.lang.util.SimpleContext;
 
 /**
@@ -2596,8 +2597,8 @@ public abstract class Lang {
         if (source == null || source.isEmpty())
             return dst;
 
-        Pattern includePattern = include == null ? null : Pattern.compile(include);
-        Pattern excludePattern = exclude == null ? null : Pattern.compile(exclude);
+        Pattern includePattern = include == null ? null : Regex.getPattern(include);
+        Pattern excludePattern = exclude == null ? null : Regex.getPattern(exclude);
 
         for (Entry<String, Object> en : source.entrySet()) {
             String key = en.getKey();
@@ -2689,8 +2690,8 @@ public abstract class Lang {
             throw new IllegalArgumentException("origin is null");
         if (target == null)
             throw new IllegalArgumentException("target is null");
-        Pattern at = active == null ? null : Pattern.compile(active);
-        Pattern lo = lock == null ? null : Pattern.compile(lock);
+        Pattern at = active == null ? null : Regex.getPattern(active);
+        Pattern lo = lock == null ? null : Regex.getPattern(lock);
         Mirror<Object> originMirror = Mirror.me(origin);
         Mirror<T> targetMirror = Mirror.me(target);
         Field[] fields = targetMirror.getFields();
