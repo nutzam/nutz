@@ -195,10 +195,13 @@ public class HttpEnhanceResponse implements Cloneable {
         if (body != null) {
             // 检查是否符合304
             String etag = Lang.sha1(new ByteArrayInputStream(body));
-            if (!Strings.isBlank(ifNoneMatch) && etag.equalsIgnoreCase(ifNoneMatch)) {
-                statusCode = 304;
-                resp.setStatus(304);
-                return;
+            if (!Strings.isBlank(ifNoneMatch)) {
+                if (etag.equalsIgnoreCase(ifNoneMatch)) {
+                    statusCode = 304;
+                    resp.setStatus(304);
+                    return;
+                }
+                log.infof("ETag expect %s but %s", etag, ifNoneMatch);
             }
             resp.setHeader("ETag", etag);
             resp.setContentLength(body.length);
