@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>如何编写starter</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">如何编写starter</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#首先的首先">首先的首先</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#基本结构">基本结构</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#Starter类怎么写?">Starter类怎么写?</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#NB的生命周期">NB的生命周期</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="首先的首先"></a>首先的首先</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果你写了一个很棒的starter,恳请告知我们,报个issue即可,码云或者github均可</p>
+<p>https://gitee.com/nutz/nutzboot</p>
+<p>https://github.com/nutzam/nutzboot</p>
+<div class="hr"><b></b></div>
+<h1><a name="基本结构"></a>基本结构</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>与NB项目一样, starter也是maven项目</p>
+<pre>- src
+	- main
+		- java
+			- net
+				- wendal
+					- time
+						- TimeStarter.java
+		- resources
+			- META-INF
+				- nutz
+					- org.nutz.boot.starter.NbStarter <span class="zdoc_code_cmt">// 这是一个文本文件
+</span></pre>
+<p>org.nutz.boot.starter.NbStarter文件的内容,就是一行一个类全名,可以是无数个.</p>
+<pre>net.wendal.time.TimeStarter
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="Starter类怎么写?"></a>Starter类怎么写?</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>首先,她是public的,非抽象的</p>
+<pre>public class TimeStarter {
+}
+</pre>
+<p>然后,她通常需要读取一些环境数据,依赖ioc注入</p>
+<pre>@IocBean
+public class TimeStarter {
+	@Inject("refer:$ioc")
+	protect Ioc ioc; <span class="zdoc_code_cmt">// 获取ioc容器
+</span>	@Inject
+	protect PropertiesProxy conf; <span class="zdoc_code_cmt">// 获取配置信息
+</span>	@Inject
+	protect AppContext appContext; <span class="zdoc_code_cmt">// 获取全局上下文
+</span>}
+</pre>
+<p>以上是能注入的全部东西了,然而appContext对象内还有几个有用的实例.</p>
+<p>获取上述对象后,你可以做到:</p>
+<ul type="disc">
+<li>获取ioc容器内的任意对象,从而触发一些行为,例如数据库连接池的初始化</li>
+<li>往ioc容器放入新的对象</li>
+<li>获取,修改,移除配置信息</li>
+<li>通过AppContext(其实Ioc和配置信息也是从它来的),你可以访问到其他starter</li>
+</ul>
+<p>那,我这个starter对外提供什么呢?</p>
+<ul type="disc">
+<li>她可以不对外提供任何东西,静静地看着你装逼</li>
+<li>返回一个IocLoader,只需实现IocLoaderProvider接口,例如<a href="https://gitee.com/nutz/nutzboot/blob/dev/nutzboot-starter/nutzboot-starter-redis/src/main/java/org/nutz/boot/starter/redis/JedisStarter.java">JedisStarter</a>就是这样干的</li>
+<li>声明为一个"服务器",例如<a href="https://gitee.com/nutz/nutzboot/blob/dev/nutzboot-starter/nutzboot-starter-jetty/src/main/java/org/nutz/boot/starter/jetty/JettyStarter.java">JettyStarter</a>,她启动了一个web容器,这时候你需要实现ServerFace</li>
+<li>声明为一个"Filter",例如<a href="https://gitee.com/nutz/nutzboot/blob/dev/nutzboot-starter/nutzboot-starter-nutz-mvc/src/main/java/org/nutz/boot/starter/nutz/mvc/NutFilterStarter.java">NutFilterStarter</a>,她返回一个类似web.xml里面的filter定义,需要实现WebFilterFace接口</li>
+<li>声明为一个"Servlet",例如<a href="https://gitee.com/nutz/nutzboot/blob/dev/nutzboot-starter/nutzboot-starter-jdbc/src/main/java/org/nutz/boot/starter/jdbc/DruidWebStatServletStarter.java">DruidStatViewStarter</a>,它返回一个servlet定义,需要实现WebServletFace</li>
+<li>监听session开关?web容器的初始化? 实现WebEventListenerFace就行</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="NB的生命周期"></a>NB的生命周期</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>读取日志配置信息</li>
+<li>获取配置信息</li>
+<li>初始化AppContext,Ioc容器等一切必要的基础设施</li>
+<li>根据org.nutz.boot.starter.NbStarter读取starter类的列表,并将它们加入到ioc容器中</li>
+<li>遍历starter,看看是否实现了IocLoaderProvider接口,获取IocLoader,加入ioc上下文</li>
+<li>逐一执行各个"服务器"starter</li>
+<li>等待程序结束</li>
+<li>逐一关闭各个"服务器"starter</li>
+<li>执行收尾工作</li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

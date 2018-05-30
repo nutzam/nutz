@@ -27,7 +27,10 @@
 <p>通过 String.format() 需要这么写：</p>
 <pre>String.format("XXXXXXXX %s  XXXXXX %s  XXXXXX %s XXXXX", "TxtA","TxtB","TxtA");
 </pre>
-<p>并且你不设值，会被无情抛错。</p>
+<p>或者用位置参数</p>
+<pre>String.format("XXXXXXXX %1$s  XXXXXX %2$s  XXXXXX %1$s XXXXX", "TxtA","TxtB");
+</pre>
+<p>并且你不设值，或者设置的值少于声明的数量, 会被无情抛错。</p>
 <div class="hr"><b></b></div>
 <h1><a name="Nutz_的代码模板"></a>Nutz 的代码模板</h1>
 <div style="float:right;"><a href="#top">Top</a></div>

@@ -26,6 +26,9 @@
 <li>
 <div><span class="num">6</span><a href="#设置SSLSocketFactory">设置SSLSocketFactory</a></div>
 </li>
+<li>
+<div><span class="num">7</span><a href="#Cookie的用法">Cookie的用法</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="为什么有这个package"></a>为什么有这个package</h1>
@@ -123,6 +126,18 @@
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>如铁道部网站的https证书是自签名的,然后不想全局关闭https检查,那么可以为Sender单独设置SSLSocketFactory</p>
 <pre>Sender.create(req).setSSLSocketFactory(Http.nopSSLSocketFactory()).send();
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="Cookie的用法"></a>Cookie的用法</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>发送cookie</p>
+<pre>    Request req = Request.create("https:<span class="zdoc_code_cmt">//nutz.cn", METHOD.GET);
+</span>    Cookie cookie = new Cookie();
+    cookie.set("sid", "aabbcceeddff");
+    ...
+    Sender sender = Sender.create(req);
+    sender.setInterceptor(cookie);
+    sender.send();
 </pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>

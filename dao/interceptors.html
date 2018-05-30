@@ -38,7 +38,7 @@
 <span class="zdoc_code_cmt">// DaoInterceptorChain 包含当前执行的全部信息,如Connection,DaoStatment等等
 </span></pre>
 <p>示例实现</p>
-<pre>public class MyDaoInterceptor {
+<pre>public class MyDaoInterceptor implements DaoInterceptor {
     public void filter(DaoInterceptorChain chain) throws DaoException {
         DaoStatement st = chain.getDaoStatement();
         if (st instanceof NutPojo) {

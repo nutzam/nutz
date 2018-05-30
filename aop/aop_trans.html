@@ -9,20 +9,32 @@
 <div class="zdoc_body">
 <ul class="zdoc_index_table">
 <li>
-<div><span class="num">1</span><a href="#声明式事务">声明式事务</a></div>
+<div><span class="num">1</span><a href="#简介">简介</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#为单个方法添加事务_必须是Ioc_Bean(注解/或json声明的bean都可以),_而且不可以是工厂方法生成的对象哦">为单个方法添加事务. 必须是Ioc Bean(注解/或json声明的bean都可以), 而且不可以是工厂方法生成的对象哦</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#这种方式也是aop,通过JsonAopConfigration实现的,可以按正则表达式匹配需要类名和方法名称,_应用特定的事务拦截器">这种方式也是aop,通过JsonAopConfigration实现的,可以按"正则表达式"匹配需要类名和方法名称, 应用特定的事务拦截器</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="声明式事务"></a>声明式事务</h1>
+<h1><a name="简介"></a>简介</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p>声明式事务, 可以脱离Trans类实现单个方法或多个的事务模板. 例如设置Service类所有insert开头的方法,均应用READ_COMMITTED事务</p>
+<p>声明式事务,是通过aop拦截器做的, 而aop依赖ioc, 在@IocBy注解中启用即可.</p>
 <pre>@IocBy(type=ComboIocProvider.class,
     args={"*json","org/nutz/mvc/testapp/classes/ioc",
           "*anno","org.nutz.mvc.testapp.classes",
           "*tx" <span class="zdoc_code_cmt">// 你只需要加上这一行,即可声明5种不同事务级别的拦截器.
 </span>	})
 public class MainModule {}
-
-<span class="zdoc_code_cmt">// 演示aop事务
+</pre>
+<p>基于注解的声明式事务</p>
+<div class="hr"><b></b></div>
+<h1><a name="为单个方法添加事务_必须是Ioc_Bean(注解/或json声明的bean都可以),_而且不可以是工厂方法生成的对象哦"></a>为单个方法添加事务. 必须是Ioc Bean(注解/或json声明的bean都可以), 而且不可以是工厂方法生成的对象哦</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre><span class="zdoc_code_cmt">// 演示aop事务
 </span>@IocBean <span class="zdoc_code_cmt">// 需要aop,那当然需要时ioc的bean
 </span>public class UserService {
 	@Inject Dao dao; <span class="zdoc_code_cmt">// 注入NutDao实例,必须的,哈哈
@@ -35,6 +47,27 @@ public class MainModule {}
 </span>	}
 }	
 </pre>
+<p>基于json的声明式事务</p>
+<div class="hr"><b></b></div>
+<h1><a name="这种方式也是aop,通过JsonAopConfigration实现的,可以按正则表达式匹配需要类名和方法名称,_应用特定的事务拦截器"></a>这种方式也是aop,通过JsonAopConfigration实现的,可以按"正则表达式"匹配需要类名和方法名称, 应用特定的事务拦截器</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>var ioc = {
+	$aop : {
+		type : "org.nutz.ioc.aop.config.impl.JsonAopConfigration",
+		fields : {
+			itemList : [
+			    <span class="zdoc_code_cmt">//[类名的正则表达式,方法名的正则表达式,事务拦截器名称] 事务拦截器的名称请看TransAop类
+</span>				["net.wendal.nutzcn.servie..+Service$", "^save.+", "txREAD_COMMITTED"],
+				["net.wendal.nutzcn.servie..+Service$", "^query.+", "txNONE"],
+				["net.wendal.nutzcn.servie..+Service$", "^update.+", "txSERIALIZABLE"],
+				["net.wendal.nutzcn.module..+Module$", ".+", "txREAD_COMMITTED"],
+			]
+		}
+	}
+}
+</pre>
+<p>如果上述规则不能满足你的需求,可继承JsonAopConfigration,覆盖setItemList方法实现自定义哦.</p>
+<p>当然, 更进一步,你可以继承AbstractAopConfigration甚至直接实现AopConfigration接口哦</p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 </body>

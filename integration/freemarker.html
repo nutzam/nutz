@@ -32,14 +32,14 @@
 <pre>	&lt;dependency&gt;
 		&lt;groupId&gt;org.nutz&lt;/groupId&gt;
 		&lt;artifactId&gt;nutz-plugins-views&lt;/artifactId&gt;
-		&lt;version&gt;1.r.60&lt;/version&gt;
+		&lt;version&gt;1.r.65&lt;/version&gt;
 	&lt;/dependency&gt;
 </pre>
 <p>当然,非maven项目的话, freemarker得自行下载了</p>
 <div class="hr"><b></b></div>
 <h1><a name="修改MainModule类,添加引用"></a>修改MainModule类,添加引用</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>@Views(value={FreeMarkerViewMaker.class})
+<pre>@Views(value={FreemarkerViewMaker.class})
 <span class="zdoc_code_cmt">// 其他配置,如IocBy等等
 </span>public class MainModule {}
 </pre>

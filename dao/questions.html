@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Dao常见问题</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Dao常见问题</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#nutz日志已出,卡在获取数据库连接的地方">nutz日志已出,卡在获取数据库连接的地方</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#报without_any_Mapping_Field">报without any Mapping Field</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="nutz日志已出,卡在获取数据库连接的地方"></a>nutz日志已出,卡在获取数据库连接的地方</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>打印以下日志后,就没反应了,一直没反应</p>
+<pre>Get Connection from DataSource for JdbcExpert, if you lock at here, check your database server and configure
+</pre>
+<p>原因: 使用了Driud,且没有配置maxWait参数,然后数据库参数错误,druid一直尝试获取连接,导致假死.</p>
+<p>解决方案: 为druid添加maxWait参数,从而抛出真实异常,方便查错. 下面给出dao.js中的示意配置</p>
+<pre>    dataSource : {
+        type : "com.alibaba.druid.pool.DruidDataSource",
+        events : {
+        	...
+        },
+        fields : {
+            ...
+        	maxWait : 5000, <span class="zdoc_code_cmt">// 毫秒数,在5秒内拿不到新连接,就抛异常,而不是继续瞎等
+</span>        	...
+        }
+    },
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="报without_any_Mapping_Field"></a>报without any Mapping Field</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>通常是update/fetchLinks传错参数, 例如</p>
+<pre>dao.fetchLink(User.class, null); <span class="zdoc_code_cmt">// 第一个参数应该是对象,而非类
+</span>dao.update(User.class); <span class="zdoc_code_cmt">// 同上
+</span>
+dao.update(date); <span class="zdoc_code_cmt">// 传了非pojo对象
+</span></pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

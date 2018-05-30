@@ -1,11 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
-<title>图像处理小军刀</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+<title>图像基本处理</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
-<div class="zdoc_header">图像处理小军刀</div>
-<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_header">图像基本处理</div>
+<div class="zdoc_author"><em>By:</em><b>wendal(wendal1985@gmail.com), pangwu86</b><a href="mailto:pangwu86@gmail.com">&lt;pangwu86@gmail.com&gt;</a></div>
 <div class="zdoc_body">
 <ul class="zdoc_index_table">
 <li>
@@ -18,10 +18,16 @@
 <div><span class="num">3</span><a href="#图像旋转">图像旋转</a></div>
 </li>
 <li>
-<div><span class="num">4</span><a href="#图像缩放">图像缩放</a></div>
+<div><span class="num">4</span><a href="#图像翻转">图像翻转</a></div>
 </li>
 <li>
-<div><span class="num">5</span><a href="#输出文件">输出文件</a></div>
+<div><span class="num">5</span><a href="#图像缩放">图像缩放</a></div>
+</li>
+<li>
+<div><span class="num">6</span><a href="#图像扭曲">图像扭曲</a></div>
+</li>
+<li>
+<div><span class="num">7</span><a href="#输出文件">输出文件</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
@@ -49,6 +55,15 @@
 <pre>img = Images.rotate(img, 90);
 </pre>
 <div class="hr"><b></b></div>
+<h1><a name="图像翻转"></a>图像翻转</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>水平翻转</p>
+<pre>img = Images.flipHorizontal(img);
+</pre>
+<p>垂直翻转</p>
+<pre>img = Images.flipVertical(img);
+</pre>
+<div class="hr"><b></b></div>
 <h1><a name="图像缩放"></a>图像缩放</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>缩放到指定长宽,等比缩放</p>
@@ -57,6 +72,20 @@
 <p>裁剪缩放</p>
 <pre>Images.clipScale("/dev/shm/abc.jpg", "/dev/shm/abc_out.jpg",  1920, 1080);
 </pre>
+<div class="hr"><b></b></div>
+<h1><a name="图像扭曲"></a>图像扭曲</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>可以手动设定扭曲级别，数值越大扭曲程度越高，同时还需设定背景色，用来填充扭曲后漏出来的部分。</p>
+<pre>img = Images.twist(img, 1, "<span class="zdoc_code_cmt">#FFF");
+</span></pre>
+<p>原图:</p>
+<p><img src="twist.jpg"/></p>
+<p>扭曲值为1：</p>
+<p><img src="twist1.jpg"/></p>
+<p>扭曲值为3：</p>
+<p><img src="twist3.jpg"/></p>
+<p>扭曲值为5：</p>
+<p><img src="twist5.jpg"/></p>
 <div class="hr"><b></b></div>
 <h1><a name="输出文件"></a>输出文件</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -67,6 +96,6 @@
 <pre>Images.writeJpeg(image, new File("/dev/shm/abc.jpg"), 0.9f);
 </pre>
 </div>
-<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_footer"><em>By:</em><b>wendal(wendal1985@gmail.com), pangwu86</b><a href="mailto:pangwu86@gmail.com">&lt;pangwu86@gmail.com&gt;</a></div>
 </body>
 </html>

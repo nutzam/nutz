@@ -71,7 +71,7 @@
 <p>quoteName -- key是否用双引号包起来,默认为true,同时也是json标准格式的要求. 若设置为false,则新版的jquery将解析出错.</p>
 <pre>Json.toJson(pet, JsonFormat.full().setQuoteName(false)); <span class="zdoc_code_cmt">// 输出类似 {name:"wendal"}
 </span></pre>
-<p>ignoreNull -- 是否忽略控制,默认为false</p>
+<p>ignoreNull -- 控制是否忽略null值,默认为false</p>
 <pre>Json.toJson(pet, JsonFormat.full().setIgnoreNull(true)); <span class="zdoc_code_cmt">// null值的key-value将不会输出,但空List还是会的.
 </span></pre>
 <p>actived -- 仅输出哪些的key,默认为null,即允许所有key. 注意,这是正则表达式!</p>

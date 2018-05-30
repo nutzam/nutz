@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>版本升级</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">版本升级</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#为啥升级版本?">为啥升级版本?</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#IE下ajax变json">IE下ajax变json</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#Ioc路径规则变化">Ioc路径规则变化</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#jdk6使用1r61启动失败">jdk6使用1.r.61启动失败</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#Mvc下报FastClass错误">Mvc下报FastClass错误</a></div>
+</li>
+<li>
+<div><span class="num">6</span><a href="#dao无sql日志">dao无sql日志</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="为啥升级版本?"></a>为啥升级版本?</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>无非就3个原因吧</p>
+<ul type="disc">
+<li>为了fix bug</li>
+<li>为了新特性</li>
+<li>为了爱,就是要追新</li>
+</ul>
+<p>从1.a.38开始的版本,升级到最新版的成本都不大.</p>
+<p>做到100%兼容是不现实的,但可以肯定的是, 遇到的问题的均有解决的办法.</p>
+<p>有些兼容性问题,属于"错误"得到修正,老版本能这样写是"bug", ^_^</p>
+<p>这是一个汇总帖子,随时更新, 也会按版本的增长继续增长....</p>
+<p>请先浏览当前版本到最新版的发行注记,然后再看本列表</p>
+<div class="hr"><b></b></div>
+<h1><a name="IE下ajax变json"></a>IE下ajax变json</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>属于Mvc范畴的问题, IE下ajax变下载,eval json结果出问题. 请查看 <a href="../mvc/questions.html">MVC常见问题</a></p>
+<div class="hr"><b></b></div>
+<h1><a name="Ioc路径规则变化"></a>Ioc路径规则变化</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>JsonLoader填路径的时候,如果是目录,老版本不需要反斜杠,新版需要</p>
+<pre><span class="zdoc_code_cmt">// 原本兼容的写法
+</span>@IocBy("*js", "ioc", "*anno", "net.wendal.nutzbook")
+<span class="zdoc_code_cmt">// 正确的写法,留意ioc后面的斜杠
+</span>@IocBy("*js", "ioc/", "*anno", "net.wendal.nutzbook")
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="jdk6使用1r61启动失败"></a>jdk6使用1.r.61启动失败</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>请更换为 1.r.61.r2</p>
+<div class="hr"><b></b></div>
+<h1><a name="Mvc下报FastClass错误"></a>Mvc下报FastClass错误</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>版本涉及 1.r.60, 升级到1.r.61.r2即可解决</p>
+<p>如果是1.r.61.r2但报错,通常原因是某种自定义的热加载机制吧,可以通过下列代码禁用, 建议放在MainSetup的init方法内.</p>
+<pre>NutConf.USE_FASTCLASS = false;
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="dao无sql日志"></a>dao无sql日志</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>升级1.r.58或之后的版本,且使用daocache时会遇到的, 需要修改daocache的ioc配置,请参考<a href="daocache">https://github.com/nutzam/nutzmore/tree/master/nutz-plugins-daocache</a></p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

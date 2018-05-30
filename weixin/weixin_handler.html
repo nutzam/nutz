@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>自定义被动消息回复</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">自定义被动消息回复</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#自定义回复">自定义回复</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#如何扩展">如何扩展</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="自定义回复"></a>自定义回复</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>之前的步骤,演示了默认的BasicWxHandler的行为是怎样的,现在,我们要自定义一个WxHandler了</p>
+<p>新建一个类,继承BasicWxHandler</p>
+<pre>@IocBean(create="init", name="wxHandler")
+public class DefaultWxHandler extends BasicWxHandler {
+
+@Inject
+protected PropertiesProxy conf; <span class="zdoc_code_cmt">// 注入配置信息加载类
+</span>
+public void init() {
+    <span class="zdoc_code_cmt">// 将读取 weixin.token/weixin.aes/weixin.appid, 他们通常会写在weixin.properties或从数据库读取.
+</span>    configure(conf, "weixin.");
+
+    <span class="zdoc_code_cmt">// 如果你不知道conf是啥, 完全搞不清楚状况,
+</span>    <span class="zdoc_code_cmt">// 请将protected PropertiesProxy conf注释掉,configure也注释掉
+</span>    <span class="zdoc_code_cmt">// 把下面这行取消注释.
+</span>    <span class="zdoc_code_cmt">// token = "1234567890";
+</span>}
+
+public WxOutMsg text(WxInMsg msg) {
+    if ("1".equals(msg.getContent())) {
+        return Wxs.respText("广告法说不能自称第一");
+    }
+    else if ("2".equals(msg.getContent())) {
+        return Wxs.respText("就是这么2");
+    }
+    return super.text(msg);
+}
+}
+</pre>
+<p>然后改一下WeixinModule中的wxHandler声明, 使其变成注入DefaultWxHandler</p>
+<pre>@Inject
+protected WxHandler wxHandler;
+</pre>
+<p>然后,就是启动你的项目, 在微信中输入1 或 2 , 看看服务器响应什么了.</p>
+<div class="hr"><b></b></div>
+<h1><a name="如何扩展"></a>如何扩展</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>BasicWxHandler 有大量的定义的方法,覆盖指定的方法即可.</p>
+<p>如果需要完全接管,那么,覆盖handle方法就可以了</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

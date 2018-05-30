@@ -14,6 +14,9 @@
 <li>
 <div><span class="num">2</span><a href="#常用配置模板">常用配置模板</a></div>
 </li>
+<li>
+<div><span class="num">3</span><a href="#特别提醒">特别提醒</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="Nutz核心jar"></a>Nutz核心jar</h1>
@@ -22,7 +25,7 @@
 <pre>&lt;dependency&gt;
 	&lt;groupId&gt;org.nutz&lt;/groupId&gt;
 	&lt;artifactId&gt;nutz&lt;/artifactId&gt;
-	&lt;version&gt;1.r.60&lt;/version&gt;
+	&lt;version&gt;1.r.65&lt;/version&gt;
 &lt;/dependency&gt;
 </pre>
 <p>快照库地址 <a href="https://jfrog.nutz.cn/artifactory/snapshots">https://jfrog.nutz.cn/artifactory/snapshots</a></p>
@@ -47,13 +50,13 @@
 	&lt;dependency&gt;
 		&lt;groupId&gt;org.nutz&lt;/groupId&gt;
 		&lt;artifactId&gt;nutz&lt;/artifactId&gt;
-		&lt;version&gt;1.r.60&lt;/version&gt;
+		&lt;version&gt;1.r.65&lt;/version&gt;
 	&lt;/dependency&gt;
 	&lt;!-- mysql驱动 --&gt;
 	&lt;dependency&gt;
 		&lt;groupId&gt;mysql&lt;/groupId&gt;
 		&lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
-		&lt;version&gt;5.1.40&lt;/version&gt;
+		&lt;version&gt;5.1.44&lt;/version&gt;
 	&lt;/dependency&gt;
 	&lt;dependency&gt;
 		&lt;groupId&gt;javax.servlet&lt;/groupId&gt;
@@ -65,7 +68,7 @@
 	&lt;dependency&gt;
 		&lt;groupId&gt;com.alibaba&lt;/groupId&gt;
 		&lt;artifactId&gt;druid&lt;/artifactId&gt;
-		&lt;version&gt;1.0.27&lt;/version&gt;
+		&lt;version&gt;1.1.5&lt;/version&gt;
 	&lt;/dependency&gt;
 	&lt;dependency&gt;
 		&lt;groupId&gt;junit&lt;/groupId&gt;
@@ -93,11 +96,14 @@
 &lt;repositories&gt;
 	&lt;repository&gt;
 		&lt;id&gt;nutz&lt;/id&gt;
-		&lt;url&gt;https:<span class="zdoc_code_cmt">//jfrog.nutz.cn/artifactory/jcenter&lt;/url&gt;
-</span>	&lt;/repository&gt;
+		&lt;url&gt;http:<span class="zdoc_code_cmt">//jfrog.nutz.cn/artifactory/libs-release&lt;/url&gt;
+</span>		&lt;snapshots&gt;
+			&lt;enabled&gt;false&lt;/enabled&gt;
+		&lt;/snapshots&gt;
+	&lt;/repository&gt;
 	&lt;repository&gt;
 		&lt;id&gt;nutz-snapshots&lt;/id&gt;
-		&lt;url&gt;https:<span class="zdoc_code_cmt">//jfrog.nutz.cn/artifactory/snapshots&lt;/url&gt;
+		&lt;url&gt;http:<span class="zdoc_code_cmt">//jfrog.nutz.cn/artifactory/snapshots&lt;/url&gt;
 </span>		&lt;snapshots&gt;
 			&lt;enabled&gt;true&lt;/enabled&gt;
 			&lt;updatePolicy&gt;always&lt;/updatePolicy&gt;
@@ -108,6 +114,25 @@
 	&lt;/repository&gt;
 &lt;/repositories&gt;
 &lt;/project&gt;
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="特别提醒"></a>特别提醒</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果配置过镜像库,例如阿里的镜像库, 你的settings.xml里面也许有这样的配置,注意星号</p>
+<pre>&lt;mirror&gt;
+    &lt;id&gt;nexus-aliyun&lt;/id&gt;
+    &lt;mirrorOf&gt;*&lt;/mirrorOf&gt;
+    &lt;name&gt;Nexus aliyun&lt;/name&gt;
+    &lt;url&gt;http:<span class="zdoc_code_cmt">//maven.aliyun.com/nexus/content/groups/public&lt;/url&gt;
+</span>&lt;/mirror&gt;
+</pre>
+<p>这个配置是错误的, 星号代表全部,无论是release还是snapshots都代理, 会导致所有第三方快照库的设置都失效. 要改成</p>
+<pre>&lt;mirror&gt;
+    &lt;id&gt;nexus-aliyun&lt;/id&gt;
+    &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;
+    &lt;name&gt;Nexus aliyun&lt;/name&gt;
+    &lt;url&gt;http:<span class="zdoc_code_cmt">//maven.aliyun.com/nexus/content/groups/public&lt;/url&gt;
+</span>&lt;/mirror&gt;
 </pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>

@@ -15,13 +15,19 @@
 <div><span class="num">2</span><a href="#修改MainModule类,添加引用">修改MainModule类,添加引用</a></div>
 </li>
 <li>
-<div><span class="num">3</span><a href="#添加velocityproperties">添加velocity.properties</a></div>
+<div><span class="num">3</span><a href="#在classpath下添加velocityproperties">在classpath下添加velocity.properties</a></div>
 </li>
 <li>
-<div><span class="num">4</span><a href="#用法及默认配置">用法及默认配置</a></div>
+<div><span class="num">4</span><a href="#webxml配置">web.xml配置</a></div>
 </li>
 <li>
-<div><span class="num">5</span><a href="#可供参考的实例项目">可供参考的实例项目</a></div>
+<div><span class="num">5</span><a href="#使用方法">使用方法</a></div>
+</li>
+<li>
+<div><span class="num">6</span><a href="#更灵活的使用方法">更灵活的使用方法</a></div>
+</li>
+<li>
+<div><span class="num">7</span><a href="#可供参考的实例项目">可供参考的实例项目</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
@@ -35,6 +41,18 @@
 		&lt;version&gt;1.r.60&lt;/version&gt;
 	&lt;/dependency&gt;
 </pre>
+<p>maven引用velocity相关jar包</p>
+<pre>	&lt;dependency&gt;
+		&lt;groupId&gt;org.apache.velocity&lt;/groupId&gt;
+		&lt;artifactId&gt;velocity&lt;/artifactId&gt;
+		&lt;version&gt;1.7&lt;/version&gt;
+	&lt;/dependency&gt;
+	&lt;dependency&gt;
+			&lt;groupId&gt;org.apache.velocity&lt;/groupId&gt;
+			&lt;artifactId&gt;velocity-tools&lt;/artifactId&gt;
+			&lt;version&gt;2.0&lt;/version&gt;
+	&lt;/dependency&gt;
+</pre>
 <div class="hr"><b></b></div>
 <h1><a name="修改MainModule类,添加引用"></a>修改MainModule类,添加引用</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -43,27 +61,99 @@
 </span>public class MainModule {}
 </pre>
 <div class="hr"><b></b></div>
-<h1><a name="添加velocityproperties"></a>添加velocity.properties</h1>
+<h1><a name="在classpath下添加velocityproperties"></a>在classpath下添加velocity.properties</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>input.encoding=UTF-8
+<pre><span class="zdoc_code_cmt">#资源加载器或加载器别名
+</span>resource.loader = webapp
+<span class="zdoc_code_cmt">#资源加载器类全限定名
+</span>webapp.resource.loader.class = org.apache.velocity.tools.view.WebappResourceLoader
+<span class="zdoc_code_cmt">#资源位置
+</span>webapp.resource.loader.path=/WEB-INF/
+<span class="zdoc_code_cmt">#编码
+</span>input.encoding=UTF-8
 output.encoding=UTF-8
-resource.loader=webapp
-webapp.resource.loader.class=org.apache.velocity.tools.view.WebappResourceLoader
-webapp.resource.loader.path=/
+<span class="zdoc_code_cmt">#布局文件为准
+</span>tools.view.servlet.layout.directory = layout/
+<span class="zdoc_code_cmt">#默认布局文件名称
+</span>tools.view.servlet.layout.default.template =default.html
+<span class="zdoc_code_cmt">#默认错误文件名称
+</span>tools.view.servlet.error.template =Error.vm
+tools.view.servlet.layout.default.template =Default.vm
 </pre>
 <div class="hr"><b></b></div>
-<h1><a name="用法及默认配置"></a>用法及默认配置</h1>
+<h1><a name="webxml配置"></a>web.xml配置</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>入口方法示例</p>
+<pre>&lt;init-param&gt;
+	&lt;param-name&gt;org.apache.velocity.properties&lt;/param-name&gt;&lt;!-- 这个不能修改--&gt;
+	&lt;param-value&gt;velocity.properties&lt;/param-value&gt; &lt;!-- 对应上一步中配置文件的位置 --&gt;
+&lt;/init-param&gt;
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="使用方法"></a>使用方法</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>User类</p>
+<pre>public class User {
+	public int roleId;
+	public String userName;
+
+public int getRoleId() {
+	return roleId;
+}
+
+public void setRoleId(int roleId) {
+	this.roleId = roleId;
+}
+
+public String getUserName() {
+	return userName;
+}
+
+public void setUserName(String userName) {
+	this.userName = userName;
+}
+}
+</pre>
+<p>MVC类</p>
 <pre>@At("/")
-@Ok("vm:tmpl.index") <span class="zdoc_code_cmt">// 模板文件的路径为  /WEB-INF/tmpl/index.vm
-</span>public void index(){}
+@Ok("vm:/tmpl/main.vm")
+public User main() {
+	User user = new User();
+	user.setUserName("nutz");
+	user.setRoleId(0);
+	return user;
+}
 </pre>
-<pre>@At("/user")
-@Ok("vm:/tmpl/user/home") <span class="zdoc_code_cmt">// 模板文件的路径为  /tmpl/user/home.vm
-</span>public void home(){}
+<p>main.vm文件</p>
+<pre><span class="zdoc_code_cmt">#if($!{obj.roleId} == 0)
+</span>&lt;li&gt; 管理员 $!{obj.userName}&lt;/li&gt;
+<span class="zdoc_code_cmt">#else
+</span>&lt;li&gt; 编辑 $!{obj.userName}&lt;/li&gt;
+<span class="zdoc_code_cmt">#end
+</span></pre>
+<div class="hr"><b></b></div>
+<h1><a name="更灵活的使用方法"></a>更灵活的使用方法</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>MVC类</p>
+<pre>@At("/")
+@Ok("vm:/tmpl/main.vm")
+public NutMap main() {
+	NutMap map = new NutMap();
+	map.put("site_name", "Nutz工具箱");
+	User user = new User();
+	user.setRoleId(0);
+	user.setUserName("nutz");
+	map.put("user", user);
+	return map;
+}
 </pre>
-<p>可以看到,规则与JspView是一致的,只是后缀变成了vm</p>
+<p>main.vm文件</p>
+<pre>&lt;span&gt; 站点名称：$!{obj.site_name}&lt;/span&gt;
+<span class="zdoc_code_cmt">#if($!{obj.user.roleId} == 0)
+</span>&lt;li&gt; 管理员 $!{obj.user.userName}&lt;/li&gt;
+<span class="zdoc_code_cmt">#else
+</span>&lt;li&gt; 编辑 $!{obj.user.userName}&lt;/li&gt;
+<span class="zdoc_code_cmt">#end
+</span></pre>
 <div class="hr"><b></b></div>
 <h1><a name="可供参考的实例项目"></a>可供参考的实例项目</h1>
 <div style="float:right;"><a href="#top">Top</a></div>

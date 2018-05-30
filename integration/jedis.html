@@ -11,55 +11,11 @@
 <li>
 <div><span class="num">1</span><a href="#简介">简介</a></div>
 </li>
-<li>
-<div><span class="num">2</span><a href="#依赖">依赖</a></div>
-</li>
-<li>
-<div><span class="num">3</span><a href="#基本用法">基本用法</a></div>
-</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="简介"></a>简介</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>详细说明请查阅插件的README</p>
-<p><a href="https://github.com/nutzam/nutzmore/tree/master/nutz-integration-jedis">nutz-integration-jedis</a><a href="https://git.oschina.net/nutz/nutzmore/tree/master/nutz-integration-jedis">Git@OSC镜像</a></p>
-<p>jedis是redis的java客户端,请注意区别</p>
-<div class="hr"><b></b></div>
-<h1><a name="依赖"></a>依赖</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<ul type="disc">
-<li>jedis 2.8+,将来会提升到3.0+</li>
-<li>依赖名为conf类型为PropertiesProxy的ioc bean</li>
-</ul>
-<div class="hr"><b></b></div>
-<h1><a name="基本用法"></a>基本用法</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<p>本插件通过@IocBy加载</p>
-<pre>@IocBy(args = {
-           "*js","ioc/",
-           "*anno", "net.wendal.nutzbook",
-           "*jedis" <span class="zdoc_code_cmt">// 加载jedis
-</span>           })
-</pre>
-<p>在conf的扫描路径内,添加一个redis.properties. 以下均为默认值,不写也行.</p>
-<pre>redis.host=localhost
-redis.port=6379
-redis.timeout=2000
-<span class="zdoc_code_cmt">#redis.password=wendal.net
-</span>redis.database=0
-</pre>
-<p>通过aop方式使用, 必须是ioc bean对象哦</p>
-<pre>import static org.nutz.integration.jedis.RedisInterceptor.jedis;
-
-@Aop("redis") <span class="zdoc_code_cmt">//拦截器的名字叫redis
-</span>public void addTopic(Topic topic) {
-    <span class="zdoc_code_cmt">// 通过调用jedis()获取上下文的Jedis对象,无需手动关闭或回收.
-</span>	jedis().set("topic:"+R.UU32(), Json.toJson(topic,JsonFormat.full()));
-}
-</pre>
-<p>通过注入JedisPool使用</p>
-<pre>@Inject JedisPool jedisPool;
-</pre>
+<p>本文档已移动到 <a href="../nosql/jedis.html">NoSQL-Redis</a></p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 </body>

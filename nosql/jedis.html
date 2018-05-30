@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>集成Redis(Jedis库)</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">集成Redis(Jedis库)</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#简介">简介</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#依赖">依赖</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#基本配置">基本配置</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#通过aop方式使用">通过aop方式使用</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#通过注入JedisAgent使用">通过注入JedisAgent使用</a></div>
+</li>
+<li>
+<div><span class="num">6</span><a href="#注入RedisService使用">注入RedisService使用</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="简介"></a>简介</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>详细说明请查阅插件的README</p>
+<p><a href="https://github.com/nutzam/nutzmore/tree/master/nutz-integration-jedis">nutz-integration-jedis</a><a href="https://git.oschina.net/nutz/nutzmore/tree/master/nutz-integration-jedis">Git@OSC镜像</a></p>
+<p>jedis是redis的java客户端,请注意区别.</p>
+<p>本插件在当前版本(1.r.60.r4), 已完成单机和集群操作的集成.</p>
+<p>提供多种使用方式</p>
+<ul type="disc">
+<li>aop -- 自动管理Jedis实例的开启和关闭,推荐使用</li>
+<li>注入JedisPool -- JedisPool就是连接池本身,使用try-with-resources或try-finally方式使用</li>
+<li>注入RedisService -- 封装Jedis的大部分方法,同时自动管理Jedis实例的开启和关闭. 建议直接注入,而不是继承它.</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="依赖"></a>依赖</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>jedis 2.8+</li>
+<li>依赖名为conf类型为PropertiesProxy的ioc bean,配置信息从它读取</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="基本配置"></a>基本配置</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>本插件通过@IocBy加载</p>
+<pre>@IocBy(args = {
+           "*js","ioc/",
+           "*anno", "net.wendal.nutzbook",
+           "*jedis" <span class="zdoc_code_cmt">// 加载jedis
+</span>           })
+</pre>
+<p>在conf的扫描路径内,添加一个redis.properties. 以下均为默认值,不写也行.</p>
+<pre>redis.host=localhost
+redis.port=6379
+redis.timeout=2000
+<span class="zdoc_code_cmt">#redis.password=wendal.net
+</span>redis.database=0
+<span class="zdoc_code_cmt">#redis.mode=cluster
+</span></pre>
+<div class="hr"><b></b></div>
+<h1><a name="通过aop方式使用"></a>通过aop方式使用</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>必须是ioc bean对象哦,不然@Aop不会生效</p>
+<pre>import static org.nutz.integration.jedis.RedisInterceptor.jedis;
+
+@Aop("redis") <span class="zdoc_code_cmt">//拦截器的名字叫redis
+</span>public void addTopic(Topic topic) {
+    <span class="zdoc_code_cmt">// 通过调用jedis()获取上下文的Jedis对象,无需手动关闭或回收.
+</span>	jedis().set("topic:"+R.UU32(), Json.toJson(topic,JsonFormat.full()));
+}
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="通过注入JedisAgent使用"></a>通过注入JedisAgent使用</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>JedisAgent封装了JedisPool和JedisCluster,通过getResource取出Jedis实例进行操作, 操作完成后,需要调用其close方法关闭.</p>
+<pre>@Inject JedisAgent jedisAgent;
+<span class="zdoc_code_cmt">//@Inject JedisCluster jedisCluster;
+</span><span class="zdoc_code_cmt">//@Inject JedisPool jedisPool;
+</span>
+<span class="zdoc_code_cmt">// JDK 7+ , 可利用try-with-resources特性, 让JDK自动回收(会自定义调用close方法)
+</span>public void setxxx(xxx yyy) {
+	try (Jedis jedis = jedisAgent.getResource()) {
+		jedis.set("wendal", "https:<span class="zdoc_code_cmt">//nutz.cn");
+</span>	}
+}
+<span class="zdoc_code_cmt">// JDK 6, 按部就班的老办法try-finally
+</span>public void setxxx(xxx yyy) {
+    Jedis jedis = null;
+	try { 
+	    jedis = jedisAgent.getResource();
+		jedis.set("wendal", "https:<span class="zdoc_code_cmt">//nutz.cn");
+</span>	} finally {
+		Streams.safeClose(jedis);
+	}
+}
+</pre>
+<p>也可以注入JedisPool(单机版jedis)或JedisCluster(集群版redis). 推荐使用JedisAgent.</p>
+<div class="hr"><b></b></div>
+<h1><a name="注入RedisService使用"></a>注入RedisService使用</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>RedisService继承了Jedis类的大部分方法, 所有方法均自动开启和关闭Jedis实例,除pipeline外的大部分方法均可正常使用. </p>
+<p>若涉及到pipeline, 可注入JedisPool取出原生Jedis进行操作.</p>
+<pre>@Inject RedisService redisService;
+
+public void setxxx(xxx yyy) {
+    redisService.set("wendal", "https:<span class="zdoc_code_cmt">//nutz.cn");
+</span>    
+}
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

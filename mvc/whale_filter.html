@@ -72,8 +72,8 @@ enc.output=utf-8
 <li>需要声明一个隐藏参数_method=delete,让WhaleFilter为你改变req的method</li>
 </ul>
 <p>例如这样的表单</p>
-<pre>&lt;form action="/admin/topic/23" method="post"&gt;
-	&lt;input name="_method" value="delete" type="hidden"&gt;
+<pre>&lt;form action="/admin/topic/23?_method=delete" method="post"&gt;
+	...
 &lt;/form&gt;
 </pre>
 <p>对应这样的入口方法</p>

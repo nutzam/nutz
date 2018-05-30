@@ -42,7 +42,7 @@
 <div style="float:right;"><a href="#top">Top</a></div>
 <h2><a name="创建一个拦截器类,在方法执行前后打印一句日志"></a>创建一个拦截器类,在方法执行前后打印一句日志</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>package aop;
+<pre>package net.wendal.nutzbook.aop;
 import org.nutz.aop.ClassAgent;
 import org.nutz.aop.ClassDefiner;
 import org.nutz.aop.DefaultClassDefiner;
@@ -62,8 +62,6 @@ public class UserAction { <span class="zdoc_code_cmt">//被AOP的类,必须是pu
         System.out.println("登陆失败");
         return false;
     }
-
-    private static ClassDefiner cd = new DefaultClassDefiner(UserAction.class.getClassLoader());
     
     public static void main(String[] args) throws Throwable {
         <span class="zdoc_code_cmt">//无AOP的时候
@@ -72,6 +70,8 @@ public class UserAction { <span class="zdoc_code_cmt">//被AOP的类,必须是pu
 
         System.out.println("-----------------------------------------------------");
         System.out.println("-----------------------------------------------------");
+        
+        ClassDefiner cd = DefaultClassDefiner.defaultOne();
         
         <span class="zdoc_code_cmt">//有AOP的时候
 </span>        ClassAgent agent = new AsmClassAgent();
@@ -120,7 +120,7 @@ class LogInterceptor implements MethodInterceptor {
 </ul>
 <h2><a name="将上一个例子,改造为Ioc形式"></a>将上一个例子,改造为Ioc形式</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>package aop;
+<pre>package net.wendal.nutzbook.aop;
 import org.nutz.ioc.aop.Aop;
 import org.nutz.ioc.loader.annotation.IocBean;
 
@@ -148,7 +148,7 @@ public class UserAction { <span class="zdoc_code_cmt">//被AOP的类,必须是pu
     }
 }
 <span class="zdoc_code_cmt">//另外一个类文件
-</span>package aop;
+</span>package net.wendal.nutzbook.aop;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.aop.InterceptorChain;
 import org.nutz.aop.MethodInterceptor;

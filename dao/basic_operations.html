@@ -222,7 +222,7 @@ dao.update(list, "^age$"); <span class="zdoc_code_cmt">//更新一个集合也�
 <pre><span class="zdoc_code_cmt">// 根据特定条件更新特定字段
 </span>dao.update(Person.class, Chain.make("dead",true), Cnd.where("age","&gt;",150));
 <span class="zdoc_code_cmt">// 常用的+1更新
-</span>dao.update(Person.class, Chain.makeSpecial("age", "+1").and("location", "yvr"), Cnd.where("name","=", "wendal"));
+</span>dao.update(Person.class, Chain.makeSpecial("age", "+1").add("location", "yvr"), Cnd.where("name","=", "wendal"));
 </pre>
 <div class="hr"><b></b></div>
 <h1><a name="删除_Delete"></a>删除 Delete</h1>
@@ -334,7 +334,7 @@ public class UserOrder {
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
 <li>不生成外键,我们也不推荐用外键</li>
-<li>只能解决一般建表需求,复制的表结构请通过自定义sql完成</li>
+<li>只能解决一般建表需求,复杂的表结构请通过自定义sql完成</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="批量建表,扫描某个package下的bean,为带@Table注解的类建表"></a>批量建表,扫描某个package下的bean,为带@Table注解的类建表</h1>

@@ -238,7 +238,7 @@ public String login(@Param("..")User user, ViewModel model) {
         return null; <span class="zdoc_code_cmt">// 返回null, 则代表走默认视图 jsp:/index
 </span>    }
     <span class="zdoc_code_cmt">// 登陆失败
-</span>    model.set("err-msg", "用户名或密码错误");
+</span>    model.setv("err-msg", "用户名或密码错误");
     return "jsp:/user/login";
 }
 </pre>
@@ -514,7 +514,7 @@ public View myFunction(@Param("type") type){
 </tr>
 <tr>
 <td> @Ok("raw:json")   </td>
-<td> 等价于@Ok("raw:application/x-javascript"); </td>
+<td> 等价于@Ok("raw:application/json"); </td>
 </tr>
 <tr>
 <td> @Ok("raw:js")     </td>

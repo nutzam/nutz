@@ -32,13 +32,10 @@
 <div><span class="num">4</span><a href="#设置应用程序的默认语言">设置应用程序的默认语言</a></div>
 </li>
 <li>
-<div><span class="num">5</span><a href="#使用过滤器">使用过滤器</a></div>
+<div><span class="num">5</span><a href="#定制自己的本地化字符串方式">定制自己的本地化字符串方式</a></div>
 </li>
 <li>
-<div><span class="num">6</span><a href="#定制自己的本地化字符串方式">定制自己的本地化字符串方式</a></div>
-</li>
-<li>
-<div><span class="num">7</span><a href="#让_Ioc_容器管理你的_MessageLoader">让 Ioc 容器管理你的 MessageLoader</a></div>
+<div><span class="num">6</span><a href="#让_Ioc_容器管理你的_MessageLoader">让 Ioc 容器管理你的 MessageLoader</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
@@ -46,7 +43,7 @@
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>每个 Mvc 框架都有自己的本地化字符串的解决方案， Nutz.Mvc 的这个是相当简陋的。我只是个人觉得足够用了。下面我把它简单介绍一下：</p>
 <ul type="disc">
-<li>假定所有的本地化字符串文件都会存放在某一目录下
+<li>假定所有的本地化字符串文件都会存放在某一<b> 目录</b>下
 <ul type="circle">
 <li>这个目录下所有的 .properties 文件，将作为默认的本地字符串文件。</li>
 <li>每一种语言都会是一个目录，目录名称对应一个 Locale 的 toString()，请参看 java.util.Locale 的 JDoc
@@ -59,7 +56,7 @@
 <li> .properties 文件需要按照 UTF-8 方式编码</li>
 </ul>
 </li>
-<li>目录，通过 @Localization("全路径") 声明在主模块上</li>
+<li>目录，通过 @Localization("路径/") 声明在主模块上</li>
 <li>当应用启动时，一次读入所有的字符串，并存入 ServletContext，属性名称为：“org.nutz.mvc.annotation.Localization”</li>
 <li>应用可以自行设置当前 Session 是哪一个国家和地区
 <ul type="circle">
@@ -68,7 +65,7 @@
 </li>
 <li>每次请求时，会根据 Session 中的 localeName，从 ServletContext 中将对应 Locale 的字符串取出，设入 Request 对象
 <ul type="circle">
-<li>属性名为 "msg"</li>
+<li>属性名为 "msg",无论@Localization声明的路径是什么,在页面(JSP/JSTL/其他模板引擎)中, 它的名字都不会变化.</li>
 <li>如果当前会话没有被设置 Locale，则将 "msg" 设置成默认本地化字符串</li>
 </ul>
 </li>
@@ -76,19 +73,31 @@
 <div class="hr"><b></b></div>
 <h1><a name="使用字符串"></a>使用字符串</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p>目录结构, 以maven为例</p>
+<pre>- src
+	- main
+		- resources
+			- msgs
+				- zh_CN
+					user.properties
+					role.properties
+				- en_US
+					user.properties
+					role.properties
+</pre>
 <h2><a name="在主模块上声明"></a>在主模块上声明</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>比如：</p>
 <pre>...
-@Localization("mymsg/")
-public class MyMainModule {
+@Localization("msgs/") <span class="zdoc_code_cmt">// 注意是文件夹的名字
+</span>public class MainModule {
 	...
 </pre>
 <ul type="disc">
 <li>在主模块上声明 @Localization 注解，指向一个目录</li>
 <li>在目录下建立文件夹，比如 <b>zh_CN</b>，每个目录下所有 <b> .properties</b> 文件都会被当作字符串文件</li>
 <li><b> .properties</b> 文件 一定要是 UTF-8 编码的</li>
-<li>比如 @Locallization("mymsg") 会指向 CLASSPATH 下的 <b>mymsg</b> 目录</li>
+<li>比如 @Locallization("msgs/") 会指向 CLASSPATH 下的 <b>msgs/</b> 目录</li>
 </ul>
 <h2><a name="在_JSP_里使用"></a>在 JSP 里使用</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -122,7 +131,6 @@ public class MyMainModule {
 <div class="hr"><b></b></div>
 <h1><a name="切换本地语言"></a>切换本地语言</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>自从 1.b.44 之后，Nutz 对本地字符串语言切换的接口做了改动:</p>
 <pre><span class="zdoc_code_cmt">// 设置一个本地字符串
 </span>@At("/lang/change")
 @Ok("redirect:/")
@@ -130,33 +138,14 @@ public void changeLocal( @Param("lang") String lang){
     Mvcs.setLocalizationKey(lang);
 }
 </pre>
-<p>1.b.44 版本 之前，只能采用如下方法:</p>
-<pre><span class="zdoc_code_cmt">// 设置一个本地字符串
-</span>@At("/lang/change")
-@Ok("redirect:/")
-public void changeLocal( @Param("lang") String lang, HttpSession sess){
-    Mvcs.setLocale(sess, lang);
-    Mvcs.setLocaleName(sess, lang);
-}
-</pre>
 <div class="hr"><b></b></div>
 <h1><a name="设置应用程序的默认语言"></a>设置应用程序的默认语言</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>对于任何一个支持多语言版本的应用程序，第一次启动的时候，总要采用一种语言。自 1.b.44 之后，Nutz 给出了一个明确的方法，来设置这个信息。你可以在应用程序启动的Setup 时，调用:</p>
 <pre>...
-Mvcs.setDefaultLocalizationKey("zh_CN");
+@Localization(value="mymsg/", defaultLocalizationKey="zh_CN")
+public class MainModule {
 ...
 </pre>
-<p>在 1.b.45 后，Nutz 又给出一个更直接的实现，你可以直接:</p>
-<pre>...
-@Localization(value="mymsg", defaultLocalizationKey="zh_CN")
-public class MyMainModule {
-...
-</pre>
-<div class="hr"><b></b></div>
-<h1><a name="使用过滤器"></a>使用过滤器</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<p>让你的 JSP 文件 (不是通过 Nutz.Mvc 入口函数访问的)也可以使用"<b>本地化字符串</b>"功能? web.xml配置了NutFilter就行</p>
 <div class="hr"><b></b></div>
 <h1><a name="定制自己的本地化字符串方式"></a>定制自己的本地化字符串方式</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -164,7 +153,7 @@ public class MyMainModule {
 <pre>...
 @Localization( type=MyMessageLoader.class,
                value="msg" )
-public class MyMainModule {
+public class MainModule {
 ...
 </pre>
 <p>对于 MessageLoader 接口，就一个方法需要你来实现:</p>
@@ -187,15 +176,15 @@ public class MyMainModule {
 <div class="hr"><b></b></div>
 <h1><a name="让_Ioc_容器管理你的_MessageLoader"></a>让 Ioc 容器管理你的 MessageLoader</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>这是 1.b.45 已后才有的方法:</p>
+<p>通过beanName进行设置:</p>
 <pre>...
-@Localization( type=MyMessageLoader.class,
+@Localization( type=MessageLoader.class,
                beanName="myMessages", 
                value="msg" )
-public class MyMainModule {
+public class MainModule {
 ...
 </pre>
-<p>提供了 "beanName" 属性，这样，Nutz.Mvc 将从 Ioc 容器中加载名字为 "myMessages" 的对象。当然它的类型必须是你声明的 "MyMessageLoader.class" </p>
+<p>提供了 "beanName" 属性，这样，Nutz.Mvc 将从 Ioc 容器中加载名字为 "myMessages" 的对象。当然它的类型实现了 "MessageLoader" 接口 </p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>

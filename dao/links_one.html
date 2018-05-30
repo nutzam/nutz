@@ -62,6 +62,20 @@ public class Pet extends Pojo {
 <li>该属性必须同目标 POJO （<span style="color:#AA0000;">Master</span>）的主键类型相同</li>
 <li><span style="color:#FF0000;"><b>注意</b></span>，这里是大小写敏感的。</li>
 </ul>
+<p>补充：在一对一映射中，有可能会存在两边对应字段名称不同的情况，所以可以通过附加 key 来说明</p>
+<pre> 	@Table("t_pet")
+ 	public class Pet extends Pojo {
+
+ 		@Column
+ 		public int masterId;
+
+ 		@One(field = "masterId", key = "id")
+ 		<span class="zdoc_code_cmt">// 1.r.59之前需要写target参数
+</span> 		<span class="zdoc_code_cmt">// @One(target = Master.class, field = "masterId", key = "id")
+</span> 		public Master master;
+
+ 	}
+</pre>
 <div class="hr"><b></b></div>
 <h1><a name="插入操作"></a>插入操作</h1>
 <div style="float:right;"><a href="#top">Top</a></div>

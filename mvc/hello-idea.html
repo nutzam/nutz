@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Hello World using IDEA</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Hello World using IDEA</div>
+<div class="zdoc_author"><em>By:</em><b>Howe</b><a href="mailto:howechiang@gmail.com">&lt;howechiang@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#关于这个_Hello_World">关于这个 Hello World</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#详细步骤">详细步骤</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#创建一个_Maven_Project">创建一个 Maven Project</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#点完成后等待项目初始化">点完成后等待项目初始化</a></div>
+</li>
+<li>
+<div><span class="num">2.3</span><a href="#将_Nutzjar_引入项目中">将 Nutz.jar 引入项目中</a></div>
+</li>
+<li>
+<div><span class="num">2.4</span><a href="#配置运行服务器">配置运行服务器</a></div>
+</li>
+<li>
+<div><span class="num">2.5</span><a href="#修改_webxml">修改 web.xml</a></div>
+</li>
+<li>
+<div><span class="num">2.6</span><a href="#创建入口函数">创建入口函数</a></div>
+</li>
+<li>
+<div><span class="num">2.7</span><a href="#创建_jsp_页面">创建 jsp 页面</a></div>
+</li>
+<li>
+<div><span class="num">2.8</span><a href="#启动服务_点击右侧Maven_Projects_>_Plugins_>_jetty_>_jetty:run">启动服务 点击右侧Maven Projects &gt; Plugins &gt; jetty &gt; jetty:run</a></div>
+</li>
+<li>
+<div><span class="num">2.9</span><a href="#在浏览器中访问">在浏览器中访问</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">3</span><a href="#如何进阶">如何进阶</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="关于这个_Hello_World"></a>关于这个 Hello World</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>这是一个简单的小例子，通过简单的几步，即可在 IDEA 中搭建出一个 Nutz.Mvc的运行环境，我假设你已经：</p>
+<ol type="1">
+<li>有了 IntelliJ IDEA -- 2016.x 以上版本,推荐2017.x系列</li>
+</ol>
+<div class="hr"><b></b></div>
+<h1><a name="详细步骤"></a>详细步骤</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<h2><a name="创建一个_Maven_Project"></a>创建一个 Maven Project</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>创建一个新的 Maven Project （Create New Project &gt; Maven &gt; maven-archetype-webapp &gt; Bundled(Maven 3)）</p>
+<ul type="disc">
+<li>项目的groupId为 org.nutz</li>
+<li>项目的artifactId为helloworld</li>
+</ul>
+<p><img src="hello-idea/1.jpg"/><img src="hello-idea/2.jpg"/><img src="hello-idea/3.jpg"/><img src="hello-idea/4.jpg"/><img src="hello-idea/5.jpg"/></p>
+<h2><a name="点完成后等待项目初始化"></a>点完成后等待项目初始化</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p><img src="hello-idea/6.jpg"/></p>
+<h2><a name="将_Nutzjar_引入项目中"></a>将 Nutz.jar 引入项目中</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>本例子需要 Nutz-1.r.59 或者更高的版本</p>
+<p>在 pom.xml 写入，并保存。</p>
+<pre>&lt;dependency&gt;
+  &lt;groupId&gt;org.nutz&lt;/groupId&gt;
+  &lt;artifactId&gt;nutz&lt;/artifactId&gt;
+  &lt;version&gt;1.r.60&lt;/version&gt;
+&lt;/dependency&gt;
+</pre>
+<p><img src="hello-idea/7.jpg"/></p>
+<h2><a name="配置运行服务器"></a>配置运行服务器</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在 pom.xml 写入 servlet 依赖，并保存。</p>
+<pre>&lt;dependency&gt;
+  &lt;groupId&gt;javax.servlet&lt;/groupId&gt;
+  &lt;artifactId&gt;javax.servlet-api&lt;/artifactId&gt;
+  &lt;version&gt;3.1.0&lt;/version&gt;
+  &lt;scope&gt;provided&lt;/scope&gt;
+&lt;/dependency&gt;
+</pre>
+<p>在 pom.xml 配置运行服务器依赖，这里使用的是Jetty</p>
+<pre>&lt;plugins&gt;
+  &lt;plugin&gt;
+	&lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
+	&lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
+	&lt;version&gt;9.4.3.v20170317&lt;/version&gt;
+  &lt;/plugin&gt;
+</pre>
+<p>保存文件即可</p>
+<h2><a name="修改_webxml"></a><img src="hello-idea/8.jpg"/>修改 web.xml</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>通过声明一个 Filter，<a href="web_xml.html">将 Nutz.mvc 挂载到 项目 中</a></p>
+<pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;web-app xmlns="http:<span class="zdoc_code_cmt">//xmlns.jcp.org/xml/ns/javaee"
+</span>	 xmlns:xsi="http:<span class="zdoc_code_cmt">//www.w3.org/2001/XMLSchema-instance"
+</span>	 xsi:schemaLocation="http:<span class="zdoc_code_cmt">//xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+</span>	 version="3.1"&gt;
+	&lt;display-name&gt;hellonutz&lt;/display-name&gt;
+	&lt;filter&gt;
+		&lt;filter-name&gt;nutz&lt;/filter-name&gt;
+		&lt;filter-class&gt;org.nutz.mvc.NutFilter&lt;/filter-class&gt;
+		&lt;init-param&gt;
+			&lt;param-name&gt;modules&lt;/param-name&gt;
+			&lt;param-value&gt;demo.hello.MainModule&lt;/param-value&gt;
+		&lt;/init-param&gt;
+	&lt;/filter&gt;
+
+	&lt;filter-mapping&gt;
+		&lt;filter-name&gt;nutz&lt;/filter-name&gt;
+		&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+		&lt;dispatcher&gt;REQUEST&lt;/dispatcher&gt;
+		&lt;dispatcher&gt;FORWARD&lt;/dispatcher&gt;
+	&lt;/filter-mapping&gt;
+&lt;/web-app&gt;
+</pre>
+<p><img src="hello-idea/14.jpg"/></p>
+<h2><a name="创建入口函数"></a>创建入口函数</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>新建个java文件夹，并设定为源码文件夹<img src="hello-idea/9.jpg"/><img src="hello-idea/10.jpg"/><img src="hello-idea/11.jpg"/>打开刚才创建的 MainModule.java，添加一个函数，整个类的源代码如下：<img src="hello-idea/12.jpg"/></p>
+<pre>package demo.hello;
+
+import org.nutz.mvc.annotation.*;
+
+public class MainModule {
+
+	@At("/hello")
+	@Ok("jsp:jsp.hello")
+	public String doHello() {
+		return "Hello Nutz";
+	}
+
+}
+</pre>
+<p><img src="hello-idea/13.jpg"/>如果你想知道更多配置方式，请参看</p>
+<ul type="disc">
+<li><a href="modules.html">Nutz.Mvc 的配置语法</a></li>
+<li><a href="url_mapping.html">URL 映射</a></li>
+</ul>
+<h2><a name="创建_jsp_页面"></a>创建 jsp 页面</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>因为我们在入口函数里声明了一个 <a href="view.html#JSP_视图">JSP 视图</a>，按照视图的定义</p>
+<ul type="disc">
+<li>@Ok("jsp:jsp.hello")</li>
+</ul>
+<p>我们需要在 WEB-INF 下面建立一个名为 <b>jsp</b> 的文件夹，并在里面建立一个 <b>hello.jsp</b></p>
+<p><img src="hello-idea/15.jpg"/></p>
+<p>下面是 hello.jsp 的源代码：</p>
+<pre>&lt;html&gt;
+	&lt;body&gt;
+		&lt;h2&gt;Hello World!&lt;/h2&gt;
+		&lt;h1&gt;&lt;%=request.getAttribute("obj")%&gt;&lt;/h1&gt;
+	&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>仅仅是输出入口函数的返回值。是的，无论入口函数返回什么，都会保存在 request 对象 "obj" 属性中</p>
+<h2><a name="启动服务_点击右侧Maven_Projects_>_Plugins_>_jetty_>_jetty:run"></a>启动服务 点击右侧Maven Projects &gt; Plugins &gt; jetty &gt; jetty:run</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>控制台输出</p>
+<p><img src="hello-idea/16.jpg"/></p>
+<h2><a name="在浏览器中访问"></a>在浏览器中访问</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p><img src="hello-idea/17.jpg"/></p>
+<p>这篇文章虽然不算短，但是实际上，你需要做的事情不多，不是吗？ ^_^</p>
+<div class="hr"><b></b></div>
+<h1><a name="如何进阶"></a>如何进阶</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li><a href="http://github.com/nutzam/nutzdemo/">访问 demo site</a></li>
+<li><a href="http://git.oschina.net/nutz/nutzdemo/">Git@OSC镜像</a></li>
+<li><a href="../lang/log.html#让_Nutz_输出日志">让_Nutz_输出日志</a></li>
+<li><a href="overview.html">详细阅读 Mvc 手册</a></li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>Howe</b><a href="mailto:howechiang@gmail.com">&lt;howechiang@gmail.com&gt;</a></div>
+</body>
+</html>

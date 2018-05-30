@@ -9,7 +9,7 @@
 <div class="zdoc_body">
 <ul class="zdoc_index_table">
 <li>
-<div><span class="num">1</span><a href="#共3个注解">共3个注解</a></div>
+<div><span class="num">1</span><a href="#共4个注解">共4个注解</a></div>
 </li>
 <li>
 <div><span class="num">2</span><a href="#JsonField的ignore配置详解">JsonField的ignore配置详解</a></div>
@@ -26,9 +26,15 @@
 <li>
 <div><span class="num">6</span><a href="#ToJson注解">ToJson注解</a></div>
 </li>
+<li>
+<div><span class="num">7</span><a href="#JsonShape注解">JsonShape注解</a></div>
+</li>
+<li>
+<div><span class="num">8</span><a href="#虚拟属性">虚拟属性</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="共3个注解"></a>共3个注解</h1>
+<h1><a name="共4个注解"></a>共4个注解</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <table border="1" cellspacing="2" cellpadding="4">
 <tr>
@@ -45,6 +51,11 @@
 <td> <span style="color:#008800;">@ToJson</span>	        </td>
 <td> 方法           </td>
 <td> 自定义本对象转换为Json字符串的逻辑</td>
+</tr>
+<tr>
+<td> <span style="color:#008800;">@JsonShape</span>		</td>
+<td> 枚举类 </td>
+<td> 用于控制枚举类型的转换格式 </td>
 </tr>
 </table>
 <div class="hr"><b></b></div>
@@ -175,6 +186,97 @@ public String wendalJson(JsonFormat jf) {
 	return "{age:" + age + ", name: null}"; <span class="zdoc_code_cmt">// 我就喜欢返回个null,有值也返回null,咋的,就是这么任性
 </span>}
 </pre>
+<div class="hr"><b></b></div>
+<h1><a name="JsonShape注解"></a>JsonShape注解</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>这个注解可以让你控制枚举类型的输出格式, 某些情况下对于复杂枚举对象我们需要输出枚举的属性字段就可以使用这个注解.</p>
+<p>注解值为Type类型枚举,有ORDINAL, NAME, OBJECT</p>
+<p>ORDINAL	输出枚举的有ORDINAL</p>
+<p>NAME 输出枚举的NAME</p>
+<p>OBJECT 对于简单枚举类说输出的是枚举的NAME,因为我们也不知道怎么把简单枚举转换成object造型;对于复杂枚举将输出枚举的详细属性</p>
+<p>具体使用请参考一下测试用例</p>
+<pre>@JsonShape(Type.OBJECT)
+public static enum TT {
+
+    T("t", 1);
+    String name;
+
+    int index;
+
+    /**
+     * @param name
+     * @param index
+     */
+    private TT(String name, int index) {
+        this.name = name;
+        this.index = index;
+    }
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * @return the index
+     */
+    public int getIndex() {
+        return index;
+    }
+
+    /**
+     * @param index
+     *            the index to set
+     */
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+}
+
+@JsonShape
+public static enum K {
+    K, T
+}
+
+@Test
+public void test_enum() {
+    assertEquals("\"K\"", Json.toJson(K.K));
+    String expected = "{\n" + "   \"name\": \"t\",\n" + "   \"index\": 1\n" + "}";
+    assertEquals(expected, Json.toJson(TT.T));
+}
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="虚拟属性"></a>虚拟属性</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>虚拟属性指的是没有对应的属性,但有成对的getter/setter. 例如</p>
+<pre>public class PojoForQQ {
+    public int id;
+	@JsonField
+	public String getName() {
+    	return "wendal," + id;
+	}
+	public void setName(String name) {
+	}
+}
+</pre>
+<p>会输出</p>
+<pre>{
+	"id" : 123,
+	"name" : "wendal,123"
+}
+</pre>
+<p>可以看到, 成对的getter/setter,配合@JsonField,可以输出一个虚拟属性.</p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 </body>

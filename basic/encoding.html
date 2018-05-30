@@ -53,7 +53,7 @@
 <p>打开 tomcat安装目录下的 bin\setenv.bat ,该文件通常不存在,新建之, 添加如下内容</p>
 <pre>set JAVA_OPTS=-Dfile.encoding=UTF-8
 </pre>
-<p>打开conf\server.conf, 在8080端口所属的Connector节点,添加URIEncoding,可解决大部分GET请求中文乱码的问题</p>
+<p>打开conf\server.xml, 在8080端口所属的Connector节点,添加URIEncoding,可解决大部分GET请求中文乱码的问题</p>
 <pre>URIEncoding="UTF-8"
 </pre>
 <div class="hr"><b></b></div>

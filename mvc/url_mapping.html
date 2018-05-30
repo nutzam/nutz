@@ -51,6 +51,9 @@
 </li>
 </ul>
 </li>
+<li>
+<div><span class="num">5</span><a href="#Nutz_中的Mvc注解继承">Nutz 中的Mvc注解继承</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="为什么需要详细描述_URL_映射"></a>为什么需要详细描述 URL 映射</h1>
@@ -329,6 +332,49 @@ public String getPet() {
 <li>/abc/getlist</li>
 </ul>
 <p>这种映射方式基本是不会发生的，因为你需要让 Nutz.Mvc 控制一批 URL 而不是单个 URL。所以，你如果选择了这种模式我就没话讲了，在 Nutz.Mvc 中你就全部匹配吧，惩罚你，哼！</p>
+<div class="hr"><b></b></div>
+<h1><a name="Nutz_中的Mvc注解继承"></a>Nutz 中的Mvc注解继承</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>自1.r.55 起，Nutz中加入了注解继承功能，举个栗子:</p>
+<pre><span class="zdoc_code_cmt">// 父类
+</span>@Ok("jsp")
+public abstract class RestfulAction{
+    @At @GET
+    public void list() {
+    	
+    }
+    @At @GET @Ok("json")
+    public QueryResult search() {
+    	return null;
+    }
+}
+<span class="zdoc_code_cmt">// 子类
+</span>@At("/items") <span class="zdoc_code_cmt">//父类的@Ok("jsp")在这里生效
+</span>public class MyAction extends RestfulAction {
+    @Override
+    public void list() {} <span class="zdoc_code_cmt">//父类的@At @GET在这里生效
+</span>    @Override
+    public QueryResult search() {} <span class="zdoc_code_cmt">//父类的@At @GET @Ok("json")在这里生效
+</span>}
+</pre>
+<p>看到了吧，是不是很容易，父类的所有Mvc注解，都对应的在子类上生效，这个功能的初衷是可以让你少写那么一点配置信息，毕竟整天搬砖都是CRUD，虽然Nutz已经足够简便了，但配置写多了也会吐 ^_^注意：<span style="color:#FF0000;"><b>这个版本中，子类还是要复写一下父类的方法，才能获得对应的入口方法映射，复写哪个，就会获得哪个</b></span></p>
+<div class="hr"><b></b></div>
+<p>自1.r.61起，wendal 加入了默认继承所有父类入口方法的功能，比如上面的例子，父类不变，子类这样写</p>
+<pre>@At("/items")
+public class MyAction extends RestfulAction {
+}
+</pre>
+<p>即可继承两个入口方法：1. /items/list2. /items/search</p>
+<div class="hr"><b></b></div>
+<p>鉴于默认继承的特性，杀伤力太大，所以1.r.63中，增加了入口方法决断机制你只要自己实现一个org.nutz.mvc.EntryDeterminer，然后在MainModule上申明下注解@Determiner使用它就好了，比如这样：</p>
+<pre>@Determiner(MyDeterminer.class)
+public class MainModule {}
+</pre>
+<p>当然，EntryDeterminer也支持从Ioc中获取，像这样</p>
+<pre>@Determiner(value = MyDeterminer.class, args = {"ioc:myDeterminer"})
+public class MainModule {}
+</pre>
+<p>其中 "myDeterminer" 就是你这个决断期在 Ioc 容器中的名字。</p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>

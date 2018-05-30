@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Ioc常见问题</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Ioc常见问题</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#Ioc_depose_tigger_by_GC">Ioc depose tigger by GC</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#Object_dao_without_define!">Object 'dao' without define!</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#解决办法">解决办法</a></div>
+</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="Ioc_depose_tigger_by_GC"></a>Ioc depose tigger by GC</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>表现就是标题这句日志了</p>
+<p>原因是, "您自己"的代码,创建了一个临时NutIoc容器,然后抛弃掉, 例如</p>
+<pre>public static Dao dao() {
+	IocLoader loader = new JsonLoader("dao.js");
+	return new NutIoc().get(Dao.class);
+}
+</pre>
+<p>解决办法, 全局搜索 new NutIoc, 改成正确的方式, <a href="ioc_by_hand.html">点我传送门</a></p>
+<div class="hr"><b></b></div>
+<h1><a name="Object_dao_without_define!"></a>Object 'dao' without define!</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>表现就是标题这句日志了, dao可以替换成其他需要得到的bean name</p>
+<p>原因呢, 一般是因为@IocBy配置错误,或类名错误</p>
+<h2><a name="解决办法"></a>解决办法</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>如果这是您自己写的类, 看看是不是缺了@IocBean</li>
+<li>如果是在ioc js中定义的bean,检查一下名字</li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

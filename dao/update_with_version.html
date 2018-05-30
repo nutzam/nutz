@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>乐观锁</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">乐观锁</div>
+<div class="zdoc_author"><em>By:</em><b>ecoolper</b><a href="mailto:crskyp@gmail.com">&lt;crskyp@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#乐观锁">乐观锁</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#乐观锁实现方式">乐观锁实现方式</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#Nutz实现方式">Nutz实现方式</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#代码片段">代码片段</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="乐观锁"></a>乐观锁</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在多用户环境中，在同一时间可能会有多个用户更新相同的记录，会产生冲突，解决方案有两种：乐观锁、悲观锁。悲观锁在这里不讲，自行Google。乐观锁假设不会发生并发冲突，只在提交操作时检查是否违反数据完整性，不完整则更新失败。</p>
+<div class="hr"><b></b></div>
+<h1><a name="乐观锁实现方式"></a>乐观锁实现方式</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>使用整数表示数据版本号.更新时检查版本号是否一致,如果相等,则更新成功,且版本号+1.如果不等,则数据已经被修改过,更新失败。</li>
+<li>使用时间戳来实现。 本质上也是版本号,只是版本号是时间戳,并发就死.</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="Nutz实现方式"></a>Nutz实现方式</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>version字段必须是数字类型（int、long、short)，不符合则抛出异常</li>
+<li>一个表中最多只能有一个version=true的字段，否则抛出异常</li>
+<li>version字段不能为空，为空则不能正确更新数据，但不报错和抛出异常</li>
+<li>只支持实体类形式的更新，包括实体类集合</li>
+<li>乐观锁更新方法 dao.updateWithVersion</li>
+<li>调用dao.updateWithVersion后，version字段值自动加1</li>
+<li>设置为version字段后，dao.insert默认赋值0</li>
+</ul>
+<h1><a name="代码片段"></a>代码片段</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>public class Pet {
+    	@Name
+    	private String name;
+    	@Column
+    	private int age;
+    	@Column(value="version")
+    	private int version;
+}
+
+<span class="zdoc_code_cmt">// 执行更新
+</span>dao.updateWithVersion(pet);
+<span class="zdoc_code_cmt">// 实际执行的SQL
+</span>update table set age=?,version=version+1 where name=? and version=?
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>ecoolper</b><a href="mailto:crskyp@gmail.com">&lt;crskyp@gmail.com&gt;</a></div>
+</body>
+</html>

@@ -1,79 +1,67 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
-<title>1.r.60 发行注记</title><link href="zdoc.css" rel="stylesheet" type="text/css"/>
+<title>1.r.65 发行注记</title><link href="zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
-<div class="zdoc_header">1.r.60 发行注记</div>
-<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_header">1.r.65 发行注记</div>
+<div class="zdoc_author"><em>By:</em><b>胖五</b><a href="mailto:pangwu86@gmail.com">&lt;pangwu86@gmail.com&gt;</a></div>
 <div class="zdoc_body">
-<ul class="zdoc_index_table">
-<li>
-<div><span class="num">1</span><a href="#1r60_原味青豆_发行注记(20170116)">1.r.60 原味青豆 发行注记(20170116)</a></div>
-</li>
-<li>
-<div><span class="num">2</span><a href="#主要变化:">主要变化:</a></div>
-</li>
-<li>
-<div><span class="num">3</span><a href="#部分新功能介绍">部分新功能介绍</a></div>
-</li>
-<li>
-<div><span class="num">4</span><a href="#关联项目更新">关联项目更新</a></div>
-</li>
-<li>
-<div><span class="num">5</span><a href="#详细列表:">详细列表:</a></div>
-</li>
-</ul>
 <div class="hr"><b></b></div>
-<h1><a name="1r60_原味青豆_发行注记(20170116)"></a>1.r.60 <b>原味青豆</b> 发行注记(20170116)</h1>
+<h1><a name="1r65_怪物猎人_发行注记(20180128)"></a>1.r.65 <b>怪物猎人</b> 发行注记(20180128)</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>青豆,即青豌豆,我(wendal)最近的最爱,因为腰果吃完了.</p>
-<p>这个版本,新功能不多,bugfix也少,最大的亮点是官网更新了(胖五做的),另外官网正在备案,请使用https协议访问.</p>
-<p>文档大幅更新,添加了十几个小节,调整了顺序,其动力来源,就是NutCN社区的3000+帖子. 每隔一段时间,我就会翻一遍,思考一下为什么会有这些问题?而不是单纯解答一下问题.</p>
-<p>感谢osc和博文视点赠送的<b>实战ES2015</b>一书,恩,还得感谢党,感谢国家,感谢CCTV</p>
+<p><img src="1r65.png"/></p>
+<p>2018已经过了快1个月，各位同学的年度总结是不是也写好了。</p>
+<p>回顾2017，来看看Nutz都做了哪些事情：</p>
+<ul type="disc">
+<li>Nutz核心包发布了共4个版本，名字都是某位广东人喜欢的水果</li>
+<li>NutzBoot项目立项且发布，直接窜上2.0</li>
+<li>NutzCloud项目立项且发布，没错就在NB的2.1版本中</li>
+<li>Nutz官网更新了一版，满足了PC与手机端访问</li>
+</ul>
+<p>总的来说相比前两年还是做了一些新东西出来，当然这也包括了一些尚未公开的项目。</p>
+<p>就在一周前，Nutz核心组的几名成员相聚长沙黄兴路步行街的金拱门餐厅，在一边吃薯条一边喝可乐的愉悦氛围下定下了2018年的目标，可以告诉大家的是“今年会有很多有趣的事情”要发生，至于具体内容将在春节前后给出答案。总的来说我们希望Nutz越来越有范，除了代码写的好其他方面也要跟上时代进步。</p>
+<p>就在本周PS4游戏《怪物猎人 世界》正式发售了，伴着勇气之证的BGM，猎人们再次集结起来加入狩猎古龙。</p>
+<p>很喜欢这种多人组队做任务的设定，所以也希望Nutz社区在今年变得更加有趣，让更多的Nutz猎人加入进来，跟我们一起来狩猎2018。</p>
 <div class="hr"><b></b></div>
-<h1><a name="主要变化:"></a>主要变化:</h1>
+<h1><a name="主要变化"></a>主要变化</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>距离上次发布仅一个月，内容主要是小Feature和Bug修改，请放心升级</p>
+<ul type="disc">
+<li>add: 坐标点旋转计算方法</li>
+<li>add: Ioc接口添加addBean方法</li>
+<li>add: 增加web环境下 国际化 相关帮助函数</li>
+<li>add: Mvcs增加辅助函数直接取得国际化信息配合NutzCodeInsight实现国际化配置代码折叠提示</li>
+<li>add: 通过Daos辅助函数自动创建表时,对不需要自动创建得表进行过滤的功能</li>
+<li>add: Times.d2TS(Date日期转Unix时间戳)</li>
+<li>add: 添加两个老的scanModuleInPackage和isModule方法,兼容老代码</li>
+<li>add: Aop类与NutIoc容器一对一绑定的功能,但默认禁用</li>
+<li>add: 根据类上的注解获取ioc对象的name列表</li>
+<li>add: CrossOriginFilter添加X-Requested-With,与jetty的CrossOriginFilter一致</li>
+<li>fix: countByJoin没做对</li>
+<li>fix: Json.fromJson 处理date类型时区的问题</li>
+<li>fix: queryByJoin要进行分页查询的时候dao.count没有关联查询的方法</li>
+<li>fix: Column不支持@Index</li>
+<li>fix: boot文档里面有链接错误</li>
+<li>fix: map.entrySet() 得到的对象无法 Json.toJson</li>
+<li>fix: 建表的时候, 如果某个类报错, 应该继续建其他类,最后再抛出异常</li>
+<li>fix: JsonAopConfigrationTest失败</li>
+<li>fix: 为NutTxDao添加个testcase</li>
+<li>fix: 容忍非法转义,可配置</li>
+<li>fix: AndOpt和OrOpt，修改强制类型转换时，没有考虑右值的问题</li>
+<li>fix: Jdbcs.guess方法有NPE的可能性</li>
+<li>fix: https://gitee.com/nutz/nutz/issues/IHHHK</li>
+</ul>
+<p>还有就是发行注记改由胖五负责，并配上题图</p>
+<div class="hr"><b></b></div>
+<h1><a name="详细列表"></a>详细列表</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
-<li>fix: Json.toJson处理map循环引用时会导致内存溢出</li>
-<li>fix: EL表达式遇到多余右括号时会死循环</li>
-<li>add: @One/@Many默认关联关系</li>
-<li>add: @Inject支持优先按类型注入</li>
-<li>add: Json.toJson支持null值当空字符串写入</li>
-<li>add: JsonFormat的DateFormat支持非JDK实现</li>
-<li>add: websocket和WhaleFilter的文档</li>
-<li>add: 集成jedis和activiti的文档</li>
-<li>add: ioc js与java代码互转的文档</li>
+<li><a href="https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.65">Issue@github</a></li>
+<li>欢迎访问<a href="https://nutzam.com">官网</a> 及 <a href="https://nutz.cn">Nutz社区</a>,以获取更多信息</li>
+<li><a href="https://nutz.cn">Nutz社区</a>已经累计了6000多帖子, 30000+条回复,平均回复时间少于10分钟哦,白天基本上秒回!</li>
 </ul>
-<div class="hr"><b></b></div>
-<h1><a name="部分新功能介绍"></a>部分新功能介绍</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<p>@One/@Many现在更简洁了, target和field均可自动推导,当然,自定义依然可用.</p>
-<pre><span class="zdoc_code_cmt">// 以前
-</span>@One(target=Master.class, field="masteId")
-private Master master;
-
-<span class="zdoc_code_cmt">// 现在
-</span>@One
-private Master master;
-</pre>
-<div class="hr"><b></b></div>
-<h1><a name="关联项目更新"></a>关联项目更新</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<ul type="disc">
-<li>nutzmore, 新增jedis/activiti/spring boot/slog等等插件和扩展</li>
-<li>nutz-web, 新增runnable war生成器和启动器</li>
-<li>nutzmongo, 适配mongodb 3.x驱动</li>
-</ul>
-<div class="hr"><b></b></div>
-<h1><a name="详细列表:"></a>详细列表:</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<ul type="disc">
-<li><a href="https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.60">issue@github</a></li>
-</ul>
-<p>欢迎访问<a href="https://nutzam.com">官网</a> 及 <a href="https://nutz.cn">Nutz社区</a>,以获取更多信息</p>
-<p><a href="https://nutz.cn">Nutz社区</a>已经累计了3000+的问答帖子, 10000+条回复,注册人数过千,平均回复时间少于10分钟哦,白天基本上秒回!</p>
 </div>
-<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_footer"><em>By:</em><b>胖五</b><a href="mailto:pangwu86@gmail.com">&lt;pangwu86@gmail.com&gt;</a></div>
 </body>
 </html>

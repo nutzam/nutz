@@ -264,6 +264,18 @@ public String someFunc(	@Param("fox") Pet pet,
 	...
 </pre>
 <p>实际上，Nutz.Mvc 会将 HTTP 输入流解析成一个 Map，然后从 Map 里取出 "fox" 和 "fox_food" 这两个子 Map，分别转换成 Pet 对象和 Food 对象。</p>
+<p>js通常这样写</p>
+<pre>var data = {id:1,name:'陆离',age:19,sex:'女',relation:'媳妇'};
+$.ajax({
+	url:'/HelloNutz/jsonAdapter',
+	"data": JSON.stringify(data), <span class="zdoc_code_cmt">// 注意要转为json,除非data本身就是json字符串
+</span>	dataType:'json',
+	type : 'POST',
+	success:function(re){
+		console.log(re);
+	}
+});
+</pre>
 <div class="hr"><b></b></div>
 <h2><a name="什么都不干_-_VoidAdaptor"></a>什么都不干 - VoidAdaptor</h2>
 <div style="float:right;"><a href="#top">Top</a></div>

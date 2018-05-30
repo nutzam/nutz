@@ -22,7 +22,7 @@
 <div class="hr"><b></b></div>
 <h1><a name="如何使用@SetupBy"></a>如何使用@SetupBy</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>首先, 实现Setup接口.这个接口就2个方法,分别对应启动(init)和关闭(depose)</p>
+<p>首先, 实现Setup接口.这个接口就2个方法,分别对应启动(init)和关闭(destroy)</p>
 <pre>public void init(NutConfig nc) {
 	Ioc ioc = nc.getIoc(); <span class="zdoc_code_cmt">// 拿到Ioc容器
 </span>	Dao dao = ioc.get(Dao.class); <span class="zdoc_code_cmt">// 通过Ioc容器可以拿到你想要的ioc bean
@@ -38,7 +38,7 @@
 </span>}
 </pre>
 <p>那关闭的时候呢?</p>
-<pre>public void depose(NutConfig nc) {
+<pre>public void destroy(NutConfig nc) {
 	Ioc ioc = nc.getIoc(); <span class="zdoc_code_cmt">// 可以拿到Ioc容器
 </span>	Dao dao = ioc.get(Dao.class);
 	

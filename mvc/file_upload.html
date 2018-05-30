@@ -42,10 +42,13 @@
 <div><span class="num">5</span><a href="#可用的参数类型">可用的参数类型</a></div>
 </li>
 <li>
-<div><span class="num">6</span><a href="#推荐的js插件">推荐的js插件</a></div>
+<div><span class="num">6</span><a href="#AJAX_方式上传文件">AJAX 方式上传文件</a></div>
 </li>
 <li>
-<div><span class="num">7</span><a href="#直接上传到云">直接上传到云</a></div>
+<div><span class="num">7</span><a href="#推荐的js插件">推荐的js插件</a></div>
+</li>
+<li>
+<div><span class="num">8</span><a href="#直接上传到云">直接上传到云</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
@@ -54,7 +57,7 @@
 <p>大多数的 Web 应用都不可避免的，会涉及到文件上传。文件上传，不过是一种适配 HTTP 输入流的方式。为此，Nutz.Mvc 内置了一个专门处理文件上传的适配器 <b>org.nutz.mvc.upload.UploadAdaptor</b></p>
 <p>这个适配器专门解析形式为</p>
 <pre>&lt;form target="hideWin" enctype="multipart/form-data" method="post"&gt;
-    &lt;input type="file"&gt;
+    &lt;input type="file" name="photo"&gt;
     ...
 </pre>
 <p>的 HTML 提交表单</p>
@@ -220,14 +223,44 @@ public void uploadPhoto( @Param("photo") TempFile[] tfs){
 <h1><a name="可用的参数类型"></a>可用的参数类型</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
-<li>TempFile 及 TempFile推荐</li>
+<li>TempFile 及 TempFile[]</li>
 <li>File 推荐用TempFile</li>
 <li>Map 用于得到全部参数</li>
 </ul>
 <div class="hr"><b></b></div>
+<h1><a name="AJAX_方式上传文件"></a>AJAX 方式上传文件</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>现在的浏览器配合 jQuery 的话是很方便上传文件的，例子如下，省略 html 代码</p>
+<pre>&lt;script&gt;
+    $(document).ready(function () {
+        $("<span class="zdoc_code_cmt">#upload").click(function () {
+</span>            var formData = new FormData();
+            formData.append('file', $('<span class="zdoc_code_cmt">#file')[0].files[0]);
+</span>
+            $.ajax({
+                url: "/upload",
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    console.log("success");
+                }
+            });
+        });
+    });
+&lt;/script&gt;
+</pre>
+<pre>@At("/upload")
+@AdaptBy(type = UploadAdaptor.class, args = {"${app.root}/WEB-INF/tmp"})
+public void uploadPhoto(@Param("file") File f) {
+    System.out.println(f.getName());
+}
+</pre>
+<p>其实这就是在画面生成一个 form 对象，然后用 AJAX POST 方式来提交这个 form。是不是一下让你想到远古时期用 js 提交 form 表单的做法呢。</p>
+<div class="hr"><b></b></div>
 <h1><a name="推荐的js插件"></a>推荐的js插件</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>ajax下是不能直接提交带文件的表单的,但良好的用户体验,怎么能不使用ajax上传文件呢?</p>
 <ul type="disc">
 <li><a href="http://fex.baidu.com/webuploader/">webuploader</a> 百毒出品,体验还是不错的</li>
 <li><a href="https://github.com/codler/jQuery-Ajax-Upload">jQuery-Ajax-Upload</a> 老牌ajax上传插件</li>

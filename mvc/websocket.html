@@ -14,6 +14,9 @@
 <li>
 <div><span class="num">2</span><a href="#Nutz为WebSocket准备了什么?">Nutz为WebSocket准备了什么?</a></div>
 </li>
+<li>
+<div><span class="num">3</span><a href="#maven依赖">maven依赖</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="WebSocket是什么?"></a>WebSocket是什么?</h1>
@@ -22,26 +25,29 @@
 <div class="hr"><b></b></div>
 <h1><a name="Nutz为WebSocket准备了什么?"></a>Nutz为WebSocket准备了什么?</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>只需要自行添加下面的类</p>
-<pre>import javax.websocket.server.ServerEndpointConfig;
-import org.nutz.mvc.Mvcs;
-
-public class NutIocWebSocketConfigurator extends ServerEndpointConfig.Configurator {
-
-    public &lt;T&gt; T getEndpointInstance(Class&lt;T&gt; endpointClass) {
-    	Ioc ioc = Mvcs.getIoc();
-    	if (ioc == null)
-    	    ioc = Mvcs.ctx().getDefaultIoc();
-        return ioc.get(endpointClass);
-    }
+<p>请下载最新的nutz-plugins-websocket及websocket api, 然后只需要一个类, 即可完成websocket的基础集成.</p>
+<pre>@ServerEndpoint(value = "/websocket", configurator=NutWsConfigurator.class)
+@IocBean
+public class MyWebsocket extends AbstractWsEndpoint {
 }
 </pre>
-<p>然后在自己的websocket服务类上添加注解,即可享用ioc注入带来的福利</p>
-<pre>@ServerEndpoint(value = "/websocket", configurator=NutIocWebSocketConfigurator.class)
-@IocBean
-public class MyWebsocket extends Endpoint {
-
-}
+<p>其他类注入MyWebsocket实例(一般就是@Inject嘛), 通过sendXXX方法发送数据到浏览器</p>
+<p>若需要扩展,请查阅AbstractWsEndpoint的javadoc及<a href="https://github.com/nutzam/nutzmore/tree/master/nutz-plugins-websocket">nutz-plugins-websocket的README.md</a></p>
+<div class="hr"><b></b></div>
+<h1><a name="maven依赖"></a>maven依赖</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>
+	&lt;dependency&gt;
+		&lt;groupId&gt;javax.websocket&lt;/groupId&gt;
+		&lt;artifactId&gt;javax.websocket-api&lt;/artifactId&gt;
+		&lt;version&gt;1.1&lt;/version&gt;
+		&lt;scope&gt;provided&lt;/scope&gt;&lt;!-- 非常重要哦 --&gt;
+	&lt;/dependency&gt;
+	&lt;dependency&gt;
+		&lt;groupId&gt;org.nutz&lt;/groupId&gt;
+		&lt;artifactId&gt;nutz-plugins-websocket&lt;/artifactId&gt;
+		&lt;version&gt;1.r.62&lt;/version&gt;
+	&lt;/dependency&gt;
 </pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>

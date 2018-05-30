@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>MVC常见问题</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">MVC常见问题</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div class="zdoc_folder"><span class="num">1</span><a href="#tomcat报readUnsignedShort">tomcat报readUnsignedShort</a></div>
+<ul>
+<li>
+<div><span class="num">1.1</span><a href="#原因:">原因:</a></div>
+</li>
+<li>
+<div><span class="num">1.2</span><a href="#解决版本:">解决版本:</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">2</span><a href="#出现nutz日志之前,停顿几十秒到几分钟不等:">出现nutz日志之前,停顿几十秒到几分钟不等:</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#IE下ajax当下载">IE下ajax当下载</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="tomcat报readUnsignedShort"></a>tomcat报readUnsignedShort</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>部署到生产环境时(tomcat版本一般较低), 出现类似这样的报错,然后tomcat无法启动:</p>
+<pre>java.io.EOFException
+at java.io.DataInputStream.readUnsignedShort(DataInputStream.java:340)
+at org.apache.tomcat.util.bcel.classfile.Utility.swallowMethodParameters(Utility.java:796)
+at org.apache.tomcat.util.bcel.classfile.Attribute.readAttribute(Attribute.java:171)
+at org.apache.tomcat.util.bcel.classfile.FieldOrMethod.&lt;init&gt;(FieldOrMethod.java:57)
+at org.apache.tomcat.util.bcel.classfile.Method.&lt;init&gt;(Method.java:71)
+at org.apache.tomcat.util.bcel.classfile.ClassParser.readMethods(ClassParser.java:267)
+at org.apache.tomcat.util.bcel.classfile.ClassParser.parse(ClassParser.java:127)
+</pre>
+<h2><a name="原因:"></a>原因:</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>tomcat 7.0.58之前的版本,处理由JDK8带-parameters编译的类文件有bug</li>
+<li>nutz从1.r.58开始,使用JDK8带-parameters编译,从而实现eclipse无源码也能提示参数名称</li>
+</ul>
+<h2><a name="解决版本:"></a>解决版本:</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>首选: 把tomcat升级到7.x最新版</li>
+<li>备选: 下载nutz源码,重新编译一份不带-parameters的jar,不推荐使用</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="出现nutz日志之前,停顿几十秒到几分钟不等:"></a>出现nutz日志之前,停顿几十秒到几分钟不等:</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>该情况只出现在老版本的Linux系统,卡顿结束后,第一条日志类似</p>
+<pre>INFO: Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [301,654] milliseconds.
+</pre>
+<p>原因: 由于linux下/dev/random极其低效,导致SecureRandom初始化非常慢</p>
+<p>解决方案: 添加启动参数</p>
+<pre>JAVA_OPTS="$JAVA_OPTS -Dfile.encoding=utf-8 -Djava.security.egd=file:/dev/urandom"
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="IE下ajax当下载"></a>IE下ajax当下载</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>原因: 新版的@Ok("json")的Content-Type设置为"application/json", 在IE下会有毛病.</p>
+<p>解决版本: 在MainModule添加@SetupBy(MainSetup.class), 然后MainSetup类实现Setup接口,在init方法内内添加下列代码</p>
+<pre>UTF8JsonView.CT = "text/plain";
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

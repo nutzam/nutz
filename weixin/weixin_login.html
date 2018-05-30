@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>微信登录</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">微信登录</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#什么是微信登录">什么是微信登录</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#PC网页版微信登录的准备工作">PC网页版微信登录的准备工作</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#生成重定向所需要的URL">生成重定向所需要的URL</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="什么是微信登录"></a>什么是微信登录</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>微信登录事实上有3种, PC网页,公众号,App.</p>
+<ul type="disc">
+<li>PC网页登录 -- 服务器生成URL,浏览器访问,出二维码,微信客户端扫码,确认登录,带token回调到服务器指定地址</li>
+<li>公众号登录 -- 服务器生成URL,微信客户端自动访问,用户确认登录(或自动登录),带token回调到服务器指定地址</li>
+<li>App登录 -- 第三方app跳转到微信客户端,用户确认登录,附带token跳转回原来的app,第三方app使用token访问服务器</li>
+</ul>
+<p>共通点与差异:</p>
+<ul type="disc">
+<li>前两种需要生成URL, app登录不需要</li>
+<li>最终结果都是拿到一个token, 然后服务器拿着这个token找微信服务器要用户信息</li>
+</ul>
+<p>那nutzwx做了啥?</p>
+<ul type="disc">
+<li>封装生成URL的逻辑</li>
+<li>封装token变用户信息的逻辑</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="PC网页版微信登录的准备工作"></a>PC网页版微信登录的准备工作</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>首先, 需要在 https://open.weixin.qq.com 上注册并认证, 申请网站应用并审核通过之后,就能看到appid和appsecret.</p>
+<p>然后, 在conf所引用的配置文件目录,添加一个新的配置文件 wxlogin.properties . </p>
+<pre><span class="zdoc_code_cmt"># 网页版微信登录所需要的密钥
+</span><span class="zdoc_code_cmt">#wxlogin.host=https://nutz.cn
+</span>wxlogin.appid=wxc1c9aa2d78658ab1
+wxlogin.appsecret=XXXXXXXXXXXXXXXXXXX
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="生成重定向所需要的URL"></a>生成重定向所需要的URL</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@At("/wxlogin/")
+@IocBean
+public class WeixinModule {
+
+    @Inject
+    protected PropertiesProxy conf;
+    
+    @Inject
+    protected Dao dao;
+
+    <span class="zdoc_code_cmt">// PC网页版微信登录
+</span>    <span class="zdoc_code_cmt">// https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&amp;t=resource/res_list&amp;verify=1&amp;id=open1419316505&amp;token=fea88cbef0867899abcd3bb3c1bee60ea53e64b3&amp;lang=zh_CN
+</span>	@At("/qrconnect")
+	@Ok("&gt;&gt;:${obj}")
+    public String qrconnect(HttpServletRequest req) {
+        String redirect_uri = req.getRequestURL().toString().replace("qrconnect", "wxlogin/access_token");
+        return wxLogin("wxlogin").qrconnect(redirect_uri, "snsapi_login", null);
+    }
+    
+    <span class="zdoc_code_cmt">// 公众号登录
+</span>    <span class="zdoc_code_cmt">// https://mp.weixin.qq.com/wiki?t=resource/res_main&amp;id=mp1421140842
+</span>	@At("/authorize")
+	@Ok("&gt;&gt;:${obj}")
+    public String authorize(HttpServletRequest req) {
+        String redirect_uri = req.getRequestURL().toString().replace("authorize", "weixin/access_token");
+        return wxLogin("weixin").authorize(redirect_uri, "snsapi_userinfo", null); <span class="zdoc_code_cmt">// snsapi_base静默登录,snsapi_userinfo需要确认,后者才能获取用户详细信息
+</span>    }
+    
+    @At("/?/access_token")
+    @Ok("&gt;&gt;:/user/home?msg=${obj}")
+    public String access_token(String prefix, @Param("code")String code, @Param("state")String state, HttpSession session) {
+        WxResp resp = wxLogin(prefix).access_token(code);
+        if (resp == null) {
+            return "登录失败";
+        }
+        String openid = resp.getString("openid");
+        <span class="zdoc_code_cmt">// 因为已经得到openid, 可以用户表,确定对应的用户,完成登录操作
+</span>        <span class="zdoc_code_cmt">// 下面假设user表有openid字段
+</span>        User user = dao.fetch(User.class, "openid", "=", openid);
+        if (user == null) {
+           <span class="zdoc_code_cmt">// 新用户 xxooo
+</span>        }
+        <span class="zdoc_code_cmt">// 执行登录操作 (普通方式)
+</span>        session.setAttribute("me", user);
+        <span class="zdoc_code_cmt">// Shiro的方式
+</span>        <span class="zdoc_code_cmt">// Subject subject = SecurityUtils.getSubject();
+</span>        <span class="zdoc_code_cmt">// subject.login(new SimpleShiroToken(user.getId()));
+</span>        
+        <span class="zdoc_code_cmt">// 最后呢, 如果不是公众号的静默登录snsapi_base,还可以获取用户详细信息
+</span>        
+        String access_token = resp.getString("access_token");
+        resp = wxLogin(prefix).userinfo(openid, access_token);
+        <span class="zdoc_code_cmt">// 然后做你想做的事吧...
+</span>        return "ok";
+    }
+    
+    protected WxLogin wxLogin(String prefix) {
+        WxLoginImpl w = new WxLoginImpl();
+        return w.configure(conf, prefix + ".");
+    }
+}
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

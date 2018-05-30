@@ -105,6 +105,9 @@ ch.add("字段名", 字段值);
 <p>它会执行 SQL</p>
 <pre>UPDATE t_pet SET name='XiaoBai', birthday='2010-4-28 14:27:12' WHERE id=2;
 </pre>
+<p>如果已经有一个map呢??</p>
+<pre>dao.update("t_pet", Chain.from(map), Cnd.where("id","=",2));
+</pre>
 <div class="hr"><b></b></div>
 <h1><a name="删除"></a>删除</h1>
 <div style="float:right;"><a href="#top">Top</a></div>

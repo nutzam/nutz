@@ -96,6 +96,7 @@ private Blob blob;
 <pre>@Table("t_user")
 @TableIndexes({@Index(name="name_age", fields={"name", "age"}, unique=false)})
 </pre>
+<p>自1.r.63起，索引的名称可以自动帮你生成，上面的例子，如果name不填的话，默认"IX_TableName_name_age"，及"前缀_表名_字段名"其中，唯一索引前缀为"UX_"，非唯一索引前缀为"IX_"</p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>

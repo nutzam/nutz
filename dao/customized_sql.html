@@ -35,52 +35,55 @@
 </ul>
 </li>
 <li>
-<div><span class="num">3</span><a href="#NutzDao_SQL_文件的格式">Nutz.Dao SQL 文件的格式</a></div>
+<div><span class="num">3</span><a href="#常用回调">常用回调</a></div>
 </li>
 <li>
-<div class="zdoc_folder"><span class="num">4</span><a href="#加载_SQL_文件">加载 SQL 文件</a></div>
+<div><span class="num">4</span><a href="#NutzDao_SQL_文件的格式">Nutz.Dao SQL 文件的格式</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">5</span><a href="#加载_SQL_文件">加载 SQL 文件</a></div>
 <ul>
 <li>
-<div><span class="num">4.1</span><a href="#在构造时加载(示意代码,新建NutDao属于重量级操作,应使用单例或Ioc模式)">在构造时加载(示意代码,新建NutDao属于重量级操作,应使用单例或Ioc模式)</a></div>
+<div><span class="num">5.1</span><a href="#在构造时加载(示意代码,新建NutDao属于重量级操作,应使用单例或Ioc模式)">在构造时加载(示意代码,新建NutDao属于重量级操作,应使用单例或Ioc模式)</a></div>
 </li>
 <li>
-<div><span class="num">4.2</span><a href="#在构造之后的任何时加载(示意代码,新建NutDao属于重量级操作,应使用单例或Ioc模式)">在构造之后的任何时加载(示意代码,新建NutDao属于重量级操作,应使用单例或Ioc模式)</a></div>
+<div><span class="num">5.2</span><a href="#在构造之后的任何时加载(示意代码,新建NutDao属于重量级操作,应使用单例或Ioc模式)">在构造之后的任何时加载(示意代码,新建NutDao属于重量级操作,应使用单例或Ioc模式)</a></div>
 </li>
 </ul>
 </li>
 <li>
-<div class="zdoc_folder"><span class="num">5</span><a href="#条件变量占位符">条件变量占位符</a></div>
+<div class="zdoc_folder"><span class="num">6</span><a href="#条件变量占位符">条件变量占位符</a></div>
 <ul>
 <li>
-<div><span class="num">5.1</span><a href="#特殊的占位符_--_$condition">特殊的占位符 -- $condition</a></div>
+<div><span class="num">6.1</span><a href="#特殊的占位符_--_$condition">特殊的占位符 -- $condition</a></div>
 </li>
 <li>
-<div><span class="num">5.2</span><a href="#使用_Entity<?>">使用 Entity&lt;?&gt;</a></div>
+<div><span class="num">6.2</span><a href="#使用_Entity<?>">使用 Entity&lt;?&gt;</a></div>
 </li>
 <li>
-<div><span class="num">5.3</span><a href="#多条件占位符(1b53开始提供)">多条件占位符(1.b.53开始提供)</a></div>
+<div><span class="num">6.3</span><a href="#多条件占位符(1b53开始提供)">多条件占位符(1.b.53开始提供)</a></div>
 </li>
 </ul>
 </li>
 <li>
-<div class="zdoc_folder"><span class="num">6</span><a href="#分页">分页</a></div>
+<div class="zdoc_folder"><span class="num">7</span><a href="#分页">分页</a></div>
 <ul>
 <li>
-<div><span class="num">6.1</span><a href="#对于不太复杂的sql,_分页还是需要的">对于不太复杂的sql, 分页还是需要的.</a></div>
+<div><span class="num">7.1</span><a href="#对于不太复杂的sql,_分页还是需要的">对于不太复杂的sql, 分页还是需要的.</a></div>
 </li>
 </ul>
 </li>
 <li>
-<div><span class="num">7</span><a href="#SQL内的数据库特殊注释">SQL内的数据库特殊注释</a></div>
+<div><span class="num">8</span><a href="#SQL内的数据库特殊注释">SQL内的数据库特殊注释</a></div>
 </li>
 <li>
-<div class="zdoc_folder"><span class="num">8</span><a href="#安全性">安全性</a></div>
+<div class="zdoc_folder"><span class="num">9</span><a href="#安全性">安全性</a></div>
 <ul>
 <li>
-<div><span class="num">8.1</span><a href="#@At(/query)public_List_query(String_city)">@At("/query")public List query(String city)</a></div>
+<div><span class="num">9.1</span><a href="#@At(/query)public_List_query(String_city)">@At("/query")public List query(String city)</a></div>
 </li>
 <li>
-<div><span class="num">8.2</span><a href="#@At(/query)public_List_query(String_city)">@At("/query")public List query(String city)</a></div>
+<div><span class="num">9.2</span><a href="#@At(/query)public_List_query(String_city)">@At("/query")public List query(String city)</a></div>
 </li>
 </ul>
 </li>
@@ -118,7 +121,7 @@ sql.setParam("name","Peter").setParam(...);
 <pre>/* delete.data */
 DELETE FROM $table WHERE name LIKE @name
 /* update.data */
-UPDATE FROM $table SET name=@name WHERE id=@id
+UPDATE $table SET name=@name WHERE id=@id
 </pre>
 <p>在你的 Java 代码中：</p>
 <pre>Sql sql = dao.sqls().create("delete.data");
@@ -193,7 +196,7 @@ sql.vars().set("name","f_name").set("age","f_age").set("weight","f_weight");
 <p>即</p>
 <ul type="disc">
 <li>输入 "@@" 表示一个 '@'</li>
-<li>输入 "$$" 表示一个 '$'</li>
+<li>输入 "$" 表示一个 '$'</li>
 </ul>
 <h2><a name="如何执行_Sql_对象"></a>如何执行 Sql 对象</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -205,6 +208,9 @@ sql.vars().set("name","f_name").set("age","f_age").set("weight","f_weight");
 }
 </pre>
 <p>这就完了吗？我怎么取得查询的结果呢。是的，同 UPDATE, DELETE, INSERT 不同， SELECT 是需要返回结果的，但是 Nutz.Dao 也不太清楚怎样为你自定义的 SELECT 语句返回结果，于是，就需要你设置回调。</p>
+<h3><a name="Tips:"></a>Tips:</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果运行的 sql 语句是类似 "show columns from tableName from dbName" 这样的语句，请在调用 dao.execute 方法前调用 sql.forceExecQuery 方法来强制让 nutz 用 select 方式运行该 sql 语句。</p>
 <h2><a name="回调的用处"></a>回调的用处</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>接上例，你需要这么改造一下你的函数：</p>
@@ -265,6 +271,107 @@ sql.params().set("name","XiaoHei").set("id",5);
 sql.addBatch();
 dao.execute(sql);
 </pre>
+<div class="hr"><b></b></div>
+<h1><a name="常用回调"></a>常用回调</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Sqls.callback.XXX 提供了80%以上场景所需要的回调类型,在编写自定义回调之前,建议您先看看有没有现成的</p>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td>   名称               </td>
+<td>   结果类型        </td>
+<td> 备注                 </td>
+</tr>
+<tr>
+<td>bool           </td>
+<td> Boolean       </td>
+<td>              </td>
+</tr>
+<tr>
+<td>bools          </td>
+<td> boolean[]     </td>
+<td>1.r.62及之前的版本是LinkedArray</td>
+</tr>
+<tr>
+<td>doubleValue    </td>
+<td> Double        </td>
+<td>              </td>
+</tr>
+<tr>
+<td>entities       </td>
+<td> List&lt;Pojo&gt;  </td>
+<td>取决于Entity对应的Pojo类  </td>
+</tr>
+<tr>
+<td>entity         </td>
+<td> Pojo          </td>
+<td>取决于Entity对应的Pojo类   </td>
+</tr>
+<tr>
+<td>floatValue     </td>
+<td> Float         </td>
+<td>              </td>
+</tr>
+<tr>
+<td>integer        </td>
+<td> Integer       </td>
+<td>              </td>
+</tr>
+<tr>
+<td>ints           </td>
+<td> int[]         </td>
+<td>              </td>
+</tr>
+<tr>
+<td>longValue      </td>
+<td> Long          </td>
+<td>              </td>
+</tr>
+<tr>
+<td>longs          </td>
+<td> long[]        </td>
+<td>              </td>
+</tr>
+<tr>
+<td>map            </td>
+<td> NutMap        </td>
+<td>与Record类型,但区分大小写 </td>
+</tr>
+<tr>
+<td>maps           </td>
+<td> List&lt;NutMap&gt;  </td>
+<td>              </td>
+</tr>
+<tr>
+<td>record         </td>
+<td> Record        </td>
+<td>字段名均为小写 </td>
+</tr>
+<tr>
+<td>records        </td>
+<td> List&lt;Record&gt;</td>
+<td>              </td>
+</tr>
+<tr>
+<td>str            </td>
+<td> String        </td>
+<td>              </td>
+</tr>
+<tr>
+<td>strList        </td>
+<td> List&lt;String&gt;  </td>
+<td>              </td>
+</tr>
+<tr>
+<td>strs           </td>
+<td> String[]    </td>
+<td>              </td>
+</tr>
+<tr>
+<td>timestamp      </td>
+<td> TimeStamp     </td>
+<td>              </td>
+</tr>
+</table>
 <div class="hr"><b></b></div>
 <h1><a name="NutzDao_SQL_文件的格式"></a>Nutz.Dao SQL 文件的格式</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
