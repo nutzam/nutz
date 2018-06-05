@@ -2833,4 +2833,22 @@ public abstract class Lang {
             return fallback;
         }
     }
+    
+    /**
+     * 判断一个对象是否不为空。它支持如下对象类型：
+     * <ul>
+     * <li>null : 一定为空
+     * <li>数组
+     * <li>集合
+     * <li>Map
+     * <li>其他对象 : 一定不为空
+     * </ul>
+     *
+     * @param obj
+     *            任意对象
+     * @return 是否为空
+     */
+    public static boolean isNotEmpty(Object obj) {
+        return !isEmpty(obj);
+    }
 }
