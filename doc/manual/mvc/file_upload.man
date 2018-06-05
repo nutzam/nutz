@@ -195,21 +195,55 @@
         是的，它们会被变成一个数组。顺序同 `<form>` 中的顺序。
 
         但是这里，有一点{#F00;*限制}
-         * {#F00;* 你只能用 `TempFile[]`}
+         * {#F00;* 你只能用 TempFile`[`]}
         也就是说，如果你用了 `File[]` 将会出错。
 
 -------------------------------------------------------------------------------------
 可用的参数类型
 
-	* TempFile 及 `TempFile[]`
+	* TempFile 及 TempFile`[`]
 	* File 推荐用TempFile
 	* Map 用于得到全部参数 
 	
 -------------------------------------------------------------------------------------
+AJAX 方式上传文件
+
+    现在的浏览器配合 jQuery 的话是很方便上传文件的，例子如下，省略 html 代码
+
+    {{{<JS>
+    <script>
+        $(document).ready(function () {
+            $("#upload").click(function () {
+                var formData = new FormData();
+                formData.append('file', $('#file')[0].files[0]);
+
+                $.ajax({
+                    url: "/upload",
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        console.log("success");
+                    }
+                });
+            });
+        });
+    </script>
+    }}}
+
+    {{{<JAVA>
+    @At("/upload")
+    @AdaptBy(type = UploadAdaptor.class, args = {"${app.root}/WEB-INF/tmp"})
+    public void uploadPhoto(@Param("file") File f) {
+        System.out.println(f.getName());
+    }
+    }}}
+
+    其实这就是在画面生成一个 form 对象，然后用 AJAX POST 方式来提交这个 form。是不是一下让你想到远古时期用 js 提交 form 表单的做法呢。
+-------------------------------------------------------------------------------------
 推荐的js插件
 
-	ajax下是不能直接提交带文件的表单的,但良好的用户体验,怎么能不使用ajax上传文件呢?
-	
 	* [http://fex.baidu.com/webuploader/ webuploader] 百毒出品,体验还是不错的
 	* [https://github.com/codler/jQuery-Ajax-Upload jQuery-Ajax-Upload] 老牌ajax上传插件
 	
