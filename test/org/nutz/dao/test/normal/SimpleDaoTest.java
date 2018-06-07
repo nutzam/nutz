@@ -861,7 +861,7 @@ public class SimpleDaoTest extends DaoCase {
     public void test_issue_1235() {
         dao.create(Pet.class, false);
         dao.insert(Pet.create(R.UU32()));
-        List<Record> list = dao.query("t_pet", null, null, "id,name");
+        List<Record> list = dao.query("t_pet", Cnd.where("age", ">", 0), null, "id,name");
         assertNotNull(list);
         assertTrue(list.size() > 0);
         assertEquals(2, list.get(0).size());
@@ -1248,5 +1248,30 @@ public class SimpleDaoTest extends DaoCase {
         sql.setValueAdaptor("name", va);
         dao.execute(sql);
         assertEquals(name, re[0]);
+    }
+    
+    @Test
+    public void test_update_integer() {
+        dao.create(PojoWithInteger.class, true);
+        PojoWithInteger pojo = new PojoWithInteger();
+        pojo.setName("wendal");
+        pojo.setAge(20);
+        pojo.setT(12);
+        dao.insert(pojo);
+        
+        pojo.setT(null);
+        pojo.setAge(30);
+        dao.updateIgnoreNull(pojo);
+        pojo = dao.fetch(PojoWithInteger.class, pojo.getName());
+        assertEquals(30, pojo.getAge());
+        assertEquals(12, pojo.getT().intValue());
+        
+
+        pojo.setT(0);
+        pojo.setAge(31);
+        dao.updateIgnoreNull(pojo);
+        pojo = dao.fetch(PojoWithInteger.class, pojo.getName());
+        assertEquals(31, pojo.getAge());
+        assertEquals(0, pojo.getT().intValue());
     }
 }

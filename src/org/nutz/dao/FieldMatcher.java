@@ -121,7 +121,7 @@ public class FieldMatcher {
     /**
      * 是否忽略零值
      */
-    private Boolean ignoreZero = true;
+    private Boolean ignoreZero;
     /**
      * 是否忽略日期
      */
