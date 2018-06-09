@@ -10,9 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestFailure;
-import junit.framework.TestResult;
-
 import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runner.Request;
@@ -21,6 +18,9 @@ import org.junit.runner.notification.RunListener;
 import org.junit.runner.notification.RunNotifier;
 import org.nutz.lang.Lang;
 import org.nutz.resource.Scans;
+
+import junit.framework.TestFailure;
+import junit.framework.TestResult;
 
 /**
  * 以多种顺序执行TestCase

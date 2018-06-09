@@ -1,9 +1,45 @@
 package org.nutz.dao.test.normal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeMap;
+
+import javax.sql.DataSource;
+
 import org.junit.Test;
 import org.nutz.Nutz;
 import org.nutz.castor.Castors;
-import org.nutz.dao.*;
+import org.nutz.dao.Chain;
+import org.nutz.dao.Cnd;
+import org.nutz.dao.Condition;
+import org.nutz.dao.DB;
+import org.nutz.dao.Dao;
+import org.nutz.dao.DaoException;
+import org.nutz.dao.FieldFilter;
+import org.nutz.dao.FieldMatcher;
+import org.nutz.dao.Sqls;
+import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.Record;
@@ -21,7 +57,23 @@ import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
-import org.nutz.dao.test.meta.*;
+import org.nutz.dao.test.meta.A;
+import org.nutz.dao.test.meta.Abc;
+import org.nutz.dao.test.meta.Base;
+import org.nutz.dao.test.meta.ColDefineUser;
+import org.nutz.dao.test.meta.DynamicTable;
+import org.nutz.dao.test.meta.IssuePkVersion;
+import org.nutz.dao.test.meta.Master;
+import org.nutz.dao.test.meta.Pet;
+import org.nutz.dao.test.meta.PetObj;
+import org.nutz.dao.test.meta.Platoon;
+import org.nutz.dao.test.meta.PojoWithInteger;
+import org.nutz.dao.test.meta.PojoWithNull;
+import org.nutz.dao.test.meta.SimplePOJO;
+import org.nutz.dao.test.meta.Soldier;
+import org.nutz.dao.test.meta.Tank;
+import org.nutz.dao.test.meta.TestMysqlIndex;
+import org.nutz.dao.test.meta.UseBlobClob;
 import org.nutz.dao.test.meta.issue1074.PojoSql;
 import org.nutz.dao.test.meta.issue1163.Issue1163Master;
 import org.nutz.dao.test.meta.issue1163.Issue1163Pet;
@@ -43,7 +95,6 @@ import org.nutz.dao.test.meta.issue928.BeanWithSet;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.blob.SimpleBlob;
 import org.nutz.dao.util.blob.SimpleClob;
-import org.nutz.dao.util.cri.Exps;
 import org.nutz.dao.util.cri.SimpleCriteria;
 import org.nutz.dao.util.meta.SystemUser;
 import org.nutz.dao.util.tables.TablesFilter;
@@ -56,22 +107,6 @@ import org.nutz.lang.random.R;
 import org.nutz.lang.util.NutMap;
 import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
-
-import javax.sql.DataSource;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.*;
-
-import static org.junit.Assert.*;
 
 public class SimpleDaoTest extends DaoCase {
 

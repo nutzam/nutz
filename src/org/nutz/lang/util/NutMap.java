@@ -30,7 +30,12 @@ import org.nutz.lang.born.Borning;
  */
 public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
 
-    public static NutMap WRAP(Map<String, Object> map) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public static NutMap WRAP(Map<String, Object> map) {
         if (null == map)
             return null;
         if (map instanceof NutMap)

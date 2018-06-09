@@ -29,6 +29,5 @@ public interface ClassAgent {
      *            拦截器
      * @return 添加完成后的ClassAgent
      */
-    @SuppressWarnings("SpellCheckingInspection")
     ClassAgent addInterceptor(MethodMatcher matcher, MethodInterceptor inte);
 }

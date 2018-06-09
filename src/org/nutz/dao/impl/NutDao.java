@@ -24,7 +24,6 @@ import org.nutz.dao.entity.EntityMaker;
 import org.nutz.dao.entity.LinkField;
 import org.nutz.dao.entity.LinkVisitor;
 import org.nutz.dao.entity.MappingField;
-import org.nutz.dao.entity.PkType;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.impl.link.DoClearLinkVisitor;
 import org.nutz.dao.impl.link.DoClearRelationByHostFieldLinkVisitor;

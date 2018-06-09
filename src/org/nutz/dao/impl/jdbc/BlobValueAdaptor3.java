@@ -2,11 +2,8 @@ package org.nutz.dao.impl.jdbc;
 
 import java.io.File;
 import java.io.InputStream;
-import java.sql.Blob;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 
 import org.nutz.dao.util.blob.SimpleBlob;
 import org.nutz.filepool.FilePool;
