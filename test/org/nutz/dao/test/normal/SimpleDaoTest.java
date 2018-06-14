@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
@@ -1308,5 +1309,37 @@ public class SimpleDaoTest extends DaoCase {
         pojo = dao.fetch(PojoWithInteger.class, pojo.getName());
         assertEquals(31, pojo.getAge());
         assertEquals(0, pojo.getT().intValue());
+    }
+    
+    @Test
+    public void test_issue_1425() {
+        List<NutMap> maps = new LinkedList<NutMap>();
+        // 第一个对象只有name和alias
+        NutMap map = new NutMap();
+        map.put("name", "wendal");
+        map.put("alias", "XXX");
+        maps.add(map);
+        // 第二个对象只有name和age
+        map = new NutMap();
+        map.put("name", "zozoh");
+        map.put("age", 30);
+        maps.add(map);
+        dao.create(Pet.class, true);
+        
+        // 设置表名
+        maps.get(0).put(".table", "t_pet");
+        // 应该会插入name, alias, age 三个字段
+        dao.fastInsert(maps, true);
+        
+        // 按上述插入
+        // --> wendal的alias应该存在, age不存在
+        Pet wendal = dao.fetch(Pet.class, "wendal");
+        assertEquals("XXX", wendal.getNickName());
+        assertEquals(0, wendal.getAge());
+        
+     // --> wendal的alias应该不存在, age存在
+        Pet zozoh = dao.fetch(Pet.class, "zozoh");
+        assertEquals(null, zozoh.getNickName());
+        assertEquals(30, zozoh.getAge());
     }
 }
