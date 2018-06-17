@@ -207,9 +207,8 @@ Proxool(严重不推荐)
 
 	Java代码的方式:
 		{{{<java>
-		//创建dataSource,以DBCP为例, 代码仅供演示,实际使用的话必须单例或使用DaoUp类(推荐)
-		DataSource ds = new BasicDataSource();
-		ds.setDriverClassName("org.postgresql.Driver");
+		//创建dataSource, 代码仅供演示,实际使用的话必须单例或使用DaoUp类(推荐)
+		SimpleDataSource ds = new SimpleDataSource();
 		ds.setUrl("jdbc:postgresql://localhost:5432/mydatabase");
 		ds.setUsername("demo");
 		ds.setPassword("123456");
