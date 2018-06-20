@@ -35,6 +35,8 @@ public class ActionContext extends SimpleContext {
     private static final String ERROR = "nutz.mvc.error";
 
     public static final String AC_DONE = "nutz.mvc.done";
+    
+    public static final String REFER_OBJECT = "nutz.mvc.refer_object";
 
     /**
      * 获取全局的Ioc对象
@@ -211,6 +213,15 @@ public class ActionContext extends SimpleContext {
     public ActionContext setServletContext(ServletContext sc) {
         this.set(SERVLET_CONTEXT, sc);
         return this;
+    }
+    
+    public ActionContext setReferObject(Object value) {
+        this.set(REFER_OBJECT, value);
+        return this;
+    }
+    
+    public Object getReferObject() {
+        return get(REFER_OBJECT);
     }
 
     public String toString() {

@@ -75,7 +75,7 @@ JsonFormat详解
 	Json.toJson(pet, JsonFormat.full().setQuoteName(false)); // 输出类似 {name:"wendal"}
 	}}}
 	
-	ignoreNull -- 是否忽略控制,默认为false
+	ignoreNull -- 控制是否忽略null值,默认为false
 	
 	{{{<Java>
 	Json.toJson(pet, JsonFormat.full().setIgnoreNull(true)); // null值的key-value将不会输出,但空List还是会的.

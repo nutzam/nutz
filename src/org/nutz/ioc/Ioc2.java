@@ -34,7 +34,7 @@ public interface Ioc2 extends Ioc {
     IocContext getIocContext();
 
     /**
-     * 增加 ValuePfoxyMaker
+     * 增加 ValueProxyMaker
      * 
      * @see org.nutz.ioc.ValueProxy
      * @see org.nutz.ioc.ValueProxyMaker
@@ -46,4 +46,6 @@ public interface Ioc2 extends Ioc {
     <T> T getByType(Class<T> type, IocContext context);
     
     String[] getNamesByAnnotation(Class<? extends Annotation> klass, IocContext context);
+    
+    Class<?> getType(String beanName, IocContext context) throws ObjectLoadException;
 }

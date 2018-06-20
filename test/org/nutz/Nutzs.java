@@ -1,15 +1,15 @@
 package org.nutz;
 
+import static java.lang.String.format;
+
 import java.io.File;
 import java.io.InputStream;
 import java.security.AccessController;
-import java.util.HashMap;
 import java.security.PrivilegedAction;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicLong;
 
-import org.nutz.aop.AbstractClassAgent;
 import org.nutz.aop.ClassDefiner;
 import org.nutz.aop.DefaultClassDefiner;
 import org.nutz.dao.DatabaseMeta;
@@ -20,8 +20,6 @@ import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
-
-import static java.lang.String.*;
 
 public class Nutzs {
 

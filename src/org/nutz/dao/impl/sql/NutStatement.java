@@ -29,13 +29,13 @@ public abstract class NutStatement implements DaoStatement {
 
     private static final long serialVersionUID = 1L;
 
-    private Entity<?> entity;
+    private transient Entity<?> entity;
 
-    private SqlContext context;
+    private transient SqlContext context;
 
     private SqlType sqlType;
     
-    protected JdbcExpert expert;
+    protected transient JdbcExpert expert;
     
     public NutStatement() {
         this.context = new SqlContext();

@@ -256,54 +256,66 @@ public class Tmpl {
             }
             // 否则分析键
             else {
-                Matcher m2 = _P2.matcher(s_match);
-
-                if (!m2.find())
-                    throw Lang.makeThrow("Fail to parse tmpl key '%s'", m.group(1));
-
-                String key = m2.group(1);
-                String type = Strings.sNull(m2.group(3), "string");
-                String fmt = m2.group(5);
-                String dft = m2.group(7);
-
-                // 记录键
-                keys.add(key);
-
-                // 创建元素
-                if ("string".equals(type)) {
-                    list.add(new TmplStringEle(key, fmt, dft));
+                // 如果是 `=` 开头，直接就作为字符串好了
+                // 这个特殊处理，可以用来把占位符和 El 结合起来
+                // 如果想输出一个占位符是 El 表达式，那么写个 = ， 就会被认为是字符串默认保留
+                // 如果渲染的时候，对 key 进行判断，发现是 = 开头的 key，用 El 预先渲染并填入上下文就好了
+                // TODO 这个是不是应该搞一个 TmplElEle 呢？
+                if (s_match.startsWith("=")) {
+                    keys.add(s_match);
+                    list.add(new TmplStringEle(s_match, null, null));
                 }
-                // int
-                else if ("int".equals(type)) {
-                    list.add(new TmplIntEle(key, fmt, dft));
-                }
-                // long
-                else if ("long".equals(type)) {
-                    list.add(new TmplLongEle(key, fmt, dft));
-                }
-                // boolean
-                else if ("boolean".equals(type)) {
-                    list.add(new TmplBooleanEle(key, fmt, dft));
-                }
-                // float
-                else if ("float".equals(type)) {
-                    list.add(new TmplFloatEle(key, fmt, dft));
-                }
-                // double
-                else if ("double".equals(type)) {
-                    list.add(new TmplDoubleEle(key, fmt, dft));
-                }
-                // date
-                else if ("date".equals(type)) {
-                    list.add(new TmplDateEle(key, fmt, dft));
-                }
-                // json
-                else if ("json".equals(type)) {
-                    list.add(new TmplJsonEle(key, fmt, dft));
-                }
-                // 靠不可能
+                // 否则根据占位符语法解析一下
                 else {
-                    throw Lang.impossible();
+                    Matcher m2 = _P2.matcher(s_match);
+
+                    if (!m2.find())
+                        throw Lang.makeThrow("Fail to parse tmpl key '%s'", m.group(1));
+
+                    String key = m2.group(1);
+                    String type = Strings.sNull(m2.group(3), "string");
+                    String fmt = m2.group(5);
+                    String dft = m2.group(7);
+
+                    // 记录键
+                    keys.add(key);
+
+                    // 创建元素
+                    if ("string".equals(type)) {
+                        list.add(new TmplStringEle(key, fmt, dft));
+                    }
+                    // int
+                    else if ("int".equals(type)) {
+                        list.add(new TmplIntEle(key, fmt, dft));
+                    }
+                    // long
+                    else if ("long".equals(type)) {
+                        list.add(new TmplLongEle(key, fmt, dft));
+                    }
+                    // boolean
+                    else if ("boolean".equals(type)) {
+                        list.add(new TmplBooleanEle(key, fmt, dft));
+                    }
+                    // float
+                    else if ("float".equals(type)) {
+                        list.add(new TmplFloatEle(key, fmt, dft));
+                    }
+                    // double
+                    else if ("double".equals(type)) {
+                        list.add(new TmplDoubleEle(key, fmt, dft));
+                    }
+                    // date
+                    else if ("date".equals(type)) {
+                        list.add(new TmplDateEle(key, fmt, dft));
+                    }
+                    // json
+                    else if ("json".equals(type)) {
+                        list.add(new TmplJsonEle(key, fmt, dft));
+                    }
+                    // 靠不可能
+                    else {
+                        throw Lang.impossible();
+                    }
                 }
             }
             // 记录

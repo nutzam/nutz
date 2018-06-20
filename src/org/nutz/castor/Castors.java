@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.nutz.castor.castor.Object2Object;
+import org.nutz.conf.NutConf;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.TypeExtractor;
@@ -455,6 +456,14 @@ public class Castors {
         defaultCastorList.add(org.nutz.castor.castor.Timestamp2SqlTime.class);
         defaultCastorList.add(org.nutz.castor.castor.Timestamp2String.class);
         defaultCastorList.add(org.nutz.castor.castor.String2DateFormat.class);
+        if (NutConf.HAS_LOCAL_DATE_TIME) {
+            defaultCastorList.add(org.nutz.castor.castor.String2LocalDateTime.class);
+            defaultCastorList.add(org.nutz.castor.castor.String2LocalTime.class);
+            defaultCastorList.add(org.nutz.castor.castor.String2LocalDate.class);
+            defaultCastorList.add(org.nutz.castor.castor.LocalDate2String.class);
+            defaultCastorList.add(org.nutz.castor.castor.LocalTime2String.class);
+            defaultCastorList.add(org.nutz.castor.castor.LocalDateTime2String.class);
+        }
     }
 
     private static Castors one = new Castors();

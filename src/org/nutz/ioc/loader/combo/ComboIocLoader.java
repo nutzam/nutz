@@ -184,7 +184,7 @@ public class ComboIocLoader extends AbstractLifeCycle implements IocLoader {
                     continue;
                 try {
                     IocObject iobj = loader.load(loading, name);
-                    if (iobj.getType() != null && klass.getAnnotation(klass) != null)
+                    if (iobj.getType() != null && iobj.getType().getAnnotation(klass) != null)
                         names.add(name);
                 }
                 catch (ObjectLoadException e) {
@@ -226,6 +226,17 @@ public class ComboIocLoader extends AbstractLifeCycle implements IocLoader {
             log.debugf("Found IocObject(%s) in %s", name, printName);
         }
     }
+    
+    public Class<?> getType(IocLoading loading, String beanName) throws ObjectLoadException {
+        for (IocLoader loader : iocLoaders) {
+            if (loader.has(beanName)) {
+                IocObject iobj = loader.load(loading, beanName);
+                if (iobj.getType() != null)
+                    return iobj.getType();
+            }
+        }
+        return null;
+     }
 
     /**
      * 类别名

@@ -11,6 +11,8 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.nutz.lang.util.Regex;
+
 /**
  * 一些时间相关的帮助函数
  * 
@@ -1175,18 +1177,13 @@ public abstract class Times {
      * @return timestamp 时间戳字符串
      */
     public static String sDT2TS(String str, DateFormat df) {
-        String timestamp = null;
-        Date date;
         try {
-            date = df.parse(str);
-            long l = date.getTime();
-            String tmp = String.valueOf(l);
-            timestamp = tmp.substring(0, 10);
+            return "" + (df.parse(str).getTime() / 1000);
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-        return timestamp;
+        return "0";
     }
 
     /**
@@ -1411,7 +1408,7 @@ public abstract class Times {
         reg.append("-?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))");
         reg.append("-?((0?[1-9])|([1-2][0-9])|(30)))|(0?2-?((0?[");
         reg.append("1-9])|(1[0-9])|(2[0-8]))))))");
-        Pattern p = Pattern.compile(reg.toString());
+        Pattern p = Regex.getPattern(reg.toString());
         return p.matcher(date).matches();
     }
 
@@ -1661,7 +1658,7 @@ public abstract class Times {
         if (Lang.isEmpty(date)) {
             return getTS();
         } else {
-            return Long.parseLong(Times.sDT2TS(Times.sDT(date), DF_DATE_TIME));
+            return date.getTime() / 1000;
         }
     }
 }

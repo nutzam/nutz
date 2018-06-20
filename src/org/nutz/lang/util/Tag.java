@@ -58,7 +58,7 @@ public class Tag extends SimpleNode<HtmlToken> {
     }
 
     public boolean isNoChild() {
-        return this.is("^(BR|HR|IMG|LINK|META)$");
+        return this.is("^(BR|HR|IMG|LINK|META|INPUT)$");
     }
 
     public boolean isHeading() {
@@ -376,8 +376,18 @@ public class Tag extends SimpleNode<HtmlToken> {
     }
 
     private static void __join_attributes(StringBuilder sb, Tag tag) {
-        for (Pair<String> attr : tag.get().getAttributes())
-            sb.append(' ').append(attr.toString());
+        for (Pair<String> attr : tag.get().getAttributes()) {
+            String name = attr.getName();
+            String n2 = name.toLowerCase();
+            // 无需 value 节点
+            if (n2.matches("^(disabled|checked)$")) {
+                sb.append(' ').append(name);
+            }
+            // 输出值
+            else {
+                sb.append(' ').append(attr.toString());
+            }
+        }
     }
 
     @SuppressWarnings("rawtypes")

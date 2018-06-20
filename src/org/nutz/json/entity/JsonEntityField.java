@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import org.nutz.json.JsonField;
@@ -134,10 +135,17 @@ public class JsonEntityField {
                 if(jfmirror.isNumber()){
                     jef.dataFormat = new DecimalFormat(dataFormat);
                 }else if(jfmirror.isDateTimeLike()){
-                    jef.dataFormat = new SimpleDateFormat(dataFormat);
-                    if (!Strings.isBlank(jf.timeZone())) {
-                        ((DateFormat)jef.dataFormat).setTimeZone(TimeZone.getTimeZone(jf.timeZone()));
+                    DateFormat df = null;
+                    if (Strings.isBlank(jf.locale())) {
+                        df = new SimpleDateFormat(dataFormat);
                     }
+                    else {
+                        df = new SimpleDateFormat(dataFormat, Locale.forLanguageTag(jf.locale()));
+                    }
+                    if (!Strings.isBlank(jf.timeZone())) {
+                        df.setTimeZone(TimeZone.getTimeZone(jf.timeZone()));
+                    }
+                    jef.dataFormat = df;
                 }
             }
         }
@@ -201,5 +209,13 @@ public class JsonEntityField {
     
     public void setGenericType(Type genericType) {
         this.genericType = ReflectTool.getInheritGenericType(declaringClass, genericType);;
+    }
+    
+    public void setInjecting(Injecting injecting) {
+        this.injecting = injecting;
+    }
+    
+    public void setEjecting(Ejecting ejecting) {
+        this.ejecting = ejecting;
     }
 }

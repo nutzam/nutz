@@ -12,6 +12,7 @@ import org.nutz.repo.Base64;
  * @author wendal(wendal1985@gmail.com)
  *
  */
+
 public class DoBase64 implements RunMethod, Plugin {
 
     public boolean canWork() {

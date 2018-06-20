@@ -107,5 +107,9 @@ public class LRUCache<K, V> {
 	public synchronized List<V> getValues() {
         return new ArrayList<V>(map.values());
     }
+	
+	public void setCacheSize(int cacheSize) {
+        this.cacheSize = cacheSize;
+    }
 
 } // end class LRUCache

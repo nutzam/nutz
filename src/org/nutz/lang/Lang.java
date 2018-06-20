@@ -14,6 +14,7 @@ import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
@@ -59,6 +60,7 @@ import org.nutz.lang.stream.StringWriter;
 import org.nutz.lang.util.Context;
 import org.nutz.lang.util.NutMap;
 import org.nutz.lang.util.NutType;
+import org.nutz.lang.util.Regex;
 import org.nutz.lang.util.SimpleContext;
 
 /**
@@ -2595,8 +2597,8 @@ public abstract class Lang {
         if (source == null || source.isEmpty())
             return dst;
 
-        Pattern includePattern = include == null ? null : Pattern.compile(include);
-        Pattern excludePattern = exclude == null ? null : Pattern.compile(exclude);
+        Pattern includePattern = include == null ? null : Regex.getPattern(include);
+        Pattern excludePattern = exclude == null ? null : Regex.getPattern(exclude);
 
         for (Entry<String, Object> en : source.entrySet()) {
             String key = en.getKey();
@@ -2688,8 +2690,8 @@ public abstract class Lang {
             throw new IllegalArgumentException("origin is null");
         if (target == null)
             throw new IllegalArgumentException("target is null");
-        Pattern at = active == null ? null : Pattern.compile(active);
-        Pattern lo = lock == null ? null : Pattern.compile(lock);
+        Pattern at = active == null ? null : Regex.getPattern(active);
+        Pattern lo = lock == null ? null : Regex.getPattern(lock);
         Mirror<Object> originMirror = Mirror.me(origin);
         Mirror<T> targetMirror = Mirror.me(target);
         Field[] fields = targetMirror.getFields();
@@ -2811,5 +2813,42 @@ public abstract class Lang {
                 return false;
             return ver.contains("-ea");
         }
+        
+        /**
+         * 获取进程id
+         * @param fallback 如果获取失败,返回什么呢?
+         * @return 进程id
+         */
+        public static String getProcessId(final String fallback) {
+            final String jvmName = ManagementFactory.getRuntimeMXBean().getName();
+            final int index = jvmName.indexOf('@');
+            if (index < 1) {
+                return fallback;
+            }
+            try {
+                return Long.toString(Long.parseLong(jvmName.substring(0, index)));
+            }
+            catch (NumberFormatException e) {
+            }
+            return fallback;
+        }
+    }
+    
+    /**
+     * 判断一个对象是否不为空。它支持如下对象类型：
+     * <ul>
+     * <li>null : 一定为空
+     * <li>数组
+     * <li>集合
+     * <li>Map
+     * <li>其他对象 : 一定不为空
+     * </ul>
+     *
+     * @param obj
+     *            任意对象
+     * @return 是否为空
+     */
+    public static boolean isNotEmpty(Object obj) {
+        return !isEmpty(obj);
     }
 }

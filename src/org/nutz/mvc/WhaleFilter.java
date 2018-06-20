@@ -29,6 +29,7 @@ import org.nutz.filepool.UU32FilePool;
 import org.nutz.lang.Each;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.Strings;
 import org.nutz.lang.util.NutMap;
 import org.nutz.log.LogAdapter;
 import org.nutz.log.Logs;
@@ -57,6 +58,13 @@ public class WhaleFilter implements Filter {
         sc = c.getServletContext();
         _me = this;
         try {
+            Enumeration<String> keys = c.getInitParameterNames();
+            while (keys.hasMoreElements()) {
+                String key = keys.nextElement();
+                String value = c.getInitParameter(key);
+                if (!Strings.isBlank(value) && !"null".equals(value))
+                    props.put(key, c.getInitParameter(key));
+            }
             String path = c.getInitParameter("config-file");
             if (path != null) {
                 InputStream ins = getClass().getClassLoader().getResourceAsStream(path);
@@ -71,6 +79,9 @@ public class WhaleFilter implements Filter {
                 if (config != null) {
                     init(new ByteArrayInputStream(config.getBytes()));
                 }
+                else {
+                    init((InputStream)null);
+                }
             }
         }
         catch (Exception e) {
@@ -79,8 +90,9 @@ public class WhaleFilter implements Filter {
     }
     
     public void init(InputStream ins) throws Exception {
-        props.load(ins);
-        if (props.contains("log.adapter")) {
+        if (ins != null)
+            props.load(ins);
+        if (props.containsKey("log.adapter")) {
             LogAdapter la = (LogAdapter) Class.forName(props.getProperty("log.adapter")).newInstance();
             Logs.setAdapter(la);
         }

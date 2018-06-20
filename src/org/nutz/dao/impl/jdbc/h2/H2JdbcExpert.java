@@ -45,4 +45,7 @@ public class H2JdbcExpert extends PsqlJdbcExpert {
         }
         return names;
     }
+
+    public void checkDataSource(Connection conn) throws SQLException {
+    }
 }

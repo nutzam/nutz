@@ -534,4 +534,11 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     public Cnd clone() {
         return Lang.fromBytes(Lang.toBytes(this),Cnd.class);
     }
+    
+    /**
+     * 仅拷贝where条件, 不拷贝排序/分组/分页
+     */
+    public Cnd cloneWhere() {
+        return Cnd.where(this.cri.where().clone());
+    }
 }

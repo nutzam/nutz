@@ -1,7 +1,10 @@
 package org.nutz.ioc.impl;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.List;
 
+import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,5 +60,23 @@ public class PropertiesProxyTest {
     public void testSize() {
         Assert.assertEquals(pp.getKeys().size(), 4);
         Assert.assertEquals(pp.getValues().size(), 4);
+    }
+
+
+    @Test
+    public void testPrefix() throws Exception {
+
+        PropertiesProxy proxy = new PropertiesProxy(true, "config/prefix.properties");
+
+        assertPrefix(proxy, "test");
+        assertPrefix(proxy, "test.");
+
+
+
+    }
+
+    private void assertPrefix(PropertiesProxy proxy, String prefix) {
+        List<String> prefixedKeys = proxy.getKeysWithPrefix(prefix);
+        Assert.assertThat(prefixedKeys, Is.is(Arrays.asList("test.p1", "test.p2")));
     }
 }

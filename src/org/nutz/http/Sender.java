@@ -1,7 +1,6 @@
 package org.nutz.http;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,9 +24,7 @@ import java.util.zip.InflaterInputStream;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
-import org.nutz.http.sender.FilePostSender;
-import org.nutz.http.sender.GetSender;
-import org.nutz.http.sender.PostSender;
+import org.nutz.http.sender.DefaultSenderFactory;
 import org.nutz.lang.Lang;
 import org.nutz.lang.stream.VoidInputStream;
 import org.nutz.lang.util.Callback;
@@ -60,16 +57,7 @@ public abstract class Sender implements Callable<Response> {
     }
 
     public static Sender create(Request request) {
-        if (request.isGet() || request.isDelete())
-            return new GetSender(request);
-        if ((request.isPost() || request.isPut()) && request.getParams() != null) {
-            for (Object val : request.getParams().values()) {
-                if (val instanceof File || val instanceof File[]) {
-                    return new FilePostSender(request);
-                }
-            }
-        }
-        return new PostSender(request);
+        return factory.create(request);
     }
 
     public static Sender create(Request request, int timeout) {
@@ -77,25 +65,27 @@ public abstract class Sender implements Callable<Response> {
     }
 
     protected Request request;
-    
+
     private int connTimeout;
 
     private int timeout;
 
     protected HttpURLConnection conn;
-    
+
     protected HttpReqRespInterceptor interceptor = new Cookie();
-    
+
     protected Callback<Response> callback;
-    
+
     protected boolean followRedirects = true;
-    
+
     protected SSLSocketFactory sslSocketFactory;
+
+    protected Proxy proxy;
 
     protected Sender(Request request) {
         this.request = request;
     }
-    
+
     protected Callback<Integer> progressListener;
 
     public abstract Response send() throws HttpException;
@@ -104,18 +94,12 @@ public abstract class Sender implements Callable<Response> {
         Response rep = null;
         if (reHeaders != null) {
             rep = new Response(conn, reHeaders);
+            String encoding = conn.getContentEncoding();
             if (rep.isOK()) {
                 InputStream is1 = conn.getInputStream();
                 InputStream is2 = null;
-                String encoding = conn.getContentEncoding();
                 // 如果采用了压缩,则需要处理否则都是乱码
-                if (encoding != null && encoding.contains("gzip")) {
-                    is2 = new GZIPInputStream(is1);
-                } else if (encoding != null && encoding.contains("deflate")) {
-                    is2 = new InflaterInputStream(is1, new Inflater(true));
-                } else {
-                    is2 = is1;
-                }
+                is2 = detectStreamEncode(encoding, is1);
 
                 BufferedInputStream is = new BufferedInputStream(is2);
                 rep.setStream(is);
@@ -123,11 +107,11 @@ public abstract class Sender implements Callable<Response> {
 
             else {
                 try {
-                    rep.setStream(conn.getInputStream());
+                    rep.setStream(detectStreamEncode(encoding, conn.getInputStream()));
                 }
                 catch (IOException e) {
                     try {
-                        rep.setStream(conn.getErrorStream());
+                        rep.setStream(detectStreamEncode(encoding, conn.getErrorStream()));
                     }
                     catch (Exception e1) {
                         rep.setStream(new VoidInputStream());
@@ -138,6 +122,16 @@ public abstract class Sender implements Callable<Response> {
         if (this.interceptor != null)
             this.interceptor.afterResponse(request, conn, rep);
         return rep;
+    }
+
+    protected InputStream detectStreamEncode(String encoding, InputStream ins) throws IOException {
+        if (encoding != null && encoding.contains("gzip")) {
+            return new GZIPInputStream(ins);
+        } else if (encoding != null && encoding.contains("deflate")) {
+            return new InflaterInputStream(ins, new Inflater(true));
+        } else {
+            return ins;
+        }
     }
 
     protected Map<String, String> getResponseHeader() throws IOException {
@@ -160,36 +154,36 @@ public abstract class Sender implements Callable<Response> {
     protected void openConnection() throws IOException {
         if (this.interceptor != null)
             this.interceptor.beforeConnect(request);
-        ProxySwitcher proxySwitcher = Http.proxySwitcher;
+        Proxy proxy = this.proxy;
+        if (proxy == null && Http.proxySwitcher != null) {
+            proxy = Http.proxySwitcher.getProxy(request);
+        }
         int connTime = connTimeout > 0 ? connTimeout : Default_Conn_Timeout;
-        if (proxySwitcher != null) {
+        if (proxy != null) {
             try {
-                Proxy proxy = proxySwitcher.getProxy(request);
-                if (proxy != null) {
-                    if (Http.autoSwitch) {
-                        Socket socket = null;
-                        try {
-                            socket = new Socket();
-                            socket.connect(proxy.address(), connTime); //5 * 1000
-                            OutputStream out = socket.getOutputStream();
-                            out.write('\n');
-                            out.flush();
-                        }
-                        finally {
-                            if (socket != null)
-                                socket.close();
-                        }
+                if (Http.autoSwitch) {
+                    Socket socket = null;
+                    try {
+                        socket = new Socket();
+                        socket.connect(proxy.address(), connTime); // 5 * 1000
+                        OutputStream out = socket.getOutputStream();
+                        out.write('\n');
+                        out.flush();
                     }
-                    log.debug("connect via proxy : " + proxy + " for " + request.getUrl());
-                    conn = (HttpURLConnection) request.getUrl().openConnection(proxy);
-                    conn.setConnectTimeout(connTime);
-                    conn.setInstanceFollowRedirects(followRedirects);
-                    if (timeout > 0)
-                        conn.setReadTimeout(timeout);
-                    else
-                        conn.setReadTimeout(Default_Read_Timeout);
-                    return;
+                    finally {
+                        if (socket != null)
+                            socket.close();
+                    }
                 }
+                log.debug("connect via proxy : " + proxy + " for " + request.getUrl());
+                conn = (HttpURLConnection) request.getUrl().openConnection(proxy);
+                conn.setConnectTimeout(connTime);
+                conn.setInstanceFollowRedirects(followRedirects);
+                if (timeout > 0)
+                    conn.setReadTimeout(timeout);
+                else
+                    conn.setReadTimeout(Default_Read_Timeout);
+                return;
             }
             catch (IOException e) {
                 if (!Http.autoSwitch) {
@@ -203,9 +197,9 @@ public abstract class Sender implements Callable<Response> {
         conn = (HttpURLConnection) url.openConnection();
         if (conn instanceof HttpsURLConnection) {
             if (sslSocketFactory != null)
-                ((HttpsURLConnection)conn).setSSLSocketFactory(sslSocketFactory);
+                ((HttpsURLConnection) conn).setSSLSocketFactory(sslSocketFactory);
             else if (Http.sslSocketFactory != null)
-                ((HttpsURLConnection)conn).setSSLSocketFactory(Http.sslSocketFactory);
+                ((HttpsURLConnection) conn).setSSLSocketFactory(Http.sslSocketFactory);
         }
         if (!Lang.isIPv4Address(host)) {
             if (url.getPort() > 0 && url.getPort() != 80)
@@ -214,9 +208,9 @@ public abstract class Sender implements Callable<Response> {
         }
         conn.setConnectTimeout(connTime);
         if (request.getMethodString() == null)
-        	conn.setRequestMethod(request.getMethod().name());
+            conn.setRequestMethod(request.getMethod().name());
         else
-        	conn.setRequestMethod(request.getMethodString());
+            conn.setRequestMethod(request.getMethodString());
         if (timeout > 0)
             conn.setReadTimeout(timeout);
         else
@@ -241,12 +235,12 @@ public abstract class Sender implements Callable<Response> {
     public int getTimeout() {
         return timeout;
     }
-    
+
     public Sender setConnTimeout(int connTimeout) {
         this.connTimeout = connTimeout;
         return this;
     }
-    
+
     public int getConnTimeout() {
         return connTimeout;
     }
@@ -255,28 +249,28 @@ public abstract class Sender implements Callable<Response> {
         this.interceptor = interceptor;
         return this;
     }
-    
+
     public Sender setCallback(Callback<Response> callback) {
         this.callback = callback;
         return this;
     }
-    
+
     public Response call() throws Exception {
         Response resp = send();
         if (callback != null)
             callback.invoke(resp);
         return resp;
     }
-    
+
     public Future<Response> send(Callback<Response> callback) throws HttpException {
         if (es == null)
             throw new IllegalStateException("Sender ExecutorService is null, Call setup first");
         this.callback = callback;
         return es.submit(this);
     }
-    
+
     protected static ExecutorService es;
-    
+
     public static ExecutorService setup(ExecutorService es) {
         if (Sender.es != null)
             shutdown();
@@ -285,7 +279,7 @@ public abstract class Sender implements Callable<Response> {
         Sender.es = es;
         return es;
     }
-    
+
     public static List<Runnable> shutdown() {
         ExecutorService _es = es;
         es = null;
@@ -293,22 +287,23 @@ public abstract class Sender implements Callable<Response> {
             return null;
         return _es.shutdownNow();
     }
-    
+
     public static ExecutorService getExecutorService() {
         return es;
     }
-    
+
     public Sender setFollowRedirects(boolean followRedirects) {
         this.followRedirects = followRedirects;
         return this;
     }
-    
+
     protected OutputStream getOutputStream() throws IOException {
         OutputStream out = conn.getOutputStream();
         if (progressListener == null)
             return out;
         return new FilterOutputStream(out) {
             int count;
+
             public void write(byte[] b, int off, int len) throws IOException {
                 super.write(b, off, len);
                 count += len;
@@ -316,17 +311,29 @@ public abstract class Sender implements Callable<Response> {
             }
         };
     }
-    
+
     public int getEstimationSize() throws IOException {
         return 0;
     }
-    
+
     public Sender setProgressListener(Callback<Integer> progressListener) {
         this.progressListener = progressListener;
         return this;
     }
-    
-    public void setSSLSocketFactory(SSLSocketFactory sslSocketFactory) {
+
+    public Sender setSSLSocketFactory(SSLSocketFactory sslSocketFactory) {
         this.sslSocketFactory = sslSocketFactory;
+        return this;
+    }
+
+    public Sender setProxy(Proxy proxy) {
+        this.proxy = proxy;
+        return this;
+    }
+
+    protected static SenderFactory factory = new DefaultSenderFactory();
+
+    public static void setFactory(SenderFactory factory) {
+        Sender.factory = factory;
     }
 }

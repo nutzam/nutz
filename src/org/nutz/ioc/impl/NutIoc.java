@@ -11,6 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.nutz.ioc.Ioc;
 import org.nutz.ioc.Ioc2;
 import org.nutz.ioc.IocContext;
 import org.nutz.ioc.IocEventListener;
@@ -18,6 +19,7 @@ import org.nutz.ioc.IocException;
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.IocLoading;
 import org.nutz.ioc.IocMaking;
+import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.ObjectMaker;
 import org.nutz.ioc.ObjectProxy;
 import org.nutz.ioc.ValueProxyMaker;
@@ -354,7 +356,7 @@ public class NutIoc implements Ioc2 {
 
     @Override
     public String toString() {
-        return "/*NutIoc*/\n{\nloader:" + loader + ",\n}";
+        return "/*NutIoc count=" + loader.getName().length + "*/";
     }
 
     @Override
@@ -386,7 +388,13 @@ public class NutIoc implements Ioc2 {
             if (op.getObj() != null && klass.isAssignableFrom(op.getObj().getClass()))
                 names.add(name);
         }
-        return new LinkedHashSet<String>(names).toArray(new String[names.size()]);
+        LinkedHashSet<String> re = new LinkedHashSet<String>();
+        for (String name : names) {
+            if (Strings.isBlank(name) || "null".equals(name))
+                continue;
+            re.add(name);
+        }
+        return re.toArray(new String[re.size()]);
     }
     
     public String[] getNamesByAnnotation(Class<? extends Annotation> klass) {
@@ -405,7 +413,13 @@ public class NutIoc implements Ioc2 {
             if (op.getObj() != null && klass.getAnnotation(klass) != null)
                 names.add(name);
         }
-        return new LinkedHashSet<String>(names).toArray(new String[names.size()]);
+        LinkedHashSet<String> re = new LinkedHashSet<String>();
+        for (String name : names) {
+            if (Strings.isBlank(name) || "null".equals(name))
+                continue;
+            re.add(name);
+        }
+        return re.toArray(new String[re.size()]);
     }
 
     public <K> K getByType(Class<K> klass) {
@@ -464,5 +478,33 @@ public class NutIoc implements Ioc2 {
             });
         }
         this.listeners = listeners;
+    }
+
+    public Ioc addBean(String name, Object obj) {
+        if (obj == null)
+            throw new RuntimeException("can't add bean=null!!");
+        if (Strings.isBlank(name))
+            throw new RuntimeException("can't add bean name is blank!!");
+        if (obj instanceof ObjectProxy)
+            getIocContext().save("app", name, (ObjectProxy)obj);
+        else
+            getIocContext().save("app", name, new ObjectProxy(obj));
+        return this;
+    }
+    
+    public Class<?> getType(String beanName) throws ObjectLoadException {
+        return getType(beanName, null);
+    }
+    
+    public Class<?> getType(String beanName, IocContext context) throws ObjectLoadException {
+        IocContext cntx;
+        if (null == context || context == this.context)
+            cntx = this.context;
+        else
+            cntx = new ComboContext(context, this.context);
+        ObjectProxy op = cntx.fetch(beanName);
+        if (op != null && op.getObj() != null)
+            return op.getObj().getClass();
+        return loader.getType(createLoading(), beanName);
     }
 }

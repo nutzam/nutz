@@ -2,6 +2,9 @@ package org.nutz.castor;
 
 import java.io.File;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -506,5 +509,30 @@ public class CastorTest {
                             Castors.create().castTo("StatusSync", AlipayNotifyType.class));
         Assert.assertEquals(AlipayNotifyType.StatusSync,
                             Castors.create().castTo("trade_status_sync", AlipayNotifyType.class));
+    }
+    
+    @Test
+    public void test_locale_date_time() {
+        {
+            LocalDateTime dt = Castors.me().castTo("2018-02-20 21:11:51", LocalDateTime.class);
+            String tmp = Castors.me().castToString(dt);
+            LocalDateTime dt2 = Castors.me().castTo(tmp, LocalDateTime.class);
+            assertEquals(dt, dt2);
+            System.out.println(tmp);
+        }
+        {
+            LocalTime dt = LocalTime.now();
+            String tmp = Castors.me().castToString(dt);
+            LocalTime dt2 = Castors.me().castTo(tmp, LocalTime.class);
+            assertEquals(dt, dt2);
+            System.out.println(tmp);
+        }
+        {
+            LocalDate dt = LocalDate.now();
+            String tmp = Castors.me().castToString(dt);
+            LocalDate dt2 = Castors.me().castTo(tmp, LocalDate.class);
+            assertEquals(dt, dt2);
+            System.out.println(tmp);
+        }
     }
 }

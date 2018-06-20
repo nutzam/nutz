@@ -418,7 +418,7 @@ Raw视图
 	|| @Ok("raw:html")   || 等价于@Ok("raw:text/html"); ||
 	|| @Ok("raw:htm")    || 等价于@Ok("raw:text/html"); ||
 	|| @Ok("raw:stream") || 等价于@Ok("raw:application/octet-stream"); ||
-	|| @Ok("raw:json")   || 等价于@Ok("raw:application/x-javascript"); ||
+	|| @Ok("raw:json")   || 等价于@Ok("raw:application/json"); ||
 	|| @Ok("raw:js")     || 等价于@Ok("raw:application/x-javascript"); ||
 	|| @Ok("raw:jpg")     || 等价于@Ok("raw:image/jpeg"); ||
 	|| @Ok("raw:png")     || 等价于@Ok("raw:image/png"); ||

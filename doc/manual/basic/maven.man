@@ -10,7 +10,7 @@ Nutz核心jar
 	<dependency>
 		<groupId>org.nutz</groupId>
 		<artifactId>nutz</artifactId>
-		<version>1.r.63.r2</version>
+		<version>1.r.65</version>
 	</dependency>
 	}}}
 	
@@ -40,13 +40,13 @@ Nutz核心jar
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.r.63.r2</version>
+			<version>1.r.65</version>
 		</dependency>
 		<!-- mysql驱动 -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.40</version>
+			<version>5.1.44</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>

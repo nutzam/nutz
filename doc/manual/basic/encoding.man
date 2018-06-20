@@ -30,13 +30,13 @@ JSP页面编码
 --------------------------------------------------------------------------------------------------------
 tomcat编码
 
-	打开 tomcat安装目录下的 bin\setenv.bat ,该文件通常不存在,新建之, 添加如下内容
+	打开 tomcat安装目录下的 `bin\setenv.bat` ,该文件通常不存在,新建之, 添加如下内容
 	
 	{{{
 	set JAVA_OPTS=-Dfile.encoding=UTF-8
 	}}}
 	
-	打开conf\server.conf, 在8080端口所属的Connector节点,添加URIEncoding,可解决大部分GET请求中文乱码的问题
+	打开`conf\server.xml`, 在8080端口所属的Connector节点,添加URIEncoding,可解决大部分GET请求中文乱码的问题
 	
 	{{{
 	URIEncoding="UTF-8"

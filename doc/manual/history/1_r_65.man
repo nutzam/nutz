@@ -1,0 +1,64 @@
+#title: 1.r.65 发行注记
+#index: 0,1
+#author: 胖五(pangwu86@gmail.com)
+    
+--------------------------------------------------------------------------------------------------------
+1.r.65 {*怪物猎人} 发行注记(20180128)
+    
+    <../imgs/1r65.png>
+    
+    2018已经过了快1个月，各位同学的年度总结是不是也写好了。
+        
+    回顾2017，来看看Nutz都做了哪些事情：
+      * Nutz核心包发布了共4个版本，名字都是某位广东人喜欢的水果
+      * NutzBoot项目立项且发布，直接窜上2.0
+      * NutzCloud项目立项且发布，没错就在NB的2.1版本中
+      * Nutz官网更新了一版，满足了PC与手机端访问
+            
+    
+    总的来说相比前两年还是做了一些新东西出来，当然这也包括了一些尚未公开的项目。
+            
+    就在一周前，Nutz核心组的几名成员相聚长沙黄兴路步行街的金拱门餐厅，在一边吃薯条一边喝可乐的愉悦氛围下定下了2018年的目标，可以告诉大家的是“今年会有很多有趣的事情”要发生，至于具体内容将在春节前后给出答案。总的来说我们希望Nutz越来越有范，除了代码写的好其他方面也要跟上时代进步。
+                
+    就在本周PS4游戏《怪物猎人 世界》正式发售了，伴着勇气之证的BGM，猎人们再次集结起来加入狩猎古龙。
+            
+    很喜欢这种多人组队做任务的设定，所以也希望Nutz社区在今年变得更加有趣，让更多的Nutz猎人加入进来，跟我们一起来狩猎2018。
+                
+
+---------------------------------------------------------------------------------------------------------
+主要变化
+          
+    距离上次发布仅一个月，内容主要是小Feature和Bug修改，请放心升级
+      * add: 坐标点旋转计算方法
+      * add: Ioc接口添加addBean方法
+      * add: 增加web环境下 国际化 相关帮助函数
+      * add: Mvcs增加辅助函数直接取得国际化信息配合NutzCodeInsight实现国际化配置代码折叠提示
+      * add: 通过Daos辅助函数自动创建表时,对不需要自动创建得表进行过滤的功能
+      * add: Times.d2TS(Date日期转Unix时间戳)
+      * add: 添加两个老的scanModuleInPackage和isModule方法,兼容老代码
+      * add: Aop类与NutIoc容器一对一绑定的功能,但默认禁用
+      * add: 根据类上的注解获取ioc对象的name列表
+      * add: CrossOriginFilter添加X-Requested-With,与jetty的CrossOriginFilter一致
+      * fix: countByJoin没做对
+      * fix: Json.fromJson 处理date类型时区的问题
+      * fix: queryByJoin要进行分页查询的时候dao.count没有关联查询的方法
+      * fix: Column不支持@Index 
+      * fix: boot文档里面有链接错误
+      * fix: map.entrySet() 得到的对象无法 Json.toJson
+      * fix: 建表的时候, 如果某个类报错, 应该继续建其他类,最后再抛出异常
+      * fix: JsonAopConfigrationTest失败
+      * fix: 为NutTxDao添加个testcase
+      * fix: 容忍非法转义,可配置
+      * fix: AndOpt和OrOpt，修改强制类型转换时，没有考虑右值的问题
+      * fix: Jdbcs.guess方法有NPE的可能性
+      * fix: https://gitee.com/nutz/nutz/issues/IHHHK
+      
+              
+    还有就是发行注记改由胖五负责，并配上题图
+
+--------------------------------------------------------------------------------------------------------
+详细列表
+ 
+    * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.65 Issue@github]
+    * 欢迎访问[https://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
+    * [https://nutz.cn Nutz社区]已经累计了6000多帖子, 30000+条回复,平均回复时间少于10分钟哦,白天基本上秒回!

@@ -349,6 +349,13 @@ public abstract class Sqls {
         public SqlCallback maps() {
         	return QueryMapCallback.me;
         }
+
+        /**
+         * @return 从 ResultSet 获得一个blob的回调对象
+         */
+        public SqlCallback blob() {
+            return new FetchBlobCallback();
+        }
     }
 
     /**

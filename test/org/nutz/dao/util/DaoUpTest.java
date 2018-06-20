@@ -479,7 +479,7 @@ password=root
         assertNotNull(rootTeam.getJobs());
         assertEquals(15, rootTeam.getJobs().size());
         
-        // 移除前11个任务的引用
+        // 移除前11个任务的引用, 在下面的deleteLinks执行的时候, 它们就会幸免于难
         for (int i = 0; i < 11; i++) {
             rootTeam.getJobs().remove(0);
         }

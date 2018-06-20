@@ -11,6 +11,7 @@ import org.nutz.ioc.val.StaticValue;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.meta.Pair;
+import org.nutz.lang.util.Regex;
 
 /**
  * @author zozoh(zozohtnt@gmail.com)
@@ -23,7 +24,7 @@ public abstract class Iocs {
 
     public static boolean isIocObject(Map<String, ?> map) {
         for (Entry<String, ?> en : map.entrySet())
-            if (!en.getKey().matches(OBJFIELDS))
+            if (!Regex.match(OBJFIELDS, en.getKey()))
                 return false;
         return true;
     }
@@ -55,7 +56,7 @@ public abstract class Iocs {
         if (me.getType() == null)
             me.setType(it.getType());
 
-        // don't need merge signleon
+        // don't need merge singleton
 
         // merge events
         if (me.getEvents() == null) {

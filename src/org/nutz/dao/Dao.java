@@ -164,6 +164,8 @@ public interface Dao {
      * 
      */
     <T> T fastInsert(T obj);
+    
+    <T> T fastInsert(T obj, boolean detectAllColumns);
 
     /**
      * 将对象插入数据库同时，也将符合一个正则表达式的所有关联字段关联的对象统统插入相应的数据库
@@ -1202,6 +1204,8 @@ public interface Dao {
      * @return 实体对象的列表,符合regex的关联属性也会取出
      */
     <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd, Pager pager);
+    
+    <T> int countByJoin(Class<T> classOfT, String regex, Condition cnd);
     
     EntityHolder getEntityHolder();
     

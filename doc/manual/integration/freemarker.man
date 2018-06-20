@@ -13,7 +13,7 @@
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz-plugins-views</artifactId>
-			<version>1.r.60</version>
+			<version>1.r.65</version>
 		</dependency>
 	}}}
 	
@@ -23,7 +23,7 @@
 修改MainModule类,添加引用
 
 	{{{<JAVA>
-	@Views(value={FreeMarkerViewMaker.class})
+	@Views(value={FreemarkerViewMaker.class})
 	// 其他配置,如IocBy等等
 	public class MainModule {}
 	}}}

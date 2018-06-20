@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -43,13 +42,18 @@ public class NutSql extends NutStatement implements Sql {
     protected Map<String, ValueAdaptor> customValueAdaptor;
     protected List<PItem> items;
     protected char[] placeholder;
+    
+    public NutSql() {
+        this(null, null);
+    }
 
     public NutSql(String source) {
         this(source, null);
     }
 
     public NutSql(String source, SqlCallback callback) {
-        this.setSourceSql(source);
+        if (source != null)
+            this.setSourceSql(source);
         this.callback = callback;
         this.vars = new SimpleVarSet();
         this.rows = new ArrayList<VarSet>();
@@ -59,7 +63,7 @@ public class NutSql extends NutStatement implements Sql {
     }
 
     public void setSourceSql(String sql) {
-        this.sourceSql = sql;
+        this.sourceSql = sql.trim();
         SqlLiteral literal = literal();
         this.varIndex = literal.getVarIndexes();
         this.paramIndex = literal.getParamIndexes();
@@ -83,12 +87,13 @@ public class NutSql extends NutStatement implements Sql {
                 }
             }
         }
+        this.items = new ArrayList<PItem>();
         for (int i = 0; i < tmp.length; i++) {
             if (tmp[i] == null) {
                 tmp[i] = new StaticPItem(ss[i], true);
             }
+            items.add(tmp[i]);
         }
-        this.items = Arrays.asList(tmp);
     }
 
     protected int _params_count() {

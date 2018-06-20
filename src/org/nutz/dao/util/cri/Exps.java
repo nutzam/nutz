@@ -53,9 +53,17 @@ public abstract class Exps {
     public static IntRange inInt(String name, int... ids) {
         return new IntRange(name, ids);
     }
+    
+    public static IntRange inInt(String name, Integer[] ids) {
+    	return new IntRange(name, ids);
+    }
 
     public static LongRange inLong(String name, long... ids) {
         return new LongRange(name, ids);
+    }
+    
+    public static LongRange inLong(String name, Long[] ids) {
+    	return new LongRange(name, ids);
     }
 
     public static NameRange inStr(String name, String... names) {
@@ -95,7 +103,7 @@ public abstract class Exps {
             Class<?> type = value.getClass();
             SqlExpression re;
             int len = Lang.eleSize(value);
-            if (len < 1) { // 如果空数组/空集合,则返回 @sinec 1.r.57
+            if (len < 1) { // 如果空数组/空集合,则返回 @since 1.r.57
                 re = new Static("1 != 1");
             }
             // 数组

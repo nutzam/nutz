@@ -12,7 +12,12 @@ public class String2Integer extends String2Number<Integer> {
     @Override
     protected Integer valueOf(String str) {
         Nums.Radix ni = Nums.evalRadix(str);
-        return Integer.valueOf(ni.val, ni.radix);
+        try {
+            return Integer.valueOf(ni.val, ni.radix);
+        }
+        catch (NumberFormatException e) {
+            return Integer.valueOf(str);
+        }
     }
 
 }

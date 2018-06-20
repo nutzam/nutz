@@ -9,6 +9,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -44,10 +45,10 @@ import org.nutz.lang.util.Callback3;
  * @param <T>
  */
 public class Mirror<T> {
-    
+
     @SuppressWarnings("rawtypes")
     static Map<Type, Mirror> mirrorCache = new HashMap<Type, Mirror>();
-    
+
     protected BornContext<T> emtryArgsBornContext;
 
     private static class DefaultTypeExtractor implements TypeExtractor {
@@ -318,8 +319,7 @@ public class Mirror<T> {
             getter = method;
             // 寻找 setter
             try {
-                setter = method.getDeclaringClass().getMethod("set"
-                                                              + Strings.upperFirst(name),
+                setter = method.getDeclaringClass().getMethod("set" + Strings.upperFirst(name),
                                                               method.getReturnType());
             }
             catch (Exception e) {}
@@ -333,8 +333,7 @@ public class Mirror<T> {
             getter = method;
             // 寻找 setter
             try {
-                setter = method.getDeclaringClass().getMethod("set"
-                                                              + Strings.upperFirst(name),
+                setter = method.getDeclaringClass().getMethod("set" + Strings.upperFirst(name),
                                                               method.getReturnType());
             }
             catch (Exception e) {}
@@ -526,13 +525,28 @@ public class Mirror<T> {
     }
 
     /**
-     * 获得当前类以及所有父类的所有的属性，包括私有属性。 <br>
+     * 获得当前类以及所有父类的所有的属性，包括私有属性，但不包括 final和static 属性 <br>
      * 但是父类不包括 Object 类，并且，如果子类的属性如果与父类重名，将会将其覆盖
      * 
      * @return 属性列表
      */
     public Field[] getFields() {
         return _getFields(true, false, true, true);
+    }
+
+    /**
+     * 获得当前类以及所有父类的所有的属性，包括私有属性。 <br>
+     * 但是父类不包括 Object 类，并且，如果子类的属性如果与父类重名，将会将其覆盖
+     * 
+     * @param noStatic
+     *            返回的列表中是否包括 static 标记的属性, true: 不包括。false:包括
+     * 
+     * @param noFinal
+     *            返回的列表中是否包括 final 标记的属性, true: 不包括。false:包括
+     * @return 属性列表
+     */
+    public Field[] getFields(boolean noStatic, boolean noFinal) {
+        return _getFields(noStatic, false, noFinal, true);
     }
 
     /**
@@ -591,7 +605,7 @@ public class Mirror<T> {
         do {
             ann = cc.getAnnotation(annType);
             cc = cc.getSuperclass();
-        } while (null == ann && cc != Object.class);
+        } while (null == ann && null != cc && cc != Object.class);
         return ann;
     }
 
@@ -826,14 +840,13 @@ public class Mirror<T> {
                         return Lang.eleSize(obj);
                     }
                     if (obj instanceof Map) {
-                        return ((Map)obj).get(name);
+                        return ((Map) obj).get(name);
                     }
                     if (obj instanceof List) {
                         try {
-                            return ((List)obj).get(Integer.parseInt(name));
+                            return ((List) obj).get(Integer.parseInt(name));
                         }
-                        catch (Exception e2) {
-                        }
+                        catch (Exception e2) {}
                     }
                 }
                 throw makeGetValueException(obj == null ? getType() : obj.getClass(), name, e);
@@ -1001,8 +1014,7 @@ public class Mirror<T> {
             if (emtryArgsBornContext == null)
                 emtryArgsBornContext = Borns.eval(klass, args);
             bc = emtryArgsBornContext;
-        }
-        else
+        } else
             bc = Borns.eval(klass, args);
         if (null == bc)
             throw new BorningException(klass, args);
@@ -1146,7 +1158,8 @@ public class Mirror<T> {
      * @param paramTypes
      *            参数类型列表
      * @return 方法
-     * @throws NoSuchMethodException 找不到合适方法时抛出
+     * @throws NoSuchMethodException
+     *             找不到合适方法时抛出
      */
     public Method findMethod(String name, Class<?>... paramTypes) throws NoSuchMethodException {
         try {
@@ -1210,7 +1223,8 @@ public class Mirror<T> {
      * @param paramTypes
      *            参数个数
      * @return 方法
-     * @throws NoSuchMethodException 找不到合适的方法时抛出
+     * @throws NoSuchMethodException
+     *             找不到合适的方法时抛出
      */
     public Method findMethod(Class<?> returnType, Class<?>... paramTypes)
             throws NoSuchMethodException {
@@ -1457,7 +1471,7 @@ public class Mirror<T> {
     }
 
     /**
-     * @return 当前对象是否为小数 (float, dobule)
+     * @return 当前对象是否为小数 (float, double)
      */
     public boolean isDecimal() {
         return isFloat() || isDouble();
@@ -1615,6 +1629,15 @@ public class Mirror<T> {
                || java.util.Date.class.isAssignableFrom(klass)
                || java.sql.Date.class.isAssignableFrom(klass)
                || java.sql.Time.class.isAssignableFrom(klass);
+    }
+    
+    public boolean isLocalDateTimeLike() {
+        try {
+            return NutConf.HAS_LOCAL_DATE_TIME && TemporalAccessor.class.isAssignableFrom(klass);
+        }
+        catch (Exception e) {
+            return false;
+        }
     }
 
     public String toString() {
@@ -1860,9 +1883,9 @@ public class Mirror<T> {
         return false;
     }
 
-
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static <T extends Annotation> T getAnnotationDeep(Method method, Class<T> annotationClass) {
+    public static <T extends Annotation> T getAnnotationDeep(Method method,
+                                                             Class<T> annotationClass) {
         T t = method.getAnnotation(annotationClass);
         if (t != null)
             return t;
@@ -1889,7 +1912,8 @@ public class Mirror<T> {
                         }
                     }
                 }
-            } catch (Exception e) {}
+            }
+            catch (Exception e) {}
             klass = klass.getSuperclass();
         }
         for (Class klass2 : method.getDeclaringClass().getInterfaces()) {
@@ -1898,12 +1922,14 @@ public class Mirror<T> {
                 t = tmp.getAnnotation(annotationClass);
                 if (t != null)
                     return t;
-            } catch (Exception e) {}
+            }
+            catch (Exception e) {}
         }
         return null;
     }
 
-    public static <T extends Annotation> T getAnnotationDeep(Class<?> type, Class<T> annotationClass) {
+    public static <T extends Annotation> T getAnnotationDeep(Class<?> type,
+                                                             Class<T> annotationClass) {
         Class<?> cc = type;
         T t;
         do {
@@ -1923,7 +1949,8 @@ public class Mirror<T> {
         return null;
     }
 
-    public static boolean isAnnotationExists(Method method, Class<? extends Annotation>... classes) {
+    public static boolean isAnnotationExists(Method method,
+                                             Class<? extends Annotation>... classes) {
         if (!Lang.isEmptyArray(classes)) {
             for (Class<? extends Annotation> klass : classes) {
                 if (getAnnotationDeep(method, klass) != null)
@@ -1933,7 +1960,8 @@ public class Mirror<T> {
         return false;
     }
 
-    public static boolean isAnnotationExists(Class<?> type, Class<? extends Annotation>... classes) {
+    public static boolean isAnnotationExists(Class<?> type,
+                                             Class<? extends Annotation>... classes) {
         if (!Lang.isEmptyArray(classes)) {
             for (Class<? extends Annotation> klass : classes) {
                 if (getAnnotationDeep(type, klass) != null)

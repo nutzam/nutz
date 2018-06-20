@@ -19,7 +19,7 @@ public class QueryMapCallback implements SqlCallback {
     public Object invoke(Connection conn, ResultSet rs, Sql sql)
             throws SQLException {
         final ResultSetMetaData meta = rs.getMetaData();
-        // ResultSetLooping 封装了遍历结果集的方法,里面包含了针对sqlserver等浮标型分页的支持
+        // ResultSetLooping 封装了遍历结果集的方法,里面包含了针对sql server等浮标型分页的支持
         ResultSetLooping ing = new ResultSetLooping() {
             protected boolean createObject(int index,
                                            ResultSet rs,

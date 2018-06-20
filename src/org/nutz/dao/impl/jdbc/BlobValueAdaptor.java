@@ -27,6 +27,15 @@ public class BlobValueAdaptor extends AbstractFileValueAdaptor {
         return new SimpleBlob(f);
     }
 
+    public Object get(ResultSet rs, int columnIndex) throws SQLException {
+        Blob blob = rs.getBlob(columnIndex);
+        if (blob == null)
+            return null;
+        File f = this.createTempFile();
+        Files.write(f, blob.getBinaryStream());
+        return new SimpleBlob(f);
+    }
+
     public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
         if (null == obj) {
             stat.setNull(i, Types.BLOB);

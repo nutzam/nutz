@@ -3,6 +3,8 @@ package org.nutz.lang;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.nutz.lang.util.Regex;
+
 /**
  * 关于数的一些帮助函数
  * 
@@ -41,7 +43,7 @@ public abstract class Nums {
         catch (NumberFormatException e) {}
 
         // 百分比
-        Pattern p = Pattern.compile("^([0-9.]{1,})%$");
+        Pattern p = Regex.getPattern("^([0-9.]{1,})%$");
         Matcher m = p.matcher(v);
         if (m.find()) {
             Double nb = Double.valueOf(m.group(1));
@@ -210,7 +212,7 @@ public abstract class Nums {
         boolean[] ns = new boolean[ss.length];
         for (int i = 0; i < ns.length; i++) {
             try {
-                ns[i] = Pattern.matches("^(1|yes|true|on)$", ss[i].toLowerCase());
+                ns[i] = Regex.match("^(1|yes|true|on)$", ss[i].toLowerCase());
             }
             catch (NumberFormatException e) {
                 ns[i] = false;
