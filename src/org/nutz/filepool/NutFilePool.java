@@ -1,9 +1,11 @@
 package org.nutz.filepool;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.nutz.lang.Files;
@@ -40,30 +42,9 @@ public class NutFilePool implements FilePool {
             log.debugf("file-pool.home: '%s'", home.getAbsolutePath());
         }
 
-        File last = home;
-        String[] subs = null;
-        while (last.isDirectory()) {
-            subs = last.list(new FilenameFilter() {
-                public boolean accept(File dir, String name) {
-                    return Regex.match("^([\\d|A-F]{2})([.][a-zA-Z]{1,})?$", name);
-                }
-            });
-            if (null != subs && subs.length > 0) {
-                String lastName = "00";
-                for (String sub : subs) {
-                    if (sub.compareTo(lastName) > 0) {
-                        lastName = sub;
-                    }
-                }
-                last = new File(last.getAbsolutePath() + "/" + lastName);
-                if (last.isFile()) {
-                    cursor = Pools.getFileId(home, last);
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
+        cursor = foundMax(home, home, 0);
+        if (cursor < 0)
+            cursor = 0;
 
         if (log.isInfoEnabled())
             log.infof("file-pool.cursor: %s", cursor);
@@ -200,5 +181,36 @@ public class NutFilePool implements FilePool {
     
     public static void clearPools() {
         pools.clear();
+    }
+    
+    protected static long foundMax(File home, File current, int level) {
+        // 最后一层了
+        if (level == 8) {
+            if (current.isDirectory())
+                return -1;
+            //System.out.println("found File!! "+current);
+            return Pools.getFileId(home, current);
+        }
+        if (!current.isDirectory())
+            return -1;
+        int next_level = level+1;
+        List<String> names = new ArrayList<String>();
+        
+        for (File f : current.listFiles()) {
+            if (Regex.match("^([\\d|A-F]{2})([.][a-zA-Z]{1,})?$", f.getName())) {
+                names.add(f.getName());
+            }
+        }
+        Collections.sort(names);
+        Collections.reverse(names);
+        for (String name : names) {
+            File next = new File(current, name);
+            //System.out.println(next + ", level=" + next_level);
+            long max = foundMax(home, next, next_level);
+            if (max > -1) {
+                return max;
+            }
+        }
+        return -1;
     }
 }
