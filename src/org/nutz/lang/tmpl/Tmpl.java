@@ -51,10 +51,14 @@ public class Tmpl {
      * @see #parse(String, Pattern, int, int)
      */
     public static Tmpl parse(String tmpl) {
+        if (null == tmpl)
+            return null;
         return new Tmpl(tmpl, null, -1, -1, null);
     }
 
     public static Tmpl parsef(String fmt, Object... args) {
+        if (null == fmt)
+            return null;
         return new Tmpl(String.format(fmt, args), null, -1, -1, null);
     }
 
@@ -83,6 +87,8 @@ public class Tmpl {
                              int groupIndex,
                              int escapeIndex,
                              TmplEscapeStr getEscapeStr) {
+        if (null == tmpl)
+            return null;
         return new Tmpl(tmpl, ptn, groupIndex, escapeIndex, getEscapeStr);
     }
 
@@ -103,6 +109,8 @@ public class Tmpl {
                              final String startChar,
                              String leftBrace,
                              String rightBrace) {
+        if (null == tmpl)
+            return null;
         String regex = "((?<!["
                        + startChar
                        + "])["
