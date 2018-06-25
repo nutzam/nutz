@@ -22,7 +22,7 @@ import org.nutz.lang.util.NutMap;
  * <li><b>double</b>: %f 格式化字符串
  * <li><b>boolean</b>: 否/是 格式化字符串
  * <li><b>date</b> : yyyyMMdd 格式化字符串
- * <li><b>string</b>: %s 格式化字符串
+ * <li><b>string</b>: %s 格式化字符串。或者 (string::A=Apple,B=Banana,C=Cherry) 表映射数据
  * <li><b>json<b> : cqn 输出一段 JSON 文本,c紧凑，q输出引号,n忽略null
  * </ul>
  * <p/>
