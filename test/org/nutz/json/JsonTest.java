@@ -14,6 +14,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.text.ParseException;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +53,8 @@ import org.nutz.json.meta.PojoWithLocalDateTime;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
+import org.nutz.lang.Strings;
+import org.nutz.lang.Times;
 import org.nutz.lang.stream.StringInputStream;
 import org.nutz.lang.stream.StringOutputStream;
 import org.nutz.lang.util.NutMap;
@@ -68,6 +72,13 @@ public class JsonTest {
 			this.name = name;
 			this.age = age;
 		}
+	}
+	
+	@Test
+	public void test_instant_field() throws ParseException {
+		Instant instant = Times.parse("yyyy-MM-dd HH:mm:ss", "2018-06-30 18:27:10").toInstant();
+		String json = Json.toJson(instant,JsonFormat.compact().setDateFormat("yyyy-MM-dd HH:mm:ss"));
+		assertEquals("\"2018-06-30 18:27:10\"", json);
 	}
 
 	/**
