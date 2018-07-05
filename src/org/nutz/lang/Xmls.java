@@ -48,7 +48,9 @@ public abstract class Xmls {
      * @throws ParserConfigurationException
      */
     public static DocumentBuilder xmls() throws ParserConfigurationException {
-        return DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setExpandEntityReferences(false);
+        return factory.newDocumentBuilder();
     }
     
     public static Document xml(InputStream ins) {
