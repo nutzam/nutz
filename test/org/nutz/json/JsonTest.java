@@ -29,6 +29,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.nutz.castor.Castors;
 import org.nutz.dao.entity.Record;
+import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.http.Request.METHOD;
@@ -1168,4 +1169,48 @@ public class JsonTest {
         System.out.println(pojo.localdt);
         assertNotNull(pojo.localdt);
     }
+
+
+    @Test
+    public void test_json_lost_exception_message() throws Exception {
+
+
+        Pojo pojo = new Pojo();
+        try {
+            Json.toJson(pojo);
+
+        } catch (Exception e) {
+
+
+            assertEquals(e.getMessage(), pojo.message);
+
+        }
+
+
+
+
+
+
+
+    }
+
+
+    public static class Pojo {
+
+
+        String message = "this is my message";
+
+        public String toJson() {
+
+            throw new RuntimeException(message);
+    }
+
+    }
+
+
+
+
+
+
+
 }
