@@ -31,5 +31,6 @@ import org.nutz.lang.util.XmlsTest;
                      AllMeta.class,
                      CodeTest.class,
                      AllEncrypts.class,
-                     XmlsTest.class})
+                     XmlsTest.class,
+                     SocketsTest.class})
 public class AllLang {}

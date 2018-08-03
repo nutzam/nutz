@@ -6,6 +6,7 @@ import java.io.OutputStream;
 
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Streams;
 import org.nutz.lang.util.SimpleContext;
 
 public class SocketContext extends SimpleContext {
@@ -47,6 +48,13 @@ public class SocketContext extends SimpleContext {
 
     public void writeLine(String str) {
         write(str + "\n");
+    }
+    
+    public void closeConn() {
+        if (!atom.socket.isClosed()) {
+            Streams.safeFlush(atom.ops);
+            Streams.safeClose(atom.socket);
+        }
     }
 
 }
