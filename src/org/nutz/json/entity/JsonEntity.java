@@ -107,7 +107,14 @@ public class JsonEntity {
                             writer.write((String)toJsonMethod.invoke(obj, jf));
                     }
                     catch (Exception e) {
-                        throw new JsonException(err);
+                        // born success, but toJson fail
+                        if (err == null) {
+                            RuntimeException cause = Lang.wrapThrow(e);
+                            throw new JsonException(cause.getMessage(), cause);
+                        // born fail
+                        } else {
+                            throw new JsonException(err);
+                        }
                     }
                     return true;
                 }
