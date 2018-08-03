@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
 import javax.servlet.ServletContext;
@@ -20,6 +21,7 @@ import org.nutz.lang.Mirror;
 import org.nutz.lang.util.MethodParamNamesScaner;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.HttpAdaptor2;
 import org.nutz.mvc.Scope;
@@ -42,6 +44,7 @@ import org.nutz.mvc.adaptor.injector.ServletContextInjector;
 import org.nutz.mvc.adaptor.injector.SessionAttrInjector;
 import org.nutz.mvc.adaptor.injector.SessionInjector;
 import org.nutz.mvc.adaptor.injector.ViewModelInjector;
+import org.nutz.mvc.adaptor.injector.VoidInjector;
 import org.nutz.mvc.annotation.Attr;
 import org.nutz.mvc.annotation.Cookie;
 import org.nutz.mvc.annotation.IocObj;
@@ -245,9 +248,12 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
             errCtx = (AdaptorErrorContext) Mirror.me(argTypes[errCtxIndex])
                     .born(argTypes.length);
 
-        Object obj;
+        Object obj = req.getAttribute(ActionContext.REFER_OBJECT);
         try {
-            obj = getReferObject(sc, req, resp, pathArgs);
+            if (obj == null) {
+                obj = getReferObject(sc, req, resp, pathArgs);
+                req.setAttribute(ActionContext.REFER_OBJECT, obj);
+            }
         }
         catch (Throwable e) {
             if (errCtx != null) {
@@ -345,6 +351,8 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
                             null,
                             true);
                 }
+                if (Modifier.isInterface(type.getModifiers()))
+                    return new VoidInjector();
                 return new NameInjector(paramName,
                         null,
                         argTypes[index],

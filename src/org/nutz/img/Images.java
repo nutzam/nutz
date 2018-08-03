@@ -226,7 +226,7 @@ public class Images {
      */
     public static BufferedImage zoomScale(BufferedImage im, int w, int h, Color bgColor) {
         if (w == -1 || h == -1) {
-            return zoomScale(im, w, h);
+            return scale(im, w, h);
         }
 
         // 检查背景颜色

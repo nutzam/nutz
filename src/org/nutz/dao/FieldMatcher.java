@@ -1,11 +1,14 @@
 package org.nutz.dao;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.nutz.dao.entity.MappingField;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.Regex;
 
 /**
  * 字段匹配器. 判断顺序 locked--actived-->ignoreNull. 
@@ -28,9 +31,9 @@ public class FieldMatcher {
         FieldMatcher fm = new FieldMatcher();
         fm.ignoreNull = ignoreNull;
         if (!Strings.isBlank(actived))
-            fm.actived = Pattern.compile(actived);
+            fm.actived = Regex.getPattern(actived);
         if (!Strings.isBlank(locked))
-            fm.locked = Pattern.compile(locked);
+            fm.locked = Regex.getPattern(locked);
         return fm;
     }
     
@@ -110,31 +113,33 @@ public class FieldMatcher {
     /**
      * 是否忽略空值
      */
-    private boolean ignoreNull = true;
+    private Boolean ignoreNull = true;
     /**
      * 是否忽略空白字符串
      */
-    private boolean ignoreBlankStr;
+    private Boolean ignoreBlankStr;
     /**
      * 是否忽略零值
      */
-    private boolean ignoreZero = true;
+    private Boolean ignoreZero;
     /**
      * 是否忽略日期
      */
-    private boolean ignoreDate;
+    private Boolean ignoreDate;
     /**
      * 是否忽略@Id标注的属性
      */
-    private boolean ignoreId = true;
+    private Boolean ignoreId = true;
     /**
      * 是否忽略@Name标注的属性
      */
-    private boolean ignoreName;
+    private Boolean ignoreName;
     /**
      * 是否忽略@Pk标注引用的属性
      */
-    private boolean ignorePk;
+    private Boolean ignorePk;
+    
+    private Boolean ignoreFalse;
 
     /**
      * 匹配顺序 locked -- actived-- ignoreNull
@@ -147,6 +152,44 @@ public class FieldMatcher {
         }
         if (null != actived && !actived.matcher(str).find()) {
             return false;
+        }
+        return true;
+    }
+    
+    public boolean match(MappingField mf, Object obj) {
+        String fieldName = mf.getName();
+        if (null != locked && locked.matcher(fieldName).find()) {
+            return false;
+        }
+        if (null != actived && !actived.matcher(fieldName).find()) {
+            return false;
+        }
+        if (ignoreId != null && ignoreId && mf.isId())
+            return false;
+        if (ignoreName != null && ignoreName && mf.isName())
+            return false;
+        if (ignorePk != null && ignorePk && mf.isCompositePk())
+            return false;
+        Object val = mf.getValue(obj);
+        if (val == null) {
+            if (ignoreNull != null && ignoreNull)
+                return false;
+        } else {
+            if (ignoreZero != null && ignoreZero
+                && val instanceof Number
+                && ((Number) val).doubleValue() == 0.0) {
+                return false;
+            }
+            if (ignoreDate != null && ignoreDate && val instanceof Date) {
+                return false;
+            }
+            if (ignoreBlankStr != null && ignoreBlankStr
+                && val instanceof CharSequence
+                && Strings.isBlank((CharSequence) val)) {
+                return false;
+            }
+            if (val instanceof Boolean && ignoreFalse != null && ignoreFalse && !((Boolean)val))
+                return false;
         }
         return true;
     }
@@ -192,7 +235,7 @@ public class FieldMatcher {
      */
     public FieldMatcher setActived(String actived) {
         if (actived != null)
-            this.actived = Pattern.compile(actived);
+            this.actived = Regex.getPattern(actived);
         else
             this.actived = null;
         return this;
@@ -205,7 +248,7 @@ public class FieldMatcher {
      */
     public FieldMatcher setLocked(String locked) {
         if (locked != null)
-            this.locked = Pattern.compile(locked);
+            this.locked = Regex.getPattern(locked);
         else
             this.locked = null;
         return this;
@@ -302,12 +345,16 @@ public class FieldMatcher {
     }
 
     public boolean isIgnoreBlankStr() {
-        return ignoreBlankStr;
+        return ignoreBlankStr != null && ignoreBlankStr;
     }
 
     public FieldMatcher setIgnoreBlankStr(boolean ignoreBlankStr) {
         this.ignoreBlankStr = ignoreBlankStr;
         return this;
+    }
+    
+    public void setIgnoreFalse(Boolean ignoreFalse) {
+        this.ignoreFalse = ignoreFalse;
     }
 
     public static FieldMatcher simple(String ...fields) {
@@ -315,6 +362,9 @@ public class FieldMatcher {
         return new FieldMatcher() {
             public boolean match(String str) {
                 return m.contains(str);
+            }
+            public boolean match(MappingField mf, Object obj) {
+                return this.match(mf.getName());
             }
         };
     }

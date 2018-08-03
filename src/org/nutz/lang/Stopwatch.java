@@ -1,6 +1,5 @@
 package org.nutz.lang;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;

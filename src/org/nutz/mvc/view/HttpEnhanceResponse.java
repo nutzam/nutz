@@ -1,9 +1,9 @@
 package org.nutz.mvc.view;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,14 +12,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.castor.Castors;
 import org.nutz.http.Http;
+import org.nutz.lang.Each;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.NutMap;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
-public class HttpServerResponse implements Cloneable {
+public class HttpEnhanceResponse implements Cloneable {
 
     private static final Log log = Logs.get();
 
@@ -27,19 +29,23 @@ public class HttpServerResponse implements Cloneable {
 
     private String statusText;
 
-    private Map<String, String> header;
+    private NutMap header;
 
     private byte[] body;
+    
+    private boolean upperHeaderName;
+    
+    private String ifNoneMatch;
 
-    public HttpServerResponse() {
-        this.header = new HashMap<String, String>();
+    public HttpEnhanceResponse() {
+        this.header = new NutMap();
     }
 
-    public HttpServerResponse clone() {
-        HttpServerResponse re = new HttpServerResponse();
+    public HttpEnhanceResponse clone() {
+        HttpEnhanceResponse re = new HttpEnhanceResponse();
         re.statusCode = statusCode;
         re.statusText = statusText;
-        re.header = new HashMap<String, String>();
+        re.header = new NutMap();
         if (header != null)
             re.header.putAll(header);
         re.body = body;
@@ -47,6 +53,10 @@ public class HttpServerResponse implements Cloneable {
     }
 
     private static final Pattern _P = Pattern.compile("^HTTP/1.\\d\\s+(\\d+)(\\s+(.*))?$");
+
+    public NutMap header() {
+        return this.header;
+    }
 
     public void updateBy(String str) {
         try {
@@ -73,7 +83,13 @@ public class HttpServerResponse implements Cloneable {
                     int p2 = line.indexOf(':');
                     String key = Strings.trim(line.substring(0, p2));
                     String val = Strings.trim(line.substring(p2 + 1));
-                    header.put(key, val);
+                    if (!Strings.isBlank(key) && !Strings.isBlank(val)) {
+                        if (upperHeaderName) {
+                            key = key.toUpperCase();
+                        }
+                        System.out.println("FF " + key + "=" + val);
+                        header.addv(key, val);
+                    }
 
                     // 指向下一行
                     pos = end + 1;
@@ -150,20 +166,44 @@ public class HttpServerResponse implements Cloneable {
             }
     }
 
-    public void render(HttpServletResponse resp) {
+    public void render(final HttpServletResponse resp) {
         resp.setStatus(statusCode);
 
         // 标记是否需要sendError
         boolean flag = statusCode >= 400;
 
         if (null != header && header.size() > 0) {
-            for (Map.Entry<String, String> en : header.entrySet()) {
-                resp.setHeader(en.getKey(), en.getValue());
+            // 如果 Header 的值为数组，那么就设置成多个
+            for (Map.Entry<String, Object> en : header.entrySet()) {
+                final String key = en.getKey();
+                Object val = en.getValue();
+                Lang.each(val, new Each<Object>() {
+                    public void invoke(int index, Object ele, int length) {
+                        if (null != ele)
+                            resp.addHeader(key, ele.toString());
+                    }
+                });
             }
             flag = false;
         }
+        
+        // 重定向链接不应该带body的, 3XX系列的响应都是这样
+        if (statusCode > 300 && statusCode < 399) {
+            return;
+        }
 
         if (body != null) {
+            // 检查是否符合304
+            String etag = Lang.sha1(new ByteArrayInputStream(body));
+            if (!Strings.isBlank(ifNoneMatch)) {
+                if (etag.equalsIgnoreCase(ifNoneMatch)) {
+                    statusCode = 304;
+                    resp.setStatus(304);
+                    return;
+                }
+                log.infof("ETag expect %s but %s", etag, ifNoneMatch);
+            }
+            resp.setHeader("ETag", etag);
             resp.setContentLength(body.length);
             OutputStream out;
             try {
@@ -186,4 +226,11 @@ public class HttpServerResponse implements Cloneable {
         }
     }
 
+    public void setUpperHeaderName(boolean upperHeaderName) {
+        this.upperHeaderName = upperHeaderName;
+    }
+
+    public void setIfNoneMatch(String ifNoneMatch) {
+        this.ifNoneMatch = ifNoneMatch;
+    }
 }

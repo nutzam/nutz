@@ -65,7 +65,10 @@ public class UploadAdaptor extends PairAdaptor {
     private UploadingContext context;
 
     public UploadAdaptor() throws IOException {
-        context = new UploadingContext(File.createTempFile("nutz", null).getParent());
+        File tmp = File.createTempFile("nutz", null);
+        String path = tmp.getParent();
+        tmp.delete();
+        context = new UploadingContext(path);
     }
 
     public UploadAdaptor(UploadingContext context) {

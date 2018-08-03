@@ -43,7 +43,7 @@ public abstract class Nums {
         catch (NumberFormatException e) {}
 
         // 百分比
-        Pattern p = Pattern.compile("^([0-9.]{1,})%$");
+        Pattern p = Regex.getPattern("^([0-9.]{1,})%$");
         Matcher m = p.matcher(v);
         if (m.find()) {
             Double nb = Double.valueOf(m.group(1));

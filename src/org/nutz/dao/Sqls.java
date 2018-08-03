@@ -14,7 +14,6 @@ import org.nutz.lang.born.Borning;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-@SuppressWarnings("ALL")
 public abstract class Sqls {
 
     private static final ValueEscaper ES_FLD_VAL = new ValueEscaper();
@@ -349,6 +348,13 @@ public abstract class Sqls {
          */
         public SqlCallback maps() {
         	return QueryMapCallback.me;
+        }
+
+        /**
+         * @return 从 ResultSet 获得一个blob的回调对象
+         */
+        public SqlCallback blob() {
+            return new FetchBlobCallback();
         }
     }
 

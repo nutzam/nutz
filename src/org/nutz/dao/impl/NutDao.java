@@ -5,7 +5,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -24,7 +26,6 @@ import org.nutz.dao.entity.EntityMaker;
 import org.nutz.dao.entity.LinkField;
 import org.nutz.dao.entity.LinkVisitor;
 import org.nutz.dao.entity.MappingField;
-import org.nutz.dao.entity.PkType;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.impl.link.DoClearLinkVisitor;
 import org.nutz.dao.impl.link.DoClearRelationByHostFieldLinkVisitor;
@@ -57,6 +58,7 @@ import org.nutz.dao.sql.PojoCallback;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.Pojos;
+import org.nutz.dao.util.cri.SimpleCriteria;
 import org.nutz.dao.util.cri.SqlExpressionGroup;
 import org.nutz.lang.ContinueLoop;
 import org.nutz.lang.Each;
@@ -186,7 +188,11 @@ public class NutDao extends DaoSupport implements Dao {
     }
 
     public <T> T fastInsert(T obj) {
-        EntityOperator opt = _optBy(obj);
+        return fastInsert(obj, false);
+    }
+
+    public <T> T fastInsert(T obj, boolean detectAllColumns) {
+        EntityOperator opt = _optBy(obj, detectAllColumns);
         if (null == opt)
             return null;
         opt.addInsertSelfOnly();
@@ -707,6 +713,11 @@ public class NutDao extends DaoSupport implements Dao {
             pojo.setEntity(en);
             // 高级条件接口，直接得到 WHERE 子句
             if (cnd instanceof Criteria) {
+                if (cnd instanceof SimpleCriteria) {
+                    String beforeWhere = ((SimpleCriteria)cnd).getBeforeWhere();
+                    if (!Strings.isBlank(beforeWhere))
+                        pojo.addParamsBy(Pojos.Items.wrap(beforeWhere));
+                }
                 pojo.append(((Criteria) cnd).where());
                 // MySQL/PgSQL/SqlServer 与 Oracle/H2的结果会不一样,奇葩啊
                 GroupBy gb = ((Criteria) cnd).getGroupBy();
@@ -961,13 +972,35 @@ public class NutDao extends DaoSupport implements Dao {
     <T> EntityOperator _opt(Class<T> classOfT) {
         return _opt(holder.getEntity(classOfT));
     }
-
+    
     EntityOperator _optBy(Object obj) {
+        return _optBy(obj, false);
+    }
+
+    EntityOperator _optBy(Object obj, boolean detectAllColumns) {
         // 阻止空对象
         if (null == obj)
             return null;
+        Entity<?> en = null;
+        // for issue 1425
+        if (detectAllColumns && Lang.eleSize(obj) > 1) {
+            Object first = Lang.first(obj);
+            if (first != null && first instanceof Map) {
+                final Map<String, Object> tmp = new HashMap<String, Object>();
+                Lang.each(obj, new Each<Object>() {
+                    @SuppressWarnings({"unchecked", "rawtypes"})
+                    public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop, LoopException {
+                        tmp.putAll((Map)ele);
+                    }
+                });
+                en = holder.getEntityBy(tmp);
+            }
+        }
+        if (en == null) {
+            en = holder.getEntityBy(obj);
+        }
         // 对象是否有内容，这里会考虑集合与数组
-        Entity<?> en = holder.getEntityBy(obj);
+        
         if (null == en)
             return null;
         // 创建操作对象

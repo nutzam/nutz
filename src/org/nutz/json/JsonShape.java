@@ -11,14 +11,16 @@ import java.lang.annotation.Target;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 @Documented
 public @interface JsonShape {
 
-    Type value() default Type.NAME;
+	Type value() default Type.NAME;
 
-    public static enum Type {
-        ORDINAL, NAME, OBJECT
-    }
+	String nameKey() default "name";
+
+	public static enum Type {
+		ORDINAL, NAME, OBJECT, OBJECTWITHNAME
+	}
 
 }

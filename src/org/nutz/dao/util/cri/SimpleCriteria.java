@@ -23,7 +23,7 @@ public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy, 
 
     private Pager pager;
     
-    private String anything;
+    private String beforeWhere;
 
     public SimpleCriteria() {
         where = new SqlExpressionGroup();
@@ -31,14 +31,14 @@ public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy, 
         groupBy = new GroupBySet();
     }
     
-    public SimpleCriteria(String anything) {
+    public SimpleCriteria(String beforeWhere) {
         this();
-        this.anything = anything;
+        this.beforeWhere = beforeWhere;
     }
 
     public void joinSql(Entity<?> en, StringBuilder sb) {
-        if (anything != null)
-            sb.append(anything);
+        if (beforeWhere != null)
+            sb.append(beforeWhere);
         where.joinSql(en, sb);
         groupBy.joinSql(en, sb);
         orderBy.joinSql(en, sb);
@@ -137,5 +137,9 @@ public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy, 
     
     public GroupBy getGroupBy() {
         return groupBy;
+    }
+    
+    public String getBeforeWhere() {
+        return beforeWhere;
     }
 }
