@@ -65,6 +65,7 @@ import org.nutz.lang.Each;
 import org.nutz.lang.ExitLoop;
 import org.nutz.lang.Lang;
 import org.nutz.lang.LoopException;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.trans.Atom;
 import org.nutz.trans.Molecule;
@@ -1022,7 +1023,13 @@ public class NutDao extends DaoSupport implements Dao {
             this.expert = Jdbcs.getExpert(name, "");
             if (this.expert == null) {
                 if (name.contains(".")) {
-                    this.expert = (JdbcExpert) Lang.loadClass(name).newInstance();
+                    Class<?> klass = Lang.loadClass(name);
+                    try {
+                        this.expert = (JdbcExpert) Mirror.me(klass).born(Jdbcs.getConf());
+                    }
+                    catch (Throwable e) {
+                        this.expert = (JdbcExpert) Lang.loadClass(name).newInstance();
+                    }
                 } else {
                     throw new DaoException("not such expert=" + obj);
                 }
