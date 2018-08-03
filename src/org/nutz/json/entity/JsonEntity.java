@@ -109,7 +109,8 @@ public class JsonEntity {
                     catch (Exception e) {
                         // born success, but toJson fail
                         if (err == null) {
-                            throw new JsonException(Lang.wrapThrow(e).getMessage());
+                            RuntimeException cause = Lang.wrapThrow(e);
+                            throw new JsonException(cause.getMessage(), cause);
                         // born fail
                         } else {
                             throw new JsonException(err);

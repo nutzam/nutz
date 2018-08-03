@@ -1182,6 +1182,7 @@ public class JsonTest {
         } catch (Exception e) {
 
 
+            e.printStackTrace();
             assertEquals(e.getMessage(), pojo.message);
 
         }
