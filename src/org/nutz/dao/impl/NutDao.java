@@ -1028,7 +1028,7 @@ public class NutDao extends DaoSupport implements Dao {
                         this.expert = (JdbcExpert) Mirror.me(klass).born(Jdbcs.getConf());
                     }
                     catch (Throwable e) {
-                        this.expert = (JdbcExpert) Lang.loadClass(name).newInstance();
+                        this.expert = (JdbcExpert) Mirror.me(klass).born();
                     }
                 } else {
                     throw new DaoException("not such expert=" + obj);

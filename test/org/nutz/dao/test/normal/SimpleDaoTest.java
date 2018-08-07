@@ -936,9 +936,12 @@ public class SimpleDaoTest extends DaoCase {
         platoon.setLeader(soldier);
         platoon1.setLeader(soldier1);
         platoon2.setLeader(soldier2);
-        dao.insertWith(platoon, null);
-        dao.insertWith(platoon1, null);
-        dao.insertWith(platoon2, null);
+        platoon.setLeader2(soldier);
+        platoon1.setLeader2(soldier1);
+        platoon2.setLeader2(soldier2);
+        dao.insertWith(platoon, "^(base|leader)$");
+        dao.insertWith(platoon1, "^(base|leader)$");
+        dao.insertWith(platoon2, "^(base|leader)$");
 
         // =======================================
         // 用条件查
@@ -950,6 +953,7 @@ public class SimpleDaoTest extends DaoCase {
         assertEquals("wendal", platoon.getName());
 
         assertNotNull(platoon.getLeader());
+        System.out.println(Json.toJson(platoon.getLeader()));
         assertEquals("stone", platoon.getLeader().getName());
 
         assertNotNull(platoon.getBase());
