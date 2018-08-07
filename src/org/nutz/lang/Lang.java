@@ -1541,7 +1541,7 @@ public abstract class Lang {
     /**
      * 继续 each 循环，如果再递归，则停止递归
      */
-    public static void Continue() throws ExitLoop {
+    public static void Continue() throws ContinueLoop {
         throw new ContinueLoop();
     }
 
