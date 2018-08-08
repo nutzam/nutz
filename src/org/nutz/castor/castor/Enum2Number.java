@@ -19,6 +19,9 @@ public class Enum2Number extends Castor<Enum, Number> {
         // 如果失败，就用其顺序号
         catch (Exception e) {
             Integer re = src.ordinal();
+            if (toType.isPrimitive() || toType.equals(Integer.class) || toType.isAssignableFrom(Number.class)) {
+                return re;
+            }
             return (Number) Mirror.me(toType).born(re.toString());
         }
     }
