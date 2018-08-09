@@ -93,6 +93,8 @@ import org.nutz.dao.test.meta.issue726.Issue726;
 import org.nutz.dao.test.meta.issue901.XPlace;
 import org.nutz.dao.test.meta.issue918.Region;
 import org.nutz.dao.test.meta.issue928.BeanWithSet;
+import org.nutz.dao.test.meta.issueXXX.IotObject;
+import org.nutz.dao.test.meta.issueXXX.IotProductStatus;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.blob.SimpleBlob;
 import org.nutz.dao.util.blob.SimpleClob;
@@ -1345,5 +1347,21 @@ public class SimpleDaoTest extends DaoCase {
         Pet zozoh = dao.fetch(Pet.class, "zozoh");
         assertEquals(null, zozoh.getNickName());
         assertEquals(30, zozoh.getAge());
+    }
+    
+    @Test
+    public void test_wizzer() {
+        dao.create(IotObject.class, true);
+        
+        IotObject a = new IotObject();
+        a.setStat(IotProductStatus.DEVELOP);
+        dao.insert(a);
+        a = dao.fetch(IotObject.class, a.getId());
+        assertNotNull(a);
+        assertEquals(IotProductStatus.DEVELOP, a.getStat());
+        System.out.println(a.getStat().value());
+        for (IotProductStatus stat : IotProductStatus.values()) {
+            System.out.println("-->"+stat.value());
+        }
     }
 }
