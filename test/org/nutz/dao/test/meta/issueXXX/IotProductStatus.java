@@ -27,7 +27,7 @@ public enum IotProductStatus {
         return text;
     }
 
-    public static IotProductStatus fromInt(int value) {
+    public static IotProductStatus from(int value) {
         for (IotProductStatus t : values()) {
             if (t.value == value) {
                 return t;
