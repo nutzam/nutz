@@ -35,7 +35,7 @@ public class PropertiesProxyTest {
 
     @Test
     public void testString() throws UnsupportedEncodingException {
-        Assert.assertEquals("Nutz ", pp.get("str"));
+        Assert.assertEquals("Nutz", pp.get("str"));
         Assert.assertEquals("Nutz", pp.getTrim("str"));
         Assert.assertEquals("坚果", new String(pp.getTrim("chinese")));
     }
@@ -58,8 +58,14 @@ public class PropertiesProxyTest {
 
     @Test
     public void testSize() {
-        Assert.assertEquals(pp.getKeys().size(), 4);
-        Assert.assertEquals(pp.getValues().size(), 4);
+        Assert.assertEquals(pp.getKeys().size(), 5);
+        Assert.assertEquals(pp.getValues().size(), 5);
+    }
+    
+    @Test
+    public void testTrim() {
+    	System.out.println(pp.get("ABC"));
+    	Assert.assertEquals(123, pp.getInt("ABC"));
     }
 
 
