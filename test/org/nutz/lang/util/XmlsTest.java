@@ -2,6 +2,7 @@ package org.nutz.lang.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 import org.nutz.lang.Xmls;
+import org.nutz.lang.Xmls.XmlParserOpts;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -52,5 +54,25 @@ public class XmlsTest extends Assert {
         NutMap user = map.getAs("user", NutMap.class);
         Object pets = user.get("pet");
         assertTrue(pets instanceof Collection || pets.getClass().isArray());
+    }
+    
+    @Test
+    public void test3() throws UnsupportedEncodingException {
+        NutMap data = NutMap.NEW();
+        data.setv("aaa","111");
+        data.setv("bbb","222");
+        String oper = Xmls.mapToXml("person", data);
+        Document xml = Xmls.xml(new ByteArrayInputStream(oper.getBytes("UTF-8")));
+
+        Element root = xml.getDocumentElement();
+        Element sign_ele = xml.createElement("ddd");
+        sign_ele.setTextContent("    ");
+        root.appendChild(sign_ele);
+        NutMap re = Xmls.asMap(root);
+        re.addv("ddd", "");
+        String dd = Xmls.mapToXml("test", re);
+        System.out.println(dd);
+        
+        assertEquals(dd, Xmls.mapToXml("test", Xmls.asMap(root, new XmlParserOpts(false, false, null, true))));
     }
 }

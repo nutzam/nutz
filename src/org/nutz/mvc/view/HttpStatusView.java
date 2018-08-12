@@ -58,14 +58,14 @@ public class HttpStatusView implements View {
 
     }
 
-    private HttpServerResponse info;
+    private HttpEnhanceResponse info;
 
-    public HttpStatusView(HttpServerResponse info) {
+    public HttpStatusView(HttpEnhanceResponse info) {
         this.info = info;
     }
 
     public HttpStatusView(int statusCode) {
-        info = new HttpServerResponse();
+        info = new HttpEnhanceResponse();
         info.updateCode(statusCode, null);
     }
 
@@ -80,7 +80,7 @@ public class HttpStatusView implements View {
     }
 
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj) {
-        HttpServerResponse info = this.info.clone();
+        HttpEnhanceResponse info = this.info.clone();
 
         if (null != obj) {
             // 指明了动态的 code

@@ -28,6 +28,7 @@ Nutz遵循Apache协议,完全开源,文档齐全,永远免费(商用也是)
 *   在线文档
     *   [官网](https://nutzam.com/core/nutz_preface.html) Nutz手册,涵盖方方面面
     *   [w3cschool上的文档](http://www.w3cschool.cn/nutz/) [由vincent109维护](https://github.com/vincent109)
+    *   [github pages](https://nutzam.github.io/nutz/) github 的 pages
 *   [各种插件](http://github.com/nutzam/nutzmore) 您能想到的都有哦(基本上`^_^`)
 *   [好玩的Nutzbook](http://nutzbook.wendal.net) 几分钟搭建一个demo有何不可? 入门从这里开始
 *	[在线javadoc](https://nutzam.com/javadoc/) 注释就是这么全

@@ -212,6 +212,7 @@ public abstract class Pojos {
 
 	public static List<MappingField> getFieldsForUpdate(Entity<?> en, FieldMatcher fm, Object refer) {
 		List<MappingField> re = new ArrayList<MappingField>(en.getMappingFields().size());
+        Object tmp = Lang.first(refer);
 		for (MappingField mf : en.getMappingFields()) {
 			if (mf.isPk()) {
 				if (en.getPkType() == PkType.ID && mf.isId())
@@ -223,13 +224,17 @@ public abstract class Pojos {
 			}
 			if (mf.isReadonly() || mf.isAutoIncreasement() || !mf.isUpdate())
 				continue;
-			else if (null != fm 
-			      && null != refer 
-			      && fm.isIgnoreNull() 
-			      && null == mf.getValue(Lang.first(refer)))
-				continue;
-			if (null == fm || fm.match(mf.getName()))
-				re.add(mf);
+			if (fm == null) {
+			    re.add(mf);
+			}
+			else if (tmp == null) {
+			    if (fm.match(mf.getName()))
+			        re.add(mf);
+			}
+			else {
+			    if (fm.match(mf, tmp))
+			        re.add(mf);
+			}
 		}
 		if (re.isEmpty() && log.isDebugEnabled())
 			log.debug("none field for update!");

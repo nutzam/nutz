@@ -18,6 +18,9 @@ import org.nutz.lang.Strings;
 
 public class Response {
     private static final String DEF_PROTOCAL_VERSION = "HTTP/1.1";
+    
+    public Response() {
+    }
 
     public Response(HttpURLConnection conn, Map<String, String> reHeader) throws IOException {
         status = conn.getResponseCode();

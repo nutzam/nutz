@@ -356,7 +356,7 @@ public class NutIoc implements Ioc2 {
 
     @Override
     public String toString() {
-        return "/*NutIoc*/\n{\nloader:" + loader + ",\n}";
+        return "/*NutIoc count=" + loader.getName().length + "*/";
     }
 
     @Override

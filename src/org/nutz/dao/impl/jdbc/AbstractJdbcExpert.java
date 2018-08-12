@@ -338,7 +338,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
                                                                                       : commentColumn);
                     columnCommentSQL.vars()
                                     .set("table", en.getTableName())
-                                    .set("column", mf.getColumnName())
+                                    .set("column", mf.getColumnNameInSql())
                                     .set("columnComment", mf.getColumnComment());
                     sqls.add(columnCommentSQL);
                 }

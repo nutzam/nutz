@@ -27,6 +27,15 @@ public class ClobValueAdaptor extends AbstractFileValueAdaptor {
         return new SimpleClob(f);
     }
 
+    public Object get(ResultSet rs, int columnIndex) throws SQLException {
+        Clob clob = rs.getClob(columnIndex);
+        if (clob == null)
+            return null;
+        File f = this.createTempFile();
+        Streams.writeAndClose(Streams.fileOutw(f), clob.getCharacterStream());
+        return new SimpleClob(f);
+    }
+
     public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
         if (null == obj) {
             stat.setNull(i, Types.CLOB);

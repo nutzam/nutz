@@ -1,11 +1,13 @@
 package org.nutz.lang.util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 
-public class LinkedIntArray {
+public class LinkedIntArray implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     public LinkedIntArray() {
         this(256);

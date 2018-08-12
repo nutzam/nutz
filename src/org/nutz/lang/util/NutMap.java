@@ -30,7 +30,12 @@ import org.nutz.lang.born.Borning;
  */
 public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
 
-    public static NutMap WRAP(Map<String, Object> map) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public static NutMap WRAP(Map<String, Object> map) {
         if (null == map)
             return null;
         if (map instanceof NutMap)
@@ -154,7 +159,7 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         if (Strings.isBlank(regex))
             return this.duplicate();
         boolean isNot = regex.startsWith("!");
-        Pattern p = Pattern.compile(isNot ? regex.substring(1) : regex);
+        Pattern p = Regex.getPattern(isNot ? regex.substring(1) : regex);
         return pickBy(p, isNot);
     }
 
