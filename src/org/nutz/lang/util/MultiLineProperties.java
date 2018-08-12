@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Strings;
@@ -31,7 +32,7 @@ public class MultiLineProperties implements Map<String, String> {
     }
 
     public MultiLineProperties() {
-        maps = new LinkedHashMap<String, String>();
+        maps = new ConcurrentHashMap<String, String>();
     }
 
     protected Map<String, String> maps;
@@ -109,7 +110,7 @@ public class MultiLineProperties implements Map<String, String> {
         }
     }
 
-    public synchronized void clear() {
+    public void clear() {
         maps.clear();
     }
 
@@ -152,11 +153,11 @@ public class MultiLineProperties implements Map<String, String> {
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public synchronized void putAll(Map t) {
+    public void putAll(Map t) {
         maps.putAll(t);
     }
 
-    public synchronized String remove(Object key) {
+    public String remove(Object key) {
         return maps.remove(key);
     }
 
