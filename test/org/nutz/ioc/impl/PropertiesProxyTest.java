@@ -9,6 +9,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.sun.org.apache.xerces.internal.util.PropertyState.is;
+import static org.junit.matchers.JUnitMatchers.either;
+
 public class PropertiesProxyTest {
 
     private PropertiesProxy pp;
@@ -77,6 +80,9 @@ public class PropertiesProxyTest {
 
     private void assertPrefix(PropertiesProxy proxy, String prefix) {
         List<String> prefixedKeys = proxy.getKeysWithPrefix(prefix);
-        Assert.assertThat(prefixedKeys, Is.is(Arrays.asList("test.p1", "test.p2")));
+        // order is required
+        Assert.assertThat(prefixedKeys,
+                either(Is.is(Arrays.asList("test.p1", "test.p2")))
+                        .or(Is.is(Arrays.asList("test.p2", "test.p1"))));
     }
 }
