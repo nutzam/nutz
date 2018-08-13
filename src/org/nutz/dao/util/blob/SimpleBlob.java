@@ -39,11 +39,9 @@ public class SimpleBlob implements Blob, Serializable {
     }
 
     public byte[] getBytes(long pos, int length) throws SQLException {
-        if (pos == 1 && length == length())
-            try {
-                return Streams.readBytes(getBinaryStream());
-            } catch (IOException e) {
-            }
+        if (pos == 1 && length == length()) {
+            return Streams.readBytesAndClose(getBinaryStream());
+        }
         throw Lang.noImplement();
     }
 
