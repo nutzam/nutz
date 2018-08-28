@@ -141,7 +141,10 @@ public abstract class Disks {
             dir = 0;
 
         StringBuilder sb = new StringBuilder(Strings.dup("../", bb.length - pos - dir));
-        return sb.append(Lang.concat(pos, ff.length - pos, '/', ff)).toString();
+        sb.append(Lang.concat(pos, ff.length - pos, '/', ff));
+        if (path.endsWith("/"))
+            sb.append('/');
+        return sb.toString();
     }
 
     /**
@@ -208,9 +211,13 @@ public abstract class Disks {
                 paths.add(s);
             }
         }
-        if (path.charAt(0) == '/')
-            return Lang.concat("/", paths).insert(0, '/').toString();
-        return Lang.concat("/", paths).toString();
+
+        StringBuilder sb = Lang.concat("/", paths);
+        if (path.startsWith("/"))
+            sb.insert(0, '/');
+        if (path.endsWith("/"))
+            sb.append('/');
+        return sb.toString();
     }
 
     /**
