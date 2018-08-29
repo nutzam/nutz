@@ -234,7 +234,7 @@ public class Http {
                 req.setData(String.valueOf(body));
             }
         }
-        return Sender.create(req).setTimeout(timeout).send();
+        return Sender.create(req).setTimeout(timeout).setConnTimeout(connTimeout).send();
     }
     
     public static Response upload(String url,
