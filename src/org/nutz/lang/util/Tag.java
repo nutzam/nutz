@@ -399,14 +399,21 @@ public class Tag extends SimpleNode<HtmlToken> {
         if (level > 0)
             sb.append(Strings.dup(' ', level * 2));
         __join_tag_begin(sb, this);
-        if (getChildren().size() == 1) {
-            sb.append(getText());
-        } else if (hasChild()) {
-            for (Node node : getChildren()) {
-                node.toXml(sb, level + 1);
+        if (hasChild()) {
+            boolean flag = true;
+            if (getChildren().size() == 1) {
+                if (getChildren().get(0).get().getName() == null) {
+                    sb.append(getText());
+                    flag = false;
+                }
             }
-            if (level > 0)
-                sb.append(Strings.dup(' ', level * 2));
+            if (flag) {
+                for (Node node : getChildren()) {
+                    node.toXml(sb, level + 1);
+                }
+                if (level > 0)
+                    sb.append(Strings.dup(' ', level * 2));
+            }
         }
         __join_tag_end(sb, this);
         sb.append("\r\n");
