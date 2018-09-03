@@ -471,7 +471,8 @@ public class SimpleDaoTest extends DaoCase {
         assertEquals(9090, pet.getId());
     }
 
-    @Test
+    @SuppressWarnings("resource")
+	@Test
     public void test_use_blob_clob() throws FileNotFoundException, IOException, SQLException {
         dao.create(UseBlobClob.class, true);
         UseBlobClob use = new UseBlobClob();
