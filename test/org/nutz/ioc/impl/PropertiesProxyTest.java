@@ -1,5 +1,7 @@
 package org.nutz.ioc.impl;
 
+import static org.junit.matchers.JUnitMatchers.either;
+
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
@@ -8,9 +10,6 @@ import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import static com.sun.org.apache.xerces.internal.util.PropertyState.is;
-import static org.junit.matchers.JUnitMatchers.either;
 
 public class PropertiesProxyTest {
 

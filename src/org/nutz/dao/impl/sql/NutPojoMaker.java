@@ -1,5 +1,13 @@
 package org.nutz.dao.impl.sql;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import org.nutz.dao.DaoException;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.Entity;
@@ -13,16 +21,11 @@ import org.nutz.dao.sql.PojoCallback;
 import org.nutz.dao.sql.PojoMaker;
 import org.nutz.dao.sql.SqlType;
 import org.nutz.dao.util.Pojos;
-import org.nutz.lang.*;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import org.nutz.lang.ContinueLoop;
+import org.nutz.lang.Each;
+import org.nutz.lang.ExitLoop;
+import org.nutz.lang.Lang;
+import org.nutz.lang.LoopException;
 
 public class NutPojoMaker implements PojoMaker {
 
