@@ -3,6 +3,8 @@
 
 [![Build Status](https://travis-ci.org/nutzam/nutz.png?branch=master)](https://travis-ci.org/nutzam/nutz)
 [![Circle CI](https://circleci.com/gh/nutzam/nutz/tree/master.svg?style=svg)](https://circleci.com/gh/nutzam/nutz/tree/master)
+[![Backers on Open Collective](https://opencollective.com/nutz/backers/badge.svg)](#backers) 
+[![Sponsors on Open Collective](https://opencollective.com/nutz/sponsors/badge.svg)](#sponsors) 
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/4917/badge.svg)](https://scan.coverity.com/projects/4917/)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.nutz/nutz/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.nutz/nutz/)
 [![codecov.io](http://codecov.io/github/nutzam/nutz/coverage.svg?branch=master)](http://codecov.io/github/nutzam/nutz?branch=master)
@@ -79,3 +81,33 @@ http://www.jetbrains.com
 ## 关于我们
 
 广州市文尔软件科技有限公司
+
+## Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+<a href="graphs/contributors"><img src="https://opencollective.com/nutz/contributors.svg?width=890&button=false" /></a>
+
+
+## Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/nutz#backer)]
+
+<a href="https://opencollective.com/nutz#backers" target="_blank"><img src="https://opencollective.com/nutz/backers.svg?width=890"></a>
+
+
+## Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/nutz#sponsor)]
+
+<a href="https://opencollective.com/nutz/sponsor/0/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/nutz/sponsor/1/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/nutz/sponsor/2/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/nutz/sponsor/3/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/nutz/sponsor/4/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/nutz/sponsor/5/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/nutz/sponsor/6/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/nutz/sponsor/7/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/nutz/sponsor/8/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/nutz/sponsor/9/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/9/avatar.svg"></a>
+
+
