@@ -117,7 +117,7 @@ public abstract class Disks {
      */
     public static String getRelativePath(String base, String path, String equalPath) {
         // 如果两个路径相等
-        if (base.equals(path)) {
+        if (base.equals(path) || "./".equals(path) || ".".equals(path)) {
             return equalPath;
         }
 

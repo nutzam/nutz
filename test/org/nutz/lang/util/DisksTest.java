@@ -49,6 +49,12 @@ public class DisksTest {
 
         path = Disks.getRelativePath("/a/b/x.html", "/a/b/f.html");
         assertEquals("f.html", path);
+        
+        path = Disks.getRelativePath("abc.html", "./");
+        assertEquals("./", path);
+        
+        path = Disks.getRelativePath("abc.html", "./", "--");
+        assertEquals("--", path);
     }
 
     @Test
