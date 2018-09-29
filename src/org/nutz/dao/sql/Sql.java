@@ -138,4 +138,6 @@ public interface Sql extends DaoStatement {
      * @return 当前SQL对象
      */
     Sql changePlaceholder(char param, char var);
+    
+    Sql appendSourceSql(String ext);
 }

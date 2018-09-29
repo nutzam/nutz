@@ -391,4 +391,10 @@ public class NutSql extends NutStatement implements Sql {
         setSourceSql(getSourceSql());
         return null;
     }
+    
+    public Sql appendSourceSql(String ext) {
+        if (ext != null)
+            setSourceSql(getSourceSql() + " " + ext);
+        return this;
+    }
 }
