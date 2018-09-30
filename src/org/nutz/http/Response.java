@@ -85,8 +85,12 @@ public class Response {
                 if (tmp == null)
                     continue;
                 tmp = tmp.trim();
-                if (tmp.startsWith("charset="))
-                    return Strings.trim(tmp.substring(8)).trim();
+                if (tmp.startsWith("charset=")) {
+                    tmp = Strings.trim(tmp.substring(8)).trim();
+                    if (tmp.contains(","))
+                        tmp = tmp.substring(0, tmp.indexOf(',')).trim();
+                    return tmp;
+                }
             }
         }
         return Encoding.UTF8;
