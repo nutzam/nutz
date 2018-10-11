@@ -104,7 +104,7 @@ public class MultiLineProperties implements Map<String, String> {
                 if (null == ss)
                     return;
             } else {
-                maps.put(Strings.trim(s), null);
+                maps.put(Strings.trim(s), "");
             }
         }
     }
