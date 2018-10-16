@@ -188,6 +188,6 @@ public class NutConf {
         Object re = me().map.get(key);
         if (re == null)
             return defaultValue;
-        return key;
+        return re;
     }
 }
