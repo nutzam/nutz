@@ -1107,33 +1107,39 @@ public class NutDao extends DaoSupport implements Dao {
         return insertOrUpdate(t, null, null);
     }
     
-    public <T> T insertOrUpdate(T t, FieldFilter insertFieldFilter, FieldFilter updateFieldFilter) {
+    public <T> T insertOrUpdate(T t, final FieldFilter insertFieldFilter, final FieldFilter updateFieldFilter) {
         if (t == null)
             return null;
         Object obj = Lang.first(t);
-        Entity<?> en = getEntity(obj.getClass());
-        boolean shall_update = false;
-        MappingField mf = en.getNameField();
-        if (mf != null) {
-            Object val = mf.getValue(obj);
-            if (val != null && fetch(en.getType(), Cnd.where(mf.getName(), "=", val)) != null) {
-                shall_update = true;
+        final Entity<?> en = getEntity(obj.getClass());
+        Lang.each(t, new Each<Object>() {
+
+            public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop, LoopException {
+
+                boolean shall_update = false;
+                MappingField mf = en.getNameField();
+                if (mf != null) {
+                    Object val = mf.getValue(ele);
+                    if (val != null && fetch(en.getType(), Cnd.where(mf.getName(), "=", val)) != null) {
+                        shall_update = true;
+                    }
+                }
+                else if (en.getIdField() != null) {
+                    mf = en.getIdField();
+                    Object val = mf.getValue(ele);
+                    if (val != null && fetch(ele) != null) {
+                        shall_update = true;
+                    }
+                }
+                else {
+                    shall_update = fetch(ele) != null;
+                }
+                if (shall_update)
+                    update(ele, updateFieldFilter);
+                else
+                    insert(ele, insertFieldFilter);
             }
-        }
-        else if (en.getIdField() != null) {
-            mf = en.getIdField();
-            Object val = mf.getValue(obj);
-            if (val != null && fetch(t) != null) {
-                shall_update = true;
-            }
-        }
-        else {
-            shall_update = fetch(t) != null;
-        }
-        if (shall_update)
-            update(t, updateFieldFilter);
-        else
-            insert(t, insertFieldFilter);
+        });
         return t;
     }
     
