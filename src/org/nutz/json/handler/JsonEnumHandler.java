@@ -33,7 +33,7 @@ public class JsonEnumHandler extends JsonTypeHandler {
 		// 枚举
 		if (mr.isEnum()) {
 			JsonShape shape = Mirror.getAnnotationDeep(mr.getType(), JsonShape.class);
-			if (shape == null) {
+			if (shape == null || jf.isIgnoreJsonShape()) {
 				r.string2Json(((Enum) currentObj).name());
 			} else {
 				NutMap map;
