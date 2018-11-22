@@ -23,11 +23,9 @@ public abstract class Iocs {
     private static final String OBJFIELDS = "^(type|scope|singleton|fields|args|events|factory)$";
 
     public static boolean isIocObject(Map<String, ?> map) {
-        for (Entry<String, ?> en : map.entrySet()) {
-            if (!Regex.match(OBJFIELDS, en.getKey())) {
+        for (Entry<String, ?> en : map.entrySet())
+            if (!Regex.match(OBJFIELDS, en.getKey()))
                 return false;
-            }
-        }
         return true;
     }
 
@@ -55,9 +53,8 @@ public abstract class Iocs {
      */
     public static IocObject mergeWith(IocObject me, IocObject it) {
         // merge type
-        if (me.getType() == null) {
+        if (me.getType() == null)
             me.setType(it.getType());
-        }
 
         // don't need merge singleton
 
@@ -67,15 +64,12 @@ public abstract class Iocs {
         } else if (it.getEvents() != null) {
             IocEventSet eventSet = it.getEvents();
             IocEventSet myEventSet = me.getEvents();
-            if (Strings.isBlank(myEventSet.getCreate())) {
+            if (Strings.isBlank(myEventSet.getCreate()))
                 myEventSet.setCreate(eventSet.getCreate());
-            }
-            if (Strings.isBlank(myEventSet.getDepose())) {
+            if (Strings.isBlank(myEventSet.getDepose()))
                 myEventSet.setDepose(eventSet.getDepose());
-            }
-            if (Strings.isBlank(myEventSet.getFetch())) {
+            if (Strings.isBlank(myEventSet.getFetch()))
                 myEventSet.setFetch(eventSet.getFetch());
-            }
         }
 
         // merge scope
@@ -84,16 +78,13 @@ public abstract class Iocs {
         }
 
         // merge arguments
-        if (!me.hasArgs()) {
+        if (!me.hasArgs())
             me.copyArgys(it.getArgs());
-        }
 
         // merge fields
-        for (IocField fld : it.getFields().values()) {
-            if (!me.hasField(fld.getName())) {
+        for (IocField fld : it.getFields().values())
+            if (!me.hasField(fld.getName()))
                 me.addField(fld);
-            }
-        }
 
         return me;
     }
@@ -114,9 +105,8 @@ public abstract class Iocs {
                 if (value.endsWith(":")) {
                     iocValue.setValue("");
                 }
-                else {
+                else
                     iocValue.setValue(value.substring(value.indexOf(':') + 1));
-                }
             } else {
                 iocValue.setType(IocValue.TYPE_NORMAL);
                 iocValue.setValue(value);
@@ -136,9 +126,8 @@ public abstract class Iocs {
     
     public static IocObject wrap(Object obj) {
         IocObject iobj = new IocObject();
-        if (obj != null) {
+        if (obj != null)
             iobj.setType(obj.getClass());
-        }
         iobj.setFactory(Iocs.class.getName() + "#self");
         IocValue ival = new IocValue(null, new StaticValue(obj));
         iobj.addArg(ival);

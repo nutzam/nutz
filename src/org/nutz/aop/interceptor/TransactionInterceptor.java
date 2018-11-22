@@ -28,7 +28,6 @@ public class TransactionInterceptor implements MethodInterceptor {
         this.level = level;
     }
 
-    @Override
     public void filter(final InterceptorChain chain) throws Throwable {
         try {
             Trans.begin(level);

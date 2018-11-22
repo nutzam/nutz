@@ -18,13 +18,11 @@ import org.nutz.lang.util.NutMap;
  */
 public class JsonEnumHandler extends JsonTypeHandler {
 
-	@Override
-    public boolean supportFromJson(Mirror<?> mirror, Object obj) {
+	public boolean supportFromJson(Mirror<?> mirror, Object obj) {
 		return mirror.isEnum();
 	}
 
-	@Override
-    public boolean supportToJson(Mirror<?> mirror, Object obj, JsonFormat jf) {
+	public boolean supportToJson(Mirror<?> mirror, Object obj, JsonFormat jf) {
 		return mirror.isEnum();
 	}
 
@@ -70,9 +68,8 @@ public class JsonEnumHandler extends JsonTypeHandler {
 		String name;
 		if (obj instanceof Map) {
 			name = (String) ((Map) obj).get("name");
-		} else {
-            name = String.valueOf(obj);
-        }
+		} else
+			name = String.valueOf(obj);
 		return Enum.valueOf((Class) mirror.getType(), name);
 	}
 }

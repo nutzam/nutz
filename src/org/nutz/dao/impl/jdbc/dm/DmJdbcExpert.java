@@ -10,7 +10,6 @@ public class DmJdbcExpert extends OracleJdbcExpert {
         super(conf);
     }
 
-    @Override
     public String getDatabaseType() {
         return DB.DM.name();
     }

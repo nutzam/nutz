@@ -36,23 +36,19 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
         super(conf);
     }
 
-    @Override
     public String getDatabaseType() {
         return DB.PSQL.name();
     }
 
-    @Override
     public void formatQuery(Pojo pojo) {
         Pager pager = pojo.getContext().getPager();
         // 需要进行分页
-        if (null != pager && pager.getPageNumber() > 0) {
+        if (null != pager && pager.getPageNumber() > 0)
             pojo.append(Pojos.Items.wrapf(" LIMIT %d OFFSET %d",
-                    pager.getPageSize(),
-                    pager.getOffset()));
-        }
+                                          pager.getPageSize(),
+                                          pager.getOffset()));
     }
 
-    @Override
     public void formatQuery(Sql sql) {
         Pager pager = sql.getContext().getPager();
         if (null != pager && pager.getPageNumber() > 0) {
@@ -63,14 +59,12 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
         }
     }
 
-    @Override
     public boolean createEntity(Dao dao, Entity<?> en) {
         StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
         // 创建字段
         for (MappingField mf : en.getMappingFields()) {
-            if (mf.isReadonly()) {
+            if (mf.isReadonly())
                 continue;
-            }
             sb.append('\n').append(mf.getColumnNameInSql());
             // 自增主键特殊形式关键字
             if (mf.isId() && mf.isAutoIncreasement()) {
@@ -83,18 +77,14 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
                 }
                 // 普通字段
                 else {
-                    if (mf.isUnsigned()) {
+                    if (mf.isUnsigned())
                         sb.append(" UNSIGNED");
-                    }
-                    if (mf.isNotNull()) {
+                    if (mf.isNotNull())
                         sb.append(" NOT NULL");
-                    }
-                    if (mf.isAutoIncreasement()) {
+                    if (mf.isAutoIncreasement())
                         throw Lang.noImplement();
-                    }
-                    if (mf.hasDefaultValue()) {
+                    if (mf.hasDefaultValue())
                         addDefaultValue(sb, mf);
-                    }
                 }
             }
             sb.append(',');
@@ -130,17 +120,14 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
         return true;
     }
 
-    @Override
     public String evalFieldType(MappingField mf) {
-        if (mf.getCustomDbType() != null) {
+        if (mf.getCustomDbType() != null)
             return mf.getCustomDbType();
-        }
         switch (mf.getColumnType()) {
         case INT:
             // 用户自定义了宽度
-            if (mf.getWidth() > 0) {
+            if (mf.getWidth() > 0)
                 return "NUMERIC(" + mf.getWidth() + ")";
-            }
             // 用数据库的默认宽度
             return "INT";
 
@@ -150,9 +137,8 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
                 return "NUMERIC(" + mf.getWidth() + "," + mf.getPrecision() + ")";
             }
             // 用默认精度
-            if (mf.getTypeMirror().isDouble()) {
+            if (mf.getTypeMirror().isDouble())
                 return "NUMERIC(15,10)";
-            }
             return "NUMERIC";
 
         case BINARY:
@@ -173,7 +159,6 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
         return super.evalFieldType(mf);
     }
 
-    @Override
     protected String createResultSetMetaSql(Entity<?> en) {
         return "SELECT * FROM " + en.getViewName() + " LIMIT 1";
     }
@@ -191,11 +176,9 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
         }
     }
     
-    @Override
     public String wrapKeywork(String columnName, boolean force) {
-        if (force || keywords.contains(columnName.toUpperCase())) {
+        if (force || keywords.contains(columnName.toUpperCase()))
             return "\"" + columnName + "\"";
-        }
         return null;
     }
 

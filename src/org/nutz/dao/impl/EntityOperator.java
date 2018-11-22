@@ -48,12 +48,10 @@ public class EntityOperator {
          */
         if (null != entity) {
             for (Pojo pojo : pojoList) {
-                if (null == pojo.getOperatingObject()) {
+                if (null == pojo.getOperatingObject())
                     pojo.setOperatingObject(myObj);
-                }
-                if (pojo.params().isEmpty()) {
+                if (pojo.params().isEmpty())
                     pojo.addParamsBy(pojo.getOperatingObject());
-                }
             }
             updateCount = dao._exec(pojoList.toArray(new DaoStatement[pojoList.size()]));
         }
@@ -75,9 +73,8 @@ public class EntityOperator {
     }
 
     public Pojo addUpdate(final Entity<?> en, final Object obj) {
-        if (null == en) {
+        if (null == en)
             return null;
-        }
 
         Pojo pojo = dao.pojoMaker.makeUpdate(en, null)
                                     .append(Pojos.Items.cndAuto(en, Lang.first(obj)))
@@ -91,9 +88,8 @@ public class EntityOperator {
     }
     
     public Pojo addUpdateByPkAndCnd(final Entity<?> en, final Object obj, final Condition cnd) {
-        if (null == en) {
+        if (null == en)
             return null;
-        }
         Pojo pojo = dao.pojoMaker.makeUpdate(en, null);
         
         boolean pureCnd = en.getPkType() == PkType.UNKNOWN;
@@ -116,20 +112,18 @@ public class EntityOperator {
                                                 final Object obj,
                                                 final FieldMatcher fm) {
 
-        if (null == en) {
+        if (null == en)
             return null;
-        }
 
         final FieldMatcher newFM;
-        if (null == fm) {
+        if (null == fm)
             newFM = FieldMatcher.make(null, null, true);
-        } else {
+        else {
             newFM = fm;
             newFM.setIgnoreNull(true);
         }
         final List<Pojo> re = new ArrayList<Pojo>(Lang.eleSize(obj));
         Lang.each(obj, new Each<Object>() {
-            @Override
             public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
                 Pojo pojo = dao.pojoMaker.makeUpdate(en, ele)
                                             .append(Pojos.Items.cndAuto(en, ele))
@@ -144,9 +138,8 @@ public class EntityOperator {
     }
     
     public Pojo addUpdateAndIncrIfMatch(final Entity<?> en, final Object obj, String fieldName) {
-        if (null == en) {
+        if (null == en)
             return null;
-        }
         MappingField mf = en.getField(fieldName);
         Pojo pojo = dao.pojoMaker.makeUpdate(en, null)
                                     .append(new Static("," + mf.getColumnNameInSql() + "=" + mf.getColumnNameInSql() + "+1"))
@@ -158,9 +151,8 @@ public class EntityOperator {
     }
 
     public Pojo addUpdate(Condition cnd) {
-        if (null == entity) {
+        if (null == entity)
             return null;
-        }
 
         Pojo pojo = dao.pojoMaker.makeUpdate(entity, null).append(Pojos.Items.cnd(cnd));
         pojoList.add(pojo);
@@ -168,9 +160,8 @@ public class EntityOperator {
     }
 
     public Pojo addDeleteSelfOnly(long id) {
-        if (null == entity) {
+        if (null == entity)
             return null;
-        }
 
         Pojo pojo = dao.pojoMaker.makeDelete(entity);
         pojo.append(Pojos.Items.cndAuto(entity, myObj));
@@ -180,9 +171,8 @@ public class EntityOperator {
     }
 
     public Pojo addDeleteSelfOnly(String name) {
-        if (null == entity) {
+        if (null == entity)
             return null;
-        }
 
         Pojo pojo = dao.pojoMaker.makeDelete(entity);
         pojo.append(Pojos.Items.cndName(entity, name));
@@ -192,9 +182,8 @@ public class EntityOperator {
     }
 
     public Pojo addDeleteSelfOnly() {
-        if (null == entity) {
+        if (null == entity)
             return null;
-        }
 
         Pojo pojo = dao.pojoMaker.makeDelete(entity);
         pojo.append(Pojos.Items.cndAuto(entity, myObj));
@@ -208,23 +197,20 @@ public class EntityOperator {
     }
 
     public List<Pojo> addInsert(Entity<?> en, Object obj) {
-        if (null == en) {
+        if (null == en)
             return null;
-        }
 
         int len = Map.class.isAssignableFrom(obj.getClass()) ? 1 : Lang.eleSize(obj);
         List<Pojo> re = new ArrayList<Pojo>(len);
         if (len > 0) {
             if (len == 1) {
-                for (Pojo pojo : en.cloneBeforeInsertMacroes()) {
+                for (Pojo pojo : en.cloneBeforeInsertMacroes())
                     re.add(pojo.setOperatingObject(obj));
-                }
             }
             re.add(dao.pojoMaker.makeInsert(en).setOperatingObject(obj));
             if (len == 1) {
-                for (Pojo pojo : en.cloneAfterInsertMacroes()) {
+                for (Pojo pojo : en.cloneAfterInsertMacroes())
                     re.add(pojo.setOperatingObject(obj));
-                }
             }
             pojoList.addAll(re);
         }
@@ -236,9 +222,8 @@ public class EntityOperator {
     }
 
     public Pojo addInsertSelfOnly(Entity<?> en, Object obj) {
-        if (null == en) {
+        if (null == en)
             return null;
-        }
 
         Pojo pojo;
 

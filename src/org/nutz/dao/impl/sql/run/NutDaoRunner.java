@@ -29,7 +29,6 @@ public class NutDaoRunner implements DaoRunner {
     
     protected DataSource slaveDataSource;
     
-    @Override
     public void run(final DataSource dataSource, final ConnCallback callback) {
         if (callback instanceof DaoInterceptorChain) {
             DaoInterceptorChain chain = (DaoInterceptorChain)callback;
@@ -52,9 +51,9 @@ public class NutDaoRunner implements DaoRunner {
                 // SQLITE仅支持2种事务级别
                 Transaction t = Trans.get();
                 if (t == null) {
-                    if (isAllSelect) {
+                    if (isAllSelect)
                         useTrans = false;
-                    } else {
+                    else {
                         chain.setAutoTransLevel(Connection.TRANSACTION_READ_UNCOMMITTED);
                         useTrans = true;
                     }
@@ -72,7 +71,6 @@ public class NutDaoRunner implements DaoRunner {
             // 看来需要开启事务了
             if (useTrans && chain.getAutoTransLevel() > 0) {
                 Trans.exec(chain.getAutoTransLevel(), new Atom() {
-                    @Override
                     public void run() {
                         _run(dataSource, callback);
                     }
@@ -107,15 +105,14 @@ public class NutDaoRunner implements DaoRunner {
             runCallback(conn, callback);
         }
         catch (Exception e) {
-            if (sp != null && conn != null) {
+            if (sp != null && conn != null)
                 try {
                     conn.rollback(sp);
-                } catch (SQLException e1) {
                 }
-            }
-            if (e instanceof DaoException) {
-                throw (DaoException) e;
-            }
+                catch (SQLException e1) {
+                }
+            if (e instanceof DaoException)
+                throw (DaoException)e;
             throw new DaoException(e);
         }
     }
@@ -128,22 +125,18 @@ public class NutDaoRunner implements DaoRunner {
             // 开始真正运行
             runCallback(conn, callback);
             // 完成提交
-            if (!conn.getAutoCommit()) {
+            if (!conn.getAutoCommit())
                 conn.commit();
-            }
         }
         // 异常回滚
         catch (Exception e) {
             try {
                 if (conn != null) // 高并发时,从数据库连接池获取连接就已经抛错误,所以conn可能为null的
-                {
                     conn.rollback();
-                }
             }
             catch (Exception e1) {}// TODO 简单记录一下?
-            if (e instanceof DaoException) {
-                throw (DaoException) e;
-            }
+            if (e instanceof DaoException)
+                throw (DaoException)e;
             throw new DaoException(e);
         }
         // 保证释放资源
@@ -154,9 +147,8 @@ public class NutDaoRunner implements DaoRunner {
                     conn.close();
                 }
                 catch (SQLException closeE) {
-                    if (log.isWarnEnabled()) {
+                    if (log.isWarnEnabled())
                         log.warn("Fail to close connection!", closeE);
-                    }
                 }
             }
         }
@@ -178,9 +170,8 @@ public class NutDaoRunner implements DaoRunner {
     }
     
     protected DataSource selectDataSource(Transaction t, DataSource master, ConnCallback callback) {
-        if (this.slaveDataSource == null) {
+        if (this.slaveDataSource == null)
             return master;
-        }
         if (t == null && callback instanceof DaoInterceptorChain) {
             DaoInterceptorChain chain = (DaoInterceptorChain)callback;
             DaoStatement[] sts = chain.getDaoStatements();

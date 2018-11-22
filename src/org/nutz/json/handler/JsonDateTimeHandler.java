@@ -17,12 +17,10 @@ import org.nutz.lang.Mirror;
  */
 public class JsonDateTimeHandler extends JsonTypeHandler {
 
-    @Override
     public boolean supportFromJson(Mirror<?> mirror, Object obj) {
         return mirror.isDateTimeLike();
     }
 
-    @Override
     public boolean supportToJson(Mirror<?> mirror, Object obj, JsonFormat jf) {
         return mirror.isDateTimeLike();
     }
@@ -37,9 +35,8 @@ public class JsonDateTimeHandler extends JsonTypeHandler {
                 flag = false;
             }
         }
-        if (flag) {
+        if (flag)
             r.string2Json(jf.getCastors().castToString(currentObj));
-        }
     }
 
     @Override
@@ -48,13 +45,11 @@ public class JsonDateTimeHandler extends JsonTypeHandler {
     }
 
     protected String doDateFormat(JsonFormat format, Date date, DateFormat df) {
-        if (df == null) {
+        if (df == null)
             df = format.getDateFormat();
-        }
         if (df != null) {
-            if (format.getTimeZone() != null) {
+            if (format.getTimeZone() != null)
                 df.setTimeZone(format.getTimeZone());
-            }
             return df.format(date);
         }
         return null;

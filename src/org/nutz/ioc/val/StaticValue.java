@@ -11,7 +11,6 @@ public class StaticValue implements ValueProxy {
         this.obj = obj;
     }
 
-    @Override
     public Object get(IocMaking ing) {
         return obj;
     }

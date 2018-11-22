@@ -14,16 +14,13 @@ import org.nutz.plugin.Plugin;
  */
 public class MakeUUID implements RunMethod, Plugin {
 
-	@Override
-    public boolean canWork() {
+	public boolean canWork() {
 		return true;
 	}
 
-	@Override
-    public Object run(List<Object> fetchParam) {
-	    if (fetchParam.isEmpty() || !(fetchParam.get(0) instanceof Number)) {
-            return UUID.randomUUID().toString().replace("-", "");
-        }
+	public Object run(List<Object> fetchParam) {
+	    if (fetchParam.isEmpty() || !(fetchParam.get(0) instanceof Number))
+	        return UUID.randomUUID().toString().replace("-", "");
 	    int type = ((Number)fetchParam.get(0)).intValue();
 	    switch (type) {
         case 32:
@@ -35,8 +32,7 @@ public class MakeUUID implements RunMethod, Plugin {
         }
 	}
 
-	@Override
-    public String fetchSelf() {
+	public String fetchSelf() {
 		return "uuid";
 	}
 

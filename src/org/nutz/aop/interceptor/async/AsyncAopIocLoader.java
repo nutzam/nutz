@@ -26,19 +26,15 @@ public class AsyncAopIocLoader extends SimpleAopMaker<Async>{
 	    this.es = es;
 	}
 	
-	@Override
-    public List<? extends MethodInterceptor> makeIt(Async async, Method method, Ioc ioc) {
-		if (!async.enable()) {
-            return null;
-        }
+	public List<? extends MethodInterceptor> makeIt(Async async, Method method, Ioc ioc) {
+		if (!async.enable())
+			return null;
 		return Arrays.asList(new AsyncMethodInterceptor(method, async, es));
 	}
 	
-	@Override
-    public void depose() throws Exception {
-		if (es != null) {
-            es.shutdownNow();
-        }
+	public void depose() throws Exception {
+		if (es != null)
+			es.shutdownNow();
 	}
 	
 	public ExecutorService getExecutorService() {

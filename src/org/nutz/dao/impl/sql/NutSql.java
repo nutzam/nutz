@@ -52,9 +52,8 @@ public class NutSql extends NutStatement implements Sql {
     }
 
     public NutSql(String source, SqlCallback callback) {
-        if (source != null) {
+        if (source != null)
             this.setSourceSql(source);
-        }
         this.callback = callback;
         this.vars = new SimpleVarSet();
         this.rows = new ArrayList<VarSet>();
@@ -63,15 +62,13 @@ public class NutSql extends NutStatement implements Sql {
         customValueAdaptor = new HashMap<String, ValueAdaptor>();
     }
 
-    @Override
     public void setSourceSql(String sql) {
         this.sourceSql = sql.trim();
         SqlLiteral literal = literal();
         this.varIndex = literal.getVarIndexes();
         this.paramIndex = literal.getParamIndexes();
-        if (getSqlType() == null) {
+        if (getSqlType() == null)
             setSqlType(literal.getType());
-        }
         String[] ss = literal.stack.cloneChain();
         PItem[] tmp = new PItem[ss.length];
         for (String var : varIndex.getOrders()) {
@@ -108,17 +105,14 @@ public class NutSql extends NutStatement implements Sql {
         return count;
     }
 
-    @Override
     public ValueAdaptor[] getAdaptors() {
         ValueAdaptor[] adaptors = new ValueAdaptor[_params_count()];
         int i = 0;
-        for (PItem item : items) {
+        for (PItem item : items)
             i = item.joinAdaptor(getEntity(), adaptors, i);
-        }
         return adaptors;
     }
 
-    @Override
     public Object[][] getParamMatrix() {
         int pc = _params_count();
         int row_count = rows.size();
@@ -129,100 +123,81 @@ public class NutSql extends NutStatement implements Sql {
         for (int z = 0; z < row_count; z++) {
             VarSet row = rows.get(z);
             int i = 0;
-            for (PItem item : items) {
+            for (PItem item : items)
                 i = item.joinParams(getEntity(), row, re[z], i);
-            }
         }
         return re;
     }
 
-    @Override
     public String toPreparedStatement() {
         StringBuilder sb = new StringBuilder();
-        for (PItem item : items) {
+        for (PItem item : items)
             item.joinSql(getEntity(), sb);
-        }
         return sb.toString();
     }
 
-    @Override
     public void onBefore(Connection conn) throws SQLException {}
 
-    @Override
     public void onAfter(Connection conn, ResultSet rs, Statement stmt) throws SQLException {
-        if (callback != null) {
+        if (callback != null)
             getContext().setResult(callback.invoke(conn, rs, this));
-        }
     }
 
-    @Override
     public DaoStatement setPager(Pager pager) {
         getContext().setPager(pager);
         return this;
     }
 
-    @Override
     public VarSet vars() {
         return vars;
     }
 
-    @Override
     public VarSet params() {
         return params;
     }
 
-    @Override
     public void setValueAdaptor(String name, ValueAdaptor adaptor) {
         this.customValueAdaptor.put(name, adaptor);
     }
 
-    @Override
     public VarIndex varIndex() {
         return varIndex;
     }
 
-    @Override
     public VarIndex paramIndex() {
         return paramIndex;
     }
 
-    @Override
     public void addBatch() {
         params = new SimpleVarSet();
         rows.add(params);
     }
 
-    @Override
     public void clearBatch() {
         params = new SimpleVarSet();
         rows.clear();
         rows.add(params);
     }
 
-    @Override
     public Sql setEntity(Entity<?> entity) {
         super.setEntity(entity);
         return this;
     }
 
-    @Override
     public Sql setCallback(SqlCallback callback) {
         this.callback = callback;
         return this;
     }
 
-    @Override
     public Sql setCondition(Condition cnd) {
         vars.set("condition", cnd);
         return this;
     }
 
-    @Override
     public Sql duplicate() {
         return new NutSql(sourceSql, callback);
     }
 
-    @Override
     public String getSourceSql() {
         return sourceSql;
     }
@@ -239,7 +214,6 @@ public class NutSql extends NutStatement implements Sql {
             this.name = name;
         }
 
-        @Override
         public void joinSql(Entity<?> en, StringBuilder sb) {
             Object val = vars.get(name);
             if (val != null) {
@@ -254,7 +228,6 @@ public class NutSql extends NutStatement implements Sql {
             }
         }
         
-        @Override
         public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
             Object val = vars.get(name);
             if (val != null) {
@@ -265,7 +238,6 @@ public class NutSql extends NutStatement implements Sql {
             return off;
         }
         
-        @Override
         public int paramCount(Entity<?> en) {
             Object val = vars.get(name);
             if (val != null) {
@@ -276,7 +248,6 @@ public class NutSql extends NutStatement implements Sql {
             return 0;
         }
         
-        @Override
         public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
             Object val = vars.get(name);
             if (val != null) {
@@ -300,7 +271,6 @@ public class NutSql extends NutStatement implements Sql {
             this.name = name;
         }
 
-        @Override
         public void joinSql(Entity<?> en, StringBuilder sb) {
             Object val = rows.get(0).get(name);
             if (val == null) {
@@ -317,7 +287,6 @@ public class NutSql extends NutStatement implements Sql {
             }
         }
 
-        @Override
         public int joinAdaptor(final Entity<?> en, final ValueAdaptor[] adaptors, final int off) {
             if (!customValueAdaptor.isEmpty()) {
                 ValueAdaptor custom = customValueAdaptor.get(name);
@@ -330,9 +299,8 @@ public class NutSql extends NutStatement implements Sql {
             if (val == null && rows.size() > 1) {
                 for (VarSet vs : rows) {
                     val = vs.get(name);
-                    if (val != null) {
+                    if (val != null)
                         break;
-                    }
                 }
             }
             if (val == null) {
@@ -343,7 +311,6 @@ public class NutSql extends NutStatement implements Sql {
             } else if (val.getClass().isArray() || Collection.class.isAssignableFrom(val.getClass())) {
                 int len = Lang.eleSize(val);
                 Lang.each(val, new Each<Object>() {
-                    @Override
                     public void invoke(int index, Object ele, int length) {
                         adaptors[off + index] = getAdapterBy(ele);
                     }
@@ -357,7 +324,6 @@ public class NutSql extends NutStatement implements Sql {
             }
         }
 
-        @Override
         public int joinParams(Entity<?> en, Object obj, final Object[] params, final int off) {
             VarSet row = (VarSet) obj;
             Object val = row.get(name);
@@ -368,7 +334,6 @@ public class NutSql extends NutStatement implements Sql {
             } else if (val.getClass().isArray()) {
                 int len = Lang.eleSize(val);
                 Lang.each(val, new Each<Object>() {
-                    @Override
                     public void invoke(int index, Object ele, int length) {
                         params[off + index] = ele;
                     }
@@ -382,7 +347,6 @@ public class NutSql extends NutStatement implements Sql {
             }
         }
 
-        @Override
         public int paramCount(Entity<?> en) {
             Object val = rows.get(0).get(name);
             if (val == null) {
@@ -403,41 +367,34 @@ public class NutSql extends NutStatement implements Sql {
      * 若需要定制参数字符和变量字符,覆盖本方法,通过SqlLiteral的构造方法指定之
      */
     protected SqlLiteral literal() {
-        if (placeholder == null) {
+        if (placeholder == null)
             return new SqlLiteral().valueOf(sourceSql);
-        }
         return new SqlLiteral(placeholder[0], placeholder[1]).valueOf(sourceSql);
     }
     
-    @Override
     public Sql setParam(String name, Object value) {
         params().set(name, value);
         return this;
     }
     
-    @Override
     public Sql setVar(String name, Object value) {
         vars().set(name, value);
         return this;
     }
     
-    @Override
     public Record getOutParams() {
         return getContext().attr(Record.class, "OUT");
     }
     
-    @Override
     public Sql changePlaceholder (char param, char var) {
         placeholder = new char[]{param, var};
         setSourceSql(getSourceSql());
         return null;
     }
     
-    @Override
     public Sql appendSourceSql(String ext) {
-        if (ext != null) {
+        if (ext != null)
             setSourceSql(getSourceSql() + " " + ext);
-        }
         return this;
     }
 }

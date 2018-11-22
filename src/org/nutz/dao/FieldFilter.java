@@ -262,9 +262,8 @@ public class FieldFilter {
      */
     public static FieldMatcher get(Class<?> type) {
         FieldFilter ff = FF.get();
-        if (null == ff) {
+        if (null == ff)
             return null;
-        }
         return ff.map.get(type);
     }
 

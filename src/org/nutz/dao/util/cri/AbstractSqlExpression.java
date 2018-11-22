@@ -21,7 +21,6 @@ public abstract class AbstractSqlExpression extends AbstractPItem implements Sql
         return this;
     }
 
-    @Override
     public SqlExpression setNot(boolean not) {
         this.not = not;
         return this;

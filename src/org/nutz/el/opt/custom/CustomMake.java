@@ -72,12 +72,10 @@ public class CustomMake {
             this.method = method;
         }
         
-        @Override
         public Object run(List<Object> fetchParam) {
             return Mirror.me(method.getDeclaringClass()).invoke(null, method.getName(), fetchParam.toArray());
         }
         
-        @Override
         public String fetchSelf() {
             return "custom method invoke";
         }

@@ -38,11 +38,9 @@ public abstract class Disks {
             re++;
         } else if (f.isDirectory()) {
             File[] fs = null == filter ? f.listFiles() : f.listFiles(filter);
-            if (fs != null) {
-                for (File theFile : fs) {
+            if (fs != null)
+                for (File theFile : fs)
                     re += visitFile(theFile, fv, filter);
-                }
-            }
         }
         return re;
     }
@@ -64,11 +62,9 @@ public abstract class Disks {
         re++;
         if (f.isDirectory()) {
             File[] fs = null == filter ? f.listFiles() : f.listFiles(filter);
-            if (fs != null) {
-                for (File theFile : fs) {
+            if (fs != null)
+                for (File theFile : fs)
                     re += visitFileWithDir(theFile, fv, filter);
-                }
-            }
         }
         return re;
     }
@@ -84,14 +80,12 @@ public abstract class Disks {
      */
     public static String getRelativePath(File base, File file) {
         String pathBase = base.getAbsolutePath();
-        if (base.isDirectory()) {
+        if (base.isDirectory())
             pathBase += "/";
-        }
 
         String pathFile = file.getAbsolutePath();
-        if (file.isDirectory()) {
+        if (file.isDirectory())
             pathFile += "/";
-        }
 
         return getRelativePath(pathBase, pathFile);
     }
@@ -132,11 +126,9 @@ public abstract class Disks {
         String[] ff = Strings.splitIgnoreBlank(getCanonicalPath(path), "[\\\\/]");
         int len = Math.min(bb.length, ff.length);
         int pos = 0;
-        for (; pos < len; pos++) {
-            if (!bb[pos].equals(ff[pos])) {
+        for (; pos < len; pos++)
+            if (!bb[pos].equals(ff[pos]))
                 break;
-            }
-        }
 
         // 证明路径是相等的
         if (len == pos && bb.length == ff.length) {
@@ -145,15 +137,13 @@ public abstract class Disks {
 
         // 开始查找不同
         int dir = 1;
-        if (base.endsWith("/")) {
+        if (base.endsWith("/"))
             dir = 0;
-        }
 
         StringBuilder sb = new StringBuilder(Strings.dup("../", bb.length - pos - dir));
         sb.append(Lang.concat(pos, ff.length - pos, '/', ff));
-        if (path.endsWith("/")) {
+        if (path.endsWith("/"))
             sb.append('/');
-        }
         return sb.toString();
     }
 
@@ -170,9 +160,8 @@ public abstract class Disks {
      */
     public static String getIntersectPath(String ph0, String ph1, String dft) {
         // 木可能有交集
-        if (null == ph0 || null == ph1) {
+        if (null == ph0 || null == ph1)
             return dft;
-        }
 
         String[] ss0 = Strings.splitIgnoreBlank(ph0, "[\\\\/]");
         String[] ss1 = Strings.splitIgnoreBlank(ph1, "[\\\\/]");
@@ -180,23 +169,20 @@ public abstract class Disks {
         int pos = 0;
         int len = Math.min(ss0.length, ss1.length);
         for (; pos < len; pos++) {
-            if (!ss0[pos].equals(ss1[pos])) {
+            if (!ss0[pos].equals(ss1[pos]))
                 break;
-            }
         }
 
         // 木有交集
-        if (pos == 0) {
+        if (pos == 0)
             return dft;
-        }
 
         // 得到
         String re = Lang.concat(0, pos, "/", ss0).toString();
 
         // 需要补全后面的 "/" 吗
-        if (ph0.endsWith("/") && ph1.endsWith("/")) {
+        if (ph0.endsWith("/") && ph1.endsWith("/"))
             return re + "/";
-        }
 
         return re;
     }
@@ -209,16 +195,14 @@ public abstract class Disks {
      * @return 整理后的路径
      */
     public static String getCanonicalPath(String path) {
-        if (Strings.isBlank(path)) {
+        if (Strings.isBlank(path))
             return path;
-        }
         String[] pa = Strings.splitIgnoreBlank(path, "[\\\\/]");
         LinkedList<String> paths = new LinkedList<String>();
         for (String s : pa) {
             if ("..".equals(s)) {
-                if (paths.size() > 0) {
+                if (paths.size() > 0)
                     paths.removeLast();
-                }
                 continue;
             }
             if (".".equals(s)) {
@@ -229,12 +213,10 @@ public abstract class Disks {
         }
 
         StringBuilder sb = Lang.concat("/", paths);
-        if (path.startsWith("/")) {
+        if (path.startsWith("/"))
             sb.insert(0, '/');
-        }
-        if (path.endsWith("/")) {
+        if (path.endsWith("/"))
             sb.append('/');
-        }
         return sb.toString();
     }
 
@@ -278,26 +260,22 @@ public abstract class Disks {
      */
     public static String absolute(String path, ClassLoader klassLoader, String enc) {
         path = normalize(path, enc);
-        if (Strings.isEmpty(path)) {
+        if (Strings.isEmpty(path))
             return null;
-        }
 
         File f = new File(path);
         if (!f.exists()) {
             URL url = null;
             try {
                 url = klassLoader.getResource(path);
-                if (null == url) {
+                if (null == url)
                     url = Thread.currentThread().getContextClassLoader().getResource(path);
-                }
-                if (null == url) {
+                if (null == url)
                     url = ClassLoader.getSystemResource(path);
-                }
             }
             catch (Throwable e) {}
-            if (null != url) {
+            if (null != url)
                 return normalize(url.getPath(), Encoding.UTF8);// 通过URL获取String,一律使用UTF-8编码进行解码
-            }
             return null;
         }
         return path;
@@ -324,12 +302,10 @@ public abstract class Disks {
      * @return 正常化后的路径
      */
     public static String normalize(String path, String enc) {
-        if (Strings.isEmpty(path)) {
+        if (Strings.isEmpty(path))
             return null;
-        }
-        if (path.charAt(0) == '~') {
+        if (path.charAt(0) == '~')
             path = Disks.home() + path.substring(1);
-        }
         try {
             return URLDecoder.decode(path, enc);
         }
@@ -355,29 +331,24 @@ public abstract class Disks {
                                        final boolean deep,
                                        final FileVisitor fv) {
         File d = Files.findFile(path);
-        if (null == d) {
+        if (null == d)
             return;
-        }
         visitFile(d, new FileVisitor() {
             @Override
             public void visit(File f) {
-                if (f.isDirectory()) {
+                if (f.isDirectory())
                     return;
-                }
                 fv.visit(f);
             }
         }, new FileFilter() {
             @Override
             public boolean accept(File f) {
-                if (f.isDirectory()) {
+                if (f.isDirectory())
                     return deep;
-                }
-                if (f.isHidden()) {
+                if (f.isHidden())
                     return false;
-                }
-                if (Strings.isEmpty(regex)) {
+                if (Strings.isEmpty(regex))
                     return true;
-                }
                 return Regex.match(regex, f.getName());
             }
         });
@@ -400,9 +371,8 @@ public abstract class Disks {
                                               final boolean deep,
                                               final FileVisitor fv) {
         File d = Files.findFile(path);
-        if (null == d) {
+        if (null == d)
             return;
-        }
         visitFileWithDir(d, new FileVisitor() {
             @Override
             public void visit(File f) {
@@ -411,15 +381,12 @@ public abstract class Disks {
         }, new FileFilter() {
             @Override
             public boolean accept(File f) {
-                if (f.isDirectory()) {
+                if (f.isDirectory())
                     return deep;
-                }
-                if (f.isHidden()) {
+                if (f.isHidden())
                     return false;
-                }
-                if (Strings.isEmpty(regex)) {
+                if (Strings.isEmpty(regex))
                     return true;
-                }
                 return f.getName().matches(regex);
             }
         });

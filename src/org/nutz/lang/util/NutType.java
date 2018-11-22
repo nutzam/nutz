@@ -69,17 +69,14 @@ public class NutType implements ParameterizedType {
 
     private Type ownerType;
 
-    @Override
     public Type[] getActualTypeArguments() {
         return actualTypeArguments;
     }
 
-    @Override
     public Type getRawType() {
         return rawType;
     }
 
-    @Override
     public Type getOwnerType() {
         return ownerType;
     }

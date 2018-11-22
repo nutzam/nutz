@@ -69,9 +69,8 @@ public class ValueEscaper {
                     break;
                 }
             }
-            if (!find) {
+            if (!find)
                 sb.append(c);
-            }
         }
         return sb;
     }

@@ -15,17 +15,14 @@ import org.nutz.lang.Mirror;
  */
 public class JsonStringLikeHandler extends JsonTypeHandler {
 
-    @Override
     public boolean supportFromJson(Mirror<?> mirror, Object obj) {
         return mirror.isStringLike() || mirror.isChar();
     }
 
-    @Override
     public boolean supportToJson(Mirror<?> mirror, Object obj, JsonFormat jf) {
         return mirror.isStringLike() || mirror.isChar();
     }
 
-    @Override
     public void toJson(Mirror<?> mirror, Object currentObj, JsonRender r, JsonFormat jf) throws IOException {
         r.string2Json(String.valueOf(currentObj));
     }

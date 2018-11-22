@@ -53,7 +53,6 @@ public class NutTransaction extends Transaction {
     /**
      * 提交事务
      */
-    @Override
     protected void commit() {
         ComboException ce = new ComboException();
         for (ConnInfo cInfo : list) {
@@ -61,9 +60,8 @@ public class NutTransaction extends Transaction {
                 // 提交事务
                 cInfo.conn.commit();
                 // 恢复旧的事务级别
-                if (cInfo.conn.getTransactionIsolation() != cInfo.oldLevel) {
+                if (cInfo.conn.getTransactionIsolation() != cInfo.oldLevel)
                     cInfo.conn.setTransactionIsolation(cInfo.oldLevel);
-                }
             }
             catch (SQLException e) {
                 ce.add(e);
@@ -80,11 +78,9 @@ public class NutTransaction extends Transaction {
      */
     @Override
     public Connection getConnection(DataSource dataSource) throws SQLException {
-        for (ConnInfo p : list) {
-            if (p.ds == dataSource) {
+        for (ConnInfo p : list)
+            if (p.ds == dataSource)
                 return p.conn;
-            }
-        }
         Connection conn = dataSource.getConnection();
         // System.out.printf("=> %s\n", conn.toString());
         boolean restoreAutoCommit = false;
@@ -100,7 +96,6 @@ public class NutTransaction extends Transaction {
     /**
      * 层次id
      */
-    @Override
     public long getId() {
         return id;
     }
@@ -115,12 +110,10 @@ public class NutTransaction extends Transaction {
             try {
                 // 试图恢复旧的事务级别
                 if (!cInfo.conn.isClosed()) {
-                    if (cInfo.restoreIsoLevel) {
+                    if (cInfo.restoreIsoLevel)
                         cInfo.conn.setTransactionIsolation(cInfo.oldLevel);
-                    }
-                    if (cInfo.restoreAutoCommit) {
+                    if (cInfo.restoreAutoCommit)
                         cInfo.conn.setAutoCommit(true);
-                    }
                 }
             }
             catch (Throwable e) {}

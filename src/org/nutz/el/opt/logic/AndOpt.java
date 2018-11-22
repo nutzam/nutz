@@ -10,17 +10,14 @@ import org.nutz.el.opt.TwoTernary;
  *
  */
 public class AndOpt extends TwoTernary {
-    @Override
     public int fetchPriority() {
         return 11;
     }
 
-    @Override
     public Object calculate() {
         Object lval = calculateItem(this.left);
-        if (null == lval) {
+        if (null == lval)
             return false;
-        }
 
         if (!(lval instanceof Boolean)) {
             // throw new ElException("操作数类型错误!");
@@ -32,9 +29,8 @@ public class AndOpt extends TwoTernary {
         }
 
         Object rval = calculateItem(this.right);
-        if (null == rval) {
+        if (null == rval)
             return false;
-        }
         if (!(rval instanceof Boolean)) {
             // throw new ElException("操作数类型错误!");
             return Castors.me().castTo(rval, Boolean.class);
@@ -42,7 +38,6 @@ public class AndOpt extends TwoTernary {
         return (Boolean) rval;
     }
 
-    @Override
     public String fetchSelf() {
         return "&&";
     }

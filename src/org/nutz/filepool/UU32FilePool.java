@@ -14,15 +14,13 @@ public class UU32FilePool implements FilePool {
 		this.root = Files.createDirIfNoExists(path);
 	}
 
-	@Override
-    public File createFile(String suffix) {
+	public File createFile(String suffix) {
 		String key = R.UU32();
 		File dir = new File(root, key.substring(0, 2));
 		Files.createDirIfNoExists(dir);
 		return new File(dir, key.substring(2));
 	}
-	@Override
-    public void clear() {
+	public void clear() {
 		Files.deleteDir(root);
 		this.root = Files.createDirIfNoExists(root);
 	}
@@ -31,13 +29,11 @@ public class UU32FilePool implements FilePool {
 	// 其他方法一概不实现
 	//-----------------------------
 
-	@Override
-    public long current() {
+	public long current() {
 		throw Lang.noImplement();
 	}
 
-	@Override
-    public boolean hasFile(long fId, String suffix) {
+	public boolean hasFile(long fId, String suffix) {
 		throw Lang.noImplement();
 	}
 
@@ -46,43 +42,35 @@ public class UU32FilePool implements FilePool {
 		throw Lang.noImplement();
 	}
 
-	@Override
-    public long getFileId(File f) {
+	public long getFileId(File f) {
 		throw Lang.noImplement();
 	}
 
-	@Override
-    public File getFile(long fId, String suffix) {
+	public File getFile(long fId, String suffix) {
 		throw Lang.noImplement();
 	}
 
-	@Override
-    public File returnFile(long fId, String suffix) {
+	public File returnFile(long fId, String suffix) {
 		throw Lang.noImplement();
 	}
 
-	@Override
-    public boolean hasDir(long fId) {
+	public boolean hasDir(long fId) {
 		throw Lang.noImplement();
 	}
 
-	@Override
-    public File removeDir(long fId) {
+	public File removeDir(long fId) {
 		throw Lang.noImplement();
 	}
 
-	@Override
-    public File createDir() {
+	public File createDir() {
 		throw Lang.noImplement();
 	}
 
-	@Override
-    public File getDir(long fId) {
+	public File getDir(long fId) {
 		throw Lang.noImplement();
 	}
 
-	@Override
-    public File returnDir(long fId) {
+	public File returnDir(long fId) {
 		throw Lang.noImplement();
 	}
 

@@ -16,11 +16,9 @@ import org.nutz.el.opt.TwoTernary;
  *
  */
 public class QuestionSelectOpt extends TwoTernary{
-    @Override
     public int fetchPriority() {
         return 13;
     }
-    @Override
     public Object calculate() {
         if(!(left instanceof QuestionOpt)){
             throw new ElException("三元表达式错误!");
@@ -32,7 +30,6 @@ public class QuestionSelectOpt extends TwoTernary{
         }
         return calculateItem(right);
     }
-    @Override
     public String fetchSelf() {
         return ":";
     }

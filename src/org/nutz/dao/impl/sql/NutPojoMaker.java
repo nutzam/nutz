@@ -35,12 +35,10 @@ public class NutPojoMaker implements PojoMaker {
         this.expert = expert;
     }
 
-    @Override
     public Pojo makePojo(SqlType type) {
         return expert.createPojo(type);
     }
 
-    @Override
     public Pojo makeInsert(final Entity<?> en) {
         Pojo pojo = Pojos.pojo(expert, en, SqlType.INSERT);
         pojo.setEntity(en);
@@ -59,7 +57,6 @@ public class NutPojoMaker implements PojoMaker {
         return pojo;
     }
 
-    @Override
     public Pojo makeUpdate(Entity<?> en, Object refer) {
         Pojo pojo = Pojos.pojo(expert, en, SqlType.UPDATE);
         pojo.setEntity(en);
@@ -68,7 +65,6 @@ public class NutPojoMaker implements PojoMaker {
         return pojo;
     }
 
-    @Override
     public Pojo makeQuery(Entity<?> en) {
         Pojo pojo = Pojos.pojo(expert, en, SqlType.SELECT);
         pojo.setEntity(en);
@@ -78,12 +74,10 @@ public class NutPojoMaker implements PojoMaker {
         return pojo;
     }
 
-    @Override
     public Pojo makeQuery(String tableName) {
         return makeQuery(tableName, "*");
     }
 
-    @Override
     public Pojo makeQuery(String tableName, String fields) {
         String[] ss = tableName.split(":");
         // String idFieldName = ss.length > 1 ? ss[1] : "*";//按id字段来统计,比较快
@@ -95,7 +89,6 @@ public class NutPojoMaker implements PojoMaker {
         return pojo;
     }
 
-    @Override
     public Pojo makeDelete(Entity<?> en) {
         Pojo pojo = Pojos.pojo(expert, en, SqlType.DELETE);
         pojo.setEntity(en);
@@ -104,7 +97,6 @@ public class NutPojoMaker implements PojoMaker {
         return pojo;
     }
 
-    @Override
     public Pojo makeDelete(String tableName) {
         Pojo pojo = makePojo(SqlType.DELETE);
         pojo.append(Pojos.Items.wrap("FROM"));
@@ -112,7 +104,6 @@ public class NutPojoMaker implements PojoMaker {
         return pojo;
     }
 
-    @Override
     public Pojo makeFunc(String tableName, String funcName, String colName) {
         Pojo pojo = makePojo(SqlType.SELECT);
         pojo.append(Pojos.Items.wrapf("%s(%s) FROM %s", funcName, colName, tableName));
@@ -121,7 +112,6 @@ public class NutPojoMaker implements PojoMaker {
 
     static class GeneratedKeys implements PojoCallback {
 
-        @Override
         public Object invoke(Connection conn, ResultSet rs, final Pojo pojo, Statement stmt)
                 throws SQLException {
             final ResultSet _rs = stmt.getGeneratedKeys();
@@ -130,13 +120,11 @@ public class NutPojoMaker implements PojoMaker {
                 obj = Arrays.asList(obj);
             }
             Lang.each(obj, new Each<Object>() {
-                @Override
                 public void invoke(int index, Object ele, int length)
                         throws ExitLoop, ContinueLoop, LoopException {
                     try {
-                        if (!_rs.next()) {
+                        if (!_rs.next())
                             throw new ExitLoop();
-                        }
                         Object key = _rs.getObject(1);
                         pojo.getEntity().getIdField().setValue(ele, key);
                     }
@@ -155,7 +143,6 @@ public class NutPojoMaker implements PojoMaker {
         pojo.setEntity(en);
         pojo.append(new QueryJoinFeilds(en, true, en.getTableName()));
         en.visitOne(null, regex, new LinkVisitor() {
-            @Override
             public void visit(Object obj, LinkField lnk) {
                 pojo.append(Pojos.Items.wrap(","));
                 pojo.append(new QueryJoinFeilds(lnk.getLinkedEntity(), false, lnk.getName()));
@@ -164,7 +151,6 @@ public class NutPojoMaker implements PojoMaker {
         pojo.append(Pojos.Items.wrap("FROM"));
         pojo.append(Pojos.Items.entityViewName());
         en.visitOne(null, regex, new LinkVisitor() {
-            @Override
             public void visit(Object obj, LinkField lnk) {
                 Entity<?> lnkEntity = lnk.getLinkedEntity();
                 String LJ = String.format("LEFT JOIN %s as %s ON %s.%s = %s.%s",
@@ -188,7 +174,6 @@ public class NutPojoMaker implements PojoMaker {
         pojo.append(Pojos.Items.wrap("FROM"));
         pojo.append(Pojos.Items.entityViewName());
         en.visitOne(null, regex, new LinkVisitor() {
-            @Override
             public void visit(Object obj, LinkField lnk) {
                 Entity<?> lnkEntity = lnk.getLinkedEntity();
                 String LJ = String.format("LEFT JOIN %s as %s ON %s.%s = %s.%s",
@@ -217,7 +202,6 @@ public class NutPojoMaker implements PojoMaker {
             this.tableName = tableName;
         }
 
-        @Override
         public void joinSql(Entity<?> en, StringBuilder sb) {
             en = this.en;
             FieldMatcher fm = getFieldMatcher();
@@ -231,16 +215,14 @@ public class NutPojoMaker implements PojoMaker {
                       .append(".")
                       .append(ef.getColumnNameInSql())
                       .append(" as ");
-                    if (!main) {
+                    if (!main)
                         sb.append(tableName).append("_z_");
-                    }
                     sb.append(ef.getColumnNameInSql()).append(',');
                 }
             }
 
-            if (sb.length() == old) {
+            if (sb.length() == old)
                 throw Lang.makeThrow("No columns be queryed: '%s'", _en(en));
-            }
 
             sb.setCharAt(sb.length() - 1, ' ');
         }

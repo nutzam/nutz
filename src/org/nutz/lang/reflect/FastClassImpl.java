@@ -24,16 +24,13 @@ public class FastClassImpl implements FastClass {
         this.fields = fields;
     }
     
-    @Override
     public Object invoke(Object obj, Method method, Object... args) {
         try {
             FastMethod fm = fast(method);
-            if (fm != null) {
+            if (fm != null)
                 return fm.invoke(obj, args);
-            }
-            if (!method.isAccessible()) {
+            if (!method.isAccessible())
                 method.setAccessible(true);
-            }
             return method.invoke(obj, args);
         }
         catch (Exception e) {
@@ -41,7 +38,6 @@ public class FastClassImpl implements FastClass {
         }
     }
 
-    @Override
     public Object invoke(Object obj, String methodName, Class<?>[] types, Object... args) {
         try {
             return invoke(obj, obj.getClass().getDeclaredMethod(methodName, types), args);
@@ -51,7 +47,6 @@ public class FastClassImpl implements FastClass {
         }
     }
 
-    @Override
     public Object born(Constructor<?> constructor, Object... args) {
         try {
             return fast(constructor).invoke(null, args);
@@ -81,27 +76,22 @@ public class FastClassImpl implements FastClass {
         }
     }
 
-    @Override
     public Object setField(Object obj, String fieldName, Object value) {
         return null;
     }
 
-    @Override
     public Object getField(Object obj, String fieldName) {
         return null;
     }
     
-    @Override
     public FastMethod fast(Method method) {
         return methods.get(method.getName() + "$" + Type.getMethodDescriptor(method));
     }
     
-    @Override
     public FastMethod fast(final Constructor<?> constructor) {
         FastMethod fm = constructors.get(Type.getConstructorDescriptor(constructor));
-        if (fm == null) {
+        if (fm == null)
             fm = new FastMethodFactory.FallbackFastMethod(constructor);
-        }
        return fm;
     }
 }

@@ -12,7 +12,6 @@ public class FileValue implements ValueProxy {
         this.path = path;
     }
 
-    @Override
     public Object get(IocMaking ing) {
         return Files.findFile(path);
     }

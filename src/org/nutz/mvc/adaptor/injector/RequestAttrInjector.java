@@ -10,7 +10,6 @@ public class RequestAttrInjector extends AttrInjector {
         super(name);
     }
 
-    @Override
     public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
         return req.getAttribute(name);
     }

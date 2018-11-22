@@ -14,18 +14,15 @@ public class SybaseIQJdbcExpert extends AbstractJdbcExpert {
 		super(conf);
 	}
 
-	@Override
-    public String getDatabaseType() {
+	public String getDatabaseType() {
 		return DB.SYBASE.name();
 	}
 
-	@Override
-    public boolean createEntity(Dao dao, Entity<?> en) {
+	public boolean createEntity(Dao dao, Entity<?> en) {
 		throw Lang.noImplement();
 	}
 
-	@Override
-    public void formatQuery(Pojo pojo) {
+	public void formatQuery(Pojo pojo) {
 		throw Lang.noImplement();
 	}
 

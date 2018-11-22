@@ -27,20 +27,17 @@ public class MsgDigestOutputStream extends FilterOutputStream {
 		}
 	}
 
-	@Override
-    public void write(byte[] b) throws IOException {
+	public void write(byte[] b) throws IOException {
 		this.out.write(b);
 		md.update(b);
 	}
 	
-	@Override
-    public void write(byte[] b, int off, int len) throws IOException {
+	public void write(byte[] b, int off, int len) throws IOException {
 		this.out.write(b, off, len);
 		md.update(b, off, len);
 	}
 	
-	@Override
-    public void write(int b) throws IOException {
+	public void write(int b) throws IOException {
 		this.out.write(b);
 		md.update((byte)b);
 	}

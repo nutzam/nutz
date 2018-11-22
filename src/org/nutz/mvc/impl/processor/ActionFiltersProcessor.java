@@ -25,7 +25,6 @@ public class ActionFiltersProcessor extends AbstractProcessor {
     
     protected Processor lastProcessor;
     
-    @Override
     public void init(NutConfig config, ActionInfo ai) throws Throwable {
         ObjectInfo<? extends ActionFilter>[] filterInfos = ai.getFilterInfos();
         if (null != filterInfos) {
@@ -46,7 +45,6 @@ public class ActionFiltersProcessor extends AbstractProcessor {
         }
     }
 
-    @Override
     public void process(ActionContext ac) throws Throwable {
         for (ActionFilter filter : filters) {
             View view = filter.match(ac);
@@ -59,9 +57,8 @@ public class ActionFiltersProcessor extends AbstractProcessor {
         if (proxyProcessor == null) {
         	doNext(ac);
         } else {
-        	if (lastProcessor != null) {
-                lastProcessor.setNext(next);
-            }
+        	if (lastProcessor != null)
+        		lastProcessor.setNext(next);
         	proxyProcessor.process(ac);
         }
     }

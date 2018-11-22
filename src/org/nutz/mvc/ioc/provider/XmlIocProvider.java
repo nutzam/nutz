@@ -13,7 +13,6 @@ import org.nutz.mvc.NutConfig;
 @Deprecated
 public class XmlIocProvider implements IocProvider {
 
-    @Override
     public Ioc create(NutConfig config, String[] args) {
         return new NutIoc(new XmlIocLoader(args), new ScopeContext("app"), "app");
     }

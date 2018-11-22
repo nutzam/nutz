@@ -33,12 +33,10 @@ public class SimpleBlob implements Blob, Serializable {
         this.file = f;
     }
 
-    @Override
     public long length() throws SQLException {
         return file.length();
     }
 
-    @Override
     public byte[] getBytes(long pos, int length) throws SQLException {
         if (pos == 1 && length == length()) {
             return Streams.readBytesAndClose(getBinaryStream());
@@ -46,47 +44,38 @@ public class SimpleBlob implements Blob, Serializable {
         throw Lang.noImplement();
     }
 
-    @Override
     public InputStream getBinaryStream() throws SQLException {
         return Streams.buff(Streams.fileIn(file));
     }
 
-    @Override
     public long position(byte[] pattern, long start) throws SQLException {
         throw Lang.noImplement();
     }
 
-    @Override
     public long position(Blob pattern, long start) throws SQLException {
         throw Lang.noImplement();
     }
 
-    @Override
     public int setBytes(long pos, byte[] bytes) throws SQLException {
         throw Lang.noImplement();
     }
 
-    @Override
     public int setBytes(long pos, byte[] bytes, int offset, int len) throws SQLException {
         throw Lang.noImplement();
     }
 
-    @Override
     public OutputStream setBinaryStream(long pos) throws SQLException {
         throw Lang.noImplement();
     }
 
-    @Override
     public void truncate(long len) throws SQLException {
         Files.write(file, new Byte[]{});
     }
 
-    @Override
     public void free() throws SQLException {
         Files.deleteFile(file);
     }
 
-    @Override
     public InputStream getBinaryStream(long pos, long length) throws SQLException {
         throw Lang.noImplement();
     }
