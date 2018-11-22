@@ -17,8 +17,7 @@ import org.nutz.ioc.aop.SimpleAopMaker;
  */
 public class AnnotationAopConfigration extends SimpleAopMaker<Aop> {
 
-	@Override
-    public List<? extends MethodInterceptor> makeIt(Aop t, Method method, Ioc ioc) {
+	public List<? extends MethodInterceptor> makeIt(Aop t, Method method, Ioc ioc) {
 		List<MethodInterceptor> list = new ArrayList<MethodInterceptor>();
 		for (String name : t.value()) {
 			list.add(ioc.get(MethodInterceptor.class, name));

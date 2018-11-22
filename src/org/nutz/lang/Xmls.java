@@ -97,9 +97,8 @@ public abstract class Xmls {
      */
     public static Document xml(InputStream ins, Charset charset) {
         try {
-            if (charset == null) {
+            if (charset == null)
                 charset = Encoding.CHARSET_UTF8;
-            }
             return xmls().parse(new InputSource(new InputStreamReader(ins, charset)));
         }
         catch (SAXException e) {
@@ -149,9 +148,8 @@ public abstract class Xmls {
      */
     public static String get(Element ele, String subTagName) {
         Element sub = firstChild(ele, subTagName);
-        if (null == sub) {
+        if (null == sub)
             return null;
-        }
         return getText(sub);
     }
 
@@ -162,9 +160,8 @@ public abstract class Xmls {
     }
 
     public static void joinText(Element ele, StringBuilder sb) {
-        if (null == ele) {
+        if (null == ele)
             return;
-        }
         NodeList nl = ele.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node nd = nl.item(i);
@@ -194,7 +191,6 @@ public abstract class Xmls {
     public static Element firstChild(Element ele) {
         final Element[] tag = new Element[1];
         eachChildren(ele, null, new Each<Element>() {
-            @Override
             public void invoke(int index, Element cld, int length) {
                 tag[0] = cld;
                 Lang.Break();
@@ -215,7 +211,6 @@ public abstract class Xmls {
     public static Element firstChild(Element ele, String regex) {
         final Element[] tag = new Element[1];
         eachChildren(ele, regex, new Each<Element>() {
-            @Override
             public void invoke(int index, Element cld, int length) {
                 tag[0] = cld;
                 Lang.Break();
@@ -274,7 +269,6 @@ public abstract class Xmls {
         final int pos = index;
         final Element[] tag = new Element[1];
         eachChildren(ele, null, new Each<Element>() {
-            @Override
             public void invoke(int index, Element cld, int length) {
                 if (index >= pos) {
                     tag[0] = cld;
@@ -295,7 +289,6 @@ public abstract class Xmls {
     public static Element lastChild(Element ele) {
         final Element[] tag = new Element[1];
         eachChildren(ele, null, new Each<Element>() {
-            @Override
             public void invoke(int index, Element cld, int length) {
                 tag[0] = cld;
                 Lang.Break();
@@ -316,7 +309,6 @@ public abstract class Xmls {
     public static Element lastChild(Element ele, String regex) {
         final Element[] tag = new Element[1];
         eachChildren(ele, regex, new Each<Element>() {
-            @Override
             public void invoke(int index, Element cld, int length) {
                 tag[0] = cld;
                 Lang.Break();
@@ -348,7 +340,6 @@ public abstract class Xmls {
     public static List<Element> children(Element ele, String regex) {
         final List<Element> list = new ArrayList<Element>(ele.getChildNodes().getLength());
         eachChildren(ele, regex, new Each<Element>() {
-            @Override
             public void invoke(int index, Element cld, int length) {
                 list.add(cld);
             }
@@ -397,12 +388,10 @@ public abstract class Xmls {
         for (int i = 0; i < len; i++) {
             Node nd = nl.item(i);
             if (nd instanceof Element) {
-                if (null == regex) {
+                if (null == regex)
                     return false;
-                }
-                if (Regex.match(regex, ((Element) nd).getTagName())) {
+                if (Regex.match(regex, ((Element) nd).getTagName()))
                     return true;
-                }
             }
         }
         return false;
@@ -424,9 +413,8 @@ public abstract class Xmls {
                                     String regex,
                                     final Each<Element> callback,
                                     int off) {
-        if (null == ele || null == callback) {
+        if (null == ele || null == callback)
             return;
-        }
 
         // 正则式
         final Pattern p = null == regex ? null : Pattern.compile(regex);
@@ -438,21 +426,20 @@ public abstract class Xmls {
 
         // 每次循环执行
         Callback2<Integer, Node> eachInvoke = new Callback2<Integer, Node>() {
-            @Override
             public void invoke(Integer index, Node nd) {
-                if (nd instanceof Element) {
+                if (nd instanceof Element)
                     try {
                         Element tag = (Element) nd;
-                        if (null == p || p.matcher(tag.getTagName()).find()) {
+                        if (null == p || p.matcher(tag.getTagName()).find())
                             callback.invoke(index, tag, len);
-                        }
-                    } catch (ExitLoop e) {
-                        throw Lang.wrapThrow(e);
-                    } catch (ContinueLoop e) {
-                    } catch (LoopException e) {
+                    }
+                    catch (ExitLoop e) {
                         throw Lang.wrapThrow(e);
                     }
-                }
+                    catch (ContinueLoop e) {}
+                    catch (LoopException e) {
+                        throw Lang.wrapThrow(e);
+                    }
             }
         };
 
@@ -472,11 +459,10 @@ public abstract class Xmls {
         }
         catch (ExitLoop e) {}
         catch (RuntimeException e) {
-            if (e.getCause() instanceof ExitLoop) {
+            if (e.getCause() instanceof ExitLoop)
                 return;
-            } else {
+            else
                 throw e;
-            }
         }
     }
 
@@ -552,13 +538,11 @@ public abstract class Xmls {
             }
         }
         eachChildren(ele, new Each<Element>() {
-            @Override
             public void invoke(int index, Element _ele, int length)
                     throws ExitLoop, ContinueLoop, LoopException {
                 String key = _ele.getNodeName();
-                if (opts.lowerFirst) {
+                if (opts.lowerFirst)
                     key = Strings.lowerFirst(key);
-                }
                 Map<String, Object> tmp = asMap(_ele, opts);
                 if (!tmp.isEmpty()) {
                     if (opts.alwaysAsList != null && opts.alwaysAsList.contains(key)) {
@@ -577,11 +561,10 @@ public abstract class Xmls {
                     if (opts.alwaysAsList != null && opts.alwaysAsList.contains(key)) {
                         map.addv2(key, val);
                     }
-                    else if (opts.dupAsList) {
+                    else if (opts.dupAsList)
                         map.addv(key, val);
-                    } else {
+                    else
                         map.setv(key, val);
-                    }
                 }
             }
         });
@@ -657,9 +640,8 @@ public abstract class Xmls {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static List<Tag> obj2tag(String nodeName, Object val) {
         List<Tag> tags = new ArrayList<Tag>();
-        if (null == val) {
+        if (null == val)
             return tags;
-        }
         if (val instanceof Map) {
             tags.add(map2Tag(nodeName, (Map<String, Object>) val));
         } else if (val instanceof Collection) {

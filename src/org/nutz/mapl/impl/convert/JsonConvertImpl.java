@@ -38,18 +38,16 @@ public class JsonConvertImpl implements MaplConvert {
         this.format = format;
     }
 
-    @Override
     public Object convert(Object obj) {
         StringBuilder sb = new StringBuilder();
         Writer writer = new StringWriter(sb);
         try {
             JsonRender jr;
             Class<? extends JsonRender> jrCls = getJsonRenderCls();
-            if (jrCls == null) {
+            if (jrCls == null)
                 jr = new JsonRenderImpl();
-            } else {
+            else
                 jr = Mirror.me(jrCls).born();
-            }
             jr.setWriter(writer);
             jr.setFormat(format);
             jr.render(obj);

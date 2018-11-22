@@ -65,24 +65,20 @@ public abstract class SimpleAopMaker<T extends Annotation> extends AbstractLifeC
         annoClass = (Class<T>) (Class) Mirror.getTypeParam(getClass(), 0);
         IocBean iocBean = getClass().getAnnotation(IocBean.class);
         if (iocBean != null) {
-            if (Strings.isBlank(iocBean.name())) {
+            if (Strings.isBlank(iocBean.name()))
                 iocName = Strings.lowerFirst(getClass().getSimpleName());
-            } else {
+            else
                 iocName = iocBean.name();
-            }
             if (!iocName.startsWith("$aop_"))
                 // 如果声明了@IocBean,那么应该用@IocBean(name="$aop_xxx") 不然会有问题
-            {
                 throw new IocException(iocName,
-                        getClass().getName()
-                                + " using @IocBean but not start with @IocBean(name=\"$aop_xxx\")");
-            }
+                                       getClass().getName()
+                                                + " using @IocBean but not start with @IocBean(name=\"$aop_xxx\")");
         }
-        if (log.isDebugEnabled()) {
+        if (log.isDebugEnabled())
             log.debugf("Load AopConfigure for anno=%s by type=%s",
-                    annoClass.getName(),
-                    getClass().getName());
-        }
+                       annoClass.getName(),
+                       getClass().getName());
     }
 
     public abstract List<? extends MethodInterceptor> makeIt(T t, Method method, Ioc ioc);
@@ -93,9 +89,8 @@ public abstract class SimpleAopMaker<T extends Annotation> extends AbstractLifeC
             || Modifier.isStatic(mod)
             || Modifier.isPrivate(mod)
             || Modifier.isFinal(mod)
-            || Modifier.isAbstract(mod)) {
+            || Modifier.isAbstract(mod))
             return false;
-        }
         return true;
     }
 
@@ -111,14 +106,12 @@ public abstract class SimpleAopMaker<T extends Annotation> extends AbstractLifeC
 
     @Override
     public List<InterceptorPair> getInterceptorPairList(Ioc ioc, Class<?> klass) {
-        if (!checkClass(klass)) {
+        if (!checkClass(klass))
             return null;
-        }
         List<InterceptorPair> list = new ArrayList<InterceptorPair>();
         for (Method method : getMethods(ioc, klass)) {
-            if (!checkMethod(method)) {
+            if (!checkMethod(method))
                 continue;
-            }
             T t = method.getAnnotation(_anno());
             if (t != null) {
                 List<? extends MethodInterceptor> _list = makeIt(t, method, ioc);
@@ -129,21 +122,17 @@ public abstract class SimpleAopMaker<T extends Annotation> extends AbstractLifeC
                 }
             }
         }
-        if (list.isEmpty()) {
+        if (list.isEmpty())
             return null;
-        }
         return list;
     }
 
-    @Override
     public String[] getName() {
-        if (iocName != null) {
+        if (iocName != null)
             return new String[]{iocName};
-        }
         return new String[]{"$aop_" + _name()};
     }
 
-    @Override
     public IocObject load(IocLoading loading, String name) throws ObjectLoadException {
         IocObject iobj = Iocs.wrap(this);
         iobj.setType(getClass());
@@ -155,11 +144,9 @@ public abstract class SimpleAopMaker<T extends Annotation> extends AbstractLifeC
         return iobj;
     }
 
-    @Override
     public boolean has(String name) {
-        if (iocName != null) {
+        if (iocName != null)
             return iocName.equals(name);
-        }
         return ("$aop_" + _name()).equals(name);
     }
     

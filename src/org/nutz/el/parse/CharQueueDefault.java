@@ -28,12 +28,10 @@ public class CharQueueDefault implements CharQueue{
         }
     }
 
-    @Override
     public char peek() {
         return (char) cursor;
     }
     
-    @Override
     public char peek(int ofset){
         if(ofset == 0){
             return (char) cursor;
@@ -54,7 +52,6 @@ public class CharQueueDefault implements CharQueue{
         return (char) t;
     }
 
-    @Override
     public char poll() {
         char x = (char) cursor;
         try {
@@ -69,7 +66,6 @@ public class CharQueueDefault implements CharQueue{
         return x;
     }
 
-    @Override
     public boolean isEmpty() {
         return cursor == -1;
     }

@@ -11,7 +11,6 @@ import org.nutz.el.obj.IdentifierObj;
  */
 public class IdentifierParse implements Parse{
 
-    @Override
     public Object fetchItem(CharQueue exp) {
         StringBuilder sb = new StringBuilder();
         if(Character.isJavaIdentifierStart(exp.peek())){

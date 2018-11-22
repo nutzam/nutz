@@ -225,11 +225,9 @@ public class SqlTemplate {
                                 Class<T> classOfT) {
         Sql sqlObj = createSqlObj(sql, params);
         sqlObj.setCallback(new SqlCallback() {
-            @Override
             public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
-                if (null != rs && rs.next()) {
+                if (null != rs && rs.next())
                     return rs.getObject(1);
-                }
                 return null;
             }
         });
@@ -397,7 +395,6 @@ public class SqlTemplate {
         Sql sqlObj = createSqlObj(sql, params);
 
         sqlObj.setCallback(new SqlCallback() {
-            @Override
             public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
                 List<T> list = new ArrayList<T>();
                 while (rs.next()) {
@@ -440,9 +437,8 @@ public class SqlTemplate {
      * 设置sql参数并执行sql。
      */
     private void execute(Sql sqlObj, Map<String, Object> vars, Map<String, Object> params) {
-        if (vars != null) {
+        if (vars != null)
             sqlObj.vars().putAll(vars);
-        }
 
         if (params != null) {
             Map<String, Object> newParams = paramProcess(params);
@@ -466,9 +462,8 @@ public class SqlTemplate {
      */
     private Sql createSqlObj(String sql, Map<String, Object> params) {
 
-        if (params == null) {
+        if (params == null)
             return Sqls.create(sql);
-        }
 
         String newSql = sqlProcess(sql, params);
 
@@ -487,9 +482,8 @@ public class SqlTemplate {
      */
     private String sqlProcess(String originSql, Map<String, Object> params) {
 
-        if (params == null || params.size() == 0) {
+        if (params == null || params.size() == 0)
             return originSql;
-        }
 
         String newSql = originSql;
         for (Entry<String, Object> entry : params.entrySet()) {
@@ -522,9 +516,8 @@ public class SqlTemplate {
      * @return 包含处理IN表达式的sql
      */
     private Map<String, Object> paramProcess(Map<String, Object> params) {
-        if (params == null || params.size() == 0) {
+        if (params == null || params.size() == 0)
             return null;
-        }
         Map<String, Object> newParams = new HashMap<String, Object>(params);
         for (Entry<String, Object> entry : params.entrySet()) {
             String paramName = entry.getKey();

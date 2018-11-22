@@ -63,15 +63,13 @@ public class NutTxDao extends NutDao implements Closeable {
         this.autoTransLevel = dao.autoTransLevel;
         this._interceptors = dao._interceptors;
         this.setRunner(new NutDaoRunner() {
-            @Override
             public void _run(DataSource dataSource, ConnCallback callback) {
                 try {
                     runCallback(getConnection(), callback);
                 }
                 catch (Exception e) {
-                    if (e instanceof RuntimeException) {
+                    if (e instanceof RuntimeException)
                         throw (RuntimeException) e;
-                    }
                     throw new DaoException(e);
                 }
             }
@@ -108,13 +106,11 @@ public class NutTxDao extends NutDao implements Closeable {
      *             如果已经开启过事务
      */
     public NutTxDao begin(int transLevel) throws DaoException {
-        if (this.conn != null) {
+        if (this.conn != null)
             throw new DaoException("NutTxDao has been begined!!");
-        }
         id = R.UU32();
-        if (debug) {
+        if (debug)
             log.debugf("begin level=%d id=%s", transLevel, id);
-        }
         try {
             this.conn = dataSource.getConnection();
             this.conn.setTransactionIsolation(transLevel);
@@ -136,9 +132,8 @@ public class NutTxDao extends NutDao implements Closeable {
      * @return 原对象
      */
     public NutTxDao commit() {
-        if (debug) {
+        if (debug)
             log.debugf("commit id=%s", id);
-        }
         try {
             conn.commit();
         }
@@ -165,16 +160,14 @@ public class NutTxDao extends NutDao implements Closeable {
      * @return 原对象
      */
     public NutTxDao rollback(String id) {
-        if (debug) {
+        if (debug)
             log.debugf("rollback id=%s", id);
-        }
         try {
             Savepoint sp = sps.getAs(id, Savepoint.class);
-            if (sp != null) {
+            if (sp != null)
                 conn.rollback(sp);
-            } else {
+            else
                 log.debug("Null Savepoint found, skip, id=" + id);
-            }
         }
         catch (Throwable e) {
         }
@@ -194,18 +187,14 @@ public class NutTxDao extends NutDao implements Closeable {
     /**
      * 关闭事务及连接
      */
-    @Override
     public void close() {
-        if (debug) {
+        if (debug)
             log.debugf("close id=%s", id);
-        }
         try {
-            if (conn == null) {
+            if (conn == null)
                 return;
-            }
-            if (_autoCommit) {
+            if (_autoCommit)
                 conn.setAutoCommit(true);
-            }
             conn.close();
             conn = null;
         }
@@ -242,7 +231,6 @@ public class NutTxDao extends NutDao implements Closeable {
         return this;
     }
 
-    @Override
     protected void finalize() throws Throwable {
         close();
         super.finalize();

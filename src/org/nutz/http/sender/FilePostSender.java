@@ -57,9 +57,8 @@ public class FilePostSender extends PostSender {
         for (Entry<String, ?> entry : params.entrySet()) {
             final String key = entry.getKey();
             Object val = entry.getValue();
-            if (val == null) {
+            if (val == null)
                 val = "";
-            }
             Lang.each(val, new Each<Object>() {
                 @Override
                 public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop, LoopException {
@@ -118,20 +117,18 @@ public class FilePostSender extends PostSender {
             count[0] += 60;
             final String key = entry.getKey();
             Object val = entry.getValue();
-            if (val == null) {
+            if (val == null)
                 val = "";
-            }
             Lang.each(val, new Each<Object>() {
-                @Override
                 public void invoke(int index, Object ele, int length){
-                    if (ele instanceof File) {
-                        count[0] += ((File) ele).length() + 100;
-                    } else {
+                    if (ele instanceof File)
+                        count[0]+= ((File)ele).length() + 100;
+                    else
                         try {
-                            count[0] += (key + ele).getBytes(request.getEnc()).length + 100;
-                        } catch (UnsupportedEncodingException e) {
+                            count[0] += (key+ele).getBytes(request.getEnc()).length + 100;
                         }
-                    }
+                        catch (UnsupportedEncodingException e) {
+                        }
                 }
             });
 	    }

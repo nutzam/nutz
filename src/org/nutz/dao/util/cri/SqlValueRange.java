@@ -21,14 +21,11 @@ public class SqlValueRange extends AbstractSqlExpression {
         this.size = values.length;
     }
 
-    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
-        if (size == 0) {
+        if (size == 0)
             return;
-        }
-        if (not) {
+        if (not)
             sb.append(" NOT ");
-        }
         sb.append(_fmtcol(en));
         String tmp = Strings.dup("?,", size);
         sb.append(" IN (");
@@ -36,11 +33,9 @@ public class SqlValueRange extends AbstractSqlExpression {
         sb.append(")");
     }
 
-    @Override
     public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
-        if (size == 0) {
+        if (size == 0)
             return off;
-        }
         MappingField mf = _field(en);
         ValueAdaptor adaptor = null;
         if (mf == null) {
@@ -50,9 +45,8 @@ public class SqlValueRange extends AbstractSqlExpression {
                     break;
                 }
             }
-            if (adaptor == null) {
+            if (adaptor == null)
                 adaptor = Jdbcs.Adaptor.asNull;
-            }
         } else {
             adaptor = mf.getAdaptor();
         }
@@ -62,7 +56,6 @@ public class SqlValueRange extends AbstractSqlExpression {
         return 0;
     }
 
-    @Override
     public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
         for (int i = off; i < off+size; i++) {
             params[i] = values[i];
@@ -70,7 +63,6 @@ public class SqlValueRange extends AbstractSqlExpression {
         return off+size;
     }
 
-    @Override
     public int paramCount(Entity<?> en) {
         return size;
     }

@@ -9,13 +9,11 @@ public class FloatRange {
         int i = 0;
         for (; i < cs.length; i++) {
             char c = cs[i];
-            if (c == ',' || c == ':') {
+            if (c == ',' || c == ':')
                 break;
-            }
         }
-        if (i == cs.length) {
+        if (i == cs.length)
             return make(Float.parseFloat(new String(cs)));
-        }
 
         float left = Float.parseFloat(String.valueOf(cs, 0, i));
         
@@ -90,7 +88,6 @@ public class FloatRange {
         this.right = right;
     }
 
-    @Override
     public String toString() {
         return String.format("%s:%s", left, right);
     }

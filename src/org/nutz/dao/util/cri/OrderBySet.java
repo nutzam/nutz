@@ -18,7 +18,6 @@ public class OrderBySet extends NoParamsPItem implements OrderBy {
         list = new ArrayList<OrderByItem>(3);
     }
 
-    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
         if (!list.isEmpty()) {
             sb.append(" ORDER BY ");
@@ -30,14 +29,12 @@ public class OrderBySet extends NoParamsPItem implements OrderBy {
         } // OK,无需添加.
     }
 
-    @Override
     public String toSql(Entity<?> en) {
         StringBuilder sb = new StringBuilder();
         joinSql(en, sb);
         return sb.toString();
     }
 
-    @Override
     public OrderBy asc(String name) {
         OrderByItem asc = new OrderByItem(name, "ASC");
         asc.setPojo(pojo);
@@ -45,7 +42,6 @@ public class OrderBySet extends NoParamsPItem implements OrderBy {
         return this;
     }
 
-    @Override
     public OrderBy desc(String name) {
         OrderByItem desc = new OrderByItem(name, "DESC");
         desc.setPojo(pojo);
@@ -53,24 +49,20 @@ public class OrderBySet extends NoParamsPItem implements OrderBy {
         return this;
     }
     
-    @Override
     public void setPojo(Pojo pojo) {
         super.setPojo(pojo);
-        for (OrderByItem obi : list) {
+        for (OrderByItem obi : list)
             obi.setPojo(pojo);
-        }
     }
 
     public List<OrderByItem> getItems() {
         return list;
     }
     
-    @Override
     public String toString() {
     	return toSql(null);
     }
     
-    @Override
     public OrderBy orderBy(String name, String dir) {
         if ("asc".equalsIgnoreCase(dir)) {
             this.asc(name);

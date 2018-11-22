@@ -26,9 +26,8 @@ public class ActionHandler {
         Mvcs.setActionContext(ac);
         
         ActionInvoker invoker = mapping.get(ac);
-        if (null == invoker) {
+        if (null == invoker)
             return false;
-        }
         return invoker.invoke(ac);
     }
 

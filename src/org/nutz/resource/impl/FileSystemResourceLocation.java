@@ -13,12 +13,10 @@ public class FileSystemResourceLocation extends ResourceLocation {
     
     public int priority = 150;
 
-    @Override
     public String id() {
         return root.getAbsolutePath();
     }
     
-    @Override
     public void scan(final String base, final Pattern pattern, final List<NutResource> list) {
         final File baseFile = new File(root.getAbsolutePath()+"/"+base);
         if (baseFile.isFile()) {
@@ -29,7 +27,6 @@ public class FileSystemResourceLocation extends ResourceLocation {
         Disks.visitFile(baseFile, new Scans.ResourceFileVisitor(list, base, priority), new Scans.ResourceFileFilter(pattern));
     }
 
-    @Override
     public String toString() {
         return "Dir[path=" + root + "]";
     }
@@ -37,9 +34,8 @@ public class FileSystemResourceLocation extends ResourceLocation {
     private File root;
 
     public FileSystemResourceLocation(File root) throws IOException {
-        if (root == null) {
+        if (root == null)
             throw new RuntimeException("FileSystemResourceLocation root can't be NULL");
-        }
         this.root = root.getAbsoluteFile().getCanonicalFile();
     }
 }

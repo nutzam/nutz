@@ -14,7 +14,6 @@ public class ConditionPItem extends NoParamsPItem {
         this.cnd = cnd;
     }
 
-    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
         if (null != cnd) {
             sb.append(' ').append(Pojos.formatCondition(en, cnd, top));

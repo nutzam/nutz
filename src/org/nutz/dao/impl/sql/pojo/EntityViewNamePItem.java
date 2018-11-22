@@ -6,7 +6,6 @@ public class EntityViewNamePItem extends NoParamsPItem {
 
     private static final long serialVersionUID = 1L;
 
-    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
         sb.append(_en(en).getViewName()).append(' ');
     }

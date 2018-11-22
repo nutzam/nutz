@@ -21,7 +21,6 @@ public class EncodingProcessor extends AbstractProcessor{
         output = ai.getOutputEncoding();
     }
 
-    @Override
     public void process(ActionContext ac) throws Throwable {
         ac.getRequest().setCharacterEncoding(input);
         ac.getResponse().setCharacterEncoding(output);

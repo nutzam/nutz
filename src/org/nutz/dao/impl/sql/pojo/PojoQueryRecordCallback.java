@@ -13,10 +13,8 @@ import org.nutz.dao.sql.SqlContext;
 
 public class PojoQueryRecordCallback implements PojoCallback {
 
-    @Override
     public Object invoke(Connection conn, ResultSet rs, Pojo pojo, Statement stmt) throws SQLException {
         ResultSetLooping ing = new ResultSetLooping() {
-            @Override
             protected boolean createObject(int index, ResultSet rs, SqlContext context, int rowCount) {
                 list.add(Record.create(rs));
                 return true;

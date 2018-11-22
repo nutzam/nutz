@@ -7,9 +7,8 @@ public abstract class EntityName {
 
     public static EntityName create(String s) {
         CharSegment seg = new CharSegment(s);
-        if (seg.keys().size() > 0) {
+        if (seg.keys().size() > 0)
             return new DynamicEntityName(seg);
-        }
         return new StaticEntityName(s);
     }
 
@@ -21,12 +20,10 @@ public abstract class EntityName {
             this.segment = seg;
         }
 
-        @Override
         public String value() {
             return TableName.render(segment);
         }
 
-        @Override
         public String getOrignalString() {
             return segment.getOrginalString();
         }
@@ -41,12 +38,10 @@ public abstract class EntityName {
             this.value = s;
         }
 
-        @Override
         public String value() {
             return value;
         }
 
-        @Override
         public String getOrignalString() {
             return value;
         }
@@ -57,7 +52,6 @@ public abstract class EntityName {
 
     public abstract String getOrignalString();
 
-    @Override
     public String toString() {
         return value();
     }

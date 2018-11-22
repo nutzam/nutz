@@ -31,7 +31,6 @@ public abstract class EnumRandom<T extends Enum<?>> implements Random<T> {
         }
     }
 
-    @Override
     public T next() {
         return r.next();
     }

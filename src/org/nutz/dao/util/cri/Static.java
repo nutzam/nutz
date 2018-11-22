@@ -18,17 +18,14 @@ public class Static extends NoParamsPItem implements SqlExpression {
         this.str = str;
     }
 
-    @Override
     public SqlExpression setNot(boolean not) {
         return this;
     }
 
-    @Override
     public String toString() {
         return ' ' + str + ' ';
     }
 
-    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
         sb.append(' ').append(str).append(' ');
     }

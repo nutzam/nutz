@@ -27,9 +27,8 @@ public class StringOutputStream extends OutputStream {
      */
     @Override
     public void write(int b) throws IOException {
-        if (null == baos) {
+        if (null == baos)
             throw new IOException("Stream is closed");
-        }
         baos.write(b);
     }
 
@@ -41,11 +40,10 @@ public class StringOutputStream extends OutputStream {
         if (null != baos) {
             baos.flush();
             if (baos.size() > 0) {
-                if (charset == null) {
+                if (charset == null)
                     sb.append(new String(baos.toByteArray()));
-                } else {
+                else
                     sb.append(new String(baos.toByteArray(), charset));
-                }
                 baos.reset();
             }
         }

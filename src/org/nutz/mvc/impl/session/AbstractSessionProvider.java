@@ -18,10 +18,9 @@ public abstract class AbstractSessionProvider implements SessionProvider {
 
 	private static final Object lock = new Object();
 
-	@Override
-    public HttpServletRequest filter(final HttpServletRequest req,
-                                     final HttpServletResponse resp,
-                                     final ServletContext servletContext) {
+	public HttpServletRequest filter(final HttpServletRequest req,
+									 final HttpServletResponse resp,
+									 final ServletContext servletContext) {
 		return new SessionProviderHttpServletRequestWrapper(req, resp, servletContext);
 	}
 
@@ -36,8 +35,7 @@ public abstract class AbstractSessionProvider implements SessionProvider {
                                        final HttpServletResponse resp,
                                        final ServletContext servletContext);
 
-	@Override
-    public void notifyStop() {}
+	public void notifyStop() {}
 
 	public class SessionProviderHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
@@ -57,20 +55,17 @@ public abstract class AbstractSessionProvider implements SessionProvider {
 			this.session = getExistSession(req, resp, servletContext);
 		}
 
-		@Override
-        public HttpSession getSession(boolean create) {
+		public HttpSession getSession(boolean create) {
 			if (create && session == null) {
 				synchronized (lock) {// 因为创建Session并不需要太多并发
-					if (session == null) {
-                        session = createSession(req, resp, servletContext);
-                    }
+					if (session == null)
+						session = createSession(req, resp, servletContext);
 				}
 			}
 			return session;
 		}
 
-		@Override
-        public HttpSession getSession() {
+		public HttpSession getSession() {
 			return getSession(true);
 		}
 	}

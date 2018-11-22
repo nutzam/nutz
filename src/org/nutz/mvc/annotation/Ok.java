@@ -17,9 +17,6 @@ import java.lang.annotation.Target;
  *
  *  @ok("json:{locked:'password|createAt|salt',ignoreNull:true}")
  *  忽略password和createAt属性,忽略空属
- *
- *  参考文档
- *  https://nutzam.com/core/json/mvc.html
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})

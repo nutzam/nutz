@@ -23,7 +23,6 @@ public class ElFieldMacro extends NutPojo {
 
     private MappingField entityField;
 
-    @Override
     public SqlType getSqlType() {
         return SqlType.RUN;
     }
@@ -35,7 +34,6 @@ public class ElFieldMacro extends NutPojo {
 
     private ElFieldMacro() {}
 
-    @Override
     public void onAfter(Connection conn, ResultSet rs, Statement stmt) throws SQLException {
         Context context = entityField.getEntity()
                                      .wrapAsContext(getOperatingObject());

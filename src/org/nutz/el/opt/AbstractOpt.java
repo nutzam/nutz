@@ -14,17 +14,14 @@ public abstract class AbstractOpt implements Operator{
      * 操作符对象自身的符号
      */
     public abstract String fetchSelf();
-    @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
+        if (obj == null)
             return false;
-        }
         if(obj.equals(fetchSelf())){
             return true;
         }
         return super.equals(obj);
     }
-    @Override
     public String toString() {
         return String.valueOf(fetchSelf());
     }

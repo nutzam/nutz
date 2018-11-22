@@ -34,7 +34,6 @@ public class InjectBySetter implements Injecting {
                        Collection.class.isAssignableFrom(valueType);
     }
 
-    @Override
     public void inject(Object obj, Object value) {
         Object v = null;
         try {
@@ -47,9 +46,8 @@ public class InjectBySetter implements Injecting {
                 v = Castors.me().castTo(value, realValueType);
             }
             if (NutConf.USE_FASTCLASS) {
-                if (fm == null) {
+                if (fm == null)
                     fm = FastClassFactory.get(setter);
-                }
                 fm.invoke(obj, v);
             } else {
                 setter.invoke(obj, v);
@@ -57,12 +55,10 @@ public class InjectBySetter implements Injecting {
         }
         catch (Exception _e) {
             Throwable e = _e;
-            if (e instanceof InvocationTargetException) {
-                e = ((InvocationTargetException) e).getTargetException();
-            }
-            if (log.isInfoEnabled()) {
+            if (e instanceof InvocationTargetException)
+                e = ((InvocationTargetException)e).getTargetException();
+            if (log.isInfoEnabled())
                 log.info("Fail to value by setter", e);
-            }
             throw Lang.wrapThrow(e, "Fail to set '%s'[ %s ] by setter %s.'%s()' because [%s]: %s",
                                     value,
                                     v == null ? value : v,

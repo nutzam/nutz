@@ -17,14 +17,12 @@ public class ComboAopConfigration implements AopConfigration {
 
     private List<AopConfigration> aopConfigrations;
 
-    @Override
     public List<InterceptorPair> getInterceptorPairList(Ioc ioc, Class<?> clazz) {
         List<InterceptorPair> interceptorPairs = new ArrayList<InterceptorPair>();
         for (AopConfigration aopConfigration : aopConfigrations) {
             List<InterceptorPair> ipList = aopConfigration.getInterceptorPairList(ioc, clazz);
-            if (ipList != null && ipList.size() > 0) {
+            if (ipList != null && ipList.size() > 0)
                 interceptorPairs.addAll(ipList);
-            }
         }
         return interceptorPairs;
     }
@@ -35,9 +33,8 @@ public class ComboAopConfigration implements AopConfigration {
     
     public boolean hasAnnotationAop() {
         for (AopConfigration cnf : aopConfigrations) {
-            if (cnf instanceof AnnotationAopConfigration) {
+            if (cnf instanceof AnnotationAopConfigration)
                 return true;
-            }
         }
         return false;
     }

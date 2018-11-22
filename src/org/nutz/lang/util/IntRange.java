@@ -9,13 +9,11 @@ public class IntRange {
         int i = 0;
         for (; i < cs.length; i++) {
             char c = cs[i];
-            if (c == ',' || c == ':') {
+            if (c == ',' || c == ':')
                 break;
-            }
         }
-        if (i == cs.length) {
+        if (i == cs.length)
             return make(Integer.parseInt(new String(cs)));
-        }
 
         int left = Integer.parseInt(String.valueOf(cs, 0, i));
         return make(left, Integer.parseInt(String.valueOf(cs, ++i, cs.length - i)));
@@ -89,7 +87,6 @@ public class IntRange {
         this.right = right;
     }
 
-    @Override
     public String toString() {
         return String.format("%d:%d", left, right);
     }

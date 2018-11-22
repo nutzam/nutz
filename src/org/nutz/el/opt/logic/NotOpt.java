@@ -14,22 +14,18 @@ import org.nutz.el.opt.AbstractOpt;
 public class NotOpt extends AbstractOpt {
     private Object right;
 
-    @Override
     public int fetchPriority() {
         return 7;
     }
 
-    @Override
     public void wrap(Queue<Object> rpn) {
         right = rpn.poll();
     }
 
-    @Override
     public Object calculate() {
         Object rval = calculateItem(this.right);
-        if (null == rval) {
+        if (null == rval)
             return true;
-        }
         if (rval instanceof Boolean) {
             return !(Boolean) rval;
         }
@@ -37,7 +33,6 @@ public class NotOpt extends AbstractOpt {
         return !Castors.me().castTo(rval, Boolean.class);
     }
 
-    @Override
     public String fetchSelf() {
         return "!";
     }

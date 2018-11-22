@@ -13,9 +13,8 @@ public class Regex {
     }
     
     public static void clear() {
-        if (cache != null) {
+        if (cache != null)
             cache.clear();
-        }
     }
     
     public static Pattern getPattern(String regex) {

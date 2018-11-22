@@ -12,7 +12,6 @@ public class ClassMeta {
     public Map<String, List<String>> paramNames = new HashMap<String, List<String>>();
     public Map<String, Integer> methodLines = new HashMap<String, Integer>();
     
-    @Override
     public String toString() {
         return Json.toJson(this);
     }

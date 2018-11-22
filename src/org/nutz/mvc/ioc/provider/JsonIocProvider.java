@@ -13,7 +13,6 @@ import org.nutz.mvc.NutConfig;
 @Deprecated
 public class JsonIocProvider implements IocProvider {
 
-    @Override
     public Ioc create(NutConfig config, String[] args) {
         return new NutIoc(new JsonLoader(args), new ScopeContext("app"), "app");
     }

@@ -27,43 +27,36 @@ public class GBaseJdbcExpert extends AbstractJdbcExpert {
 		super(conf);
 	}
 
-	@Override
-    public String getDatabaseType() {
+	public String getDatabaseType() {
 		return DB.GBASE.name();
 	}
 
-	@Override
-    public void formatQuery(Pojo pojo) {
+	public void formatQuery(Pojo pojo) {
 		Pager pager = pojo.getContext().getPager();
 		// 需要进行分页
-		if (null != pager && pager.getPageNumber() > 0) {
-            pojo.append(Pojos.Items.wrapf(" LIMIT %d, %d", pager.getOffset(), pager.getPageSize()));
-        }
+		if (null != pager && pager.getPageNumber() > 0)
+			pojo.append(Pojos.Items.wrapf(" LIMIT %d, %d", pager.getOffset(), pager.getPageSize()));
 	}
 
-	@Override
-    public void formatQuery(Sql sql) {
+	public void formatQuery(Sql sql) {
 		Pager pager = sql.getContext().getPager();
 		// 需要进行分页
-		if (null != pager && pager.getPageNumber() > 0) {
-            sql.setSourceSql(sql.getSourceSql()
-                    + String.format(" LIMIT %d, %d",
-                    pager.getOffset(),
-                    pager.getPageSize()));
-        }
+		if (null != pager && pager.getPageNumber() > 0)
+			sql.setSourceSql(sql.getSourceSql()
+								+ String.format(" LIMIT %d, %d",
+												pager.getOffset(),
+												pager.getPageSize()));
 	}
 
-	@Override
-    public String evalFieldType(MappingField mf) {
-		if (mf.getCustomDbType() != null) {
-            return mf.getCustomDbType();
-        }
+	public String evalFieldType(MappingField mf) {
+		if (mf.getCustomDbType() != null)
+			return mf.getCustomDbType();
 		// Mysql 的精度是按照 bit
 		if (mf.getColumnType() == ColType.INT) {
 			int width = mf.getWidth();
-			if (width <= 0) {
-                return "INT(32)";
-            } else if (width <= 4) {
+			if (width <= 0)
+				return "INT(32)";
+			else if (width <= 4) {
 				return "TINYINT(" + (width * 4) + ")";
 			} else if (width <= 8) {
 				return "INT(" + (width * 4) + ")";
@@ -77,14 +70,12 @@ public class GBaseJdbcExpert extends AbstractJdbcExpert {
 		return super.evalFieldType(mf);
 	}
 
-	@Override
-    public boolean createEntity(Dao dao, Entity<?> en) {
+	public boolean createEntity(Dao dao, Entity<?> en) {
 		StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
 		// 创建字段
 		for (MappingField mf : en.getMappingFields()) {
-            if (mf.isReadonly()) {
+            if (mf.isReadonly())
                 continue;
-            }
 			sb.append('\n').append(mf.getColumnNameInSql());
 			sb.append(' ').append(evalFieldType(mf));
 			// 非主键的 @Name，应该加入唯一性约束
@@ -94,9 +85,8 @@ public class GBaseJdbcExpert extends AbstractJdbcExpert {
 			// 普通字段
 			else {
 				// 下面的关于Timestamp处理，是因为MySql中第一出现Timestamp的话，如果没有设定default，数据库默认会设置为CURRENT_TIMESTAMP
-				if (mf.isUnsigned()) {
-                    sb.append(" UNSIGNED");
-                }
+				if (mf.isUnsigned())
+					sb.append(" UNSIGNED");
 
 				if (mf.isNotNull()) {
 					sb.append(" NOT NULL");
@@ -104,9 +94,8 @@ public class GBaseJdbcExpert extends AbstractJdbcExpert {
 					sb.append(" NULL");
 				}
 
-				if (mf.isAutoIncreasement()) {
-                    sb.append(" AUTO_INCREMENT");
-                }
+				if (mf.isAutoIncreasement())
+					sb.append(" AUTO_INCREMENT");
 
 				if (mf.getColumnType() == ColType.TIMESTAMP) {
 					if (mf.hasDefaultValue()) {
@@ -119,9 +108,8 @@ public class GBaseJdbcExpert extends AbstractJdbcExpert {
 						}
 					}
 				} else {
-					if (mf.hasDefaultValue()) {
-                        addDefaultValue(sb, mf);
-                    }
+					if (mf.hasDefaultValue())
+					    addDefaultValue(sb, mf);
 				}
 			}
 
@@ -172,13 +160,11 @@ public class GBaseJdbcExpert extends AbstractJdbcExpert {
 		return true;
 	}
 
-	@Override
-    protected String createResultSetMetaSql(Entity<?> en) {
+	protected String createResultSetMetaSql(Entity<?> en) {
 		return "SELECT * FROM " + en.getViewName() + " LIMIT 1";
 	}
 
-	@Override
-    public Pojo fetchPojoId(Entity<?> en, MappingField idField) {
+	public Pojo fetchPojoId(Entity<?> en, MappingField idField) {
 		String autoSql = "SELECT @@@@IDENTITY";
 		Pojo autoInfo = new SqlFieldMacro(idField, autoSql);
 		autoInfo.setEntity(en);

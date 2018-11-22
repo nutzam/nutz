@@ -48,9 +48,8 @@ public class NutConf {
     private static NutConf me() {
         if (null == conf) {
             synchronized (NutConf.class) {
-                if (null == conf) {
+                if (null == conf)
                     conf = new NutConf();
-                }
             }
         }
         return conf;
@@ -90,9 +89,8 @@ public class NutConf {
                     }
                 }
                 catch (Throwable e) {
-                    if (log.isWarnEnabled()) {
+                    if (log.isWarnEnabled())
                         log.warn("Fail to load config?! for " + nr.getName(), e);
-                    }
                 }
             }
         }
@@ -180,18 +178,16 @@ public class NutConf {
     public static boolean AOP_ENABLED = !"false".equals(System.getProperty("nutz.aop.enable"));
     
     public static void set(String key, Object value) {
-        if (value == null) {
+        if (value == null)
             me().map.remove(key);
-        } else {
+        else
             me().map.put(key, value);
-        }
     }
     
     public static Object getOrDefault(String key, Object defaultValue) {
         Object re = me().map.get(key);
-        if (re == null) {
+        if (re == null)
             return defaultValue;
-        }
         return re;
     }
 }

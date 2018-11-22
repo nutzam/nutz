@@ -51,7 +51,6 @@ public class FileSqlManager implements SqlManager {
         this.paths = paths;
     }
 
-    @Override
     public void refresh() {
         for (String path : paths) {
             List<NutResource> list = Scans.me().scan(path, regex);
@@ -72,18 +71,16 @@ public class FileSqlManager implements SqlManager {
     public void add(Reader r) throws IOException {
         try {
             BufferedReader br = null;
-            if (r instanceof BufferedReader) {
-                br = (BufferedReader) r;
-            } else {
+            if (r instanceof BufferedReader)
+                br = (BufferedReader)r;
+            else
                 br = new BufferedReader(r);
-            }
             StringBuilder key = new StringBuilder();
             StringBuilder sb = new StringBuilder();
             OUT: while (br.ready()) {
                 String line = Streams.nextLineTrim(br);
-                if (line == null) {
+                if (line == null)
                     break;
-                }
                 if (line.startsWith(pairBegin)) {
                     if (key.length() > 0 && line.contains(pairEnd) && !line.endsWith(pairEnd)) {
                         sb.append(line);
@@ -96,21 +93,18 @@ public class FileSqlManager implements SqlManager {
                     sb.setLength(0);
                     
                     if (line.endsWith(pairEnd)) {
-                        if (line.length() > 4) {
+                        if (line.length() > 4)
                             key.append(line.substring(2, line.length() - 2).trim());
-                        }
                         continue;
                     } else {
                         key.append(line.substring(2).trim());
                         while (br.ready()) {
                             line = Streams.nextLineTrim(br);
-                            if (line == null) {
+                            if (line == null)
                                 break OUT;
-                            }
                             if (line.endsWith(pairEnd)) {
-                                if (line.length() > 2) {
+                                if (line.length() > 2)
                                     key.append(line.substring(0, line.length() - 2).trim());
-                                }
                                 continue OUT;
                             } else {
                                 key.append(line);
@@ -122,9 +116,8 @@ public class FileSqlManager implements SqlManager {
                     log.infof("skip not key sql line %s", line);
                     continue;
                 }
-                if (sb.length() > 0) {
+                if (sb.length() > 0)
                     sb.append("\n");
-                }
                 sb.append(line);
             }
             
@@ -138,27 +131,22 @@ public class FileSqlManager implements SqlManager {
         }
     }
     
-    @Override
     public String get(String key) throws SqlNotFoundException {
         _check_inited();
         String sql = sqls.get(key);
-        if (sql == null) {
+        if (sql == null)
             throw new SqlNotFoundException(key);
-        }
         return sql;
     }
 
-    @Override
     public Sql create(String key) throws SqlNotFoundException {
         _check_inited();
         return Sqls.create(get(key));
     }
 
-    @Override
     public List<Sql> createCombo(String... keys) {
-        if (keys.length == 0) {
+        if (keys.length == 0)
             keys = keys();
-        }
         List<Sql> list = new ArrayList<Sql>(keys.length);
         for (String key : keys) {
             list.add(create(key));
@@ -166,29 +154,24 @@ public class FileSqlManager implements SqlManager {
         return list;
     }
 
-    @Override
     public int count() {
         _check_inited();
         return sqls.size();
     }
 
-    @Override
     public String[] keys() {
         _check_inited();
         Set<String> keys = sqls.keySet();
         return keys.toArray(new String[keys.size()]);
     }
 
-    @Override
     public synchronized void addSql(String key, String value) {
         log.debugf("key=[%s], sql=[%s]", key, value);
-        if (!isAllowDuplicate() && sqls.containsKey(key)) {
-            throw new DaoException("Duplicate sql key=[" + key + "]");
-        }
+        if (!isAllowDuplicate() && sqls.containsKey(key))
+            throw new DaoException("Duplicate sql key=[" +key + "]");
         sqls.put(key, value);
     }
 
-    @Override
     public void remove(String key) {
         _check_inited();
         sqls.remove(key);
@@ -246,7 +229,6 @@ public class FileSqlManager implements SqlManager {
         }
     }
     
-    @Override
     public void clear() {
 		sqls.clear();
 	}
