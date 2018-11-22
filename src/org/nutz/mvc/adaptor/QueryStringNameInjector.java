@@ -41,7 +41,7 @@ public class QueryStringNameInjector extends NameInjector {
                 // 分析
                 String qs = req.getQueryString();
                 String[] ss = Strings.splitIgnoreBlank(qs, "[&]");
-                if (null != ss)
+                if (null != ss) {
                     for (String s : ss) {
                         Pair<String> p = Pair.create(s);
                         String val = p.getValue();
@@ -50,13 +50,13 @@ public class QueryStringNameInjector extends NameInjector {
                         } else {
                             try {
                                 val = URLDecoder.decode(val, Encoding.UTF8);
-                            }
-                            catch (UnsupportedEncodingException e) {
+                            } catch (UnsupportedEncodingException e) {
                                 throw Lang.wrapThrow(e);
                             }
                             qsMap.put(p.getName(), val);
                         }
                     }
+                }
                 // 保存
                 req.setAttribute("_nutz_qs_map", qsMap);
             }

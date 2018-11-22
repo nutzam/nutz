@@ -80,8 +80,9 @@ public abstract class Borns {
 
 		BornContext<T> re = evalWithArgTypes(false, type, argTypes, dynaArg);
 
-		if (null == re)
-			return null;
+		if (null == re) {
+            return null;
+        }
 
 		if (MatchType.LACK == re.getMatchType()) {
 			re.setArgs(Lang.arrayLast(args, re.getLackArg()));
@@ -196,11 +197,13 @@ public abstract class Borns {
 	}
 
 	private static boolean canBeCasted(Class<?>[] argTypes, Class<?>[] pts) {
-		if (pts.length != argTypes.length)
-			return false;
+		if (pts.length != argTypes.length) {
+            return false;
+        }
 		for (int i = 0; i < pts.length; i++) {
-			if (!Castors.me().canCast(argTypes[i], pts[i]))
-				return false;
+			if (!Castors.me().canCast(argTypes[i], pts[i])) {
+                return false;
+            }
 		}
 
 		return true;

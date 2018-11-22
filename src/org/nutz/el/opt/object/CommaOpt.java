@@ -12,10 +12,12 @@ import org.nutz.el.opt.TwoTernary;
  *
  */
 public class CommaOpt extends TwoTernary {
+    @Override
     public int fetchPriority() {
         return 99;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public Object calculate() {
         List<Object> objs = new ArrayList<Object>();
@@ -30,6 +32,7 @@ public class CommaOpt extends TwoTernary {
         objs.add(calculateItem(right));
         return objs;
     }
+    @Override
     public String fetchSelf() {
         return ",";
     }

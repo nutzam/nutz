@@ -12,18 +12,24 @@ public class SimpleMethodMatcher implements MethodMatcher {
         this.m = method;
     }
 
+    @Override
     public boolean match(Method method) {
-        if (m == method)
+        if (m == method) {
             return true;
-        if (!m.getName().equals(method.getName()))
+        }
+        if (!m.getName().equals(method.getName())) {
             return false;
+        }
         Class<?>[] parameterTypesMe = m.getParameterTypes();
         Class<?>[] parameterTypesOut = method.getParameterTypes();
-        if (parameterTypesMe.length != parameterTypesOut.length)
+        if (parameterTypesMe.length != parameterTypesOut.length) {
             return false;
-        for (int i = 0; i < parameterTypesMe.length; i++)
-            if (!parameterTypesMe[i].isAssignableFrom(parameterTypesOut[i]))
+        }
+        for (int i = 0; i < parameterTypesMe.length; i++) {
+            if (!parameterTypesMe[i].isAssignableFrom(parameterTypesOut[i])) {
                 return false;
+            }
+        }
         return true;
     }
 

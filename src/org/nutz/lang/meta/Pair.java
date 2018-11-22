@@ -15,7 +15,7 @@ public class Pair<T> {
         String name = null;
         String value = null;
         String pattern = PTN_3;
-        if (null != ss)
+        if (null != ss) {
             if (ss.length == 1) {
                 name = ss[0];
             } else if (ss.length == 2) {
@@ -33,6 +33,7 @@ public class Pair<T> {
                     }
                 }
             }
+        }
         Pair<String> re = new Pair<String>(name, value);
         re.pattern = pattern;
         return re;
@@ -78,11 +79,14 @@ public class Pair<T> {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj instanceof Pair<?>)
-            if (Strings.equals(((Pair<?>) obj).name, name))
+        }
+        if (obj instanceof Pair<?>) {
+            if (Strings.equals(((Pair<?>) obj).name, name)) {
                 return Lang.equals(((Pair<?>) obj).value, value);
+            }
+        }
         return false;
     }
 

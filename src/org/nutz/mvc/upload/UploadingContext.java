@@ -91,8 +91,9 @@ public class UploadingContext {
     }
 
     public UploadingContext setFilePool(FilePool pool) {
-        if (!(pool instanceof SynchronizedFilePool))
+        if (!(pool instanceof SynchronizedFilePool)) {
             pool = new SynchronizedFilePool(pool);
+        }
         this.filePool = pool;
         return this;
     }
@@ -134,17 +135,21 @@ public class UploadingContext {
 
     public UploadingContext setNameFilter(String nameFilter) {
         this.nameFilter = nameFilter;
-        if (!Strings.isBlank(nameFilter))
-        	this.nameFilterPattern = Pattern.compile(nameFilter);
+        if (!Strings.isBlank(nameFilter)) {
+            this.nameFilterPattern = Pattern.compile(nameFilter);
+        }
         return this;
     }
 
     public boolean isNameAccepted(String name) {
         if (null == nameFilter || Strings.isBlank(name) 
                 || "\"\"".equals(name)) //用户不选择文件时,文件名会是"" 两个双引号
+        {
             return true;
-        if (nameFilterPattern == null)
-        	return Regex.match(nameFilter, name.toLowerCase());
+        }
+        if (nameFilterPattern == null) {
+            return Regex.match(nameFilter, name.toLowerCase());
+        }
         return nameFilterPattern.matcher(name.toLowerCase()).find();
     }
 
@@ -158,8 +163,9 @@ public class UploadingContext {
     }
 
     public boolean isContentTypeAccepted(String contentType) {
-        if (null == contentTypeFilter || Strings.isBlank(contentType))
+        if (null == contentTypeFilter || Strings.isBlank(contentType)) {
             return true;
+        }
         return Regex.match(contentTypeFilter, contentType.toLowerCase());
     }
 }

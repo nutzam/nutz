@@ -22,12 +22,15 @@ public class MapArrayInjector implements ParamInjector {
 
     private String name;
 
+    @Override
     public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
-        if (refer == null)
+        if (refer == null) {
             return null;
+        }
         Object obj = ((Map<?, ?>) refer).get(name);
-        if (obj == null)
+        if (obj == null) {
             return null;
+        }
 
         if (obj instanceof List) {
             return Lang.collection2array((List<?>) ((List<?>) obj));

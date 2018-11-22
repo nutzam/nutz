@@ -18,10 +18,12 @@ public class ClobValueAdaptor extends AbstractFileValueAdaptor {
         suffix = ".clob";
     }
 
+    @Override
     public Object get(ResultSet rs, String colName) throws SQLException {
         Clob clob = rs.getClob(colName);
-        if (clob == null)
+        if (clob == null) {
             return null;
+        }
         File f = this.createTempFile();
         Streams.writeAndClose(Streams.fileOutw(f), clob.getCharacterStream());
         return new SimpleClob(f);
@@ -29,13 +31,15 @@ public class ClobValueAdaptor extends AbstractFileValueAdaptor {
 
     public Object get(ResultSet rs, int columnIndex) throws SQLException {
         Clob clob = rs.getClob(columnIndex);
-        if (clob == null)
+        if (clob == null) {
             return null;
+        }
         File f = this.createTempFile();
         Streams.writeAndClose(Streams.fileOutw(f), clob.getCharacterStream());
         return new SimpleClob(f);
     }
 
+    @Override
     public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
         if (null == obj) {
             stat.setNull(i, Types.CLOB);

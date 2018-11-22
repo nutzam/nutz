@@ -37,12 +37,14 @@ public abstract class EntityService<T> extends Service {
         try {
             Class<T> entryClass = (Class<T>) Mirror.getTypeParam(getClass(), 0);
             mirror = Mirror.me(entryClass);
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debugf("Get TypeParams for self : %s", entryClass.getName());
+            }
         }
         catch (Throwable e) {
-            if (log.isWarnEnabled())
+            if (log.isWarnEnabled()) {
                 log.warn("!!!Fail to get TypeParams for self!", e);
+            }
         }
     }
 

@@ -76,6 +76,7 @@ public class AnnotationEntityMaker implements EntityMaker {
     protected AnnotationEntityMaker() {
 	}
 
+    @Override
     public void init(DataSource datasource, JdbcExpert expert, EntityHolder holder) {
     	this.datasource = datasource;
         this.expert = expert;
@@ -86,6 +87,7 @@ public class AnnotationEntityMaker implements EntityMaker {
         init(datasource, expert, holder);
     }
 
+    @Override
     public <T> Entity<T> make(Class<T> type) {
         NutEntity<T> en = _createNutEntity(type);
 
@@ -96,8 +98,9 @@ public class AnnotationEntityMaker implements EntityMaker {
          */
         // 全局
         if (null != expert.getConf()) {
-            for (String key : expert.getConf().keySet())
+            for (String key : expert.getConf().keySet()) {
                 en.getMetas().put(key, expert.getConf().get(key));
+            }
         }
         // 当前表
         if (null != ti.annMeta) {
@@ -113,8 +116,9 @@ public class AnnotationEntityMaker implements EntityMaker {
         String tableName = null;
         if (null == ti.annTable) {
         	tableName = Daos.getTableNameMaker().make(type);
-        	if (null == ti.annView)
-        	    log.warnf("No @Table found, fallback to use table name='%s' for type '%s'", tableName, type.getName());
+        	if (null == ti.annView) {
+                log.warnf("No @Table found, fallback to use table name='%s' for type '%s'", tableName, type.getName());
+            }
         } else {
         	    tableName = ti.annTable.value().isEmpty() ? Daos.getTableNameMaker().make(type) : ti.annTable.value();
             if (!ti.annTable.prefix().isEmpty()) {
@@ -260,17 +264,20 @@ public class AnnotationEntityMaker implements EntityMaker {
             	tmp.add(mi);
             }
         }
-        if (miName != null)
+        if (miName != null) {
             tmp.add(0, miName);
-        if (miId != null)
+        }
+        if (miId != null) {
             tmp.add(0, miId);
+        }
         infos = tmp;
 
         // 映射字段搞完了? 我看看你到底有没有字段!!
-        if (infos.isEmpty())
+        if (infos.isEmpty()) {
             throw Lang.makeThrow(IllegalArgumentException.class,
-                                 "Pojo(%s) without any Mapping Field!!",
-                                 type);
+                    "Pojo(%s) without any Mapping Field!!",
+                    type);
+        }
 
         /*
          * 解析所有映射字段
@@ -315,8 +322,9 @@ public class AnnotationEntityMaker implements EntityMaker {
 			/*
 			 * 解析实体索引
 			 */
-			if (null != ti.annIndexes)
-			    _evalEntityIndexes(en, ti.annIndexes);
+			if (null != ti.annIndexes) {
+                _evalEntityIndexes(en, ti.annIndexes);
+            }
 		} catch (RuntimeException e) {
 			holder.remove(en);
 			throw e;
@@ -361,12 +369,14 @@ public class AnnotationEntityMaker implements EntityMaker {
     private List<FieldMacroInfo> _annToFieldMacroInfo(EL[] els, SQL[] sqls) {
         List<FieldMacroInfo> mis = new LinkedList<FieldMacroInfo>();
         if (els.length > 0) { // els 没有机会为 null 的
-            for (EL el : els)
+            for (EL el : els) {
                 mis.add(new FieldMacroInfo(el));
+            }
         }
         if (sqls.length > 0) { // @SQL 没有 @EL 优先级高
-            for (SQL sql : sqls)
+            for (SQL sql : sqls) {
                 mis.add(new FieldMacroInfo(sql));
+            }
         }
         return mis;
     }
@@ -432,42 +442,48 @@ public class AnnotationEntityMaker implements EntityMaker {
         }
 
         // 检查 @Id 和 @Name 的冲突
-        if (ef.isId() && ef.isName())
+        if (ef.isId() && ef.isName()) {
             throw Lang.makeThrow("Field '%s'(%s) can not be @Id and @Name at same time!",
-                                 ef.getName(),
-                                 ef.getEntity().getType().getName());
+                    ef.getName(),
+                    ef.getEntity().getType().getName());
+        }
 
         // 检查 PK
         if (null != info.annPK) {
             // 用 @PK 的方式声明的主键
             if (info.annPK.value().length == 1) {
                 if (Lang.contains(info.annPK.value(), info.name)) {
-                    if (ef.getTypeMirror().isIntLike())
+                    if (ef.getTypeMirror().isIntLike()) {
                         ef.setAsId();
-                    else
+                    } else {
                         ef.setAsName();
+                    }
                 }
             }
             // 看看是不是复合主键
-            else if (Lang.contains(info.annPK.value(), info.name))
+            else if (Lang.contains(info.annPK.value(), info.name)) {
                 ef.setAsCompositePk();
+            }
         }
 
         // 默认值
-        if (null != info.annDefault)
+        if (null != info.annDefault) {
             ef.setDefaultValue(new CharSegment(info.annDefault.value()));
+        }
 
         // 只读
-        if (null != info.annReadonly)
+        if (null != info.annReadonly) {
             ef.setAsReadonly();
+        }
 
         // 字段更多定义
         if (null != info.annDefine) {
             // 类型
-            if (info.annDefine.type() != ColType.AUTO)
+            if (info.annDefine.type() != ColType.AUTO) {
                 ef.setColumnType(info.annDefine.type());
-            else
+            } else {
                 Jdbcs.guessEntityFieldColumnType(ef);
+            }
             // 宽度
             ef.setWidth(info.annDefine.width());
             if (ef.getWidth() == 0 && ef.getColumnType() == ColType.VARCHAR) {
@@ -476,14 +492,17 @@ public class AnnotationEntityMaker implements EntityMaker {
             // 精度
             ef.setPrecision(info.annDefine.precision());
             // 无符号
-            if (info.annDefine.unsigned())
+            if (info.annDefine.unsigned()) {
                 ef.setAsUnsigned();
+            }
             // 非空约束
-            if (info.annDefine.notNull())
+            if (info.annDefine.notNull()) {
                 ef.setAsNotNull();
+            }
             // 自增，如果 @Id(auto=false)，则忽略
-            if (info.annDefine.auto() && !ef.isId())
+            if (info.annDefine.auto() && !ef.isId()) {
                 ef.setAsAutoIncreasement();
+            }
 
             // 是否为自定义类型呢?
             if (info.annDefine.customType().length() > 0) {
@@ -500,10 +519,11 @@ public class AnnotationEntityMaker implements EntityMaker {
         }
 
         // 字段值的适配器
-        if (null == info.annDefine || null == info.annDefine.adaptor() || info.annDefine.adaptor().isInterface())
+        if (null == info.annDefine || null == info.annDefine.adaptor() || info.annDefine.adaptor().isInterface()) {
             ef.setAdaptor(expert.getAdaptor(ef));
-        else
+        } else {
             ef.setAdaptor(Mirror.me(info.annDefine.adaptor()).born());
+        }
 
         // 输入输出
         ef.setInjecting(info.injecting);
@@ -543,8 +563,9 @@ public class AnnotationEntityMaker implements EntityMaker {
             }
             // '@Id' : 的自动后续获取
             else if (null != info.annId && info.annId.auto() && en.getField(info.name).isAutoIncreasement()) {
-            	if (!expert.isSupportAutoIncrement() || !expert.isSupportGeneratedKeys())
-            		en.addAfterInsertMacro(expert.fetchPojoId(en, en.getField(info.name)));
+            	if (!expert.isSupportAutoIncrement() || !expert.isSupportGeneratedKeys()) {
+                    en.addAfterInsertMacro(expert.fetchPojoId(en, en.getField(info.name)));
+                }
             }
         }
     }
@@ -562,10 +583,11 @@ public class AnnotationEntityMaker implements EntityMaker {
         }
         // 如果找到，增加
         if (null != theInfo) {
-            if (theInfo.isEl())
+            if (theInfo.isEl()) {
                 return new ElFieldMacro(ef, theInfo.getValue());
-            else
+            } else {
                 return new SqlFieldMacro(ef, theInfo.getValue());
+            }
         }
         return null;
     }
@@ -590,8 +612,9 @@ public class AnnotationEntityMaker implements EntityMaker {
         }
         for (Field field : en.getMirror().getFields()) {
             Index idx = field.getAnnotation(Index.class);
-            if (idx == null)
+            if (idx == null) {
                 continue;
+            }
             NutEntityIndex index = new NutEntityIndex();
             index.setUnique(idx.unique());
             index.setName(idx.name());
@@ -607,12 +630,13 @@ public class AnnotationEntityMaker implements EntityMaker {
             expert.setupEntityField(conn, en);
         }
         catch (Exception e) {
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debugf("Fail to setup '%s'(%s) by DB, because: (%s)'%s'",
-                           en.getType().getName(),
-                           en.getTableName(),
-                           e.getClass().getName(),
-                           e.getMessage());
+                        en.getType().getName(),
+                        en.getTableName(),
+                        e.getClass().getName(),
+                        e.getMessage());
+            }
         }
         finally {
             Trans.closeConnectionAuto(conn);

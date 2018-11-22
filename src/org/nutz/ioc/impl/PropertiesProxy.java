@@ -108,19 +108,19 @@ public class PropertiesProxy extends MultiLineProperties {
         clear();
         try {
             List<NutResource> list = getResources(paths);
-            if (utf8)
+            if (utf8) {
                 for (NutResource nr : list) {
-                    if (log.isDebugEnabled())
+                    if (log.isDebugEnabled()) {
                         log.debug("load properties from " + nr);
+                    }
                     Reader r = nr.getReader();
                     try {
                         load(nr.getReader(), false);
-                    }
-                    finally {
+                    } finally {
                         Streams.safeClose(r);
                     }
                 }
-            else {
+            } else {
                 Properties p = new Properties();
                 for (NutResource nr : list) {
                     // 用字符流来读取文件
@@ -198,8 +198,9 @@ public class PropertiesProxy extends MultiLineProperties {
 
     public String check(String key) {
         String val = get(key);
-        if (null == val)
+        if (null == val) {
             throw Lang.makeThrow("Ioc.$conf expect property '%s'", key);
+        }
         return val;
     }
 
@@ -209,8 +210,9 @@ public class PropertiesProxy extends MultiLineProperties {
 
     public boolean getBoolean(String key, boolean dfval) {
         String val = get(key);
-        if (Strings.isBlank(val))
+        if (Strings.isBlank(val)) {
             return dfval;
+        }
         return Castors.me().castTo(val, Boolean.class);
     }
 
@@ -325,13 +327,16 @@ public class PropertiesProxy extends MultiLineProperties {
                 // 如果是一个包，引用全部 Files
                 if (f.isDirectory()) {
                     Disks.visitFile(f, new FileVisitor() {
+                        @Override
                         public void visit(File f) {
                             me.joinAndClose(Streams.fileInr(f));
                         }
                     }, new FileFilter() {
+                        @Override
                         public boolean accept(File f) {
-                            if (f.isDirectory())
+                            if (f.isDirectory()) {
                                 return !f.isHidden() && !f.getName().startsWith(".");
+                            }
                             return f.getName().endsWith(".properties");
                         }
                     });

@@ -12,6 +12,7 @@ public abstract class TwoTernary extends AbstractOpt {
     protected Object right;
     protected Object left;
 
+    @Override
     public void wrap(Queue<Object> rpn) {
         right = rpn.poll();
         left = rpn.poll();

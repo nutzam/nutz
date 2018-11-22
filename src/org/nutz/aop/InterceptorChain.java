@@ -53,9 +53,9 @@ public class InterceptorChain {
      *             下层拦截器或原方法抛出的一切异常
      */
     public InterceptorChain doChain() throws Throwable {
-        if (currentMI == miList.size())
+        if (currentMI == miList.size()) {
             invoke();
-        else {
+        } else {
             currentMI++;
             miList.get(currentMI - 1).filter(this);
         }
@@ -70,10 +70,11 @@ public class InterceptorChain {
      *             原方法抛出的一切异常
      */
     public void invoke() throws Throwable {
-        if (invoked)
+        if (invoked) {
             log.warnf("!! Calling Method more than once! Method --> %s", callingMethod.toString());
-        else
+        } else {
             invoked = true;
+        }
         this.returnValue = callingObj._aop_invoke(methodIndex, args);
     }
 

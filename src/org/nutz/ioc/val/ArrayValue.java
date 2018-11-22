@@ -10,14 +10,17 @@ public class ArrayValue implements ValueProxy {
 
     public ArrayValue(IocMaking ing, IocValue[] array) {
         values = new ValueProxy[array.length];
-        for (int i = 0; i < values.length; i++)
+        for (int i = 0; i < values.length; i++) {
             values[i] = ing.makeValue(array[i]);
+        }
     }
 
+    @Override
     public Object get(IocMaking ing) {
         Object[] re = new Object[values.length];
-        for (int i = 0; i < values.length; i++)
+        for (int i = 0; i < values.length; i++) {
             re[i] = values[i].get(ing);
+        }
         return re;
     }
 

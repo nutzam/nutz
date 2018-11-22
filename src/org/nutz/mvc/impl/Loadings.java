@@ -131,12 +131,13 @@ public abstract class Loadings {
                 }
                 // 执行扫描，并将结果计入搜索结果
                 Collection<Class<?>> col = ms.scan();
-                if (null != col)
+                if (null != col) {
                     for (Class<?> type : col) {
                         if (isModule(type, determiner)) {
                             modules.add(type);
                         }
                     }
+                }
             }
 
             // 扫描包，扫描出的类直接计入结果
@@ -151,8 +152,9 @@ public abstract class Loadings {
             // mawm 为了兼容maven,根据这个type来加载该type所在jar的加载
             try {
                 URL location = type.getProtectionDomain().getCodeSource().getLocation();
-                if (log.isDebugEnabled())
+                if (log.isDebugEnabled()) {
                     log.debugf("module class location '%s'", location);
+                }
             }
             catch (NullPointerException e) {
                 // Android上无法拿到getProtectionDomain,just pass
@@ -169,8 +171,9 @@ public abstract class Loadings {
             // 仅仅加载自己
             else {
                 if (isModule(type, determiner)) {
-                    if (log.isDebugEnabled())
+                    if (log.isDebugEnabled()) {
                         log.debugf(" > Found @At : '%s'", type.getName());
+                    }
                     modules.add(type);
                 } else if (log.isTraceEnabled()) {
                     log.tracef(" > ignore '%s'", type.getName());
@@ -181,8 +184,9 @@ public abstract class Loadings {
     }
 
     public static void scanModuleInPackage(Set<Class<?>> modules, String packageName, EntryDeterminer determiner) {
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debugf(" > scan '%s'", packageName);
+        }
 
         List<Class<?>> subs = Scans.me().scanPackage(packageName);
         checkModule(modules, subs, determiner);
@@ -200,8 +204,9 @@ public abstract class Loadings {
         for (Class<?> sub : subs) {
             try {
                 if (isModule(sub, determiner)) {
-                    if (log.isDebugEnabled())
+                    if (log.isDebugEnabled()) {
                         log.debugf("   >> add '%s'", sub.getName());
+                    }
                     modules.add(sub);
                 } else if (log.isTraceEnabled()) {
                     log.tracef("   >> ignore '%s'", sub.getName());
@@ -214,17 +219,22 @@ public abstract class Loadings {
     }
 
     public static void evalHttpMethod(ActionInfo ai, Method method, At at) {
-        if (Mirror.getAnnotationDeep(method, GET.class) != null)
+        if (Mirror.getAnnotationDeep(method, GET.class) != null) {
             ai.getHttpMethods().add("GET");
-        if (Mirror.getAnnotationDeep(method, POST.class) != null)
+        }
+        if (Mirror.getAnnotationDeep(method, POST.class) != null) {
             ai.getHttpMethods().add("POST");
-        if (Mirror.getAnnotationDeep(method, PUT.class) != null)
+        }
+        if (Mirror.getAnnotationDeep(method, PUT.class) != null) {
             ai.getHttpMethods().add("PUT");
-        if (Mirror.getAnnotationDeep(method, DELETE.class) != null)
+        }
+        if (Mirror.getAnnotationDeep(method, DELETE.class) != null) {
             ai.getHttpMethods().add("DELETE");
+        }
         if (at != null) {
-            for (String m : at.methods())
+            for (String m : at.methods()) {
                 ai.getHttpMethods().add(m.toUpperCase());
+            }
         }
     }
 
@@ -242,10 +252,12 @@ public abstract class Loadings {
                 ai.setPaths(at.value());
             }
 
-            if (!Strings.isBlank(at.key()))
+            if (!Strings.isBlank(at.key())) {
                 ai.setPathKey(at.key());
-            if (at.top())
+            }
+            if (at.top()) {
                 ai.setPathTop(true);
+            }
         } else if (isMethod) {
             // 由于EntryDeterminer机制的存在，action方法上可能没有@At，这时候给一个默认的入口路径
             ai.setPaths(Lang.array("/" + def.toLowerCase()));
@@ -278,7 +290,9 @@ public abstract class Loadings {
         InjectName innm = Mirror.getAnnotationDeep(type,InjectName.class);
         IocBean iocBean = Mirror.getAnnotationDeep(type,IocBean.class);
         if (innm == null && iocBean == null) // TODO 再考虑考虑
+        {
             return;
+        }
         if (iocBean != null) {
             beanName = iocBean.name();
         }
@@ -340,11 +354,14 @@ public abstract class Loadings {
         int classModify = classZ.getModifiers();
         if (!Modifier.isPublic(classModify)
             || Modifier.isAbstract(classModify)
-            || Modifier.isInterface(classModify))
+            || Modifier.isInterface(classModify)) {
             return false;
-        for (Method method : classZ.getMethods())
-            if (determiner.isEntry(classZ, method))
+        }
+        for (Method method : classZ.getMethods()) {
+            if (determiner.isEntry(classZ, method)) {
                 return true;
+            }
+        }
         return false;
     }
     

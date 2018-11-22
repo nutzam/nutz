@@ -31,10 +31,12 @@ public class JsonActionChainMakerConfiguretion implements ActionChainMakerConfig
             map.putAll(Json.fromJson(Map.class, new InputStreamReader(getClass().getClassLoader().getResourceAsStream("org/nutz/mvc/impl/chainconfig/default-chains.js"))));
             
             if (!list.isEmpty()) {
-                for (NutResource nr : list)
-                    map.putAll(Json.fromJson(Map.class,nr.getReader()));
-                if (log.isDebugEnabled())
-                	log.debug("ActionChain Config:\n" + Json.toJson(map));
+                for (NutResource nr : list) {
+                    map.putAll(Json.fromJson(Map.class, nr.getReader()));
+                }
+                if (log.isDebugEnabled()) {
+                    log.debug("ActionChain Config:\n" + Json.toJson(map));
+                }
             }
         }
         catch (IOException e) {
@@ -42,18 +44,22 @@ public class JsonActionChainMakerConfiguretion implements ActionChainMakerConfig
         }
     }
     
+    @Override
     @SuppressWarnings("unchecked")
     public List<String> getProcessors(String key) {
         Map<String,Object> config = map.get(key);
-        if(config != null && config.containsKey("ps"))
+        if(config != null && config.containsKey("ps")) {
             return (List<String>) config.get("ps");
+        }
         return (List<String>) map.get("default").get("ps");
     }
     
+    @Override
     public String getErrorProcessor(String key) {
         Map<String,Object> config = map.get(key);
-        if(config != null && config.containsKey("error"))
+        if(config != null && config.containsKey("error")) {
             return (String) config.get("error");
+        }
         return (String) map.get("default").get("error");
     }
     

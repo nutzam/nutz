@@ -28,12 +28,14 @@ public class BorningException extends RuntimeException {
         String name = null == type ? "unknown" : type.getName();
         sb.append("Fail to born or cast to '").append(name).append('\'');
         if (null != argTypes && argTypes.length > 0) {
-            if (argTypes.length > 1)
+            if (argTypes.length > 1) {
                 sb.append("\n");
+            }
             sb.append("by args: [");
             for (Object argType : argTypes) {
-                if (argTypes.length > 1)
+                if (argTypes.length > 1) {
                     sb.append("\n");
+                }
                 sb.append("@(").append(argType).append(')');
             }
             sb.append("]");
@@ -57,8 +59,9 @@ public class BorningException extends RuntimeException {
         if (null != args) {
             sb.append("\n by args: [");
             for (Object arg : args) {
-                if (args.length > 1)
+                if (args.length > 1) {
                     sb.append("\n");
+                }
                 sb.append("@(").append(arg).append(')');
             }
             sb.append("]");

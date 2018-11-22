@@ -22,23 +22,29 @@ public abstract class AbstractLog implements Log {
 
     public static int level(String str) {
         if (null != str) {
-            if ("F".equals(str) || "fatal".equals(str))
+            if ("F".equals(str) || "fatal".equals(str)) {
                 return LEVEL_FATAL;
+            }
 
-            if ("E".equals(str) || "error".equals(str))
+            if ("E".equals(str) || "error".equals(str)) {
                 return LEVEL_ERROR;
+            }
 
-            if ("W".equals(str) || "warn".equals(str))
+            if ("W".equals(str) || "warn".equals(str)) {
                 return LEVEL_WARN;
+            }
 
-            if ("I".equals(str) || "info".equals(str))
+            if ("I".equals(str) || "info".equals(str)) {
                 return LEVEL_INFO;
+            }
 
-            if ("D".equals(str) || "debug".equals(str))
+            if ("D".equals(str) || "debug".equals(str)) {
                 return LEVEL_DEBUG;
+            }
 
-            if ("T".equals(str) || "trace".equals(str))
+            if ("T".equals(str) || "trace".equals(str)) {
                 return LEVEL_TRACE;
+            }
         }
 
         return LEVEL_INFO;
@@ -65,8 +71,9 @@ public abstract class AbstractLog implements Log {
      * <code>log.warnf("User(name=%s) login fail",username,e)</code>
      */
     private LogInfo makeInfo(Object obj, Object... args) {
-        if (obj == null)
+        if (obj == null) {
             return LOGINFO_NULL;
+        }
         try {
             LogInfo info = new LogInfo();
             if (obj instanceof Throwable) {
@@ -82,108 +89,141 @@ public abstract class AbstractLog implements Log {
             // }
             else {
                 info.message = String.format(obj.toString(), args);
-                if (args[args.length - 1] instanceof Throwable)
+                if (args[args.length - 1] instanceof Throwable) {
                     info.e = (Throwable) args[args.length - 1];
+                }
             }
             return info;
         }
         catch (Throwable e) { // 即使格式错误也继续log
-            if (isWarnEnabled())
+            if (isWarnEnabled()) {
                 warn("String format fail in log , fmt = "
-                     + obj
-                     + " , args = "
-                     + Arrays.toString(args),
-                     e);
+                                + obj
+                                + " , args = "
+                                + Arrays.toString(args),
+                        e);
+            }
             return LOGINFO_ERROR;
         }
     }
 
+    @Override
     public void debug(Object message) {
-        if (isDebugEnabled())
+        if (isDebugEnabled()) {
             log(LEVEL_DEBUG, makeInfo(message));
+        }
     }
 
+    @Override
     public void debugf(String fmt, Object... args) {
-        if (isDebugEnabled())
+        if (isDebugEnabled()) {
             log(LEVEL_DEBUG, makeInfo(fmt, args));
+        }
     }
 
+    @Override
     public void error(Object message) {
-        if (isErrorEnabled())
+        if (isErrorEnabled()) {
             log(LEVEL_ERROR, makeInfo(message));
+        }
     }
 
+    @Override
     public void errorf(String fmt, Object... args) {
-        if (isErrorEnabled())
+        if (isErrorEnabled()) {
             log(LEVEL_ERROR, makeInfo(fmt, args));
+        }
     }
 
+    @Override
     public void fatal(Object message) {
-        if (isFatalEnabled())
+        if (isFatalEnabled()) {
             log(LEVEL_FATAL, makeInfo(message));
+        }
     }
 
+    @Override
     public void fatalf(String fmt, Object... args) {
-        if (isFatalEnabled())
+        if (isFatalEnabled()) {
             log(LEVEL_FATAL, makeInfo(fmt, args));
+        }
     }
 
+    @Override
     public void info(Object message) {
-        if (isInfoEnabled())
+        if (isInfoEnabled()) {
             log(LEVEL_INFO, makeInfo(message));
+        }
     }
 
+    @Override
     public void infof(String fmt, Object... args) {
-        if (isInfoEnabled())
+        if (isInfoEnabled()) {
             log(LEVEL_INFO, makeInfo(fmt, args));
+        }
     }
 
+    @Override
     public void trace(Object message) {
-        if (isTraceEnabled())
+        if (isTraceEnabled()) {
             log(LEVEL_TRACE, makeInfo(message));
+        }
     }
 
+    @Override
     public void tracef(String fmt, Object... args) {
-        if (isTraceEnabled())
+        if (isTraceEnabled()) {
             log(LEVEL_TRACE, makeInfo(fmt, args));
+        }
     }
 
+    @Override
     public void warn(Object message) {
-        if (isWarnEnabled())
+        if (isWarnEnabled()) {
             log(LEVEL_WARN, makeInfo(message));
+        }
     }
 
+    @Override
     public void warnf(String fmt, Object... args) {
-        if (isWarnEnabled())
+        if (isWarnEnabled()) {
             log(LEVEL_WARN, makeInfo(fmt, args));
+        }
     }
 
+    @Override
     public boolean isDebugEnabled() {
         return isDebugEnabled;
     }
 
+    @Override
     public boolean isErrorEnabled() {
         return isErrorEnabled;
     }
 
+    @Override
     public boolean isFatalEnabled() {
         return isFatalEnabled;
     }
 
+    @Override
     public boolean isInfoEnabled() {
         return isInfoEnabled;
     }
 
+    @Override
     public boolean isTraceEnabled() {
         return isTraceEnabled;
     }
 
+    @Override
     public boolean isWarnEnabled() {
         return isWarnEnabled;
     }
 
     protected String tag = "";
 
+    @Override
     public Log setTag(String tag) {
         this.tag = tag;
         return this;

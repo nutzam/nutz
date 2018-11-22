@@ -27,8 +27,9 @@ public class ResourceBundleMessageLoader implements MessageLoader {
         Map<String, Map<String, Object>> re = new HashMap<String, Map<String, Object>>();
         re.put(Mvcs.DEFAULT_MSGS, new NutMap());
         List<NutResource> allnrs = Scans.me().scan(refer, "^.+[.]properties$");
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debugf("Load Messages in %s resource : [%s]", allnrs.size(), allnrs);
+        }
         for (NutResource nr : allnrs) {
 			try {
 				String name = nr.getName();

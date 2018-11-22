@@ -14,7 +14,8 @@ public interface Parse {
      * 空对象, 这样更好判断空值
      */
     static final Object nullobj = new Object() {
-    	public String toString() {return "/*nutz-el-nullobj*/";}
+    	@Override
+        public String toString() {return "/*nutz-el-nullobj*/";}
     };
     /**
      * 提取队列顶部元素<br>

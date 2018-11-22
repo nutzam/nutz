@@ -77,10 +77,11 @@ public final class Logs {
         catch (Throwable e) {
             try {
                 Log4jLogAdapter tmp = new Log4jLogAdapter();
-                if (tmp.canWork())
+                if (tmp.canWork()) {
                     adapter = tmp;
-                else
+                } else {
                     adapter = new SystemLogAdapter();
+                }
             } catch (Throwable _e) {
                 adapter = new SystemLogAdapter();
             }

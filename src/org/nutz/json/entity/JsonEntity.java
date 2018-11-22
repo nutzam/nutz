@@ -57,8 +57,9 @@ public class JsonEntity {
         }
         // 开始解析
         fields = fieldMaker.make(mirror);
-        for (JsonEntityField ef : fields)
+        for (JsonEntityField ef : fields) {
             fieldMap.put(ef.getName(), ef);
+        }
 
         try {
             borning = mirror.getBorning();
@@ -76,8 +77,9 @@ public class JsonEntity {
              */
             try {
                 Method myMethod = klass.getMethod(myMethodName);
-                if (!myMethod.isAccessible())
+                if (!myMethod.isAccessible()) {
                     myMethod.setAccessible(true);
+                }
                 toJsonMethod = myMethod;
             }
             /*
@@ -86,8 +88,9 @@ public class JsonEntity {
             catch (NoSuchMethodException e1) {
                 try {
                     Method myMethod = klass.getMethod(myMethodName, JsonFormat.class);
-                    if (!myMethod.isAccessible())
+                    if (!myMethod.isAccessible()) {
                         myMethod.setAccessible(true);
+                    }
                     toJsonMethod = myMethod;
                 }
                 catch (NoSuchMethodException e) {}
@@ -99,12 +102,14 @@ public class JsonEntity {
         if (toJsonMethod != null) {
             final int paramCount = toJsonMethod.getParameterTypes().length;
             jsonCallback = new JsonCallback() {
+                @Override
                 public boolean toJson(Object obj, JsonFormat jf, Writer writer) throws IOException {
                     try {
-                        if (paramCount == 0)
-                            writer.write((String)toJsonMethod.invoke(obj));
-                        else
-                            writer.write((String)toJsonMethod.invoke(obj, jf));
+                        if (paramCount == 0) {
+                            writer.write((String) toJsonMethod.invoke(obj));
+                        } else {
+                            writer.write((String) toJsonMethod.invoke(obj, jf));
+                        }
                     }
                     catch (Exception e) {
                         // born success, but toJson fail
@@ -118,6 +123,7 @@ public class JsonEntity {
                     }
                     return true;
                 }
+                @Override
                 public Object fromJson(Object obj) {
                     return null;
                 }
@@ -130,8 +136,9 @@ public class JsonEntity {
     }
 
     public Object born() {
-        if (null == borning)
+        if (null == borning) {
             throw err;
+        }
         return borning.born(new Object[0]);
     }
 

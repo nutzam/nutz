@@ -32,6 +32,7 @@ import org.nutz.lang.reflect.FastMethod;
  */
 public class ObjectMakerImpl implements ObjectMaker {
 
+    @Override
     public ObjectProxy make(final IocMaking ing, IocObject iobj) {
 
         // 获取配置的对象事件集合
@@ -41,8 +42,9 @@ public class ObjectMakerImpl implements ObjectMaker {
         // 并且有一个非 null 的名称的时候才会保存
         // 就是说，所有内部对象，将会随这其所附属的对象来保存，而自己不会单独保存
         ObjectProxy op = new ObjectProxy();
-        if (iobj.isSingleton() && null != ing.getObjectName())
+        if (iobj.isSingleton() && null != ing.getObjectName()) {
             ing.getContext().save(iobj.getScope(), ing.getObjectName(), op);
+        }
 
 
         try {
@@ -53,8 +55,9 @@ public class ObjectMakerImpl implements ObjectMaker {
 
             // 构造函数参数
             ValueProxy[] vps = new ValueProxy[Lang.eleSize(iobj.getArgs())];
-            for (int i = 0; i < vps.length; i++)
+            for (int i = 0; i < vps.length; i++) {
                 vps[i] = ing.makeValue(iobj.getArgs()[i]);
+            }
             dw.setArgs(vps);
 
             // 先获取一遍，根据这个数组来获得构造函数
@@ -75,6 +78,7 @@ public class ObjectMakerImpl implements ObjectMaker {
                 final String[] ss = iobj.getFactory().split("#", 2);
                 if (ss[0].startsWith("$")) {
                     dw.setBorning(new Borning<Object>() {
+                        @Override
                         public Object born(Object... args) {
                             Object factoryBean = ing.getIoc().get(null, ss[0].substring(1));
                             return Mirror.me(factoryBean).invoke(factoryBean, ss[1], args);
@@ -85,18 +89,21 @@ public class ObjectMakerImpl implements ObjectMaker {
                     Method m;
                     if (hasNullArg) {
                         m = (Method) Lang.first(mi.findMethods(ss[1],args.length));
-                        if (m == null)
+                        if (m == null) {
                             throw new IocException(ing.getObjectName(), "Factory method not found --> ", iobj.getFactory());
+                        }
                         dw.setBorning(new MethodCastingBorning<Object>(m));
                     } else {
                         m = mi.findMethod(ss[1], args);
                         dw.setBorning(new MethodBorning<Object>(m));
                     }
-                    if (iobj.getType() == null)
+                    if (iobj.getType() == null) {
                         iobj.setType(m.getReturnType());
+                    }
                 }
-                if (iobj.getType() != null)
+                if (iobj.getType() != null) {
                     mirror = ing.getMirrors().getMirror(iobj.getType(), ing.getObjectName());
+                }
             } else {
                 mirror = ing.getMirrors().getMirror(iobj.getType(), ing.getObjectName());
                 dw.setBorning((Borning<?>) mirror.getBorning(args));
@@ -134,8 +141,9 @@ public class ObjectMakerImpl implements ObjectMaker {
             dw.setFields(fields);
 
             // 如果是单例对象，前面已经生成实例了，在这里需要填充一下它的字段
-            if (null != obj)
+            if (null != obj) {
                 dw.fill(ing, obj);
+            }
 
             // 对象创建完毕，如果有 create 事件，调用它
             dw.onCreate(obj);
@@ -158,8 +166,9 @@ public class ObjectMakerImpl implements ObjectMaker {
 
     @SuppressWarnings({"unchecked"})
     private static IocEventTrigger<Object> createTrigger(Mirror<?> mirror, final String str) {
-        if (Strings.isBlank(str))
+        if (Strings.isBlank(str)) {
             return null;
+        }
         if (str.contains(".")) {
             try {
                 return (IocEventTrigger<Object>) Mirror.me(Lang.loadClass(str))
@@ -171,7 +180,8 @@ public class ObjectMakerImpl implements ObjectMaker {
         }
         return new IocEventTrigger<Object>() {
         	protected FastMethod fm;
-			public void trigger(Object obj) {
+			@Override
+            public void trigger(Object obj) {
 				try {
 					if (fm == null) {
 						Method method = Mirror.me(obj).findMethod(str);

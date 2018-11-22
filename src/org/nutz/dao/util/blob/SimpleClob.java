@@ -30,54 +30,68 @@ public class SimpleClob implements Clob, Serializable {
         this.file = f;
     }
 
+    @Override
     public long length() throws SQLException {
         return file.length();
     }
 
+    @Override
     public String getSubString(long pos, int length) throws SQLException {
-        if (pos < 1)
+        if (pos < 1) {
             throw new SQLException("pos<1");
+        }
         pos--;
         String str = Files.read(file);
-        if (pos >= length)
-            throw new IllegalArgumentException("pos="+pos);
-        if (pos + length >= length())
-            return str.substring((int)pos);
+        if (pos >= length) {
+            throw new IllegalArgumentException("pos=" + pos);
+        }
+        if (pos + length >= length()) {
+            return str.substring((int) pos);
+        }
         return str.substring((int)pos, (int)(pos + length - 1));
     }
 
+    @Override
     public Reader getCharacterStream() throws SQLException {
         return Streams.fileInr(file);
     }
 
+    @Override
     public InputStream getAsciiStream() throws SQLException {
         return Streams.buff(Streams.fileIn(file));
     }
 
+    @Override
     public long position(String searchstr, long start) throws SQLException {
         throw Lang.noImplement();
     }
 
+    @Override
     public long position(Clob searchstr, long start) throws SQLException {
         throw Lang.noImplement();
     }
 
+    @Override
     public int setString(long pos, String str) throws SQLException {
         throw Lang.noImplement();
     }
 
+    @Override
     public int setString(long pos, String str, int offset, int len) throws SQLException {
         throw Lang.noImplement();
     }
 
+    @Override
     public OutputStream setAsciiStream(long pos) throws SQLException {
         throw Lang.noImplement();
     }
 
+    @Override
     public Writer setCharacterStream(long pos) throws SQLException {
         throw Lang.noImplement();
     }
 
+    @Override
     public void truncate(long len) throws SQLException {
         try {
             RandomAccessFile raf = new RandomAccessFile(file, "rw");
@@ -92,10 +106,12 @@ public class SimpleClob implements Clob, Serializable {
         }
     }
 
+    @Override
     public void free() throws SQLException {
         Files.deleteFile(file);
     }
 
+    @Override
     public Reader getCharacterStream(long pos, long length) throws SQLException {
         throw Lang.noImplement();
     }

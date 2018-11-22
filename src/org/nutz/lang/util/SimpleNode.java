@@ -19,29 +19,36 @@ public class SimpleNode<T> implements Node<T> {
     private SimpleNode<T> firstChild;
     private SimpleNode<T> lastChild;
 
+    @Override
     public T get() {
         return obj;
     }
 
+    @Override
     public Node<T> set(T obj) {
         this.obj = obj;
         return this;
     }
 
+    @Override
     public Node<T> parent() {
         return parent;
     }
 
+    @Override
     public Node<T> top() {
-        if (null == parent)
+        if (null == parent) {
             return this;
+        }
         return parent.top();
     }
 
+    @Override
     public Node<T> prev() {
         return prev;
     }
 
+    @Override
     public Node<T> prev(Node<T> node) {
         SimpleNode<T> nd = (SimpleNode<T>) node;
         this.prev = nd;
@@ -50,10 +57,12 @@ public class SimpleNode<T> implements Node<T> {
         return this;
     }
 
+    @Override
     public Node<T> next() {
         return next;
     }
 
+    @Override
     public Node<T> next(Node<T> node) {
         SimpleNode<T> nd = (SimpleNode<T>) node;
         this.next = nd;
@@ -62,18 +71,22 @@ public class SimpleNode<T> implements Node<T> {
         return this;
     }
 
+    @Override
     public boolean isRoot() {
         return null == parent;
     }
 
+    @Override
     public boolean isLast() {
         return null == next;
     }
 
+    @Override
     public boolean isFirst() {
         return null == prev;
     }
 
+    @Override
     public List<Node<T>> parents() {
         LinkedList<Node<T>> list = new LinkedList<Node<T>>();
         Node<T> me = parent;
@@ -84,6 +97,7 @@ public class SimpleNode<T> implements Node<T> {
         return list;
     }
 
+    @Override
     public List<Node<T>> getAncestors() {
         List<Node<T>> list = new LinkedList<Node<T>>();
         Node<T> me = parent;
@@ -94,6 +108,7 @@ public class SimpleNode<T> implements Node<T> {
         return list;
     }
 
+    @Override
     public int depth() {
         int re = 0;
         Node<T> nd = this;
@@ -104,6 +119,7 @@ public class SimpleNode<T> implements Node<T> {
         return re;
     }
 
+    @Override
     public List<Node<T>> getNextSibling() {
         List<Node<T>> list = new LinkedList<Node<T>>();
         Node<T> me = next;
@@ -114,6 +130,7 @@ public class SimpleNode<T> implements Node<T> {
         return list;
     }
 
+    @Override
     public List<Node<T>> getPrevSibling() {
         List<Node<T>> list = new LinkedList<Node<T>>();
         Node<T> me = prev;
@@ -124,10 +141,12 @@ public class SimpleNode<T> implements Node<T> {
         return list;
     }
 
+    @Override
     public int index() {
         return getPrevSibling().size();
     }
 
+    @Override
     public List<Node<T>> getChildren() {
         List<Node<T>> list = new LinkedList<Node<T>>();
         if (null != firstChild) {
@@ -137,6 +156,7 @@ public class SimpleNode<T> implements Node<T> {
         return list;
     }
 
+    @Override
     public int countChildren() {
         int re = 0;
         if (null != firstChild) {
@@ -149,30 +169,36 @@ public class SimpleNode<T> implements Node<T> {
         return re;
     }
 
+    @Override
     public boolean hasChild() {
         return null != firstChild;
     }
 
+    @Override
     public Node<T> firstChild() {
         return firstChild;
     }
 
+    @Override
     public Node<T> lastChild() {
         return lastChild;
     }
 
+    @Override
     public Node<T> parent(Node<T> node) {
         parent = (SimpleNode<T>) node;
         node.add(this);
         return this;
     }
 
+    @Override
     public Node<T> clearChildren() {
         firstChild = null;
         lastChild = null;
         return this;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public Node<T> add(Node<?>... nodes) {
         if (nodes.length == 0) {
@@ -218,6 +244,7 @@ public class SimpleNode<T> implements Node<T> {
         return this;
     }
 
+    @Override
     public Node<T> addFirst(Node<T> node) {
         ((SimpleNode<T>) node).parent = this;
         if (!this.hasChild()) {
@@ -234,12 +261,15 @@ public class SimpleNode<T> implements Node<T> {
         return this;
     }
 
+    @Override
     public Node<T> child(int index) {
-        if (hasChild())
+        if (hasChild()) {
             return firstChild.next(index);
+        }
         return null;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <E extends Node<T>> void eachChild(Each<E> callback) {
         SimpleNode<T> nd = firstChild;
@@ -247,34 +277,41 @@ public class SimpleNode<T> implements Node<T> {
         while (nd != null) {
             callback.invoke(i++, (E) nd, -1);
             nd = nd.next;
-            if (nd == firstChild)
+            if (nd == firstChild) {
                 throw Lang.makeThrow("If i am here, tell me -_-!");
+            }
         }
     }
 
+    @Override
     public Node<T> desc(int... indexes) {
         Node<T> me = this;
         for (int i : indexes) {
-            if (!me.hasChild())
+            if (!me.hasChild()) {
                 return null;
+            }
             me = me.firstChild().next(i);
         }
         return me;
     }
 
+    @Override
     public Node<T> next(int index) {
-        if (index < 0)
+        if (index < 0) {
             return null;
+        }
         Node<T> me = this;
         while (index > 0 && me != null) {
             index--;
             me = me.next();
         }
-        if (index > 0)
+        if (index > 0) {
             return null;
+        }
         return me;
     }
 
+    @Override
     public Node<T> prev(int index) {
         Node<T> me = this;
         while (index > 0 && me != null) {
@@ -284,6 +321,7 @@ public class SimpleNode<T> implements Node<T> {
         return me;
     }
 
+    @Override
     public Node<T> insertBefore(int index, Node<T> node) {
         SimpleNode<T> me = (SimpleNode<T>) child(index);
         if (null != me) {
@@ -292,51 +330,60 @@ public class SimpleNode<T> implements Node<T> {
             me.prev.next = (SimpleNode<T>) node;
             me.prev = (SimpleNode<T>) node;
             ((SimpleNode<T>) node).parent = this;
-            if (firstChild == me)
+            if (firstChild == me) {
                 firstChild = (SimpleNode<T>) node;
+            }
         }
         return this;
     }
 
+    @Override
     public Node<T> pop() {
-        if (!hasChild())
+        if (!hasChild()) {
             return null;
+        }
         SimpleNode<T> re = lastChild;
         lastChild = lastChild.prev;
-        if (null == lastChild)
+        if (null == lastChild) {
             firstChild = null;
-        else
+        } else {
             lastChild.next = null;
+        }
 
         re.prev = null;
         re.next = null;
         return re;
     }
 
+    @Override
     public Node<T> popFirst() {
-        if (!hasChild())
+        if (!hasChild()) {
             return null;
+        }
         SimpleNode<T> re = firstChild;
         firstChild = firstChild.next;
-        if (null == firstChild)
+        if (null == firstChild) {
             lastChild = null;
-        else
+        } else {
             firstChild.prev = null;
+        }
 
         re.prev = null;
         re.next = null;
         return re;
     }
 
+    @Override
     public Node<T> removeChild(int index) {
         if (hasChild()) {
             SimpleNode<T> node = (SimpleNode<T>) child(index);
-            if (null == node)
+            if (null == node) {
                 return null;
-            else if (node.isLast())
+            } else if (node.isLast()) {
                 return pop();
-            else if (node.isFirst())
+            } else if (node.isFirst()) {
                 return popFirst();
+            }
 
             node.next.prev = node.prev;
             node.prev.next = node.next;
@@ -348,18 +395,22 @@ public class SimpleNode<T> implements Node<T> {
         return null;
     }
 
+    @Override
     public boolean remove() {
         int i = getIndex();
-        if (i < 0)
+        if (i < 0) {
             return false;
+        }
         parent.removeChild(i);
         return true;
 
     }
 
+    @Override
     public int getIndex() {
-        if (parent == null)
+        if (parent == null) {
             return -1;
+        }
         int i = 0;
         Node<T> n = parent.firstChild();
         while (n != parent.child(i)) {
@@ -368,6 +419,7 @@ public class SimpleNode<T> implements Node<T> {
         return i;
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         appendTo(this, sb, 0);
@@ -392,19 +444,23 @@ public class SimpleNode<T> implements Node<T> {
 
         InnerIterator(Node<T> node) {
             this.root = node;
-            if (root.hasChild())
+            if (root.hasChild()) {
                 this.node = root.child(0);
-            else
+            } else {
                 this.node = root;
+            }
         }
 
+        @Override
         public boolean hasNext() {
             return node != root;
         }
 
+        @Override
         public Node<T> next() {
-            if (node == root)
+            if (node == root) {
                 return null;
+            }
             Node<T> re = node;
             if (node.hasChild()) {
                 node = node.firstChild();
@@ -414,18 +470,21 @@ public class SimpleNode<T> implements Node<T> {
                 while (node.isLast() && !node.isRoot()) {
                     node = node.parent();
                 }
-                if (!node.isRoot())
+                if (!node.isRoot()) {
                     node = node.next();
+                }
             }
             return re;
         }
 
+        @Override
         public void remove() {
             throw Lang.makeThrow("No implement yet!");
         }
 
     }
 
+    @Override
     public Iterator<Node<T>> iterator() {
         return new InnerIterator<T>(this);
     }

@@ -73,31 +73,37 @@ public class XmlIocLoader implements IocLoader {
                 document.normalizeDocument();
                 NodeList nodeListZ = ((Element) document.getDocumentElement()).getChildNodes();
                 for (int i = 0; i < nodeListZ.getLength(); i++) {
-                    if (nodeListZ.item(i) instanceof Element)
+                    if (nodeListZ.item(i) instanceof Element) {
                         paserBean((Element) nodeListZ.item(i), false);
+                    }
                 }
                 Streams.safeClose(ins);
             }
             handleParent();
-            if (LOG.isDebugEnabled())
+            if (LOG.isDebugEnabled()) {
                 LOG.debugf("Load complete :\n%s", Json.toJson(iocMap));
+            }
         }
         catch (Throwable e) {
             throw Lang.wrapThrow(e);
         }
     }
 
+    @Override
     public String[] getName() {
         return iocMap.keySet().toArray(new String[iocMap.keySet().size()]);
     }
 
+    @Override
     public boolean has(String name) {
         return iocMap.containsKey(name);
     }
 
+    @Override
     public IocObject load(IocLoading loading, String name) throws ObjectLoadException {
-        if (has(name))
+        if (has(name)) {
             return iocMap.get(name);
+        }
         throw new ObjectLoadException("Object '" + name + "' without define!");
     }
 
@@ -106,36 +112,45 @@ public class XmlIocLoader implements IocLoader {
         if (innerBean) {
             beanId = "inner$" + innerId;
             innerId++;
-        } else
+        } else {
             beanId = beanElement.getAttribute("name");
-        if (beanId == null)
+        }
+        if (beanId == null) {
             throw Lang.makeThrow("No name for one bean!");
-        if (iocMap.containsKey(beanId))
+        }
+        if (iocMap.containsKey(beanId)) {
             throw Lang.makeThrow("Name of bean is not unique! name=" + beanId);
+        }
 
-        if (LOG.isDebugEnabled())
+        if (LOG.isDebugEnabled()) {
             LOG.debugf("Resolving bean define, name = %s", beanId);
+        }
         IocObject iocObject = new IocObject();
         String beanType = beanElement.getAttribute("type");
-        if (!Strings.isBlank(beanType))
+        if (!Strings.isBlank(beanType)) {
             iocObject.setType(Lang.loadClass(beanType));
+        }
         String beanScope = beanElement.getAttribute("scope");
-        if (!Strings.isBlank(beanScope))
+        if (!Strings.isBlank(beanScope)) {
             iocObject.setScope(beanScope);
+        }
         String beanParent = beanElement.getAttribute("parent");
-        if (!Strings.isBlank(beanParent))
+        if (!Strings.isBlank(beanParent)) {
             parentMap.put(beanId, beanParent);
+        }
         String factory = beanElement.getAttribute("factory");
-        if (!Strings.isBlank(factory))
-        	iocObject.setFactory(factory);
+        if (!Strings.isBlank(factory)) {
+            iocObject.setFactory(factory);
+        }
 
         parseArgs(beanElement, iocObject);
         parseFields(beanElement, iocObject);
         parseEvents(beanElement, iocObject);
 
         iocMap.put(beanId, iocObject);
-        if (LOG.isDebugEnabled())
+        if (LOG.isDebugEnabled()) {
             LOG.debugf("Resolved bean define, name = %s", beanId);
+        }
         return beanId;
     }
 
@@ -145,8 +160,9 @@ public class XmlIocLoader implements IocLoader {
             Element argsElement = list.get(0);
             NodeList argNodeList = argsElement.getChildNodes();
             for (int i = 0; i < argNodeList.getLength(); i++) {
-                if (argNodeList.item(i) instanceof Element)
+                if (argNodeList.item(i) instanceof Element) {
                     iocObject.addArg(parseX((Element) argNodeList.item(i)));
+                }
             }
         }
     }
@@ -156,8 +172,9 @@ public class XmlIocLoader implements IocLoader {
         for (Element fieldElement : list) {
                 IocField iocField = new IocField();
                 iocField.setName(fieldElement.getAttribute("name"));
-                if ("true".equals(fieldElement.getAttribute("optional")))
-                	iocField.setOptional(true);
+                if ("true".equals(fieldElement.getAttribute("optional"))) {
+                    iocField.setOptional(true);
+                }
                 if (fieldElement.hasChildNodes()) {
                     NodeList nodeList = fieldElement.getChildNodes();
                     for (int j = 0; j < nodeList.getLength(); j++) {
@@ -239,8 +256,9 @@ public class XmlIocLoader implements IocLoader {
             iocValue.setValue(set);
         } else {
             iocValue.setType(null);
-            if (element.getFirstChild() != null)
+            if (element.getFirstChild() != null) {
                 iocValue.setValue(element.getFirstChild().getTextContent());
+            }
         }
         return iocValue;
     }
@@ -265,8 +283,9 @@ public class XmlIocLoader implements IocLoader {
             List<Element> elist = getChildNodesByTagName(element, ITEM_TAG);
             for (Element elementItem : elist) {
                 String key = elementItem.getAttribute("key");
-                if (map.containsKey(key))
+                if (map.containsKey(key)) {
                     throw new IllegalArgumentException("key is not unique!");
+                }
                 NodeList list = elementItem.getChildNodes();
                 for (int j = 0; j < list.getLength(); j++) {
                     if (list.item(j) instanceof Element) {
@@ -274,8 +293,9 @@ public class XmlIocLoader implements IocLoader {
                         break;
                     }
                 }
-                if (!map.containsKey(key))
+                if (!map.containsKey(key)) {
                     map.put(key, null);
+                }
             }
         }
         return map;
@@ -287,32 +307,41 @@ public class XmlIocLoader implements IocLoader {
             Element eventsElement = elist.get(0);
             IocEventSet iocEventSet = new IocEventSet();
             elist = getChildNodesByTagName(eventsElement, "fetch");
-            if (elist.size() > 0)
+            if (elist.size() > 0) {
                 iocEventSet.setFetch(elist.get(0).getTextContent());
+            }
             elist = getChildNodesByTagName(eventsElement, "create");
-            if (elist.size() > 0)
+            if (elist.size() > 0) {
                 iocEventSet.setCreate(elist.get(0).getTextContent());
+            }
             elist = getChildNodesByTagName(eventsElement, "depose");
-            if (elist.size() > 0)
+            if (elist.size() > 0) {
                 iocEventSet.setDepose(elist.get(0).getTextContent());
-            if (iocEventSet.getCreate() == null)
-                if (iocEventSet.getDepose() == null)
-                    if (iocEventSet.getFetch() == null)
+            }
+            if (iocEventSet.getCreate() == null) {
+                if (iocEventSet.getDepose() == null) {
+                    if (iocEventSet.getFetch() == null) {
                         return;
+                    }
+                }
+            }
             iocObject.setEvents(iocEventSet);
         }
     }
 
     protected void handleParent() {
         // 检查parentId是否都存在.
-        for (String parentId : parentMap.values())
-            if (!iocMap.containsKey(parentId))
+        for (String parentId : parentMap.values()) {
+            if (!iocMap.containsKey(parentId)) {
                 throw Lang.makeThrow("发现无效的parent=%s", parentId);
+            }
+        }
         // 检查循环依赖
         List<String> parentList = new ArrayList<String>();
         for (Entry<String, String> entry : parentMap.entrySet()) {
-            if (!check(parentList, entry.getKey()))
+            if (!check(parentList, entry.getKey())) {
                 throw Lang.makeThrow("发现循环依赖! bean id=%s", entry.getKey());
+            }
             parentList.clear();
         }
         while (parentMap.size() != 0) {
@@ -332,11 +361,13 @@ public class XmlIocLoader implements IocLoader {
     }
 
     protected boolean check(List<String> parentList, String currentBeanId) {
-        if (parentList.contains(currentBeanId))
+        if (parentList.contains(currentBeanId)) {
             return false;
+        }
         String parentBeanId = parentMap.get(currentBeanId);
-        if (parentBeanId == null)
+        if (parentBeanId == null) {
             return true;
+        }
         parentList.add(currentBeanId);
         return check(parentList, parentBeanId);
     }
@@ -351,8 +382,9 @@ public class XmlIocLoader implements IocLoader {
         if(nList.getLength() > 0) {
             for (int i = 0; i < nList.getLength(); i++) {
                 Node node = nList.item(i);
-                if(node.getParentNode().isSameNode(element) && node instanceof Element)
+                if(node.getParentNode().isSameNode(element) && node instanceof Element) {
                     list.add((Element) node);
+                }
             }
         }
         return list;

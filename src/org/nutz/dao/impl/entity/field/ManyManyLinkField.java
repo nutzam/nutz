@@ -127,6 +127,7 @@ public class ManyManyLinkField extends AbstractLinkField {
 
     }
 
+    @Override
     public Condition createCondition(Object host) {
         SimpleCriteria cri = Cnd.cri();
         cri.where().andInBySql(    linkedField.getColumnName(),
@@ -138,10 +139,13 @@ public class ManyManyLinkField extends AbstractLinkField {
         return cri;
     }
 
+    @Override
     public void updateLinkedField(Object obj, Object linked) {}
 
+    @Override
     public void saveLinkedField(Object obj, Object linked) {}
 
+    @Override
     public LinkType getLinkType() {
         return LinkType.MANYMANY;
     }

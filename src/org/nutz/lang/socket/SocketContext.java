@@ -22,8 +22,9 @@ public class SocketContext extends SimpleContext {
     }
 
     public String readLine() throws IOException {
-        if (atom.socket.isClosed())
+        if (atom.socket.isClosed()) {
             return null;
+        }
         
         return atom.br.readLine();
     }
@@ -37,13 +38,13 @@ public class SocketContext extends SimpleContext {
     }
 
     public void write(String str) {
-        if (!atom.socket.isClosed())
+        if (!atom.socket.isClosed()) {
             try {
                 atom.ops.write(str.getBytes(Encoding.UTF8));
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw Lang.wrapThrow(e);
             }
+        }
     }
 
     public void writeLine(String str) {

@@ -83,8 +83,9 @@ public class Images {
     public static BufferedImage rotate(String srcPath, String taPath, int degree)
             throws IOException {
         File srcIm = Files.findFile(srcPath);
-        if (null == srcIm)
+        if (null == srcIm) {
             throw Lang.makeThrow("Fail to find image file '%s'!", srcPath);
+        }
 
         File taIm = Files.createFileIfNoExists(taPath);
         return rotate(srcIm, taIm, degree);
@@ -107,8 +108,9 @@ public class Images {
         int x = 0;
         int y = 0;
         degree = degree % 360;
-        if (degree < 0)
+        if (degree < 0) {
             degree = 360 + degree;// 将角度转换到0-360度之间
+        }
         double ang = degree * 0.0174532925;// 将角度转为弧度
 
         /**
@@ -202,8 +204,9 @@ public class Images {
                                           Color bgColor)
             throws IOException {
         File srcIm = Files.findFile(srcPath);
-        if (null == srcIm)
+        if (null == srcIm) {
             throw Lang.makeThrow("Fail to find image file '%s'!", srcPath);
+        }
 
         File taIm = Files.createFileIfNoExists(taPath);
         return zoomScale(srcIm, taIm, w, h, bgColor);
@@ -376,8 +379,9 @@ public class Images {
     public static BufferedImage clipScale(String srcPath, String taPath, int w, int h)
             throws IOException {
         File srcIm = Files.findFile(srcPath);
-        if (null == srcIm)
+        if (null == srcIm) {
             throw Lang.makeThrow("Fail to find image file '%s'!", srcPath);
+        }
 
         File taIm = Files.createFileIfNoExists(taPath);
         return clipScale(srcIm, taIm, w, h);
@@ -448,8 +452,9 @@ public class Images {
                                           int[] endPoint)
             throws IOException {
         File srcIm = Files.findFile(srcPath);
-        if (null == srcIm)
+        if (null == srcIm) {
             throw Lang.makeThrow("Fail to find image file '%s'!", srcPath);
+        }
 
         File taIm = Files.createFileIfNoExists(taPath);
         return clipScale(srcIm, taIm, startPoint, endPoint);
@@ -961,11 +966,13 @@ public class Images {
             if (img instanceof CharSequence) {
                 return ImageIO.read(Files.checkFile(img.toString()));
             }
-            if (img instanceof File)
+            if (img instanceof File) {
                 return ImageIO.read((File) img);
+            }
 
-            if (img instanceof URL)
+            if (img instanceof URL) {
                 img = ((URL) img).openStream();
+            }
 
             if (img instanceof InputStream) {
                 File tmp = File.createTempFile("nutz_img", ".jpg");
@@ -982,14 +989,16 @@ public class Images {
         catch (IOException e) {
             try {
                 InputStream in = null;
-                if (img instanceof File)
+                if (img instanceof File) {
                     in = new FileInputStream((File) img);
-                else if (img instanceof URL)
+                } else if (img instanceof URL) {
                     in = ((URL) img).openStream();
-                else if (img instanceof InputStream)
+                } else if (img instanceof InputStream) {
                     in = (InputStream) img;
-                if (in != null)
+                }
+                if (in != null) {
                     return readJpeg(in);
+                }
             }
             catch (IOException e2) {
                 e2.fillInStackTrace();
@@ -1103,8 +1112,9 @@ public class Images {
                 break;
             }
         }
-        if (reader == null)
+        if (reader == null) {
             return null;
+        }
         try {
             ImageInputStream input = ImageIO.createImageInputStream(in);
             reader.setInput(input);

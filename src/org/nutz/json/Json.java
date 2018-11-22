@@ -90,8 +90,9 @@ public class Json {
 
     private static Object parse(Type type, Reader reader) {
         Object obj = fromJson(reader);
-        if (type != null)
+        if (type != null) {
             return Mapl.maplistToObj(obj, type);
+        }
         return obj;
     }
 
@@ -241,14 +242,16 @@ public class Json {
      */
     public static void toJson(Writer writer, Object obj, JsonFormat format) {
         try {
-            if (format == null)
+            if (format == null) {
                 format = deft;
+            }
             JsonRender jr;
             Class<? extends JsonRender> jrCls = getJsonRenderCls();
-            if (jrCls == null)
+            if (jrCls == null) {
                 jr = new JsonRenderImpl();
-            else
-            	jr = Mirror.me(jrCls).born();
+            } else {
+                jr = Mirror.me(jrCls).born();
+            }
             jr.setWriter(writer);
             jr.setFormat(format);
             jr.render(obj);
@@ -443,23 +446,26 @@ public class Json {
 
     protected static JsonFormat deft = JsonFormat.nice();
     public static void setDefaultJsonformat(JsonFormat defaultJf) {
-        if (defaultJf == null)
+        if (defaultJf == null) {
             defaultJf = JsonFormat.nice();
+        }
         Json.deft = defaultJf;
     }
 
     private static JsonEntityFieldMaker deftMaker = new JsonEntityFieldMakerImpl();
     public static void setDefaultFieldMaker(JsonEntityFieldMaker fieldMaker) {
-        if (fieldMaker != null)
+        if (fieldMaker != null) {
             Json.deftMaker = fieldMaker;
+        }
     }
     public static JsonEntityFieldMaker getDefaultFieldMaker() {
         return deftMaker;
     }
     protected static List<JsonTypeHandler> handlers = new ArrayList<JsonTypeHandler>();
     public static void addTypeHandler(JsonTypeHandler handler) {
-        if (!handlers.contains(handler))
+        if (!handlers.contains(handler)) {
             handlers.add(0, handler);
+        }
     }
     public static List<JsonTypeHandler> getTypeHandlers() {
         return Collections.unmodifiableList(handlers);

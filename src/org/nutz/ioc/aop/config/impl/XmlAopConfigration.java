@@ -33,8 +33,9 @@ public class XmlAopConfigration extends AbstractAopConfigration {
             document = builder.parse(nutResource.getInputStream());
             document.normalizeDocument();
             NodeList nodeListZ = ((Element) document.getDocumentElement()).getElementsByTagName("class");
-            for (int i = 0; i < nodeListZ.getLength(); i++)
+            for (int i = 0; i < nodeListZ.getLength(); i++) {
                 aopList.add(parse((Element) nodeListZ.item(i)));
+            }
         }
         setAopItemList(aopList);
     }
@@ -44,8 +45,9 @@ public class XmlAopConfigration extends AbstractAopConfigration {
         aopItem.setClassName(item.getAttribute("name"));
         aopItem.setMethodName(item.getAttribute("method"));
         aopItem.setInterceptor(item.getAttribute("interceptor"));
-        if (item.hasAttribute("singleton"))
+        if (item.hasAttribute("singleton")) {
             aopItem.setSingleton(Boolean.parseBoolean(item.getAttribute("singleton")));
+        }
         return aopItem;
     }
 

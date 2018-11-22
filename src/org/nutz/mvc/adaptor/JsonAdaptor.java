@@ -22,19 +22,22 @@ import org.nutz.mvc.impl.AdaptorErrorContext;
  */
 public class JsonAdaptor extends PairAdaptor {
 
+    @Override
     protected ParamInjector evalInjector(Type type, Param param) {
         if (param == null || "..".equals(param.value())) {
             Class<?> clazz = Lang.getTypeClass(type);
-            if (clazz != null && AdaptorErrorContext.class.isAssignableFrom(clazz))
+            if (clazz != null && AdaptorErrorContext.class.isAssignableFrom(clazz)) {
                 return new VoidInjector();
+            }
             return new JsonInjector(type, null);
         }
         return super.evalInjector(type, param);
     }
 
-    public Object getReferObject(    ServletContext sc,
-                            HttpServletRequest req,
-                            HttpServletResponse resp, String[] pathArgs) {
+    @Override
+    public Object getReferObject(ServletContext sc,
+                                 HttpServletRequest req,
+                                 HttpServletResponse resp, String[] pathArgs) {
         // Read all as String
         try {
             //TODO URL传来的参数会丢失

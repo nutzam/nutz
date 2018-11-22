@@ -21,14 +21,16 @@ public class WebClassesResourceLocation extends ResourceLocation {
         this.sc = sc;
     }
 
+    @Override
     public String id() {
         return "/WEB-INF/classes/";
     }
 
     @Override
     public void scan(String base, Pattern pattern, List<NutResource> list) {
-        if (!base.startsWith("/"))
+        if (!base.startsWith("/")) {
             base = "/" + base;
+        }
         List<String> paths = new ArrayList<String>();
         getResources("/WEB-INF/classes"+base, paths);
         for (final String path : paths) {
@@ -50,16 +52,19 @@ public class WebClassesResourceLocation extends ResourceLocation {
             setSource("webapp:"+path);
             this.path = path;
             this.base = base;
-            if (path.equals("/WEB-INF/classes"+base))
+            if (path.equals("/WEB-INF/classes"+base)) {
                 setName(path);
-            else
-                setName(path.substring(("/WEB-INF/classes"+base).length()));
+            } else {
+                setName(path.substring(("/WEB-INF/classes" + base).length()));
+            }
             setPriority(priority);
         }
+        @Override
         public InputStream getInputStream() throws IOException {
             return sc.getResourceAsStream(path);
         }
         
+        @Override
         public String toString() {
             return "webapp:" + path;
         }
@@ -67,13 +72,15 @@ public class WebClassesResourceLocation extends ResourceLocation {
     
     public void getResources(String base, List<String> list) {
         Set<String> paths = sc.getResourcePaths(base);
-        if (paths == null)
+        if (paths == null) {
             return;
+        }
         for (final String path : paths) {
-            if (path.endsWith("/"))
+            if (path.endsWith("/")) {
                 getResources(path, list);
-            else
+            } else {
                 list.add(path);
+            }
         }
     }
 }

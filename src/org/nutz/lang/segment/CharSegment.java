@@ -24,6 +24,7 @@ public class CharSegment implements Segment, Cloneable {
         valueOf(str);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public Segment add(String key, Object v) {
         if (!context.has(key)) {
@@ -44,24 +45,29 @@ public class CharSegment implements Segment, Cloneable {
         return this;
     }
 
+    @Override
     public void clearAll() {
         context.clear();
     }
 
+    @Override
     public boolean contains(String key) {
         return keys.containsKey(key);
     }
 
+    @Override
     public Segment born() {
         return new CharSegment(this.getOrginalString());
     }
 
     private String orgString;
 
+    @Override
     public String getOrginalString() {
         return orgString;
     }
 
+    @Override
     public Segment clone() {
         CharSegment cs = new CharSegment();
         cs.parse(Lang.inr(orgString));
@@ -69,35 +75,43 @@ public class CharSegment implements Segment, Cloneable {
         return cs;
     }
 
+    @Override
     public Set<String> keys() {
         return this.keys.keySet();
     }
 
+    @Override
     public int keyCount() {
         return this.keys.size();
     }
 
+    @Override
     public boolean hasKey() {
         return !this.keys.isEmpty();
     }
 
+    @Override
     public List<Object> values() {
         List<Object> re = new ArrayList<Object>(nodes.size());
         for (SegmentNode node : nodes) {
-            if (node.isKey())
+            if (node.isKey()) {
                 re.add(context.get(node.getValue()));
-            else
+            } else {
                 re.add(node.getValue());
+            }
         }
         return re;
     }
 
+    @Override
     public Segment setAll(Object v) {
-        for (String key : keys())
+        for (String key : keys()) {
             context.set(key, v);
+        }
         return this;
     }
 
+    @Override
     public Segment setBy(Object obj) {
         Iterator<String> it = keys().iterator();
         Class<?> klass = obj.getClass();
@@ -134,11 +148,13 @@ public class CharSegment implements Segment, Cloneable {
         return this;
     }
 
+    @Override
     public Segment set(String key, Object v) {
         context.set(key, v);
         return this;
     }
 
+    @Override
     public List<SegmentNode> getNodes() {
         return nodes;
     }
@@ -149,6 +165,7 @@ public class CharSegment implements Segment, Cloneable {
 
     private NutMap keys;
 
+    @Override
     public void parse(Reader reader) {
         nodes = new LinkedList<SegmentNode>();
         context = Lang.context();
@@ -180,12 +197,14 @@ public class CharSegment implements Segment, Cloneable {
                         // Search the end
                         while (-1 != (b = reader.read())) {
                             org.append((char) b);
-                            if (b == '}')
+                            if (b == '}') {
                                 break;
+                            }
                             sb.append((char) b);
                         }
-                        if (b != '}')
+                        if (b != '}') {
                             throw Lang.makeThrow("Error format around '%s'", sb);
+                        }
                         // Create Key
                         String key = sb.toString();
                         nodes.add(SegmentNode.key(key));
@@ -201,8 +220,9 @@ public class CharSegment implements Segment, Cloneable {
                     sb.append((char) b);
                 }
             }
-            if (sb.length() > 0)
+            if (sb.length() > 0) {
                 nodes.add(SegmentNode.val(sb.toString()));
+            }
             // Store the Oraginal Value
             orgString = org.toString();
         }
@@ -211,21 +231,25 @@ public class CharSegment implements Segment, Cloneable {
         }
     }
 
+    @Override
     public Segment valueOf(String str) {
         parse(new StringReader(str));
         return this;
     }
 
+    @Override
     public CharSequence render() {
         return render(context);
     }
 
+    @Override
     public CharSequence render(Context context) {
         StringBuilder sb = new StringBuilder();
         for (SegmentNode node : nodes) {
             Object val = node.isKey() ? context.get(node.getValue()) : node.getValue();
-            if (null == val)
+            if (null == val) {
                 continue;
+            }
             if (val instanceof Collection<?>) {
                 for (Object obj : (Collection<?>) val) {
                     sb.append(obj);
@@ -237,18 +261,22 @@ public class CharSegment implements Segment, Cloneable {
         return sb;
     }
 
+    @Override
     public Context getContext() {
         return context;
     }
 
+    @Override
     public void fillNulls(Context context) {
         for (String key : keys.keySet()) {
             Object val = context.get(key);
-            if (null == val)
+            if (null == val) {
                 context.set(key, "${" + key + "}");
+            }
         }
     }
 
+    @Override
     public String toString() {
         return render().toString();
     }

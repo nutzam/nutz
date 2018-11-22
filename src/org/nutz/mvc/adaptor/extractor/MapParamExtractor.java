@@ -25,26 +25,32 @@ public class MapParamExtractor implements ParamExtractor {
         this.map = refer;
     }
 
+    @Override
     public String[] extractor(String name) {
         if (null != map && map.containsKey(name)) {
             Object obj = map.get(name);
-            if (obj instanceof String[])
+            if (obj instanceof String[]) {
                 return (String[]) obj;
-            if (obj == null)
+            }
+            if (obj == null) {
                 return null;
+            }
             return new String[]{obj.toString()};
         }
-        if (req == null)
+        if (req == null) {
             return null;
+        }
         return req.getParameterValues(name);
     }
 
+    @Override
     public Set<String> keys() {
         Set<String> ss = new HashSet<String>();
         ss.addAll(map.keySet());
-        if (req != null)
+        if (req != null) {
             ss.addAll((Collection<? extends String>) Lang.enum2collection(req.getParameterNames(),
-                                                                          new HashSet<String>()));
+                    new HashSet<String>()));
+        }
         return ss;
     }
 

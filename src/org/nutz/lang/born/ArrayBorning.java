@@ -17,6 +17,7 @@ public class ArrayBorning implements Borning<Object> {
         this.eleType = eleType;
     }
 
+    @Override
     public Object born(Object... args) {
         // 第一个参数必须为整数
         if (args.length >= 1) {

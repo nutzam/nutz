@@ -47,39 +47,45 @@ class ClassY implements Opcodes {
 
     String[] getParentInterfaces(Class<?> xClass) {
         Class<?>[] its = xClass.getInterfaces();
-        if (its == null || its.length == 0)
+        if (its == null || its.length == 0) {
             return new String[]{AopCallback.class.getName().replace('.', '/')};
-        else {
+        } else {
             String[] iii = new String[its.length + 1];
-            for (int i = 0; i < its.length; i++)
+            for (int i = 0; i < its.length; i++) {
                 iii[i] = its[i].getName().replace('.', '/');
+            }
             iii[its.length] = AopCallback.class.getName().replace('.', '/');
             return iii;
         }
     }
 
     String[] convertExp(Class<?>[] expClasses) {
-        if (expClasses.length == 0)
+        if (expClasses.length == 0) {
             return null;
+        }
         String[] results = new String[expClasses.length];
-        for (int i = 0; i < results.length; i++)
+        for (int i = 0; i < results.length; i++) {
             results[i] = expClasses[i].getName().replace('.', '/');
+        }
         return results;
     }
 
     int getAccess(int modify) {
-        if (Modifier.isProtected(modify))
+        if (Modifier.isProtected(modify)) {
             return ACC_PROTECTED;
-        if (Modifier.isPublic(modify))
+        }
+        if (Modifier.isPublic(modify)) {
             return ACC_PUBLIC;
+        }
         return 0x00;
     }
 
     static int findMethodIndex(String name, String desc, Method[] methods) {
         for (int i = 0; i < methods.length; i++) {
             Method method = methods[i];
-            if (Type.getMethodDescriptor(method).equals(desc) && method.getName().equals(name))
+            if (Type.getMethodDescriptor(method).equals(desc) && method.getName().equals(name)) {
                 return i;
+            }
         }
         return -1;// 是否应该抛出异常呢?应该不可能发生的
     }

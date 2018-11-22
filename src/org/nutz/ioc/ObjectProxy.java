@@ -79,8 +79,9 @@ public class ObjectProxy {
     }
 
     public void depose() {
-        if (null != obj && null != depose)
+        if (null != obj && null != depose) {
             depose.trigger(obj);
+        }
     }
 
     public Object getObj() {

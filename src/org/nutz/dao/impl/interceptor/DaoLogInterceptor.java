@@ -14,6 +14,7 @@ import org.nutz.dao.sql.DaoStatement;
  */
 public class DaoLogInterceptor implements DaoInterceptor {
 
+    @Override
     public void filter(DaoInterceptorChain chain) throws DaoException {
         DaoStatement statement = chain.getDaoStatement();
         if (statement != null) {

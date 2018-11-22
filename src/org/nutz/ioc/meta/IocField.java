@@ -63,9 +63,9 @@ public class IocField {
 	}
 	
 	public String toJson(JsonFormat jf) {
-	    if (!optional)
-	        return Json.toJson(this.value, jf);
-	    else{
+	    if (!optional) {
+            return Json.toJson(this.value, jf);
+        } else{
 	        NutMap map = new NutMap();
 	        map.put("optional", optional);
 	        map.put(this.value.getType(), this.value.getValue());

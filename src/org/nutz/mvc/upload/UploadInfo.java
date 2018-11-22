@@ -34,6 +34,7 @@ public class UploadInfo implements Serializable, Cloneable {
      */
     public boolean stop;
 
+    @Override
     public UploadInfo clone() {
         UploadInfo old = new UploadInfo();
         old.sum = sum;

@@ -21,11 +21,14 @@ public class NestingExpression extends AbstractSqlExpression {
 		this.value = value;
 	}
 
+	@Override
 	public void joinSql(Entity<?> en, StringBuilder sb) {
-		if (!"EXISTS".equals(op))
-			sb.append(_fmtcol(en));
-		if (not)
-			sb.append(" NOT");
+		if (!"EXISTS".equals(op)) {
+            sb.append(_fmtcol(en));
+        }
+		if (not) {
+            sb.append(" NOT");
+        }
 		if ("=".equals(op) || ">".equals(op) || "<".equals(op) || "!=".equals(op)) {
 			sb.append(op).append("(").append(value.toString()).append(")");
 		} else {
@@ -33,14 +36,17 @@ public class NestingExpression extends AbstractSqlExpression {
 		}
 	}
 
+	@Override
 	public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
 		return 0;
 	}
 
+	@Override
 	public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
 		return 0;
 	}
 
+	@Override
 	public int paramCount(Entity<?> en) {
 		return 0;
 	}

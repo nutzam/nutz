@@ -33,11 +33,13 @@ public class ReferTypeValue implements ValueProxy {
         this.name = field.getName();
         this.type = field.getType();
         Inject inject = field.getAnnotation(Inject.class);
-        if (inject != null)
+        if (inject != null) {
             typeFirst = inject.typeFirst();
+        }
     }
 
-	public Object get(IocMaking ing) {
+	@Override
+    public Object get(IocMaking ing) {
 		Ioc ioc = ing.getIoc();
 		IocContext ctx = ing.getContext();
 		if (typeFirst) {
@@ -56,22 +58,26 @@ public class ReferTypeValue implements ValueProxy {
 	        }
 		}
 		if (ioc.has(name)) {
-			if (ioc instanceof Ioc2)
-				return ((Ioc2)ioc).get(type, name, ctx);
+			if (ioc instanceof Ioc2) {
+                return ((Ioc2) ioc).get(type, name, ctx);
+            }
 			return ioc.get(type, name);
 		}
-		if (log.isDebugEnabled())
-		    log.debugf("name=%s not found, search for type=%s", name, type.getName());
-		if (ioc instanceof Ioc2)
-            return ((Ioc2)ioc).getByType(type, ctx);
-        else
+		if (log.isDebugEnabled()) {
+            log.debugf("name=%s not found, search for type=%s", name, type.getName());
+        }
+		if (ioc instanceof Ioc2) {
+            return ((Ioc2) ioc).getByType(type, ctx);
+        } else {
             return ioc.getByType(type);
+        }
 	}
 	
 	public Object getByType(Ioc ioc, IocContext ctx) {
-	    if (ioc instanceof Ioc2)
-            return ((Ioc2)ioc).getByType(type, ctx);
-        else
+	    if (ioc instanceof Ioc2) {
+            return ((Ioc2) ioc).getByType(type, ctx);
+        } else {
             return ioc.getByType(type);
+        }
 	}
 }

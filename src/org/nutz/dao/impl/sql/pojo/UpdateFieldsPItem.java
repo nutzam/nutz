@@ -19,18 +19,22 @@ public class UpdateFieldsPItem extends InsertValuesPItem {
         this.refer = refer;
     }
 
+    @Override
     protected List<MappingField> _mfs(Entity<?> en) {
-        if (null == mfs)
-        	return Pojos.getFieldsForUpdate(_en(en), getFieldMatcher(), refer == null ? pojo.getOperatingObject() : refer);
+        if (null == mfs) {
+            return Pojos.getFieldsForUpdate(_en(en), getFieldMatcher(), refer == null ? pojo.getOperatingObject() : refer);
+        }
         return mfs;
     }
 
+    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
         List<MappingField> mfs = _mfs(en);
 
         sb.append(" SET ");
-        for (MappingField mf : mfs)
+        for (MappingField mf : mfs) {
             sb.append(mf.getColumnNameInSql()).append("=?,");
+        }
 
         sb.setCharAt(sb.length() - 1, ' ');
     }

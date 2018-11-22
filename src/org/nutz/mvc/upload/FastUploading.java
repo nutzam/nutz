@@ -33,10 +33,12 @@ public class FastUploading implements Uploading {
 
     private static final Log log = Logs.get();
 
+    @Override
     public Map<String, Object> parse(HttpServletRequest req, UploadingContext context)
             throws UploadException {
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("FastUpload : " + Mvcs.getRequestPath(req));
+        }
             
         /*
          * 初始化一些临时变量
@@ -50,14 +52,16 @@ public class FastUploading implements Uploading {
          * 创建进度对象
          */
         UploadInfo info = Uploads.createInfo(req);
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("info created");
+        }
         /*
          * 创建参数表
          */
         NutMap params = Uploads.createParamsMap(req);
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debugf("Params map created - %s params", params.size());
+        }
         /*
          * 解析边界
          */
@@ -68,13 +72,15 @@ public class FastUploading implements Uploading {
         RemountBytes nameEndlBytes = RemountBytes.create("\r\n\r\n");
 
         if (Http.multipart.getBoundary(req.getContentType()) == null) {
-            if (log.isInfoEnabled())
+            if (log.isInfoEnabled()) {
                 log.info("boundary no found!!");
+            }
             return params;
         }
 
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("boundary: " + itemEndl);
+        }
 
         /*
          * 准备缓冲环，并跳过开始标记
@@ -91,13 +97,15 @@ public class FastUploading implements Uploading {
             mm = br.mark(firstBoundaryBytes);
             // 这是不可能的，应该立即退出
             if (mm != MarkMode.FOUND) {
-                if (log.isWarnEnabled())
+                if (log.isWarnEnabled()) {
                     log.warnf("Fail to find the firstBoundary (%s) in stream, quit!", firstBoundary);
+                }
                 return params;
             }
             br.skipMark();
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug("skip first boundary");
+            }
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);
@@ -107,8 +115,9 @@ public class FastUploading implements Uploading {
          * ========================================================<br>
          * 进入循环
          */
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("Reading...");
+        }
         try {
             FieldMeta meta;
             do {
@@ -129,12 +138,14 @@ public class FastUploading implements Uploading {
                 else {
                     throw new UploadInvalidFormatException("Fail to found nameEnd!");
                 }
-                if(log.isDebugEnabled())
-                    log.debugf("Upload File info: FilePath=[%s],fieldName=[%s]",meta.getFileLocalPath(),meta.getName());
+                if(log.isDebugEnabled()) {
+                    log.debugf("Upload File info: FilePath=[%s],fieldName=[%s]", meta.getFileLocalPath(), meta.getName());
+                }
                 // 作为文件读取
                 if (meta.isFile()) {
-                    if (log.isDebugEnabled())
-                        log.debugf("Upload Info: name=%s,content_type=%s", meta.getFileLocalName(),meta.getContentType());
+                    if (log.isDebugEnabled()) {
+                        log.debugf("Upload Info: name=%s,content_type=%s", meta.getFileLocalName(), meta.getContentType());
+                    }
                     // 检查是否通过文件名过滤
                     if (!context.isNameAccepted(meta.getFileLocalName())) {
                         throw new UploadUnsupportedFileNameException(meta);
@@ -171,8 +182,9 @@ public class FastUploading implements Uploading {
                                         throw new UploadOutOfSizeException(meta);
                                     }
                                     br.dump(ops);
-                                    if(info.stop)
+                                    if(info.stop) {
                                         throw new UploadStopException(info);
+                                    }
                                 } while (mm == MarkMode.NOT_FOUND);
                             }
                             // 不限制文件大小
@@ -182,8 +194,9 @@ public class FastUploading implements Uploading {
                                     mm = br.mark(itemEndlBytes);
                                     assertStreamNotEnd(mm);
                                     br.dump(ops);
-                                    if(info.stop)
+                                    if(info.stop) {
                                         throw new UploadStopException(info);
+                                    }
                                 } while (mm == MarkMode.NOT_FOUND);
                             }
                         }
@@ -210,10 +223,11 @@ public class FastUploading implements Uploading {
                     } while (mm == MarkMode.NOT_FOUND);
                     String val = new String(bao.toByteArray(), charset);
                     params.addv(meta.getName(), val);
-                    if (log.isDebugEnabled())
-                        log.debugf(    "Found a param, name=[%s] value=[%s]",
-                                    meta.getName(),
-                                    val);
+                    if (log.isDebugEnabled()) {
+                        log.debugf("Found a param, name=[%s] value=[%s]",
+                                meta.getName(),
+                                val);
+                    }
                 }
 
             } while (mm != MarkMode.STREAM_END);
@@ -227,8 +241,9 @@ public class FastUploading implements Uploading {
             br.close();
         }
         info.current = info.sum;
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debugf("...Done %s bytes readed", br.readed());
+        }
         /**
          * 全部结束<br>
          * ========================================================
@@ -238,7 +253,8 @@ public class FastUploading implements Uploading {
     }
 
     private static void assertStreamNotEnd(MarkMode mm) throws UploadInvalidFormatException {
-        if (mm == MarkMode.STREAM_END)
+        if (mm == MarkMode.STREAM_END) {
             throw new UploadInvalidFormatException("Should not end stream");
+        }
     }
 }

@@ -53,6 +53,7 @@ public class Mirror<T> {
 
     private static class DefaultTypeExtractor implements TypeExtractor {
 
+        @Override
         public Class<?>[] extract(Mirror<?> mirror) {
             Class<?> theType = mirror.getType();
             List<Class<?>> re = new ArrayList<Class<?>>(5);
@@ -81,9 +82,9 @@ public class Mirror<T> {
                     re.add(Array.class);
                 }
                 // 字符串
-                else if (mirror.isStringLike())
+                else if (mirror.isStringLike()) {
                     re.add(CharSequence.class);
-                // 数字
+                }// 数字
                 else if (mirror.isNumber()) {
                     re.add(Number.class);
                 }
@@ -102,8 +103,9 @@ public class Mirror<T> {
                 }
             }
             // 最后确保 Object 一定被加上了
-            if (theType != Object.class)
+            if (theType != Object.class) {
                 re.add(Object.class);
+            }
 
             return re.toArray(new Class<?>[re.size()]);
         }
@@ -133,10 +135,12 @@ public class Mirror<T> {
      */
     @SuppressWarnings("unchecked")
     public static <T> Mirror<T> me(T obj) {
-        if (obj == null)
+        if (obj == null) {
             return null;
-        if (obj instanceof Class<?>)
+        }
+        if (obj instanceof Class<?>) {
             return (Mirror<T>) me((Class<?>) obj);
+        }
         return (Mirror<T>) me(obj.getClass());
     }
 
@@ -230,28 +234,35 @@ public class Mirror<T> {
         String _is = "is" + fn;
         Method _m = null;
         for (Method method : klass.getMethods()) {
-            if (method.getParameterTypes().length != 0)
+            if (method.getParameterTypes().length != 0) {
                 continue;
+            }
 
             Class<?> mrt = method.getReturnType();
 
             // 必须有返回类型
-            if (null == mrt)
+            if (null == mrt) {
                 continue;
+            }
 
             // 如果给了返回类型，用它判断一下
-            if (null != returnType && !returnType.equals(mrt))
+            if (null != returnType && !returnType.equals(mrt)) {
                 continue;
+            }
 
             if (!method.isAccessible()) // 有些时候,即使是public的方法,也不一定能访问
+            {
                 method.setAccessible(true);
+            }
 
-            if (_get.equals(method.getName()))
+            if (_get.equals(method.getName())) {
                 return method;
+            }
 
             if (_is.equals(method.getName())) {
-                if (!Mirror.me(mrt).isBoolean())
+                if (!Mirror.me(mrt).isBoolean()) {
                     throw new NoSuchMethodException();
+                }
                 return method;
             }
 
@@ -260,8 +271,9 @@ public class Mirror<T> {
                 continue;
             }
         }
-        if (_m != null)
+        if (_m != null) {
             return _m;
+        }
         throw Lang.makeThrow(NoSuchMethodException.class,
                              "Fail to find getter for [%s]->[%s]",
                              klass.getName(),
@@ -351,13 +363,15 @@ public class Mirror<T> {
         }
         // 虾米都不是，错!
         else {
-            if (null != whenError)
+            if (null != whenError) {
                 whenError.invoke(method);
+            }
             return;
         }
         // 最后调用回调
-        if (null != callback)
+        if (null != callback) {
             callback.invoke(name, getter, setter);
+        }
     }
 
     /**
@@ -375,6 +389,7 @@ public class Mirror<T> {
                                         final String errmsgFormat,
                                         Callback3<String, Method, Method> callback) {
         evalGetterSetter(method, callback, new Callback<Method>() {
+            @Override
             public void invoke(Method method) {
                 throw Lang.makeThrow(errmsgFormat,
                                      method.getName(),
@@ -422,19 +437,22 @@ public class Mirror<T> {
                 catch (Throwable e1) {
                     Mirror<?> type = Mirror.me(paramType);
                     for (Method method : klass.getMethods()) {
-                        if (method.getParameterTypes().length == 1)
+                        if (method.getParameterTypes().length == 1) {
                             if (method.getName().equals(setterName)
-                                || method.getName().equals(fieldName)) {
+                                    || method.getName().equals(fieldName)) {
                                 if (null == paramType
-                                    || type.canCastToDirectly(method.getParameterTypes()[0]))
+                                        || type.canCastToDirectly(method.getParameterTypes()[0])) {
                                     return method;
+                                }
                             }
+                        }
                     }
                     // 还是没有? 会不会是包装类型啊?
                     if (!paramType.isPrimitive()) {
                         Class<?> p = unWrapper();
-                        if (null != p)
+                        if (null != p) {
                             return getSetter(fieldName, p);
+                        }
                     }
                     throw new RuntimeException();
                 }
@@ -461,8 +479,9 @@ public class Mirror<T> {
         for (Method m : this.klass.getMethods()) {
             if (!Modifier.isStatic(m.getModifiers())
                 && m.getParameterTypes().length == 1
-                && m.getName().equals(mName))
+                && m.getName().equals(mName)) {
                 ms.add(m);
+            }
         }
         return ms.toArray(new Method[ms.size()]);
     }
@@ -500,8 +519,9 @@ public class Mirror<T> {
      */
     public <AT extends Annotation> Field getField(Class<AT> ann) throws NoSuchFieldException {
         for (Field field : this.getFields()) {
-            if (field.isAnnotationPresent(ann))
+            if (field.isAnnotationPresent(ann)) {
                 return field;
+            }
         }
         throw new NoSuchFieldException(String.format("Can NOT find field [@%s] in class [%s] and it's parents classes",
                                                      ann.getName(),
@@ -518,8 +538,9 @@ public class Mirror<T> {
     public <AT extends Annotation> Field[] getFields(Class<AT> ann) {
         List<Field> fields = new LinkedList<Field>();
         for (Field f : this.getFields()) {
-            if (f.isAnnotationPresent(ann))
+            if (f.isAnnotationPresent(ann)) {
                 fields.add(f);
+            }
         }
         return fields.toArray(new Field[fields.size()]);
     }
@@ -572,16 +593,21 @@ public class Mirror<T> {
             for (int i = 0; i < fs.length; i++) {
                 Field f = fs[i];
                 int m = f.getModifiers();
-                if (noStatic && Modifier.isStatic(m))
+                if (noStatic && Modifier.isStatic(m)) {
                     continue;
-                if (noFinal && Modifier.isFinal(m))
+                }
+                if (noFinal && Modifier.isFinal(m)) {
                     continue;
-                if (noInner && f.getName().startsWith("this$"))
+                }
+                if (noInner && f.getName().startsWith("this$")) {
                     continue;
-                if (noMember && !Modifier.isStatic(m))
+                }
+                if (noMember && !Modifier.isStatic(m)) {
                     continue;
-                if (map.containsKey(fs[i].getName()))
+                }
+                if (map.containsKey(fs[i].getName())) {
                     continue;
+                }
 
                 map.put(fs[i].getName(), fs[i]);
             }
@@ -659,8 +685,9 @@ public class Mirror<T> {
             Method[] fs = cc.getDeclaredMethods();
             for (int i = 0; i < fs.length; i++) {
                 String key = fs[i].getName() + Mirror.getParamDescriptor(fs[i].getParameterTypes());
-                if (!map.containsKey(key))
+                if (!map.containsKey(key)) {
                     map.put(key, fs[i]);
+                }
             }
             cc = cc.getSuperclass() == top ? null : cc.getSuperclass();
         }
@@ -682,8 +709,9 @@ public class Mirror<T> {
     public Method[] getStaticMethods() {
         List<Method> list = new LinkedList<Method>();
         for (Method m : klass.getMethods()) {
-            if (Modifier.isStatic(m.getModifiers()) && Modifier.isPublic(m.getModifiers()))
+            if (Modifier.isStatic(m.getModifiers()) && Modifier.isPublic(m.getModifiers())) {
                 list.add(m);
+            }
         }
         return list.toArray(new Method[list.size()]);
     }
@@ -715,18 +743,19 @@ public class Mirror<T> {
      * @throws FailToSetValueException
      */
     public void setValue(Object obj, Field field, Object value) throws FailToSetValueException {
-        if (!field.isAccessible())
+        if (!field.isAccessible()) {
             field.setAccessible(true);
+        }
         Class<?> ft = field.getType();
         // 非 null 值，进行转换
         if (null != value) {
-            if (!field.getType().isAssignableFrom(value.getClass()))
+            if (!field.getType().isAssignableFrom(value.getClass())) {
                 try {
                     value = Castors.me().castTo(value, field.getType());
-                }
-                catch (FailToCastObjectException e) {
+                } catch (FailToCastObjectException e) {
                     throw makeSetValueException(obj.getClass(), field.getName(), value, e);
                 }
+            }
         }
         // 如果是原生类型，转换成默认值
         else if (ft.isPrimitive()) {
@@ -804,8 +833,9 @@ public class Mirror<T> {
      * @throws FailToGetValueException
      */
     public Object getValue(Object obj, Field f) throws FailToGetValueException {
-        if (!f.isAccessible())
+        if (!f.isAccessible()) {
             f.setAccessible(true);
+        }
         try {
             return f.get(obj);
         }
@@ -907,29 +937,39 @@ public class Mirror<T> {
      */
     public Class<?> getWrapperClass() {
         if (!klass.isPrimitive()) {
-            if (this.isPrimitiveNumber() || this.is(Boolean.class) || this.is(Character.class))
+            if (this.isPrimitiveNumber() || this.is(Boolean.class) || this.is(Character.class)) {
                 return klass;
-            if (Number.class.isAssignableFrom(klass))
+            }
+            if (Number.class.isAssignableFrom(klass)) {
                 return klass;
+            }
             throw Lang.makeThrow("Class '%s' should be a primitive class", klass.getName());
         }
         // TODO 用散列能快一点
-        if (is(int.class))
+        if (is(int.class)) {
             return Integer.class;
-        if (is(char.class))
+        }
+        if (is(char.class)) {
             return Character.class;
-        if (is(boolean.class))
+        }
+        if (is(boolean.class)) {
             return Boolean.class;
-        if (is(long.class))
+        }
+        if (is(long.class)) {
             return Long.class;
-        if (is(float.class))
+        }
+        if (is(float.class)) {
             return Float.class;
-        if (is(byte.class))
+        }
+        if (is(byte.class)) {
             return Byte.class;
-        if (is(short.class))
+        }
+        if (is(short.class)) {
             return Short.class;
-        if (is(double.class))
+        }
+        if (is(double.class)) {
             return Double.class;
+        }
 
         throw Lang.makeThrow("Class [%s] has no wrapper class!", klass.getName());
     }
@@ -938,8 +978,9 @@ public class Mirror<T> {
      * @return 获得外覆类，如果没有外覆类，则返回自身的类型
      */
     public Class<?> getWrapper() {
-        if (klass.isPrimitive())
+        if (klass.isPrimitive()) {
             return getWrapperClass();
+        }
         return klass;
     }
 
@@ -947,12 +988,14 @@ public class Mirror<T> {
      * @return 如果当前类为内部类，则返回其外部类。否则返回 null
      */
     public Class<?> getOuterClass() {
-        if (Modifier.isStatic(klass.getModifiers()))
+        if (Modifier.isStatic(klass.getModifiers())) {
             return null;
+        }
         String name = klass.getName();
         int pos = name.lastIndexOf('$');
-        if (pos == -1)
+        if (pos == -1) {
             return null;
+        }
         name = name.substring(0, pos);
         try {
             return Lang.loadClass(name);
@@ -976,8 +1019,9 @@ public class Mirror<T> {
      */
     public Borning<T> getBorning(Object... args) throws BorningException {
         BornContext<T> bc = Borns.eval(klass, args);
-        if (null == bc)
+        if (null == bc) {
             throw new BorningException(klass, args);
+        }
 
         return bc.getBorning();
     }
@@ -996,8 +1040,9 @@ public class Mirror<T> {
      */
     public Borning<T> getBorningByArgTypes(Class<?>... argTypes) throws BorningException {
         BornContext<T> bc = Borns.evalByArgTypes(klass, argTypes);
-        if (null == bc)
+        if (null == bc) {
             throw new BorningException(klass, argTypes);
+        }
         return bc.getBorning();
     }
 
@@ -1011,32 +1056,41 @@ public class Mirror<T> {
     public T born(Object... args) {
         BornContext<T> bc;
         if (NutConf.USE_MIRROR_CACHE && args.length == 0) {
-            if (emtryArgsBornContext == null)
+            if (emtryArgsBornContext == null) {
                 emtryArgsBornContext = Borns.eval(klass, args);
+            }
             bc = emtryArgsBornContext;
-        } else
+        } else {
             bc = Borns.eval(klass, args);
-        if (null == bc)
+        }
+        if (null == bc) {
             throw new BorningException(klass, args);
+        }
 
         return bc.doBorn();
     }
 
     private static boolean doMatchMethodParamsType(Class<?>[] paramTypes,
                                                    Class<?>[] methodArgTypes) {
-        if (paramTypes.length == 0 && methodArgTypes.length == 0)
+        if (paramTypes.length == 0 && methodArgTypes.length == 0) {
             return true;
+        }
         if (paramTypes.length == methodArgTypes.length) {
-            for (int i = 0; i < paramTypes.length; i++)
-                if (!Mirror.me(paramTypes[i]).canCastToDirectly((methodArgTypes[i])))
+            for (int i = 0; i < paramTypes.length; i++) {
+                if (!Mirror.me(paramTypes[i]).canCastToDirectly((methodArgTypes[i]))) {
                     return false;
+                }
+            }
             return true;
         } else if (paramTypes.length + 1 == methodArgTypes.length) {
-            if (!methodArgTypes[paramTypes.length].isArray())
+            if (!methodArgTypes[paramTypes.length].isArray()) {
                 return false;
-            for (int i = 0; i < paramTypes.length; i++)
-                if (!Mirror.me(paramTypes[i]).canCastToDirectly((methodArgTypes[i])))
+            }
+            for (int i = 0; i < paramTypes.length; i++) {
+                if (!Mirror.me(paramTypes[i]).canCastToDirectly((methodArgTypes[i]))) {
                     return false;
+                }
+            }
             return true;
         }
         return false;
@@ -1064,21 +1118,20 @@ public class Mirror<T> {
      */
     public Injecting getInjecting(String fieldName) {
         Method[] sss = this.findSetters(fieldName);
-        if (sss.length == 1)
+        if (sss.length == 1) {
             return new InjectBySetter(sss[0]);
-        else
+        } else {
             try {
                 Field field = this.getField(fieldName);
                 try {
                     return new InjectBySetter(this.getSetter(field));
-                }
-                catch (NoSuchMethodException e) {
+                } catch (NoSuchMethodException e) {
                     return new InjectByField(field);
                 }
-            }
-            catch (NoSuchFieldException e) {
+            } catch (NoSuchFieldException e) {
                 throw Lang.wrapThrow(e);
             }
+        }
     }
 
     /**
@@ -1142,11 +1195,13 @@ public class Mirror<T> {
      * @return 符合条件的方法
      */
     public Method findMethod(String name, Object[] args) throws NoSuchMethodException {
-        if (null == args || args.length == 0)
+        if (null == args || args.length == 0) {
             return findMethod(name);
+        }
         Class<?>[] paramTypes = new Class<?>[args.length];
-        for (int i = 0; i < args.length; i++)
+        for (int i = 0; i < args.length; i++) {
             paramTypes[i] = args[i].getClass();
+        }
         return findMethod(name, paramTypes);
     }
 
@@ -1167,24 +1222,29 @@ public class Mirror<T> {
         }
         catch (NoSuchMethodException e) {
             for (Method m : klass.getMethods()) {
-                if (m.getName().equals(name))
-                    if (doMatchMethodParamsType(paramTypes, m.getParameterTypes()))
+                if (m.getName().equals(name)) {
+                    if (doMatchMethodParamsType(paramTypes, m.getParameterTypes())) {
                         return m;
+                    }
+                }
             }
         }
         // TODO 与Borns的代码有重叠
         Method[] sms = getMethods();
         OUT: for (Method m : sms) {
-            if (!m.getName().equals(name))
+            if (!m.getName().equals(name)) {
                 continue;
+            }
             Class<?>[] pts = m.getParameterTypes();
             if (pts.length == 1 && pts[0].isArray()) {
-                if (paramTypes.length == 0)
+                if (paramTypes.length == 0) {
                     return m;
+                }
                 Class<?> varParam = pts[0].getComponentType();
                 for (Class<?> klass : paramTypes) {
-                    if (!Castors.me().canCast(klass, varParam))
+                    if (!Castors.me().canCast(klass, varParam)) {
                         continue OUT;
+                    }
                 }
                 return m;
             }
@@ -1206,12 +1266,15 @@ public class Mirror<T> {
      */
     public Method[] findMethods(String name, int argNumber) {
         List<Method> methods = new LinkedList<Method>();
-        for (Method m : klass.getMethods())
-            if (m.getName().equals(name))
-                if (argNumber < 0)
+        for (Method m : klass.getMethods()) {
+            if (m.getName().equals(name)) {
+                if (argNumber < 0) {
                     methods.add(m);
-                else if (m.getParameterTypes().length == argNumber)
+                } else if (m.getParameterTypes().length == argNumber) {
                     methods.add(m);
+                }
+            }
+        }
         return methods.toArray(new Method[methods.size()]);
     }
 
@@ -1229,7 +1292,7 @@ public class Mirror<T> {
     public Method findMethod(Class<?> returnType, Class<?>... paramTypes)
             throws NoSuchMethodException {
         for (Method m : klass.getMethods()) {
-            if (returnType == m.getReturnType())
+            if (returnType == m.getReturnType()) {
                 if (paramTypes.length == m.getParameterTypes().length) {
                     boolean noThisOne = false;
                     for (int i = 0; i < paramTypes.length; i++) {
@@ -1238,9 +1301,11 @@ public class Mirror<T> {
                             break;
                         }
                     }
-                    if (!noThisOne)
+                    if (!noThisOne) {
                         return m;
+                    }
                 }
+            }
         }
         throw new NoSuchMethodException(String.format("Can not find method in [%s] with return type '%s' and arguemtns \n'%s'!",
                                                       klass.getName(),
@@ -1274,8 +1339,9 @@ public class Mirror<T> {
     public static Class<?>[] evalToTypes(Object... args) {
         Class<?>[] types = new Class[args.length];
         int i = 0;
-        for (Object arg : args)
+        for (Object arg : args) {
             types[i++] = null == arg ? Object.class : arg.getClass();
+        }
         return types;
     }
 
@@ -1292,8 +1358,9 @@ public class Mirror<T> {
      * @return 新数组,如果数组中包括了 null，或者数组的类型不一致，则返回旧数组
      */
     public static Object evalArgToRealArray(Object... args) {
-        if (null == args || args.length == 0 || null == args[0])
+        if (null == args || args.length == 0 || null == args[0]) {
             return null;
+        }
         Object re = null;
         /*
          * Check inside the arguments list, to see if all element is in same
@@ -1301,8 +1368,9 @@ public class Mirror<T> {
          */
         Class<?> type = null;
         for (Object arg : args) {
-            if (null == arg)
+            if (null == arg) {
                 break;
+            }
             if (null == type) {
                 type = arg.getClass();
                 continue;
@@ -1339,19 +1407,25 @@ public class Mirror<T> {
      */
     public static MatchType matchParamTypes(Class<?>[] paramTypes, Class<?>[] argTypes) {
         int len = argTypes == null ? 0 : argTypes.length;
-        if (len == 0 && paramTypes.length == 0)
+        if (len == 0 && paramTypes.length == 0) {
             return MatchType.YES;
+        }
         if (paramTypes.length == len) {
-            for (int i = 0; i < len; i++)
-                if (!Mirror.me(argTypes[i]).canCastToDirectly((paramTypes[i])))
+            for (int i = 0; i < len; i++) {
+                if (!Mirror.me(argTypes[i]).canCastToDirectly((paramTypes[i]))) {
                     return MatchType.NO;
+                }
+            }
             return MatchType.YES;
         } else if (len + 1 == paramTypes.length) {
-            if (!paramTypes[len].isArray())
+            if (!paramTypes[len].isArray()) {
                 return MatchType.NO;
-            for (int i = 0; i < len; i++)
-                if (!Mirror.me(argTypes[i]).canCastToDirectly((paramTypes[i])))
+            }
+            for (int i = 0; i < len; i++) {
+                if (!Mirror.me(argTypes[i]).canCastToDirectly((paramTypes[i]))) {
                     return MatchType.NO;
+                }
+            }
             return MatchType.LACK;
         }
         return MatchType.NO;
@@ -1517,11 +1591,13 @@ public class Mirror<T> {
      * @return 判断当前对象是否能直接转换到目标类型，而不产生异常
      */
     public boolean canCastToDirectly(Class<?> type) {
-        if (klass == type || type.isAssignableFrom(klass))
+        if (klass == type || type.isAssignableFrom(klass)) {
             return true;
+        }
         if (klass.isPrimitive() && type.isPrimitive()) {
-            if (this.isPrimitiveNumber() && Mirror.me(type).isPrimitiveNumber())
+            if (this.isPrimitiveNumber() && Mirror.me(type).isPrimitiveNumber()) {
                 return true;
+            }
         }
         try {
             return Mirror.me(type).getWrapperClass() == this.getWrapperClass();
@@ -1558,14 +1634,17 @@ public class Mirror<T> {
      * @return true or false
      */
     public boolean isPojo() {
-        if (this.klass.isPrimitive() || this.isEnum())
+        if (this.klass.isPrimitive() || this.isEnum()) {
             return false;
+        }
 
-        if (this.isStringLike() || this.isDateTimeLike())
+        if (this.isStringLike() || this.isDateTimeLike()) {
             return false;
+        }
 
-        if (this.isPrimitiveNumber() || this.isBoolean() || this.isChar())
+        if (this.isPrimitiveNumber() || this.isBoolean() || this.isChar()) {
             return false;
+        }
 
         return !isContainer();
     }
@@ -1640,6 +1719,7 @@ public class Mirror<T> {
         }
     }
 
+    @Override
     public String toString() {
         return klass.getName();
     }
@@ -1660,12 +1740,14 @@ public class Mirror<T> {
      */
     public static Type[] getTypeParams(Class<?> klass) {
         // TODO 这个实现会导致泛型丢失,只能取得申明类型
-        if (klass == null || "java.lang.Object".equals(klass.getName()))
+        if (klass == null || "java.lang.Object".equals(klass.getName())) {
             return null;
+        }
         // 看看父类
         Type superclass = klass.getGenericSuperclass();
-        if (null != superclass && superclass instanceof ParameterizedType)
+        if (null != superclass && superclass instanceof ParameterizedType) {
             return ((ParameterizedType) superclass).getActualTypeArguments();
+        }
 
         // 看看接口
         Type[] interfaces = klass.getGenericInterfaces();
@@ -1697,14 +1779,15 @@ public class Mirror<T> {
                 try {
                     for (int i = 0; i < ss.length; i++) {
                         String className = ss[i];
-                        if (className.length() > 0 && className.charAt(0) == '?')
+                        if (className.length() > 0 && className.charAt(0) == '?') {
                             re[i] = Object.class;
-                        else {
+                        } else {
                             int pos = className.indexOf('<');
-                            if (pos < 0)
+                            if (pos < 0) {
                                 re[i] = Lang.loadClass(className);
-                            else
+                            } else {
                                 re[i] = Lang.loadClass(className.substring(0, pos));
+                            }
                         }
                     }
                     return re;
@@ -1726,8 +1809,9 @@ public class Mirror<T> {
      */
     public static Class<?> getGenericTypes(Field f, int index) {
         Class<?>[] types = getGenericTypes(f);
-        if (null == types || types.length <= index)
+        if (null == types || types.length <= index) {
             return null;
+        }
         return types[index];
     }
 
@@ -1743,13 +1827,15 @@ public class Mirror<T> {
     @SuppressWarnings("unchecked")
     public static <T> Class<T> getTypeParam(Class<?> klass, int index) {
         Type[] types = getTypeParams(klass);
-        if (types == null)
+        if (types == null) {
             return null;
+        }
         if (index >= 0 && index < types.length) {
             Type t = types[index];
             Class<T> clazz = (Class<T>) Lang.getTypeClass(t);
-            if (clazz == null)
+            if (clazz == null) {
                 throw Lang.makeThrow("Type '%s' is not a Class", t.toString());
+            }
             return clazz;
         }
         throw Lang.makeThrow("Class type param out of range %d/%d", index, types.length);
@@ -1772,8 +1858,9 @@ public class Mirror<T> {
     public static String getParamDescriptor(Class<?>[] parameterTypes) {
         StringBuilder sb = new StringBuilder();
         sb.append('(');
-        for (Class<?> pt : parameterTypes)
+        for (Class<?> pt : parameterTypes) {
             sb.append(getTypeDescriptor(pt));
+        }
         sb.append(')');
         return sb.toString();
     }
@@ -1804,25 +1891,26 @@ public class Mirror<T> {
      */
     public static String getTypeDescriptor(Class<?> klass) {
         if (klass.isPrimitive()) {
-            if (klass == void.class)
+            if (klass == void.class) {
                 return "V";
-            else if (klass == int.class)
+            } else if (klass == int.class) {
                 return "I";
-            else if (klass == long.class)
+            } else if (klass == long.class) {
                 return "J";
-            else if (klass == byte.class)
+            } else if (klass == byte.class) {
                 return "B";
-            else if (klass == short.class)
+            } else if (klass == short.class) {
                 return "S";
-            else if (klass == float.class)
+            } else if (klass == float.class) {
                 return "F";
-            else if (klass == double.class)
+            } else if (klass == double.class) {
                 return "D";
-            else if (klass == char.class)
+            } else if (klass == char.class) {
                 return "C";
-            else
-                /* if(klass == boolean.class) */
+            } else
+                /* if(klass == boolean.class) */ {
                 return "Z";
+            }
         }
         StringBuilder sb = new StringBuilder();
         if (klass.isArray()) {
@@ -1842,9 +1930,11 @@ public class Mirror<T> {
      */
     public static Field findField(Class<?> type, Class<? extends Annotation> ann) {
         Mirror<?> mirror = Mirror.me(type);
-        for (Field f : mirror.getFields())
-            if (f.isAnnotationPresent(ann))
+        for (Field f : mirror.getFields()) {
+            if (f.isAnnotationPresent(ann)) {
                 return f;
+            }
+        }
         return null;
     }
 
@@ -1887,8 +1977,9 @@ public class Mirror<T> {
     public static <T extends Annotation> T getAnnotationDeep(Method method,
                                                              Class<T> annotationClass) {
         T t = method.getAnnotation(annotationClass);
-        if (t != null)
+        if (t != null) {
             return t;
+        }
         Class klass = method.getDeclaringClass().getSuperclass();
         while (klass != null && klass != Object.class) {
             try {
@@ -1896,8 +1987,9 @@ public class Mirror<T> {
                     if (m.getName().equals(method.getName())) {
                         Class[] mParameters = m.getParameterTypes();
                         Class[] methodParameters = method.getParameterTypes();
-                        if (mParameters.length != methodParameters.length)
+                        if (mParameters.length != methodParameters.length) {
                             continue;
+                        }
                         boolean match = true;
                         for (int i = 0; i < mParameters.length; i++) {
                             if (!mParameters[i].isAssignableFrom(methodParameters[i])) {
@@ -1907,8 +1999,9 @@ public class Mirror<T> {
                         }
                         if (match) {
                             t = m.getAnnotation(annotationClass);
-                            if (t != null)
+                            if (t != null) {
                                 return t;
+                            }
                         }
                     }
                 }
@@ -1920,8 +2013,9 @@ public class Mirror<T> {
             try {
                 Method tmp = klass2.getMethod(method.getName(), method.getParameterTypes());
                 t = tmp.getAnnotation(annotationClass);
-                if (t != null)
+                if (t != null) {
                     return t;
+                }
             }
             catch (Exception e) {}
         }
@@ -1936,13 +2030,15 @@ public class Mirror<T> {
             t = cc.getAnnotation(annotationClass);
             cc = cc.getSuperclass();
         } while (null == t && cc != Object.class);
-        if (t != null)
+        if (t != null) {
             return t;
+        }
         for (Class<?> klass : type.getInterfaces()) {
             try {
                 t = klass.getAnnotation(annotationClass);
-                if (t != null)
+                if (t != null) {
                     return t;
+                }
             }
             catch (Exception e) {}
         }
@@ -1953,8 +2049,9 @@ public class Mirror<T> {
                                              Class<? extends Annotation>... classes) {
         if (!Lang.isEmptyArray(classes)) {
             for (Class<? extends Annotation> klass : classes) {
-                if (getAnnotationDeep(method, klass) != null)
+                if (getAnnotationDeep(method, klass) != null) {
                     return true;
+                }
             }
         }
         return false;
@@ -1964,8 +2061,9 @@ public class Mirror<T> {
                                              Class<? extends Annotation>... classes) {
         if (!Lang.isEmptyArray(classes)) {
             for (Class<? extends Annotation> klass : classes) {
-                if (getAnnotationDeep(type, klass) != null)
+                if (getAnnotationDeep(type, klass) != null) {
                     return true;
+                }
             }
         }
         return false;

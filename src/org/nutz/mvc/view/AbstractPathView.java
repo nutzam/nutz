@@ -44,16 +44,18 @@ public abstract class AbstractPathView implements View {
     }
 
     protected String evalPath(HttpServletRequest req, Object obj) {
-        if (null == dest)
+        if (null == dest) {
             return null;
+        }
 
         Context context = Lang.context();
 
         // 解析每个表达式
         if (exps.size() != 0) {
         	Context expContext = createContext(req, obj);
-        	for (Entry<String, El> en : exps.entrySet())
-        		context.set(en.getKey(), en.getValue().eval(expContext));
+        	for (Entry<String, El> en : exps.entrySet()) {
+                context.set(en.getKey(), en.getValue().eval(expContext));
+            }
         }
         // 生成解析后的路径
         return Strings.trim(this.dest.render(context).toString());
@@ -81,15 +83,17 @@ public abstract class AbstractPathView implements View {
         Map<String, Object> req_attr = new HashMap<String, Object>();
         for (Enumeration<String> en = req.getAttributeNames(); en.hasMoreElements();) {
             String tem = en.nextElement();
-            if (!tem.startsWith("$"))
+            if (!tem.startsWith("$")) {
                 req_attr.put(tem, req.getAttribute(tem));
+            }
         }
         context.set("a", req_attr);// 兼容最初的写法
         context.set("req_attr", req_attr);
 
         ActionContext ac = Mvcs.getActionContext();
-        if (ac != null)
+        if (ac != null) {
             context.set("pathargs", Mvcs.getActionContext().getPathArgs());
+        }
 
         HttpSession session = Mvcs.getHttpSession(false);
         if (session != null) {
@@ -121,8 +125,9 @@ public abstract class AbstractPathView implements View {
         }
 
         // 加入返回对象
-        if (null != obj)
+        if (null != obj) {
             context.set(ViewProcessor.DEFAULT_ATTRIBUTE, obj);
+        }
         return context;
     }
 }

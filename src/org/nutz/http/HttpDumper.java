@@ -68,8 +68,9 @@ public class HttpDumper {
         Enumeration<?> em = request.getHeaderNames();
         sb.append('\n');
         sb.append("<HEADERS request=\"" + request.getRequestURL().toString());
-        if (null != request.getQueryString())
+        if (null != request.getQueryString()) {
             sb.append("?" + request.getQueryString());
+        }
         sb.append("\"");
         sb.append('\n' + "SESSIONid=\"" + request.getSession().getId() + "\"");
         sb.append('\n' + "ServerName=\"" + request.getServerName() + "\"");
@@ -166,8 +167,9 @@ public class HttpDumper {
                 sb.append("=");
                 sb.append(v);
             }
-            if (en.hasMoreElements())
+            if (en.hasMoreElements()) {
                 sb.append("&");
+            }
         }
         return String.format(    "%5s:%15s[%5s]%s",
                                 new Object[]{    request.getLocale().toString(),

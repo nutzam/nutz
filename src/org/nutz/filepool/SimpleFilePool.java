@@ -39,35 +39,42 @@ public class SimpleFilePool implements FilePool {
         return new File(home.getAbsolutePath() + "/" + fId + (null == suffix ? "" : suffix));
     }
 
+    @Override
     public synchronized boolean hasFile(long fId, String suffix) {
         return _F(fId, suffix).exists();
     }
 
+    @Override
     public long current() {
         return current;
     }
 
+    @Override
     public synchronized File removeFile(long fId, String suffix) {
         File f = _F(fId, suffix);
-        if (f.exists())
+        if (f.exists()) {
             Files.deleteFile(f);
+        }
         return f;
     }
 
+    @Override
     public synchronized File createFile(String suffix) {
         File f = _F(current++, suffix);
-        if (current > max)
+        if (current > max) {
             current = 0;
-        if (!f.exists())
+        }
+        if (!f.exists()) {
             try {
                 Files.createNewFile(f);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw Lang.wrapThrow(e);
             }
+        }
         return f;
     }
 
+    @Override
     public long getFileId(File f) {
         String nm = Files.getMajorName(f);
         try {
@@ -77,60 +84,73 @@ public class SimpleFilePool implements FilePool {
         return -1;
     }
 
+    @Override
     public File getFile(long fId, String suffix) {
         File re = _F(fId, suffix);
-        if (re.exists())
+        if (re.exists()) {
             return re;
+        }
         return null;
     }
 
+    @Override
     public synchronized File returnFile(long fId, String suffix) {
         File re = _F(fId, suffix);
-        if (!re.exists())
+        if (!re.exists()) {
             try {
                 Files.createNewFile(re);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw Lang.wrapThrow(e);
             }
+        }
         return re;
     }
 
+    @Override
     public synchronized boolean hasDir(long fId) {
         return _F(fId, null).exists();
     }
 
+    @Override
     public synchronized File removeDir(long fId) {
         File f = _F(fId, null);
         Files.deleteDir(f);
         return f;
     }
 
+    @Override
     public synchronized File createDir() {
         File f = _F(current++, null);
-        if (current > max)
+        if (current > max) {
             current = 0;
-        if (f.exists())
+        }
+        if (f.exists()) {
             Files.clearDir(f);
-        else
+        } else {
             Files.makeDir(f);
+        }
         return f;
     }
 
+    @Override
     public File getDir(long fId) {
         File re = _F(fId, null);
-        if (re.exists())
+        if (re.exists()) {
             return re;
+        }
         return null;
     }
 
+    @Override
     public synchronized File returnDir(long fId) {
         File re = _F(fId, null);
-        if (!re.exists())
+        if (!re.exists()) {
             Files.makeDir(re);
+        }
         return re;
     }
 
+    @Override
     public synchronized void clear() {
         Files.clearDir(home);
     }

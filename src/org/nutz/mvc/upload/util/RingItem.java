@@ -127,8 +127,9 @@ class RingItem {
      * @return -1, 0 或者 +n
      */
     int mark(byte[] bs, int[] fails) {
-        if (!isLoaded)
+        if (!isLoaded) {
             throw new MarkUnloadedRingItemException();
+        }
 
         byte start = bs[0];
 

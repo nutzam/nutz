@@ -44,8 +44,9 @@ public class JdbcExpertConfigFile {
 
     public JdbcExpert matchExpert(String dbName) {
         for (Entry<Pattern, Class<? extends JdbcExpert>> entry : _experts.entrySet()) {
-            if (entry.getKey().matcher(dbName).find())
+            if (entry.getKey().matcher(dbName).find()) {
                 return Mirror.me(entry.getValue()).born(this);
+            }
         }
         return null;
     }
@@ -62,14 +63,17 @@ public class JdbcExpertConfigFile {
     }
 
     public FilePool getPool() {
-    	if (!isInit)
-    		synchronized (lock) {
-    			if (!isInit)
-    				initFilePool();
-    		}
+    	if (!isInit) {
+            synchronized (lock) {
+                if (!isInit) {
+                    initFilePool();
+                }
+            }
+        }
         if (pool == null) {
-            if (log.isWarnEnabled())
+            if (log.isWarnEnabled()) {
                 log.warnf("NutDao FilePool create fail!! Blob and Clob Support is DISABLE!!");
+            }
             throw new DaoException("NutDao FilePool create fail!! Blob and Clob Support is DISABLE!!");
         }
         return pool;
@@ -99,8 +103,9 @@ public class JdbcExpertConfigFile {
   		String home = config.get("pool-home").toString();
   		try {
   			home = Disks.normalize(home);
-  			if (home == null)
-  				home = config.get("pool-home").toString();
+  			if (home == null) {
+                home = config.get("pool-home").toString();
+            }
   			long max = config.containsKey("pool-max") ? ((Number) config.get("pool-max")).longValue() : 2000;
   			if (home.contains("${app.home}")) {
   				try {
@@ -113,8 +118,9 @@ public class JdbcExpertConfigFile {
   				pool = NutFilePool.getOrCreatePool(home, max);
   			} catch (Exception e) {
   				// 看看是不是Mvc环境,尝试在WebContent下创建
-  				if (!home.startsWith("~/") || Mvcs.getServletContext() == null)
-  					throw e;
+  				if (!home.startsWith("~/") || Mvcs.getServletContext() == null) {
+                    throw e;
+                }
   				try {
   					String tmp = Mvcs.getServletContext().getRealPath("/") + home.substring(2);
   					pool = NutFilePool.getOrCreatePool(tmp, max);
@@ -125,8 +131,9 @@ public class JdbcExpertConfigFile {
   			}
   			pool = new SynchronizedFilePool(pool);
   		} catch (Throwable e) {
-  			if (log.isWarnEnabled())
-  				log.warnf("NutDao FilePool create fail!! Blob and Clob Support is DISABLE!! Home=" + home, e);
+  			if (log.isWarnEnabled()) {
+                log.warnf("NutDao FilePool create fail!! Blob and Clob Support is DISABLE!! Home=" + home, e);
+            }
   		}
   		isInit = true;
   	}

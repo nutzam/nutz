@@ -6,8 +6,9 @@ import org.nutz.lang.Strings;
 public class IntSet {
 
     public static IntSet make(String s) {
-        if (s.length() < 3)
+        if (s.length() < 3) {
             throw Lang.makeThrow("Invalid IntSet : '%s'", s);
+        }
         s = Strings.trim(s);
         char l = s.charAt(0);
         char r = s.charAt(s.length() - 1);

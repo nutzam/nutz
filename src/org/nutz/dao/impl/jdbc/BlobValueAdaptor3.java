@@ -18,8 +18,9 @@ public class BlobValueAdaptor3 extends BlobValueAdaptor2 {
     @Override
     public Object get(ResultSet rs, String colName) throws SQLException {
         InputStream ins = rs.getBinaryStream(colName);
-        if (ins == null)
+        if (ins == null) {
             return null;
+        }
         File f = this.createTempFile();
         Files.write(f, ins);
         return new SimpleBlob(f);

@@ -35,8 +35,9 @@ public class ScopeContext implements IocContext {
     }
 
     private void checkBuffer() {
-        if (null == objs)
+        if (null == objs) {
             throw Lang.makeThrow("Context '%s' had been deposed!", scope);
+        }
     }
 
     public Map<String, ObjectProxy> getObjs() {
@@ -51,18 +52,21 @@ public class ScopeContext implements IocContext {
         this.scope = scope;
     }
 
+    @Override
     public ObjectProxy fetch(String name) {
         checkBuffer();
         return objs.get(name);
     }
 
+    @Override
     public boolean save(String scope, String name, ObjectProxy obj) {
         if (accept(scope)) {
             checkBuffer();
             synchronized (this) {
                 if (!objs.containsKey(name)) {
-                    if (log.isDebugEnabled())
+                    if (log.isDebugEnabled()) {
                         log.debugf("Save object '%s' to [%s] ", name, scope);
+                    }
                     objs.put(name, obj);
                     return true;
                 }
@@ -75,14 +79,16 @@ public class ScopeContext implements IocContext {
         return null != scope && this.scope.equals(scope);
     }
 
+    @Override
     public boolean remove(String scope, String name) {
         if (accept(scope)) {
             checkBuffer();
 
             synchronized (this) {
                 if (objs.containsKey(name)) {
-                    if (log.isDebugEnabled())
+                    if (log.isDebugEnabled()) {
                         log.debugf("Remove object '%s' from [%s] ", name, scope);
+                    }
                     return null != objs.remove(name);
                 }
             }
@@ -90,6 +96,7 @@ public class ScopeContext implements IocContext {
         return false;
     }
 
+    @Override
     public void clear() {
         checkBuffer();
         List<Entry<String, ObjectProxy>> list = new ArrayList<Entry<String, ObjectProxy>>(objs.entrySet());
@@ -105,31 +112,37 @@ public class ScopeContext implements IocContext {
                 }
             } catch (Throwable e) {
             }
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debugf("Depose object '%s' ...", en.getKey());
+            }
             en.getValue().depose();
         }
         for (Entry<String, ObjectProxy> en : tmp) {
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debugf("Depose object '%s' ...", en.getKey());
+            }
             en.getValue().depose();
         }
         objs.clear();
     }
 
+    @Override
     public void depose() {
         if (objs != null) {
             clear();
             objs = null;
         } else {
-            if (log.isWarnEnabled())
+            if (log.isWarnEnabled()) {
                 log.warn("can't depose twice , skip");
+            }
         }
     }
 
+    @Override
     public Set<String> names() {
-        if (objs == null)
+        if (objs == null) {
             return new HashSet<String>();
+        }
         return objs.keySet();
     }
 }

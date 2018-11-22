@@ -10,6 +10,7 @@ import org.nutz.dao.sql.SqlCallback;
 
 public class FetchRecordCallback implements SqlCallback {
 
+    @Override
     public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
         if (null != rs && rs.next()) {
             return Record.create(rs);

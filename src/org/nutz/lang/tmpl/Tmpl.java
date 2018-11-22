@@ -51,14 +51,16 @@ public class Tmpl {
      * @see #parse(String, Pattern, int, int)
      */
     public static Tmpl parse(String tmpl) {
-        if (null == tmpl)
+        if (null == tmpl) {
             return null;
+        }
         return new Tmpl(tmpl, null, -1, -1, null);
     }
 
     public static Tmpl parsef(String fmt, Object... args) {
-        if (null == fmt)
+        if (null == fmt) {
             return null;
+        }
         return new Tmpl(String.format(fmt, args), null, -1, -1, null);
     }
 
@@ -87,8 +89,9 @@ public class Tmpl {
                              int groupIndex,
                              int escapeIndex,
                              TmplEscapeStr getEscapeStr) {
-        if (null == tmpl)
+        if (null == tmpl) {
             return null;
+        }
         return new Tmpl(tmpl, ptn, groupIndex, escapeIndex, getEscapeStr);
     }
 
@@ -109,8 +112,9 @@ public class Tmpl {
                              final String startChar,
                              String leftBrace,
                              String rightBrace) {
-        if (null == tmpl)
+        if (null == tmpl) {
             return null;
+        }
         String regex = "((?<!["
                        + startChar
                        + "])["
@@ -128,6 +132,7 @@ public class Tmpl {
                        + "])";
         Pattern ptn = Pattern.compile(regex);
         return new Tmpl(tmpl, ptn, 2, 3, new TmplEscapeStr() {
+            @Override
             public String get(Matcher m) {
                 return startChar;
             }
@@ -214,6 +219,7 @@ public class Tmpl {
             this.groupIndex = 2;
             this.escapeIndex = 3;
             this.getEscapeStr = new TmplEscapeStr() {
+                @Override
                 public String get(Matcher m) {
                     return "$";
                 }
@@ -227,6 +233,7 @@ public class Tmpl {
             this.getEscapeStr = getEscapeStr;
             if (null == this.getEscapeStr) {
                 this.getEscapeStr = new TmplEscapeStr() {
+                    @Override
                     public String get(Matcher m) {
                         return m.group(escapeIndex).substring(0, 1);
                     }
@@ -277,8 +284,9 @@ public class Tmpl {
                 else {
                     Matcher m2 = _P2.matcher(s_match);
 
-                    if (!m2.find())
+                    if (!m2.find()) {
                         throw Lang.makeThrow("Fail to parse tmpl key '%s'", m.group(1));
+                    }
 
                     String key = m2.group(1);
                     String type = Strings.sNull(m2.group(3), "string");
@@ -343,8 +351,9 @@ public class Tmpl {
 
     public String render(NutBean context, boolean showKey) {
         StringBuilder sb = new StringBuilder();
-        if (null == context)
+        if (null == context) {
             context = new NutMap();
+        }
         for (TmplEle ele : list) {
             ele.join(sb, context, showKey);
         }
@@ -355,6 +364,7 @@ public class Tmpl {
         return this.keys;
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (TmplEle ele : list) {

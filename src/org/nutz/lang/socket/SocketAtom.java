@@ -35,17 +35,20 @@ public class SocketAtom implements Atom {
         this.saTable = saTable;
     }
 
+    @Override
     public void run() {
         if (this.context.getBoolean("stop")) {
-            if (log.isInfoEnabled())
+            if (log.isInfoEnabled()) {
                 log.info("stop=true, so, exit ...."); //线程池里面可能还有有尚未启动的任务
+            }
                                                       //所以,这里还需要判断一下
             Sockets.safeClose(socket);
             return;
         }
         
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debugf("connect with '%s'", socket.getRemoteSocketAddress().toString());
+        }
 
         try {
             br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -62,8 +65,9 @@ public class SocketAtom implements Atom {
         catch (SocketException e) {}
         // 要关闭 socket 监听 ...
         catch (CloseSocketException e) {
-            if (log.isInfoEnabled())
+            if (log.isInfoEnabled()) {
                 log.info("Catch CloseSocketException , set lock stop");
+            }
             context.set("stop", true);
         }
         catch (IOException e) {
@@ -71,8 +75,9 @@ public class SocketAtom implements Atom {
         }
         // 最后保证关闭
         finally {
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug("Close socket");
+            }
             Sockets.safeClose(socket);
         }
     }
@@ -83,8 +88,9 @@ public class SocketAtom implements Atom {
 
         // 在这个 socket 中逐行读取 ...
         while (null != line) {
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug("  <<socket<<: " + line);
+            }
 
             SocketAction action = saTable.get(Strings.trim(line));
             if (null != action) {

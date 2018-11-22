@@ -15,8 +15,9 @@ public abstract class ResourceLocation {
     
     public static ResourceLocation file(File root) {
         try {
-            if (!root.exists())
+            if (!root.exists()) {
                 return ErrorResourceLocation.make(root);
+            }
             return new FileSystemResourceLocation(root.getAbsoluteFile().getCanonicalFile());
         } catch (Exception e) {
             return ErrorResourceLocation.make(root);
@@ -32,8 +33,9 @@ public abstract class ResourceLocation {
     }
     
     public static String getJarPath(String jarPath) {
-        if (jarPath.startsWith("zip:"))
+        if (jarPath.startsWith("zip:")) {
             jarPath = jarPath.substring(4);
+        }
         if (jarPath.startsWith("file:/")) {
             jarPath = jarPath.substring("file:/".length());
             if (!new File(jarPath).exists() && !jarPath.startsWith("/")) {
@@ -50,16 +52,21 @@ public abstract class ResourceLocation {
     
 
     
+    @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (obj instanceof ResourceLocation)
-            return ((ResourceLocation)obj).id().equals(this.id());
+        }
+        if (obj instanceof ResourceLocation) {
+            return ((ResourceLocation) obj).id().equals(this.id());
+        }
         return false;
     }
     
+    @Override
     public int hashCode() {
         return id().hashCode();
     }

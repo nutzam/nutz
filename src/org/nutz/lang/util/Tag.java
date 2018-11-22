@@ -73,8 +73,9 @@ public class Tag extends SimpleNode<HtmlToken> {
     public int getHeadingLevel() {
         if (this.isElement()) {
             Matcher m = Pattern.compile("^H([1-9])$").matcher(tagName());
-            if (m.find())
+            if (m.find()) {
                 return Integer.parseInt(m.group(1));
+            }
         }
         return 0;
     }
@@ -85,10 +86,12 @@ public class Tag extends SimpleNode<HtmlToken> {
 
     public boolean is(String regex) {
         String tagName = this.tagName();
-        if (null == tagName)
+        if (null == tagName) {
             return false;
-        if (regex.startsWith("^"))
+        }
+        if (regex.startsWith("^")) {
             return tagName.matches(regex.toUpperCase());
+        }
         return tagName.equals(regex.toUpperCase());
     }
 
@@ -101,23 +104,28 @@ public class Tag extends SimpleNode<HtmlToken> {
     }
 
     public boolean isElement() {
-        if (null != htmlSegment)
+        if (null != htmlSegment) {
             return true;
+        }
         return this.get().isElement();
     }
 
     public boolean isTextNode() {
-        if (null != htmlSegment)
+        if (null != htmlSegment) {
             return false;
+        }
         return this.get().isText();
     }
 
     public boolean isChildAllInline() {
-        if (!get().isElement())
+        if (!get().isElement()) {
             return false;
-        for (Node<HtmlToken> ht : this.getChildren())
-            if (((Tag) ht).isBlock())
+        }
+        for (Node<HtmlToken> ht : this.getChildren()) {
+            if (((Tag) ht).isBlock()) {
                 return false;
+            }
+        }
         return true;
     }
 
@@ -138,8 +146,9 @@ public class Tag extends SimpleNode<HtmlToken> {
         if (null != this.htmlSegment) {
             if (this.htmlSegment.startsWith("<")) {
                 int pos = this.htmlSegment.indexOf(' ');
-                if (pos > 1)
+                if (pos > 1) {
                     return this.htmlSegment.substring(1, pos);
+                }
             }
             return null;
         }
@@ -196,8 +205,9 @@ public class Tag extends SimpleNode<HtmlToken> {
 
     public boolean hasClass(String name) {
         String cns = get().getAttrVal("class");
-        if (null == cns || cns.length() < name.length())
+        if (null == cns || cns.length() < name.length()) {
             return false;
+        }
         return (" " + cns + " ").indexOf(" " + name + " ") != -1;
     }
 
@@ -254,10 +264,12 @@ public class Tag extends SimpleNode<HtmlToken> {
         return list;
     }
 
+    @Override
     public String toString() {
         return toString(0);
     }
 
+    @Override
     public String toString(int level) {
         StringBuilder sb = new StringBuilder();
         __join_to_string(sb, this, level, true, null);
@@ -288,8 +300,9 @@ public class Tag extends SimpleNode<HtmlToken> {
 
             __join_to_string(sb, childTag, level, false, tagWatcher);
 
-            if (childTag.isBlock() || childTag.isBody())
+            if (childTag.isBlock() || childTag.isBody()) {
                 sb.append('\n');
+            }
         }
         return sb.toString();
     }
@@ -324,8 +337,9 @@ public class Tag extends SimpleNode<HtmlToken> {
             __join_tag_prefix(sb, tag, prefix);
             sb.append('<').append(tag.name());
             __join_attributes(sb, tag);
-            if (closeNoChild)
+            if (closeNoChild) {
                 sb.append('/');
+            }
             sb.append('>');
         }
         // 行内元素
@@ -345,8 +359,9 @@ public class Tag extends SimpleNode<HtmlToken> {
             for (Node<HtmlToken> child : tag.getChildren()) {
                 Tag childTag = (Tag) child;
 
-                if (childTag.isBlock() || childTag.isBody())
+                if (childTag.isBlock() || childTag.isBody()) {
                     sb.append('\n');
+                }
 
                 __join_to_string(sb,
                                  childTag,
@@ -361,8 +376,9 @@ public class Tag extends SimpleNode<HtmlToken> {
     }
 
     private static void __join_tag_prefix(StringBuilder sb, Tag tag, String prefix) {
-        if (null != prefix && prefix.length() > 0)
+        if (null != prefix && prefix.length() > 0) {
             sb.append(prefix);
+        }
     }
 
     private static void __join_tag_begin(StringBuilder sb, Tag tag) {
@@ -390,14 +406,18 @@ public class Tag extends SimpleNode<HtmlToken> {
         }
     }
 
+    @Override
     @SuppressWarnings("rawtypes")
     public void toXml(StringBuilder sb, int level) {
-        if (level == 0)
+        if (level == 0) {
             sb.append(Xmls.HEAD);
-        if (sb.length() > 2 && sb.charAt(sb.length() - 1) != '\n')
+        }
+        if (sb.length() > 2 && sb.charAt(sb.length() - 1) != '\n') {
             sb.append("\r\n");
-        if (level > 0)
+        }
+        if (level > 0) {
             sb.append(Strings.dup(' ', level * 2));
+        }
         __join_tag_begin(sb, this);
         if (hasChild()) {
             boolean flag = true;
@@ -411,8 +431,9 @@ public class Tag extends SimpleNode<HtmlToken> {
                 for (Node node : getChildren()) {
                     node.toXml(sb, level + 1);
                 }
-                if (level > 0)
+                if (level > 0) {
                     sb.append(Strings.dup(' ', level * 2));
+                }
             }
         }
         __join_tag_end(sb, this);

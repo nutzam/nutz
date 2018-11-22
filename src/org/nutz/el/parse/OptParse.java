@@ -41,6 +41,7 @@ import org.nutz.el.opt.object.AccessOpt;
  */
 public class OptParse implements Parse {
 
+    @Override
     public Object fetchItem(CharQueue exp){
         switch(exp.peek()){
         case '+':

@@ -19,7 +19,8 @@ public class AsyncMethodInterceptor implements MethodInterceptor {
 		hasFuture = Future.class.isAssignableFrom(method.getReturnType());
 	}
 
-	public void filter(final InterceptorChain chain) throws Throwable {
+	@Override
+    public void filter(final InterceptorChain chain) throws Throwable {
 		Future<Object> future = es.submit(new _async_task(chain, hasFuture));
 		if (hasFuture) {
 			chain.setReturnValue(future);
@@ -37,7 +38,8 @@ class _async_task implements Callable<Object> {
 		this.hasFuture = hasFuture;
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public Object call() throws Exception {
 		try {
 			Object re = chain.doChain().getReturn();

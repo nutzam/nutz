@@ -43,8 +43,9 @@ public class FieldMeta {
             list.add(sb.toString().trim());
         }
         for (String pair : list) {
-            if (pair.isEmpty())
+            if (pair.isEmpty()) {
                 continue;
+            }
             String name = pair.split("[:=]")[0];
             String value = pair.replaceAll("^[^=:]*[=:]", "");
             map.put(Strings.trim(name), formatValue(value));
@@ -53,10 +54,12 @@ public class FieldMeta {
 
     private static String formatValue(String s) {
         s = Strings.trim(s);
-        if (null != s && s.length() > 2 && s.charAt(0) == '"')
+        if (null != s && s.length() > 2 && s.charAt(0) == '"') {
             return s.substring(1, s.length() - 1);
-        if ("\"\"".equals(s))
+        }
+        if ("\"\"".equals(s)) {
             return "";
+        }
         return s;
     }
 
@@ -81,8 +84,9 @@ public class FieldMeta {
     public String getFileExtension() {
         String name = getFileLocalPath();
         int pos = name.lastIndexOf('.');
-        if (pos >= 0)
+        if (pos >= 0) {
             return name.substring(pos);
+        }
         return "";
     }
 

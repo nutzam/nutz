@@ -15,14 +15,16 @@ public class IocObjectNode extends ChainNode {
         this.type = p.getValue();
     }
 
+    @Override
     protected Object getValue(IocMaking ing, Object obj) throws Exception {
         return ing.getIoc().get(type, name);
     }
 
     @Override
     protected String asString() {
-        if (null == type)
+        if (null == type) {
             return "$" + name;
+        }
         return "$" + name + ":" + type.getName();
     }
 

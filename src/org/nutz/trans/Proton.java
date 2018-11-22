@@ -26,6 +26,7 @@ public abstract class Proton<T> implements Atom {
     /**
      * 用户代码的开始
      */
+    @Override
     public void run() {
         obj = exec();
     }

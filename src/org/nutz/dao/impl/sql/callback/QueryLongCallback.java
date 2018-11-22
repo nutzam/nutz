@@ -15,10 +15,12 @@ import org.nutz.lang.util.LinkedLongArray;
  */
 public class QueryLongCallback implements SqlCallback {
 
+    @Override
     public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
         LinkedLongArray ary = new LinkedLongArray(20);
-        while (rs.next())
+        while (rs.next()) {
             ary.push(rs.getLong(1));
+        }
         return ary.toArray();
     }
 

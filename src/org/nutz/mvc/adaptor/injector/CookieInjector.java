@@ -22,13 +22,15 @@ public class CookieInjector implements ParamInjector {
 		this.type = type;
 	}
 	
+    @Override
     public Object get(ServletContext sc,
-					  HttpServletRequest req,
-					  HttpServletResponse resp,
-					  Object refer) {
+                      HttpServletRequest req,
+                      HttpServletResponse resp,
+                      Object refer) {
         Cookie[] _cookies = req.getCookies();
-        if (_cookies == null)
+        if (_cookies == null) {
             _cookies = new Cookie[0];
+        }
 		if ("_map".equals(name)) {
 			Map<String, String> cookies = new LinkedHashMap<String, String>();
 			for (Cookie cookie : _cookies) {
@@ -37,8 +39,9 @@ public class CookieInjector implements ParamInjector {
 			return cookies;
 		}
 		for (Cookie cookie : _cookies) {
-			if (cookie.getName().equalsIgnoreCase(name))
-				return Castors.me().castTo(cookie.getValue(), type);
+			if (cookie.getName().equalsIgnoreCase(name)) {
+                return Castors.me().castTo(cookie.getValue(), type);
+            }
 		}
 		return null;
 	}

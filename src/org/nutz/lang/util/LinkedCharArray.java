@@ -14,8 +14,9 @@ public class LinkedCharArray implements Serializable {
     }
 
     public LinkedCharArray(int size) {
-        if (size <= 0)
+        if (size <= 0) {
             Lang.makeThrow("width must >0!");
+        }
         this.width = size;
         cache = new ArrayList<char[]>();
     }
@@ -53,8 +54,9 @@ public class LinkedCharArray implements Serializable {
 
     public LinkedCharArray push(String s) {
         char[] cs = s.toCharArray();
-        for (char c : cs)
+        for (char c : cs) {
             push(c);
+        }
         return this;
     }
 
@@ -63,8 +65,9 @@ public class LinkedCharArray implements Serializable {
     }
 
     public LinkedCharArray popFirst(int num) {
-        for (int i = 0; i < num; i++)
+        for (int i = 0; i < num; i++) {
             popFirst();
+        }
         return this;
     }
 
@@ -73,20 +76,23 @@ public class LinkedCharArray implements Serializable {
     }
 
     public LinkedCharArray popLast(int num) {
-        for (int i = 0; i < num; i++)
+        for (int i = 0; i < num; i++) {
             popLast();
+        }
         return this;
     }
 
     public char first() {
-        if (size() == 0)
+        if (size() == 0) {
             return (char) 0;
+        }
         return innerGet(offset);
     }
 
     public char last() {
-        if (size() == 0)
+        if (size() == 0) {
             return (char) 0;
+        }
         return innerGet(cursor - 1);
     }
 
@@ -99,11 +105,12 @@ public class LinkedCharArray implements Serializable {
     }
 
     private void checkBound(int index) {
-        if (index >= size() || index < 0)
+        if (index >= size() || index < 0) {
             throw new IndexOutOfBoundsException("Index: "
-                                                + index
-                                                + ", Size: "
-                                                + size());
+                    + index
+                    + ", Size: "
+                    + size());
+        }
     }
 
     public LinkedCharArray clear() {
@@ -132,56 +139,70 @@ public class LinkedCharArray implements Serializable {
     }
 
     public boolean startsWith(String s) {
-        if (null == s)
+        if (null == s) {
             return false;
-        if (s.length() > this.size())
+        }
+        if (s.length() > this.size()) {
             return false;
+        }
         return startsWith(s.toCharArray());
     }
 
     public boolean startsWith(char[] cs) {
-        if (null == cs)
+        if (null == cs) {
             return false;
-        for (int i = 0; i < cs.length; i++)
-            if (cs[i] != get(i))
+        }
+        for (int i = 0; i < cs.length; i++) {
+            if (cs[i] != get(i)) {
                 return false;
+            }
+        }
         return true;
     }
 
     public boolean endsWith(String s) {
-        if (null == s)
+        if (null == s) {
             return false;
-        if (s.length() > this.size())
+        }
+        if (s.length() > this.size()) {
             return false;
+        }
         return endsWith(s.toCharArray());
     }
 
     public boolean endsWith(char[] cs) {
-        if (null == cs)
+        if (null == cs) {
             return false;
-        if (size() < cs.length)
+        }
+        if (size() < cs.length) {
             return false;
+        }
         int of = size() - cs.length;
-        for (int i = 0; i < cs.length; i++)
-            if (cs[i] != get(of + i))
+        for (int i = 0; i < cs.length; i++) {
+            if (cs[i] != get(of + i)) {
                 return false;
+            }
+        }
         return true;
     }
 
     public int[] toIntArray() {
         int[] re = new int[size()];
-        for (int i = 0; i < re.length; i++)
+        for (int i = 0; i < re.length; i++) {
             re[i] = this.get(i);
+        }
         return re;
     }
 
     public char[] toArray() {
         char[] re = new char[size()];
-        for (int i = 0; i < re.length; i++)
+        for (int i = 0; i < re.length; i++) {
             re[i] = (char) this.get(i);
+        }
         return re;
     }
 
+    @Override
     public String toString() {
         return new String(toArray());
     }

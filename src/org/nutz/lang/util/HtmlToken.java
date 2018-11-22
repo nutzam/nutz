@@ -16,8 +16,9 @@ public class HtmlToken {
     private List<Pair<String>> attributes;
 
     public String getTagName() {
-        if (null == name)
+        if (null == name) {
             return null;
+        }
         return name.toUpperCase();
     }
 
@@ -63,9 +64,11 @@ public class HtmlToken {
     }
 
     public Pair<String> getAttr(String name) {
-        for (Pair<String> attr : attributes)
-            if (attr.getName().equals(name))
+        for (Pair<String> attr : attributes) {
+            if (attr.getName().equals(name)) {
                 return attr;
+            }
+        }
         return null;
     }
 

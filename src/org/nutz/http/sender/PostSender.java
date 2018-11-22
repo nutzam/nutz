@@ -28,8 +28,9 @@ public class PostSender extends Sender {
             if (ins != null
                 && request.getHeader() != null
                 && ins instanceof ByteArrayInputStream
-                && this.request.getHeader().get("Content-Length") == null)
+                && this.request.getHeader().get("Content-Length") == null) {
                 conn.addRequestProperty("Content-Length", "" + ins.available());
+            }
             setupDoInputOutputFlag();
             if (null != ins) {
                 OutputStream ops = Streams.buff(getOutputStream());

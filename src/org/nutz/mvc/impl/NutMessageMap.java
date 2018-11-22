@@ -13,6 +13,7 @@ public class NutMessageMap extends HashMap<String, Object> {
 
     private static final long serialVersionUID = 3910572112957799492L;
 
+    @Override
     public Object get(Object key) {
         return Strings.sNull(super.get(key), key.toString());
     }
@@ -22,17 +23,20 @@ public class NutMessageMap extends HashMap<String, Object> {
      */
     public String get(String key, Context context) {
         Object obj = super.get(key);
-        if (null == obj)
+        if (null == obj) {
             return key;
-        if (obj instanceof Segment)
+        }
+        if (obj instanceof Segment) {
             return Segments.replace((Segment) obj, context);
+        }
         return obj.toString();
     }
 
     public String get(String key, NutBean context) {
         Object obj = super.get(key);
-        if (null == obj)
+        if (null == obj) {
             return key;
+        }
         return Tmpl.exec(obj.toString(), context);
     }
 

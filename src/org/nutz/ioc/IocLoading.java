@@ -57,16 +57,18 @@ public class IocLoading {
             // singleton
             try {
                 v = map.get("singleton");
-                if (null != v)
+                if (null != v) {
                     iobj.setSingleton(Castors.me().castTo(v, boolean.class));
+                }
             }
             catch (FailToCastObjectException e) {
                 throw E(e, "Wrong singleton: '%s'", v);
             }
             // scope
             v = map.get("scope");
-            if (null != v)
+            if (null != v) {
                 iobj.setScope(v.toString());
+            }
             // events
             try {
                 v = map.get("events");
@@ -83,6 +85,7 @@ public class IocLoading {
                 v = map.get("args");
                 if (null != v) {
                     Lang.each(v, new Each<Object>() {
+                        @Override
                         public void invoke(int i, Object ele, int length) {
                             iobj.addArg(object2value(ele));
                         }

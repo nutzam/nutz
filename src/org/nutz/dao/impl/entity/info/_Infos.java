@@ -43,6 +43,7 @@ public class _Infos {
     private static <T extends FieldInfo> T create(Class<T> classOfT, final Method method) {
         final T info = Mirror.me(classOfT).born();
         Mirror.evalGetterSetter(method, ERR_MSG, new Callback3<String, Method, Method>() {
+            @Override
             public void invoke(String name, Method getter, Method setter) {
                 // 木有 getter
                 if (null == getter) {
@@ -130,18 +131,22 @@ public class _Infos {
         
         //检查@Id和@Name的属性类型
         if (info.annId != null) {
-            if (!Mirror.me(field.getType()).isIntLike())
+            if (!Mirror.me(field.getType()).isIntLike()) {
                 throw Lang.makeThrow(DaoException.class, "Field(%s) annotation @Id , but not Number type!!", field);
+            }
         }
         
-        if (info.annName != null)
-            if (!Mirror.me(field.getType()).isStringLike())
+        if (info.annName != null) {
+            if (!Mirror.me(field.getType()).isStringLike()) {
                 throw Lang.makeThrow(DaoException.class, "Field(%s) annotation @Name , but not String type!!", field);
+            }
+        }
         //检查@Version属性类型，必须是int、long、short
         if (info.annColumn != null && info.annColumn.version()){
         	Mirror<?> mirror =Mirror.me(field.getType());
-        	if (!mirror.isInt() && !mirror.isShort() && !mirror.isLong())
-        		throw Lang.makeThrow(DaoException.class, "Field(%s) define version=true , but not  int\\long\\short type!", field);
+        	if (!mirror.isInt() && !mirror.isShort() && !mirror.isLong()) {
+                throw Lang.makeThrow(DaoException.class, "Field(%s) define version=true , but not  int\\long\\short type!", field);
+            }
         }
         
         return info;

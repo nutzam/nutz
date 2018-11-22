@@ -11,6 +11,7 @@ import org.nutz.plugin.Plugin;
  *
  */
 public class Max implements RunMethod, Plugin{
+    @Override
     public Object run(List<Object> param) {
         if(param.size() <= 0){
             return null;
@@ -42,10 +43,12 @@ public class Max implements RunMethod, Plugin{
         return Math.max(n1.intValue(), n2.intValue());
     }
 
+    @Override
     public boolean canWork() {
         return true;
     }
 
+    @Override
     public String fetchSelf() {
         return "max";
     }

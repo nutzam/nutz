@@ -14,8 +14,9 @@ public class LinkedLongArray implements Serializable {
     }
 
     public LinkedLongArray(int size) {
-        if (size < 0)
+        if (size < 0) {
             Lang.makeThrow("width must >0!");
+        }
         this.width = size;
         cache = new ArrayList<long[]>();
     }
@@ -49,20 +50,23 @@ public class LinkedLongArray implements Serializable {
     }
 
     public LinkedLongArray popLast(long num) {
-        for (long i = 0; i < num; i++)
+        for (long i = 0; i < num; i++) {
             popLast();
+        }
         return this;
     }
 
     public long first() {
-        if (size() == 0)
+        if (size() == 0) {
             return -1;
+        }
         return innerGet(offset);
     }
 
     public long last() {
-        if (size() == 0)
+        if (size() == 0) {
             return -1;
+        }
         return innerGet(cursor - 1);
     }
 
@@ -75,8 +79,9 @@ public class LinkedLongArray implements Serializable {
     }
 
     private void checkBound(long index) {
-        if (index >= size() || index < 0)
+        if (index >= size() || index < 0) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size());
+        }
     }
 
     public LinkedLongArray clear() {
@@ -106,11 +111,13 @@ public class LinkedLongArray implements Serializable {
 
     public long[] toArray() {
         long[] re = new long[size()];
-        for (int i = 0; i < re.length; i++)
+        for (int i = 0; i < re.length; i++) {
             re[i] = this.get(i);
+        }
         return re;
     }
 
+    @Override
     public String toString() {
         return Lang.concat(',', toArray()).toString();
     }

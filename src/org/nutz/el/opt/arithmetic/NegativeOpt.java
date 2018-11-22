@@ -12,25 +12,32 @@ import org.nutz.el.opt.AbstractOpt;
 public class NegativeOpt extends AbstractOpt {
     private Object right;
 
+    @Override
     public int fetchPriority() {
         return 2;
     }
 
+    @Override
     public void wrap(Queue<Object> operand) {
         right = operand.poll();
     }
 
+    @Override
     public Object calculate() {
         Object rval = calculateItem(this.right);
-        if(rval instanceof Double)
-            return 0 - (Double)rval;
-        if(rval instanceof Float)
-            return 0 - (Float)rval;
-        if(rval instanceof Long)
-            return 0 - (Long)rval;
+        if(rval instanceof Double) {
+            return 0 - (Double) rval;
+        }
+        if(rval instanceof Float) {
+            return 0 - (Float) rval;
+        }
+        if(rval instanceof Long) {
+            return 0 - (Long) rval;
+        }
         return 0 - (Integer)rval;
     }
 
+    @Override
     public String fetchSelf() {
         return "-";
     }

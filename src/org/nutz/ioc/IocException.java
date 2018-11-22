@@ -22,14 +22,17 @@ public class IocException extends RuntimeException {
     }
     
     public void addBeanNames(String beanName) {
-        if (!beanNames.contains(beanName))
+        if (!beanNames.contains(beanName)) {
             beanNames.add(0, beanName);
+        }
     }
     
+    @Override
     public String getMessage() {
         String msg = super.getMessage();
-        if (msg.length() > 4096)
+        if (msg.length() > 4096) {
             return msg;
+        }
         return "IocBean[" + Strings.join(" -> ", beanNames.toArray()) + "] " + msg;
     }
 }

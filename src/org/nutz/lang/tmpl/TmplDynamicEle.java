@@ -38,6 +38,7 @@ abstract class TmplDynamicEle implements TmplEle {
         }
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("${").append(key);
         if (null != _type) {
@@ -58,6 +59,7 @@ abstract class TmplDynamicEle implements TmplEle {
         return sb.append('}').toString();
     }
 
+    @Override
     public void join(StringBuilder sb, NutBean context, boolean showKey) {
         // 看看有没有值
         Object val = __get_val(context, key);

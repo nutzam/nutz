@@ -32,8 +32,9 @@ public class TableName {
      */
     public static void run(Object refer, Runnable atom) {
         if (null != atom) {
-            if (log.isTraceEnabled())
+            if (log.isTraceEnabled()) {
                 log.tracef("TableName.run: [%s]->[%s]", object, object.get());
+            }
 
             Object old = get();
             set(refer);
@@ -45,8 +46,9 @@ public class TableName {
             }
             finally {
                 set(old);
-                if (log.isTraceEnabled())
+                if (log.isTraceEnabled()) {
                     log.tracef("TableName.finally: [%s]->[%s]", object, object.get());
+                }
             }
         }
     }
@@ -87,23 +89,28 @@ public class TableName {
      */
     public static String render(Segment tableName) {
         Object obj = get();
-        if (null == obj || !tableName.hasKey())
+        if (null == obj || !tableName.hasKey()) {
             return tableName.toString();
+        }
 
         Context context = Lang.context();
         if (isPrimitive(obj)) {
-            for (String key : tableName.keys())
+            for (String key : tableName.keys()) {
                 context.set(key, obj);
+            }
         } else if (obj instanceof Context) {
-            for (String key : tableName.keys())
+            for (String key : tableName.keys()) {
                 context.set(key, ((Context) obj).get(key));
+            }
         } else if (obj instanceof Map<?, ?>) {
-            for (String key : tableName.keys())
+            for (String key : tableName.keys()) {
                 context.set(key, ((Map<?, ?>) obj).get(key));
+            }
         } else {
             Mirror<?> mirror = Mirror.me(obj);
-            for (String key : tableName.keys())
+            for (String key : tableName.keys()) {
                 context.set(key, mirror.getValue(obj, key));
+            }
         }
         return tableName.render(context).toString();
     }

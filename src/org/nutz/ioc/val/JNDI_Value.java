@@ -22,10 +22,12 @@ public class JNDI_Value implements ValueProxy{
         this.jndiName = jndiName;
     }
 
+    @Override
     public Object get(IocMaking ing) {
         try {
-            if (cntxt == null)
-                cntxt = (Context)new InitialContext().lookup("java:comp/env");
+            if (cntxt == null) {
+                cntxt = (Context) new InitialContext().lookup("java:comp/env");
+            }
             return cntxt.lookup(jndiName);
         }
         catch (NamingException e) {

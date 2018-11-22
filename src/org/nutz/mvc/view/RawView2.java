@@ -29,11 +29,13 @@ public class RawView2 extends RawView {
         this.maxLen = maxLen;
     }
 
+    @Override
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
             throws Throwable {
         try {
-            if (resp.getContentType() == null)
+            if (resp.getContentType() == null) {
                 resp.setContentType(contentType);
+            }
             resp.addHeader("Connection", "close");
             String rangeStr = req.getHeader("Range");
 

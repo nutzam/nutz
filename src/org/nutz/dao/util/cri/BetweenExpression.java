@@ -23,13 +23,16 @@ public class BetweenExpression extends AbstractSqlExpression {
 		this.max = max;
 	}
 
-	public void joinSql(Entity<?> en, StringBuilder sb) {
-		if (not)
+	@Override
+    public void joinSql(Entity<?> en, StringBuilder sb) {
+		if (not) {
             sb.append(" NOT ");
+        }
 		sb.append(_fmtcol(en)).append(' ').append("BETWEEN").append(' ').append('?').append(" AND ").append('?');
 	}
 
-	public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
+	@Override
+    public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
 		MappingField mf = _field(en);
         if (null != mf) {
             adaptors[off++] = mf.getAdaptor();
@@ -41,13 +44,15 @@ public class BetweenExpression extends AbstractSqlExpression {
         return off;
 	}
 
-	public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
+	@Override
+    public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
 		params[off++] = min;
 		params[off++] = max;
         return off;
 	}
 
-	public int paramCount(Entity<?> en) {
+	@Override
+    public int paramCount(Entity<?> en) {
 		return 2;
 	}
 

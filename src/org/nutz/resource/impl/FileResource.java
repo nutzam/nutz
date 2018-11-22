@@ -26,10 +26,11 @@ public class FileResource extends NutResource {
 
     public FileResource(String base, File file) {
         base = Disks.normalize(Disks.getCanonicalPath(base));
-        if (base == null)
+        if (base == null) {
             base = "";
-        else if (!base.endsWith("/"))
+        } else if (!base.endsWith("/")) {
             base += "/";
+        }
         this.name = Disks.normalize(Disks.getCanonicalPath(file.getAbsolutePath()));
         this.name = this.name.substring(this.name.indexOf(base) + base.length()).replace('\\', '/');
         this.file = file.getAbsoluteFile();
@@ -45,24 +46,31 @@ public class FileResource extends NutResource {
         return this;
     }
 
+    @Override
     public InputStream getInputStream() throws IOException {
         return Streams.fileIn(file);
     }
     
+    @Override
     public boolean equals(Object obj) {
-    	if (obj == null)
-    		return false;
-    	if (obj == this)
-    		return true;
-    	if (! (obj instanceof FileResource))
-    		return false;
+    	if (obj == null) {
+            return false;
+        }
+    	if (obj == this) {
+            return true;
+        }
+    	if (! (obj instanceof FileResource)) {
+            return false;
+        }
     	return ((FileResource)obj).file.equals(file);
     }
 
+    @Override
     public int hashCode() {
     	return file.hashCode();
     }
     
+    @Override
     public String toString() {
         return "File["+file.getAbsolutePath()+"]";
     }

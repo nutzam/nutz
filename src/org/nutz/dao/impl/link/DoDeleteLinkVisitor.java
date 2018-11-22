@@ -16,6 +16,7 @@ public class DoDeleteLinkVisitor extends AbstractLinkVisitor {
     
     private static final Log log = Logs.get();
 
+    @Override
     public void visit(Object obj, LinkField lnk) {
         Object value = lnk.getValue(obj);
         if (value == null || Lang.eleSize(value) == 0) {
@@ -29,6 +30,7 @@ public class DoDeleteLinkVisitor extends AbstractLinkVisitor {
         pojo.setOperatingObject(value);
         pojo.append(Pojos.Items.cndAuto(lnk.getLinkedEntity(), null));
         Lang.each(value, new Each<Object>() {
+            @Override
             public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
                 pojo.addParamsBy(ele);
             }

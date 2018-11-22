@@ -9,6 +9,7 @@ import org.nutz.resource.NutResource;
 
 public class ErrorResourceLocation extends ResourceLocation {
     
+    @Override
     public void scan(String base, Pattern pattern, List<NutResource> list) {}
     
     private static final Log log = Logs.get();
@@ -24,13 +25,16 @@ public class ErrorResourceLocation extends ResourceLocation {
     
     private ErrorResourceLocation(Object loc) {
         this.loc = loc;
-        if (log.isInfoEnabled())
+        if (log.isInfoEnabled()) {
             log.info("[loc=" + loc + "]not exist");
+        }
     }
+    @Override
     public String toString() {
         return "ErrorResourceLocation [loc=" + loc + "]";
     }
     
+    @Override
     public String id() {
         return String.valueOf(loc);
     }

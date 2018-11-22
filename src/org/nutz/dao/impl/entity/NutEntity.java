@@ -184,10 +184,11 @@ public class NutEntity<T> implements Entity<T> {
 
         // 检查对象的创建方法
         BornContext<T> bc = Borns.evalByArgTypes(type, ResultSet.class);
-        if (null != bc)
+        if (null != bc) {
             this.bornByRS = bc.getBorning();
-        else if (null == bornByDefault)
+        } else if (null == bornByDefault) {
             throw new DaoException("Need non-arg constructor : " + type);
+        }
 
         // 映射
         this.ones = new LinkFieldSet();
@@ -195,37 +196,47 @@ public class NutEntity<T> implements Entity<T> {
         this.manymanys = new LinkFieldSet();
     }
     
+    @Override
     public T getObject(ResultSet rs, FieldMatcher matcher) {
         return getObject(rs, matcher, null);
     }
 
+    @Override
     public T getObject(ResultSet rs, FieldMatcher matcher, String prefix) {
         // 构造时创建对象
-        if (null != bornByRS)
+        if (null != bornByRS) {
             return bornByRS.born(rs);
+        }
 
         // 通过反射每个字段逐次设置对象
         T re = bornByDefault.born(EMTRY_ARG);
-        if (null == matcher)
-            for (MappingField fld : fields)
+        if (null == matcher) {
+            for (MappingField fld : fields) {
                 fld.injectValue(re, rs, prefix);
-        else
-            for (MappingField fld : fields)
-                if (matcher.match(fld.getName()))
+            }
+        } else {
+            for (MappingField fld : fields) {
+                if (matcher.match(fld.getName())) {
                     fld.injectValue(re, rs, prefix);
+                }
+            }
+        }
 
         // 返回构造的对象
         return re;
     }
     
+    @Override
     public T getObject(Record rec) {
         return getObject(rec, null);
     }
 
+    @Override
     public T getObject(Record rec, String prefix) {
         T obj = bornByDefault.born(EMTRY_ARG);
-        for (MappingField fld : fields)
+        for (MappingField fld : fields) {
             fld.injectValue(obj, rec, prefix);
+        }
         return obj;
 
     }
@@ -239,12 +250,13 @@ public class NutEntity<T> implements Entity<T> {
     public void checkCompositeFields(String[] names) {
         if (!Lang.isEmptyArray(names) && names.length > 1) {
             for (String name : names) {
-                if (byJava.containsKey(name) && byJava.get(name).isCompositePk())
+                if (byJava.containsKey(name) && byJava.get(name).isCompositePk()) {
                     theComposites.add(byJava.get(name));
-                else
+                } else {
                     throw Lang.makeThrow("Fail to find comosite field '%s' in class '%s'!",
-                                         name,
-                                         type.getName());
+                            name,
+                            type.getName());
+                }
             }
             this.pkType = PkType.COMPOSITE;
         } else if (null != this.theId) {
@@ -261,13 +273,14 @@ public class NutEntity<T> implements Entity<T> {
      *            数据库实体字段
      */
     public void addMappingField(MappingField field) {
-        if (field.isId())
+        if (field.isId()) {
             theId = field;
-        else if (field.isName())
+        } else if (field.isName()) {
             theName = field;
-      //wjw(2017-04-10),add,乐观锁
-        else if (field.isVersion())
-        	theVersion =field;
+        }//wjw(2017-04-10),add,乐观锁
+        else if (field.isVersion()) {
+            theVersion = field;
+        }
         
         byJava.put(field.getName(), field);
         byDB.put(field.getColumnName(), field);
@@ -308,18 +321,22 @@ public class NutEntity<T> implements Entity<T> {
         indexMap.put(index.getName(this), index);
     }
 
+    @Override
     public Context wrapAsContext(Object obj) {
         return new EntityObjectContext(this, obj);
     }
 
+    @Override
     public List<LinkField> visitOne(Object obj, String regex, LinkVisitor visitor) {
         return ones.visit(obj, regex, visitor);
     }
 
+    @Override
     public List<LinkField> visitMany(Object obj, String regex, LinkVisitor visitor) {
         return manys.visit(obj, regex, visitor);
     }
 
+    @Override
     public List<LinkField> visitManyMany(Object obj, String regex, LinkVisitor visitor) {
         return manymanys.visit(obj, regex, visitor);
     }
@@ -352,18 +369,22 @@ public class NutEntity<T> implements Entity<T> {
         this.viewName = EntityName.create(namep);
     }
 
+    @Override
     public MappingField getField(String name) {
         return byJava.get(name);
     }
 
+    @Override
     public MappingField getColumn(String name) {
         return byDB.get(name);
     }
 
+    @Override
     public List<MappingField> getMappingFields() {
         return fields;
     }
 
+    @Override
     public List<LinkField> getLinkFields(String regex) {
         List<LinkField> reOnes = ones.getList(regex);
         List<LinkField> reManys = manys.getList(regex);
@@ -377,54 +398,68 @@ public class NutEntity<T> implements Entity<T> {
         return re;
     }
 
+    @Override
     public List<MappingField> getCompositePKFields() {
         return this.theComposites;
     }
 
+    @Override
     public MappingField getNameField() {
         return this.theName;
     }
 
+    @Override
     public MappingField getVersionField() {
     	return this.theVersion;
     }
 
+    @Override
     public MappingField getIdField() {
         return this.theId;
     }
 
+    @Override
     public List<MappingField> getPks() {
-        if (null != theId)
+        if (null != theId) {
             return Lang.list(theId);
-        if (null != theName)
+        }
+        if (null != theName) {
             return Lang.list(theName);
+        }
         return theComposites;
     }
 
+    @Override
     public Class<T> getType() {
         return this.type;
     }
 
+    @Override
     public Mirror<T> getMirror() {
         return this.mirror;
     }
 
+    @Override
     public List<EntityIndex> getIndexes() {
         return this.indexes;
     }
 
+    @Override
     public EntityIndex getIndex(String name) {
         return this.indexMap.get(name);
     }
 
+    @Override
     public String getTableName() {
         return this.tableName.value();
     }
 
+    @Override
     public String getViewName() {
         return this.viewName.value();
     }
 
+    @Override
     public boolean addBeforeInsertMacro(Pojo pojo) {
         if (null != pojo) {
             beforeInsertMacroes.add(pojo);
@@ -433,6 +468,7 @@ public class NutEntity<T> implements Entity<T> {
         return false;
     }
 
+    @Override
     public boolean addAfterInsertMacro(Pojo pojo) {
         if (null != pojo) {
             afterInsertMacroes.add(pojo);
@@ -441,56 +477,70 @@ public class NutEntity<T> implements Entity<T> {
         return false;
     }
 
+    @Override
     public List<Pojo> cloneBeforeInsertMacroes() {
         List<Pojo> re = new ArrayList<Pojo>(beforeInsertMacroes.size());
-        for (Pojo pojo : beforeInsertMacroes)
+        for (Pojo pojo : beforeInsertMacroes) {
             re.add(pojo.duplicate());
+        }
         return re;
     }
 
+    @Override
     public List<Pojo> cloneAfterInsertMacroes() {
         List<Pojo> re = new ArrayList<Pojo>(afterInsertMacroes.size());
-        for (Pojo pojo : afterInsertMacroes)
+        for (Pojo pojo : afterInsertMacroes) {
             re.add(pojo.duplicate());
+        }
         return re;
     }
 
+    @Override
     public PkType getPkType() {
         return pkType;
     }
 
+    @Override
     public Object getMeta(String key) {
         return metas.get(key);
     }
 
+    @Override
     public boolean hasMeta(String key) {
         return metas.containsKey(key);
     }
 
+    @Override
     public Map<String, Object> getMetas() {
         return metas;
     }
 
+    @Override
     public String toString() {
         return String.format("Entity<%s:%s>", getType().getName(), getTableName());
     }
 
+    @Override
     public boolean hasTableComment() {
         return hasTableComment;
     }
 
+    @Override
     public String getTableComment() {
         return tableComment;
     }
 
+    @Override
     public boolean hasColumnComment() {
         return hasColumnComment;
     }
 
+    @Override
     public String getColumnComent(String columnName) {
         return columnComments.get(columnName);
     }
 
+    @Override
     public boolean isComplete() {
         return complete;
     }
@@ -499,9 +549,11 @@ public class NutEntity<T> implements Entity<T> {
         this.complete = complete;
     }
     
+    @Override
     public T born(ResultSet rs) {
-        if (null != bornByRS)
+        if (null != bornByRS) {
             return bornByRS.born(rs);
+        }
         return bornByDefault.born(EMTRY_ARG);
     }
 }

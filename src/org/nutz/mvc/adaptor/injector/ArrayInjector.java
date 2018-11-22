@@ -35,16 +35,19 @@ public class ArrayInjector extends NameInjector {
         if (null != refer) {
             if (refer instanceof Map) {
                 value = ((Map<String, Object>) refer).get(name);
-                if (value != null && value.getClass().isArray())
+                if (value != null && value.getClass().isArray()) {
                     return Lang.array2array(value, klass.getComponentType());
+                }
             }
-            if (value != null)
+            if (value != null) {
                 return convertMe(value);
+            }
         }
 
         String[] values = req.getParameterValues(name);
-        if (null == values || values.length == 0)
+        if (null == values || values.length == 0) {
             return null;
+        }
 
         if (values.length == 1 && auto_split) {
             // 如果只有一个值，那么试图直接转换

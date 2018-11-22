@@ -190,8 +190,9 @@ public abstract class Tasks {
     	int timerNum = timerList.size();
     	//清除Timer
     	synchronized (timerList) {
-    		for (Timer t: timerList)
-    			t.cancel();
+    		for (Timer t: timerList) {
+                t.cancel();
+            }
     		timerList.clear();
     	}
     	

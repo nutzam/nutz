@@ -21,9 +21,11 @@ public class PkConditionPItem extends AbstractPItem {
         this.pks = pks;
     }
 
+    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
-        if (top)
+        if (top) {
             sb.append(" WHERE ");
+        }
         Iterator<MappingField> it = _en(en).getCompositePKFields().iterator();
         sb.append(it.next().getColumnNameInSql()).append("=?");
         while (it.hasNext()) {
@@ -32,31 +34,36 @@ public class PkConditionPItem extends AbstractPItem {
         sb.append(' ');
     }
 
+    @Override
     public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
-        for (ValueAdaptor va : vas)
+        for (ValueAdaptor va : vas) {
             adaptors[off++] = va;
+        }
         return off;
     }
 
+    @Override
     public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
-        if ((null != pks && null == obj) || (pks == obj && null != obj))
-            for (Object pk : pks)
+        if ((null != pks && null == obj) || (pks == obj && null != obj)) {
+            for (Object pk : pks) {
                 params[off++] = pk;
-
-        else if (null != obj && _en(en).getType().isInstance(obj))
-            for (MappingField mf : _en(en).getCompositePKFields())
+            }
+        } else if (null != obj && _en(en).getType().isInstance(obj)) {
+            for (MappingField mf : _en(en).getCompositePKFields()) {
                 params[off++] = mf.getValue(obj);
-
-        else if (null != obj && obj.getClass().isArray())
-            for (int i = 0; i < pks.length; i++)
+            }
+        } else if (null != obj && obj.getClass().isArray()) {
+            for (int i = 0; i < pks.length; i++) {
                 params[off++] = Array.get(obj, i);
-
-        else
+            }
+        } else {
             throw Lang.impossible();
+        }
 
         return off;
     }
 
+    @Override
     public int paramCount(Entity<?> en) {
         return vas.length;
     }

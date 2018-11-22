@@ -22,8 +22,9 @@ public class LinkedArray<T> implements Serializable {
 
     public LinkedArray(Class<T> eleType, int size) {
         this.eleType = eleType;
-        if (size <= 0)
+        if (size <= 0) {
             Lang.makeThrow("width must >0!");
+        }
         this.width = size;
         cache = new ArrayList<T[]>();
     }
@@ -40,10 +41,11 @@ public class LinkedArray<T> implements Serializable {
         int row = cursor / width;
         int i = cursor % width;
         if (cache.size() == 0 || (cursor != offset && i == 0)) {
-            if (null == eleType)
+            if (null == eleType) {
                 array = (T[]) Array.newInstance(e.getClass(), width);
-            else
+            } else {
                 array = (T[]) Array.newInstance(eleType, width);
+            }
             cache.add(array);
         } else {
             array = cache.get(row);
@@ -54,8 +56,9 @@ public class LinkedArray<T> implements Serializable {
     }
 
     public LinkedArray<T> pushAll(T... es) {
-        for (T e : es)
+        for (T e : es) {
             push(e);
+        }
         return this;
     }
 
@@ -65,8 +68,9 @@ public class LinkedArray<T> implements Serializable {
 
     public String popFirst(int num) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < num; i++)
+        for (int i = 0; i < num; i++) {
             sb.append(popFirst());
+        }
         return sb.toString();
     }
 
@@ -75,20 +79,23 @@ public class LinkedArray<T> implements Serializable {
     }
 
     public LinkedArray<T> popLast(int num) {
-        for (int i = 0; i < num; i++)
+        for (int i = 0; i < num; i++) {
             popLast();
+        }
         return this;
     }
 
     public T first() {
-        if (size() == 0)
+        if (size() == 0) {
             return null;
+        }
         return innerGet(offset);
     }
 
     public T last() {
-        if (size() == 0)
+        if (size() == 0) {
             return null;
+        }
         return innerGet(cursor - 1);
     }
 
@@ -101,8 +108,9 @@ public class LinkedArray<T> implements Serializable {
     }
 
     private void checkBound(int index) {
-        if (index >= size() || index < 0)
+        if (index >= size() || index < 0) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size());
+        }
     }
 
     public LinkedArray<T> clear() {
@@ -133,8 +141,9 @@ public class LinkedArray<T> implements Serializable {
     @SuppressWarnings("unchecked")
     public T[] toArray() {
         if (size() == 0) {
-            if (null == eleType)
+            if (null == eleType) {
                 return (T[]) new Object[0];
+            }
             return (T[]) Array.newInstance(eleType, 0);
         }
         T[] re;
@@ -143,16 +152,18 @@ public class LinkedArray<T> implements Serializable {
         } else {
             re = (T[]) Array.newInstance(eleType, size());
         }
-        for (int i = 0; i < re.length; i++)
+        for (int i = 0; i < re.length; i++) {
             re[i] = this.innerGet(i);
+        }
         return re;
     }
 
     public List<T> toList() {
         int len = size();
         ArrayList<T> list = new ArrayList<T>(len);
-        for (int i = 0; i < len; i++)
+        for (int i = 0; i < len; i++) {
             list.add(innerGet(i));
+        }
         return list;
     }
 
@@ -166,16 +177,20 @@ public class LinkedArray<T> implements Serializable {
             i = stack.offset;
         }
 
+        @Override
         public boolean hasNext() {
             return i < stack.cursor;
         }
 
+        @Override
         public E next() {
-            if (i >= stack.offset && i < stack.cursor)
+            if (i >= stack.offset && i < stack.cursor) {
                 return stack.innerGet(i++);
+            }
             return null;
         }
 
+        @Override
         public void remove() {
             throw Lang.noImplement();
         }
@@ -186,6 +201,7 @@ public class LinkedArray<T> implements Serializable {
         return new LinkedArrayIterator<T>(this);
     }
 
+    @Override
     public String toString() {
         return Json.toJson(toArray());
     }
@@ -197,23 +213,29 @@ public class LinkedArray<T> implements Serializable {
     }
 
     public boolean contains(T obj) {
-        for (int i = 0; i < size(); i++)
-            if (innerGet(i).equals(obj))
+        for (int i = 0; i < size(); i++) {
+            if (innerGet(i).equals(obj)) {
                 return true;
+            }
+        }
         return false;
     }
 
     public int indexOf(T obj) {
-        for (int i = 0; i < size(); i++)
-            if (innerGet(i).equals(obj))
+        for (int i = 0; i < size(); i++) {
+            if (innerGet(i).equals(obj)) {
                 return i;
+            }
+        }
         return -1;
     }
 
     public int lastIndexOf(T obj) {
-        for (int i = size() - 1; i >= 0; i--)
-            if (innerGet(i).equals(obj))
+        for (int i = size() - 1; i >= 0; i--) {
+            if (innerGet(i).equals(obj)) {
                 return i;
+            }
+        }
         return -1;
     }
 }

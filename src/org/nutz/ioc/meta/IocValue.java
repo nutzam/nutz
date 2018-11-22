@@ -104,8 +104,9 @@ public class IocValue {
     }
 
     public String toJson(JsonFormat jf) {
-        if (this.type == null || TYPE_NORMAL.equals(type))
+        if (this.type == null || TYPE_NORMAL.equals(type)) {
             return Json.toJson(this.value, jf);
+        }
         if (TYPE_REFER_TYPE.equals(type) && value instanceof Field) {
         	Field field = (Field)value;
         	String val = field.getName() + "#" + field.getType().getName();

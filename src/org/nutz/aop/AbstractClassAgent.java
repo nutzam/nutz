@@ -27,28 +27,35 @@ public abstract class AbstractClassAgent implements ClassAgent {
 
     public String id;
 
+    @Override
     public ClassAgent addInterceptor(MethodMatcher matcher, MethodInterceptor listener) {
-        if (null != listener)
+        if (null != listener) {
             pairs.add(new Pair(matcher, listener));
+        }
         return this;
     }
 
+    @Override
     public <T> Class<T> define(ClassDefiner cd, Class<T> klass) {
-        if (klass.getName().endsWith(CLASSNAME_SUFFIX))
+        if (klass.getName().endsWith(CLASSNAME_SUFFIX)) {
             return klass;
+        }
         String newName = klass.getName() + (id == null ? "" : "$" + id) +  CLASSNAME_SUFFIX;
         return define(cd, klass, newName);
     }
     
     public <T> Class<T> define(ClassDefiner cd, Class<T> klass, String newName) {
         Class<T> newClass = try2Load(newName, klass.getClassLoader());
-        if (newClass != null)
+        if (newClass != null) {
             return newClass;
-        if (!checkClass(klass))
+        }
+        if (!checkClass(klass)) {
             return klass;
+        }
         Pair2[] pair2s = findMatchedMethod(klass);
-        if (pair2s.length == 0)
+        if (pair2s.length == 0) {
             return klass;
+        }
         Constructor<T>[] constructors = getEffectiveConstructors(klass);
         newClass = generate(cd, pair2s, newName, klass, constructors);
         return newClass;
@@ -66,39 +73,46 @@ public abstract class AbstractClassAgent implements ClassAgent {
         List<Constructor<T>> cList = new ArrayList<Constructor<T>>();
         for (int i = 0; i < constructors.length; i++) {
             Constructor<T> constructor = constructors[i];
-            if (Modifier.isPrivate(constructor.getModifiers()))
+            if (Modifier.isPrivate(constructor.getModifiers())) {
                 continue;
+            }
             cList.add(constructor);
         }
-        if (cList.isEmpty())
+        if (cList.isEmpty()) {
             throw Lang.makeThrow("No non-private constructor founded,unable to create sub-class!");
+        }
         return cList.toArray(new Constructor[cList.size()]);
     }
 
     protected <T> boolean checkClass(Class<T> klass) {
-        if (klass == null)
+        if (klass == null) {
             return false;
+        }
         String klassName = klass.getName();
-        if (klassName.endsWith(CLASSNAME_SUFFIX))
+        if (klassName.endsWith(CLASSNAME_SUFFIX)) {
             return false;
+        }
         if (klass.isInterface()
             || klass.isArray()
             || klass.isEnum()
             || klass.isPrimitive()
             || klass.isMemberClass()
             || klass.isAnnotation()
-            || klass.isAnonymousClass())
+            || klass.isAnonymousClass()) {
             throw Lang.makeThrow("%s is NOT a Top-Class!Creation FAIL!", klassName);
-        if (Modifier.isFinal(klass.getModifiers()) || Modifier.isAbstract(klass.getModifiers()))
+        }
+        if (Modifier.isFinal(klass.getModifiers()) || Modifier.isAbstract(klass.getModifiers())) {
             throw Lang.makeThrow("%s is final or abstract!Creation FAIL!", klassName);
+        }
         return true;
     }
 
     @SuppressWarnings("unchecked")
     protected <T> Class<T> try2Load(String newName, ClassLoader loader) {
         try {
-            if (loader == null)
+            if (loader == null) {
                 return (Class<T>) getClass().getClassLoader().loadClass(newName);
+            }
             return (Class<T>) loader.loadClass(newName);
         }
         catch (ClassNotFoundException e) {
@@ -113,14 +127,18 @@ public abstract class AbstractClassAgent implements ClassAgent {
             int mod = m.getModifiers();
             if (mod == 0 || Modifier.isStatic(mod) || Modifier.isPrivate(mod) 
                     || Modifier.isFinal(mod)
-                    || Modifier.isAbstract(mod))
+                    || Modifier.isAbstract(mod)) {
                 continue;
+            }
             ArrayList<MethodInterceptor> mls = new ArrayList<MethodInterceptor>();
-            for (Pair p : pairs)
-                if (p.matcher.match(m))
+            for (Pair p : pairs) {
+                if (p.matcher.match(m)) {
                     mls.add(p.listener);
-            if (!mls.isEmpty())
+                }
+            }
+            if (!mls.isEmpty()) {
                 p2.add(new Pair2(m, mls));
+            }
         }
         return p2.toArray(new Pair2[p2.size()]);
     }

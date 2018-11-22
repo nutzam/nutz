@@ -41,40 +41,49 @@ class VarIndexImpl implements VarIndex {
         return indexes.values();
     }
 
+    @Override
     public int[] getOrderIndex(String name) {
         LinkedIntArray re = new LinkedIntArray(orders.size());
         int i = 0;
         for (String od : orders) {
-            if (od.equals(name))
+            if (od.equals(name)) {
                 re.push(i);
+            }
             i++;
         }
         return re.toArray();
     }
 
+    @Override
     public List<String> getOrders() {
         return orders;
     }
 
+    @Override
     public String getOrderName(int i) {
         return orders.get(i);
     }
 
+    @Override
     public String nameOf(int i) {
         return names.get(i);
     }
 
+    @Override
     public int[] indexesOf(String name) {
         LinkedIntArray lia = indexes.get(name);
-        if (null == lia)
+        if (null == lia) {
             return null;
+        }
         return lia.toArray();
     }
 
+    @Override
     public Set<String> names() {
         return indexes.keySet();
     }
 
+    @Override
     public int size() {
         return indexes.size();
     }

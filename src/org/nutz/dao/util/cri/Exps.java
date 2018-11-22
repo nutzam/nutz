@@ -113,8 +113,9 @@ public abstract class Exps {
             // 集合
             else if (Collection.class.isAssignableFrom(type)) {
                 Object first = Lang.first(value);
-                if (null == first)
+                if (null == first) {
                     return null;
+                }
                 re = _evalRange((Mirror<?>) Mirror.me(first), name, value);
             }
             // Sql Range
@@ -152,11 +153,11 @@ public abstract class Exps {
     }
 
     private static SqlExpression _evalRange(Mirror<?> mirror, String name, Object value) {
-        if (mirror.isInt())
+        if (mirror.isInt()) {
             return inInt(name, Castors.me().castTo(value, int[].class));
-
-        else if (mirror.isLong())
+        } else if (mirror.isLong()) {
             return inLong(name, Castors.me().castTo(value, long[].class));
+        }
 
         return inStr(name, Castors.me().castTo(value, String[].class));
     }

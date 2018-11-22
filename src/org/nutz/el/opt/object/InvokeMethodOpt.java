@@ -13,10 +13,12 @@ import org.nutz.el.opt.AbstractOpt;
 public class InvokeMethodOpt extends AbstractOpt {
     private Object left;
 
+    @Override
     public int fetchPriority() {
         return 1;
     }
 
+    @Override
     public Object calculate() {
         if(left instanceof MethodOpt){
             return ((MethodOpt) left).calculate();
@@ -24,10 +26,12 @@ public class InvokeMethodOpt extends AbstractOpt {
         return null;
     }
 
+    @Override
     public String fetchSelf() {
         return "method invoke";
     }
 
+    @Override
     public void wrap(Queue<Object> operand) {
         left = operand.poll();
     }

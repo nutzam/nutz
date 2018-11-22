@@ -15,10 +15,12 @@ public abstract class AbstractPItem implements PItem {
     
     protected boolean top = true;
 
+    @Override
     public Pojo getPojo() {
         return pojo;
     }
 
+    @Override
     public void setPojo(Pojo pojo) {
         this.pojo = pojo;
         this.setupPojo(pojo);
@@ -35,19 +37,22 @@ public abstract class AbstractPItem implements PItem {
     protected void setupPojo(Pojo pojo) {}
 
     protected Entity<?> _en(Entity<?> en) {
-        if (null == en && null != pojo)
+        if (null == en && null != pojo) {
             return pojo.getEntity();
+        }
         return en;
     }
 
     protected String _fmtcolnm(Entity<?> en, String name) {
-        if (null == en && null != pojo)
+        if (null == en && null != pojo) {
             en = pojo.getEntity();
+        }
 
         if (null != en) {
             MappingField mf = en.getField(name);
-            if (null != mf)
+            if (null != mf) {
                 return mf.getColumnNameInSql();
+            }
         }
         return name;
     }

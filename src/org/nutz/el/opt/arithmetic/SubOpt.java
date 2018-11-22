@@ -8,13 +8,16 @@ import org.nutz.el.opt.TwoTernary;
  */
 public class SubOpt extends TwoTernary{
 
+    @Override
     public String fetchSelf() {
         return "-";
     }
+    @Override
     public int fetchPriority() {
         return 4;
     }
     
+    @Override
     public Object calculate() {
         Number lval = (Number) calculateItem(this.left);
         Number rval = (Number) calculateItem(this.right);

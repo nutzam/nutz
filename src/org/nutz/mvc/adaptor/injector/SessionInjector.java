@@ -9,6 +9,7 @@ import org.nutz.mvc.adaptor.ParamInjector;
 
 public class SessionInjector implements ParamInjector {
 
+    @Override
     public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
         return Mvcs.getHttpSession();
     }

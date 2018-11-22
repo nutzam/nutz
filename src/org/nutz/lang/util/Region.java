@@ -163,8 +163,9 @@ public abstract class Region<T extends Comparable<T>> {
      * @return 运算符
      */
     public String leftOpt(String gt, String gte) {
-        if (null == left)
+        if (null == left) {
             return null;
+        }
         return leftOpen ? gt : gte;
     }
 
@@ -178,8 +179,9 @@ public abstract class Region<T extends Comparable<T>> {
      * @return 运算符
      */
     public String rightOpt(String lt, String lte) {
-        if (null == right)
+        if (null == right) {
             return null;
+        }
         return rightOpen ? lt : lte;
     }
 
@@ -189,8 +191,9 @@ public abstract class Region<T extends Comparable<T>> {
      * @return 对象是否在这个区间
      */
     public boolean match(T obj) {
-        if (null == obj)
+        if (null == obj) {
             return false;
+        }
         if (!isRegion()) {
             // 左右都是开区间，表示不等于
             if (this.leftOpen && this.rightOpen) {
@@ -269,18 +272,21 @@ public abstract class Region<T extends Comparable<T>> {
 
     public T fromString(String str) {
         str = Strings.trim(str);
-        if (Strings.isEmpty(str))
+        if (Strings.isEmpty(str)) {
             return null;
+        }
         return Castors.me().castTo(str, eleType);
     }
 
+    @Override
     public String toString() {
-        if (this.isRegion())
+        if (this.isRegion()) {
             return String.format("%c%s,%s%c",
-                                 leftOpen ? '(' : '[',
-                                 toString(left),
-                                 toString(right),
-                                 rightOpen ? ')' : ']');
+                    leftOpen ? '(' : '[',
+                    toString(left),
+                    toString(right),
+                    rightOpen ? ')' : ']');
+        }
 
         return String.format("%c%s%c", leftOpen ? '(' : '[', toString(left), rightOpen ? ')' : ']');
     }

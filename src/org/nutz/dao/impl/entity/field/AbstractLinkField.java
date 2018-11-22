@@ -56,41 +56,48 @@ public abstract class AbstractLinkField extends AbstractEntityField implements L
     @Override
     public void setValue(Object obj, Object value) {
         if (null != value) {
-            if (!Mirror.me(value).canCastToDirectly(this.getTypeClass()))
+            if (!Mirror.me(value).canCastToDirectly(this.getTypeClass())) {
                 value = Castors.me().cast(value, value.getClass(), this.getTypeClass(), mapKey);
+            }
         }
         super.setValue(obj, value);
     }
 
+    @Override
     public Entity<?> getLinkedEntity() {
         if (null == target) {
             synchronized (lock) {
                 if (null == target) {
-                    if (targetType.equals(getEntity().getType()))
+                    if (targetType.equals(getEntity().getType())) {
                         target = getEntity();
-                    else
+                    } else {
                         target = holder.getEntity(targetType);
+                    }
                 }
             }
         }
         return target;
     }
 
+    @Override
     public PojoCallback getCallback() {
         return callback;
     }
 
+    @Override
     public MappingField getHostField() {
         return hostField;
     }
 
+    @Override
     public MappingField getLinkedField() {
         return linkedField;
     }
 
     protected Class<?> guessTargetClass(LinkInfo info, Class<?> klass) {
-        if (!klass.equals(Object.class))
+        if (!klass.equals(Object.class)) {
             return klass;
+        }
         Mirror<?> mirror = Mirror.me(info.fieldType);
         if (mirror.isCollection()) {
             return (Class<?>) mirror.getGenericsType(0);

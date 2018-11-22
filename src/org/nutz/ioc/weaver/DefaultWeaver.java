@@ -61,18 +61,22 @@ public class DefaultWeaver implements ObjectWeaver {
         this.listeners = listeners;
     }
 
+    @Override
     public <T> T fill(IocMaking ing, T obj) {
         // 设置字段的值
-        for (FieldInjector fi : fields)
+        for (FieldInjector fi : fields) {
             fi.inject(ing, obj);
+        }
         return obj;
     }
 
+    @Override
     public Object born(IocMaking ing) {
         // 准备构造函数参数
         Object[] args = new Object[this.args.length];
-        for (int i = 0; i < args.length; i++)
+        for (int i = 0; i < args.length; i++) {
             args[i] = this.args[i].get(ing);
+        }
 
         // 创建实例
         Object obj = borning.born(args);
@@ -84,9 +88,11 @@ public class DefaultWeaver implements ObjectWeaver {
         return obj;
     }
 
+    @Override
     public Object onCreate(Object obj) {
-        if (null != create && null != obj)
+        if (null != create && null != obj) {
             create.trigger(obj);
+        }
         if (shallTrigger(obj)) {
             for (IocEventListener listener : listeners) {
                 obj = listener.afterCreate(obj, beanName);

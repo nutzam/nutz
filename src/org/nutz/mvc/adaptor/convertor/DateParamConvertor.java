@@ -20,19 +20,23 @@ public class DateParamConvertor implements ParamConvertor {
         if (Strings.isBlank(datefmt)) {
             dfmt = null;
         } else {
-            if (Strings.isBlank(locale))
+            if (Strings.isBlank(locale)) {
                 dfmt = new SimpleDateFormat(datefmt);
-            else
+            } else {
                 dfmt = new SimpleDateFormat(datefmt, new Locale(locale));
+            }
         }
     }
 
+    @Override
     public Object convert(String[] ss) {
-        if (null == ss || ss.length == 0)
+        if (null == ss || ss.length == 0) {
             return null;
+        }
 
-        if (Strings.isBlank(ss[0]))
+        if (Strings.isBlank(ss[0])) {
             return null;
+        }
 
         // 如果不为 null，必然要转换成日期
         if (null != dfmt) {

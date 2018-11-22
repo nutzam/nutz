@@ -32,11 +32,13 @@ public class FastMethodFactory implements Opcodes {
         String descriptor = Type.getMethodDescriptor(method) + method.getDeclaringClass().getClassLoader();
         String key = "$FM$" + method.getName() + "$" + Lang.md5(descriptor);
         String className = klass.getName() + key;
-        if (klass.getName().startsWith("java"))
+        if (klass.getName().startsWith("java")) {
             className = FastMethod.class.getPackage().getName() + ".fast." + className;
+        }
         FastMethod fm = cache.get(className);
-        if (fm != null)
+        if (fm != null) {
             return fm;
+        }
         // fix issue #1382 : 非public类的方法,统统做成FallbackFastMethod
         if (!Modifier.isPublic(klass.getModifiers())) {
             fm = new FallbackFastMethod(method);
@@ -63,8 +65,9 @@ public class FastMethodFactory implements Opcodes {
             fm = (FastMethod) t.newInstance();
         }
         catch (Throwable e) {
-            if (log.isTraceEnabled())
+            if (log.isTraceEnabled()) {
                 log.trace("Fail to create FastMethod for " + method, e);
+            }
             fm = new FallbackFastMethod(method);
         }
         cache.put(className, fm);
@@ -76,11 +79,13 @@ public class FastMethodFactory implements Opcodes {
         String descriptor = Type.getConstructorDescriptor(constructor) + constructor.getDeclaringClass().getClassLoader();;
         String key = Lang.md5(descriptor);
         String className = klass.getName() + "$FC$" + key;
-        if (klass.getName().startsWith("java"))
+        if (klass.getName().startsWith("java")) {
             className = FastMethod.class.getPackage().getName() + ".fast." + className;
+        }
         FastMethod fm = (FastMethod) cache.get(className);
-        if (fm != null)
+        if (fm != null) {
             return fm;
+        }
         try {
             fm = (FastMethod) klass.getClassLoader().loadClass(className).newInstance();
             cache.put(key, fm);
@@ -101,8 +106,9 @@ public class FastMethodFactory implements Opcodes {
             fm = (FastMethod) t.newInstance();
         }
         catch (Throwable e) {
-            if (log.isTraceEnabled())
+            if (log.isTraceEnabled()) {
                 log.trace("Fail to create FastMethod for " + constructor, e);
+            }
             fm = new FallbackFastMethod(constructor);
         }
         cache.put(className, fm);
@@ -249,19 +255,23 @@ public class FastMethodFactory implements Opcodes {
         
         public FallbackFastMethod(Method method) {
             this.method = method;
-            if (!this.method.isAccessible())
+            if (!this.method.isAccessible()) {
                 this.method.setAccessible(true);
+            }
         }
 
         public FallbackFastMethod(Constructor<?> constructor) {
             this.constructor = constructor;
-            if (!this.constructor.isAccessible())
+            if (!this.constructor.isAccessible()) {
                 this.constructor.setAccessible(true);
+            }
         }
 
+        @Override
         public Object invoke(Object obj, Object... args) throws Exception {
-            if (method == null)
+            if (method == null) {
                 return constructor.newInstance(args);
+            }
             return method.invoke(obj, args);
         }
         

@@ -147,23 +147,26 @@ public class Stopwatch {
                                       (nano ? "ns" : "ms"),
                                       Times.sDTms2(new Date(from)),
                                       Times.sDTms2(new Date(to)));
-        if (tags == null)
+        if (tags == null) {
             return prefix;
+        }
         StringBuilder sb = new StringBuilder(prefix).append("\r\n");
         for (int i = 0; i < tags.size(); i++) {
             StopTag tag = tags.get(i);
             sb.append(String.format("  -> %5s: %dms",
                                     tag.name == null ? "TAG" + i : tag.name,
                                     tag.du()));
-            if (i < tags.size() - 1)
+            if (i < tags.size() - 1) {
                 sb.append("\r\n");
+            }
         }
         return sb.toString();
     }
 
     public StopTag tag(String name) {
-        if (tags == null)
-            tags = new LinkedList<Stopwatch.StopTag>();
+        if (tags == null) {
+            tags = new LinkedList<StopTag>();
+        }
         lastTag = new StopTag(name, System.currentTimeMillis(), lastTag);
         tags.add(lastTag);
         return lastTag;
@@ -188,8 +191,9 @@ public class Stopwatch {
         }
 
         public long du() {
-            if (pre == null)
+            if (pre == null) {
                 return tm - from;
+            }
             return tm - pre.tm;
         }
     }

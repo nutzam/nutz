@@ -28,48 +28,54 @@ public class OneLinkField extends AbstractLinkField {
     public OneLinkField(Entity<?> entity, EntityHolder holder, LinkInfo info) {
         super(entity, holder, info);
         this.targetType = guessTargetClass(info, info.one.target());
-        if (Strings.isBlank(info.one.field()))
+        if (Strings.isBlank(info.one.field())) {
             throw new DaoException("Invalid @One(field=\"\") at class="
-                                   + getEntity().getType().getName());
+                    + getEntity().getType().getName());
+        }
         String hostFieldName = "_".equals(info.one.field()) ? info.name + "Id" : info.one.field();
         // 宿主实体的字段
         hostField = entity.getField(hostFieldName);
-        if (null == hostField)
+        if (null == hostField) {
             throw new DaoException(String.format("Invalid @One(field=%s) '%s' : %s<=>%s",
-                                                 hostFieldName,
-                                                 getName(),
-                                                 getEntity().getType(),
-                                                 getLinkedEntity().getType()));
+                    hostFieldName,
+                    getName(),
+                    getEntity().getType(),
+                    getLinkedEntity().getType()));
+        }
 
         if (!Strings.isBlank(info.one.key())) {
             linkedField = this.getLinkedEntity().getField(info.one.key());
-            if (linkedField == null)
+            if (linkedField == null) {
                 throw new DaoException(String.format("Fail to find linkedField for @One(field=%s) '%s' : %s<=>%s By key=%s",
-                                                     hostFieldName,
-                                                     getName(),
-                                                     getEntity().getType(),
-                                                     getLinkedEntity().getType(),
-                                                     info.one.key()));
+                        hostFieldName,
+                        getName(),
+                        getEntity().getType(),
+                        getLinkedEntity().getType(),
+                        info.one.key()));
+            }
             return;
         }
 
         // 链接实体的字段
         linkedField = hostField.getTypeMirror().isIntLike() ? this.getLinkedEntity().getIdField()
                                                             : this.getLinkedEntity().getNameField();
-        if (null == linkedField)
+        if (null == linkedField) {
             throw Lang.makeThrow("Fail to find linkedField for @One(field=%s) '%s' : %s<=>%s By %s",
-                                 hostFieldName,
-                                 getName(),
-                                 getEntity().getType(),
-                                 getLinkedEntity().getType(),
-                                 hostField.getTypeMirror().isIntLike() ? "@Id" : "@Name");
+                    hostFieldName,
+                    getName(),
+                    getEntity().getType(),
+                    getLinkedEntity().getType(),
+                    hostField.getTypeMirror().isIntLike() ? "@Id" : "@Name");
+        }
 
     }
 
+    @Override
     public Condition createCondition(Object host) {
         return Cnd.where(linkedField.getColumnName(), "=", hostField.getValue(host));
     }
 
+    @Override
     public void updateLinkedField(Object obj, Object linked) {
         if (hostField.isId()) {
             Object val = linkedField.getValue(linked);
@@ -81,11 +87,13 @@ public class OneLinkField extends AbstractLinkField {
         }
     }
 
+    @Override
     public void saveLinkedField(Object obj, Object linked) {
         Object v = linkedField.getValue(linked);
         hostField.setValue(obj, v);
     }
 
+    @Override
     public LinkType getLinkType() {
         return LinkType.ONE;
     }

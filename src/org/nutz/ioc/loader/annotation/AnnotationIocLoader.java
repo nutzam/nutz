@@ -49,8 +49,9 @@ public class AnnotationIocLoader implements IocLoader {
     public AnnotationIocLoader(String... packages) {
         for (String pkg : packages) {
         	log.infof(" > scan '%s'", pkg);
-            for (Class<?> classZ : Scans.me().scanPackage(pkg))
+            for (Class<?> classZ : Scans.me().scanPackage(pkg)) {
                 addClass(classZ);
+            }
         }
         if (map.isEmpty()) {
             log.warnf("NONE @IocBean found!! Check your ioc configure!! packages=%s", Arrays.toString(packages));
@@ -63,11 +64,13 @@ public class AnnotationIocLoader implements IocLoader {
             || classZ.isMemberClass()
             || classZ.isEnum()
             || classZ.isAnnotation()
-            || classZ.isAnonymousClass())
+            || classZ.isAnonymousClass()) {
             return;
+        }
         int modify = classZ.getModifiers();
-        if (Modifier.isAbstract(modify) || (!Modifier.isPublic(modify)))
+        if (Modifier.isAbstract(modify) || (!Modifier.isPublic(modify))) {
             return;
+        }
         IocBean iocBean = classZ.getAnnotation(IocBean.class);
         if (iocBean != null) {
             // 采用 @IocBean->name
@@ -85,12 +88,13 @@ public class AnnotationIocLoader implements IocLoader {
             }
 
             // 重名了, 需要用户用@IocBean(name="xxxx") 区分一下
-            if (map.containsKey(beanName))
-                throw new IocException(beanName, 
-                                       "Duplicate beanName=%s, by %s !!  Have been define by %s !!",
-                                     beanName,
-                                     classZ.getName(),
-                                     map.get(beanName).getType().getName());
+            if (map.containsKey(beanName)) {
+                throw new IocException(beanName,
+                        "Duplicate beanName=%s, by %s !!  Have been define by %s !!",
+                        beanName,
+                        classZ.getName(),
+                        map.get(beanName).getType().getName());
+            }
 
             IocObject iocObject = new IocObject();
             iocObject.setType(classZ);
@@ -99,26 +103,32 @@ public class AnnotationIocLoader implements IocLoader {
             log.infof("   > add '%-40s' - %s", beanName, classZ.getName());
 
             iocObject.setSingleton(iocBean.singleton());
-            if (!Strings.isBlank(iocBean.scope()))
+            if (!Strings.isBlank(iocBean.scope())) {
                 iocObject.setScope(iocBean.scope());
+            }
 
             // 看看构造函数都需要什么函数
             String[] args = iocBean.args();
             // if (null == args || args.length == 0)
             // args = iocBean.param();
-            if (null != args && args.length > 0)
-                for (String value : args)
+            if (null != args && args.length > 0) {
+                for (String value : args) {
                     iocObject.addArg(Iocs.convert(value, true));
+                }
+            }
 
             // 设置Events
             IocEventSet eventSet = new IocEventSet();
             iocObject.setEvents(eventSet);
-            if (!Strings.isBlank(iocBean.create()))
+            if (!Strings.isBlank(iocBean.create())) {
                 eventSet.setCreate(iocBean.create().trim().intern());
-            if (!Strings.isBlank(iocBean.depose()))
+            }
+            if (!Strings.isBlank(iocBean.depose())) {
                 eventSet.setDepose(iocBean.depose().trim().intern());
-            if (!Strings.isBlank(iocBean.fetch()))
+            }
+            if (!Strings.isBlank(iocBean.fetch())) {
                 eventSet.setFetch(iocBean.fetch().trim().intern());
+            }
 
             // 处理字段(以@Inject方式,位于字段)
             List<String> fieldList = new ArrayList<String>();
@@ -136,8 +146,9 @@ public class AnnotationIocLoader implements IocLoader {
                     iocValue = new IocValue();
                     iocValue.setType(IocValue.TYPE_REFER_TYPE);
                     iocValue.setValue(field);
-                } else
+                } else {
                     iocValue = Iocs.convert(inject.value(), true);
+                }
                 iocField.setValue(iocValue);
                 iocField.setOptional(inject.optional());
                 iocObject.addField(iocField);
@@ -163,27 +174,31 @@ public class AnnotationIocLoader implements IocLoader {
             }
             for (Method method : methods) {
                 Inject inject = method.getAnnotation(Inject.class);
-                if (inject == null)
+                if (inject == null) {
                     continue;
+                }
                 // 过滤特殊方法
                 int m = method.getModifiers();
-                if (Modifier.isAbstract(m) || (!Modifier.isPublic(m)) || Modifier.isStatic(m))
+                if (Modifier.isAbstract(m) || (!Modifier.isPublic(m)) || Modifier.isStatic(m)) {
                     continue;
+                }
                 String methodName = method.getName();
                 if (methodName.startsWith("set")
                     && methodName.length() > 3
                     && method.getParameterTypes().length == 1) {
                     IocField iocField = new IocField();
                     iocField.setName(Strings.lowerFirst(methodName.substring(3)));
-                    if (fieldList.contains(iocField.getName()))
+                    if (fieldList.contains(iocField.getName())) {
                         throw duplicateField(beanName, classZ, iocField.getName());
+                    }
                     IocValue iocValue;
                     if (Strings.isBlank(inject.value())) {
                         iocValue = new IocValue();
                         iocValue.setType(IocValue.TYPE_REFER_TYPE);
                         iocValue.setValue(Strings.lowerFirst(methodName.substring(3)) + "#" + method.getParameterTypes()[0].getName());
-                    } else
+                    } else {
                         iocValue = Iocs.convert(inject.value(), true);
+                    }
                     iocField.setValue(iocValue);
                     iocObject.addField(iocField);
                     fieldList.add(iocField.getName());
@@ -193,8 +208,9 @@ public class AnnotationIocLoader implements IocLoader {
             String[] flds = iocBean.fields();
             if (flds != null && flds.length > 0) {
                 for (String fieldInfo : flds) {
-                    if (fieldList.contains(fieldInfo))
+                    if (fieldList.contains(fieldInfo)) {
                         throw duplicateField(beanName, classZ, fieldInfo);
+                    }
                     IocField iocField = new IocField();
                     if (fieldInfo.contains(":")) { // dao:jndi:dataSource/jdbc形式
                         String[] datas = fieldInfo.split(":", 2);
@@ -223,8 +239,9 @@ public class AnnotationIocLoader implements IocLoader {
             // 看看有没有方法标注了@IocBean
             for (Method method : methods) {
                 IocBean ib = method.getAnnotation(IocBean.class);
-                if (ib == null)
+                if (ib == null) {
                     continue;
+                }
                 handleIocBeanMethod(method, ib, beanName);
             }
         } else {
@@ -243,8 +260,9 @@ public class AnnotationIocLoader implements IocLoader {
             }
             beanName = Strings.lowerFirst(methodName);
         }
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debugf("Found @IocBean method : %s define as name=%s", Lang.simpleMethodDesc(method), beanName);
+        }
         IocObject iobj = new IocObject();
         iobj.setType(method.getReturnType());
         iobj.setFactory("$"+facotryBeanName+"#"+method.getName());
@@ -276,26 +294,33 @@ public class AnnotationIocLoader implements IocLoader {
         // 设置Events
         IocEventSet eventSet = new IocEventSet();
         iobj.setEvents(eventSet);
-        if (!Strings.isBlank(ib.create()))
+        if (!Strings.isBlank(ib.create())) {
             eventSet.setCreate(ib.create().trim().intern());
-        if (!Strings.isBlank(ib.depose()))
+        }
+        if (!Strings.isBlank(ib.depose())) {
             eventSet.setDepose(ib.depose().trim().intern());
-        if (!Strings.isBlank(ib.fetch()))
+        }
+        if (!Strings.isBlank(ib.fetch())) {
             eventSet.setFetch(ib.fetch().trim().intern());
+        }
         map.put(beanName, iobj);
     }
 
+    @Override
     public String[] getName() {
         return map.keySet().toArray(new String[map.size()]);
     }
 
+    @Override
     public boolean has(String name) {
         return map.containsKey(name);
     }
 
+    @Override
     public IocObject load(IocLoading loading, String name) throws ObjectLoadException {
-        if (has(name))
+        if (has(name)) {
             return map.get(name);
+        }
         throw new ObjectLoadException("Object '" + name + "' without define! Pls check your ioc configure");
     }
 
@@ -306,6 +331,7 @@ public class AnnotationIocLoader implements IocLoader {
                               name);
     }
 
+    @Override
     public String toString() {
         return "/*AnnotationIocLoader*/\n" + Json.toJson(map);
     }

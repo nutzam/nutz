@@ -26,8 +26,9 @@ public class Html5Uploading implements Uploading {
     
     private static final Log log = Logs.get();
 
+    @Override
     public Map<String, Object> parse(HttpServletRequest req,
-            UploadingContext context) throws UploadException,
+                                     UploadingContext context) throws UploadException,
             UploadOutOfSizeException, UploadUnsupportedFileNameException,
             UploadUnsupportedFileTypeException {
         
@@ -48,12 +49,14 @@ public class Html5Uploading implements Uploading {
         if (disposition != null && disposition.startsWith("attachment;")) {
             meta = new FieldMeta(disposition.substring("attachment;".length()).trim());
         } else {
-            if (log.isInfoEnabled())
+            if (log.isInfoEnabled()) {
                 log.info("Content-Disposition no found, using default fieldname=filedata, filename=nutz.jpg");
+            }
         }
         
-        if(log.isDebugEnabled())
-            log.debugf("Upload File info: FilePath=[%s],fieldName=[%s]",meta.getFileLocalPath(),meta.getName());
+        if(log.isDebugEnabled()) {
+            log.debugf("Upload File info: FilePath=[%s],fieldName=[%s]", meta.getFileLocalPath(), meta.getName());
+        }
         
         // 检查是否通过文件名过滤
         if (!context.isNameAccepted(meta.getFileLocalName())) {
@@ -72,18 +75,21 @@ public class Html5Uploading implements Uploading {
             Streams.writeAndClose(ops, req.getInputStream());
             
             //检查文件大小
-            if (tmp.length() != size)
+            if (tmp.length() != size) {
                 throw new UploadOutOfSizeException(meta);
-            if (maxSize > 0 && tmp.length() > maxSize)
+            }
+            if (maxSize > 0 && tmp.length() > maxSize) {
                 throw new UploadOutOfSizeException(meta);
+            }
             
             
             NutMap params = Uploads.createParamsMap(req);
             
             //检查空文件
             if (tmp.length() == 0 && context.isIgnoreNull()) {
-                if (log.isDebugEnabled())
+                if (log.isDebugEnabled()) {
                     log.debug("emtry file , drop it ~~");
+                }
                 tmp.delete();
             } else {
                 params.put(meta.getName(), new TempFile(meta, tmp));

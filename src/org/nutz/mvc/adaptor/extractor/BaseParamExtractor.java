@@ -21,15 +21,19 @@ public class BaseParamExtractor implements ParamExtractor {
         this.req = req;
     }
 
+    @Override
     public String[] extractor(String name) {
-        if (req == null)
+        if (req == null) {
             return new String[0];
+        }
         return req.getParameterValues(name);
     }
 
+    @Override
     public Set<String> keys() {
-        if (req == null)
+        if (req == null) {
             return new HashSet<String>();
+        }
         return (Set<String>) Lang.enum2collection(req.getParameterNames(), new HashSet<String>());
     }
 

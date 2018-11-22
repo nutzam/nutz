@@ -14,6 +14,7 @@ public class InjectByField implements Injecting {
         this.field.setAccessible(true);
     }
 
+    @Override
     public void inject(Object obj, Object value) {
         Object v = null;
         try {

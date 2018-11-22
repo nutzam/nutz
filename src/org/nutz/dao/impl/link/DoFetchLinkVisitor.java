@@ -13,11 +13,13 @@ import org.nutz.dao.util.Pojos;
 
 public class DoFetchLinkVisitor extends AbstractLinkVisitor {
 
+    @Override
     public void visit(final Object obj, final LinkField lnk) {
         Pojo pojo = opt.maker().makeQuery(lnk.getLinkedEntity());
         pojo.setOperatingObject(obj);
         pojo.append(Pojos.Items.cnd(lnk.createCondition(obj)));
         pojo.setAfter(new PojoCallback() {
+            @Override
             public Object invoke(Connection conn, ResultSet rs, Pojo pojo, Statement stmt) throws SQLException {
                 Object value = lnk.getCallback().invoke(conn, rs, pojo, stmt);
                 lnk.setValue(obj, value);

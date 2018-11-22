@@ -32,10 +32,12 @@ public class RelationObjectMap extends NutMap {
 
     @Override
     public Object get(Object key) {
-        if (mm.getFromColumnName().equals(key))
+        if (mm.getFromColumnName().equals(key)) {
             return mm.getHostField().getValue(host);
-        if (mm.getToColumnName().equals(key))
+        }
+        if (mm.getToColumnName().equals(key)) {
             return mm.getLinkedField().getValue(linked);
+        }
         return super.get(key);
     }
 

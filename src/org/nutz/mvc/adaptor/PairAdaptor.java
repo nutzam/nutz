@@ -25,19 +25,22 @@ public class PairAdaptor extends AbstractAdaptor {
 
     private static final Log log = Logs.get();
 
+    @Override
     protected ParamInjector evalInjectorBy(Type type, Param param) {
         // TODO 这里的实现感觉很丑, 感觉可以直接用type进行验证与传递
         // TODO 这里将Type的影响局限在了 github issue #30 中提到的局部范围
         Class<?> clazz = Lang.getTypeClass(type);
         if (null == clazz) {
-            if (log.isWarnEnabled())
+            if (log.isWarnEnabled()) {
                 log.warnf("!!Fail to get Type Class : type=%s , param=%s", type, param);
+            }
             return null;
         }
 
         Type[] paramTypes = null;
-        if (type instanceof ParameterizedType)
+        if (type instanceof ParameterizedType) {
             paramTypes = ((ParameterizedType) type).getActualTypeArguments();
+        }
 
         // 没有声明 @Param 且 clazz 是POJO的话，使用".."
         // 没有声明 @Param 且 clazz 不是POJO的话，使用方法的参数名称
@@ -58,8 +61,9 @@ public class PairAdaptor extends AbstractAdaptor {
         }
         // POJO with prefix
         else if (pm != null && pm.startsWith("::")) {
-            if (pm.length() > 2)
+            if (pm.length() > 2) {
                 return new ObjectNavlPairInjector(pm.substring(2), type);
+            }
             return new ObjectNavlPairInjector(null, type);
         }
         // POJO[]

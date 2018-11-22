@@ -10,22 +10,27 @@ import org.nutz.plugin.Plugin;
 
 public class DoURLEncoder implements RunMethod, Plugin  {
 
+    @Override
     public boolean canWork() {
         return true;
     }
 
+    @Override
     public Object run(List<Object> fetchParam) {
-        if (fetchParam.isEmpty())
+        if (fetchParam.isEmpty()) {
             throw new IllegalArgumentException("need args!!");
+        }
         Object val = fetchParam.get(0);
-        if (val == null)
+        if (val == null) {
             return "";
+        }
         Object enc = null;
         if (fetchParam.size() > 1) {
             enc = fetchParam.get(1);
         }
-        if (enc == null)
+        if (enc == null) {
             enc = Encoding.UTF8;
+        }
         try {
             return URLEncoder.encode(val.toString(), enc.toString());
         }
@@ -34,6 +39,7 @@ public class DoURLEncoder implements RunMethod, Plugin  {
         }
     }
 
+    @Override
     public String fetchSelf() {
         return "urlencode";
     }

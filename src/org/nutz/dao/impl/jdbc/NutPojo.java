@@ -62,14 +62,17 @@ public class NutPojo extends NutStatement implements Pojo {
         append(Pojos.Items.sqlType());
     }
 
+    @Override
     public ValueAdaptor[] getAdaptors() {
         ValueAdaptor[] adaptors = new ValueAdaptor[_params_count()];
         int i = 0;
-        for (PItem item : items)
+        for (PItem item : items) {
             i = item.joinAdaptor(getEntity(), adaptors, i);
+        }
         return adaptors;
     }
 
+    @Override
     public Object[][] getParamMatrix() {
         Object[][] re;
         /*
@@ -78,8 +81,9 @@ public class NutPojo extends NutStatement implements Pojo {
         if (_params_count() > 0 && params.isEmpty()) {
             re = new Object[1][_params_count()];
             int i = 0;
-            for (PItem item : items)
+            for (PItem item : items) {
                 i = item.joinParams(getEntity(), null, re[0], i);
+            }
         }
         /*
          * 依照参数列表循环获取参数矩阵
@@ -89,126 +93,154 @@ public class NutPojo extends NutStatement implements Pojo {
             int row = 0;
             for (Object obj : params) {
                 int i = 0;
-                for (PItem item : items)
+                for (PItem item : items) {
                     i = item.joinParams(getEntity(), obj, re[row], i);
+                }
                 row++;
             }
         }
         return re;
     }
 
+    @Override
     public String toPreparedStatement() {
         StringBuilder sb = new StringBuilder();
-        for (PItem item : items)
+        for (PItem item : items) {
             item.joinSql(getEntity(), sb);
+        }
         return sb.toString();
     }
 
+    @Override
     public void onBefore(Connection conn) throws SQLException {
-        if (null != before)
+        if (null != before) {
             before.invoke(conn, null, this, null);
+        }
     }
 
+    @Override
     public void onAfter(Connection conn, ResultSet rs, Statement stmt) throws SQLException {
-        if (null != after)
+        if (null != after) {
             getContext().setResult(after.invoke(conn, rs, this, stmt));
+        }
     }
 
+    @Override
     public Pojo setBefore(PojoCallback before) {
         this.before = before;
         return this;
     }
 
+    @Override
     public Pojo setAfter(PojoCallback after) {
         this.after = after;
         return this;
     }
 
+    @Override
     public Pojo setPager(Pager pager) {
         this.getContext().setPager(pager);
         return this;
     }
 
+    @Override
     public Pojo addParamsBy(Object obj) {
-        if (null == obj)
+        if (null == obj) {
             return this;
+        }
 
         // 集合
-        if (obj instanceof Collection<?>)
-            for (Object ele : (Collection<?>) obj)
+        if (obj instanceof Collection<?>) {
+            for (Object ele : (Collection<?>) obj) {
                 addParamsBy(ele);
-        // 数组
+            }
+        }// 数组
         else if (obj.getClass().isArray()) {
             int len = Array.getLength(obj);
-            for (int i = 0; i < len; i++)
+            for (int i = 0; i < len; i++) {
                 addParamsBy(Array.get(obj, i));
+            }
         }
         // 链: 变成 Map
-        else if (obj instanceof Chain)
+        else if (obj instanceof Chain) {
             params.add(((Chain) obj).updateBy(this.getEntity()).toMap());
-        // 迭带器 : TODO 以后是不是考虑 params 也变成迭代器，这样可以允许无限多的对象被执行 ...
+        }// 迭带器 : TODO 以后是不是考虑 params 也变成迭代器，这样可以允许无限多的对象被执行 ...
         else if (obj instanceof Iterator<?>) {
             Iterator<?> it = (Iterator<?>) obj;
-            while (it.hasNext())
+            while (it.hasNext()) {
                 addParamsBy(it.next());
+            }
         }
         // 其他对象，直接保存，占一行
-        else
+        else {
             params.add(obj);
+        }
 
         return this;
     }
 
+    @Override
     public Object getLastParams() {
         return params.isEmpty() ? null : params.getLast();
     }
 
+    @Override
     public List<Object> params() {
         return params;
     }
 
+    @Override
     public Object getOperatingObject() {
         return obj;
     }
 
+    @Override
     public Pojo setOperatingObject(Object obj) {
         this.obj = obj;
         return this;
     }
 
+    @Override
     public Pojo clear() {
         this.params.clear();
         return this;
     }
 
+    @Override
     public Pojo append(PItem... itemAry) {
-        if (null != itemAry)
+        if (null != itemAry) {
             for (PItem item : itemAry) {
                 if (null != item) {
                     items.add(item);
                     item.setPojo(this);
                 }
             }
+        }
         return this;
     }
 
+    @Override
     public Pojo insertFirst(PItem... itemAry) {
         items.addAll(0, Lang.list(itemAry));
-        for (PItem pi : itemAry)
+        for (PItem pi : itemAry) {
             pi.setPojo(this);
+        }
         return this;
     }
 
+    @Override
     public Pojo setItem(int index, PItem pi) {
         items.set(index, pi);
         pi.setPojo(this);
         return this;
     }
 
+    @Override
     public PItem getItem(int index) {
         return items.get(index);
     }
 
+    @Override
     public Pojo removeItem(int index) {
         items.remove(index);
         return this;
@@ -219,6 +251,7 @@ public class NutPojo extends NutStatement implements Pojo {
         return (NutPojo) super.setSqlType(sqlType);
     }
 
+    @Override
     public String toString() {
         if (SqlType.RUN == this.getSqlType()) {
             return this.getSqlType().name()
@@ -228,6 +261,7 @@ public class NutPojo extends NutStatement implements Pojo {
         return super.toString();
     }
 
+    @Override
     public Pojo duplicate() {
         throw Lang.noImplement();
     }

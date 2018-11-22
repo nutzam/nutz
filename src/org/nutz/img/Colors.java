@@ -47,8 +47,9 @@ public final class Colors {
      * @return 颜色对象
      */
     public static Color as(String str) {
-        if (null == str)
+        if (null == str) {
             return Color.BLACK;
+        }
 
         // 整理一下字符串以便后面匹配分析
         str = Strings.trim(str.toUpperCase());
@@ -57,8 +58,9 @@ public final class Colors {
             str = str.substring(1);
         }
 
-        if (str.endsWith(";"))
+        if (str.endsWith(";")) {
             str = str.substring(0, str.length() - 1);
+        }
 
         // RGB: #FFF
         Pattern p = Pattern.compile("^([0-9A-F])([0-9A-F])([0-9A-F])$");

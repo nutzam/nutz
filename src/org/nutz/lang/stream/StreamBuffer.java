@@ -19,8 +19,9 @@ public class StreamBuffer extends InputStream {
 
         @Override
         public void write(int b) throws IOException {
-            if (cursor >= width)
+            if (cursor >= width) {
                 index++;
+            }
             byte[] row = bytes.size() > index ? bytes.get(index) : null;
             if (null == row) {
                 row = new byte[width];
@@ -54,12 +55,14 @@ public class StreamBuffer extends InputStream {
             index++;
             cursor = 0;
         }
-        if (index > buffer.index)
+        if (index > buffer.index) {
             return -1;
+        }
         if (index < buffer.bytes.size()) {
             byte[] cs = buffer.bytes.get(index);
-            if (cursor < buffer.cursor)
+            if (cursor < buffer.cursor) {
                 return cs[cursor++];
+            }
         }
         return -1;
     }
@@ -91,8 +94,9 @@ public class StreamBuffer extends InputStream {
         StringBuilder sb = new StringBuilder();
         StringOutputStream sos = new StringOutputStream(sb, charset);
         byte c;
-        while ((c = (byte) this.read()) != -1)
+        while ((c = (byte) this.read()) != -1) {
             sos.write(c);
+        }
         Streams.safeFlush(sos);
         Streams.safeClose(sos);
         return sb.toString();

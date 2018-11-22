@@ -13,6 +13,7 @@ import org.nutz.mvc.annotation.Param;
  */
 public class VoidAdaptor extends AbstractAdaptor {
 
+    @Override
     protected ParamInjector evalInjectorBy(Type type, Param param) {
         return null;
     }

@@ -22,6 +22,7 @@ class ChangeToChildConstructorMethodAdapter extends NormalMethodAdapter {
         this.superClassName = superClassName;
     }
 
+    @Override
     void visitCode() {
         mv.visitCode();
         // start of fuck line number

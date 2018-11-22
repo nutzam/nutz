@@ -179,18 +179,22 @@ public class DaoSupport {
     }
     
     public void setDataSource(DataSource ds,boolean isLazy) {
-        if (null != dataSource)
-            if (log.isWarnEnabled())
+        if (null != dataSource) {
+            if (log.isWarnEnabled()) {
                 log.warn("Replaced a running dataSource!");
+            }
+        }
         dataSource = ds;
-        if (expert == null)
+        if (expert == null) {
             expert = Jdbcs.getExpert(ds);
+        }
         log.debug("select expert : " + expert.getClass().getName());
         pojoMaker = new NutPojoMaker(expert);
 
         meta = new DatabaseMeta();
         final Set<String> keywords = new HashSet<String>(Daos.sql2003Keywords());
         run(new ConnCallback() {
+            @Override
             public void invoke(Connection conn) throws Exception {
                 try {
                     DatabaseMetaData dmd = conn.getMetaData();
@@ -198,8 +202,9 @@ public class DaoSupport {
                     meta.setVersion(dmd.getDatabaseProductVersion());
                     log.debug("JDBC Driver --> " + dmd.getDriverVersion());
                     log.debug("JDBC Name   --> " + dmd.getDriverName());
-                    if (!Strings.isBlank(dmd.getURL()))
+                    if (!Strings.isBlank(dmd.getURL())) {
                         log.debug("JDBC URL    --> " + dmd.getURL());
+                    }
                     if (dmd.getDriverName().contains("mariadb") || dmd.getDriverName().contains("sqlite")) {
                         log.warn("Auto-select fetch size to Integer.MIN_VALUE, enable for ResultSet Streaming");
                         SqlContext.DEFAULT_FETCH_SIZE = Integer.MIN_VALUE;
@@ -217,8 +222,9 @@ public class DaoSupport {
                 }
             }
         });
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("Database info --> " + meta);
+        }
         expert.setKeywords(keywords);
 
         if(!isLazy)
@@ -231,8 +237,9 @@ public class DaoSupport {
     }
 
     public void execute(final Sql... sqls) {
-        for (Sql sql : sqls)
+        for (Sql sql : sqls) {
             expert.formatQuery(sql);
+        }
         _exec(sqls);
     }
 
@@ -241,10 +248,11 @@ public class DaoSupport {
     }
 
     protected int _exec(final DaoStatement... sts) {
-        if (sts != null)
+        if (sts != null) {
             for (DaoStatement ds : sts) {
                 ds.setExpert(expert);
             }
+        }
         final DaoInterceptorChain callback = new DaoInterceptorChain(sts);
         callback.setExecutor(executor);
         callback.setAutoTransLevel(autoTransLevel);
@@ -275,8 +283,9 @@ public class DaoSupport {
         List<DaoInterceptor> list = new LinkedList<DaoInterceptor>();
         for (Object it : interceptors) {
             DaoInterceptor d = makeInterceptor(it);
-            if (d != null)
+            if (d != null) {
                 list.add(d);
+            }
         }
         this._interceptors = list;
     }
@@ -291,8 +300,9 @@ public class DaoSupport {
     }
     
     public DaoInterceptor makeInterceptor(Object it) {
-        if (it == null)
+        if (it == null) {
             return null;
+        }
         if (it instanceof String) {
             String itName = it.toString().trim();
             if ("log".equals(itName)) {

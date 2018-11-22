@@ -11,6 +11,7 @@ import org.nutz.mvc.adaptor.ParamInjector;
 
 public class HttpInputStreamInjector implements ParamInjector {
 
+    @Override
     public Object get(ServletContext sc,
                       HttpServletRequest req,
                       HttpServletResponse resp,

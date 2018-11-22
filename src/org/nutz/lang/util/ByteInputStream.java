@@ -25,14 +25,16 @@ public class ByteInputStream extends InputStream {
         this.bytes = bytes;
         this.cursor = off;
         this.length = off + len;
-        if (this.length > bytes.length)
+        if (this.length > bytes.length) {
             this.length = bytes.length;
+        }
     }
  
     @Override
     public int read() throws IOException {
-        if (cursor < length)
+        if (cursor < length) {
             return bytes[cursor++] & 0xff;
+        }
         return -1;
     }
  

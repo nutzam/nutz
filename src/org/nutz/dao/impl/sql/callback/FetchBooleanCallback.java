@@ -14,9 +14,11 @@ import org.nutz.dao.sql.SqlCallback;
  */
 public class FetchBooleanCallback implements SqlCallback {
 
+    @Override
     public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
-        if (null != rs && rs.next())
+        if (null != rs && rs.next()) {
             return rs.getBoolean(1);
+        }
         return null;
     }
 

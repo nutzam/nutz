@@ -14,9 +14,11 @@ import org.nutz.mvc.NutConfig;
 @Deprecated
 public class AnnotationIocProvider implements IocProvider {
 
+    @Override
     public Ioc create(NutConfig config, String[] args) {
-    	if (args == null || args.length == 0)
-    		args = new String[]{config.getMainModule().getPackage().getName()};
+    	if (args == null || args.length == 0) {
+            args = new String[]{config.getMainModule().getPackage().getName()};
+        }
         return new NutIoc(new AnnotationIocLoader(args), new ScopeContext("app"), "app");
     }
 

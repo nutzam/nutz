@@ -165,6 +165,7 @@ public abstract class Chain implements Serializable {
     /**
      * 生成一个 JSON 字符串
      */
+    @Override
     public String toString() {
         return Json.toJson(toMap());
     }
@@ -185,8 +186,9 @@ public abstract class Chain implements Serializable {
      * @see org.nutz.dao.FieldMatcher
      */
     public static Chain from(Object obj, FieldMatcher fm) {
-        if (null == obj)
+        if (null == obj) {
             return null;
+        }
         Chain c = null;
         /*
          * Is Map
@@ -194,16 +196,19 @@ public abstract class Chain implements Serializable {
         if (obj instanceof Map<?, ?>) {
             for (Map.Entry<?, ?> en : ((Map<?, ?>) obj).entrySet()) {
                 Object key = en.getKey();
-                if (null == key)
+                if (null == key) {
                     continue;
+                }
                 String name = key.toString();
-                if (null != fm && !fm.match(name))
+                if (null != fm && !fm.match(name)) {
                     continue;
+                }
                 Object v = en.getValue();
                 if (null != fm ) {
                     if (null == v) {
-                        if (fm.isIgnoreNull())
+                        if (fm.isIgnoreNull()) {
                             continue;
+                        }
                     } else if (fm.isIgnoreBlankStr() && v instanceof String && Strings.isBlank((String)v)) {
                         continue;
                     }
@@ -221,12 +226,14 @@ public abstract class Chain implements Serializable {
         else {
             Mirror<?> mirror = Mirror.me(obj.getClass());
             for (Field f : mirror.getFields()) {
-                if (null != fm && !fm.match(f.getName()))
+                if (null != fm && !fm.match(f.getName())) {
                     continue;
+                }
                 Object v = mirror.getValue(obj, f.getName());
                 if (null == v) {
-                    if (fm != null && fm.isIgnoreNull())
+                    if (fm != null && fm.isIgnoreNull()) {
                         continue;
+                    }
                 } else if (fm != null && fm.isIgnoreBlankStr() && v instanceof String && Strings.isBlank((String)v)) {
                     continue;
                 }
@@ -256,17 +263,21 @@ public abstract class Chain implements Serializable {
     public static Chain from(Object obj, FieldMatcher fm, Dao dao) {
         final Chain[] chains = new Chain[1];
         boolean re = Daos.filterFields(obj, fm, dao, new Callback2<MappingField, Object>() {
+            @Override
             public void invoke(MappingField mf, Object val) {
-                if (mf.isReadonly() || !mf.isUpdate())
+                if (mf.isReadonly() || !mf.isUpdate()) {
                     return;
-                if (chains[0] == null)
+                }
+                if (chains[0] == null) {
                     chains[0] = Chain.make(mf.getName(), val);
-                else
+                } else {
                     chains[0].add(mf.getName(), val);
+                }
             }
         });
-        if (re)
+        if (re) {
             return chains[0];
+        }
         return null;
     }
     
@@ -311,52 +322,65 @@ public abstract class Chain implements Serializable {
             this.tail = head;
             this.size = 1;
         }
+        @Override
         public int size() {
             return size;
         }
+        @Override
         public Chain name(String name) {
             current.name = name;
             return this;
         }
+        @Override
         public Chain value(Object value) {
             current.value = value;
             return this;
         }
+        @Override
         public Chain adaptor(ValueAdaptor adaptor) {
             current.adaptor = adaptor;
             return this;
         }
+        @Override
         public ValueAdaptor adaptor() {
             return current.adaptor;
         }
+        @Override
         public Chain add(String name, Object value) {
             tail.next = new ChainEntry(name, value);
             tail = tail.next;
             size ++;
             return this;
         }
+        @Override
         public String name() {
             return current.name;
         }
+        @Override
         public Object value() {
             return current.value;
         }
+        @Override
         public Chain next() {
             current = current.next;
             return current == null ? null : this;
         }
+        @Override
         public Chain head() {
             current = head;
             return this;
         }
+        @Override
         public Chain addSpecial(String name, Object value) {
             add(name, value);
             tail.special = true;
             return this;
         }
+        @Override
         public boolean special() {
             return current.special;
         }
+        @Override
         public boolean isSpecial() {
             ChainEntry entry = head;
             do {
@@ -366,17 +390,20 @@ public abstract class Chain implements Serializable {
             } while ((entry = entry.next) != null);
             return false;
         }
+        @Override
         public Map<String, Object> toMap() {
             NutMap map = new NutMap();
             ChainEntry current = head;
             while (current != null) {
                 map.put(current.name, current.value);
-                if (current.adaptor != null)
-                	map.put("."+current.name+".adaptor", current.adaptor);
+                if (current.adaptor != null) {
+                    map.put("." + current.name + ".adaptor", current.adaptor);
+                }
                 current = current.next;
             }
             return map;
         }
+        @Override
         public Chain updateBy(Entity<?> entity) {
             if (null != entity) {
                 ChainEntry current = head;
@@ -390,6 +417,7 @@ public abstract class Chain implements Serializable {
             }
             return head();
         }
+        @Override
         public <T> T toObject(Class<T> classOfT) {
             Mirror<T> mirror = Mirror.me(classOfT);
             T re = mirror.born();

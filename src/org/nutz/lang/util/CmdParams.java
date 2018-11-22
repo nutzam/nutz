@@ -28,11 +28,13 @@ public class CmdParams {
      * @see #parse(String[], String, String)
      */
     public static CmdParams parse(String[] args, String bools) {
-        if (null == bools)
+        if (null == bools) {
             return parse(args, null, null);
+        }
 
-        if (bools.startsWith("^"))
+        if (bools.startsWith("^")) {
             return parse(args, null, bools);
+        }
 
         return parse(args, bools, null);
     }
@@ -134,8 +136,9 @@ public class CmdParams {
 
     public String val(int index) {
         int i = index >= 0 ? index : vals.length + index;
-        if (i < 0 || i >= vals.length)
+        if (i < 0 || i >= vals.length) {
             return null;
+        }
         return this.vals[i];
     }
 
@@ -214,8 +217,9 @@ public class CmdParams {
 
     public String getString(String key, String dft) {
         Object val = map.get(key);
-        if (null == val || val instanceof Boolean)
+        if (null == val || val instanceof Boolean) {
             return dft;
+        }
         return val.toString();
     }
 
@@ -250,11 +254,13 @@ public class CmdParams {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public NutMap getMap(String key, NutMap dft) {
         Object val = map.get(key);
-        if (null == val)
+        if (null == val) {
             return null;
+        }
 
-        if (val instanceof Map)
+        if (val instanceof Map) {
             return NutMap.WRAP((Map) val);
+        }
 
         return Lang.map(val.toString());
     }

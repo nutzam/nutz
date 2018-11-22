@@ -31,11 +31,13 @@ public class String2Class extends Castor<String, Class> {
 
     @Override
     public Class<?> cast(String src, Class toType, String... args) {
-        if (null == src)
+        if (null == src) {
             return null;
+        }
         Class<?> c = map.get(src);
-        if (null != c)
+        if (null != c) {
             return c;
+        }
         try {
             return Lang.loadClass(src);
         }

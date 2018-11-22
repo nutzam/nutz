@@ -11,10 +11,12 @@ public class FieldNode extends ChainNode {
         this.name = name;
     }
 
+    @Override
     protected Object getValue(IocMaking ing, Object obj) throws Exception {
         return Mirror.me(obj.getClass()).getValue(obj, name);
     }
 
+    @Override
     protected String asString() {
         return name;
     }

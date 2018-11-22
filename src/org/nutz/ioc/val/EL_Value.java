@@ -18,25 +18,33 @@ public class EL_Value extends SimpleContext implements ValueProxy {
         this.el = new El(el);
     }
 
+    @Override
     public Object get(IocMaking ing) {
         this.ioc = ing.getIoc();
         return el.eval(this);
     }
     
+    @Override
     public boolean has(String key) {
-        if (key == null)
+        if (key == null) {
             return false;
-        if ("sys".equals(key))
+        }
+        if ("sys".equals(key)) {
             return true;
-        if ("env".equals(key))
+        }
+        if ("env".equals(key)) {
             return true;
-        if ("$ioc".equals(key))
+        }
+        if ("$ioc".equals(key)) {
             return true;
-        if (key.startsWith("$") && key.length() > 1)
+        }
+        if (key.startsWith("$") && key.length() > 1) {
             return ioc.has(key.substring(1));
+        }
         return super.has(key);
     }
     
+    @Override
     public Set<String> keys() {
         Set<String> keys = super.keys();
         keys.add("sys");
@@ -48,21 +56,28 @@ public class EL_Value extends SimpleContext implements ValueProxy {
         return keys;
     }
     
+    @Override
     public int size() {
         return this.keys().size();
     }
     
+    @Override
     public Object get(String key) {
-        if (key == null)
+        if (key == null) {
             return null;
-        if ("sys".equals(key))
+        }
+        if ("sys".equals(key)) {
             return System.getProperties();
-        if ("env".equals(key))
+        }
+        if ("env".equals(key)) {
             return System.getenv();
-        if ("$ioc".equals(key))
+        }
+        if ("$ioc".equals(key)) {
             return ioc;
-        if (key.startsWith("$") && key.length() > 1)
+        }
+        if (key.startsWith("$") && key.length() > 1) {
             return ioc.get(Object.class, key.substring(1));
+        }
         return super.get(key);
     }
 }

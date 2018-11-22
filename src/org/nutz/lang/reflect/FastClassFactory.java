@@ -43,8 +43,9 @@ public final class FastClassFactory implements Opcodes {
             }
             try {
                 fastClass = create(klass);
-                if (useCache)
+                if (useCache) {
                     cache.put(cacheKey, fastClass);
+                }
                 return fastClass;
             }
             catch (Exception e) {
@@ -73,8 +74,9 @@ public final class FastClassFactory implements Opcodes {
             constructors.put(key, fm);
         }
         for (Method method : klass.getMethods()) {
-            if (method.getName().contains("$"))
+            if (method.getName().contains("$")) {
                 continue;
+            }
             String key = method.getName() + "$" + Type.getMethodDescriptor(method);
             FastMethod fm = FastMethodFactory.make(method);
             methods.put(key, fm);

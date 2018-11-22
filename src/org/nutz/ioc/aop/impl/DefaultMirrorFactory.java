@@ -47,10 +47,12 @@ public class DefaultMirrorFactory extends AbstractLifeCycle implements MirrorFac
 
     public DefaultMirrorFactory(Ioc ioc) {
         this.ioc = ioc;
-        if (NutConf.AOP_USE_CLASS_ID)
-            id  = R.UU32().substring(4);
+        if (NutConf.AOP_USE_CLASS_ID) {
+            id = R.UU32().substring(4);
+        }
     }
 
+    @Override
     public <T> Mirror<T> getMirror(Class<T> type, String name) {
         if (MethodInterceptor.class.isAssignableFrom(type)
             || type.getName().endsWith(ClassAgent.CLASSNAME_SUFFIX)
@@ -63,17 +65,20 @@ public class DefaultMirrorFactory extends AbstractLifeCycle implements MirrorFac
             log.info("skip aop check , type="+type.getName());
             return Mirror.me(type);
         }
-        if (list == null)
+        if (list == null) {
             init();
+        }
         List<InterceptorPair> interceptorPairs = new ArrayList<InterceptorPair>();
         for (AopConfigration cnf : list) {
             List<InterceptorPair> tmp = cnf.getInterceptorPairList(ioc, type);
-            if (tmp != null && tmp.size() > 0)
+            if (tmp != null && tmp.size() > 0) {
                 interceptorPairs.addAll(tmp);
+            }
         }
         if (interceptorPairs.isEmpty()) {
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debugf("Load %s without AOP", type);
+            }
             return Mirror.me(type);
         }
 
@@ -89,9 +94,10 @@ public class DefaultMirrorFactory extends AbstractLifeCycle implements MirrorFac
             }
             AsmClassAgent agent = new AsmClassAgent();
             agent.id = id;
-            for (InterceptorPair interceptorPair : interceptorPairs)
+            for (InterceptorPair interceptorPair : interceptorPairs) {
                 agent.addInterceptor(interceptorPair.getMethodMatcher(),
-                                     interceptorPair.getMethodInterceptor());
+                        interceptorPair.getMethodInterceptor());
+            }
             return Mirror.me(agent.define(cd, type));
         }
 
@@ -102,13 +108,17 @@ public class DefaultMirrorFactory extends AbstractLifeCycle implements MirrorFac
         this.list.add(aopConfigration);
     }
     
+    @Override
     public void init() {
-        if (this.ioc == null)
+        if (this.ioc == null) {
             return;
-        if (this.list != null)
+        }
+        if (this.list != null) {
             return;
-        if (L.get() != null)
+        }
+        if (L.get() != null) {
             return;
+        }
         ArrayList<AopConfigration> list = new ArrayList<AopConfigration>();
         try {
             L.set(Integer.TYPE);
@@ -116,20 +126,23 @@ public class DefaultMirrorFactory extends AbstractLifeCycle implements MirrorFac
             String[] names = ioc.getNames();
             Arrays.sort(names);
             for (String beanName : names) {
-                if (!beanName.startsWith(AopConfigration.IOCNAME))
+                if (!beanName.startsWith(AopConfigration.IOCNAME)) {
                     continue;
+                }
                 AopConfigration cnf = ioc.get(AopConfigration.class, beanName);
                 list.add(cnf);
-                if (cnf instanceof AnnotationAopConfigration)
+                if (cnf instanceof AnnotationAopConfigration) {
                     flag = false;
+                }
                 if (cnf instanceof ComboAopConfigration) {
                     if (((ComboAopConfigration) cnf).hasAnnotationAop()) {
                         flag = false;
                     }
                 }
             }
-            if (flag)
+            if (flag) {
                 list.add(new AnnotationAopConfigration());
+            }
             this.list = list;
         } finally {
             L.set(null);

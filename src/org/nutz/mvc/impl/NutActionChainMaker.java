@@ -28,6 +28,7 @@ public class NutActionChainMaker implements ActionChainMaker {
         co = new JsonActionChainMakerConfiguretion(args);
     }
 
+    @Override
     public ActionChain eval(NutConfig config, ActionInfo ai) {
         
         try {
@@ -47,24 +48,27 @@ public class NutActionChainMaker implements ActionChainMaker {
              */
             return new NutActionChain(list, errorProcessor, ai);
         } catch (Throwable e) {
-            if (log.isDebugEnabled())
-                log.debugf("Eval FAIL!! : %s",ai.getMethod(), e);
+            if (log.isDebugEnabled()) {
+                log.debugf("Eval FAIL!! : %s", ai.getMethod(), e);
+            }
             throw Lang.wrapThrow(e);
         }
     }
 
     protected Processor getProcessorByName(NutConfig config,String name) throws Exception {
         if (name.startsWith("ioc:") && name.length() > 4) {
-            if (config.getIoc() == null)
+            if (config.getIoc() == null) {
                 throw new IllegalArgumentException("getProcessorByName " + name + " but no ioc !");
+            }
             return config.getIoc().get(Processor.class, name.substring(4).trim());
         }
         else {
             Class<?> klass = null;
             if (name.startsWith("!")) {
                 name = name.substring(1);
-                if (disabledProcessor.contains(name))
+                if (disabledProcessor.contains(name)) {
                     return null;
+                }
                 try {
                     klass = Lang.loadClass(name);
                 }

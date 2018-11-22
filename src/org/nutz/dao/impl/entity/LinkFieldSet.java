@@ -36,9 +36,11 @@ public class LinkFieldSet {
 
     List<LinkField> visit(Object obj, String regex, LinkVisitor visitor) {
         List<LinkField> list = getList(regex);
-        if (null != visitor)
-            for (LinkField lnk : list)
+        if (null != visitor) {
+            for (LinkField lnk : list) {
                 visitor.visit(obj, lnk);
+            }
+        }
         return list;
     }
 
@@ -53,9 +55,11 @@ public class LinkFieldSet {
                     list = cache.get(regex);
                     if (null == list) {
                         list = new ArrayList<LinkField>(lnks.size());
-                        for (LinkField lnk : lnks)
-                            if (Pattern.matches(regex, lnk.getName()))
+                        for (LinkField lnk : lnks) {
+                            if (Pattern.matches(regex, lnk.getName())) {
                                 list.add(lnk);
+                            }
+                        }
                         list.trimToSize();
                         cache.put(regex, list);
                     }

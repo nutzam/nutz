@@ -136,8 +136,9 @@ public class DaoUp {
      * @param dao Dao实例
      */
     public void setDao(Dao dao) {
-        if (this.dao != null)
+        if (this.dao != null) {
             log.infof("override old Dao=%s by new Dao=%s", this.dao, dao);
+        }
         this.dao = dao;
     }
     
@@ -199,8 +200,9 @@ public class DaoUp {
             log.debug("build DruidDataSource by props");
             Mirror<?> mirror = Mirror.me(druidFactoryClass);
             DataSource ds = (DataSource) mirror.invoke(null, "createDataSource", props);
-            if (!props.containsKey("maxWait"))
-                Mirror.me(ds).setValue(ds, "maxWait", 15*1000);
+            if (!props.containsKey("maxWait")) {
+                Mirror.me(ds).setValue(ds, "maxWait", 15 * 1000);
+            }
             return ds;
         }
         log.debug("build SimpleteDataSource by props");
@@ -212,8 +214,9 @@ public class DaoUp {
      * <b>只能在程序关闭时调用,严禁在每次Dao操作后调用!!</b>
      */
     public synchronized void close() {
-        if (dao == null)
+        if (dao == null) {
             return;
+        }
         log.infof("shutdown DaoUp(name=%s)", name);
         try {
             Mirror.me(dataSource).invoke(dataSource, "close");
@@ -241,9 +244,11 @@ public class DaoUp {
     /**
      * 如果被GC,主动触发关闭,除非autoCloseWhenFinalize为false
      */
+    @Override
     protected void finalize() throws Throwable {
-        if (autoCloseWhenFinalize)
+        if (autoCloseWhenFinalize) {
             close();
+        }
         super.finalize();
     }
     

@@ -61,6 +61,7 @@ public class NutFilter implements Filter {
     
     protected ServletContext sc;
     
+    @Override
     public void init(FilterConfig conf) throws ServletException {
     	try {
     	    if ("disable".equals(conf.getInitParameter("fast-class"))) {
@@ -128,13 +129,16 @@ public class NutFilter implements Filter {
         sp = config.getSessionProvider();
     }
 
+    @Override
     public void destroy() {
-    	if (proxyFilter != null)
-    		return;
+    	if (proxyFilter != null) {
+            return;
+        }
         Mvcs.resetALL();
         Mvcs.set(selfName, null, null);
-        if (handler != null)
+        if (handler != null) {
             handler.depose();
+        }
         Mvcs.close();
         Mvcs.setServletContext(null);
         Mvcs.set(null, null, null);
@@ -168,10 +172,12 @@ public class NutFilter implements Filter {
     	return false;
     }
 
+    @Override
     public void doFilter(final ServletRequest req, final ServletResponse resp, final FilterChain chain)
             throws IOException, ServletException {
-        if (!Mvcs.DISABLE_X_POWERED_BY)
-            ((HttpServletResponse)resp).setHeader("X-Powered-By", Mvcs.X_POWERED_BY);
+        if (!Mvcs.DISABLE_X_POWERED_BY) {
+            ((HttpServletResponse) resp).setHeader("X-Powered-By", Mvcs.X_POWERED_BY);
+        }
     	ServletContext prCtx = Mvcs.getServletContext();
     	Mvcs.setServletContext(sc);
     	if (proxyFilter != null) {
@@ -193,14 +199,16 @@ public class NutFilter implements Filter {
         String preName = Mvcs.getName();
         Context preContext = Mvcs.resetALL();
         try {
-            if (sp != null)
+            if (sp != null) {
                 request = sp.filter(request,
-                                response,
-                                Mvcs.getServletContext());
+                        response,
+                        Mvcs.getServletContext());
+            }
             Mvcs.set(this.selfName, request, response);
             if (!isExclusion(matchUrl)) {
-                if (handler.handle(request, response))
+                if (handler.handle(request, response)) {
                     return;
+                }
             }
             nextChain(request, response, chain);
         }

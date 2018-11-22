@@ -100,6 +100,7 @@ class AopMethodAdapter extends NormalMethodAdapter implements Opcodes {
         mv.visitEnd();
     }
 
+    @Override
     void visitCode() {
         enhandMethod_Void();
     }
@@ -123,10 +124,11 @@ class AopMethodAdapter extends NormalMethodAdapter implements Opcodes {
         if (i < 6) {
             mv.visitInsn(i + ICONST_0);
         } else {
-            if (i < Byte.MAX_VALUE)
+            if (i < Byte.MAX_VALUE) {
                 mv.visitIntInsn(BIPUSH, i);
-            else 
+            } else {
                 mv.visitIntInsn(SIPUSH, i);
+            }
         }
     }
 

@@ -10,10 +10,12 @@ public class DynaMethodBorning<T> implements Borning<T> {
 
     public DynaMethodBorning(Method method) {
         this.method = method;
-        if (!method.isAccessible())
+        if (!method.isAccessible()) {
             this.method.setAccessible(true);
+        }
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public T born(Object... args) {
         try {

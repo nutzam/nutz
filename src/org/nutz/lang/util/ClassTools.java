@@ -83,13 +83,15 @@ public class ClassTools {
             dis.skipBytes(2);//版本控制符
             int pos = dis.readUnsignedShort();
             String name = strs.get(classes.get(pos));
-            if (name != null)
+            if (name != null) {
                 name = name.replace('/', '.');
+            }
             dis.close();
             return name;
         } catch (Throwable e) {
-            if (log.isInfoEnabled()) 
+            if (log.isInfoEnabled()) {
                 log.info("Fail to read ClassName from class InputStream", e);
+            }
         }
         return null;
     }
@@ -98,10 +100,12 @@ public class ClassTools {
     static {
         nutClassLoader = Nutz.class.getClassLoader();
         //当使用JavaSE是,如果Nutz通过bootClassLoader加载,那么就会为null
-        if (nutClassLoader == null)
+        if (nutClassLoader == null) {
             try {
                 nutClassLoader = ClassLoader.getSystemClassLoader();
-            }catch (Throwable e) {}
+            } catch (Throwable e) {
+            }
+        }
     }
     
     /**

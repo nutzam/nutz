@@ -39,30 +39,37 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
         super(conf);
     }
 
+    @Override
     public String getDatabaseType() {
         return DB.MYSQL.name();
     }
 
+    @Override
     public void formatQuery(Pojo pojo) {
         Pager pager = pojo.getContext().getPager();
         // 需要进行分页
-        if (null != pager && pager.getPageNumber() > 0)
+        if (null != pager && pager.getPageNumber() > 0) {
             pojo.append(Pojos.Items.wrapf(" LIMIT %d, %d", pager.getOffset(), pager.getPageSize()));
+        }
     }
 
+    @Override
     public void formatQuery(Sql sql) {
         Pager pager = sql.getContext().getPager();
         // 需要进行分页
-        if (null != pager && pager.getPageNumber() > 0)
+        if (null != pager && pager.getPageNumber() > 0) {
             sql.setSourceSql(sql.getSourceSql()
-                             + String.format(" LIMIT %d, %d",
-                                             pager.getOffset(),
-                                             pager.getPageSize()));
+                    + String.format(" LIMIT %d, %d",
+                    pager.getOffset(),
+                    pager.getPageSize()));
+        }
     }
 
+    @Override
     public String evalFieldType(MappingField mf) {
-        if (mf.getCustomDbType() != null)
+        if (mf.getCustomDbType() != null) {
             return mf.getCustomDbType();
+        }
         int intLen = 4;
         if (mf.getEntity().hasMeta(META_INTLEN)) {
         	intLen = ((Number)mf.getEntity().getMeta(META_INTLEN)).intValue();
@@ -91,12 +98,14 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
         return super.evalFieldType(mf);
     }
 
+    @Override
     public boolean createEntity(Dao dao, Entity<?> en) {
         StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
         // 创建字段
         for (MappingField mf : en.getMappingFields()) {
-            if (mf.isReadonly())
+            if (mf.isReadonly()) {
                 continue;
+            }
             sb.append('\n').append(mf.getColumnNameInSql());
             sb.append(' ').append(evalFieldType(mf));
             // 非主键的 @Name，应该加入唯一性约束
@@ -106,8 +115,9 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
             // 普通字段
             else {
                 // 下面的关于Timestamp处理，是因为MySql中第一出现Timestamp的话，如果没有设定default，数据库默认会设置为CURRENT_TIMESTAMP
-                if (mf.isUnsigned())
+                if (mf.isUnsigned()) {
                     sb.append(" UNSIGNED");
+                }
 
                 if (mf.isNotNull()) {
                     sb.append(" NOT NULL");
@@ -115,8 +125,9 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
                     sb.append(" NULL");
                 }
 
-                if (mf.isAutoIncreasement())
+                if (mf.isAutoIncreasement()) {
                     sb.append(" AUTO_INCREMENT");
+                }
 
                 if (mf.getColumnType() == ColType.TIMESTAMP) {
                     if (mf.hasDefaultValue()) {
@@ -129,8 +140,9 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
                         }
                     }
                 } else {
-                    if (mf.hasDefaultValue())
+                    if (mf.hasDefaultValue()) {
                         addDefaultValue(sb, mf);
+                    }
                 }
             }
 
@@ -181,10 +193,12 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
         return true;
     }
 
+    @Override
     protected String createResultSetMetaSql(Entity<?> en) {
         return "SELECT * FROM " + en.getViewName() + " LIMIT 1";
     }
 
+    @Override
     public Pojo fetchPojoId(Entity<?> en, MappingField idField) {
         // String autoSql = "SELECT @@@@IDENTITY";
         // Pojo autoInfo = new SqlFieldMacro(idField, autoSql);
@@ -208,15 +222,17 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
             String sql = "SHOW VARIABLES LIKE 'character_set%'";
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
-            while (rs.next())
+            while (rs.next()) {
                 log.debugf("Mysql : %s=%s", rs.getString(1), rs.getString(2));
+            }
             rs.close();
             // 打印binlog_format
             sql = "SHOW VARIABLES LIKE 'binlog_format'";
             stmt = conn.createStatement();
             rs = stmt.executeQuery(sql);
-            while (rs.next())
+            while (rs.next()) {
                 log.debugf("Mysql : %s=%s", rs.getString(1), rs.getString(2));
+            }
             rs.close();
             // 打印当前数据库名称
             String dbName = "";
@@ -228,29 +244,34 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
             rs.close();
             // 打印当前连接用户及主机名
             rs = stmt.executeQuery("SELECT USER()");
-            if (rs.next())
+            if (rs.next()) {
                 log.debug("Mysql : user=" + rs.getString(1));
+            }
             rs.close();
             stmt.close();
             // 列出所有MyISAM引擎的表,这些表不支持事务
             PreparedStatement pstmt = conn.prepareStatement("SELECT TABLE_NAME FROM information_schema.TABLES where TABLE_SCHEMA = ? and engine = 'MyISAM'");
             pstmt.setString(1, dbName);
             rs = pstmt.executeQuery();
-            if (rs.next())
+            if (rs.next()) {
                 log.debug("Mysql : '" + rs.getString(1) + "' engine=MyISAM");
+            }
             rs.close();
             pstmt.close();
         }
     }
 
+    @Override
     public boolean canCommentWhenAddIndex() {
         return true;
     }
 
+    @Override
     protected Sql createRelation(Dao dao, LinkField lf) {
         Sql sql = super.createRelation(dao, lf);
-        if (sql == null)
+        if (sql == null) {
             return null;
+        }
         Entity<?> en = lf.getEntity();
         StringBuilder sb = new StringBuilder(sql.getSourceSql());
         // 设置特殊引擎

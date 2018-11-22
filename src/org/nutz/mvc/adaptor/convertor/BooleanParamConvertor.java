@@ -6,11 +6,14 @@ import org.nutz.mvc.adaptor.ParamConvertor;
 
 public class BooleanParamConvertor implements ParamConvertor {
 
+    @Override
     public Object convert(String[] ss) {
-        if (ss == null || ss.length == 0)
+        if (ss == null || ss.length == 0) {
             return null;
-        if (Strings.isBlank(ss[0]))
+        }
+        if (Strings.isBlank(ss[0])) {
             return null;
+        }
         return Lang.parseBoolean(ss[0]);
     }
 

@@ -16,8 +16,9 @@ public class DaoException extends RuntimeException {
     }
 
     public static <T> DaoException create(T obj, String fieldName, String name, Exception e) {
-        if (e instanceof DaoException)
+        if (e instanceof DaoException) {
             return (DaoException) e;
+        }
         return new DaoException(String.format(    "Fail to %s [%s]->[%s], because: '%s'",
                                                 name,
                                                 obj == null ? "NULL object" : obj    .getClass()

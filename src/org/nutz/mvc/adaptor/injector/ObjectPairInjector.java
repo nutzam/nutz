@@ -52,13 +52,15 @@ public class ObjectPairInjector implements ParamInjector {
             this.names[i] = prefix + nm;
             this.converters[i] = Params.makeParamConvertor(f.getType(), datefmt, locale);
             if (param != null && !Params.ParamDefaultTag.equals(param.df())) {
-                if (defaultValues == null)
+                if (defaultValues == null) {
                     defaultValues = new String[fields.length];
+                }
                 defaultValues[i] = param.df();
             }
         }
     }
 
+    @Override
     public Object get(ServletContext sc,
                       HttpServletRequest req,
                       HttpServletResponse resp,
@@ -67,10 +69,12 @@ public class ObjectPairInjector implements ParamInjector {
         Object obj = borning.born();
         for (int i = 0; i < injs.length; i++) {
             Object param = converters[i].convert(pe.extractor(names[i]));
-            if (param == null && defaultValues != null && defaultValues[i] != null)
+            if (param == null && defaultValues != null && defaultValues[i] != null) {
                 param = defaultValues[i];
-            if (null != param)
+            }
+            if (null != param) {
                 injs[i].inject(obj, param);
+            }
         }
         return obj;
     }

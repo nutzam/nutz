@@ -9,10 +9,12 @@ import org.nutz.plugin.Plugin;
 
 public class SystemLogAdapter implements LogAdapter, Plugin {
 
+    @Override
     public Log getLogger(String className) {
         return SystemLog.me();
     }
 
+    @Override
     public boolean canWork() {
         return true;
     }
@@ -42,46 +44,60 @@ public class SystemLogAdapter implements LogAdapter, Plugin {
             isDebugEnabled = true;
         }
 
+        @Override
         public void debug(Object message, Throwable t) {
-            if (isDebugEnabled())
-                printOut("DEBUG",message, t);
+            if (isDebugEnabled()) {
+                printOut("DEBUG", message, t);
+            }
         }
 
+        @Override
         public void error(Object message, Throwable t) {
-            if (isErrorEnabled())
-                errorOut("ERROR",message, t);
+            if (isErrorEnabled()) {
+                errorOut("ERROR", message, t);
+            }
         }
 
+        @Override
         public void fatal(Object message, Throwable t) {
-            if (isFatalEnabled())
-                errorOut("FATAL",message, t);
+            if (isFatalEnabled()) {
+                errorOut("FATAL", message, t);
+            }
         }
 
+        @Override
         public void info(Object message, Throwable t) {
-            if (isInfoEnabled())
-                printOut("INFO",message, t);
+            if (isInfoEnabled()) {
+                printOut("INFO", message, t);
+            }
         }
 
+        @Override
         public void trace(Object message, Throwable t) {
-            if (isTraceEnabled())
-                printOut("TRACE",message, t);
+            if (isTraceEnabled()) {
+                printOut("TRACE", message, t);
+            }
         }
 
+        @Override
         public void warn(Object message, Throwable t) {
-            if (isWarnEnabled())
-                errorOut("WARN",message, t);
+            if (isWarnEnabled()) {
+                errorOut("WARN", message, t);
+            }
         }
 
         private void printOut(String level, Object message, Throwable t) {
             System.out.printf("%s %s [%s] %s\n", Times.sDTms2(new Date()), level, Thread.currentThread().getName(),message);
-            if (t != null)
+            if (t != null) {
                 t.printStackTrace(System.out);
+            }
         }
 
         private void errorOut(String level, Object message, Throwable t) {
             System.err.printf("%s %s [%s] %s\n", Times.sDTms2(new Date()), level, Thread.currentThread().getName(),message);
-            if (t != null)
+            if (t != null) {
                 t.printStackTrace(System.err);
+            }
         }
 
         @Override

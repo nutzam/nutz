@@ -34,10 +34,11 @@ public class RemountBytes {
                 for (int j = blueL; j <= blueR; j++) {
                     byte red = bs[x];
                     byte blue = bs[j];
-                    if (red == blue)
+                    if (red == blue) {
                         x++;
-                    else
+                    } else {
                         x = 0;
+                    }
                 }
                 // 当 blue 全部耗尽，长度为失效数组的值
                 fails[i] = x;

@@ -43,8 +43,9 @@ public class ObjConvertImpl implements MaplConvert {
 
     public ObjConvertImpl(Type type) {
         this.type = type;
-        if (NutConf.USE_EL_IN_OBJECT_CONVERT)
+        if (NutConf.USE_EL_IN_OBJECT_CONVERT) {
             context = Lang.context();
+        }
     }
 
     /**
@@ -59,11 +60,14 @@ public class ObjConvertImpl implements MaplConvert {
      * <li>只要不是List, Map 存储的, 都认为是可以直接写入对象的. TODO 这点可以调整一下.
      * </ul>
      */
+    @Override
     public Object convert(Object model) {
-        if (model == null)
+        if (model == null) {
             return null;
-        if (type == null)
+        }
+        if (type == null) {
             return model;
+        }
         // obj是基本数据类型或String
         if (!(model instanceof Map) && !(model instanceof Iterable)) {
             return Castors.me().castTo(model, Lang.getTypeClass(type));
@@ -90,8 +94,9 @@ public class ObjConvertImpl implements MaplConvert {
         } else {
             obj = injectObj(model, me);
         }
-        if (path.size() > 0)
+        if (path.size() > 0) {
             path.pop();
+        }
         return obj;
     }
 
@@ -212,17 +217,20 @@ public class ObjConvertImpl implements MaplConvert {
         JsonCallback callback = jen.getJsonCallback();
         if (callback != null) {
             obj = callback.fromJson(model);
-            if (obj != null)
+            if (obj != null) {
                 return obj;
+            }
         }
         obj = mirror.born();
-        if (NutConf.USE_EL_IN_OBJECT_CONVERT)
+        if (NutConf.USE_EL_IN_OBJECT_CONVERT) {
             context.set(fetchPath(), obj);
+        }
         Map<String, Object> map = (Map<String, Object>) model;
         for (Entry<String, ?> en : map.entrySet()) {
             Object val = en.getValue();
-            if (val == null)
+            if (val == null) {
                 continue;
+            }
             String key = en.getKey();
             JsonEntityField jef = jen.getField(key);
             if (jef == null) {

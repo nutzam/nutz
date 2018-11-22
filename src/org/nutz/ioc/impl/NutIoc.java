@@ -109,18 +109,20 @@ public class NutIoc implements Ioc2 {
         this.maker = maker;
         this.defaultScope = defaultScope;
         this.context = context;
-        if (loader instanceof ComboIocLoader)
+        if (loader instanceof ComboIocLoader) {
             this.loader = (ComboIocLoader) loader;
-        else
+        } else {
             this.loader = new ComboIocLoader(loader);
+        }
         vpms = new ArrayList<ValueProxyMaker>(5); // 预留五个位置，足够了吧
         addValueProxyMaker(new DefaultValueProxyMaker());
 
         // 初始化类工厂， 这是同 AOP 的连接点
-        if (mirrors == null)
+        if (mirrors == null) {
             this.mirrors = new DefaultMirrorFactory(this);
-        else
+        } else {
             this.mirrors = mirrors;
+        }
         try {
             this.loader.init();
         }
@@ -141,9 +143,11 @@ public class NutIoc implements Ioc2 {
                     supportedTypes = new HashSet<String>();
                     for (ValueProxyMaker maker : vpms) {
                         String[] ss = maker.supportedTypes();
-                        if (ss != null)
-                            for (String s : ss)
+                        if (ss != null) {
+                            for (String s : ss) {
                                 supportedTypes.add(s);
+                            }
+                        }
                     }
                 }
             }
@@ -151,22 +155,28 @@ public class NutIoc implements Ioc2 {
         return new IocLoading(supportedTypes);
     }
 
+    @Override
     public <T> T get(Class<T> type) throws IocException {
         InjectName inm = type.getAnnotation(InjectName.class);
-        if (null != inm && (!Strings.isBlank(inm.value())))
+        if (null != inm && (!Strings.isBlank(inm.value()))) {
             return get(type, inm.value());
+        }
         IocBean iocBean = type.getAnnotation(IocBean.class);
-        if (iocBean != null && (!Strings.isBlank(iocBean.name())))
+        if (iocBean != null && (!Strings.isBlank(iocBean.name()))) {
             return get(type, iocBean.name());
+        }
         return get(type, Strings.lowerFirst(type.getSimpleName()));
     }
 
+    @Override
     public <T> T get(Class<T> type, String name, IocContext context) throws IocException {
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debugf("Get '%s'<%s>", name, type == null ? "" : type);
+        }
         try {
-            if (this.mirrors instanceof LifeCycle)
+            if (this.mirrors instanceof LifeCycle) {
                 ((LifeCycle) this.mirrors).init();
+            }
         }
         catch (Exception e) {
             throw new IocException("_mirror_factory_init", e, "Mirror Factory init fail");
@@ -188,8 +198,9 @@ public class NutIoc implements Ioc2 {
                 // 如果未发现对象
                 if (null == op) {
                     try {
-                        if (log.isDebugEnabled())
+                        if (log.isDebugEnabled()) {
                             log.debug("\t >> Load definition name=" + name);
+                        }
 
                         // 读取对象定义
                         IocObject iobj = loader.load(createLoading(), name);
@@ -209,18 +220,22 @@ public class NutIoc implements Ioc2 {
                         }
 
                         // 修正对象类型
-                        if (null == iobj.getType())
-                            if (null == type && Strings.isBlank(iobj.getFactory()))
+                        if (null == iobj.getType()) {
+                            if (null == type && Strings.isBlank(iobj.getFactory())) {
                                 throw new IocException(name, "NULL TYPE object '%s'", name);
-                            else
+                            } else {
                                 iobj.setType(type);
+                            }
+                        }
                         // 检查对象级别
-                        if (Strings.isBlank(iobj.getScope()))
+                        if (Strings.isBlank(iobj.getScope())) {
                             iobj.setScope(defaultScope);
+                        }
 
                         // 根据对象定义，创建对象，maker 会自动的缓存对象到 context 中
-                        if (log.isDebugEnabled())
+                        if (log.isDebugEnabled()) {
                             log.debugf("\t >> Make...'%s'<%s>", name, type == null ? "" : type);
+                        }
                         if (iobj.getType() != null && IocEventListener.class.isAssignableFrom(iobj.getType())) {
                             if (listenerH.get() != null) {
                                 op = maker.make(ing, iobj);
@@ -267,27 +282,32 @@ public class NutIoc implements Ioc2 {
         }
     }
 
+    @Override
     public <T> T get(Class<T> type, String name) {
         return this.get(type, name, null);
     }
 
+    @Override
     public boolean has(String name) {
         return loader.has(name) || context.fetch(name) != null;
     }
 
     private boolean deposed = false;
 
+    @Override
     public void depose() {
         if (deposed) {
-            if (log.isInfoEnabled())
+            if (log.isInfoEnabled()) {
                 log.info("You can't depose a Ioc twice!");
+            }
             return;
         }
-        if (log.isInfoEnabled())
+        if (log.isInfoEnabled()) {
             log.infof("%s@%s is closing. startup date [%s]",
-                      getClass().getName(),
-                      hashCode(),
-                      Times.sDTms2(this.createTime));
+                    getClass().getName(),
+                    hashCode(),
+                    Times.sDTms2(this.createTime));
+        }
         try {
             this.loader.depose();
         }
@@ -297,31 +317,37 @@ public class NutIoc implements Ioc2 {
         context.depose();
         loader.clear();
         deposed = true;
-        if (log.isInfoEnabled())
+        if (log.isInfoEnabled()) {
             log.infof("%s@%s is deposed. startup date [%s]",
-                      getClass().getName(),
-                      hashCode(),
-                      Times.sDTms2(this.createTime));
+                    getClass().getName(),
+                    hashCode(),
+                    Times.sDTms2(this.createTime));
+        }
     }
 
+    @Override
     public void reset() {
         context.clear();
     }
 
+    @Override
     public String[] getNames() {
         LinkedHashSet<String> list = new LinkedHashSet<String>();
         list.addAll(Arrays.asList(loader.getName()));
-        if (context != null)
+        if (context != null) {
             list.addAll(context.names());
+        }
         return list.toArray(new String[list.size()]);
     }
 
+    @Override
     public void addValueProxyMaker(ValueProxyMaker vpm) {
         vpms.add(0, vpm);// 优先使用最后加入的ValueProxyMaker
         supportedTypes = null;
         loader.clear();
     }
 
+    @Override
     public IocContext getIocContext() {
         return context;
     }
@@ -344,11 +370,12 @@ public class NutIoc implements Ioc2 {
     public IocMaking makeIocMaking(IocContext context, String name) {
         // 连接上下文
         IocContext cntx;
-        if (null == context || context == this.context)
+        if (null == context || context == this.context) {
             cntx = this.context;
-        else {
-            if (log.isTraceEnabled())
+        } else {
+            if (log.isTraceEnabled()) {
                 log.trace("Link contexts");
+            }
             cntx = new ComboContext(context, this.context);
         }
         return new IocMaking(this, mirrors, cntx, maker, vpms, name);
@@ -372,67 +399,80 @@ public class NutIoc implements Ioc2 {
         super.finalize();
     }
 
+    @Override
     public String[] getNamesByType(Class<?> klass) {
         return this.getNamesByType(klass, null);
     }
 
+    @Override
     public String[] getNamesByType(Class<?> klass, IocContext context) {
         List<String> names = new ArrayList<String>(loader.getNamesByTypes(createLoading(), klass));
         IocContext cntx;
-        if (null == context || context == this.context)
+        if (null == context || context == this.context) {
             cntx = this.context;
-        else
+        } else {
             cntx = new ComboContext(context, this.context);
+        }
         for (String name : cntx.names()) {
             ObjectProxy op = cntx.fetch(name);
-            if (op.getObj() != null && klass.isAssignableFrom(op.getObj().getClass()))
+            if (op.getObj() != null && klass.isAssignableFrom(op.getObj().getClass())) {
                 names.add(name);
+            }
         }
         LinkedHashSet<String> re = new LinkedHashSet<String>();
         for (String name : names) {
-            if (Strings.isBlank(name) || "null".equals(name))
+            if (Strings.isBlank(name) || "null".equals(name)) {
                 continue;
+            }
             re.add(name);
         }
         return re.toArray(new String[re.size()]);
     }
     
+    @Override
     public String[] getNamesByAnnotation(Class<? extends Annotation> klass) {
         return this.getNamesByAnnotation(klass, null);
     }
 
+    @Override
     public String[] getNamesByAnnotation(Class<? extends Annotation> klass, IocContext context) {
         List<String> names = new ArrayList<String>(loader.getNamesByAnnotation(createLoading(), klass));
         IocContext cntx;
-        if (null == context || context == this.context)
+        if (null == context || context == this.context) {
             cntx = this.context;
-        else
+        } else {
             cntx = new ComboContext(context, this.context);
+        }
         for (String name : cntx.names()) {
             ObjectProxy op = cntx.fetch(name);
-            if (op.getObj() != null && klass.getAnnotation(klass) != null)
+            if (op.getObj() != null && klass.getAnnotation(klass) != null) {
                 names.add(name);
+            }
         }
         LinkedHashSet<String> re = new LinkedHashSet<String>();
         for (String name : names) {
-            if (Strings.isBlank(name) || "null".equals(name))
+            if (Strings.isBlank(name) || "null".equals(name)) {
                 continue;
+            }
             re.add(name);
         }
         return re.toArray(new String[re.size()]);
     }
 
+    @Override
     public <K> K getByType(Class<K> klass) {
         return this.getByType(klass, null);
     }
 
+    @Override
     public <K> K getByType(Class<K> klass, IocContext context) {
         String _name = null;
         IocContext cntx;
-        if (null == context || context == this.context)
+        if (null == context || context == this.context) {
             cntx = this.context;
-        else
+        } else {
             cntx = new ComboContext(context, this.context);
+        }
         for (String name : cntx.names()) {
             ObjectProxy op = cntx.fetch(name);
             if (op.getObj() != null && klass.isAssignableFrom(op.getObj().getClass())) {
@@ -440,21 +480,24 @@ public class NutIoc implements Ioc2 {
                 break;
             }
         }
-        if (_name != null)
+        if (_name != null) {
             return get(klass, _name, context);
+        }
         for (String name : getNames()) {
             try {
                 IocObject iobj = loader.load(createLoading(), name);
                 if (iobj != null
                     && iobj.getType() != null
-                    && klass.isAssignableFrom(iobj.getType()))
+                    && klass.isAssignableFrom(iobj.getType())) {
                     _name = name;
+                }
             }
             catch (Exception e) {
                 continue;
             }
-            if (_name != null)
+            if (_name != null) {
                 return get(klass, name, context);
+            }
         }
         throw new IocException("class:"
                                + klass.getName(),
@@ -462,17 +505,20 @@ public class NutIoc implements Ioc2 {
     }
     
     protected void _checkIocEventListeners() {
-        if (listeners != null)
+        if (listeners != null) {
             return;
+        }
         List<IocEventListener> listeners = new ArrayList<IocEventListener>();
         for (String beanName : this.loader.getNamesByTypes(createLoading(), IocEventListener.class)) {
             listeners.add(get(IocEventListener.class, beanName));
         }
         if (listeners.size() > 0) {
             Collections.sort(listeners, new Comparator<IocEventListener>() {
+                @Override
                 public int compare(IocEventListener prev, IocEventListener next) {
-                    if (prev.getOrder() == next.getOrder())
+                    if (prev.getOrder() == next.getOrder()) {
                         return 0;
+                    }
                     return prev.getOrder() > next.getOrder() ? -1 : 1;
                 }
             });
@@ -480,31 +526,39 @@ public class NutIoc implements Ioc2 {
         this.listeners = listeners;
     }
 
+    @Override
     public Ioc addBean(String name, Object obj) {
-        if (obj == null)
+        if (obj == null) {
             throw new RuntimeException("can't add bean=null!!");
-        if (Strings.isBlank(name))
+        }
+        if (Strings.isBlank(name)) {
             throw new RuntimeException("can't add bean name is blank!!");
-        if (obj instanceof ObjectProxy)
-            getIocContext().save("app", name, (ObjectProxy)obj);
-        else
+        }
+        if (obj instanceof ObjectProxy) {
+            getIocContext().save("app", name, (ObjectProxy) obj);
+        } else {
             getIocContext().save("app", name, new ObjectProxy(obj));
+        }
         return this;
     }
     
+    @Override
     public Class<?> getType(String beanName) throws ObjectLoadException {
         return getType(beanName, null);
     }
     
+    @Override
     public Class<?> getType(String beanName, IocContext context) throws ObjectLoadException {
         IocContext cntx;
-        if (null == context || context == this.context)
+        if (null == context || context == this.context) {
             cntx = this.context;
-        else
+        } else {
             cntx = new ComboContext(context, this.context);
+        }
         ObjectProxy op = cntx.fetch(beanName);
-        if (op != null && op.getObj() != null)
+        if (op != null && op.getObj() != null) {
             return op.getObj().getClass();
+        }
         return loader.getType(createLoading(), beanName);
     }
 }

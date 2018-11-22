@@ -12,15 +12,19 @@ import org.nutz.el.opt.AbstractOpt;
  */
 public class RBracketOpt extends AbstractOpt{
 
+    @Override
     public int fetchPriority() {
         return 100;
     }
+    @Override
     public String fetchSelf() {
         return ")";
     }
+    @Override
     public void wrap(Queue<Object> obj) {
         throw new ElException("')符号不能进行wrap操作!'");
     }
+    @Override
     public Object calculate() {
         throw new ElException("')'符号不能进行计算操作!");
     }

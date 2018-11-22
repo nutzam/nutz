@@ -29,30 +29,37 @@ public abstract class AbstractEntityField implements EntityField {
         this.entity = entity;
     }
 
+    @Override
     public Entity<?> getEntity() {
         return entity;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public Type getType() {
         return type;
     }
 
+    @Override
     public Class<?> getTypeClass() {
         return typeClass;
     }
 
+    @Override
     public Mirror<?> getTypeMirror() {
         return mirror;
     }
 
+    @Override
     public void setValue(Object obj, Object value) {
         injecting.inject(obj, value);
     }
 
+    @Override
     public Object getValue(Object obj) {
         return ejecting.eject(obj);
     }
@@ -75,6 +82,7 @@ public abstract class AbstractEntityField implements EntityField {
         this.mirror = Mirror.me(typeClass);
     }
 
+    @Override
     public String toString() {
         return String.format("'%s'(%s)", this.name, this.entity.getType().getName());
     }

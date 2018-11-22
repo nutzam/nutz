@@ -16,10 +16,12 @@ import org.nutz.dao.sql.SqlCallback;
  */
 public class QueryStringCallback implements SqlCallback {
 
+    @Override
     public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
         List<String> list = new LinkedList<String>();
-        while (rs.next())
+        while (rs.next()) {
             list.add(rs.getString(1));
+        }
         return list;
     }
 

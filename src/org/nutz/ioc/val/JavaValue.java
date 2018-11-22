@@ -65,6 +65,7 @@ public class JavaValue implements ValueProxy {
         this.node = parsing.getNode();
     }
 
+    @Override
     public Object get(IocMaking ing) {
         return node.eval(ing);
     }

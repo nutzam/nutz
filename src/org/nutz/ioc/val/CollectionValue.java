@@ -22,15 +22,18 @@ public class CollectionValue implements ValueProxy {
         this.type = (Class<? extends Collection<Object>>) (null == type ? ArrayList.class : type);
         values = new ValueProxy[col.size()];
         int i = 0;
-        for (IocValue iv : col)
+        for (IocValue iv : col) {
             values[i++] = ing.makeValue(iv);
+        }
     }
 
+    @Override
     public Object get(IocMaking ing) {
         try {
             Collection<Object> re = Mirror.me(type).born();
-            for (ValueProxy vp : values)
+            for (ValueProxy vp : values) {
                 re.add(vp.get(ing));
+            }
             return re;
         }
         catch (Exception e) {

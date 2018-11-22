@@ -12,8 +12,9 @@ public class EjectBySimpleEL implements Ejecting {
     private Method method;
 
     public EjectBySimpleEL(String by) {
-        if (Strings.isBlank(by))
+        if (Strings.isBlank(by)) {
             throw new IllegalArgumentException("MUST NOT Null/Blank");
+        }
         if (by.indexOf('#') > 0) {
             try {
                 method = Lang.loadClass(by.substring(0, by.indexOf('#')))
@@ -26,12 +27,15 @@ public class EjectBySimpleEL implements Ejecting {
         this.by = by;
     }
 
+    @Override
     public Object eject(Object obj) {
         try {
-            if (method != null)
+            if (method != null) {
                 return method.invoke(null, obj);
-            if (obj == null)
+            }
+            if (obj == null) {
                 return null;
+            }
             return obj.getClass().getMethod(by).invoke(obj);
         }
         catch (Throwable e) {

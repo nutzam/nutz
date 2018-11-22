@@ -23,8 +23,9 @@ public abstract class Uploads {
 	public static UploadInfo getInfo(HttpServletRequest req) {
 		try {
 			HttpSession session = Mvcs.getHttpSession(false);
-			if (session == null)
-				return null;
+			if (session == null) {
+                return null;
+            }
 			return (UploadInfo) session.getAttribute(UploadInfo.SESSION_NAME);
 		} catch (Throwable e) {
 		}

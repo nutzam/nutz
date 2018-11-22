@@ -215,8 +215,9 @@ public abstract class R {
 
         // 返回 UUID 对象
         char[] names = new char[32];
-        for (int i = 0; i < bytes.length; i++)
+        for (int i = 0; i < bytes.length; i++) {
             names[i] = _UU16[bytes[i]];
+        }
         return new String(names);
     }
 
@@ -306,8 +307,9 @@ public abstract class R {
      *            随机生成器,不可以是null
      */
     public static void setR(Random r) {
-        if (r == null)
+        if (r == null) {
             throw new NullPointerException("Random MUST NOT NULL");
+        }
         R.r = r;
     }
 

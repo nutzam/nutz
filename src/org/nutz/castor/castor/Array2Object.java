@@ -16,8 +16,9 @@ public class Array2Object extends Castor<Object, Object> {
     @Override
     public Object cast(Object src, Class<?> toType, String... args)
             throws FailToCastObjectException {
-        if (Array.getLength(src) == 0)
+        if (Array.getLength(src) == 0) {
             return null;
+        }
         return Castors.me().castTo(Array.get(src, 0), toType);
     }
 

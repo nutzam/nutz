@@ -23,13 +23,16 @@ public class WebFilterProxy implements Filter {
     
     protected Object lock = new Object();
 
+    @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         this.filterConfig = filterConfig;
         this.beanName = filterConfig.getInitParameter("beanName");
-        if (Strings.isBlank(beanName))
+        if (Strings.isBlank(beanName)) {
             beanName = filterConfig.getFilterName();
+        }
     }
 
+    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         if (proxy == null) {
@@ -45,9 +48,11 @@ public class WebFilterProxy implements Filter {
         proxy.doFilter(request, response, chain);
     }
 
+    @Override
     public void destroy() {
-        if (proxy != null)
+        if (proxy != null) {
             proxy.destroy();
+        }
     }
 
 }

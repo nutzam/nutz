@@ -58,11 +58,13 @@ public class StringGenerator {
      * @return 生成的字符串
      */
     public String next() {
-        if (maxLen <= 0 || minLen <= 0 || minLen > maxLen)
+        if (maxLen <= 0 || minLen <= 0 || minLen > maxLen) {
             return null;
+        }
         char[] buf = new char[R.random(minLen, maxLen)];
-        for (int i = 0; i < buf.length; i++)
+        for (int i = 0; i < buf.length; i++) {
             buf[i] = CharGenerator.next();
+        }
         return new String(buf);
     }
 
