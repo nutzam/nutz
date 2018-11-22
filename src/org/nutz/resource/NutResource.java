@@ -19,13 +19,17 @@ public abstract class NutResource implements Comparable<NutResource> {
     
     public NutResource() {}
 
+    @Override
     public boolean equals(Object obj) {
-    	if (obj == null)
-    		return false;
-        if (this == obj)
+    	if (obj == null) {
+            return false;
+        }
+        if (this == obj) {
             return true;
-        if (obj instanceof NutResource)
+        }
+        if (obj instanceof NutResource) {
             return this.toString().equals(obj.toString());
+        }
         return false;
     }
 
@@ -41,6 +45,7 @@ public abstract class NutResource implements Comparable<NutResource> {
         return Streams.utf8r(getInputStream());
     }
 
+    @Override
     public int hashCode() {
         return null == name ? "NULL".hashCode() : name.hashCode();
     }
@@ -50,6 +55,7 @@ public abstract class NutResource implements Comparable<NutResource> {
         return this;
     }
 
+    @Override
     public String toString() {
         return String.format("NutResource[%s]", name);
     }
@@ -62,9 +68,11 @@ public abstract class NutResource implements Comparable<NutResource> {
         return source;
     }
     
+    @Override
     public int compareTo(NutResource o) {
-        if (o.priority == this.priority)
+        if (o.priority == this.priority) {
             return 0;
+        }
         return o.priority > this.priority ? -1 : 1;
     }
     

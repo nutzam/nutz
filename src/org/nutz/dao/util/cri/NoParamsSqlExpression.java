@@ -11,14 +11,17 @@ public abstract class NoParamsSqlExpression extends AbstractSqlExpression {
         super(name);
     }
 
+    @Override
     public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
         return off;
     }
 
+    @Override
     public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
         return off;
     }
 
+    @Override
     public int paramCount(Entity<?> en) {
         return 0;
     }

@@ -13,16 +13,20 @@ import java.util.List;
  */
 public class TimeNow implements RunMethod, Plugin {
 
+    @Override
     public boolean canWork() {
         return true;
     }
 
+    @Override
     public Object run(List<Object> fetchParam) {
-        if (fetchParam == null || fetchParam.isEmpty())
+        if (fetchParam == null || fetchParam.isEmpty()) {
             return System.currentTimeMillis();
+        }
         return new SimpleDateFormat(fetchParam.get(0).toString()).format(new Date());
     }
 
+    @Override
     public String fetchSelf() {
         return "now";
     }

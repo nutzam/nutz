@@ -50,6 +50,7 @@ public class NutLoading implements Loading {
 
     private static final Log log = Logs.get();
 
+    @Override
     public UrlMapping load(NutConfig config) {
         if (log.isInfoEnabled()) {
             log.infof("Nutz Version : %s ", Nutz.version());
@@ -69,8 +70,9 @@ public class NutLoading implements Loading {
                        config.getServletContext().getMajorVersion(),
                        config.getServletContext().getMinorVersion());
             if (config.getServletContext().getMajorVersion() > 2
-                || config.getServletContext().getMinorVersion() > 4)
+                || config.getServletContext().getMinorVersion() > 4) {
                 log.debugf(" - ContextPath     : %s", config.getServletContext().getContextPath());
+            }
             log.debugf(" - context.tempdir : %s", config.getAttribute("javax.servlet.context.tempdir"));
             log.debugf(" - MainModule      : %s", config.getMainModule().getName());
         }
@@ -121,8 +123,9 @@ public class NutLoading implements Loading {
             evalSetup(config, mainModule);
         }
         catch (Exception e) {
-            if (log.isErrorEnabled())
+            if (log.isErrorEnabled()) {
                 log.error("Error happend during start serivce!", e);
+            }
             if (ioc != null) {
                 log.error("try to depose ioc");
                 try {
@@ -137,8 +140,9 @@ public class NutLoading implements Loading {
 
         // ~ Done ^_^
         sw.stop();
-        if (log.isInfoEnabled())
+        if (log.isInfoEnabled()) {
             log.infof("Nutz.Mvc[%s] is up in %sms", config.getAppName(), sw.getDuration());
+        }
 
         return mapping;
 
@@ -155,8 +159,9 @@ public class NutLoading implements Loading {
          * 准备 UrlMapping
          */
         UrlMapping mapping = createUrlMapping(config);
-        if (log.isInfoEnabled())
+        if (log.isInfoEnabled()) {
             log.infof("Build URL mapping by %s ...", mapping.getClass().getName());
+        }
 
         /*
          * 创建视图工厂
@@ -184,21 +189,24 @@ public class NutLoading implements Loading {
         Set<Class<?>> modules = getModuleClasses(ioc, mainModule, determiner);
 
         if (modules.isEmpty()) {
-            if (log.isWarnEnabled())
+            if (log.isWarnEnabled()) {
                 log.warn("None module classes found!!!");
+            }
         }
 
         int atMethods = 0;
         /*
          * 分析所有的子模块
          */
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debugf("Use %s as EntryMethodDeterminer", determiner.getClass().getName());
+        }
         for (Class<?> module : modules) {
             ActionInfo moduleInfo = Loadings.createInfo(module).mergeWith(mainInfo, true);
             for (Method method : module.getMethods()) {
-                if (!determiner.isEntry(module, method))
+                if (!determiner.isEntry(module, method)) {
                     continue;
+                }
                 // 增加到映射中
                 ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo, false);
                 info.setViewMakers(makers);
@@ -215,8 +223,9 @@ public class NutLoading implements Loading {
         }
 
         if (atMethods == 0) {
-            if (log.isWarnEnabled())
+            if (log.isWarnEnabled()) {
                 log.warn("None @At found in any modules class!!");
+            }
         } else {
             log.infof("Found %d module methods", atMethods);
         }
@@ -240,11 +249,13 @@ public class NutLoading implements Loading {
         }
 
         // 载入环境变量
-        for (Entry<String, String> entry : System.getenv().entrySet())
+        for (Entry<String, String> entry : System.getenv().entrySet()) {
             context.set("env." + entry.getKey(), entry.getValue());
+        }
         // 载入系统变量
-        for (Entry<Object, Object> entry : System.getProperties().entrySet())
+        for (Entry<Object, Object> entry : System.getProperties().entrySet()) {
             context.set("sys." + entry.getKey(), entry.getValue());
+        }
 
         if (log.isTraceEnabled()) {
             log.tracef(">>\nCONTEXT %s", Json.toJson(context, JsonFormat.nice()));
@@ -254,8 +265,9 @@ public class NutLoading implements Loading {
 
     protected UrlMapping createUrlMapping(NutConfig config) throws Exception {
         UrlMappingBy umb = config.getMainModule().getAnnotation(UrlMappingBy.class);
-        if (umb != null)
+        if (umb != null) {
             return Loadings.evalObj(config, umb.value(), umb.args());
+        }
         return new UrlMappingImpl();
     }
 
@@ -263,16 +275,18 @@ public class NutLoading implements Loading {
         ChainBy ann = mainModule.getAnnotation(ChainBy.class);
         ActionChainMaker maker = null == ann ? new NutActionChainMaker(new String[]{})
                                             : Loadings.evalObj(config, ann.type(), ann.args());
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debugf("@ChainBy(%s)", maker.getClass().getName());
+        }
         return maker;
     }
 
     protected void evalSetup(NutConfig config, Class<?> mainModule) throws Exception {
         SetupBy sb = mainModule.getAnnotation(SetupBy.class);
         if (null != sb) {
-            if (log.isInfoEnabled())
+            if (log.isInfoEnabled()) {
                 log.info("Setup application...");
+            }
             Setup setup = Loadings.evalObj(config, sb.value(), sb.args());
             config.setAttributeIgnoreNull(Setup.class.getName(), setup);
             setup.init(config);
@@ -284,8 +298,9 @@ public class NutLoading implements Loading {
                 if (name != null && name.startsWith(Setup.IOCNAME)) {
                     if (flag) {
                         flag = false;
-                        if (log.isInfoEnabled())
+                        if (log.isInfoEnabled()) {
                             log.info("Setup application...");
+                        }
                     }
                     log.debug("load Setup from Ioc by name=" + name);
                     Setup setup = config.getIoc().get(Setup.class, name);
@@ -303,12 +318,13 @@ public class NutLoading implements Loading {
     protected void evalLocalization(NutConfig config, Class<?> mainModule) {
         Localization lc = mainModule.getAnnotation(Localization.class);
         if (null != lc) {
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debugf("Localization: %s('%s') %s dft<%s>",
-                           lc.type().getName(),
-                           lc.value(),
-                           Strings.isBlank(lc.beanName()) ? "" : "$ioc->" + lc.beanName(),
-                           lc.defaultLocalizationKey());
+                        lc.type().getName(),
+                        lc.value(),
+                        Strings.isBlank(lc.beanName()) ? "" : "$ioc->" + lc.beanName(),
+                        lc.defaultLocalizationKey());
+            }
 
             MessageLoader msgLoader = null;
             // 通过 Ioc 方式加载 MessageLoader ...
@@ -326,8 +342,9 @@ public class NutLoading implements Loading {
             Mvcs.setMessageSet(msgss);
 
             // 如果有声明默认语言 ...
-            if (!Strings.isBlank(lc.defaultLocalizationKey()))
+            if (!Strings.isBlank(lc.defaultLocalizationKey())) {
                 Mvcs.setDefaultLocalizationKey(lc.defaultLocalizationKey());
+            }
 
         }
         // 否则记录一下
@@ -375,11 +392,12 @@ public class NutLoading implements Loading {
     protected Ioc createIoc(NutConfig config, Class<?> mainModule) throws Exception {
         IocBy ib = mainModule.getAnnotation(IocBy.class);
         if (null != ib) {
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debugf("@IocBy(type=%s, args=%s,init=%s)",
-                           ib.type().getName(),
-                           Json.toJson(ib.args()),
-                           Json.toJson(ib.init()));
+                        ib.type().getName(),
+                        Json.toJson(ib.args()),
+                        Json.toJson(ib.init()));
+            }
 
             Ioc ioc = Mirror.me(ib.type()).born().create(config, ib.args());
             // 如果是 Ioc2 的实现，增加新的 ValueMaker
@@ -395,8 +413,9 @@ public class NutLoading implements Loading {
             // 保存 Ioc 对象
             Mvcs.setIoc(ioc);
             return ioc;
-        } else if (log.isInfoEnabled())
+        } else if (log.isInfoEnabled()) {
             log.info("!!!Your application without @IocBy supporting");
+        }
         return null;
     }
 
@@ -405,44 +424,52 @@ public class NutLoading implements Loading {
         SessionBy sb = mainModule.getAnnotation(SessionBy.class);
         if (sb != null) {
             SessionProvider sp = null;
-            if (sb.args() != null && sb.args().length == 1 && sb.args()[0].startsWith("ioc:"))
+            if (sb.args() != null && sb.args().length == 1 && sb.args()[0].startsWith("ioc:")) {
                 sp = config.getIoc().get(sb.value(), sb.args()[0].substring(4));
-            else
-                sp = Mirror.me(sb.value()).born((Object[])sb.args());
-            if (log.isInfoEnabled())
+            } else {
+                sp = Mirror.me(sb.value()).born((Object[]) sb.args());
+            }
+            if (log.isInfoEnabled()) {
                 log.info("SessionBy --> " + sp);
+            }
             config.setSessionProvider(sp);
         }
     }
 
+    @Override
     public void depose(NutConfig config) {
-        if (log.isInfoEnabled())
+        if (log.isInfoEnabled()) {
             log.infof("Nutz.Mvc[%s] is deposing ...", config.getAppName());
+        }
         Stopwatch sw = Stopwatch.begin();
 
         // Firstly, upload the user customized desctroy
         try {
             Setup setup = config.getAttributeAs(Setup.class, Setup.class.getName());
-            if (null != setup)
+            if (null != setup) {
                 setup.destroy(config);
+            }
         }
         catch (Exception e) {
             throw new LoadingException(e);
         }
         finally {
             SessionProvider sp = config.getSessionProvider();
-            if (sp != null)
+            if (sp != null) {
                 sp.notifyStop();
+            }
             // If the application has Ioc, depose it
             Ioc ioc = config.getIoc();
-            if (null != ioc)
+            if (null != ioc) {
                 ioc.depose();
+            }
         }
 
         // Done, print info
         sw.stop();
-        if (log.isInfoEnabled())
+        if (log.isInfoEnabled()) {
             log.infof("Nutz.Mvc[%s] is down in %sms", config.getAppName(), sw.getDuration());
+        }
     }
 
     protected Set<Class<?>> getModuleClasses(Ioc ioc, Class<?> mainModule, EntryDeterminer determiner) {

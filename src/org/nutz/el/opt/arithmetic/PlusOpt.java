@@ -8,13 +8,16 @@ import org.nutz.el.opt.TwoTernary;
  *
  */
 public class PlusOpt extends TwoTernary {
+    @Override
     public int fetchPriority() {
         return 4;
     }
 
+    @Override
     public String fetchSelf() {
         return "+";
     }
+    @Override
     public Object calculate() {
         Object lval = calculateItem(this.left);
         Object rval = calculateItem(this.right);

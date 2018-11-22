@@ -64,15 +64,18 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 		casesensitive = true;
 	}
 
-	public ValueAdaptor getAdaptor() {
+	@Override
+    public ValueAdaptor getAdaptor() {
 		return adaptor;
 	}
 
-	public void setAdaptor(ValueAdaptor adaptor) {
+	@Override
+    public void setAdaptor(ValueAdaptor adaptor) {
 		this.adaptor = adaptor;
 	}
 
-	public void injectValue(Object obj, Record rec, String prefix) {
+	@Override
+    public void injectValue(Object obj, Record rec, String prefix) {
 		try {
 			Object val = rec.get(prefix == null ? columnName : prefix + columnName);
 			this.setValue(obj, val);
@@ -84,7 +87,8 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 		}
 	}
 
-	public void injectValue(Object obj, ResultSet rs, String prefix) {
+	@Override
+    public void injectValue(Object obj, ResultSet rs, String prefix) {
 		try {
 			this.setValue(obj, adaptor.get(rs, prefix == null ? columnName : prefix + columnName));
 		}
@@ -95,70 +99,87 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 		}
 	}
 
-	public String getColumnName() {
+	@Override
+    public String getColumnName() {
 		return columnName;
 	}
 
-	public ColType getColumnType() {
+	@Override
+    public ColType getColumnType() {
 		return columnType;
 	}
 
-	public String getDefaultValue(Object obj) {
-		if (null == defaultValue)
-			return null;
+	@Override
+    public String getDefaultValue(Object obj) {
+		if (null == defaultValue) {
+            return null;
+        }
 		String re;
-		if (null == obj || defaultValue.keyCount() == 0)
-			re = defaultValue.toString();
-		else
-			re = defaultValue.render(new EntityObjectContext(getEntity(), obj)).toString();
+		if (null == obj || defaultValue.keyCount() == 0) {
+            re = defaultValue.toString();
+        } else {
+            re = defaultValue.render(new EntityObjectContext(getEntity(), obj)).toString();
+        }
 		return re;
 	}
 
-	public int getWidth() {
+	@Override
+    public int getWidth() {
 		return width;
 	}
 
-	public int getPrecision() {
+	@Override
+    public int getPrecision() {
 		return precision;
 	}
 
-	public boolean isCompositePk() {
+	@Override
+    public boolean isCompositePk() {
 		return isCompositePk;
 	}
 
-	public boolean isPk() {
+	@Override
+    public boolean isPk() {
 		return isId || (!isId && isName) || isCompositePk;
 	}
 
-	public boolean isId() {
+	@Override
+    public boolean isId() {
 		return isId;
 	}
 
-	public boolean isName() {
+	@Override
+    public boolean isName() {
 		return isName;
 	}
 
-	public boolean isReadonly() {
+	@Override
+    public boolean isReadonly() {
 		return readonly;
 	}
 
-	public boolean hasDefaultValue() {
+	@Override
+    public boolean hasDefaultValue() {
 		return null != defaultValue;
 	}
 
-	public boolean isNotNull() {
+	@Override
+    public boolean isNotNull() {
 		return notNull;
 	}
 
-	public boolean isCasesensitive() {
+	@Override
+    public boolean isCasesensitive() {
 		return casesensitive;
 	}
 
-	public boolean isAutoIncreasement() {
+	@Override
+    public boolean isAutoIncreasement() {
 		return autoIncreasement;
 	}
 
-	public boolean isUnsigned() {
+	@Override
+    public boolean isUnsigned() {
 		return unsigned;
 	}
 
@@ -166,7 +187,8 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 		this.columnName = columnName;
 	}
 
-	public void setColumnType(ColType columnType) {
+	@Override
+    public void setColumnType(ColType columnType) {
 		this.columnType = columnType;
 	}
 
@@ -202,11 +224,13 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 		this.isName = true;
 	}
 
-	public void setAsReadonly() {
+	@Override
+    public void setAsReadonly() {
 		this.readonly = true;
 	}
 
-	public void setAsNotNull() {
+	@Override
+    public void setAsNotNull() {
 		this.notNull = true;
 	}
 
@@ -226,27 +250,33 @@ public class NutMappingField extends AbstractEntityField implements MappingField
         this.autoIncreasement = autoIncreasement;
     }
 
-	public String getColumnComment() {
+	@Override
+    public String getColumnComment() {
 		return columnComment;
 	}
 
-	public boolean hasColumnComment() {
+	@Override
+    public boolean hasColumnComment() {
 		return hasColumnComment;
 	}
 
-	public void setCustomDbType(String customDbType) {
+	@Override
+    public void setCustomDbType(String customDbType) {
 		this.customDbType = customDbType;
 	}
 
-	public String getCustomDbType() {
+	@Override
+    public String getCustomDbType() {
 		return customDbType;
 	}
 
-	public boolean isInsert() {
+	@Override
+    public boolean isInsert() {
 		return insert;
 	}
 
-	public boolean isUpdate() {
+	@Override
+    public boolean isUpdate() {
 		return update;
 	}
 
@@ -258,9 +288,11 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 		this.update = update;
 	}
 
-	public String getColumnNameInSql() {
-	    if (columnNameInSql != null)
-	        return columnNameInSql;
+	@Override
+    public String getColumnNameInSql() {
+	    if (columnNameInSql != null) {
+            return columnNameInSql;
+        }
 	    return columnName;
 	}
 	
@@ -268,7 +300,8 @@ public class NutMappingField extends AbstractEntityField implements MappingField
         this.columnNameInSql = columnNameInSql;
     }
 
-	public boolean isVersion() {
+	@Override
+    public boolean isVersion() {
 		return isVersion;
 	}
 

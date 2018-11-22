@@ -19,6 +19,7 @@ public class SimpleResource extends NutResource {
     }
 
 
+    @Override
     public InputStream getInputStream() throws IOException {
         return ins;
     }

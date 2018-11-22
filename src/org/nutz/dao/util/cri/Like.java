@@ -29,27 +29,33 @@ public class Like extends AbstractSqlExpression {
         super(name);
     }
 
+    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
         String colName = _fmtcol(en);
-        if (not)
+        if (not) {
             sb.append(" NOT ");
-        if (ignoreCase)
+        }
+        if (ignoreCase) {
             sb.append("LOWER(").append(colName).append(") LIKE LOWER(?)");
-        else
+        } else {
             sb.append(colName).append(" LIKE ?");
+        }
 
     }
 
+    @Override
     public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
         adaptors[off++] = Jdbcs.Adaptor.asString;
         return off;
     }
 
+    @Override
     public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
         params[off++] = (null == left ? "" : left) + value + (null == right ? "" : right);
         return off;
     }
 
+    @Override
     public int paramCount(Entity<?> en) {
         return 1;
     }

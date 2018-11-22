@@ -55,18 +55,20 @@ public class MapEntityMaker {
             while (true) {
                 if (key.startsWith("+")) {
                     ef.setAsAutoIncreasement();
-                    if (mirror != null && mirror.isIntLike())
+                    if (mirror != null && mirror.isIntLike()) {
                         ef.setAsId();
+                    }
                     key = key.substring(1);
                 } else if (key.startsWith("!")) {
                     ef.setAsNotNull();
                     key = key.substring(1);
                 } else if (key.startsWith("*")) {
                     key = key.substring(1);
-                    if (mirror != null && mirror.isIntLike())
+                    if (mirror != null && mirror.isIntLike()) {
                         ef.setAsId();
-                    else
+                    } else {
                         ef.setAsName();
+                    }
                 } else {
                     break;
                 }
@@ -119,8 +121,9 @@ public class MapEntityMaker {
 
             en.addMappingField(ef);
 
-            if (mirror != null && !check)
+            if (mirror != null && !check) {
                 check = mirror.isEnum();
+            }
         }
         en.checkCompositeFields(null);
 
@@ -133,8 +136,9 @@ public class MapEntityMaker {
                     expert.setupEntityField(conn, en);
                 }
                 finally {
-                    if (conn != null)
+                    if (conn != null) {
                         conn.close();
+                    }
                 }
             }
             catch (SQLException e) {

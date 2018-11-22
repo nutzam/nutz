@@ -106,8 +106,9 @@ public class Http {
 
     public static class multipart {
         public static String getBoundary(String contentType) {
-            if (null == contentType)
+            if (null == contentType) {
                 return null;
+            }
             for (String tmp : contentType.split(";")) {
                 tmp = tmp.trim();
                 if (tmp.startsWith("boundary=")) {
@@ -122,10 +123,12 @@ public class Http {
             sb.append("Content-Disposition: form-data; name=\"");
             sb.append(name);
             sb.append("\"");
-            if (null != filename)
+            if (null != filename) {
                 sb.append("; filename=\"" + filename + "\"");
-            if (null != contentType)
+            }
+            if (null != contentType) {
                 sb.append("\nContent-Type: " + contentType);
+            }
             sb.append('\n' + '\n');
             return sb.toString();
         }
@@ -257,8 +260,9 @@ public class Http {
     }
 
     public static String encode(Object s, String enc) {
-        if (null == s)
+        if (null == s) {
             return "";
+        }
         try {
             // Fix issue 283, 按照“茶几”的意见再次修改
             return URLEncoder.encode(s.toString(),
@@ -293,20 +297,24 @@ public class Http {
     public static void setHttpProxy(String host, int port) {
         final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
         proxySwitcher = new ProxySwitcher() {
+            @Override
             public Proxy getProxy(URL url) {
                 return proxy;
             }
 
+            @Override
             public Proxy getProxy(Request req) {
-                if ("close".equals(req.getHeader().get("NoProxy")))
+                if ("close".equals(req.getHeader().get("NoProxy"))) {
                     return null;
+                }
                 String url = req.getUrl().toString();
                 if (url.startsWith("http")
                     && url.contains("://")
                     && url.length() > "https://".length()) {
                     url = url.substring(url.indexOf("://") + "://".length());
-                    if (url.startsWith("127.0.0") || url.startsWith("localhost"))
+                    if (url.startsWith("127.0.0") || url.startsWith("localhost")) {
                         return null;
+                    }
                 }
                 req.getHeader().set("Connection", "close");
                 return getProxy(req.getUrl());
@@ -321,20 +329,24 @@ public class Http {
     public static void setSocktProxy(String host, int port) {
         final Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(host, port));
         proxySwitcher = new ProxySwitcher() {
+            @Override
             public Proxy getProxy(URL url) {
                 return proxy;
             }
 
+            @Override
             public Proxy getProxy(Request req) {
-                if ("close".equals(req.getHeader().get("NoProxy")))
+                if ("close".equals(req.getHeader().get("NoProxy"))) {
                     return null;
+                }
                 String url = req.getUrl().toString();
                 if (url.startsWith("http")
                         && url.contains("://")
                         && url.length() > "https://".length()) {
                     url = url.substring(url.indexOf("://"));
-                    if (url.startsWith("127.0.0") || url.startsWith("localhost"))
+                    if (url.startsWith("127.0.0") || url.startsWith("localhost")) {
                         return null;
+                    }
                 }
                 req.getHeader().set("Connection", "close");
                 return getProxy(req.getUrl());
@@ -345,20 +357,24 @@ public class Http {
     public static void setSocketProxy(String host, int port) {
         final Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(host, port));
         proxySwitcher = new ProxySwitcher() {
+            @Override
             public Proxy getProxy(URL url) {
                 return proxy;
             }
 
+            @Override
             public Proxy getProxy(Request req) {
-                if ("close".equals(req.getHeader().get("NoProxy")))
+                if ("close".equals(req.getHeader().get("NoProxy"))) {
                     return null;
+                }
                 String url = req.getUrl().toString();
                 if (url.startsWith("http")
                     && url.contains("://")
                     && url.length() > "https://".length()) {
                     url = url.substring(url.indexOf("://"));
-                    if (url.startsWith("127.0.0") || url.startsWith("localhost"))
+                    if (url.startsWith("127.0.0") || url.startsWith("localhost")) {
                         return null;
+                    }
                 }
                 req.getHeader().set("Connection", "close");
                 return getProxy(req.getUrl());
@@ -394,12 +410,15 @@ public class Http {
     public static SSLSocketFactory nopSSLSocketFactory() throws Exception {
         SSLContext sc = SSLContext.getInstance("SSL");
         TrustManager[] tmArr = {new X509TrustManager() {
+            @Override
             public void checkClientTrusted(X509Certificate[] paramArrayOfX509Certificate,
                                            String paramString) throws CertificateException {}
 
+            @Override
             public void checkServerTrusted(X509Certificate[] paramArrayOfX509Certificate,
                                            String paramString) throws CertificateException {}
 
+            @Override
             public X509Certificate[] getAcceptedIssuers() {
                 return null;
             }

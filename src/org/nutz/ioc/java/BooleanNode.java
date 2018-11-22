@@ -10,10 +10,12 @@ public class BooleanNode extends ChainNode {
         b = Boolean.parseBoolean(s);
     }
 
+    @Override
     protected String asString() {
         return String.valueOf(b);
     }
 
+    @Override
     protected Object getValue(IocMaking ing, Object obj) throws Exception {
         return b;
     }

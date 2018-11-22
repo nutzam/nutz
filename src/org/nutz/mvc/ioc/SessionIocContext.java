@@ -24,14 +24,16 @@ public class SessionIocContext implements IocContext {
         this.session = session;
     }
 
+    @Override
     public void clear() {
         synchronized (session) {
             Enumeration<String> ems = session.getAttributeNames();
             List<String> keys = new ArrayList<String>();
             while (ems.hasMoreElements()) {
                 String key = ems.nextElement();
-                if (null == key)
+                if (null == key) {
                     continue;
+                }
                 Object value = session.getAttribute(key);
                 if (value instanceof ObjectProxy) {
                     keys.add(key);
@@ -44,20 +46,25 @@ public class SessionIocContext implements IocContext {
         }
     }
 
+    @Override
     public void depose() {
         clear();
         session = null;
     }
 
+    @Override
     public ObjectProxy fetch(String name) {
         Object re = session.getAttribute(name);
-        if (re == null)
+        if (re == null) {
             return null;
-        if (re instanceof ObjectProxy)
+        }
+        if (re instanceof ObjectProxy) {
             return (ObjectProxy) re;
+        }
         return new ObjectProxy().setObj(re);
     }
 
+    @Override
     public boolean remove(String scope, String name) {
         if (null != scope && "session".equals(scope)) {
             session.removeAttribute(name);
@@ -66,6 +73,7 @@ public class SessionIocContext implements IocContext {
         return false;
     }
 
+    @Override
     public boolean save(String scope, String name, ObjectProxy obj) {
         if (null != scope && "session".equals(scope)) {
             session.setAttribute(name, obj);
@@ -78,14 +86,16 @@ public class SessionIocContext implements IocContext {
         return session;
     }
     
+    @Override
     public Set<String> names() {
         Set<String> list = new HashSet<String>();
         synchronized (session) {
             Enumeration<String> ems = session.getAttributeNames();
             while (ems.hasMoreElements()) {
                 String key = ems.nextElement();
-                if (null == key)
+                if (null == key) {
                     continue;
+                }
                 Object value = session.getAttribute(key);
                 if (value instanceof ObjectProxy) {
                     list.add(key);

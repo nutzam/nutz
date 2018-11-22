@@ -29,12 +29,14 @@ public class JsonEntityFieldMakerImpl extends AbstractJsonEntityFieldMaker {
     public JsonEntityField make(final Mirror<?> mirror, final Method method) {
         final JsonField jf = method.getAnnotation(JsonField.class);
         // 忽略方法
-        if (null == jf || jf.ignore())
+        if (null == jf || jf.ignore()) {
             return null;
+        }
         final JsonEntityField[] result = new JsonEntityField[1];
         // 如果有，尝试作新的 Entity
         Callback<Method> whenError = new Callback<Method>() {
             // 给定方法即不是 getter 也不是 setter，靠！玩我!
+            @Override
             public void invoke(Method m) {
                 throw Lang.makeThrow(JsonException.class,
                                      "JsonField '%s' should be getter/setter pair!",
@@ -42,6 +44,7 @@ public class JsonEntityFieldMakerImpl extends AbstractJsonEntityFieldMaker {
             }
         };
         Callback3<String, Method, Method> whenOk = new Callback3<String, Method, Method>() {
+            @Override
             public void invoke(String name, Method getter, Method setter) {
                 // 防止错误
                 if (null == getter || null == setter || Strings.isBlank(name)) {

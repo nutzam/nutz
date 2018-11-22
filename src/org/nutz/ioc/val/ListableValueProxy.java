@@ -20,14 +20,17 @@ public abstract class ListableValueProxy implements ValueProxy {
 
     protected abstract Object getValue(String key);
 
+    @Override
     public Object get(IocMaking ing) {
-        if (obj == null)
+        if (obj == null) {
             return null;
+        }
         if (obj.getClass().isArray() || obj instanceof Collection) {} else {
             obj = new Object[]{obj};
         }
         final StringBuilder sb = new StringBuilder();
         Lang.each(obj, new Each<Object>() {
+            @Override
             public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop, LoopException {
                 String key = String.valueOf(ele);
                 if (key.startsWith("!")) {

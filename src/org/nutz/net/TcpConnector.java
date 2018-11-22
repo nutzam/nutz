@@ -71,14 +71,14 @@ public class TcpConnector {
     }
 
     public TcpConnector close() {
-        if (null != socket)
+        if (null != socket) {
             try {
                 log.infof("Close socket <-> %s:%d", host, port);
                 socket.close();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 log.warn("fail to close", e);
             }
+        }
         socket = null;
         reader = null;
         writer = null;

@@ -19,10 +19,12 @@ import org.nutz.lang.util.Context;
  *
  */
 public class AccessOpt extends TwoTernary implements RunMethod{
+    @Override
     public int fetchPriority() {
         return 1;
     }
 
+    @Override
     public Object calculate() {
         //如果直接调用计算方法,那基本上就是直接调用属性了吧...我也不知道^^
         Object obj = fetchVar();
@@ -46,11 +48,13 @@ public class AccessOpt extends TwoTernary implements RunMethod{
         return me.getValue(obj, right.toString());
     }
     
+    @Override
     public Object run(List<Object> param) {
         Object obj = fetchVar();
         Mirror<?> me = null;
-        if (obj == null)
+        if (obj == null) {
             throw new NullPointerException();
+        }
         if (obj instanceof Class) {
             //也许是个静态方法
             me = Mirror.me(obj);
@@ -85,6 +89,7 @@ public class AccessOpt extends TwoTernary implements RunMethod{
         return left;
     }
 
+    @Override
     public String fetchSelf() {
         return ".";
     }

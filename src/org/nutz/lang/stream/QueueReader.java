@@ -138,6 +138,7 @@ public class QueueReader extends Reader{
     /**
      * 跳过和丢弃输入流中的数据
      */
+    @Override
     public long skip(long n) throws IOException {
         int s = cache.size();
         if(s > 0){
@@ -161,6 +162,7 @@ public class QueueReader extends Reader{
         return end;
     }
     
+    @Override
     public int read(char[] cbuf, int off, int len) throws IOException {
         for(int i = 0; i < len ; i++){
             if(isEnd()){
@@ -171,6 +173,7 @@ public class QueueReader extends Reader{
         return len;
     }
     
+    @Override
     public void close() throws IOException {
         is.close();
         cache.clear();

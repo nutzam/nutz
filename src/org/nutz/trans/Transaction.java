@@ -32,8 +32,9 @@ public abstract class Transaction {
      * @param level 事务等级
      */
     public void setLevel(int level) {
-        if (this.level <= 0)
+        if (this.level <= 0) {
             this.level = level;
+        }
     }
 
     /**

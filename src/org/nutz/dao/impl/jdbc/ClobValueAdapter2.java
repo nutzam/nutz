@@ -14,6 +14,7 @@ public class ClobValueAdapter2 extends ClobValueAdaptor {
         super(pool);
     }
 
+    @Override
     public void set(PreparedStatement stat, Object obj, int index) throws SQLException {
         if (null == obj) {
             stat.setNull(index, Types.CLOB);

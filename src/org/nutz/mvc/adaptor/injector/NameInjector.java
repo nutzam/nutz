@@ -33,9 +33,10 @@ public class NameInjector implements ParamInjector {
                         Type[] paramTypes,
                         String defaultValue) {
         this.klass = Mirror.me(type).getType();
-        if (null == name)
+        if (null == name) {
             throw Lang.makeThrow("Can not accept null as name, type '%s'",
-                                 klass.getName());
+                    klass.getName());
+        }
         this.name = name;
         if (Strings.isBlank(datefmt) || !Mirror.me(klass).isDateTimeLike()) {
             dfmt = null;
@@ -56,6 +57,7 @@ public class NameInjector implements ParamInjector {
      *            这个参考字段，如果有值，表示是路径参数的值，那么它比 request 里的参数优先
      * @return 注入值
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Object get(ServletContext sc,
                       HttpServletRequest req,
@@ -66,6 +68,7 @@ public class NameInjector implements ParamInjector {
          */
         if (null != refer)
             // Map 对象，详细分析一下
+        {
             if (refer instanceof Map<?, ?>) {
                 Object value = ((Map<?, ?>) refer).get(name);
                 if (value == null) { // TODO 临时解决JsonAdaptor丢URL参数的问题
@@ -74,8 +77,8 @@ public class NameInjector implements ParamInjector {
                 // 如果 value 是集合，并且有范型参数，需要预先将集合内的对象都转换一遍
                 // Issue #32
                 if ((value instanceof Collection<?>)
-                    && null != paramTypes
-                    && paramTypes.length > 0) {
+                        && null != paramTypes
+                        && paramTypes.length > 0) {
                     try {
                         Collection<?> col = ((Collection<?>) value);
                         Collection<Object> nw = col.getClass().newInstance();
@@ -85,8 +88,7 @@ public class NameInjector implements ParamInjector {
                             nw.add(obj);
                         }
                         value = nw;
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         throw Lang.wrapThrow(e);
                     }
                 }
@@ -96,6 +98,7 @@ public class NameInjector implements ParamInjector {
             else {
                 return Castors.me().castTo(refer, klass);
             }
+        }
         /*
          * 直接从 http params 里取
          */
@@ -110,8 +113,9 @@ public class NameInjector implements ParamInjector {
             return Castors.me().castTo(o, klass);
         }
         if (params == null || params.length == 0) {
-        	if (defaultValue != null)
-        		params = new String[]{defaultValue};
+        	if (defaultValue != null) {
+                params = new String[]{defaultValue};
+            }
         }
         // 默认用转换器转换
         return Castors.me().castTo(params, klass);

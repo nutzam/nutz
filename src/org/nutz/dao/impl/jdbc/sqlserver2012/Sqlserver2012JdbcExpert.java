@@ -13,17 +13,21 @@ public class Sqlserver2012JdbcExpert extends Sqlserver2005JdbcExpert {
         super(conf);
     }
 
+    @Override
     public void formatQuery(Pojo pojo) {
         Pager pager = pojo.getContext().getPager();
         // 需要进行分页
-        if (null != pager && pager.getPageNumber() > 0)
+        if (null != pager && pager.getPageNumber() > 0) {
             pojo.append(Pojos.Items.wrapf(" OFFSET %d ROWS FETCH NEXT %d ROW ONLY", pager.getOffset(), pager.getPageSize()));
+        }
     }
     
+    @Override
     public void formatQuery(Sql sql) {
         Pager pager = sql.getContext().getPager();
         // 需要进行分页
-        if (null != pager && pager.getPageNumber() > 0)
+        if (null != pager && pager.getPageNumber() > 0) {
             sql.setSourceSql(sql.getSourceSql() + String.format(" OFFSET %d ROWS FETCH NEXT %d ROW ONLY", pager.getOffset(), pager.getPageSize()));
+        }
     }
 }

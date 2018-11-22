@@ -18,14 +18,17 @@ public class GroupBySet extends OrderBySet implements GroupBy {
 		this.names = names;
 	}
 	
+	@Override
 	public GroupBy having(Condition cnd) {
 		having = cnd;
 		return this;
 	}
 	
+	@Override
 	public void joinSql(Entity<?> en, StringBuilder sb) {
-	    if (names == null || names.length == 0)
-	        return;
+	    if (names == null || names.length == 0) {
+            return;
+        }
 		sb.append(" GROUP BY ");
 		for (String name : names) {
 			sb.append(_fmtcolnm(en, name));
@@ -39,13 +42,15 @@ public class GroupBySet extends OrderBySet implements GroupBy {
 				sb.append(having.toSql(en));
 			} else {
 				String sql = having.toSql(en).trim();
-				if (sql.length() > 5 && "WHERE".equalsIgnoreCase(sql.substring(0,  5)))
-					sql = sql.substring(5).trim();
+				if (sql.length() > 5 && "WHERE".equalsIgnoreCase(sql.substring(0,  5))) {
+                    sql = sql.substring(5).trim();
+                }
 				sb.append(sql);
 			}
 		}
 	}
 	
+	@Override
 	public GroupBy groupBy(String ... names) {
 	    this.names = names;
 	    return this;

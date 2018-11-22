@@ -11,6 +11,7 @@ public class EmptyArgsMethodBorning<T> implements Borning<T> {
         this.method.setAccessible(true);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public T born(Object... args) {
         try {

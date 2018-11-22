@@ -66,8 +66,9 @@ public abstract class IdEntityService<T> extends EntityService<T> {
      */
     public boolean exists(long id) {
         EntityField ef = getEntity().getIdField();
-        if (null == ef)
+        if (null == ef) {
             return false;
+        }
         return dao().count(getEntityClass(), Cnd.where(ef.getName(), "=", id)) > 0;
     }
 

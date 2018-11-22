@@ -13,10 +13,13 @@ public class LifeCycleWrapper extends AbstractLifeCycle {
         this.proxy = proxy;
     }
     
+    @Override
     public void trigger(Event event) throws Exception {
-        for (Listener listener : listeners)
-            if(!listener.trigger(proxy, event))
+        for (Listener listener : listeners) {
+            if (!listener.trigger(proxy, event)) {
                 return;
+            }
+        }
     }
 
     public void addListener(Listener listener) {

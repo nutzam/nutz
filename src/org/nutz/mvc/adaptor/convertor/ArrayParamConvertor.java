@@ -17,9 +17,11 @@ public class ArrayParamConvertor implements ParamConvertor {
         this.convertor = Params.makeParamConvertor(eleType, null);
     }
 
+    @Override
     public Object convert(String[] ss) {
-        if (null == ss)
+        if (null == ss) {
             return null;
+        }
 
         Object re = Array.newInstance(eleType, ss.length);
         for (int i = 0; i < ss.length; i++) {

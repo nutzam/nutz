@@ -63,6 +63,7 @@ public class JsonRPC {
         if (req instanceof Iterable) {// rpc批量调用
             final List<NutMap> results = new ArrayList<NutMap>();
             Lang.each(req, new Each<Object>() {
+                @Override
                 public void invoke(int index, Object ele, int length) {
                     if (ele instanceof Map) {
                         results.add(JsonRPC.invoke(obj, new NutMap((Map<String, Object>) ele)));
@@ -131,6 +132,7 @@ public class JsonRPC {
      */
     public static <T> T mapper(Class<T> klass, final String endpoint, final String namespace, final int timeout) {
         return (T)Proxy.newProxyInstance(klass.getClassLoader(), new Class<?>[]{klass}, new InvocationHandler() {
+            @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 NutMap jreq = new NutMap();
                 jreq.setv("jsonrpc", "2.0").setv("id", R.UU32()).setv("method", method.getName());
@@ -142,8 +144,9 @@ public class JsonRPC {
                 req.setData(Json.toJson(jreq));
                 Response resp = Sender.create(req).setTimeout(timeout).send();
                 if (resp.isOK()) {
-                    if (method.getReturnType() == Void.class)
+                    if (method.getReturnType() == Void.class) {
                         return null;
+                    }
                     return Json.fromJson(method.getGenericReturnType(), resp.getReader());
                 }
                 throw new RuntimeException("resp code="+resp.getStatus());

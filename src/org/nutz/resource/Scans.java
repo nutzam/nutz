@@ -74,12 +74,13 @@ public class Scans {
 	    Stopwatch sw = Stopwatch.begin();
         // 获取classes文件夹的路径, 优先级为125
 	    String classesPath = sc.getRealPath("/WEB-INF/classes");
-	    if (classesPath == null)
-	        addResourceLocation(new WebClassesResourceLocation(sc));
-	    else {
+	    if (classesPath == null) {
+            addResourceLocation(new WebClassesResourceLocation(sc));
+        } else {
 	        ResourceLocation rc = ResourceLocation.file(new File(classesPath));
-	        if (rc instanceof FileSystemResourceLocation)
-	            ((FileSystemResourceLocation)rc).priority = 125;
+	        if (rc instanceof FileSystemResourceLocation) {
+                ((FileSystemResourceLocation) rc).priority = 125;
+            }
 	        addResourceLocation(rc);
 	    }
 
@@ -87,8 +88,9 @@ public class Scans {
         Set<String> jars = sc.getResourcePaths("/WEB-INF/lib/");
         if (jars != null) {// 这个文件夹不一定存在,尤其是Maven的WebApp项目
             for (String path : jars) {
-                if (!path.endsWith(".jar"))
+                if (!path.endsWith(".jar")) {
                     continue;
+                }
                 try {
                     addResourceLocation(new JarResourceLocation(sc.getResource(path)));
                 }
@@ -108,17 +110,19 @@ public class Scans {
             list.addAll(scan(path, regex));
         }
         // 如果找不到?
-        if (list.size() < 1 && paths.length > 0)
-            throw Lang.makeThrow(    RuntimeException.class,
-                                    "folder or file like '%s' no found in %s",
-                                    regex,
-                                    Castors.me().castToString(paths));
+        if (list.size() < 1 && paths.length > 0) {
+            throw Lang.makeThrow(RuntimeException.class,
+                    "folder or file like '%s' no found in %s",
+                    regex,
+                    Castors.me().castToString(paths));
+        }
         return list;
     }
 
     public void registerLocation(Class<?> klass) {
-        if (klass == null)
+        if (klass == null) {
             return;
+        }
         try {
             registerLocation(klass.getProtectionDomain().getCodeSource().getLocation());
         }
@@ -138,16 +142,18 @@ public class Scans {
                     registerLocation(new URL(str));
                 }
                 catch (Throwable e2) {
-                    if (log.isInfoEnabled())
+                    if (log.isInfoEnabled()) {
                         log.info("Fail to registerLocation --> " + str, e);
+                    }
                 }
             }
         }
     }
 
     public void registerLocation(URL url) {
-        if (url == null)
+        if (url == null) {
             return;
+        }
         addResourceLocation(makeResourceLocation(url));
     }
 
@@ -164,16 +170,19 @@ public class Scans {
             } else if (str.startsWith("file:")) {
                 return ResourceLocation.file(new File(url.getFile()));
             } else {
-                if (str.startsWith("jar:file:"))
+                if (str.startsWith("jar:file:")) {
                     return ResourceLocation.jar(str.substring(str.indexOf('!')));
-                if (log.isDebugEnabled())
+                }
+                if (log.isDebugEnabled()) {
                     log.debug("Unkown URL " + url);
+                }
                 //return ResourceLocation.file(new File(url.toURI()));
             }
         }
         catch (Throwable e) {
-            if (log.isInfoEnabled())
+            if (log.isInfoEnabled()) {
                 log.info("Fail to registerLocation --> " + url, e);
+            }
         }
         return ErrorResourceLocation.make(url);
     }
@@ -194,15 +203,18 @@ public class Scans {
      * @return 资源列表
      */
     public List<NutResource> scan(String src, String regex) {
-        if (src.isEmpty())
+        if (src.isEmpty()) {
             throw new RuntimeException("emtry src is NOT allow");
-        if ("/".equals(src))
+        }
+        if ("/".equals(src)) {
             throw new RuntimeException("root path is NOT allow");
+        }
         List<NutResource> list = new ArrayList<NutResource>();
         Pattern pattern = regex == null ? null : Pattern.compile(regex);
         // 先看看是不是文件系统上一个具体的文件
-        if (src.startsWith("~/"))
+        if (src.startsWith("~/")) {
             src = Disks.normalize(src);
+        }
         File srcFile = new File(src);
         if (srcFile.exists()) {
             if (srcFile.isDirectory()) {
@@ -225,21 +237,24 @@ public class Scans {
                         try {
                             URL url = enu.nextElement();
                             ResourceLocation loc = makeResourceLocation(url);
-                            if (url.toString().contains("jar!"))
+                            if (url.toString().contains("jar!")) {
                                 loc.scan(src, pattern, list);
-                            else
+                            } else {
                                 loc.scan("", pattern, list);
+                            }
                         }
                         catch (Throwable e) {
-                            if (log.isTraceEnabled())
+                            if (log.isTraceEnabled()) {
                                 log.trace("", e);
+                            }
                         }
                     }
                 }
             }
             catch (Throwable e) {
-                if (log.isDebugEnabled())
+                if (log.isDebugEnabled()) {
                     log.debug("Fail to run deep scan!", e);
+                }
             }
             // 依然是空?
             if (list.isEmpty() && !src.endsWith("/")) {
@@ -276,8 +291,9 @@ public class Scans {
         }
         list = _list;
         Collections.sort(list);
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debugf("Found %s resource by src( %s ) , regex( %s )", list.size(), src, regex);
+        }
         return list;
     }
 
@@ -309,8 +325,9 @@ public class Scans {
      */
     public List<Class<?>> scanPackage(String pkg, String regex) {
         String packagePath = pkg.replace('.', '/').replace('\\', '/');
-        if (!packagePath.endsWith("/"))
+        if (!packagePath.endsWith("/")) {
             packagePath += "/";
+        }
         return rs2class(pkg, scan(packagePath, regex));
     }
 
@@ -332,8 +349,9 @@ public class Scans {
             ZipInputStream zis = makeZipInputStream(jeInfo.getJarPath());
             ZipEntry ens = null;
             while (null != (ens = zis.getNextEntry())) {
-                if (ens.isDirectory())
+                if (ens.isDirectory()) {
                     continue;
+                }
                 if (jeInfo.getEntryName().equals(ens.getName())) {
                     return makeJarNutResource(jeInfo.getJarPath(), ens.getName(), "");
                 }
@@ -347,10 +365,11 @@ public class Scans {
                                                     final String entryName,
                                                     final String base) throws IOException {
         NutResource nutResource = new JarResource(jarPath, entryName);
-        if (entryName.equals(base))
+        if (entryName.equals(base)) {
             nutResource.setName(entryName);
-        else
+        } else {
             nutResource.setName(entryName.substring(base.length()));
+        }
         nutResource.setSource(jarPath + ":" + entryName);
         return nutResource;
     }
@@ -401,16 +420,18 @@ public class Scans {
                     in = nr.getInputStream();
                     className = ClassTools.getClassName(in);
                     if (className == null) {
-                        if (log.isInfoEnabled())
+                        if (log.isInfoEnabled()) {
                             log.infof("Resource can't map to Class, Resource %s", nr);
+                        }
                         continue;
                     }
                     Class<?> klass = Lang.loadClass(className);
                     re.add(klass);
                 }
                 catch (Throwable e) {
-                    if (log.isInfoEnabled())
+                    if (log.isInfoEnabled()) {
                         log.info("Resource can't map to Class, Resource " + nr.getName());
+                    }
                 }
                 finally {
                     Streams.safeClose(in);
@@ -421,16 +442,19 @@ public class Scans {
     }
 
     public static class ResourceFileFilter implements FileFilter {
+        @Override
         public boolean accept(File f) {
             if (f.isDirectory()) {
                 String fnm = f.getName().toLowerCase();
                 // 忽略 SVN 和 CVS 文件,还有Git文件
-                if (".svn".equals(fnm) || ".cvs".equals(fnm) || ".git".equals(fnm))
+                if (".svn".equals(fnm) || ".cvs".equals(fnm) || ".git".equals(fnm)) {
                     return false;
+                }
                 return true;
             }
-            if (f.isHidden())
+            if (f.isHidden()) {
                 return false;
+            }
             return pattern == null || pattern.matcher(f.getName()).find();
         }
 
@@ -443,6 +467,7 @@ public class Scans {
     }
 
     public static class ResourceFileVisitor implements FileVisitor {
+        @Override
         public void visit(File f) {
             list.add(new FileResource(base, f).setPriority(priority));
         }
@@ -461,8 +486,9 @@ public class Scans {
 
     protected Scans() {
         if (Lang.isAndroid) {
-            if (log.isInfoEnabled())
+            if (log.isInfoEnabled()) {
                 log.info("Running in Android , so nothing I can scan , just disable myself");
+            }
             return;
         }
         Stopwatch sw = Stopwatch.begin();
@@ -484,18 +510,23 @@ public class Scans {
                     String url_str = url.toString();
                     if (url_str.contains("jar!")) {
                         String tmp = url_str.substring(0, url_str.lastIndexOf("jar!") + 3);
-                        if (tmp.startsWith("jar:"))
+                        if (tmp.startsWith("jar:")) {
                             tmp = tmp.substring("jar:".length());
-                        if (tmp.startsWith("file:/"))
+                        }
+                        if (tmp.startsWith("file:/")) {
                             tmp = tmp.substring("file:/".length());
-                        if (tmp.contains("tomcat"))
+                        }
+                        if (tmp.contains("tomcat")) {
                             continue;
-                        if (tmp.contains("Java"))
+                        }
+                        if (tmp.contains("Java")) {
                             continue;
+                        }
                         //jars.add(tmp);
                     }
-                    else
+                    else {
                         registerLocation(new URL(url_str.substring(0, url_str.length() - referPath.length())));
+                    }
                 }
             }
             catch (IOException e) {}
@@ -505,10 +536,11 @@ public class Scans {
             String classpath = System.getProperties().getProperty("java.class.path");
             String[] paths = classpath.split(System.getProperties().getProperty("path.separator"));
             for (String pathZ : paths) {
-                if (pathZ.endsWith(".jar"))
+                if (pathZ.endsWith(".jar")) {
                     addResourceLocation(ResourceLocation.jar(pathZ));
-                else
+                } else {
                     addResourceLocation(ResourceLocation.file(new File(pathZ)));
+                }
             }
         }
         catch (Throwable e) {

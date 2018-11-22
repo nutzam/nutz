@@ -12,10 +12,12 @@ import org.nutz.lang.Mirror;
  */
 public class JsonJsonRenderHandler extends JsonTypeHandler {
 
+    @Override
     public boolean supportToJson(Mirror<?> mirror, Object obj, JsonFormat jf) {
         return obj != null && obj instanceof JsonRender;
     }
 
+    @Override
     public void toJson(Mirror<?> mirror, Object currentObj, JsonRender r, JsonFormat jf) throws IOException {
         ((JsonRender) currentObj).render(null);
     }

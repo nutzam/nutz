@@ -18,6 +18,7 @@ public class AsmClassAgent extends AbstractClassAgent {
     static final String MethodArray_FieldName = "_$$Nut_methodArray";
     static final String MethodInterceptorList_FieldName = "_$$Nut_methodInterceptorList";
 
+    @Override
     @SuppressWarnings("unchecked")
     protected <T> Class<T> generate(ClassDefiner cd,
                                     Pair2[] pair2s,

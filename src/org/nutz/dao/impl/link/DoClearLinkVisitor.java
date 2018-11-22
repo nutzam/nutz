@@ -7,6 +7,7 @@ import org.nutz.dao.util.Pojos;
 
 public class DoClearLinkVisitor extends AbstractLinkVisitor {
 
+    @Override
     public void visit(final Object obj, final LinkField lnk) {
         Pojo pojo = opt.maker().makeDelete(lnk.getLinkedEntity());
         pojo.append(Pojos.Items.cnd(lnk.createCondition(obj)));

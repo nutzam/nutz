@@ -47,6 +47,7 @@ public abstract class AbstractNutConfig implements NutConfig {
         Json.clearEntityCache();
     }
 
+    @Override
     public Loading createLoading() {
         /*
          * 确保用户声明了 MainModule
@@ -58,13 +59,15 @@ public abstract class AbstractNutConfig implements NutConfig {
          */
         LoadingBy by = mainModule.getAnnotation(LoadingBy.class);
         if (null == by) {
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug("Loading by " + NutLoading.class);
+            }
             return new NutLoading();
         }
         try {
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug("Loading by " + by.value());
+            }
             return Mirror.me(by.value()).born();
         }
         catch (Exception e) {
@@ -72,66 +75,83 @@ public abstract class AbstractNutConfig implements NutConfig {
         }
     }
 
+    @Override
     public Context getLoadingContext() {
         return (Context) this.getServletContext().getAttribute(Loading.CONTEXT_NAME);
     }
 
+    @Override
     public String getAppRoot() {
         String webinf = getServletContext().getRealPath("/WEB-INF/");
         if (webinf == null) {
             log.info("/WEB-INF/ not Found?!");
-            if (new File("src/main/webapp").exists())
+            if (new File("src/main/webapp").exists()) {
                 return new File("src/main/webapp").getAbsolutePath();
-            if (new File("src/main/resources/webapp").exists())
+            }
+            if (new File("src/main/resources/webapp").exists()) {
                 return new File("src/main/resources/webapp").getAbsolutePath();
+            }
             return "./webapp";
         }
         String root = getServletContext().getRealPath("/").replace('\\', '/');
-        if (root.endsWith("/"))
+        if (root.endsWith("/")) {
             return root.substring(0, root.length() - 1);
-        else if (root.endsWith("/."))
+        } else if (root.endsWith("/.")) {
             return root.substring(0, root.length() - 2);
+        }
         return root;
     }
 
+    @Override
     public Ioc getIoc() {
         return Mvcs.getIoc();
     }
 
+    @Override
     public Object getAttribute(String name) {
         return this.getServletContext().getAttribute(name);
     }
 
+    @Override
     public List<String> getAttributeNames() {
         return enum2list(this.getServletContext().getAttributeNames());
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T getAttributeAs(Class<T> type, String name) {
         Object obj = getAttribute(name);
-        if (null == obj)
+        if (null == obj) {
             return null;
-        if (type.isInstance(obj))
+        }
+        if (type.isInstance(obj)) {
             return (T) obj;
+        }
         return Castors.me().castTo(obj, type);
     }
 
+    @Override
     public void setAttribute(String name, Object obj) {
         this.getServletContext().setAttribute(name, obj);
     }
 
+    @Override
     public void setAttributeIgnoreNull(String name, Object obj) {
-        if (null != obj)
+        if (null != obj) {
             setAttribute(name, obj);
+        }
     }
 
+    @Override
     public Class<?> getMainModule() {
-        if (mainModule != null)
+        if (mainModule != null) {
             return mainModule;
+        }
         String name = Strings.trim(getInitParameter("modules"));
         try {
-            if (Strings.isBlank(name))
-            	throw new NutConfigException("You need declare 'modules' parameter in your context configuration file or web.xml ! Only found -> " + getInitParameterNames());
+            if (Strings.isBlank(name)) {
+                throw new NutConfigException("You need declare 'modules' parameter in your context configuration file or web.xml ! Only found -> " + getInitParameterNames());
+            }
             mainModule = Lang.loadClass(name);
             return mainModule;
         }
@@ -143,50 +163,61 @@ public abstract class AbstractNutConfig implements NutConfig {
         }
     }
 
+    @Override
     public AtMap getAtMap() {
         return Mvcs.getAtMap();
     }
 
     protected List<String> enum2list(Enumeration<?> enums) {
         LinkedList<String> re = new LinkedList<String>();
-        while (enums.hasMoreElements())
+        while (enums.hasMoreElements()) {
             re.add(enums.nextElement().toString());
+        }
         return re;
     }
 
+    @Override
     public void setSessionProvider(SessionProvider provider) {
         this.sessionProvider = provider;
     }
     
+    @Override
     public SessionProvider getSessionProvider() {
         return sessionProvider;
     }
 
-	public UrlMapping getUrlMapping() {
+	@Override
+    public UrlMapping getUrlMapping() {
 		return urlMapping;
 	}
 
-	public void setUrlMapping(UrlMapping urlMapping) {
+	@Override
+    public void setUrlMapping(UrlMapping urlMapping) {
 		this.urlMapping = urlMapping;
 	}
 	
-	public ActionChainMaker getActionChainMaker() {
+	@Override
+    public ActionChainMaker getActionChainMaker() {
 		return chainMaker;
 	}
 	
-	public void setActionChainMaker(ActionChainMaker acm) {
+	@Override
+    public void setActionChainMaker(ActionChainMaker acm) {
 		this.chainMaker = acm;
 	}
 	
-	public void setViewMakers(ViewMaker[] makers) {
+	@Override
+    public void setViewMakers(ViewMaker[] makers) {
 		this.viewMakers = makers;
 	}
 	
-	public ViewMaker[] getViewMakers() {
+	@Override
+    public ViewMaker[] getViewMakers() {
 		return viewMakers;
 	}
 	
-	public void setMainModule(Class<?> mainModule) {
+	@Override
+    public void setMainModule(Class<?> mainModule) {
         this.mainModule = mainModule;
     }
 }

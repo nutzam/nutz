@@ -36,8 +36,9 @@ import org.nutz.lang.stream.StringOutputStream;
 public class BufferRing {
 
     private static void assertRingLength(int len) {
-        if (len < 2)
+        if (len < 2) {
             throw Lang.makeThrow("BufferRing length can not less than 2");
+        }
     }
 
     private InputStream ins;
@@ -97,8 +98,9 @@ public class BufferRing {
                     ri.nextmark = ri.max;
                 }
             }
-            if (ri.isStreamEnd)
+            if (ri.isStreamEnd) {
                 break;
+            }
             // 指向下一个节点
             ri = ri.next;
             // 保证该节点已经加载了
@@ -107,11 +109,13 @@ public class BufferRing {
                 readed += ri.max;
             }
             // 如果已经循环了一圈，退出
-            if (ri == item)
+            if (ri == item) {
                 break;
+            }
         }
-        if (re == -1)
+        if (re == -1) {
             return MarkMode.FOUND;
+        }
 
         return ri.isStreamEnd ? MarkMode.STREAM_END : MarkMode.NOT_FOUND;
     }
@@ -127,11 +131,12 @@ public class BufferRing {
         while (item.isLoaded) {
             item.dump(ops);
             // All content had been dumped, move to next
-            if (!item.isLoaded)
+            if (!item.isLoaded) {
                 item = item.next;
-            // Else break the loop and waiting for next 'mark'
-            else
+            }// Else break the loop and waiting for next 'mark'
+            else {
                 break;
+            }
         }
         ops.flush();
     }
@@ -171,14 +176,19 @@ public class BufferRing {
      */
     public void skipMark() throws IOException {
         dump(new OutputStream() {
+            @Override
             public void write(int b) throws IOException {}
 
+            @Override
             public void close() throws IOException {}
 
+            @Override
             public void flush() throws IOException {}
 
+            @Override
             public void write(byte[] b, int off, int len) throws IOException {}
 
+            @Override
             public void write(byte[] b) throws IOException {}
 
         });
@@ -192,13 +202,15 @@ public class BufferRing {
      * @throws IOException
      */
     public long load() throws IOException {
-        if (item.isStreamEnd)
+        if (item.isStreamEnd) {
             return readed;
+        }
         RingItem ri = item;
         while (!ri.isLoaded) {
             ri.load(ins);
-            if (ri.max > 0)
+            if (ri.max > 0) {
                 readed += ri.max;
+            }
             ri = ri.next;
         }
         return readed;

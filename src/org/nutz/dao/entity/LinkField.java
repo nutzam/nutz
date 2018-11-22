@@ -73,6 +73,7 @@ public interface LinkField extends EntityField {
     /**
      * @return 打印映射信息
      */
+    @Override
     String toString();
 
 }

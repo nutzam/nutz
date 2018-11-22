@@ -38,6 +38,7 @@ public interface Pojo extends DaoStatement {
      *            分页对象
      * @return 自身
      */
+    @Override
     Pojo setPager(Pager pager);
 
     /**

@@ -19,15 +19,19 @@ public class ListRandom<T> implements Random<T> {
         len = list.size();
     }
 
+    @Override
     public T next() {
         synchronized (lock) {
-            if (len <= 0)
+            if (len <= 0) {
                 return null;
-            if (len == 1)
+            }
+            if (len == 1) {
                 return list.get(--len);
+            }
             int index = r.nextInt(len);
-            if (index == len - 1)
+            if (index == len - 1) {
                 return list.get(--len);
+            }
             T c = list.get(index);
             list.set(index, list.get(--len));
             return c;

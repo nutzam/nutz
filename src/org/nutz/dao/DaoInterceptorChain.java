@@ -126,11 +126,13 @@ public class DaoInterceptorChain implements ConnCallback {
     /**
      * 这是DaoExecutor会执行的方法,拦截器内不要执行这个方法!! 这里也是拦截器开始生效的地方.
      */
+    @Override
     public void invoke(Connection conn) throws Exception {
         for (DaoStatement st : sts) {
             if (st == null) {
-                if (log.isInfoEnabled())
+                if (log.isInfoEnabled()) {
                     log.info("Found a null DaoStatement(SQL), ingore it ~~");
+                }
                 continue;
             }
             current = 0;

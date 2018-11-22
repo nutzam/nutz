@@ -13,15 +13,18 @@ public class AllAttrInjector extends AttrInjector {
         super(name);
     }
 
+    @Override
     public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
         Object re = req.getAttribute(name);
-        if (null != re)
+        if (null != re) {
             return re;
+        }
         HttpSession session = Mvcs.getHttpSession(false);
         if (session != null) {
         	re = session.getAttribute(name);
-            if (null != re)
+            if (null != re) {
                 return re;
+            }
         }
         
         return sc.getAttribute(name);

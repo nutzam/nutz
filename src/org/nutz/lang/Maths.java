@@ -48,12 +48,14 @@ public abstract class Maths {
     }
 
     private static int takeOne(CompareSomeThing cp, int... nums) {
-        if (null == nums || nums.length == 0)
+        if (null == nums || nums.length == 0) {
             return 0;
+        }
         int re = nums[0];
         for (int i = 1; i < nums.length; i++) {
-            if (cp.compare(nums[i], re))
+            if (cp.compare(nums[i], re)) {
                 re = nums[i];
+            }
         }
         return re;
     }

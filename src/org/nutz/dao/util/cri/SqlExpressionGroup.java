@@ -36,24 +36,28 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
 
     public SqlExpressionGroup and(SqlExpression exp) {
     	if (exp == null) {
-    		if (log.isTraceEnabled())
-    			log.trace("ignore null SqlExpression");
+    		if (log.isTraceEnabled()) {
+                log.trace("ignore null SqlExpression");
+            }
     		return this;
     	}
-        if (!exps.isEmpty())
+        if (!exps.isEmpty()) {
             _add(new Static("AND"));
+        }
         return _add(exp);
     }
 
     public SqlExpressionGroup andEquals(String name, Object val) {
-        if (null == val)
+        if (null == val) {
             return andIsNull(name);
+        }
         return and(eq(name, val));
     }
 
     public SqlExpressionGroup andNotEquals(String name, Object val) {
-        if (null == val)
+        if (null == val) {
             return andNotIsNull(name);
+        }
         return and(eq(name, val).not());
 
     }
@@ -216,12 +220,14 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
 
     public SqlExpressionGroup or(SqlExpression exp) {
         if (exp == null) {
-            if (log.isTraceEnabled())
+            if (log.isTraceEnabled()) {
                 log.trace("ignore null SqlExpression");
+            }
             return this;
         }
-        if (!exps.isEmpty())
+        if (!exps.isEmpty()) {
             _add(new Static("OR"));
+        }
         return _add(exp);
     }
 
@@ -350,60 +356,75 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     @Override
     public void setPojo(Pojo pojo) {
         super.setPojo(pojo);
-        for (SqlExpression exp : exps)
+        for (SqlExpression exp : exps) {
             exp.setPojo(pojo);
+        }
     }
 
     private SqlExpressionGroup _add(SqlExpression exp) {
         if (null != exp) {
             exps.add(exp);
             exp.setPojo(pojo);
-            if (exp instanceof SqlExpressionGroup)
+            if (exp instanceof SqlExpressionGroup) {
                 ((SqlExpressionGroup) exp).top = false;
+            }
         }
         return this;
     }
 
+    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
         if (!exps.isEmpty()) {
             if (top) {
                 sb.append(" WHERE ");
-                if (not)
+                if (not) {
                     sb.append("NOT (");
-                for (SqlExpression exp : exps)
+                }
+                for (SqlExpression exp : exps) {
                     exp.joinSql(en, sb);
-                if (not)
+                }
+                if (not) {
                     sb.append(')');
+                }
             } else {
-                if (not)
+                if (not) {
                     sb.append("NOT ");
+                }
                 sb.append('(');
-                for (SqlExpression exp : exps)
+                for (SqlExpression exp : exps) {
                     exp.joinSql(en, sb);
+                }
                 sb.append(')');
             }
         }
     }
 
+    @Override
     public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
-        for (SqlExpression exp : exps)
+        for (SqlExpression exp : exps) {
             off = exp.joinAdaptor(en, adaptors, off);
+        }
         return off;
     }
 
+    @Override
     public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
-        for (SqlExpression exp : exps)
+        for (SqlExpression exp : exps) {
             off = exp.joinParams(en, obj, params, off);
+        }
         return off;
     }
 
+    @Override
     public int paramCount(Entity<?> en) {
         int re = 0;
-        for (SqlExpression exp : exps)
+        for (SqlExpression exp : exps) {
             re += exp.paramCount(en);
+        }
         return re;
     }
 
+    @Override
     public SqlExpression setNot(boolean not) {
         this.not = not;
         return this;
@@ -421,6 +442,7 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
 		return exps;
 	}
     
+    @Override
     public SqlExpressionGroup clone(){
         SqlExpressionGroup seg = new SqlExpressionGroup();
         seg.exps = cloneExps();

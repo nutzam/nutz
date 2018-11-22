@@ -65,8 +65,9 @@ public class SocketActionTable {
     public SocketAction get(String line) {
         // 是否有精确匹配
         SocketAction sa = map.get(line);
-        if (null != sa)
+        if (null != sa) {
             return sa;
+        }
 
         // 用正则式匹配
         for (int i = 0; i < nots.length; i++) {

@@ -16,10 +16,12 @@ import org.nutz.lang.Mirror;
  */
 public class JsonIterableHandler extends JsonTypeHandler {
 
+    @Override
     public boolean supportFromJson(Mirror<?> mirror, Object obj) {
         return false;
     }
 
+    @Override
     public boolean supportToJson(Mirror<?> mirror, Object obj, JsonFormat jf) {
         return obj instanceof Iterable;
     }
@@ -35,8 +37,9 @@ public class JsonIterableHandler extends JsonTypeHandler {
             if (it.hasNext()) {
                 r.appendPairEnd();
                 writer.append(' ');
-            } else
+            } else {
                 break;
+            }
         }
         writer.append(']');
     }

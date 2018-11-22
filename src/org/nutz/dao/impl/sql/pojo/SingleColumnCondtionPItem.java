@@ -37,6 +37,7 @@ public class SingleColumnCondtionPItem extends AbstractPItem {
         this.def = def;
     }
 
+    @Override
     public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
         // 默认值可以直接使用
         if (def == obj && null != obj) {
@@ -46,45 +47,51 @@ public class SingleColumnCondtionPItem extends AbstractPItem {
         else {
             en = _en(en);
             // 是个实体对象，试图直接取值
-            if (null != obj && null != mf && mf.getEntity() == en && en.getType().isInstance(obj))
+            if (null != obj && null != mf && mf.getEntity() == en && en.getType().isInstance(obj)) {
                 params[off++] = mf.getValue(obj);
-            // 采用默认值
-            else if (null != def)
+            }// 采用默认值
+            else if (null != def) {
                 params[off++] = def;
-            // 试图转换传入的对象
+            }// 试图转换传入的对象
             else if (null != obj) {
                 // TODO 这是啥规则?!!! 完全搞不懂!!!
                 params[off++] = Castors.me().castTo(obj, colType);
             }
             // 逼急了，老子抛异常了!
-            else
+            else {
                 throw Lang.impossible();
+            }
         }
         return off;
     }
 
+    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
-        if (top)
+        if (top) {
             sb.append(" WHERE ");
-        if (null != mf && !casesensitive)
+        }
+        if (null != mf && !casesensitive) {
             switch (mf.getColumnType()) {
-            case CHAR:
-            case VARCHAR:
-            case TEXT:
-                sb.append("LOWER(").append(colName).append(")=LOWER(?)");
-                return;
-            default :
-                break;
+                case CHAR:
+                case VARCHAR:
+                case TEXT:
+                    sb.append("LOWER(").append(colName).append(")=LOWER(?)");
+                    return;
+                default:
+                    break;
             }
+        }
 
         sb.append(colName).append("=?");
     }
 
+    @Override
     public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
         adaptors[off++] = va;
         return off;
     }
 
+    @Override
     public int paramCount(Entity<?> en) {
         return 1;
     }

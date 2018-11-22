@@ -22,12 +22,15 @@ public class PojoQueryEntityByJoinCallback implements PojoCallback {
         this.regex = regex;
     }
 
+    @Override
     public Object invoke(Connection conn, ResultSet rs, final Pojo pojo, Statement stmt)
             throws SQLException {
         ResultSetLooping ing =  new ResultSetLooping() {
+            @Override
             protected boolean createObject(int index, final ResultSet rs, SqlContext context, int rowCount) {
                 final Object mainObject = pojo.getEntity().getObject(rs, pojo.getContext().getFieldMatcher(), null);
                 pojo.getEntity().visitOne(mainObject, regex, new LinkVisitor() {
+                    @Override
                     public void visit(Object obj, LinkField lnk) {
                         Entity<?> en  = lnk.getLinkedEntity();
                         String prefix = lnk.getName() + "_z_";

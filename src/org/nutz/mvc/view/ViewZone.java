@@ -40,10 +40,11 @@ public class ViewZone implements View {
         }
     }
 
+    @Override
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj) throws Throwable {
-        if (obj == null)
+        if (obj == null) {
             dft.render(req, resp, obj);
-        else {
+        } else {
             View v = makeView(config, ai, obj.toString(), false);
             if (index > -1) {
                 Object re = Mvcs.getActionContext().getMethodArgs()[index];
@@ -56,8 +57,9 @@ public class ViewZone implements View {
     }
     
     public static View makeView(NutConfig config, ActionInfo ai, String viewType, boolean allowProxy) {
-        if (Strings.isBlank(viewType))
+        if (Strings.isBlank(viewType)) {
             return new VoidView();
+        }
 
         String str = viewType;
         int pos = str.indexOf(':');
@@ -72,20 +74,23 @@ public class ViewZone implements View {
         
         if (allowProxy && "re".equals(type)) {
             View dft = null;
-            if (value != null)
+            if (value != null) {
                 dft = makeView(config, ai, value, false);
+            }
             return new ViewZone(config, ai, dft);
         }
         
         for (ViewMaker maker : ai.getViewMakers()) {
             if (maker instanceof ViewMaker2) {
                 View view = ((ViewMaker2)maker).make(config, ai, type, value);
-                if (view != null)
+                if (view != null) {
                     return view;
+                }
             }
             View view = maker.make(config.getIoc(), type, value);
-            if (null != view)
+            if (null != view) {
                 return view;
+            }
         }
         throw Lang.makeThrow("Can not eval %s(\"%s\") View for %s", viewType, str, ai.getMethod());
     }

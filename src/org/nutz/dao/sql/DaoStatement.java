@@ -120,6 +120,7 @@ public interface DaoStatement extends Serializable {
      * 
      * @return 日志打印字符串
      */
+    @Override
     String toString();
 
     /**

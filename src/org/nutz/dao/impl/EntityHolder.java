@@ -48,8 +48,9 @@ public class EntityHolder {
     }
 
     public void remove(Entity<?> en) {
-        if (en == null || en.getType() == null)
+        if (en == null || en.getType() == null) {
             return;
+        }
         synchronized (map) {
             this.map.remove(en.getType());
         }
@@ -94,15 +95,17 @@ public class EntityHolder {
         // 正常的构建一个 Entity
         Object first = Lang.first(obj);
         // 对象为空，不能构建实体
-        if (first == null)
+        if (first == null) {
             return null;
+        }
 
         // 这是一个 Map,试图构建一个 entity
         if (first instanceof Map<?, ?>) {
             Object tableName = ((Map<String, ?>) first).get(".table");
-            if (null == tableName)
+            if (null == tableName) {
                 throw Lang.makeThrow("Can not insert map without key '.table' : \n%s",
-                                     Json.toJson(first, JsonFormat.forLook()));
+                        Json.toJson(first, JsonFormat.forLook()));
+            }
             return makeEntity(tableName.toString(), (Map<String, ?>) first);
         }
         // 作为 POJO 构建
@@ -122,8 +125,9 @@ public class EntityHolder {
     public void remove(String className) {
         Set<Class<?>> keys = new HashSet<Class<?>>(map.keySet());
         for (Class<?> klass : keys) {
-            if (klass.getName().equals(className))
+            if (klass.getName().equals(className)) {
                 map.remove(klass);
+            }
         }
     }
 }

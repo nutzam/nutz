@@ -70,8 +70,9 @@ public class SqlLiteral implements Cloneable, Serializable {
         reset();
         // int statementIndex = 1;
         source = str;
-        if (null == source)
+        if (null == source) {
             return this;
+        }
         char[] cs = Strings.trim(source).toCharArray();
         StringBuilder sb;
         for (int i = 0; i < cs.length; i++) {
@@ -117,30 +118,31 @@ public class SqlLiteral implements Cloneable, Serializable {
 
         // eval SqlType ...
 
-        if (stack.firstEquals("SELECT") || stack.firstEquals("WITH"))
+        if (stack.firstEquals("SELECT") || stack.firstEquals("WITH")) {
             type = SqlType.SELECT;
-        else if (stack.firstEquals("UPDATE"))
+        } else if (stack.firstEquals("UPDATE")) {
             type = SqlType.UPDATE;
-        else if (stack.firstEquals("INSERT"))
+        } else if (stack.firstEquals("INSERT")) {
             type = SqlType.INSERT;
-        else if (stack.firstEquals("DELETE"))
+        } else if (stack.firstEquals("DELETE")) {
             type = SqlType.DELETE;
-        else if (stack.firstEquals("CREATE"))
+        } else if (stack.firstEquals("CREATE")) {
             type = SqlType.CREATE;
-        else if (stack.firstEquals("DROP"))
+        } else if (stack.firstEquals("DROP")) {
             type = SqlType.DROP;
-        else if (stack.firstEquals("TRUNCATE"))
+        } else if (stack.firstEquals("TRUNCATE")) {
             type = SqlType.TRUNCATE;
-        else if (stack.firstEquals("ALTER"))
+        } else if (stack.firstEquals("ALTER")) {
             type = SqlType.ALTER;
-        else if (stack.firstEquals("EXEC"))
+        } else if (stack.firstEquals("EXEC")) {
             type = SqlType.EXEC;
-        else if (stack.firstEquals("CALL"))
+        } else if (stack.firstEquals("CALL")) {
             type = SqlType.CALL;
-        else if (stack.firstEquals("{CALL"))
+        } else if (stack.firstEquals("{CALL")) {
             type = SqlType.CALL;
-        else
+        } else {
             type = SqlType.OTHER;
+        }
 
         return this;
     }
@@ -174,6 +176,7 @@ public class SqlLiteral implements Cloneable, Serializable {
         return new SqlLiteral(paramChar, varChar).valueOf(source);
     }
 
+    @Override
     public String toString() {
         return source;
     }

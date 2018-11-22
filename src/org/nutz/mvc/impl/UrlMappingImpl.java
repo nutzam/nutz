@@ -38,17 +38,20 @@ public class UrlMappingImpl implements UrlMapping {
         this.prefix = prefix;
     }
 
+    @Override
     public void add(ActionChainMaker maker, ActionInfo ai, NutConfig config) {
 
         // 检查所有的path
         String[] paths = ai.getPaths();
         for (int i = 0; i < paths.length; i++) {
             String path = paths[i];
-            if (Strings.isBlank(path))
+            if (Strings.isBlank(path)) {
                 throw new BlankAtException(ai.getModuleType(), ai.getMethod());
+            }
 
-            if (path.charAt(0) != '/')
+            if (path.charAt(0) != '/') {
                 paths[i] = '/' + path;
+            }
         }
 
         ActionChain chain = maker.eval(config, ai);
@@ -70,8 +73,9 @@ public class UrlMappingImpl implements UrlMapping {
 
             // 将动作链，根据特殊的 HTTP 方法，保存到调用者内部
             if (ai.isForSpecialHttpMethod()) {
-                for (String httpMethod : ai.getHttpMethods())
+                for (String httpMethod : ai.getHttpMethods()) {
                     invoker.addChain(httpMethod, chain);
+                }
             }
             // 否则，将其设置为默认动作链
             else {
@@ -83,15 +87,18 @@ public class UrlMappingImpl implements UrlMapping {
 
         // TODO 下面个IF要不要转换到NutLoading中去呢?
         // 记录一个 @At.key
-        if (!Strings.isBlank(ai.getPathKey()))
+        if (!Strings.isBlank(ai.getPathKey())) {
             config.getAtMap().add(ai.getPathKey(), ai.getPaths()[0]);
+        }
     }
 
+    @Override
     public ActionInvoker get(ActionContext ac) {
         RequestPath rp = Mvcs.getRequestPathObject(ac.getRequest());
         String path = rp.getPath();
-        if (prefix != null)
+        if (prefix != null) {
             path = path.substring(prefix.length());
+        }
         ac.setSuffix(rp.getSuffix());
         ActionInvoker invoker = root.get(ac, path);
         if (invoker != null) {
@@ -106,11 +113,13 @@ public class UrlMappingImpl implements UrlMapping {
                 return invoker;
             }
         }
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debugf("Search mapping for [%s] path=%s : NOT Action match", ac.getRequest().getMethod(), path);
+        }
         return null;
     }
     
+    @Override
     public void add(String path, ActionInvoker invoker) {
     	root.add(path, invoker);
     	map.put(path, invoker);
@@ -131,18 +140,20 @@ public class UrlMappingImpl implements UrlMapping {
             StringBuilder sb = new StringBuilder();
             if (null != paths && paths.length > 0) {
                 sb.append("   '").append(paths[0]).append("'");
-                for (int i = 1; i < paths.length; i++)
+                for (int i = 1; i < paths.length; i++) {
                     sb.append(", '").append(paths[i]).append("'");
+                }
             } else {
                 throw Lang.impossible();
             }
             // 打印方法名
             Method method = ai.getMethod();
             String str;
-            if (null != method)
+            if (null != method) {
                 str = genMethodDesc(ai);
-            else
+            } else {
                 throw Lang.impossible();
+            }
             log.debugf("%s >> %50s | @Ok(%-5s) @Fail(%-5s) | by %d Filters | (I:%s/O:%s)",
                        Strings.alignLeft(sb, 30, ' '),
                        str,

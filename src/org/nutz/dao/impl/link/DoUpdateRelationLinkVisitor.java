@@ -22,6 +22,7 @@ public class DoUpdateRelationLinkVisitor extends AbstractLinkVisitor {
         this.items = Pojos.Items.cnd(cnd);
     }
 
+    @Override
     public void visit(Object obj, LinkField lnk) {
         if (lnk instanceof ManyManyLinkField) {
             ManyManyLinkField mm = (ManyManyLinkField) lnk;

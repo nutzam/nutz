@@ -42,11 +42,13 @@ public class NutServlet extends HttpServlet {
         sp = config.getSessionProvider();
     }
 
+    @Override
     public void destroy() {
         Mvcs.resetALL();
         Mvcs.set(selfName, null, null);
-        if(handler != null)
+        if(handler != null) {
             handler.depose();
+        }
         Mvcs.close();
         Mvcs.setServletContext(null);
         Mvcs.ctx().removeReqCtx();
@@ -55,8 +57,9 @@ public class NutServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        if (!Mvcs.DISABLE_X_POWERED_BY)
+        if (!Mvcs.DISABLE_X_POWERED_BY) {
             resp.setHeader("X-Powered-By", Mvcs.X_POWERED_BY);
+        }
     	String markKey = "nutz_ctx_mark";
         Integer mark = (Integer) req.getAttribute(markKey);
     	if (mark != null) {
@@ -69,11 +72,13 @@ public class NutServlet extends HttpServlet {
         String preName = Mvcs.getName();
         Context preContext = Mvcs.resetALL();
         try {
-            if (sp != null)
+            if (sp != null) {
                 req = sp.filter(req, resp, sc);
+            }
             Mvcs.set(selfName, req, resp);
-            if (!handler.handle(req, resp))
+            if (!handler.handle(req, resp)) {
                 resp.sendError(404);
+            }
         } finally {
         	Mvcs.resetALL();
             //仅当forward/incule时,才需要恢复之前设置

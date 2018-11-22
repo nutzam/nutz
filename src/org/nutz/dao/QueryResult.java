@@ -60,13 +60,15 @@ public class QueryResult implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public <T> List<T> convertList(Class<T> eleType) {
-        if (null == list || list.isEmpty())
+        if (null == list || list.isEmpty()) {
             return (List<T>) list;
+        }
 
         List<T> re = new ArrayList<T>(list.size());
         Castors castors = Castors.me();
-        for (Object obj : list)
+        for (Object obj : list) {
             re.add(castors.castTo(obj, eleType));
+        }
 
         return re;
     }

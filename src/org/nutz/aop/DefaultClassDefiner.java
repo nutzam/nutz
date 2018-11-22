@@ -18,10 +18,12 @@ public class DefaultClassDefiner implements ClassDefiner {
         return me;
     }
 
+    @Override
     public Class<?> define(String className, byte[] bytes, ClassLoader loader) {
         try {
-            if (debugDir != null)
+            if (debugDir != null) {
                 Files.write(debugDir + className.replace('.', '/') + ".class", bytes);
+            }
             return ReflectTool.defineClass(className, bytes, loader);
         }
         catch (Exception e) {

@@ -30,12 +30,15 @@ public class IocObjInjector implements ParamInjector {
         this.objName = objName;
     }
 
+    @Override
     public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
         Ioc ioc = Mvcs.getIoc();
-        if (null == ioc)
+        if (null == ioc) {
             throw new RuntimeException("You need define @IocBy in main module!!!");
-        if (Strings.isBlank(objName))
+        }
+        if (Strings.isBlank(objName)) {
             return ioc.get(objType);
+        }
         return ioc.get(objType, objName);
     }
 

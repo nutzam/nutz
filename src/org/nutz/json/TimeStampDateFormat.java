@@ -16,10 +16,12 @@ class TimeStampDateFormat extends SimpleDateFormat {
 
     private static final long serialVersionUID = 1L;
 
+    @Override
     public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition fieldPosition) {
         return toAppendTo.append(""+date.getTime());
     }
 
+    @Override
     public Date parse(String source, ParsePosition pos) {
         throw Lang.noImplement();
     }

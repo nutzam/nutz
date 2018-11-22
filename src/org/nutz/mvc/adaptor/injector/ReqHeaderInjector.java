@@ -22,10 +22,11 @@ public class ReqHeaderInjector implements ParamInjector {
 		this.type = type;
 	}
 	
+    @Override
     public Object get(ServletContext sc,
-					  HttpServletRequest req,
-					  HttpServletResponse resp,
-					  Object refer) {
+                      HttpServletRequest req,
+                      HttpServletResponse resp,
+                      Object refer) {
 		if ("_map".equals(name)) {
 			Map<String, String> headers = new LinkedHashMap<String, String>();
 			Enumeration<String> names = req.getHeaderNames();
@@ -45,8 +46,9 @@ public class ReqHeaderInjector implements ParamInjector {
 					break;
 				}
 			}
-			if (val == null)
-				return null;
+			if (val == null) {
+                return null;
+            }
 		}
 		return Castors.me().castTo(val, type);
 	}

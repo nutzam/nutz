@@ -48,16 +48,17 @@ public class TcpServer implements Runnable {
         }
         // 确保关闭
         finally {
-            if (!socket.isClosed())
+            if (!socket.isClosed()) {
                 try {
                     socket.close();
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     throw Lang.wrapThrow(e);
                 }
+            }
         }
     }
 
+    @Override
     public void run() {
         // ----------------------------------------- 建立
         log.infof("start TcpServer [%s] @ %d", Thread.currentThread().getName(), port);

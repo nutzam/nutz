@@ -101,19 +101,23 @@ public class Castors {
         classes.addAll(defaultCastorList);
         for (Class<?> klass : classes) {
             try {
-                if (Modifier.isAbstract(klass.getModifiers()))
+                if (Modifier.isAbstract(klass.getModifiers())) {
                     continue;
-                if (!Castor.class.isAssignableFrom(klass))
+                }
+                if (!Castor.class.isAssignableFrom(klass)) {
                     continue;
+                }
                 fillMap(klass, settingMap, false);
             }
             catch (Throwable e) {
-                if (log.isWarnEnabled())
+                if (log.isWarnEnabled()) {
                     log.warnf("Fail to create castor [%s] because: %s", klass, e.getMessage());
+                }
             }
         }
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debugf("Using %s castor for Castors", map.size());
+        }
     }
 
     private void buildSettingMap() throws SecurityException {
@@ -167,8 +171,9 @@ public class Castors {
                 }
             }
         }
-        if (null != m)
+        if (null != m) {
             m.invoke(setting, castor);
+        }
     }
 
     /**
@@ -199,30 +204,32 @@ public class Castors {
         if (null == src) {
             // 原生数据的默认值
             if (toType.isPrimitive()) {
-                if (toType == int.class)
+                if (toType == int.class) {
                     return (T) Integer.valueOf(0);
-                else if (toType == long.class)
+                } else if (toType == long.class) {
                     return (T) Long.valueOf(0L);
-                else if (toType == byte.class)
+                } else if (toType == byte.class) {
                     return (T) Byte.valueOf((byte) 0);
-                else if (toType == short.class)
+                } else if (toType == short.class) {
                     return (T) Short.valueOf((short) 0);
-                else if (toType == float.class)
+                } else if (toType == float.class) {
                     return (T) Float.valueOf(.0f);
-                else if (toType == double.class)
+                } else if (toType == double.class) {
                     return (T) Double.valueOf(.0);
-                else if (toType == boolean.class)
+                } else if (toType == boolean.class) {
                     return (T) Boolean.FALSE;
-                else if (toType == char.class)
+                } else if (toType == char.class) {
                     return (T) Character.valueOf(' ');
+                }
                 throw Lang.impossible();
             }
             // 是对象，直接返回 null
             return null;
         }
 
-        if (fromType == toType || toType == null || fromType == null)
+        if (fromType == toType || toType == null || fromType == null) {
             return (T) src;
+        }
 
         Class<?> componentType = toType.getComponentType();
         if (null != componentType
@@ -233,18 +240,21 @@ public class Castors {
             return (T) array;
         }
 
-        if (fromType.getName().equals(toType.getName()))
+        if (fromType.getName().equals(toType.getName())) {
             return (T) src;
-        if (toType.isAssignableFrom(fromType))
+        }
+        if (toType.isAssignableFrom(fromType)) {
             return (T) src;
+        }
         Mirror<?> from = Mirror.me(fromType, extractor);
         Castor c = find(from, toType);
-        if (null == c)
+        if (null == c) {
             throw new FailToCastObjectException(String.format("Can not find castor for '%s'=>'%s' in (%d) because:\n%s",
-                                                              fromType.getName(),
-                                                              toType.getName(),
-                                                              map.size(),
-                                                              "Fail to find matched castor"));
+                    fromType.getName(),
+                    toType.getName(),
+                    map.size(),
+                    "Fail to find matched castor"));
+        }
         if (Object2Object.class.getName().equals(c.getClass().getName())
             && from.canCastToDirectly(toType)) { // Use language built-in cases
             return (T) src;
@@ -329,8 +339,9 @@ public class Castors {
      * @return 是否可以转换
      */
     public boolean canCast(Class<?> fromType, Class<?> toType) {
-        if (Mirror.me(fromType).canCastToDirectly(toType))
+        if (Mirror.me(fromType).canCastToDirectly(toType)) {
             return true;
+        }
 
         if (toType.isArray() && toType.getComponentType().isAssignableFrom(fromType)) {
             return true;

@@ -28,19 +28,23 @@ public class MapReferInjector extends ObjectPairInjector {
             HttpServletResponse resp, Object refer) {
         Object obj = mirror.born();
         Map<String, Object> map = null;
-        if (Map.class.isAssignableFrom(refer.getClass()))
+        if (Map.class.isAssignableFrom(refer.getClass())) {
             map = (Map<String, Object>) refer;
+        }
         for (int i = 0; i < injs.length; i++) {
             Injecting inj = injs[i];
             Object s;
-            if (null != map && map.containsKey(names[i]))
+            if (null != map && map.containsKey(names[i])) {
                 s = map.get(names[i]);
-            else
+            } else {
                 s = req.getParameter(names[i]);
-            if (null == s)
+            }
+            if (null == s) {
                 continue;
-            if (s instanceof String && Strings.isBlank((String) s))
+            }
+            if (s instanceof String && Strings.isBlank((String) s)) {
                 s = null;
+            }
             inj.inject(obj, s);
         }
         return obj;

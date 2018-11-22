@@ -42,8 +42,9 @@ public class Invoking {
 
         @Override
         Object invoke(Object obj) throws Exception {
-            if (isStatic)
+            if (isStatic) {
                 return method.invoke(null, args);
+            }
             return method.invoke(obj, args);
         }
     }
@@ -90,7 +91,7 @@ public class Invoking {
                 // get all same name methods
                 Method[] all = type.getMethods();
                 List<Method> candidates = new ArrayList<Method>(all.length);
-                for (Method m : all)
+                for (Method m : all) {
                     if (m.getName().equals(methodName)) {
                         // int mod =
                         // m.getParameterTypes().length -
@@ -98,6 +99,7 @@ public class Invoking {
                         // if (mod == 0 || mod == 1)
                         candidates.add(m);
                     }
+                }
                 // get argTypes
                 Class<?>[] argTypes = Mirror.evalToTypes(args);
                 Object dynaArg = Mirror.evalArgToRealArray(args);
@@ -132,9 +134,9 @@ public class Invoking {
                 // to same length param method
                 // ro to last param is "T...", length+1
                 // method
-                if (null == invoker)
+                if (null == invoker) {
                     try {
-                        for (Iterator<Method> it = candidates.iterator(); it.hasNext();) {
+                        for (Iterator<Method> it = candidates.iterator(); it.hasNext(); ) {
                             Method m = it.next();
                             Class<?>[] pts = m.getParameterTypes();
                             if (pts.length == args.length) {
@@ -143,8 +145,9 @@ public class Invoking {
                                 invoker = new DefaultInvoker(m, Lang.array2ObjectArray(args, pts));
                             }
                         }
+                    } catch (Exception e) {
                     }
-                    catch (Exception e) {}
+                }
                 // to same length + last is dynamic
                 // argument method
             }
@@ -152,19 +155,21 @@ public class Invoking {
         catch (NoSuchMethodException e) {
             throw Lang.wrapThrow(e);
         }
-        if (null == invoker)
+        if (null == invoker) {
             throw new InvokingException("Don't know how to invoke [%s].%s() by args:\n %s",
-                                        type.getName(),
-                                        methodName,
-                                        safeConcat(args));
+                    type.getName(),
+                    methodName,
+                    safeConcat(args));
+        }
         this.typeName = type.getName();
         this.methodName = methodName;
         this.args = args;
     }
     
     public static String safeConcat(Object[] objs) {
-        if (objs == null || objs.length == 0)
+        if (objs == null || objs.length == 0) {
             return "";
+        }
         StringBuilder sb = new StringBuilder();
         sb.append(Strings.safeToString(objs[0], null));
         if (objs.length > 1) {

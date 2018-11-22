@@ -18,10 +18,12 @@ public class StringInputStream extends ByteArrayInputStream {
     }
     
     protected static byte[] toBytes(CharSequence str, Charset charset) {
-        if (str == null)
+        if (str == null) {
             return new byte[0];
-        if (charset == null)
+        }
+        if (charset == null) {
             charset = Encoding.CHARSET_UTF8;
+        }
         try {
             return str.toString().getBytes(charset.name());
         }

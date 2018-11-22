@@ -52,7 +52,9 @@ public class MappingNode<T> {
             // '?'
             else if ("?".equals(key)) {
                 if (quesmark == null) // 也许这个节点之前就已经有值呢
+                {
                     quesmark = new MappingNode<T>();
+                }
                 quesmark.add(obj, ss, off);
             }
             // 其它节点，加入 map
@@ -84,8 +86,9 @@ public class MappingNode<T> {
         if (null != node) {
             // 在子节点中查找
             T t = node.get(ac, ss, off + 1);
-            if (t != null)
+            if (t != null) {
                 return t;
+            }
             // 找不到的时候, 继续在当前节点找泛匹配(?或者*)
         }
 
@@ -93,16 +96,18 @@ public class MappingNode<T> {
         if (quesmark != null) {
             ac.getPathArgs().add(key);
             T t = quesmark.get(ac, ss, off + 1);
-            if (t != null)
+            if (t != null) {
                 return t;
+            }
             ac.getPathArgs().remove(ac.getPathArgs().size() - 1);
         }
 
         // 还没有则看看是否有 '*' 的匹配
         if (null != asterisk) {
             List<String> pathArgs = ac.getPathArgs();
-            while (off < ss.length)
+            while (off < ss.length) {
                 pathArgs.add(ss[off++]);
+            }
             return asterisk;
         }
 
@@ -149,6 +154,7 @@ public class MappingNode<T> {
         return get(ac, ss, 0);
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         appendTo(sb, 0);

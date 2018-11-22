@@ -18,15 +18,19 @@ public class MapListInjector implements ParamInjector {
 
     private String name;
 
+    @Override
     public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
-        if (refer == null)
+        if (refer == null) {
             return null;
+        }
         Object obj = ((Map<?,?>) refer).get(name);
-        if (obj == null)
+        if (obj == null) {
             return null;
+        }
         
-        if(obj instanceof List)
+        if(obj instanceof List) {
             return obj;
+        }
         
         List<Object> re = new ArrayList<Object>(1);
         re.add(obj);

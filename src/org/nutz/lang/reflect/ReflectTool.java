@@ -22,6 +22,7 @@ public class ReflectTool {
         PROTECTION_DOMAIN = getProtectionDomain(ReflectTool.class);
 
         AccessController.doPrivileged(new PrivilegedAction() {
+            @Override
             public Object run() {
                 try {
                     Class loader = Class.forName("java.lang.ClassLoader"); // JVM
@@ -52,6 +53,7 @@ public class ReflectTool {
             return null;
         }
         return (ProtectionDomain) AccessController.doPrivileged(new PrivilegedAction() {
+            @Override
             public Object run() {
                 return source.getProtectionDomain();
             }
@@ -72,8 +74,9 @@ public class ReflectTool {
                                      new Integer(0),
                                      new Integer(b.length),
                                      protectionDomain};
-        if (loader == null)
+        if (loader == null) {
             loader = ReflectTool.class.getClassLoader();
+        }
         Class c = (Class) DEFINE_CLASS.invoke(loader, args);
         // Force static initializers to run.
         Class.forName(className, true, loader);

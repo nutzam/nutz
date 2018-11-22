@@ -27,8 +27,9 @@ public class Header {
     }
 
     public Header set(String key, String value) {
-        if (null != key)
+        if (null != key) {
             items.put(key, value);
+        }
         return this;
     }
 
@@ -47,8 +48,9 @@ public class Header {
     }
 
     public Header addAll(Map<String, String> map) {
-        if (null != map)
+        if (null != map) {
             items.putAll(map);
+        }
         return this;
     }
 
@@ -74,15 +76,17 @@ public class Header {
 
     public String get(String key, String defaultValue) {
         String value = get(key);
-        if (value == null)
+        if (value == null) {
             return defaultValue;
+        }
         return value;
     }
 
     public int getInt(String key, int defaultValue) {
         String value = get(key);
-        if (value == null)
+        if (value == null) {
             return defaultValue;
+        }
         return Integer.parseInt(value);
     }
     
@@ -95,15 +99,17 @@ public class Header {
     }
     
     public Header asJsonContentType(String enc) {
-        if (enc == null)
+        if (enc == null) {
             enc = Charset.defaultCharset().name();
+        }
         set("Content-Type", "application/json; charset="+enc.toUpperCase());
         return this;
     }
     
     public Header asFormContentType(String enc) {
-        if (enc == null)
+        if (enc == null) {
             enc = Charset.defaultCharset().name();
+        }
         set("Content-Type", "application/x-www-form-urlencoded; charset="+enc.toUpperCase());
         return this;
     }

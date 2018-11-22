@@ -14,30 +14,38 @@ public abstract class NumberRange extends AbstractSqlExpression {
         super(name);
     }
 
+    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
         if (ids.length > 0) {
             sb.append(_fmtcol(en));
-            if (not)
+            if (not) {
                 sb.append(" NOT");
+            }
             sb.append(" IN (");
-            for (int i = 0; i < ids.length; i++)
+            for (int i = 0; i < ids.length; i++) {
                 sb.append("?,");
+            }
             sb.setCharAt(sb.length() - 1, ')');
         } //OK,无需添加.
     }
 
+    @Override
     public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
-        for (int i = 0; i < ids.length; i++)
+        for (int i = 0; i < ids.length; i++) {
             adaptors[off++] = Jdbcs.Adaptor.asLong;
+        }
         return off;
     }
 
+    @Override
     public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
-        for (long id : ids)
+        for (long id : ids) {
             params[off++] = id;
+        }
         return off;
     }
 
+    @Override
     public int paramCount(Entity<?> en) {
         return ids.length;
     }

@@ -23,15 +23,19 @@ public class EjectByGetter implements Ejecting {
         this.getter = getter;
     }
 
+    @Override
     public Object eject(Object obj) {
         try {
-            if (obj == null)
+            if (obj == null) {
                 return null;
+            }
             if (NutConf.USE_FASTCLASS) {
-                if (fm == null)
+                if (fm == null) {
                     fm = FastClassFactory.get(getter);
-                if (fm == null)
-                	return getter.invoke(obj);
+                }
+                if (fm == null) {
+                    return getter.invoke(obj);
+                }
                 return fm.invoke(obj);
             }
             return getter.invoke(obj);
@@ -40,8 +44,9 @@ public class EjectByGetter implements Ejecting {
             throw new FailToGetValueException("getter=" + getter, e);
         }
         catch (Exception e) {
-            if (log.isInfoEnabled())
+            if (log.isInfoEnabled()) {
                 log.info("Fail to value by getter", e);
+            }
             throw Lang.makeThrow(    "Fail to invoke getter %s.'%s()' %s because [%s]: %s",
                                     getter.getDeclaringClass().getName(),
                                     getter.getName(),

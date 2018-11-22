@@ -159,10 +159,12 @@ public class JsonFormat extends NutMap {
      * @return true: 该字段在忽略字段中，false: 该字段不在忽略字段中
      */
     public boolean ignore(String name) {
-        if (null != getActived())
+        if (null != getActived()) {
             return !getActived().matcher(name).find();
-        if (null != getLocked())
+        }
+        if (null != getLocked()) {
             return getLocked().matcher(name).find();
+        }
         return false;
     }
 
@@ -337,8 +339,9 @@ public class JsonFormat extends NutMap {
      */
     public char getSeparator() {
         Character separator = getAs(Function.separator, Character.class);
-        if (separator != null)
+        if (separator != null) {
             return separator;
+        }
         return DEFAULT_SEPARATOR;
     }
 

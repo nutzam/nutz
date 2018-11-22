@@ -22,6 +22,7 @@ public class FailProcessor extends ViewProcessor {
         view = evalView(config, ai, ai.getFailView());
     }
 
+    @Override
     public void process(ActionContext ac) throws Throwable {
         if (log.isWarnEnabled()) {
             String uri = Mvcs.getRequestPath(ac.getRequest());

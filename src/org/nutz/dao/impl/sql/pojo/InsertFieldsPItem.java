@@ -10,12 +10,14 @@ public class InsertFieldsPItem extends NoParamsPItem {
 
     private static final long serialVersionUID = 1L;
 
+    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
         List<MappingField> mfs = Pojos.getFieldsForInsert(_en(en), getFieldMatcher());
 
         sb.append('(');
-        for (MappingField mf : mfs)
+        for (MappingField mf : mfs) {
             sb.append(mf.getColumnNameInSql()).append(',');
+        }
 
         sb.setCharAt(sb.length() - 1, ')');
         sb.append(' ');

@@ -40,14 +40,16 @@ public abstract class AbstractSqlManager implements SqlManager {
     private boolean allowDuplicate = true;
 
     private Map<String, String> map() {
-        if (null == _sql_map)
+        if (null == _sql_map) {
             this.refresh();
+        }
         return _sql_map;
     }
 
     private List<String> keylist() {
-        if (null == _sql_keys)
+        if (null == _sql_keys) {
             this.refresh();
+        }
         return _sql_keys;
     }
 
@@ -67,20 +69,25 @@ public abstract class AbstractSqlManager implements SqlManager {
         w.close();
     }
 
+    @Override
     public String get(String key) {
         String sql = map().get(key);
-        if (null == sql)
+        if (null == sql) {
             throw new SqlNotFoundException(key);
+        }
         return sql;
     }
 
+    @Override
     public Sql create(String key) throws SqlNotFoundException {
         return Sqls.create(get(key));
     }
 
+    @Override
     public List<Sql> createCombo(String... keys) {
-        if (null == keys || keys.length == 0)
+        if (null == keys || keys.length == 0) {
             keys = this.keys();
+        }
         List<Sql> list = new ArrayList<Sql>(keys.length);
         for (String key : keys) {
             Sql sql = create(key);
@@ -89,17 +96,21 @@ public abstract class AbstractSqlManager implements SqlManager {
         return list;
     }
 
+    @Override
     public int count() {
         return map().size();
     }
 
+    @Override
     public String[] keys() {
         return keylist().toArray(new String[keylist().size()]);
     }
 
+    @Override
     public void addSql(String key, String value) {
-        if (map().containsKey(key) && !allowDuplicate)
+        if (map().containsKey(key) && !allowDuplicate) {
             throw Lang.makeThrow("duplicate key '%s'", key);
+        }
         key = Strings.trim(key);
         map().put(key, value);
         keylist().add(key);
@@ -148,8 +159,9 @@ public abstract class AbstractSqlManager implements SqlManager {
 
         void addOne() {
             String value = Strings.trim(list.popAll());
-            if (!Strings.isBlank(value))
+            if (!Strings.isBlank(value)) {
                 map.put(key, value);
+            }
             key = null;
         }
 
@@ -165,8 +177,9 @@ public abstract class AbstractSqlManager implements SqlManager {
             while (-1 != (c = reader.read())) {
                 stack.eat(c);
             }
-            if (stack.key != null)
+            if (stack.key != null) {
                 stack.addOne();
+            }
             map = stack.map;
             Streams.safeClose(reader);
         }
@@ -184,6 +197,7 @@ public abstract class AbstractSqlManager implements SqlManager {
         }
     }
 
+    @Override
     public void remove(String key) {
         this.keylist().remove(key);
         this.map().remove(key);
@@ -198,10 +212,11 @@ public abstract class AbstractSqlManager implements SqlManager {
     protected void loadSQL(Reader reader) throws IOException {
         BufferedReader bufferedReader = null;
         try {
-            if(reader instanceof BufferedReader)
-                bufferedReader = (BufferedReader)reader;
-            else
+            if(reader instanceof BufferedReader) {
+                bufferedReader = (BufferedReader) reader;
+            } else {
                 bufferedReader = new BufferedReader(reader);
+            }
             SqlFileBuilder p = new SqlFileBuilder(bufferedReader);
             _sql_keys = new ArrayList<String>(p.map.size());
             for (Entry<String, String> en : p.entrySet()) {

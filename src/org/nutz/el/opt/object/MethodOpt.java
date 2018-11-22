@@ -31,10 +31,12 @@ public class MethodOpt extends TwoTernary {
         return size;
     }
 
+    @Override
     public int fetchPriority() {
         return 1;
     }
     
+    @Override
     public void wrap(Queue<Object> rpn) {
         if(getSize() <= 0){
             left = rpn.poll();
@@ -44,6 +46,7 @@ public class MethodOpt extends TwoTernary {
         }
     }
     
+    @Override
     public Object calculate(){
         return fetchMethod().run(fetchParam());
     }
@@ -63,8 +66,9 @@ public class MethodOpt extends TwoTernary {
                 }
             }
             RunMethod run = CustomMake.me().make(left.toString());
-            if (run == null)
-                throw new ElException("no such key="+left);
+            if (run == null) {
+                throw new ElException("no such key=" + left);
+            }
             return run;
         }
         return (AccessOpt) left;
@@ -95,10 +99,12 @@ public class MethodOpt extends TwoTernary {
         return rvals;
     }
     
+    @Override
     public String fetchSelf() {
         return "method";
     }
 
+    @Override
     public String toString() {
         return super.toString() + "(" + size + ")";
     }

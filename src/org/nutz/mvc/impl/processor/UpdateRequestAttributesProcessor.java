@@ -10,6 +10,7 @@ import org.nutz.mvc.Mvcs;
  */
 public class UpdateRequestAttributesProcessor extends AbstractProcessor{
 
+    @Override
     public void process(ActionContext ac) throws Throwable {
         Mvcs.updateRequestAttributes(ac.getRequest());
         doNext(ac);

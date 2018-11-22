@@ -10,12 +10,14 @@ import org.nutz.mvc.NutConfig;
 
 public class ComboIocProvider implements IocProvider {
 
+    @Override
     public Ioc create(NutConfig config, String[] args) {
         try {
             //TODO 扩展语法
             for (int i = 0; i < args.length; i++) {
-                if (args[i].contains("${main}"))
+                if (args[i].contains("${main}")) {
                     args[i] = args[i].replace("${main}", config.getMainModule().getPackage().getName());
+                }
             }
             return new NutIoc(new ComboIocLoader(args), new ScopeContext("app"), "app");
         }

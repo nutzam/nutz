@@ -59,23 +59,29 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         super(conf);
     }
 
+    @Override
     public ValueAdaptor getAdaptor(MappingField ef) {
         Mirror<?> mirror = ef.getTypeMirror();
-        if (mirror.isBoolean())
+        if (mirror.isBoolean()) {
             return new OracleBooleanAdaptor();
-        if (mirror.isOf(Clob.class))
+        }
+        if (mirror.isOf(Clob.class)) {
             return new ClobValueAdapter2(Jdbcs.getFilePool());
-        if (mirror.isOf(Blob.class))
+        }
+        if (mirror.isOf(Blob.class)) {
             return new BlobValueAdaptor2(Jdbcs.getFilePool());
+        }
         return super.getAdaptor(ef);
     }
 
+    @Override
     public boolean createEntity(Dao dao, Entity<?> en) {
         StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
         // 创建字段
         for (MappingField mf : en.getMappingFields()) {
-            if (mf.isReadonly())
+            if (mf.isReadonly()) {
                 continue;
+            }
             sb.append('\n').append(mf.getColumnNameInSql());
             sb.append(' ').append(evalFieldType(mf));
             // 非主键的 @Name，应该加入唯一性约束
@@ -84,14 +90,19 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
             }
             // 普通字段
             else {
-                if (mf.isPk() && en.getPks().size() == 1)
+                if (mf.isPk() && en.getPks().size() == 1) {
                     sb.append(" primary key ");
-                if (mf.isNotNull())
+                }
+                if (mf.isNotNull()) {
                     sb.append(" NOT NULL");
-                if (mf.hasDefaultValue() && mf.getColumnType() != ColType.BOOLEAN)
+                }
+                if (mf.hasDefaultValue() && mf.getColumnType() != ColType.BOOLEAN) {
                     addDefaultValue(sb, mf);
+                }
                 if (mf.isUnsigned() && mf.getColumnType() != ColType.BOOLEAN) // 有点暴力
+                {
                     sb.append(" Check ( ").append(mf.getColumnNameInSql()).append(" >= 0)");
+                }
             }
             sb.append(',');
         }
@@ -135,8 +146,9 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         // }
         // 处理AutoIncreasement
         for (MappingField mf : en.getMappingFields()) {
-            if (!mf.isAutoIncreasement())
+            if (!mf.isAutoIncreasement()) {
                 continue;
+            }
             // 序列
             sqls.add(Sqls.create(gSQL(CSEQ, en.getTableName(), mf.getColumnName())));
             // 触发器
@@ -159,6 +171,7 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         return true;
     }
 
+    @Override
     public void formatQuery(Pojo pojo) {
         Pager pager = pojo.getContext().getPager();
         // 需要进行分页
@@ -183,17 +196,21 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         }
     }
 
+    @Override
     public String getDatabaseType() {
         return DB.ORACLE.name();
     }
 
+    @Override
     public String evalFieldType(MappingField mf) {
-        if (mf.getCustomDbType() != null)
+        if (mf.getCustomDbType() != null) {
             return mf.getCustomDbType();
+        }
         switch (mf.getColumnType()) {
         case BOOLEAN:
-            if (mf.hasDefaultValue())
-                return "char(1) DEFAULT '"+getDefaultValue(mf)+"' check (" + mf.getColumnNameInSql() + " in(0,1))";
+            if (mf.hasDefaultValue()) {
+                return "char(1) DEFAULT '" + getDefaultValue(mf) + "' check (" + mf.getColumnNameInSql() + " in(0,1))";
+            }
             return "char(1) check (" + mf.getColumnNameInSql() + " in(0,1))";
         case TEXT:
             return "CLOB";
@@ -201,8 +218,9 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
             return "VARCHAR2(" + mf.getWidth() + ")";
         case INT:
             // 用户自定义了宽度
-            if (mf.getWidth() > 0)
+            if (mf.getWidth() > 0) {
                 return "NUMBER(" + mf.getWidth() + ")";
+            }
             // 用数据库的默认宽度
             return "NUMBER";
 
@@ -212,8 +230,9 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
                 return "NUMBER(" + mf.getWidth() + "," + mf.getPrecision() + ")";
             }
             // 用默认精度
-            if (mf.getTypeMirror().isDouble())
+            if (mf.getTypeMirror().isDouble()) {
                 return "NUMBER(15,10)";
+            }
             return "NUMBER";
         case TIME:
         case DATETIME:
@@ -232,8 +251,9 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
     @Override
     public boolean dropEntity(Dao dao, Entity<?> en) {
         if (super.dropEntity(dao, en)) {
-            if (en.getPks().isEmpty())
+            if (en.getPks().isEmpty()) {
                 return true;
+            }
             List<Sql> sqls = new ArrayList<Sql>();
             for (MappingField pk : en.getPks()) {
                 if (pk.isAutoIncreasement()) {
@@ -250,25 +270,31 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         return false;
     }
 
+    @Override
     public boolean isSupportAutoIncrement() {
         return false;
     }
     
+    @Override
     public boolean addColumnNeedColumn() {
         return false;
     }
     
+    @Override
     public boolean supportTimestampDefault() {
         return false;
     }
     
+    @Override
     public String wrapKeywork(String columnName, boolean force) {
-        if (force || keywords.contains(columnName.toUpperCase()))
+        if (force || keywords.contains(columnName.toUpperCase())) {
             return "\"" + columnName + "\"";
+        }
         return null;
     }
     
     // https://docs.oracle.com/cd/B12037_01/server.101/b10755/statviews_1061.htm
+    @Override
     public List<String> getIndexNames(Entity<?> en, Connection conn) throws SQLException {
         List<String> names = new ArrayList<String>();
         String showIndexs = "SELECT * FROM user_indexes WHERE table_name='" + en.getTableName()+"'";

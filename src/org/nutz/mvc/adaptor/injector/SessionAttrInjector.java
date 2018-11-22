@@ -13,10 +13,12 @@ public class SessionAttrInjector extends AttrInjector {
         super(name);
     }
 
+    @Override
     public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
         HttpSession session = Mvcs.getHttpSession(false);
-        if (session == null)
-        	return null;
+        if (session == null) {
+            return null;
+        }
     	return session.getAttribute(name);
     }
 

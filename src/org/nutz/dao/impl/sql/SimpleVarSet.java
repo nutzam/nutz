@@ -17,19 +17,23 @@ class SimpleVarSet implements VarSet {
         this.map = new HashMap<String, Object>();
     }
 
+    @Override
     public VarSet set(String name, Object value) {
         map.put(name, value);
         return this;
     }
 
+    @Override
     public Object get(String name) {
         return map.get(name);
     }
 
+    @Override
     public Set<String> keys() {
         return map.keySet();
     }
 
+    @Override
     public VarSet putAll(Map<String, Object> map) {
         if (map != null) {
             this.map.putAll(map);
@@ -37,6 +41,7 @@ class SimpleVarSet implements VarSet {
         return this;
     }
 
+    @Override
     public VarSet putAll(Object pojo) {
         if (pojo != null) {
             Map<String, Object> pojoMap = Lang.obj2map(pojo);
@@ -45,6 +50,7 @@ class SimpleVarSet implements VarSet {
         return this;
     }
 
+    @Override
     public int size() {
         return map.size();
     }

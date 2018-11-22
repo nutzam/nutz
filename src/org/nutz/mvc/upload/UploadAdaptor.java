@@ -120,38 +120,46 @@ public class UploadAdaptor extends PairAdaptor {
     	return super.adapt(sc, req, resp, pathArgs);
     }
 
+    @Override
     @SuppressWarnings("deprecation")
 	protected ParamInjector evalInjectorBy(Type type, Param param) {
         // TODO 这里的实现感觉很丑, 感觉可以直接用type进行验证与传递
         // TODO 这里将Type的影响局限在了 github issue #30 中提到的局部范围
         Class<?> clazz = Lang.getTypeClass(type);
         if (clazz == null) {
-            if (log.isWarnEnabled())
+            if (log.isWarnEnabled()) {
                 log.warnf("!!Fail to get Type Class : type=%s , param=%s", type, param);
+            }
             return null;
         }
 
         // Map
-        if (Map.class.isAssignableFrom(clazz))
+        if (Map.class.isAssignableFrom(clazz)) {
             return new MapSelfInjector();
+        }
 
         String pn = null == param ? getParamRealName(curIndex) : param.value();
 
         // File
-        if (File.class.isAssignableFrom(clazz))
+        if (File.class.isAssignableFrom(clazz)) {
             return new org.nutz.mvc.upload.injector.FileInjector(pn);
+        }
         // FileMeta
-        if (FieldMeta.class.isAssignableFrom(clazz))
+        if (FieldMeta.class.isAssignableFrom(clazz)) {
             return new org.nutz.mvc.upload.injector.FileMetaInjector(pn);
+        }
         // TempFile
-        if (TempFile.class.isAssignableFrom(clazz))
+        if (TempFile.class.isAssignableFrom(clazz)) {
             return new TempFileInjector(pn);
+        }
         // InputStream
-        if (InputStream.class.isAssignableFrom(clazz))
+        if (InputStream.class.isAssignableFrom(clazz)) {
             return new InputStreamInjector(pn);
+        }
         // Reader
-        if (Reader.class.isAssignableFrom(clazz))
+        if (Reader.class.isAssignableFrom(clazz)) {
             return new ReaderInjector(pn);
+        }
         // List
         //if (List.class.isAssignableFrom(clazz)) {
         //    if (!Strings.isBlank(paramName) && paramName.startsWith("::"))
@@ -165,6 +173,7 @@ public class UploadAdaptor extends PairAdaptor {
         return super.evalInjectorBy(type, param);
     }
 
+    @Override
     public Map<String, Object> getReferObject(ServletContext sc,
                                               HttpServletRequest request,
                                               HttpServletResponse response,
@@ -180,15 +189,17 @@ public class UploadAdaptor extends PairAdaptor {
                 throw new UploadException("Content-Type is NULL!!");
             }
             if (contentType.contains("multipart/form-data")) { // 普通表单上传
-                if (log.isDebugEnabled())
+                if (log.isDebugEnabled()) {
                     log.debug("Select Html4 Form upload parser --> " + request.getRequestURI());
+                }
                 Uploading ing = new FastUploading();
                 return ing.parse(request, context);
             }
             if (contentType.contains("application/octet-stream")) { // Html5
                                                                     // 流式上传
-                if (log.isDebugEnabled())
+                if (log.isDebugEnabled()) {
                     log.debug("Select Html5 Stream upload parser --> " + request.getRequestURI());
+                }
                 Uploading ing = new Html5Uploading();
                 return ing.parse(request, context);
             }

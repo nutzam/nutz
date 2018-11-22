@@ -13,12 +13,15 @@ public class FileMetaInjector extends AbstractUploadInjector {
         super(name);
     }
 
+    @Override
     public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
-        if (refer == null)
+        if (refer == null) {
             return null;
+        }
         TempFile tmp = getTempFile(refer, name);
-        if (tmp == null)
-        	return null;
+        if (tmp == null) {
+            return null;
+        }
         return tmp.getMeta();
     }
 

@@ -14,9 +14,11 @@ import org.nutz.el.opt.TwoTernary;
  *
  */
 public class ArrayOpt extends TwoTernary {
+    @Override
     public int fetchPriority() {
         return 1;
     }
+    @Override
     @SuppressWarnings("rawtypes")
     public Object calculate() {
         Object lval = calculateItem(left);
@@ -34,6 +36,7 @@ public class ArrayOpt extends TwoTernary {
         
         return Array.get(lval, (Integer)rval);
     }
+    @Override
     public String fetchSelf() {
         return "[";
     }

@@ -26,10 +26,12 @@ public class InsertByChainPItem extends AbstractPItem {
             i++;
             c = c.next();
         }
-        if (i == 0)
+        if (i == 0) {
             throw Lang.makeThrow("Insert empty chain!");
+        }
     }
 
+    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
         // 字段名部分
         sb.append(" (").append(_colname(en, 0));
@@ -44,33 +46,40 @@ public class InsertByChainPItem extends AbstractPItem {
         sb.append(')');
     }
 
+    @Override
     public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
-        for (int i = 0; i < names.length; i++)
+        for (int i = 0; i < names.length; i++) {
             adaptors[off++] = _adaptor(en, i);
+        }
         return off;
     }
 
+    @Override
     public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
-        for (int i = 0; i < values.length; i++)
+        for (int i = 0; i < values.length; i++) {
             params[off++] = values[i];
+        }
         return off;
     }
 
+    @Override
     public int paramCount(Entity<?> en) {
         return values.length;
     }
 
     private String _colname(Entity<?> en, int index) {
     	MappingField field = en.getField(names[index]);
-    	if (field == null)
-    		throw new IllegalArgumentException(String.format("Class %s didn't have field named (%s)", en.getType(), names[index]));
+    	if (field == null) {
+            throw new IllegalArgumentException(String.format("Class %s didn't have field named (%s)", en.getType(), names[index]));
+        }
         return field.getColumnNameInSql();
     }
     
     private ValueAdaptor _adaptor(Entity<?> en, int index) {
         MappingField field = en.getField(names[index]);
-        if (field == null)
+        if (field == null) {
             throw new IllegalArgumentException(String.format("Class %s didn't have field named (%s)", en.getType(), names[index]));
+        }
         return field.getAdaptor();
     }
 }

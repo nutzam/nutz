@@ -13,8 +13,9 @@ public class LongRange extends NumberRange {
     LongRange(String name, Long[] ids) {
     	super(name);
     	this.ids =  new long[ids.length];
-    	for (int i = 0; i < ids.length; i++)
-    		this.ids[i] = ids[i];
+    	for (int i = 0; i < ids.length; i++) {
+            this.ids[i] = ids[i];
+        }
     	this.not = false;
     }
 

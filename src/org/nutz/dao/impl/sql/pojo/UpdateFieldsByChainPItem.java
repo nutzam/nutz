@@ -17,6 +17,7 @@ public class UpdateFieldsByChainPItem extends AbstractPItem {
         this.chain = chain;
     }
 
+    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
         if (chain.size() > 0) {
             sb.append(" SET ");
@@ -56,38 +57,44 @@ public class UpdateFieldsByChainPItem extends AbstractPItem {
         }
     }
 
+    @Override
     public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
         Chain c = chain.head();
         while (c != null) {
             if (!c.special()) {
                 MappingField mf = en.getField(c.name());
                 // TODO 移除这种数组下标用++的写法!!!
-                if (c.adaptor() == null)
+                if (c.adaptor() == null) {
                     adaptors[off++] = (null == mf ? Jdbcs.getAdaptorBy(c.value()) : mf.getAdaptor());
-                else
+                } else {
                     adaptors[off++] = c.adaptor();
+                }
             }
             c = c.next();
         }
         return off;
     }
 
+    @Override
     public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
         Chain c = chain.head();
         while (c != null) {
-            if (!c.special())
+            if (!c.special()) {
                 params[off++] = c.value();
+            }
             c = c.next();
         }
         return off;
     }
 
+    @Override
     public int paramCount(Entity<?> en) {
         int count = 0;
         Chain c = chain.head();
         while (c != null) {
-            if (!c.special())
+            if (!c.special()) {
                 count++;
+            }
             c = c.next();
         }
         return count;

@@ -18,12 +18,15 @@ public class StaticPItem extends NoParamsPItem {
         this.tidy = tidy;
     }
 
+    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
         sb.append(str);
-        if (!tidy)
+        if (!tidy) {
             sb.append(' ');
+        }
     }
 
+    @Override
     public String toString() {
         return str;
     }

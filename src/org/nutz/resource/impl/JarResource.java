@@ -21,20 +21,24 @@ public class JarResource extends NutResource {
         priority = 50;
     }
     
+    @Override
     public InputStream getInputStream() throws IOException {
         ZipInputStream zis = Scans.makeZipInputStream(jarPath);
         ZipEntry ens = null;
         while (null != (ens = zis.getNextEntry())) {
-            if (ens.getName().equals(entryName))
+            if (ens.getName().equals(entryName)) {
                 return zis;
+            }
         }
         throw Lang.impossible();
     }
     
+    @Override
     public int hashCode() {
         return (jarPath + ":" + entryName).hashCode();
     }
     
+    @Override
     public String toString() {
         return String.format("Jar[%s:%s]", jarPath, entryName);
     }

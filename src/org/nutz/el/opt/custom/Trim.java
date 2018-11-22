@@ -12,6 +12,7 @@ import org.nutz.plugin.Plugin;
  *
  */
 public class Trim implements RunMethod, Plugin{
+    @Override
     public Object run(List<Object> fetchParam) {
         if(fetchParam.size() <= 0){
             throw new ElException("trim方法参数错误");
@@ -20,10 +21,12 @@ public class Trim implements RunMethod, Plugin{
         return obj.trim();
     }
 
+    @Override
     public boolean canWork() {
         return true;
     }
 
+    @Override
     public String fetchSelf() {
         return "trim";
     }

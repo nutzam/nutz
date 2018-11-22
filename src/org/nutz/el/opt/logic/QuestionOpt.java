@@ -13,20 +13,25 @@ import org.nutz.el.opt.TwoTernary;
  * @author juqkai(juqkai@gmail.com)
  */
 public class QuestionOpt extends TwoTernary {
+    @Override
     public int fetchPriority() {
         return 13;
     }
 
+    @Override
     public Object calculate() {
         Object obj = getLeft();
-        if (null == obj)
+        if (null == obj) {
             return false;
-        if (obj instanceof Boolean)
+        }
+        if (obj instanceof Boolean) {
             return (Boolean) obj;
+        }
         // throw new ElException("三元表达式错误! --> " + obj);
         return Castors.me().castTo(obj, Boolean.class);
     }
 
+    @Override
     public String fetchSelf() {
         return "?";
     }

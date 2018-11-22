@@ -38,8 +38,9 @@ public class ActionInvoker {
      *            动作链
      */
     public void addChain(String httpMethod, ActionChain chain) {
-        if (Strings.isBlank(httpMethod))
+        if (Strings.isBlank(httpMethod)) {
             throw Lang.makeThrow("chain need a valid HTTP Method, but is is '%s'", httpMethod);
+        }
         ActionChain old = chainMap.put(httpMethod.toUpperCase(), chain);
         if (old != null) {
             log.warnf("Duplicate @At mapping with same HttpMethod");
@@ -60,8 +61,9 @@ public class ActionInvoker {
     public boolean invoke(ActionContext ac) {
         ActionChain chain = getActionChain(ac);
         if (chain == null) {
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debugf("Not chain for req (path=%s, method=%s)", ac.getPath(), ac.getRequest().getMethod());
+            }
             return false;
         }
         chain.doChain(ac);

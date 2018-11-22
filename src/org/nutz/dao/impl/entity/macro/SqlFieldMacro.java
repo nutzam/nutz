@@ -46,16 +46,18 @@ public class SqlFieldMacro extends NutPojo {
         super.setOperatingObject(obj);
         if (null != obj) {
             Entity<?> en = entityField.getEntity();
-            if (!en.getType().isInstance(obj))
-                throw Lang.makeThrow(    "Invalid operating object '%s' for field '%s'",
-                                        obj.getClass().getName(),
-                                        entityField.toString());
+            if (!en.getType().isInstance(obj)) {
+                throw Lang.makeThrow("Invalid operating object '%s' for field '%s'",
+                        obj.getClass().getName(),
+                        entityField.toString());
+            }
 
             prepareVarParam(sql);
         }
         return this;
     }
 
+    @Override
     public void onAfter(Connection conn, ResultSet rs, Statement stmt) throws SQLException {
         if (rs != null && rs.next()) {
             String colName = rs.getMetaData().getColumnName(1);
@@ -64,18 +66,22 @@ public class SqlFieldMacro extends NutPojo {
         }
     }
 
+    @Override
     public SqlType getSqlType() {
         return sql.getSqlType();
     }
 
+    @Override
     public ValueAdaptor[] getAdaptors() {
         return sql.getAdaptors();
     }
 
+    @Override
     public Object[][] getParamMatrix() {
         return _parseSQL().getParamMatrix();
     }
 
+    @Override
     public String toPreparedStatement() {
         return _parseSQL().toPreparedStatement();
     }
@@ -92,8 +98,9 @@ public class SqlFieldMacro extends NutPojo {
     }
 
     private Sql _parseSQL() {
-        if (!shallDuplicate)
+        if (!shallDuplicate) {
             return sql;
+        }
         Sql sql = this.sql.duplicate();
         prepareVarParam(sql);
         return sql;
@@ -101,26 +108,27 @@ public class SqlFieldMacro extends NutPojo {
 
     protected void prepareVarParam(Sql sql) {
         for (String name : sql.varIndex().names()) {
-            if ("view".equals(name))
+            if ("view".equals(name)) {
                 sql.vars().set("view", getEntity().getViewName());
-            else if ("table".equals(name))
+            } else if ("table".equals(name)) {
                 sql.vars().set("table", getEntity().getTableName());
-            else if ("field".equals(name))
+            } else if ("field".equals(name)) {
                 sql.vars().set("field", entityField.getColumnName());
-            else {
+            } else {
                 sql.vars().set(name, getFieldVale(name, getOperatingObject()));
             }
         }
 
         for (String name : sql.paramIndex().names()) {
-            if ("view".equals(name))
+            if ("view".equals(name)) {
                 sql.params().set("view", getEntity().getViewName());
-            else if ("table".equals(name))
+            } else if ("table".equals(name)) {
                 sql.params().set("table", getEntity().getTableName());
-            else if ("field".equals(name))
+            } else if ("field".equals(name)) {
                 sql.params().set("field", entityField.getColumnName());
-            else
+            } else {
                 sql.params().set(name, getFieldVale(name, getOperatingObject()));
+            }
         }
     }
     

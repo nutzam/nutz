@@ -6,8 +6,9 @@ public class Object2Boolean extends Castor<Object, Boolean> {
 
     @Override
     public Boolean cast(Object src, Class<?> toType, String... args) {
-        if (null == src)
+        if (null == src) {
             return Boolean.FALSE;
+        }
 
         return true;
     }

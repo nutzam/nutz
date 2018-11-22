@@ -58,8 +58,9 @@ public abstract class NameEntityService<T> extends EntityService<T> {
      */
     public boolean exists(String name) {
         EntityField ef = getEntity().getNameField();
-        if (null == ef)
+        if (null == ef) {
             return false;
+        }
         return dao().count(getEntityClass(), Cnd.where(ef.getName(), "=", name)) > 0;
     }
 

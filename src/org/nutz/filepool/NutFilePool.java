@@ -31,10 +31,11 @@ public class NutFilePool implements FilePool {
         this.size = size;
         this.home = Files.createDirIfNoExists(homePath);
 
-        if (!home.isDirectory())
-            throw Lang.makeThrow(    "Path error '%s'! ,You must declare a real directory as the '%s' home folder.",
-                                    homePath,
-                                    this.getClass().getName());
+        if (!home.isDirectory()) {
+            throw Lang.makeThrow("Path error '%s'! ,You must declare a real directory as the '%s' home folder.",
+                    homePath,
+                    this.getClass().getName());
+        }
 
         home = new File(Disks.normalize(homePath));
 
@@ -43,44 +44,52 @@ public class NutFilePool implements FilePool {
         }
 
         cursor = foundMax(home, home, 0);
-        if (cursor < 0)
+        if (cursor < 0) {
             cursor = 0;
+        }
 
-        if (log.isInfoEnabled())
+        if (log.isInfoEnabled()) {
             log.infof("file-pool.cursor: %s", cursor);
+        }
     }
 
     private File home;
     private long cursor;
     private long size;
 
+    @Override
     public void clear() {
         Files.deleteDir(home);
         Files.makeDir(home);
         cursor = 0;
     }
 
+    @Override
     public File createFile(String suffix) {
-        if (size > 0 && cursor >= size)
+        if (size > 0 && cursor >= size) {
             cursor = -1;
+        }
         long id = ++cursor;
-        if (size > 0 && id >= size)
+        if (size > 0 && id >= size) {
             Lang.makeThrow("Id (%d) is out of range (%d)", id, size);
+        }
         File re = Pools.getFileById(home, id, suffix);
-        if (!re.exists())
+        if (!re.exists()) {
             try {
                 Files.createNewFile(re);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw Lang.wrapThrow(e);
             }
+        }
         return re;
     }
 
+    @Override
     public long current() {
         return cursor;
     }
 
+    @Override
     public long getFileId(File f) {
         try {
             return Pools.getFileId(home, f);
@@ -90,46 +99,55 @@ public class NutFilePool implements FilePool {
         }
     }
 
+    @Override
     public File removeFile(long fId, String suffix) {
         File f = Pools.getFileById(home, fId, suffix);
         Files.deleteFile(f);
         return f;
     }
 
+    @Override
     public boolean hasFile(long fId, String suffix) {
         File f = Pools.getFileById(home, fId, suffix);
         return f.exists();
     }
 
+    @Override
     public File getFile(long fId, String suffix) {
         File f = Pools.getFileById(home, fId, suffix);
-        if (!f.exists())
+        if (!f.exists()) {
             return null;
+        }
         return f;
     }
 
+    @Override
     public File returnFile(long fId, String suffix) {
         File f = Pools.getFileById(home, fId, suffix);
-        if (!f.exists())
+        if (!f.exists()) {
             try {
                 Files.createNewFile(f);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw Lang.wrapThrow(e);
             }
+        }
         return f;
     }
 
+    @Override
     public File createDir() {
-        if (size > 0 && cursor >= size)
+        if (size > 0 && cursor >= size) {
             cursor = -1;
+        }
         long id = ++cursor;
-        if (size > 0 && id >= size)
+        if (size > 0 && id >= size) {
             Lang.makeThrow("Id (%d) is out of range (%d)", id, size);
+        }
 
         return Files.createDirIfNoExists(Pools.getFilePathById(home, id, null));
     }
 
+    @Override
     public File removeDir(long fId) {
         File f = Pools.getFileById(home, fId, null);
         if (f.isDirectory()) {
@@ -140,22 +158,27 @@ public class NutFilePool implements FilePool {
         return f;
     }
 
+    @Override
     public boolean hasDir(long fId) {
         File f = Pools.getFileById(home, fId, null);
         return f.exists();
     }
 
+    @Override
     public File getDir(long fId) {
         File f = Pools.getFileById(home, fId, null);
-        if (!f.exists())
+        if (!f.exists()) {
             return null;
+        }
         return f;
     }
 
+    @Override
     public File returnDir(long fId) {
         File f = Pools.getFileById(home, fId, null);
-        if (!f.exists())
+        if (!f.exists()) {
             Files.makeDir(f);
+        }
         return f;
     }
     
@@ -186,13 +209,15 @@ public class NutFilePool implements FilePool {
     protected static long foundMax(File home, File current, int level) {
         // 最后一层了
         if (level == 8) {
-            if (current.isDirectory())
+            if (current.isDirectory()) {
                 return -1;
+            }
             //System.out.println("found File!! "+current);
             return Pools.getFileId(home, current);
         }
-        if (!current.isDirectory())
+        if (!current.isDirectory()) {
             return -1;
+        }
         int next_level = level+1;
         List<String> names = new ArrayList<String>();
         

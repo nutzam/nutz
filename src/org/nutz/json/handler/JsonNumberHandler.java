@@ -15,22 +15,26 @@ import org.nutz.lang.Mirror;
  */
 public class JsonNumberHandler extends JsonTypeHandler {
 
+    @Override
     public boolean supportFromJson(Mirror<?> mirror, Object obj) {
         return mirror.isNumber();
     }
 
+    @Override
     public boolean supportToJson(Mirror<?> mirror, Object obj, JsonFormat jf) {
         return Mirror.me(obj).isNumber();
     }
 
+    @Override
     public void toJson(Mirror<?> mirror, Object currentObj, JsonRender r, JsonFormat jf) throws IOException {
         String tmp = currentObj.toString();
         if (tmp.equals("NaN")) {
             // TODO 怎样才能应用上JsonFormat中是否忽略控制呢?
             // 因为此时已经写入了key:
             r.writeRaw("null");
-        } else
+        } else {
             r.writeRaw(tmp);
+        }
     }
 
     @Override

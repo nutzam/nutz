@@ -21,6 +21,7 @@ public class ViewWrapper implements View {
 
     private Object data;
 
+    @Override
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
             throws Throwable {
         view.render(req, resp, data);

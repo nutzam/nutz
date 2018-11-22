@@ -21,6 +21,7 @@ public abstract class AbstractProcessor implements Processor {
     /**
      * 建议覆盖这个方法,以便从NutConfig/ActionInfo获取需要的信息
      */
+    @Override
     public void init(NutConfig config, ActionInfo ai) throws Throwable {
     }
 
@@ -29,6 +30,7 @@ public abstract class AbstractProcessor implements Processor {
      * <p/><b>一般情形下都不应该覆盖这个方法<b>
      * @param next 下一个Processor,一般不为null
      */
+    @Override
     public void setNext(Processor next) {
         this.next = next;
     }
@@ -40,8 +42,9 @@ public abstract class AbstractProcessor implements Processor {
      * @throws Throwable
      */
     protected void doNext(ActionContext ac) throws Throwable {
-        if (null != next)
+        if (null != next) {
             next.process(ac);
+        }
     }
 
     protected static <T> T evalObj(NutConfig config, ObjectInfo<T> info) {
@@ -59,6 +62,7 @@ public abstract class AbstractProcessor implements Processor {
         }
     }
     
+    @Override
     public Processor getNext() {
         return next;
     }

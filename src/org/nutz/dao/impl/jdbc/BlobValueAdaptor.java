@@ -18,10 +18,12 @@ public class BlobValueAdaptor extends AbstractFileValueAdaptor {
         suffix = ".blob";
     }
 
+    @Override
     public Object get(ResultSet rs, String colName) throws SQLException {
         Blob blob = rs.getBlob(colName);
-        if (blob == null)
+        if (blob == null) {
             return null;
+        }
         File f = this.createTempFile();
         Files.write(f, blob.getBinaryStream());
         return new SimpleBlob(f);
@@ -29,13 +31,15 @@ public class BlobValueAdaptor extends AbstractFileValueAdaptor {
 
     public Object get(ResultSet rs, int columnIndex) throws SQLException {
         Blob blob = rs.getBlob(columnIndex);
-        if (blob == null)
+        if (blob == null) {
             return null;
+        }
         File f = this.createTempFile();
         Files.write(f, blob.getBinaryStream());
         return new SimpleBlob(f);
     }
 
+    @Override
     public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
         if (null == obj) {
             stat.setNull(i, Types.BLOB);

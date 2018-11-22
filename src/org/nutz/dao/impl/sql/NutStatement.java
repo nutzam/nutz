@@ -41,59 +41,73 @@ public abstract class NutStatement implements DaoStatement {
         this.context = new SqlContext();
     }
 
+    @Override
     public boolean isSelect() {
         return SqlType.SELECT == sqlType;
     }
 
+    @Override
     public boolean isUpdate() {
         return SqlType.UPDATE == sqlType;
     }
 
+    @Override
     public boolean isDelete() {
         return SqlType.DELETE == sqlType;
     }
 
+    @Override
     public boolean isInsert() {
         return SqlType.INSERT == sqlType;
     }
 
+    @Override
     public boolean isCreate() {
         return SqlType.CREATE == sqlType;
     }
 
+    @Override
     public boolean isDrop() {
         return SqlType.DROP == sqlType;
     }
 
+    @Override
     public boolean isRun() {
         return SqlType.RUN == sqlType;
     }
 
+    @Override
     public boolean isAlter() {
         return SqlType.ALTER == sqlType;
     }
     
+    @Override
     public boolean isExec() {
     	return SqlType.EXEC == sqlType;
     }
     
+    @Override
     public boolean isCall() {
     	return SqlType.CALL == sqlType;
     }
 
+    @Override
     public boolean isOther() {
         return SqlType.OTHER == sqlType;
     }
 
+    @Override
     public Entity<?> getEntity() {
         return entity;
     }
 
+    @Override
     public DaoStatement setEntity(Entity<?> entity) {
         this.entity = entity;
         return this;
     }
 
+    @Override
     public SqlContext getContext() {
         return context;
     }
@@ -102,6 +116,7 @@ public abstract class NutStatement implements DaoStatement {
         this.context = context;
     }
 
+    @Override
     public SqlType getSqlType() {
         return sqlType;
     }
@@ -111,85 +126,106 @@ public abstract class NutStatement implements DaoStatement {
         return this;
     }
 
+    @Override
     public Object getResult() {
         return context.getResult();
     }
 
     // TODO 是不是太暴力了涅~~~ --> 不是一般的暴力!!
+    @Override
     @SuppressWarnings("unchecked")
     public <T> List<T> getList(Class<T> classOfT) {
         Object re = getResult();
-        if (re == null)
+        if (re == null) {
             return null;
+        }
         if (re.getClass().isArray()) {
             return Lang.array2list(re, classOfT);
         }
         return (List<T>) re;// TODO 考虑先遍历转换一次
     }
 
+    @Override
     public <T> T getObject(Class<T> classOfT) {
         return Castors.me().castTo(getResult(), classOfT);
     }
 
+    @Override
     public int getInt() {
         return getNumber().intValue();
     }
     
+    @Override
     public int getInt(int defaultValue) {
         Number re = getNumber();
-        if (re == null)
+        if (re == null) {
             return defaultValue;
+        }
         return re.intValue();
     }
 
+    @Override
     public long getLong() {
         return getNumber().longValue();
     }
+    @Override
     public long getLong(long defaultValue) {
         Number re = getNumber();
-        if (re == null)
+        if (re == null) {
             return defaultValue;
+        }
         return re.longValue();
     }
 
+    @Override
     public double getDouble() {
         return getNumber().doubleValue();
     }
 
+    @Override
     public double getDouble(double defaultValue) {
         Number re = getNumber();
-        if (re == null)
+        if (re == null) {
             return defaultValue;
+        }
         return re.doubleValue();
     }
 
+    @Override
     public float getFloat() {
         return getNumber().floatValue();
     }
 
+    @Override
     public float getFloat(float defaultValue) {
         Number re = getNumber();
-        if (re == null)
+        if (re == null) {
             return defaultValue;
+        }
         return re.floatValue();
     }
 
+    @Override
     public Number getNumber() {
     	return getObject(Number.class);
     }
 
+    @Override
     public String getString() {
         return getObject(String.class);
     }
 
+    @Override
     public boolean getBoolean() {
         return getObject(Boolean.class);
     }
 
+    @Override
     public int getUpdateCount() {
         return context.getUpdateCount();
     }
 
+    @Override
     public String forPrint() {
         String sql = this.toPreparedStatement();
         StringBuilder sb = new StringBuilder(sql);
@@ -201,14 +237,16 @@ public abstract class NutStatement implements DaoStatement {
                 // 计算每列最大宽度，以及获取列参数的内容
                 int[] maxes = new int[mtrx[0].length];
                 String[][] sss = new String[mtrx.length][mtrx[0].length];
-                for (int row = 0; row < mtrx.length; row++)
+                for (int row = 0; row < mtrx.length; row++) {
                     for (int col = 0; col < mtrx[0].length; col++) {
                         String s = param2String(mtrx[row][col]);
                         maxes[col] = Math.max(maxes[col], s.length());
-                        if (format.getParamLengthLimit() > 0 && maxes[col] > format.getParamLengthLimit())
+                        if (format.getParamLengthLimit() > 0 && maxes[col] > format.getParamLengthLimit()) {
                             maxes[col] = format.getParamLengthLimit();
+                        }
                         sss[row][col] = s;
                     }
+                }
                 // 输出表头
                 sb.append("\n    |");
                 for (int i = 0; i < mtrx[0].length; i++) {
@@ -235,8 +273,9 @@ public abstract class NutStatement implements DaoStatement {
                     }
                 }
 
-                if (maxRow != mtrx.length)
+                if (maxRow != mtrx.length) {
                     sb.append("\n -- Only display first " + maxRow + " lines , don't show the remaining record(count=" + mtrx.length + ")");
+                }
             }
             if (format.isPrintExample()) {
                 // 输出可执行的 SQL 语句, TODO 格式非常不好看!!如果要复制SQL,很麻烦!!!
@@ -270,17 +309,19 @@ public abstract class NutStatement implements DaoStatement {
                 }
             }
         }
-        for (; i < ss.length; i++)
-        	sb.append(ss[i]);
+        for (; i < ss.length; i++) {
+            sb.append(ss[i]);
+        }
         return sb.toString();
     }
 
     protected String param2String(Object obj) {
-        if (obj == null)
+        if (obj == null) {
             return "NULL";
-        if (obj instanceof CharSequence)
+        }
+        if (obj instanceof CharSequence) {
             return obj.toString();
-        else {
+        } else {
             if (obj instanceof Blob) {
                 Blob blob = (Blob) obj;
                 if (blob instanceof SimpleBlob) {
@@ -313,27 +354,33 @@ public abstract class NutStatement implements DaoStatement {
         }
     }
 
+    @Override
     public void forceExecQuery() {
     	this.sqlType = SqlType.SELECT;
     }
     
+    @Override
     public boolean isForceExecQuery() {
     	return isSelect();
     }
 
+    @Override
     public String toString() {
         return toStatement(this.getParamMatrix(), this.toPreparedStatement());
     }
     
+    @Override
     public void setExpert(JdbcExpert expert) {
         this.expert = expert;
     }
     
     protected ValueAdaptor getAdapterBy(Object value) {
-        if (value == null)
+        if (value == null) {
             return Jdbcs.Adaptor.asNull;
-        if (expert == null)
+        }
+        if (expert == null) {
             return Jdbcs.getAdaptorBy(value);
+        }
         NutMappingField mf = new NutMappingField(entity);
         mf.setType(value.getClass());
         Jdbcs.guessEntityFieldColumnType(mf);

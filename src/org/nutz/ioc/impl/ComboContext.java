@@ -26,63 +26,78 @@ public class ComboContext implements IocContext {
     public ComboContext(IocContext... contexts) {
         ArrayList<IocContext> tmp = new ArrayList<IocContext>(contexts.length);
         for (IocContext iocContext : contexts) {
-            if (tmp.contains(iocContext))
+            if (tmp.contains(iocContext)) {
                 continue;
+            }
             if (iocContext instanceof ComboContext){
                 ComboContext comboContext = (ComboContext)iocContext;
                 for (IocContext iocContext2 : comboContext.contexts) {
-                    if (tmp.contains(iocContext2))
+                    if (tmp.contains(iocContext2)) {
                         continue;
+                    }
                     tmp.add(iocContext2);
                 }
             }
-            else
+            else {
                 tmp.add(iocContext);
+            }
         }
         this.contexts = tmp.toArray(new IocContext[tmp.size()]);
     }
 
+    @Override
     public ObjectProxy fetch(String key) {
         for (IocContext c : contexts) {
             ObjectProxy re = c.fetch(key);
-            if (null != re)
+            if (null != re) {
                 return re;
+            }
         }
         return null;
     }
 
+    @Override
     public boolean save(String scope, String name, ObjectProxy obj) {
         boolean re = false;
-        for (IocContext c : contexts)
+        for (IocContext c : contexts) {
             re |= c.save(scope, name, obj);
+        }
         return re;
     }
 
+    @Override
     public boolean remove(String scope, String name) {
         boolean re = false;
-        for (IocContext c : contexts)
+        for (IocContext c : contexts) {
             re |= c.remove(scope, name);
+        }
         return re;
     }
 
+    @Override
     public void clear() {
-        for (IocContext c : contexts)
+        for (IocContext c : contexts) {
             c.clear();
+        }
     }
 
+    @Override
     public void depose() {
-        for (IocContext c : contexts)
+        for (IocContext c : contexts) {
             c.depose();
+        }
     }
 
     public IocContext[] getContexts() {
         return contexts;
     }
     
+    @Override
     public Set<String> names() {
         Set<String> list = new HashSet<String>();
-        for (IocContext c : contexts)
+        for (IocContext c : contexts) {
             list.addAll(c.names());
+        }
         return list;
     }
 }

@@ -18,15 +18,19 @@ public class SimpleExpression extends AbstractSqlExpression {
         this.value = val;
     }
 
+    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
-        if (not)
+        if (not) {
             sb.append(" NOT ");
-        if ("=".equals(op) || ">".equals(op) || "<".equals(op) || "!=".equals(op))
+        }
+        if ("=".equals(op) || ">".equals(op) || "<".equals(op) || "!=".equals(op)) {
             sb.append(_fmtcol(en)).append(op).append('?');
-        else
+        } else {
             sb.append(_fmtcol(en)).append(' ').append(op).append(' ').append('?');
+        }
     }
 
+    @Override
     public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
         MappingField mf = _field(en);
         if (null != mf) {
@@ -37,11 +41,13 @@ public class SimpleExpression extends AbstractSqlExpression {
         return off;
     }
 
+    @Override
     public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
         params[off++] = value;
         return off;
     }
 
+    @Override
     public int paramCount(Entity<?> en) {
         return 1;
     }

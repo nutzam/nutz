@@ -6,6 +6,7 @@ public class SqlTypePItem extends NoParamsPItem {
 
     private static final long serialVersionUID = 1L;
 
+    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
         switch (getSqlType()) {
         case INSERT:

@@ -24,55 +24,69 @@ public class EntityObjectContext extends AbstractContext {
         this.obj = obj;
     }
 
+    @Override
     public int size() {
         return ext.size();
     }
 
+    @Override
     public Context set(String name, Object value) {
         MappingField field = en.getField(name);
-        if (field != null && !("view".equals(name) || "field".equals(name)))
+        if (field != null && !("view".equals(name) || "field".equals(name))) {
             field.setValue(obj, value);
-        else
+        } else {
             ext.put(name, value);
+        }
         return this;
     }
 
+    @Override
     public Set<String> keys() {
         Set<String> names = new HashSet<String>(en.getMappingFields().size());
         names.add(ME);
-        for (MappingField mf : en.getMappingFields())
+        for (MappingField mf : en.getMappingFields()) {
             names.add(mf.getName());
+        }
         names.addAll(ext.keySet());
         return names;
     }
 
+    @Override
     public boolean has(String key) {
-        if (ME.equals(key))
+        if (ME.equals(key)) {
             return true;
-        if (en.getField(key) != null)
+        }
+        if (en.getField(key) != null) {
             return true;
+        }
         return ext.containsKey(key);
     }
 
+    @Override
     public Context clear() {
         obj = en.getMirror().born();
         ext.clear();
         return this;
     }
 
+    @Override
     public Object get(String name) {
-        if (ME.equals(name))
+        if (ME.equals(name)) {
             return obj;
+        }
         MappingField field = en.getField(name);
-        if (field != null)
+        if (field != null) {
             return field.getValue(obj);
+        }
         return ext.get(name);
     }
 
+    @Override
     public EntityObjectContext clone() {
         EntityObjectContext eoc = new EntityObjectContext(en, obj);
-        if (!this.ext.isEmpty())
+        if (!this.ext.isEmpty()) {
             eoc.ext = new HashMap<String, Object>(this.ext);
+        }
         return eoc;
     }
 }

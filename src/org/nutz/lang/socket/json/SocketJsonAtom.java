@@ -28,6 +28,7 @@ public class SocketJsonAtom extends SocketAtom {
             SocketActionTable saTable) {
         super(context, socket, saTable);
     }
+    @Override
     @SuppressWarnings("unchecked")
     public void doRun() throws IOException {
         StringBuilder sb = new StringBuilder();
@@ -35,40 +36,47 @@ public class SocketJsonAtom extends SocketAtom {
         line = br.readLine();
         // 在这个 socket 中逐行读取 ...
         while (null != line) {
-            if (context.getBoolean("stop"))
+            if (context.getBoolean("stop")) {
                 return;
+            }
             
             sb.append(line).append('\n');
             // 前面有空行
-            if (Strings.isBlank(line))
+            if (Strings.isBlank(line)) {
                 break;
+            }
             // 接着读 ...
             line = br.readLine();
         }
         // 打印信息
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("  <<socket<<: " + sb);
+        }
 
         // 解析成 JSON
         try {
             LinkedHashMap<String, Object> map = Json.fromJson(LinkedHashMap.class, sb.toString());
             if (map == null) {
-                if (log.isWarnEnabled())
+                if (log.isWarnEnabled()) {
                     log.warn("Null data ???!!");
+                }
                 return;
             }
             SocketAction action = saTable.get(map.get("cmd").toString());
             if (null != action) {
-                if (log.isDebugEnabled())
-                    log.debugf("handle request by "+ action);
+                if (log.isDebugEnabled()) {
+                    log.debugf("handle request by " + action);
+                }
                 SocketContext context = new SocketContext(this);
                 context.set("json_data", map);
                 action.run(context);
-                if (log.isDebugEnabled())
-                    log.debugf("finish request by "+ action);
+                if (log.isDebugEnabled()) {
+                    log.debugf("finish request by " + action);
+                }
             } else {
-                if (log.isWarnEnabled())
-                    log.warn("Unknown CMD="+map.get("cmd"));
+                if (log.isWarnEnabled()) {
+                    log.warn("Unknown CMD=" + map.get("cmd"));
+                }
                 Writer writer = Streams.utf8w(ops);
                 Map<String, Object> x = new HashMap<String, Object>();
                 x.put("ok", false);
@@ -78,14 +86,16 @@ public class SocketJsonAtom extends SocketAtom {
                     writer.close();
                 }
                 catch (IOException e) {
-                    if (log.isWarnEnabled())
+                    if (log.isWarnEnabled()) {
                         log.warn("Error to write...", e);
+                    }
                 }
             }
         }
         catch (JsonException e) {
-            if (log.isWarnEnabled())
+            if (log.isWarnEnabled()) {
                 log.warnf("Json error > %s : \n<%s>", e.getMessage(), sb);
+            }
         }
     }
 }

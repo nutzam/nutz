@@ -26,18 +26,22 @@ import org.nutz.lang.Mirror;
  */
 public class JsonPojoHandler extends JsonTypeHandler {
 
+    @Override
     public boolean supportFromJson(Mirror<?> mirror, Object obj) {
         return false;
     }
 
+    @Override
     public boolean supportToJson(Mirror<?> mirror, Object obj, JsonFormat jf) {
         return true;
     }
 
+    @Override
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void toJson(Mirror<?> _mirror, Object obj, JsonRender r, JsonFormat format) throws IOException {
-        if (null == obj)
+        if (null == obj) {
             return;
+        }
         /*
          * Default
          */
@@ -45,46 +49,54 @@ public class JsonPojoHandler extends JsonTypeHandler {
         JsonEntity jen = Json.getEntity(Mirror.me(type));
         JsonCallback jsonCallback = jen.getJsonCallback();
         if (jsonCallback != null) {
-            if (jsonCallback.toJson(obj, format, r.getWriter()))
+            if (jsonCallback.toJson(obj, format, r.getWriter())) {
                 return;
+            }
         }
         List<JsonEntityField> fields = jen.getFields();
         r.appendBraceBegin();
         r.increaseFormatIndent();
         ArrayList<JsonPair> list = new ArrayList<JsonPair>(fields.size());
         for (JsonEntityField jef : fields) {
-            if (jef.isIgnore())
+            if (jef.isIgnore()) {
                 continue;
+            }
             String name = jef.getName();
             try {
                 Object value = jef.getValue(obj);
                 // 判断是否应该被忽略
-                if (r.isIgnore(name, value))
+                if (r.isIgnore(name, value)) {
                     continue;
+                }
                 Mirror mirror = jef.getMirror();
                 // 以前曾经输出过 ...
                 if (null != value) {
                     // zozoh: 循环引用的默认行为，应该为 null，以便和其他语言交换数据
                     if (mirror.isPojo()) {
-                        if (r.memoContains(value))
+                        if (r.memoContains(value)) {
                             value = null;
+                        }
                     }
                 }
                 if (null == value) {
                     // 处理各种类型的空值
                     if (mirror != null) {
                         if (mirror.isStringLike()) {
-                            if (format.isNullStringAsEmpty())
+                            if (format.isNullStringAsEmpty()) {
                                 value = "";
+                            }
                         } else if (mirror.isNumber()) {
-                            if (format.isNullNumberAsZero())
+                            if (format.isNullNumberAsZero()) {
                                 value = 0;
+                            }
                         } else if (mirror.isCollection()) {
-                            if (format.isNullListAsEmpty())
+                            if (format.isNullListAsEmpty()) {
                                 value = Collections.EMPTY_LIST;
+                            }
                         } else if (jef.getGenericType() == Boolean.class) {
-                            if (format.isNullBooleanAsFalse())
+                            if (format.isNullBooleanAsFalse()) {
                                 value = false;
+                            }
                         }
                     }
                 } else {
@@ -125,6 +137,7 @@ public class JsonPojoHandler extends JsonTypeHandler {
         r.writeItem(list);
     }
 
+    @Override
     public Object fromJson(Object obj, Mirror<?> mirror) throws Exception {
         // TODO Auto-generated method stub
         return null;

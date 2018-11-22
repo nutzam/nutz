@@ -36,10 +36,12 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
 	private static final long serialVersionUID = 1L;
 
 	public static NutMap WRAP(Map<String, Object> map) {
-        if (null == map)
+        if (null == map) {
             return null;
-        if (map instanceof NutMap)
+        }
+        if (map instanceof NutMap) {
             return (NutMap) map;
+        }
         return new NutMap(map);
     }
 
@@ -95,10 +97,12 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
     @Override
     public boolean is(String key, Object val) {
         Object obj = this.get(key);
-        if (null == obj && null == val)
+        if (null == obj && null == val) {
             return true;
-        if (null == obj || null == val)
+        }
+        if (null == obj || null == val) {
             return false;
+        }
         return obj.equals(val);
     }
 
@@ -117,13 +121,15 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
      */
     @Override
     public NutMap pick(String... keys) {
-        if (keys.length == 0)
+        if (keys.length == 0) {
             return new NutMap();
+        }
         NutMap re = new NutMap();
         for (String key : keys) {
             Object val = this.get(key);
-            if (null != val)
+            if (null != val) {
                 re.put(key, val);
+            }
         }
         return re;
     }
@@ -137,8 +143,9 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
      */
     @Override
     public NutMap pickAndRemove(String... keys) {
-        if (keys.length == 0)
+        if (keys.length == 0) {
             return new NutMap();
+        }
         NutMap re = new NutMap();
         for (String key : keys) {
             Object val = this.remove(key);
@@ -156,8 +163,9 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
      */
     @Override
     public NutMap pickBy(String regex) {
-        if (Strings.isBlank(regex))
+        if (Strings.isBlank(regex)) {
             return this.duplicate();
+        }
         boolean isNot = regex.startsWith("!");
         Pattern p = Regex.getPattern(isNot ? regex.substring(1) : regex);
         return pickBy(p, isNot);
@@ -207,8 +215,9 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
      * @see #pickAndRemoveBy(Pattern, boolean)
      */
     public NutMap pickAndRemoveBy(String regex) {
-        if (Strings.isBlank(regex))
+        if (Strings.isBlank(regex)) {
             return new NutMap();
+        }
         boolean isNot = regex.startsWith("!");
         Pattern p = Pattern.compile(isNot ? regex.substring(1) : regex);
         return pickAndRemoveBy(p, isNot);
@@ -254,8 +263,9 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         }
 
         // 删除 Key
-        for (String key : delKeys)
+        for (String key : delKeys) {
             this.remove(key);
+        }
 
         // 返回
         return re;
@@ -299,22 +309,25 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
 
     @Override
     public boolean containsValue(Object value) {
-        if (null == _map)
+        if (null == _map) {
             return super.containsValue(value);
+        }
         return super.containsValue(value) || _map.containsValue(value);
     }
 
     @Override
     public boolean containsKey(Object key) {
-        if (null == _map)
+        if (null == _map) {
             return super.containsKey(key);
+        }
         return super.containsKey(key) || _map.containsKey(key);
     }
 
     @Override
     public Set<String> keySet() {
-        if (null == _map)
+        if (null == _map) {
             return super.keySet();
+        }
         HashSet<String> keys = new HashSet<String>();
         keys.addAll(super.keySet());
         keys.addAll(_map.keySet());
@@ -323,8 +336,9 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
 
     @Override
     public Collection<Object> values() {
-        if (null == _map)
+        if (null == _map) {
             return super.values();
+        }
         List<Object> vals = new LinkedList<Object>();
         for (String key : this.keySet()) {
             vals.add(this.get(key));
@@ -334,8 +348,9 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
 
     @Override
     public Set<Entry<String, Object>> entrySet() {
-        if (null == _map)
+        if (null == _map) {
             return super.entrySet();
+        }
         HashSet<Entry<String, Object>> vals = new HashSet<Entry<String, Object>>();
         vals.addAll(_map.entrySet());
         vals.addAll(super.entrySet());
@@ -345,8 +360,9 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
     @Override
     public void clear() {
         super.clear();
-        if (null != _map)
+        if (null != _map) {
             _map.clear();
+        }
     }
 
     private NutMap _map;
@@ -364,8 +380,9 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
 
     @Override
     public Object get(Object key) {
-        if (_map == null)
+        if (_map == null) {
             return super.get(key);
+        }
 
         if (super.containsKey(key)) {
             return super.get(key);
@@ -444,10 +461,12 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
     @SuppressWarnings("rawtypes")
     public String getString(String key, String dft) {
         Object v = get(key);
-        if (v == null)
+        if (v == null) {
             return dft;
-        if (v instanceof CharSequence)
+        }
+        if (v instanceof CharSequence) {
             return v.toString();
+        }
         if (v instanceof List) {
             v = ((List) v).iterator().next();
         }
@@ -470,21 +489,25 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
     @Override
     public <T extends Enum<T>> T getEnum(String key, Class<T> classOfEnum) {
         String s = getString(key);
-        if (Strings.isBlank(s))
+        if (Strings.isBlank(s)) {
             return null;
+        }
         return Enum.valueOf(classOfEnum, s);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public boolean isEnum(String key, Enum<?>... eus) {
-        if (null == eus || eus.length == 0)
+        if (null == eus || eus.length == 0) {
             return false;
+        }
         try {
             Enum<?> v = getEnum(key, eus[0].getClass());
-            for (Enum<?> eu : eus)
-                if (!v.equals(eu))
+            for (Enum<?> eu : eus) {
+                if (!v.equals(eu)) {
                     return false;
+                }
+            }
             return true;
         }
         catch (Exception e) {
@@ -507,8 +530,9 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
     @SuppressWarnings({"rawtypes", "unchecked"})
     public <T> List<T> getAsList(String key, Class<T> eleType) {
         Object v = get(key);
-        if (null == v)
+        if (null == v) {
             return null;
+        }
         List list = (List) v;
         ListIterator it = list.listIterator();
         while (it.hasNext()) {
@@ -533,8 +557,9 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
     @SuppressWarnings("unchecked")
     public <T> List<T> getList(String key, final Class<T> eleType, List<T> dft) {
         Object v = get(key);
-        if (null == v)
+        if (null == v) {
             return dft;
+        }
 
         if (v instanceof CharSequence) {
             return Lang.list(Castors.me().castTo(v, eleType));
@@ -563,8 +588,9 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
     @SuppressWarnings("unchecked")
     public <T> T[] getArray(String key, final Class<T> eleType, T[] dft) {
         Object v = get(key);
-        if (null == v)
+        if (null == v) {
             return dft;
+        }
 
         if (v instanceof CharSequence) {
             return Lang.array(Castors.me().castTo(v, eleType));
@@ -596,9 +622,9 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         Object obj = get(key);
         if (null == obj) {
             put(key, value);
-        } else if (obj instanceof List<?>)
+        } else if (obj instanceof List<?>) {
             ((List<Object>) obj).add(value);
-        else {
+        } else {
             List<Object> list = new LinkedList<Object>();
             list.add(obj);
             list.add(value);
@@ -641,21 +667,24 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
             // 不存在的话，增加列表
             if (null == v) {
                 List<Object> list = new LinkedList<Object>();
-                for (Object val : values)
+                for (Object val : values) {
                     list.add(val);
+                }
                 this.put(key, list);
             }
             // 如果是集合的话，就增加
             else if (v instanceof Collection) {
-                for (Object val : values)
+                for (Object val : values) {
                     ((Collection) v).add(val);
+                }
             }
             // 否则将原来的值变成列表再增加
             else {
                 List<Object> list = new LinkedList<Object>();
                 list.add(v);
-                for (Object val : values)
+                for (Object val : values) {
                     list.add(val);
+                }
                 this.put(key, list);
             }
         }
@@ -732,11 +761,13 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
             Object key = en.getKey();
             Object val = en.getValue();
 
-            if (null == key)
+            if (null == key) {
                 continue;
+            }
 
-            if (null == val && ignoreNullValue)
+            if (null == val && ignoreNullValue) {
                 continue;
+            }
 
             this.put(key.toString(), val);
         }
@@ -769,8 +800,9 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
             String key = en.getKey();
             Object val = en.getValue();
 
-            if (null == key || null == val)
+            if (null == key || null == val) {
                 continue;
+            }
 
             Object myVal = this.get(key);
 
@@ -780,8 +812,9 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
                 Map<String, Object> m1 = (Map<String, Object>) val;
                 NutMap m2 = NutMap.WRAP(m0).mergeWith(m1, onlyAbsent);
                 // 搞出了新 Map，设置一下
-                if (m2 != m0)
+                if (m2 != m0) {
                     this.put(key, m2);
+                }
             }
             // 只有没有的时候才设置
             else if (onlyAbsent) {
@@ -807,8 +840,9 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
      */
     @Override
     public NutMap setnx(String key, Object val) {
-        if (!containsKey(key))
+        if (!containsKey(key)) {
             setv(key, val);
+        }
         return this;
     }
 
@@ -867,12 +901,14 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
     @Override
     public boolean match(Map<String, Object> map) {
         // 空 map 一定是不匹配的
-        if (null == map)
+        if (null == map) {
             return false;
+        }
 
         // 本 Map 如果没值，表示全匹配
-        if (this.size() == 0)
+        if (this.size() == 0) {
             return true;
+        }
 
         // 逐个匹配键
         for (Map.Entry<String, Object> en : this.entrySet()) {
@@ -881,8 +917,9 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
 
             // null 表示对方不能包括这个键
             if (null == mtc) {
-                if (map.containsKey(key))
+                if (map.containsKey(key)) {
                     return false;
+                }
             }
             // 其他的值，匹配一下
             else {
@@ -972,10 +1009,12 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
 
     public int evalInt(String el) {
         Object obj = El.eval(Lang.context(this), el);
-        if (obj == null)
+        if (obj == null) {
             return 0;
-        if (obj instanceof Number)
+        }
+        if (obj instanceof Number) {
             return ((Number) obj).intValue();
+        }
         return Integer.parseInt(obj.toString());
     }
 
@@ -986,6 +1025,7 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
      *            键
      * @return 自增后结果
      */
+    @Override
     public int intIncrement(String key) {
         return intIncrement(key, 1);
     }
@@ -999,6 +1039,7 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
      *            数值
      * @return 增后结果
      */
+    @Override
     public int intIncrement(String key, int number) {
         int val = getInt(key, 0);
         val += number;
@@ -1013,6 +1054,7 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
      *            键
      * @return 自减后结果
      */
+    @Override
     public int intDecrement(String key) {
         return intDecrement(key, 1);
     }
@@ -1026,6 +1068,7 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
      *            数值
      * @return 减后结果
      */
+    @Override
     public int intDecrement(String key, int number) {
         int val = getInt(key, 0);
         val -= number;
@@ -1040,6 +1083,7 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
      *            键
      * @return 自增后结果
      */
+    @Override
     public long longIncrement(String key) {
         return longIncrement(key, 1);
     }
@@ -1053,6 +1097,7 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
      *            数值
      * @return 增后结果
      */
+    @Override
     public long longIncrement(String key, long number) {
         long val = getLong(key, 0);
         val += number;
@@ -1067,6 +1112,7 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
      *            键
      * @return 自减后结果
      */
+    @Override
     public long longDecrement(String key) {
         return longDecrement(key, 1);
     }
@@ -1080,6 +1126,7 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
      *            数值
      * @return 减后结果
      */
+    @Override
     public long longDecrement(String key, long number) {
         long val = getLong(key, 0);
         val -= number;

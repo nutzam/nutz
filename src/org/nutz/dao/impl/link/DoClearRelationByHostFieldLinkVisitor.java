@@ -8,6 +8,7 @@ import org.nutz.dao.util.Pojos;
 
 public class DoClearRelationByHostFieldLinkVisitor extends AbstractLinkVisitor {
 
+    @Override
     public void visit(Object obj, LinkField lnk) {
         if (lnk instanceof ManyManyLinkField) {
             final ManyManyLinkField mm = (ManyManyLinkField) lnk;

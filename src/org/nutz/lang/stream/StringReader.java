@@ -19,12 +19,14 @@ public class StringReader extends Reader {
 
     @Override
     public int read(char[] cbuf, int off, int len) throws IOException {
-        if (index >= cs.length())
+        if (index >= cs.length()) {
             return -1;
+        }
         int count = 0;
         for (int i = off; i < (off + len); i++) {
-            if (index >= cs.length())
+            if (index >= cs.length()) {
                 return count;
+            }
             cbuf[i] = cs.charAt(index++);
             count++;
         }

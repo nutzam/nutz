@@ -20,11 +20,13 @@ public class PojoFetchEntityByJoinCallback implements PojoCallback {
         this.regex = regex;
     }
 
+    @Override
     public Object invoke(Connection conn, final ResultSet rs, Pojo pojo, Statement stmt)
             throws SQLException {
         if (null != rs && rs.next()) {
             final Object mainObject = pojo.getEntity().getObject(rs, pojo.getContext().getFieldMatcher(), null);
             pojo.getEntity().visitOne(mainObject, regex, new LinkVisitor() {
+                @Override
                 public void visit(Object obj, LinkField lnk) {
                     Entity<?> en  = lnk.getLinkedEntity();
                     String prefix = lnk.getName() + "_z_";

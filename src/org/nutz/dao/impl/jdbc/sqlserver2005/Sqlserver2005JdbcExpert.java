@@ -37,16 +37,19 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
         super(conf);
     }
 
+    @Override
     public String getDatabaseType() {
         return DB.SQLSERVER.name();
     }
 
+    @Override
     public boolean createEntity(Dao dao, Entity<?> en) {
         StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
         // 创建字段
         for (MappingField mf : en.getMappingFields()) {
-            if (mf.isReadonly())
+            if (mf.isReadonly()) {
                 continue;
+            }
             sb.append('\n').append(mf.getColumnNameInSql());
             sb.append(' ').append(evalFieldType(mf));
             // 非主键的 @Name，应该加入唯一性约束
@@ -55,14 +58,18 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
             }
             // 普通字段
             else {
-                if (mf.isUnsigned())
+                if (mf.isUnsigned()) {
                     sb.append(" UNSIGNED");
-                if (mf.isNotNull())
+                }
+                if (mf.isNotNull()) {
                     sb.append(" NOT NULL");
-                if (mf.isAutoIncreasement())
+                }
+                if (mf.isAutoIncreasement()) {
                     sb.append(" IDENTITY");
-                if (mf.hasDefaultValue())
+                }
+                if (mf.hasDefaultValue()) {
                     addDefaultValue(sb, mf);
+                }
             }
             sb.append(',');
         }
@@ -113,9 +120,11 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
         }
     }
 
+    @Override
     public String evalFieldType(MappingField mf) {
-        if (mf.getCustomDbType() != null)
+        if (mf.getCustomDbType() != null) {
             return mf.getCustomDbType();
+        }
         switch (mf.getColumnType()) {
         case BOOLEAN:
             return "BIT";
@@ -129,8 +138,9 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
             return "DATETIME";
         case INT:
             // 用户自定义了宽度
-            if (mf.getWidth() > 0)
+            if (mf.getWidth() > 0) {
                 return "NUMERIC(" + mf.getWidth() + ")";
+            }
             // 用数据库的默认宽度
             return "INT";
 
@@ -140,8 +150,9 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
                 return "decimal(" + mf.getWidth() + "," + mf.getPrecision() + ")";
             }
             // 用默认精度
-            if (mf.getTypeMirror().isDouble())
+            if (mf.getTypeMirror().isDouble()) {
                 return "decimal(15,10)";
+            }
             return "float";
         case BINARY:
             return "varbinary(max)";
@@ -153,6 +164,7 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
         return super.evalFieldType(mf);
     }
 
+    @Override
     public void formatQuery(Pojo pojo) {
         Pager pager = pojo.getContext().getPager();
         if (null != pager && pager.getPageNumber() > 0) {
@@ -164,8 +176,9 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
             String str = sb.toString();
             if (str.trim().toLowerCase().startsWith("select")) {
                 pojo.setItem(0, Pojos.Items.wrap(str.substring(6)));
-            } else
+            } else {
                 return;// 以免出错.
+            }
             pojo.insertFirst(Pojos.Items.wrapf(    "select * from(select row_number()over(order by __tc__)__rn__,* from(select top %d 0 __tc__, ",
                                                 pager.getOffset() + pager.getPageSize()));
             pojo.append(Pojos.Items.wrapf(")t)tt where __rn__ > %d order by __rn__", pager.getOffset()));
@@ -179,8 +192,9 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
         if (null != pager && pager.getPageNumber() > 0) {
             // -----------------------------------------------------
             // TODO XXX 这个写法灰常暴力!!But , it works!!!! 期待更好的写法
-            if (!sql.getSourceSql().toUpperCase().startsWith("SELECT "))
+            if (!sql.getSourceSql().toUpperCase().startsWith("SELECT ")) {
                 return;// 以免出错.
+            }
             String xSql = sql.getSourceSql().substring(6);
             String pre = String.format(    "select * from(select row_number()over(order by __tc__)__rn__,* from(select top %d 0 __tc__, ",
                                                             pager.getOffset() + pager.getPageSize());
@@ -189,10 +203,12 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
         }
     }
 
+    @Override
     protected String createResultSetMetaSql(Entity<?> en) {
         return "SELECT top 1 * FROM " + en.getViewName();
     }
     
+    @Override
     public Pojo fetchPojoId(Entity<?> en, MappingField idField) {
         String autoSql = "SELECT @@@@IDENTITY as $field";
         Pojo autoInfo = new SqlFieldMacro(idField, autoSql);
@@ -200,20 +216,25 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
         return autoInfo;
     }
     
+    @Override
     public boolean addColumnNeedColumn() {
         return false;
     }
     
+    @Override
     public String wrapKeywork(String columnName, boolean force) {
-        if (force || keywords.contains(columnName.toUpperCase()))
+        if (force || keywords.contains(columnName.toUpperCase())) {
             return "[" + columnName + "]";
+        }
         return null;
     }
     
+    @Override
     public boolean isSupportGeneratedKeys() {
         return false;
     }
     
+    @Override
     public List<String> getIndexNames(Entity<?> en, Connection conn) throws SQLException {
         List<String> names = new ArrayList<String>();
         String showIndexs = "SELECT i.name FROM sys.indexes AS i "

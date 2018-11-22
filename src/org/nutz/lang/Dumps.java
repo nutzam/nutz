@@ -30,8 +30,9 @@ public abstract class Dumps {
      * @return 信息
      */
     public static String matcher(Matcher m) {
-        if (m.find())
+        if (m.find()) {
             return matcherFound(m);
+        }
         return "No found!";
     }
 
@@ -49,8 +50,9 @@ public abstract class Dumps {
                                 m.end(),
                                 m.regionStart(),
                                 m.regionEnd()));
-        for (int i = 0; i <= m.groupCount(); i++)
+        for (int i = 0; i <= m.groupCount(); i++) {
             sb.append(String.format("%2d:[%3d,%3d) %s\n", i, m.start(i), m.end(i), m.group(i)));
+        }
         return sb.toString();
     }
 
@@ -62,29 +64,34 @@ public abstract class Dumps {
      * @return 信息
      */
     public static String obj(Object obj) {
-        if (null == obj)
+        if (null == obj) {
             return "null";
+        }
         StringBuilder sb = new StringBuilder(obj.getClass().getName() + "\n\n[Fields:]");
         Mirror<?> mirror = Mirror.me(obj.getClass());
-        for (Field f : mirror.getType().getFields())
-            if (Modifier.isPublic(f.getModifiers()))
+        for (Field f : mirror.getType().getFields()) {
+            if (Modifier.isPublic(f.getModifiers())) {
                 try {
                     sb.append(String.format("\n\t%10s : %s", f.getName(), f.get(obj)));
-                }
-                catch (Exception e1) {
+                } catch (Exception e1) {
                     sb.append(String.format("\n\t%10s : %s", f.getName(), e1.getMessage()));
                 }
+            }
+        }
         sb.append("\n\n[Methods:]");
-        for (Method m : mirror.getType().getMethods())
-            if (Modifier.isPublic(m.getModifiers()))
-                if (m.getName().startsWith("get"))
-                    if (m.getParameterTypes().length == 0)
+        for (Method m : mirror.getType().getMethods()) {
+            if (Modifier.isPublic(m.getModifiers())) {
+                if (m.getName().startsWith("get")) {
+                    if (m.getParameterTypes().length == 0) {
                         try {
                             sb.append(String.format("\n\t%10s : %s", m.getName(), m.invoke(obj)));
-                        }
-                        catch (Exception e) {
+                        } catch (Exception e) {
                             sb.append(String.format("\n\t%10s : %s", m.getName(), e.getMessage()));
                         }
+                    }
+                }
+            }
+        }
         return sb.toString();
     }
 
@@ -123,16 +130,18 @@ public abstract class Dumps {
                     }
                     sb.append("\r\n");
                     ins = Lang.ins(sb);
-                    while (-1 != (b = ins.read()))
+                    while (-1 != (b = ins.read())) {
                         ops.write(b);
+                    }
                 }
                 /*
                  * Body
                  */
                 if (MODE.ALL == mode || MODE.BODY_ONLY == mode) {
                     ins = req.getInputStream();
-                    while (-1 != (b = ins.read()))
+                    while (-1 != (b = ins.read())) {
                         ops.write(b);
+                    }
                     ins.close();
                 }
                 ops.flush();

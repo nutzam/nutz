@@ -25,8 +25,9 @@ public class Segments {
      * @return 填充后的片段对象
      */
     public static Segment fill(Segment seg, Object obj) {
-        if (null == obj || null == seg)
+        if (null == obj || null == seg) {
             return seg;
+        }
         return seg.setBy(obj);
     }
 
@@ -54,13 +55,16 @@ public class Segments {
      * @return 替换后的字符串
      */
     public static String replace(Segment seg, Context context) {
-        if (null == seg)
+        if (null == seg) {
             return null;
+        }
 
         // 增加缺失的占位符号
-        for (String key : seg.keys())
-            if (!context.has(key))
+        for (String key : seg.keys()) {
+            if (!context.has(key)) {
                 context.set(key, "${" + key + "}");
+            }
+        }
 
         return seg.render(context).toString();
     }
@@ -75,10 +79,12 @@ public class Segments {
      * @return 替换后的字符串
      */
     public static String replace(String pattern, Context context) {
-        if (null == pattern)
+        if (null == pattern) {
             return null;
-        if (null == context)
+        }
+        if (null == context) {
             return pattern;
+        }
         return replace(new CharSegment(pattern), context);
     }
 

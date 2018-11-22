@@ -103,8 +103,9 @@ public class JsonEntityField {
         // XXX 有用户就是_开头的字段也要啊! by wendal
         // if (fld.getName().startsWith("_") || fld.getName().startsWith("$"))
         if (fld.getName().startsWith("$")
-            && fld.getAnnotation(JsonField.class) == null)
+            && fld.getAnnotation(JsonField.class) == null) {
             return null;
+        }
 
         JsonField jf = fld.getAnnotation(JsonField.class);
 
@@ -156,10 +157,12 @@ public class JsonEntityField {
             jef.isInt = fldMirror.isInt();
             jef.isDouble = fldMirror.isDouble() || fldMirror.isFloat();
         	jef.hasJsonIgnore = true;
-            if (jef.isDouble)
-            	jef.ignoreNullDouble = jsonIgnore.null_double();
-            if (jef.isInt)
-            	jef.ignoreNullInt = jsonIgnore.null_int();
+            if (jef.isDouble) {
+                jef.ignoreNullDouble = jsonIgnore.null_double();
+            }
+            if (jef.isInt) {
+                jef.ignoreNullInt = jsonIgnore.null_int();
+            }
         }
         
         return jef;
@@ -176,21 +179,26 @@ public class JsonEntityField {
     }
 
     public void setValue(Object obj, Object value) {
-        if (injecting != null)
+        if (injecting != null) {
             injecting.inject(obj, value);
+        }
     }
 
     public Object getValue(Object obj) {
-        if (ejecting == null)
+        if (ejecting == null) {
             return null;
+        }
         Object val = ejecting.eject(obj);
-        if (val == null)
-        	return null;
+        if (val == null) {
+            return null;
+        }
         if (hasJsonIgnore) {
-            if (isInt && ((Number)val).intValue() == ignoreNullInt)
-            	return null;
-            if (isDouble && ((Number)val).doubleValue() == ignoreNullDouble)
-            	return null;
+            if (isInt && ((Number)val).intValue() == ignoreNullInt) {
+                return null;
+            }
+            if (isDouble && ((Number)val).doubleValue() == ignoreNullDouble) {
+                return null;
+            }
         }
         return val;
     }

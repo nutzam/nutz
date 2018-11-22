@@ -192,11 +192,13 @@ public class Strings {
      * @return 新字符串
      */
     public static String dup(CharSequence cs, int num) {
-        if (isEmpty(cs) || num <= 0)
+        if (isEmpty(cs) || num <= 0) {
             return "";
+        }
         StringBuilder sb = new StringBuilder(cs.length() * num);
-        for (int i = 0; i < num; i++)
+        for (int i = 0; i < num; i++) {
             sb.append(cs);
+        }
         return sb.toString();
     }
 
@@ -210,11 +212,13 @@ public class Strings {
      * @return 新字符串
      */
     public static String dup(char c, int num) {
-        if (c == 0 || num < 1)
+        if (c == 0 || num < 1) {
             return "";
+        }
         StringBuilder sb = new StringBuilder(num);
-        for (int i = 0; i < num; i++)
+        for (int i = 0; i < num; i++) {
             sb.append(c);
+        }
         return sb.toString();
     }
 
@@ -239,14 +243,17 @@ public class Strings {
      * @return 首字母小写后的新字符串
      */
     public static String lowerFirst(CharSequence s) {
-        if (null == s)
+        if (null == s) {
             return null;
+        }
         int len = s.length();
-        if (len == 0)
+        if (len == 0) {
             return "";
+        }
         char c = s.charAt(0);
-        if (Character.isLowerCase(c))
+        if (Character.isLowerCase(c)) {
             return s.toString();
+        }
         return new StringBuilder(len).append(Character.toLowerCase(c))
                                      .append(s.subSequence(1, len))
                                      .toString();
@@ -260,14 +267,17 @@ public class Strings {
      * @return 首字母大写后的新字符串
      */
     public static String upperFirst(CharSequence s) {
-        if (null == s)
+        if (null == s) {
             return null;
+        }
         int len = s.length();
-        if (len == 0)
+        if (len == 0) {
             return "";
+        }
         char c = s.charAt(0);
-        if (Character.isUpperCase(c))
+        if (Character.isUpperCase(c)) {
             return s.toString();
+        }
         return new StringBuilder(len).append(Character.toUpperCase(c))
                                      .append(s.subSequence(1, len))
                                      .toString();
@@ -344,12 +354,14 @@ public class Strings {
      * @return 如果此字符串为 null 或者全为空白字符，则返回 true
      */
     public static boolean isBlank(CharSequence cs) {
-        if (null == cs)
+        if (null == cs) {
             return true;
+        }
         int length = cs.length();
         for (int i = 0; i < length; i++) {
-            if (!(Character.isWhitespace(cs.charAt(i))))
+            if (!(Character.isWhitespace(cs.charAt(i)))) {
                 return false;
+            }
         }
         return true;
     }
@@ -366,63 +378,78 @@ public class Strings {
      * @return 去掉了前后空白字符的新字符串
      */
     public static String trim(CharSequence cs) {
-        if (null == cs)
+        if (null == cs) {
             return null;
+        }
         int length = cs.length();
-        if (length == 0)
+        if (length == 0) {
             return cs.toString();
+        }
         int l = 0;
         int last = length - 1;
         int r = last;
         for (; l < length; l++) {
-            if (!Character.isWhitespace(cs.charAt(l)))
+            if (!Character.isWhitespace(cs.charAt(l))) {
                 break;
+            }
         }
         for (; r > l; r--) {
-            if (!Character.isWhitespace(cs.charAt(r)))
+            if (!Character.isWhitespace(cs.charAt(r))) {
                 break;
+            }
         }
-        if (l > r)
+        if (l > r) {
             return "";
-        else if (l == 0 && r == last)
+        } else if (l == 0 && r == last) {
             return cs.toString();
+        }
         return cs.subSequence(l, r + 1).toString();
     }
 
     public static String trimLeft(CharSequence cs) {
-        if (null == cs)
+        if (null == cs) {
             return null;
+        }
         int length = cs.length();
-        if (length == 0)
+        if (length == 0) {
             return cs.toString();
+        }
         int l = 0;
         for (; l < length; l++) {
-            if (!Character.isWhitespace(cs.charAt(l)))
+            if (!Character.isWhitespace(cs.charAt(l))) {
                 break;
+            }
         }
-        if ((length - 1) == l)
+        if ((length - 1) == l) {
             return "";
-        if (l > 0)
+        }
+        if (l > 0) {
             return cs.subSequence(l, length).toString();
+        }
         return cs.toString();
     }
 
     public static String trimRight(CharSequence cs) {
-        if (null == cs)
+        if (null == cs) {
             return null;
+        }
         int length = cs.length();
-        if (length == 0)
+        if (length == 0) {
             return cs.toString();
+        }
         int last = length - 1;
         int r = last;
         for (; r > 0; r--) {
-            if (!Character.isWhitespace(cs.charAt(r)))
+            if (!Character.isWhitespace(cs.charAt(r))) {
                 break;
+            }
         }
-        if (0 == r)
+        if (0 == r) {
             return "";
-        if (r == last)
+        }
+        if (r == last) {
             return cs.toString();
+        }
         return cs.subSequence(0, r + 1).toString();
     }
 
@@ -436,8 +463,9 @@ public class Strings {
      * @return 紧凑的字符串
      */
     public static String brief(String str, int len) {
-        if (Strings.isBlank(str) || (str.length() + 3) <= len)
+        if (Strings.isBlank(str) || (str.length() + 3) <= len) {
             return str;
+        }
         int w = len / 2;
         int l = str.length();
         return str.substring(0, len - w) + " ... " + str.substring(l - w);
@@ -464,13 +492,15 @@ public class Strings {
      * @return 字符串数组
      */
     public static String[] splitIgnoreBlank(String s, String regex) {
-        if (null == s)
+        if (null == s) {
             return null;
+        }
         String[] ss = s.split(regex);
         List<String> list = new LinkedList<String>();
         for (String st : ss) {
-            if (isBlank(st))
+            if (isBlank(st)) {
                 continue;
+            }
             list.add(trim(st));
         }
         return list.toArray(new String[list.size()]);
@@ -566,13 +596,16 @@ public class Strings {
      * @return 修饰后的字符串
      */
     public static String cutRight(String s, int width, char c) {
-        if (null == s)
+        if (null == s) {
             return null;
+        }
         int len = s.length();
-        if (len == width)
+        if (len == width) {
             return s;
-        if (len < width)
+        }
+        if (len < width) {
             return Strings.dup(c, width - len) + s;
+        }
         return s.substring(len - width, len);
     }
 
@@ -588,13 +621,16 @@ public class Strings {
      * @return 修饰后的字符串
      */
     public static String cutLeft(String s, int width, char c) {
-        if (null == s)
+        if (null == s) {
             return null;
+        }
         int len = s.length();
-        if (len == width)
+        if (len == width) {
             return s;
-        if (len < width)
+        }
+        if (len < width) {
             return s + Strings.dup(c, width - len);
+        }
         return s.substring(0, width);
     }
 
@@ -610,12 +646,14 @@ public class Strings {
      * @return 新字符串
      */
     public static String alignRight(Object o, int width, char c) {
-        if (null == o)
+        if (null == o) {
             return null;
+        }
         String s = o.toString();
         int len = s.length();
-        if (len >= width)
+        if (len >= width) {
             return s;
+        }
         return new StringBuilder().append(dup(c, width - len)).append(s).toString();
     }
 
@@ -631,12 +669,14 @@ public class Strings {
      * @return 新字符串
      */
     public static String alignLeft(Object o, int width, char c) {
-        if (null == o)
+        if (null == o) {
             return null;
+        }
         String s = o.toString();
         int length = s.length();
-        if (length >= width)
+        if (length >= width) {
             return s;
+        }
         return new StringBuilder().append(s).append(dup(c, width - length)).toString();
     }
 
@@ -652,23 +692,28 @@ public class Strings {
      * @return 字符串是被左字符和右字符包裹
      */
     public static boolean isQuoteByIgnoreBlank(CharSequence cs, char lc, char rc) {
-        if (null == cs)
+        if (null == cs) {
             return false;
+        }
         int len = cs.length();
-        if (len < 2)
+        if (len < 2) {
             return false;
+        }
         int l = 0;
         int last = len - 1;
         int r = last;
         for (; l < len; l++) {
-            if (!Character.isWhitespace(cs.charAt(l)))
+            if (!Character.isWhitespace(cs.charAt(l))) {
                 break;
+            }
         }
-        if (cs.charAt(l) != lc)
+        if (cs.charAt(l) != lc) {
             return false;
+        }
         for (; r > l; r--) {
-            if (!Character.isWhitespace(cs.charAt(r)))
+            if (!Character.isWhitespace(cs.charAt(r))) {
                 break;
+            }
         }
         return l < r && cs.charAt(r) == rc;
     }
@@ -685,8 +730,9 @@ public class Strings {
      * @return 字符串是被左字符和右字符包裹
      */
     public static boolean isQuoteBy(CharSequence cs, char lc, char rc) {
-        if (null == cs)
+        if (null == cs) {
             return false;
+        }
         int length = cs.length();
         return length > 1 && cs.charAt(0) == lc && cs.charAt(length - 1) == rc;
     }
@@ -703,8 +749,9 @@ public class Strings {
      * @return 字符串是被左字符串和右字符串包裹
      */
     public static boolean isQuoteBy(String str, String l, String r) {
-        if (null == str || null == l || null == r)
+        if (null == str || null == l || null == r) {
             return false;
+        }
         return str.startsWith(l) && str.endsWith(r);
     }
 
@@ -722,12 +769,13 @@ public class Strings {
         if (!isEmpty(str)) {
             for (int i = 0; i < str.length(); i++) {
                 char c = str.charAt(i);
-                if (' ' == c)
+                if (' ' == c) {
                     n++;
-                else if ('\t' == c)
+                } else if ('\t' == c) {
                     n += tabWidth;
-                else
+                } else {
                     break;
+                }
             }
         }
         return n / tabWidth;
@@ -744,11 +792,13 @@ public class Strings {
      */
     public static int countStrHeadChar(String str, char c) {
         int re = 0;
-        if (!isEmpty(str))
+        if (!isEmpty(str)) {
             for (; re < str.length(); re++) {
-                if (str.charAt(re) != c)
+                if (str.charAt(re) != c) {
                     return re;
+                }
             }
+        }
         return re;
     }
 
@@ -765,26 +815,31 @@ public class Strings {
      * @return 反向缩进后的字符串
      */
     public static String shiftIndent(String str, int indent, int tabWidth) {
-        if (isEmpty(str))
+        if (isEmpty(str)) {
             return str;
-        if (indent <= 0)
+        }
+        if (indent <= 0) {
             indent = 1;
+        }
 
         int n = 0;
         int i = 0;
         for (; i < str.length(); i++) {
-            if (n > 0 && (n / tabWidth) >= indent)
+            if (n > 0 && (n / tabWidth) >= indent) {
                 break;
+            }
             char c = str.charAt(i);
-            if (' ' == c)
+            if (' ' == c) {
                 n++;
-            else if ('\t' == c)
+            } else if ('\t' == c) {
                 n += tabWidth;
-            else
+            } else {
                 break;
+            }
         }
-        if (i > 0)
+        if (i > 0) {
             return str.substring(i);
+        }
         return str;
     }
 
@@ -797,10 +852,13 @@ public class Strings {
      */
     public static int maxLength(Collection<? extends CharSequence> coll) {
         int re = 0;
-        if (null != coll)
-            for (CharSequence s : coll)
-                if (null != s)
+        if (null != coll) {
+            for (CharSequence s : coll) {
+                if (null != s) {
                     re = Math.max(re, s.length());
+                }
+            }
+        }
         return re;
     }
 
@@ -813,10 +871,13 @@ public class Strings {
      */
     public static <T extends CharSequence> int maxLength(T[] array) {
         int re = 0;
-        if (null != array)
-            for (CharSequence s : array)
-                if (null != s)
+        if (null != array) {
+            for (CharSequence s : array) {
+                if (null != s) {
                     re = Math.max(re, s.length());
+                }
+            }
+        }
         return re;
     }
 
@@ -865,8 +926,9 @@ public class Strings {
      * @return 对指定对象进行 toString 操作；如果该对象为 null 或者 toString 方法为空串（""），则返回默认值
      */
     public static String sBlank(Object obj, String def) {
-        if (null == obj)
+        if (null == obj) {
             return def;
+        }
         String s = obj.toString();
         return Strings.isBlank(s) ? def : s;
     }
@@ -885,10 +947,12 @@ public class Strings {
      * @return 新字符串
      */
     public static String removeFirst(CharSequence str) {
-        if (str == null)
+        if (str == null) {
             return null;
-        if (str.length() > 1)
+        }
+        if (str.length() > 1) {
             return str.subSequence(1, str.length()).toString();
+        }
         return "";
     }
 
@@ -923,11 +987,14 @@ public class Strings {
      * @return 是否包含
      */
     public static boolean isin(String[] ss, String s) {
-        if (null == ss || ss.length == 0 || Strings.isBlank(s))
+        if (null == ss || ss.length == 0 || Strings.isBlank(s)) {
             return false;
-        for (String w : ss)
-            if (s.equals(w))
+        }
+        for (String w : ss) {
+            if (s.equals(w)) {
                 return true;
+            }
+        }
         return false;
     }
 
@@ -939,8 +1006,9 @@ public class Strings {
      * @return true 如果是有效的邮箱地址
      */
     public static final boolean isEmail(CharSequence input) {
-        if (Strings.isBlank(input))
+        if (Strings.isBlank(input)) {
             return false;
+        }
         try {
             new Email(input.toString());
             return true;
@@ -969,8 +1037,9 @@ public class Strings {
         for (int i = 0; i < len; i++) {
             char ch = cs.charAt(i);
             if (Character.isUpperCase(ch)) {
-                if (i > 0)
+                if (i > 0) {
                     sb.append(c);
+                }
                 sb.append(Character.toLowerCase(ch));
             } else {
                 sb.append(ch);
@@ -1001,8 +1070,9 @@ public class Strings {
             if (ch == c) {
                 do {
                     i++;
-                    if (i >= len)
+                    if (i >= len) {
                         return sb.toString();
+                    }
                     ch = cs.charAt(i);
                 } while (ch == c);
                 sb.append(Character.toUpperCase(ch));
@@ -1109,14 +1179,17 @@ public class Strings {
      * @return 新字符串
      */
     public static String replaceBy(CharSequence cs, Map<String, Object> map) {
-        if (null == cs)
+        if (null == cs) {
             return null;
+        }
         String str = cs.toString();
-        if (str.length() == 0)
+        if (str.length() == 0) {
             return str;
+        }
 
-        if (null == map || map.isEmpty())
+        if (null == map || map.isEmpty()) {
             return str;
+        }
 
         // 准备两个分组
         List<String> keys1 = new ArrayList<String>(map.size());
@@ -1154,8 +1227,9 @@ public class Strings {
         }
 
         // mode 1,2 的时候才有必要转换吧
-        if (mode <= 0)
+        if (mode <= 0) {
             return str;
+        }
 
         // 编译正则表达式
         Pattern p = Pattern.compile(regex.toString());
@@ -1199,10 +1273,12 @@ public class Strings {
         }
 
         // 木有匹配，直接返回
-        if (pos == 0)
+        if (pos == 0) {
             return str;
-        if (pos < str.length())
+        }
+        if (pos < str.length()) {
             sb.append(str.substring(pos));
+        }
         // 拼上最后一截并返回
         return sb.toString();
     }
@@ -1431,8 +1507,9 @@ public class Strings {
             if (Nums.isin(seps, c)) {
                 if (keepBlank || !Strings.isBlank(sb)) {
                     String s2 = sb.toString();
-                    if (!keepQuote)
+                    if (!keepQuote) {
                         s2 = evalEscape(s2);
+                    }
                     list.add(s2);
                     sb = new StringBuilder();
                 }
@@ -1440,8 +1517,9 @@ public class Strings {
             // 如果是转义字符
             else if (c == '\\') {
                 i++;
-                if (keepQuote)
+                if (keepQuote) {
                     sb.append(c);
+                }
                 if (i < cs.length) {
                     c = cs[i];
                     sb.append(c);
@@ -1451,8 +1529,9 @@ public class Strings {
             }
             // 字符串
             else if (c == '\'' || c == '"' || c == '`') {
-                if (keepQuote)
+                if (keepQuote) {
                     sb.append(c);
+                }
                 while (++i < cs.length) {
                     char c2 = cs[i];
                     // 如果是转义字符
@@ -1468,8 +1547,9 @@ public class Strings {
                     }
                     // 退出字符串
                     else if (c2 == c) {
-                        if (keepQuote)
+                        if (keepQuote) {
                             sb.append(c2);
+                        }
                         break;
                     }
                     // 其他附加
@@ -1487,8 +1567,9 @@ public class Strings {
         // 添加最后一个
         if (keepBlank || !Strings.isBlank(sb)) {
             String s2 = sb.toString();
-            if (!keepQuote)
+            if (!keepQuote) {
                 s2 = evalEscape(s2);
+            }
             list.add(s2);
         }
 
@@ -1497,14 +1578,16 @@ public class Strings {
     }
 
     public static String safeToString(Object obj, String dft) {
-        if (obj == null)
+        if (obj == null) {
             return "null";
+        }
         try {
             return obj.toString();
         }
         catch (Exception e) {}
-        if (dft != null)
+        if (dft != null) {
             return dft;
+        }
         return String.format("/*%s(toString FAILED)*/", obj.getClass().getName());
     }
 
@@ -1533,12 +1616,13 @@ public class Strings {
      */
     public static String cutStr(int length, String s, String supply) {
 
-        if (Lang.isEmpty(length) || Lang.isEmpty(s))
+        if (Lang.isEmpty(length) || Lang.isEmpty(s)) {
             return null;
-        else if (s.length() <= length)
+        } else if (s.length() <= length) {
             return s;
-        else
+        } else {
             return s.substring(0, length - 1) + supply;
+        }
     }
 
     /**
@@ -1577,8 +1661,9 @@ public class Strings {
      * @return 判断结果
      */
     public static boolean isCitizenId(String s) {
-        if (isBlank(s))
+        if (isBlank(s)) {
             return false;
+        }
         return isMactchRegex(P_CitizenId, s);
     }
 
@@ -1590,8 +1675,9 @@ public class Strings {
      * @return 判断结果
      */
     public static boolean isMobile(String s) {
-        if (isBlank(s))
+        if (isBlank(s)) {
             return false;
+        }
         return isMactchRegex(P_Mobile, s);
     }
 
@@ -1603,8 +1689,9 @@ public class Strings {
      * @return 判断结果
      */
     public static boolean isZipCode(String s) {
-        if (isBlank(s))
+        if (isBlank(s)) {
             return false;
+        }
         return isMactchRegex(P_ZipCode, s);
     }
 
@@ -1616,8 +1703,9 @@ public class Strings {
      * @return 判断结果
      */
     public static boolean isMoney(String s) {
-        if (isBlank(s))
+        if (isBlank(s)) {
             return false;
+        }
         return isMactchRegex(P_Money, s);
     }
 
@@ -1630,8 +1718,9 @@ public class Strings {
      */
     public static boolean isNumber(String s) {
 
-        if (isBlank(s))
+        if (isBlank(s)) {
             return false;
+        }
         return isMactchRegex(P_Number, s);
     }
 
@@ -1660,7 +1749,9 @@ public class Strings {
     public static boolean isMatch(Pattern pattern, String content) {
         if (content == null || pattern == null)
             // 提供null的字符串为不匹配
+        {
             return false;
+        }
         return pattern.matcher(content).matches();
     }
 
@@ -1672,8 +1763,9 @@ public class Strings {
      * @return 判断结果
      */
     public static boolean isEmail(String s) {
-        if (isBlank(s))
+        if (isBlank(s)) {
             return false;
+        }
         return isMatch(P_Email, s);
     }
 
@@ -1685,8 +1777,9 @@ public class Strings {
      * @return 判断结果
      */
     public static boolean isQQ(String s) {
-        if (isBlank(s))
+        if (isBlank(s)) {
             return false;
+        }
         return isMatch(P_QQ, s);
     }
 
@@ -1704,8 +1797,9 @@ public class Strings {
      * @return 判断结果
      */
     public static boolean isUSCC(String s) {
-        if (isBlank(s))
+        if (isBlank(s)) {
             return false;
+        }
         return isMatch(P_USCC, s);
     }
 
@@ -1718,8 +1812,9 @@ public class Strings {
      * @return 判断结果
      */
     public static boolean isUnionPayCard(String s) {
-        if (isBlank(s))
+        if (isBlank(s)) {
             return false;
+        }
         return isMatch(P_UnionPayCard, s);
     }
 
@@ -1737,10 +1832,12 @@ public class Strings {
      * @return 新字符串
      */
     public static String removeLast(CharSequence str) {
-        if (str == null)
+        if (str == null) {
             return null;
-        if (str.length() > 1)
+        }
+        if (str.length() > 1) {
             return str.subSequence(0, str.length() - 1).toString();
+        }
         return "";
     }
 

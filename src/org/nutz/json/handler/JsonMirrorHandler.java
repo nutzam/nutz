@@ -15,19 +15,23 @@ import org.nutz.lang.Mirror;
  */
 public class JsonMirrorHandler extends JsonTypeHandler {
 
+    @Override
     public boolean supportFromJson(Mirror<?> mirror, Object obj) {
         return mirror.getType() == Mirror.class;
     }
 
+    @Override
     public boolean supportToJson(Mirror<?> mirror, Object obj, JsonFormat jf) {
         return obj != null && obj instanceof Mirror;
     }
 
+    @Override
     @SuppressWarnings("rawtypes")
     public void toJson(Mirror<?> mirror, Object currentObj, JsonRender r, JsonFormat jf) throws IOException {
         r.string2Json(((Mirror) currentObj).getType().getName());
     }
 
+    @Override
     public Object fromJson(Object obj, Mirror<?> mirror) throws Exception {
         return Mirror.me(Lang.loadClass(String.valueOf(obj)));
     }

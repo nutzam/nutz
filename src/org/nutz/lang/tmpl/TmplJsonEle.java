@@ -21,15 +21,18 @@ public class TmplJsonEle extends TmplDynamicEle {
 
     @Override
     protected String _val(Object val) {
-        if (null == val)
+        if (null == val) {
             return "null";
+        }
 
         if (val instanceof CharSequence) {
-            if ("-obj-".equals(val))
+            if ("-obj-".equals(val)) {
                 return "{}";
+            }
             String s = Strings.trim(val.toString());
-            if (Strings.isQuoteBy(s, '[', ']'))
+            if (Strings.isQuoteBy(s, '[', ']')) {
                 return s;
+            }
             // zozoh 字符串还是应该转 JSON 吧
             // return val.toString();
         }

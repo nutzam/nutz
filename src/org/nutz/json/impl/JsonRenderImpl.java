@@ -55,6 +55,7 @@ public class JsonRenderImpl implements JsonRender {
         this.compact = format.isCompact();
     }
 
+    @Override
     public Writer getWriter() {
         return writer;
     }
@@ -82,8 +83,9 @@ public class JsonRenderImpl implements JsonRender {
                     handler.toJson(null, obj, this, format);
                     memo.remove(obj);
                 }
-                else
+                else {
                     handler.toJson(null, obj, this, format);
+                }
                 return;
             }
         }
@@ -102,10 +104,11 @@ public class JsonRenderImpl implements JsonRender {
 
     @Override
     public void appendName(String name) throws IOException {
-        if (format.isQuoteName() || !p.matcher(name).find())
+        if (format.isQuoteName() || !p.matcher(name).find()) {
             string2Json(name);
-        else
+        } else {
             writer.append(name);
+        }
     }
 
     @Override
@@ -134,8 +137,9 @@ public class JsonRenderImpl implements JsonRender {
 
     @Override
     public boolean isIgnore(String name, Object value) {
-        if (null == value && format.isIgnoreNull())
+        if (null == value && format.isIgnoreNull()) {
             return true;
+        }
         return format.ignore(name);
     }
 
@@ -158,10 +162,12 @@ public class JsonRenderImpl implements JsonRender {
         writer.append('}');
     }
 
+    @Override
     @SuppressWarnings({"unchecked"})
     public void map2Json(Map map) throws IOException {
-        if (null == map)
+        if (null == map) {
             return;
+        }
         appendBraceBegin();
         increaseFormatIndent();
         ArrayList<JsonPair> list = new ArrayList<JsonPair>(map.size());
@@ -169,8 +175,9 @@ public class JsonRenderImpl implements JsonRender {
         for (Entry entry : entrySet) {
             String name = null == entry.getKey() ? "null" : entry.getKey().toString();
             Object value = entry.getValue();
-            if (!this.isIgnore(name, value))
+            if (!this.isIgnore(name, value)) {
                 list.add(new JsonPair(name, value));
+            }
         }
         writeItem(list);
     }
@@ -188,20 +195,23 @@ public class JsonRenderImpl implements JsonRender {
 
     @Override
     public void decreaseFormatIndent() {
-        if (!compact)
+        if (!compact) {
             indent--;
+        }
     }
 
     @Override
     public void increaseFormatIndent() {
-        if (!compact)
+        if (!compact) {
             indent++;
+        }
     }
 
+    @Override
     public void string2Json(String s) throws IOException {
-        if (null == s)
+        if (null == s) {
             appendNull();
-        else {
+        } else {
             char[] cs = s.toCharArray();
             writer.append(format.getSeparator());
             for (char c : cs) {
@@ -232,10 +242,11 @@ public class JsonRenderImpl implements JsonRender {
                     if (c >= 256 && format.isAutoUnicode()) {
                         writer.append("\\u");
                         String u = Strings.fillHex(c, 4);
-                        if (format.isUnicodeLower())
+                        if (format.isUnicodeLower()) {
                             writer.write(u.toLowerCase());
-                        else
+                        } else {
                             writer.write(u.toUpperCase());
+                        }
                     } else {
                         if (c < ' ' || (c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
                             writer.write("\\u");
@@ -264,31 +275,36 @@ public class JsonRenderImpl implements JsonRender {
             }
         }
         if (df != null) {
-            if (df instanceof DateFormat)
+            if (df instanceof DateFormat) {
                 return doDateFormat((Date) value, (DateFormat) df);
+            }
             return df.format(value);
         }
         return value.toString();
     }
 
     protected void doIntent() throws IOException {
-        for (int i = 0; i < indent; i++)
+        for (int i = 0; i < indent; i++) {
             writer.write(format.getIndentBy());
+        }
     }
 
     protected void appendNull() throws IOException {
-        if (format.isNullAsEmtry())
+        if (format.isNullAsEmtry()) {
             writer.write("\"\"");
-        else
+        } else {
             writer.write("null");
+        }
     }
 
     protected String doDateFormat(Date date, DateFormat df) {
-        if (df == null)
+        if (df == null) {
             df = format.getDateFormat();
+        }
         if (df != null) {
-            if (format.getTimeZone() != null)
+            if (format.getTimeZone() != null) {
                 df.setTimeZone(format.getTimeZone());
+            }
             return df.format(date);
         }
         return null;

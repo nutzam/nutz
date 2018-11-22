@@ -168,8 +168,9 @@ public class MaplRebuild {
         // [1]格式, 路径上自带索引，可以是多个，譬如[1][3][0]
         String[] ss = val.substring(1, val.length() - 1).split("\\]\\[");
         int[] re = new int[ss.length];
-        for (int i = 0; i < ss.length; i++)
+        for (int i = 0; i < ss.length; i++) {
             re[i] = Integer.parseInt(ss[i]);
+        }
         return re;
     }
 

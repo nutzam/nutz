@@ -55,8 +55,9 @@ public class ChainParsing {
                 clearStringBuffer();
                 for (i++; i < cs.length; i++) {
                     char n = cs[i];
-                    if (n == c)
+                    if (n == c) {
                         break;
+                    }
                     sb.append(n);
                 }
                 addNode(new StringNode(clearStringBuffer()));
@@ -138,10 +139,12 @@ public class ChainParsing {
         int dot = 0, comma = 0;
         for (int currentIndex = i; currentIndex < cs.length; currentIndex++) {
             char c = cs[currentIndex];
-            if (c == '.')
+            if (c == '.') {
                 dot = currentIndex;
-            if (c == ',')
+            }
+            if (c == ',') {
                 comma = currentIndex;
+            }
         }
         return dot < comma || (dot != 0 && comma == 0);//点号在逗号前边或后边有点号没有逗号
     }
@@ -165,8 +168,9 @@ public class ChainParsing {
             // the chain is empty
             else if (null == last) {
                 int pos = s.lastIndexOf('.');
-                if (pos < 0)
+                if (pos < 0) {
                     throw Lang.makeThrow("Don't know how to invoke '%s'", s);
+                }
                 String className = s.substring(0, pos);
                 String funcName = s.substring(pos + 1);
                 addNode(new StaticFunctionNode(className,
@@ -183,8 +187,9 @@ public class ChainParsing {
     private String readToDot() {
         for (i++; i < cs.length; i++) {
             char c = cs[i];
-            if (c == '.' || c == ',')
+            if (c == '.' || c == ',') {
                 break;
+            }
             sb.append(c);
         }
         return clearStringBuffer();
@@ -193,8 +198,9 @@ public class ChainParsing {
     private String readToComma() {
         for (i++; i < cs.length; i++) {
             char c = cs[i];
-            if (c == ',' || c == ')')
+            if (c == ',' || c == ')') {
                 break;
+            }
             sb.append(c);
         }
         return clearStringBuffer();

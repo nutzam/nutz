@@ -91,15 +91,17 @@ public abstract class Pojos {
 
 		public static PItem cndId(Entity<?> en, Number id) {
 		    MappingField mappingField = en.getIdField();
-		    if (mappingField == null)
-		        throw new DaoException("expect @Id but NOT found. " + en.getType().getName());
+		    if (mappingField == null) {
+                throw new DaoException("expect @Id but NOT found. " + en.getType().getName());
+            }
 			return cndColumn(mappingField, id);
 		}
 
 		public static PItem cndName(Entity<?> en, String name) {
 		    MappingField mappingField = en.getNameField();
-            if (mappingField == null)
+            if (mappingField == null) {
                 throw new DaoException("expect @Name but NOT found. " + en.getType().getName());
+            }
 			return cndColumn(mappingField, name);
 		}
 
@@ -119,8 +121,9 @@ public abstract class Pojos {
 		public static PItem cndPk(Entity<?> en, Object[] pks) {
 			ValueAdaptor[] vas = new ValueAdaptor[en.getCompositePKFields().size()];
 			int i = 0;
-			for (MappingField mf : en.getCompositePKFields())
-				vas[i++] = mf.getAdaptor();
+			for (MappingField mf : en.getCompositePKFields()) {
+                vas[i++] = mf.getAdaptor();
+            }
 			return new PkConditionPItem(vas, pks);
 		}
 
@@ -144,8 +147,9 @@ public abstract class Pojos {
 				if (null != obj) {
 					pks = new Object[en.getCompositePKFields().size()];
 					int i = 0;
-					for (EntityField ef : en.getCompositePKFields())
-						pks[i++] = ef.getValue(obj);
+					for (EntityField ef : en.getCompositePKFields()) {
+                        pks[i++] = ef.getValue(obj);
+                    }
 				}
 				return cndPk(en, pks);
 			default:
@@ -205,8 +209,9 @@ public abstract class Pojos {
                 }
             }
         }
-        if (re.isEmpty() && log.isDebugEnabled())
+        if (re.isEmpty() && log.isDebugEnabled()) {
             log.debug("none field for insert!");
+        }
         return re;
     }
 
@@ -215,29 +220,36 @@ public abstract class Pojos {
         Object tmp = Lang.first(refer);
 		for (MappingField mf : en.getMappingFields()) {
 			if (mf.isPk()) {
-				if (en.getPkType() == PkType.ID && mf.isId())
-					continue;
-				if (en.getPkType() == PkType.NAME && mf.isName())
-					continue;
-				if (en.getPkType() == PkType.COMPOSITE && mf.isCompositePk())
-					continue;
+				if (en.getPkType() == PkType.ID && mf.isId()) {
+                    continue;
+                }
+				if (en.getPkType() == PkType.NAME && mf.isName()) {
+                    continue;
+                }
+				if (en.getPkType() == PkType.COMPOSITE && mf.isCompositePk()) {
+                    continue;
+                }
 			}
-			if (mf.isReadonly() || mf.isAutoIncreasement() || !mf.isUpdate())
-				continue;
+			if (mf.isReadonly() || mf.isAutoIncreasement() || !mf.isUpdate()) {
+                continue;
+            }
 			if (fm == null) {
 			    re.add(mf);
 			}
 			else if (tmp == null) {
-			    if (fm.match(mf.getName()))
-			        re.add(mf);
+			    if (fm.match(mf.getName())) {
+                    re.add(mf);
+                }
 			}
 			else {
-			    if (fm.match(mf, tmp))
-			        re.add(mf);
+			    if (fm.match(mf, tmp)) {
+                    re.add(mf);
+                }
 			}
 		}
-		if (re.isEmpty() && log.isDebugEnabled())
-			log.debug("none field for update!");
+		if (re.isEmpty() && log.isDebugEnabled()) {
+            log.debug("none field for update!");
+        }
 		return re;
 	}
 
@@ -251,8 +263,9 @@ public abstract class Pojos {
 	public static String formatCondition(Entity<?> en, Condition cnd, boolean top) {
         if (null != cnd) {
             String str = Strings.trim(cnd.toSql(en));
-            if (top && !ptn.matcher(str).find())
+            if (top && !ptn.matcher(str).find()) {
                 return "WHERE " + str;
+            }
             return str;
         }
         return "";

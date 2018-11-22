@@ -59,11 +59,13 @@ public abstract class Trans {
             tn.setLevel(level);
             trans.set(tn);
             count.set(0);
-            if (DEBUG)
+            if (DEBUG) {
                 log.debugf("Start New Transaction id=%d, level=%d", tn.getId(), level);
+            }
         } else {
-            if (DEBUG)
+            if (DEBUG) {
                 log.debugf("Attach Transaction    id=%d, level=%d", tn.getId(), level);
+            }
         }
         int tCount = count.get() + 1;
         count.set(tCount);
@@ -76,39 +78,43 @@ public abstract class Trans {
         count.set(count.get() - 1);
         Transaction tn = trans.get();
         if (count.get() == 0) {
-            if (DEBUG)
-                log.debug("Transaction Commit id="+tn.getId());
+            if (DEBUG) {
+                log.debug("Transaction Commit id=" + tn.getId());
+            }
             tn.commit();
         } else {
-            if (DEBUG)
+            if (DEBUG) {
                 log.debugf("Transaction delay Commit id=%d, count=%d", tn.getId(), count.get());
+            }
         }
     }
 
     static void _depose() {
-        if (count.get() == 0)
+        if (count.get() == 0) {
             try {
-                if (DEBUG)
+                if (DEBUG) {
                     log.debugf("Transaction depose id=%d, count=%s", trans.get().getId(), count.get());
+                }
                 trans.get().close();
-            }
-            catch (Throwable e) {
+            } catch (Throwable e) {
                 throw Lang.wrapThrow(e);
-            }
-            finally {
+            } finally {
                 trans.set(null);
             }
+        }
     }
 
     static void _rollback(Integer num) {
         count.set(num);
         if (count.get() == 0) {
-            if (DEBUG)
+            if (DEBUG) {
                 log.debugf("Transaction rollback id=%s, count=%s", trans.get().getId(), num);
+            }
             trans.get().rollback();
         } else {
-            if (DEBUG)
+            if (DEBUG) {
                 log.debugf("Transaction delay rollback id=%s, count=%s", trans.get().getId(), num);
+            }
         }
     }
 
@@ -165,13 +171,15 @@ public abstract class Trans {
      * @see java.sql.Connection
      */
     public static void exec(int level, Atom... atoms) {
-        if (null == atoms)
+        if (null == atoms) {
             return;
+        }
         int num = count.get() == null ? 0 : count.get();
         try {
             _begain(level);
-            for (Atom atom : atoms)
+            for (Atom atom : atoms) {
                 atom.run();
+            }
             _commit();
         }
         catch (Throwable e) {
@@ -239,10 +247,11 @@ public abstract class Trans {
      */
     public static void rollback() throws Exception {
         Integer c = Trans.count.get();
-        if (c == null)
+        if (c == null) {
             c = Integer.valueOf(0);
-        else if (c > 0)
-        	c--;
+        } else if (c > 0) {
+            c--;
+        }
         Trans._rollback(c);
     }
 
@@ -259,10 +268,11 @@ public abstract class Trans {
      * 如果在事务中,则返回事务的连接,否则直接从数据源取一个新的连接
      */
     public static Connection getConnectionAuto(DataSource ds) throws SQLException {
-        if (get() == null)
+        if (get() == null) {
             return ds.getConnection();
-        else
+        } else {
             return get().getConnection(ds);
+        }
     }
 
     /**
@@ -286,15 +296,17 @@ public abstract class Trans {
      */
     public static void clear(boolean rollbackOrCommit) {
         Integer c = Trans.count.get();
-        if (c == null)
+        if (c == null) {
             return;
+        }
         if (c > 0) {
             for (int i = 0; i < c; i++) {
                 try {
-                    if (rollbackOrCommit)
+                    if (rollbackOrCommit) {
                         Trans.rollback();
-                    else
+                    } else {
                         Trans.commit();
+                    }
                     Trans.close();
                 }
                 catch (Exception e) {
@@ -303,8 +315,9 @@ public abstract class Trans {
         }
         Trans.count.set(null);
         Transaction t = get();
-        if (t != null)
+        if (t != null) {
             t.close();
+        }
         Trans.trans.set(null);
     }
     

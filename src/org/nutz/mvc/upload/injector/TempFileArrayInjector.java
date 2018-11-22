@@ -26,29 +26,35 @@ public class TempFileArrayInjector implements ParamInjector {
         this.name = name;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
-        if (refer == null)
+        if (refer == null) {
             return null;
+        }
         Object obj = ((Map<String, Object>) refer).get(name);
-        if (obj == null || Lang.eleSize(obj) == 0)
+        if (obj == null || Lang.eleSize(obj) == 0) {
             return EMTRY;
+        }
         if (Lang.eleSize(obj) == 1) {
             Object tmp = Lang.first(obj);
-            if (tmp == null || !(tmp instanceof TempFile))
+            if (tmp == null || !(tmp instanceof TempFile)) {
                 return EMTRY;
+            }
             return new TempFile[]{(TempFile)tmp};
         }
         final List<TempFile> list = new ArrayList<TempFile>();
         Lang.each(obj, new Each<Object>() {
+            @Override
             public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop, LoopException {
                 if (ele instanceof TempFile) {
                     list.add((TempFile)ele);
                 }
             }
         });
-        if (list.isEmpty())
+        if (list.isEmpty()) {
             return EMTRY;
+        }
         return list.toArray(new TempFile[list.size()]);
     }
 

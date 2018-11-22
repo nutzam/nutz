@@ -27,6 +27,7 @@ class AopInvokeAdpter extends AopMethodAdapter {
         this.methodArray = methodArray;
     }
 
+    @Override
     void visitCode() {
         mv.visitCode();
 
@@ -57,10 +58,11 @@ class AopInvokeAdpter extends AopMethodAdapter {
                                 false);
             {
                 returnType = Type.getReturnType(method);
-                if (returnType.equals(Type.VOID_TYPE))
+                if (returnType.equals(Type.VOID_TYPE)) {
                     mv.visitInsn(ACONST_NULL);
-                else if (returnType.getOpcode(IRETURN) != ARETURN)
-                    AsmHelper.packagePrivateData(returnType,mv);
+                } else if (returnType.getOpcode(IRETURN) != ARETURN) {
+                    AsmHelper.packagePrivateData(returnType, mv);
+                }
                 mv.visitInsn(ARETURN);
             }
             mv.visitLabel(l0);

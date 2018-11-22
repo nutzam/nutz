@@ -44,8 +44,9 @@ public abstract class Streams {
         int dA;
         while ((dA = sA.read()) != -1) {
             int dB = sB.read();
-            if (dA != dB)
+            if (dA != dB) {
                 return false;
+            }
         }
         return sB.read() == -1;
     }
@@ -124,8 +125,9 @@ public abstract class Streams {
      * @throws IOException
      */
     public static long write(OutputStream ops, InputStream ins, int bufferSize) throws IOException {
-        if (null == ops || null == ins)
+        if (null == ops || null == ins) {
             return 0;
+        }
 
         byte[] buf = new byte[bufferSize];
         int len;
@@ -182,15 +184,17 @@ public abstract class Streams {
      * @throws IOException
      */
     public static long write(Writer writer, Reader reader) throws IOException {
-        if (null == writer || null == reader)
+        if (null == writer || null == reader) {
             return 0;
+        }
 
         char[] cbuf = new char[BUF_SIZE];
         int len, count = 0;
         while (true) {
             len = reader.read(cbuf);
-            if (len == -1)
+            if (len == -1) {
                 break;
+            }
             writer.write(cbuf, 0, len);
             count += len;
         }
@@ -232,8 +236,9 @@ public abstract class Streams {
      * @throws IOException
      */
     public static void write(OutputStream ops, byte[] bytes) throws IOException {
-        if (null == ops || null == bytes || bytes.length == 0)
+        if (null == ops || null == bytes || bytes.length == 0) {
             return;
+        }
         ops.write(bytes);
     }
 
@@ -387,13 +392,13 @@ public abstract class Streams {
      * @return 是否成功关闭
      */
     public static boolean safeClose(Closeable cb) {
-        if (null != cb)
+        if (null != cb) {
             try {
                 cb.close();
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 return false;
             }
+        }
         return true;
     }
 
@@ -404,11 +409,12 @@ public abstract class Streams {
      *            可刷新对象
      */
     public static void safeFlush(Flushable fa) {
-        if (null != fa)
+        if (null != fa) {
             try {
                 fa.flush();
+            } catch (IOException e) {
             }
-            catch (IOException e) {}
+        }
     }
 
     /**
@@ -419,10 +425,12 @@ public abstract class Streams {
      * @return 缓冲输入流
      */
     public static BufferedInputStream buff(InputStream ins) {
-        if (ins == null)
+        if (ins == null) {
             throw new NullPointerException("ins is null!");
-        if (ins instanceof BufferedInputStream)
+        }
+        if (ins instanceof BufferedInputStream) {
             return (BufferedInputStream) ins;
+        }
         // BufferedInputStream的构造方法,竟然是允许null参数的!! 我&$#^$&%
         return new BufferedInputStream(ins);
     }
@@ -435,10 +443,12 @@ public abstract class Streams {
      * @return 缓冲输出流
      */
     public static BufferedOutputStream buff(OutputStream ops) {
-        if (ops == null)
+        if (ops == null) {
             throw new NullPointerException("ops is null!");
-        if (ops instanceof BufferedOutputStream)
+        }
+        if (ops instanceof BufferedOutputStream) {
             return (BufferedOutputStream) ops;
+        }
         return new BufferedOutputStream(ops);
     }
 
@@ -450,8 +460,9 @@ public abstract class Streams {
      * @return 缓冲文本输入流
      */
     public static BufferedReader buffr(Reader reader) {
-        if (reader instanceof BufferedReader)
+        if (reader instanceof BufferedReader) {
             return (BufferedReader) reader;
+        }
         return new BufferedReader(reader);
     }
 
@@ -463,8 +474,9 @@ public abstract class Streams {
      * @return 缓冲文本输出流
      */
     public static BufferedWriter buffw(Writer ops) {
-        if (ops instanceof BufferedWriter)
+        if (ops instanceof BufferedWriter) {
             return (BufferedWriter) ops;
+        }
         return new BufferedWriter(ops);
     }
 
@@ -479,11 +491,12 @@ public abstract class Streams {
         InputStream ins = Files.findFileAsStream(path);
         if (null == ins) {
             File f = Files.findFile(path);
-            if (null != f)
+            if (null != f) {
                 try {
                     ins = Streams._input(f);
+                } catch (IOException e) {
                 }
-                catch (IOException e) {}
+            }
         }
         if (null == ins) {
             // TODO 考虑一下,应该抛异常呢?还是返回null呢?
@@ -545,13 +558,15 @@ public abstract class Streams {
      */
     public static InputStream utf8filte(InputStream in) {
         try {
-            if (in.available() == -1)
+            if (in.available() == -1) {
                 return in;
+            }
             PushbackInputStream pis = new PushbackInputStream(in, 3);
             byte[] header = new byte[3];
             int len = pis.read(header, 0, 3);
-            if (len < 1)
+            if (len < 1) {
                 return in;
+            }
             if (header[0] != UTF_BOM[0] || header[1] != UTF_BOM[1] || header[2] != UTF_BOM[2]) {
                 pis.unread(header, 0, len);
             }
@@ -637,8 +652,9 @@ public abstract class Streams {
      * @return 迭代的行数
      */
     public static int eachLine(Reader r, Each<String> callback) {
-        if (null == callback || null == r)
+        if (null == callback || null == r) {
             return 0;
+        }
         BufferedReader br = null;
         try {
             br = Streams.buffr(r);
@@ -670,12 +686,14 @@ public abstract class Streams {
      * 
      */
     protected static InputStream _input(File file) throws IOException {
-        if (file.exists())
+        if (file.exists()) {
             return new FileInputStream(file);
+        }
         if (Scans.isInJar(file)) {
             NutResource nutResource = Scans.makeJarNutResource(file);
-            if (nutResource != null)
+            if (nutResource != null) {
                 return nutResource.getInputStream();
+            }
         }
         throw new FileNotFoundException(file.toString());
     }
@@ -699,10 +717,12 @@ public abstract class Streams {
         String line = null;
         while (br.ready()) {
             line = br.readLine();
-            if (line == null)
+            if (line == null) {
                 break;
-            if (Strings.isBlank(line))
+            }
+            if (Strings.isBlank(line)) {
                 continue;
+            }
             return line.trim();
         }
         return line;

@@ -18,10 +18,12 @@ public class ReferValue implements ValueProxy {
         this.type = p.getValue();
     }
 
+    @Override
     public Object get(IocMaking ing) {
         Ioc ioc = ing.getIoc();
-        if (ioc instanceof Ioc2)
-            return ((Ioc2)ioc).get(type, name,ing.getContext());
+        if (ioc instanceof Ioc2) {
+            return ((Ioc2) ioc).get(type, name, ing.getContext());
+        }
         return ioc.get(type, name);
     }
 

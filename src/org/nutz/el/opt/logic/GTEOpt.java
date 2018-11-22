@@ -7,14 +7,17 @@ package org.nutz.el.opt.logic;
  */
 public class GTEOpt extends AbstractCompareOpt {
     
+    @Override
     public int fetchPriority() {
         return 6;
     }
     
+    @Override
     public Object calculate() {
         return compare() >= 0;
     }
     
+    @Override
     public String fetchSelf() {
         return ">=";
     }

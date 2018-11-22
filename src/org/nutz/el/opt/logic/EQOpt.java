@@ -9,14 +9,17 @@ package org.nutz.el.opt.logic;
  */
 public class EQOpt extends AbstractCompareOpt {
     
+    @Override
     public int fetchPriority() {
         return 7;
     }
 
+    @Override
     public Boolean calculate() {
         return compare() == 0;
     }
 
+    @Override
     public String fetchSelf() {
         return "==";
     }

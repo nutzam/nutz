@@ -87,6 +87,7 @@ public abstract class NutRunner implements Runnable {
     /**
      * 主逻辑,用户代码不应该覆盖.
      */
+    @Override
     public void run() {
         if (log == null) {
             log = Logs.get().setTag(rnm);
@@ -153,19 +154,22 @@ public abstract class NutRunner implements Runnable {
                     // 修改一下本线程的时间
                     upAt = Times.now();
                     downAt = null;
-                    if (debug && log.isDebugEnabled())
+                    if (debug && log.isDebugEnabled()) {
                         log.debugf("%s [%d] : up", rnm, ++count);
+                    }
 
                     // 执行业务
                     interval = exec();
 
-                    if (interval < 1)
+                    if (interval < 1) {
                         interval = 1; // 不能间隔0或者负数,会死线程的
+                    }
 
                     // 等待一个周期
                     downAt = Times.now();
-                    if (debug && log.isDebugEnabled())
+                    if (debug && log.isDebugEnabled()) {
                         log.debugf("%s [%d] : wait %ds(%dms)", rnm, count, interval / 1000, interval);
+                    }
                     lock.wait(interval);
                 }
                 catch (InterruptedException e) {
@@ -189,6 +193,7 @@ public abstract class NutRunner implements Runnable {
     /**
      * 返回格式为 [名称:总启动次数] 最后启动时间:最后休眠时间 - 休眠间隔
      */
+    @Override
     public String toString() {
         return String.format("[%s:%d] %s/%s - %d",
                              rnm,

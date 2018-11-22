@@ -39,11 +39,13 @@ public class FilterConvertImpl extends MaplEach implements MaplConvert{
      * 转换
      * @param obj 目标对象
      */
+    @Override
     public Object convert(Object obj){
         each(obj);
         return build.fetchNewobj();
     }
     
+    @Override
     protected void DLR(String path, Object item) {
         if(clude){
             if(items.contains(path)){
@@ -52,6 +54,7 @@ public class FilterConvertImpl extends MaplEach implements MaplConvert{
         }
     }
 
+    @Override
     protected void LRD(String path, Object item) {
         if(clude){
            return;

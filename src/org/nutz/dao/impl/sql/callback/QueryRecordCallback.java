@@ -12,8 +12,10 @@ import org.nutz.dao.sql.SqlContext;
 
 public class QueryRecordCallback implements SqlCallback {
 
+    @Override
     public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
         ResultSetLooping ing = new ResultSetLooping() {
+            @Override
             protected boolean createObject(int index, ResultSet rs, SqlContext context, int rowCout) {
                 list.add(Record.create(rs));
                 return true;

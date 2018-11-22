@@ -73,8 +73,9 @@ public class IocMaking {
     public ValueProxy makeValue(IocValue iv) {
         for (ValueProxyMaker vpm : vpms) {
             ValueProxy vp = vpm.make(this, iv);
-            if (null != vp)
+            if (null != vp) {
                 return vp;
+            }
         }
         throw Lang.makeThrow(    "Unknown value {'%s':%s} for object [%s]",
                                 iv.getType(),

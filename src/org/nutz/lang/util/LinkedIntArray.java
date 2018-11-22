@@ -14,8 +14,9 @@ public class LinkedIntArray implements Serializable {
     }
 
     public LinkedIntArray(int size) {
-        if (size <= 0)
+        if (size <= 0) {
             Lang.makeThrow("width must >0!");
+        }
         this.width = size;
         cache = new ArrayList<int[]>();
     }
@@ -49,20 +50,23 @@ public class LinkedIntArray implements Serializable {
     }
 
     public LinkedIntArray popLast(int num) {
-        for (int i = 0; i < num; i++)
+        for (int i = 0; i < num; i++) {
             popLast();
+        }
         return this;
     }
 
     public int first() {
-        if (size() == 0)
+        if (size() == 0) {
             return (char) 0;
+        }
         return innerGet(offset);
     }
 
     public int last() {
-        if (size() == 0)
+        if (size() == 0) {
             return (char) 0;
+        }
         return innerGet(cursor - 1);
     }
 
@@ -80,11 +84,12 @@ public class LinkedIntArray implements Serializable {
     }
 
     private void checkBound(int index) {
-        if (index >= size() || index < 0)
+        if (index >= size() || index < 0) {
             throw new IndexOutOfBoundsException("Index: "
-                                                + index
-                                                + ", Size: "
-                                                + size());
+                    + index
+                    + ", Size: "
+                    + size());
+        }
     }
 
     public LinkedIntArray clear() {
@@ -114,18 +119,21 @@ public class LinkedIntArray implements Serializable {
 
     public int[] toArray() {
         int[] re = new int[size()];
-        for (int i = 0; i < re.length; i++)
+        for (int i = 0; i < re.length; i++) {
             re[i] = this.get(i);
+        }
         return re;
     }
 
     public byte[] toByteArray() {
         byte[] re = new byte[size()];
-        for (int i = 0; i < re.length; i++)
+        for (int i = 0; i < re.length; i++) {
             re[i] = (byte) this.get(i);
+        }
         return re;
     }
 
+    @Override
     public String toString() {
         return Lang.concat(',', toArray()).toString();
     }

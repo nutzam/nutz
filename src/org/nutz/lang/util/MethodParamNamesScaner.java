@@ -24,15 +24,19 @@ public class MethodParamNamesScaner {
     public static List<String> getParamNames(Method method) {
         try {
             int size = method.getParameterTypes().length;
-            if (size == 0)
+            if (size == 0) {
                 return new ArrayList<String>(0);
+            }
             List<String> list = ClassMetaReader.getParamNames(method.getDeclaringClass()).get(ClassMetaReader.getKey(method));
-            if (list == null)
+            if (list == null) {
                 return null;
-            if (list.size() == size)
+            }
+            if (list.size() == size) {
                 return list;
-            if (list.size() > size)
+            }
+            if (list.size() > size) {
                 return list.subList(0, size);
+            }
             return null;
         } catch (Throwable e) {
             throw new RuntimeException(e);
@@ -47,11 +51,13 @@ public class MethodParamNamesScaner {
     public static List<String> getParamNames(Constructor<?> constructor) {
         try {
             int size = constructor.getParameterTypes().length;
-            if (size == 0)
+            if (size == 0) {
                 return new ArrayList<String>(0);
+            }
             List<String> list =  ClassMetaReader.getParamNames(constructor.getDeclaringClass()).get(ClassMetaReader.getKey(constructor));
-            if (list != null && list.size() != size)
+            if (list != null && list.size() != size) {
                 return list.subList(0, size);
+            }
             return list;
         } catch (Throwable e) {
             throw new RuntimeException(e);
@@ -60,8 +66,9 @@ public class MethodParamNamesScaner {
     
     public static Map<String, List<String>> getParamNames(Class<?> klass) throws IOException {
         String key = klass.getName();
-        if (caches.containsKey(key))
+        if (caches.containsKey(key)) {
             return caches.get(key);
+        }
         InputStream in = klass.getResourceAsStream("/" + klass.getName().replace('.', '/') + ".class");        
         Map<String, List<String>> names = getParamNames(in);
         caches.put(key, names);
@@ -69,8 +76,9 @@ public class MethodParamNamesScaner {
     }
     
     public static Map<String, List<String>> getParamNames(InputStream ins) throws IOException {
-        if (ins == null)
+        if (ins == null) {
             return new HashMap<String, List<String>>();
+        }
         return ClassMetaReader.build(ins).paramNames;
     }
     

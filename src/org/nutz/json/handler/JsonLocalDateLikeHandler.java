@@ -27,14 +27,16 @@ public class JsonLocalDateLikeHandler extends JsonTypeHandler {
     @Override
     public void toJson(Mirror<?> mirror, Object currentObj, JsonRender r, JsonFormat jf) throws IOException {
         String df = jf.getDateFormatRaw();
-        if (df == null)
+        if (df == null) {
             df = "yyyy-MM-dd HH:mm:ss.SSS";
+        }
         Locale locale = null;
         String tmp = jf.getLocale();
-        if (tmp != null)
+        if (tmp != null) {
             locale = Locale.forLanguageTag(tmp);
-        else
+        } else {
             locale = Locale.getDefault();
+        }
         r.string2Json(DateTimeFormatter.ofPattern(df, locale).withZone(ZoneId.systemDefault()).format((TemporalAccessor) currentObj));
     }
 

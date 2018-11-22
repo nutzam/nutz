@@ -10,6 +10,7 @@ import org.nutz.el.Parse;
  */
 public class ValParse implements Parse {
 
+    @Override
     public Object fetchItem(CharQueue exp){
         StringBuilder sb = new StringBuilder();
         switch(exp.peek()){

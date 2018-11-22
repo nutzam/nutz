@@ -119,8 +119,9 @@ public abstract class Sender implements Callable<Response> {
                 }
             }
         }
-        if (this.interceptor != null)
+        if (this.interceptor != null) {
             this.interceptor.afterResponse(request, conn, rep);
+        }
         return rep;
     }
 
@@ -135,13 +136,15 @@ public abstract class Sender implements Callable<Response> {
     }
 
     protected Map<String, String> getResponseHeader() throws IOException {
-        if (conn.getResponseCode() < 0)
+        if (conn.getResponseCode() < 0) {
             throw new IOException("Network error!! resp code=" + conn.getResponseCode());
+        }
         Map<String, String> reHeaders = new HashMap<String, String>();
         for (Entry<String, List<String>> en : conn.getHeaderFields().entrySet()) {
             List<String> val = en.getValue();
-            if (null != val && val.size() > 0)
+            if (null != val && val.size() > 0) {
                 reHeaders.put(en.getKey(), en.getValue().get(0));
+            }
         }
         return reHeaders;
     }
@@ -152,8 +155,9 @@ public abstract class Sender implements Callable<Response> {
     }
 
     protected void openConnection() throws IOException {
-        if (this.interceptor != null)
+        if (this.interceptor != null) {
             this.interceptor.beforeConnect(request);
+        }
         Proxy proxy = this.proxy;
         if (proxy == null && Http.proxySwitcher != null) {
             proxy = Http.proxySwitcher.getProxy(request);
@@ -171,18 +175,20 @@ public abstract class Sender implements Callable<Response> {
                         out.flush();
                     }
                     finally {
-                        if (socket != null)
+                        if (socket != null) {
                             socket.close();
+                        }
                     }
                 }
                 log.debug("connect via proxy : " + proxy + " for " + request.getUrl());
                 conn = (HttpURLConnection) request.getUrl().openConnection(proxy);
                 conn.setConnectTimeout(connTime);
                 conn.setInstanceFollowRedirects(followRedirects);
-                if (timeout > 0)
+                if (timeout > 0) {
                     conn.setReadTimeout(timeout);
-                else
+                } else {
                     conn.setReadTimeout(Default_Read_Timeout);
+                }
                 return;
             }
             catch (IOException e) {
@@ -196,35 +202,42 @@ public abstract class Sender implements Callable<Response> {
         String host = url.getHost();
         conn = (HttpURLConnection) url.openConnection();
         if (conn instanceof HttpsURLConnection) {
-            if (sslSocketFactory != null)
+            if (sslSocketFactory != null) {
                 ((HttpsURLConnection) conn).setSSLSocketFactory(sslSocketFactory);
-            else if (Http.sslSocketFactory != null)
+            } else if (Http.sslSocketFactory != null) {
                 ((HttpsURLConnection) conn).setSSLSocketFactory(Http.sslSocketFactory);
+            }
         }
         if (!Lang.isIPv4Address(host)) {
-            if (url.getPort() > 0 && url.getPort() != 80)
+            if (url.getPort() > 0 && url.getPort() != 80) {
                 host += ":" + url.getPort();
+            }
             conn.addRequestProperty("Host", host);
         }
         conn.setConnectTimeout(connTime);
-        if (request.getMethodString() == null)
+        if (request.getMethodString() == null) {
             conn.setRequestMethod(request.getMethod().name());
-        else
+        } else {
             conn.setRequestMethod(request.getMethodString());
-        if (timeout > 0)
+        }
+        if (timeout > 0) {
             conn.setReadTimeout(timeout);
-        else
+        } else {
             conn.setReadTimeout(Default_Read_Timeout);
+        }
         conn.setInstanceFollowRedirects(followRedirects);
-        if (interceptor != null)
+        if (interceptor != null) {
             this.interceptor.afterConnect(request, conn);
+        }
     }
 
     protected void setupRequestHeader() {
         Header header = request.getHeader();
-        if (null != header)
-            for (Entry<String, String> entry : header.getAll())
+        if (null != header) {
+            for (Entry<String, String> entry : header.getAll()) {
                 conn.addRequestProperty(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     public Sender setTimeout(int timeout) {
@@ -255,16 +268,19 @@ public abstract class Sender implements Callable<Response> {
         return this;
     }
 
+    @Override
     public Response call() throws Exception {
         Response resp = send();
-        if (callback != null)
+        if (callback != null) {
             callback.invoke(resp);
+        }
         return resp;
     }
 
     public Future<Response> send(Callback<Response> callback) throws HttpException {
-        if (es == null)
+        if (es == null) {
             throw new IllegalStateException("Sender ExecutorService is null, Call setup first");
+        }
         this.callback = callback;
         return es.submit(this);
     }
@@ -272,10 +288,12 @@ public abstract class Sender implements Callable<Response> {
     protected static ExecutorService es;
 
     public static ExecutorService setup(ExecutorService es) {
-        if (Sender.es != null)
+        if (Sender.es != null) {
             shutdown();
-        if (es == null)
+        }
+        if (es == null) {
             es = Executors.newFixedThreadPool(64);
+        }
         Sender.es = es;
         return es;
     }
@@ -283,8 +301,9 @@ public abstract class Sender implements Callable<Response> {
     public static List<Runnable> shutdown() {
         ExecutorService _es = es;
         es = null;
-        if (_es == null)
+        if (_es == null) {
             return null;
+        }
         return _es.shutdownNow();
     }
 
@@ -299,11 +318,13 @@ public abstract class Sender implements Callable<Response> {
 
     protected OutputStream getOutputStream() throws IOException {
         OutputStream out = conn.getOutputStream();
-        if (progressListener == null)
+        if (progressListener == null) {
             return out;
+        }
         return new FilterOutputStream(out) {
             int count;
 
+            @Override
             public void write(byte[] b, int off, int len) throws IOException {
                 super.write(b, off, len);
                 count += len;

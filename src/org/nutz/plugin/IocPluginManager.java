@@ -21,27 +21,31 @@ public class IocPluginManager<T> implements PluginManager<T> {
         this.names = names;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public T get() throws NoPluginCanWorkException {
         for (String name : names) {
             try {
                 Plugin plugin = ioc.get(Plugin.class, name);
-                if (plugin.canWork())
+                if (plugin.canWork()) {
                     return (T) plugin;
+                }
             }
             catch (IocException e) {}
         }
         throw new NoPluginCanWorkException();
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public List<T> gets() {
         List<T> aList = new ArrayList<T>(names.length);
         for (String name : names) {
             try {
                 Plugin plugin = ioc.get(Plugin.class, name);
-                if (plugin.canWork())
-                    aList.add((T)plugin);
+                if (plugin.canWork()) {
+                    aList.add((T) plugin);
+                }
             }
             catch (IocException e) {}
         }

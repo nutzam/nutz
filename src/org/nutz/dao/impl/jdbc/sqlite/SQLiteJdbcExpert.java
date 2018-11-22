@@ -40,31 +40,36 @@ public class SQLiteJdbcExpert extends AbstractJdbcExpert {
         // 创建字段
         boolean mPks = en.getPks().size() > 1;
         for (MappingField mf : en.getMappingFields()) {
-            if (mf.isReadonly())
+            if (mf.isReadonly()) {
                 continue;
+            }
             sb.append('\n').append(mf.getColumnNameInSql());
             // Sqlite的整数型主键,一般都是自增的,必须定义为(PRIMARY KEY
             // AUTOINCREMENT),但这样就无法定义多主键!!
             if (mf.isId() && en.getPkType() == PkType.ID) {
                 sb.append(" INTEGER PRIMARY KEY AUTOINCREMENT,");
                 continue;
-            } else
+            } else {
                 sb.append(' ').append(evalFieldType(mf));
+            }
             // 非主键的 @Name，应该加入唯一性约束
             if (mf.isName() && en.getPkType() != PkType.NAME) {
                 sb.append(" UNIQUE NOT NULL");
             }
             // 普通字段
             else {
-                if (mf.isUnsigned())
+                if (mf.isUnsigned()) {
                     sb.append(" UNSIGNED");
-                if (mf.isNotNull())
+                }
+                if (mf.isNotNull()) {
                     sb.append(" NOT NULL");
+                }
                 if (mf.isPk() && !mPks) {// 复合主键需要另外定义
                     sb.append(" PRIMARY KEY");
                 }
-                if (mf.hasDefaultValue())
+                if (mf.hasDefaultValue()) {
                     addDefaultValue(sb, mf);
+                }
             }
             sb.append(',');
         }
@@ -94,6 +99,7 @@ public class SQLiteJdbcExpert extends AbstractJdbcExpert {
         return true;
     }
     
+    @Override
     public Pojo fetchPojoId(Entity<?> en, MappingField idField) {
     	String autoSql = "SELECT MAX($field) AS $field FROM $view";
         Pojo autoInfo = new SqlFieldMacro(idField, autoSql);
@@ -101,22 +107,26 @@ public class SQLiteJdbcExpert extends AbstractJdbcExpert {
         return autoInfo;
     }
 
+    @Override
     public void formatQuery(Pojo pojo) {
         Pager pager = pojo.getContext().getPager();
         // 需要进行分页
-        if (null != pager && pager.getPageNumber() > 0)
+        if (null != pager && pager.getPageNumber() > 0) {
             pojo.append(Pojos.Items.wrapf(" LIMIT %d, %d",
-                                          pager.getOffset(),
-                                          pager.getPageSize()));
+                    pager.getOffset(),
+                    pager.getPageSize()));
+        }
     }
 
+    @Override
     public void formatQuery(Sql sql) {
         Pager pager = sql.getContext().getPager();
         // 需要进行分页
-        if (null != pager && pager.getPageNumber() > 0)
+        if (null != pager && pager.getPageNumber() > 0) {
             sql.setSourceSql(sql.getSourceSql()
-                             + String.format(" LIMIT %d, %d",
-                                             pager.getOffset(),
-                                             pager.getPageSize()));
+                    + String.format(" LIMIT %d, %d",
+                    pager.getOffset(),
+                    pager.getPageSize()));
+        }
     }
 }

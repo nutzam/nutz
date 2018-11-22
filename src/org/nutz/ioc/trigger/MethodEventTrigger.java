@@ -13,6 +13,7 @@ public class MethodEventTrigger implements IocEventTrigger<Object> {
         this.method = method;
     }
 
+    @Override
     public void trigger(Object obj) {
         try {
             method.invoke(obj);

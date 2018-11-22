@@ -15,19 +15,23 @@ import org.nutz.repo.Base64;
 
 public class DoBase64 implements RunMethod, Plugin {
 
+    @Override
     public boolean canWork() {
         return true;
     }
 
+    @Override
     public Object run(List<Object> fetchParam) {
-        if (fetchParam.isEmpty())
+        if (fetchParam.isEmpty()) {
             return null;
+        }
         if (fetchParam.size() == 1) {
             return encode(fetchParam.get(0));
         }
         Object obj = fetchParam.get(1);
-        if (obj == null)
+        if (obj == null) {
             return null;
+        }
         if ("decode".equals(fetchParam.get(0))) {
             return new String(Base64.decode(String.valueOf(obj).getBytes(Encoding.CHARSET_UTF8)), Encoding.CHARSET_UTF8);
         } else {
@@ -36,11 +40,13 @@ public class DoBase64 implements RunMethod, Plugin {
     }
     
     public String encode(Object obj) {
-        if (obj == null)
+        if (obj == null) {
             return null;
+        }
         return Base64.encodeToString(String.valueOf(obj).getBytes(Encoding.CHARSET_UTF8), false);
     }
 
+    @Override
     public String fetchSelf() {
         return "base64";
     }

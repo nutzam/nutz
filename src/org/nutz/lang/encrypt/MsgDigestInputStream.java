@@ -27,20 +27,24 @@ public class MsgDigestInputStream extends FilterInputStream {
 		}
 	}
 	
-	public int read() throws IOException {
+	@Override
+    public int read() throws IOException {
 		int b = this.in.read();
 		md.update((byte)b);
 		return b;
 	}
 	
-	public int read(byte[] b) throws IOException {
+	@Override
+    public int read(byte[] b) throws IOException {
 		int len = this.in.read(b);
-		if (-1 != len)
-		    md.update(b, 0 , len);
+		if (-1 != len) {
+            md.update(b, 0, len);
+        }
 		return len;
 	}
 	
-	public int read(byte[] b, int off, int len) throws IOException {
+	@Override
+    public int read(byte[] b, int off, int len) throws IOException {
 		int len2 = this.in.read(b, off, len);
 		md.update(b, off, len2);
 		return len2;
@@ -53,11 +57,13 @@ public class MsgDigestInputStream extends FilterInputStream {
 		return Lang.fixedHexString(md.digest());
 	}
 	
-	public boolean markSupported() {
+	@Override
+    public boolean markSupported() {
 		return false;
 	}
 	
-	public synchronized void reset() throws IOException {
+	@Override
+    public synchronized void reset() throws IOException {
 		super.reset();
 		md.reset();
 	}

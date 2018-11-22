@@ -32,10 +32,11 @@ public abstract class Castor<FROM, TO> {
             Class<?>[] args = new Class<?>[2];
             int n = 0;
             for (int i = 0; i < superParams.length; i++) {
-                if (superParams[i] instanceof Class<?>)
+                if (superParams[i] instanceof Class<?>) {
                     args[i] = (Class<?>) superParams[i];
-                else
+                } else {
                     args[i] = (Class<?>) myParams[n++];
+                }
             }
             fromClass = args[0];
             toClass = args[1];
@@ -76,18 +77,21 @@ public abstract class Castor<FROM, TO> {
                     coll = new HashSet<Object>();
                 }
             }
-            if (null == coll)
+            if (null == coll) {
                 throw new FailToCastObjectException(String.format("Castors don't know how to implement '%s'",
-                                                                  toType.getName()),
-                                                    Lang.unwrapThrow(e));
+                        toType.getName()),
+                        Lang.unwrapThrow(e));
+            }
         }
         return coll;
     }
 
+    @Override
     public int hashCode() {
         return toString().hashCode();
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Castor)) {
             return false;
@@ -96,6 +100,7 @@ public abstract class Castor<FROM, TO> {
         return toString().equals(castor.toString());
     }
 
+    @Override
     public String toString() {
         return fromClass.getName() + "2" + toClass.getName();
     }

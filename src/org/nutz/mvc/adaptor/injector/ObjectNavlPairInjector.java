@@ -34,14 +34,16 @@ public class ObjectNavlPairInjector implements ParamInjector {
         this.type = type;
     }
 
-    public Object get(    ServletContext sc,
-                        HttpServletRequest req,
-                        HttpServletResponse resp,
-                        Object refer) {
+    @Override
+    public Object get(ServletContext sc,
+                      HttpServletRequest req,
+                      HttpServletResponse resp,
+                      Object refer) {
         ObjectNaviNode no = new ObjectNaviNode();
         String pre = "";
-        if ("".equals(prefix))
+        if ("".equals(prefix)) {
             pre = "node.";
+        }
         ParamExtractor pe = Params.makeParamExtractor(req, refer);
         for (Object name : pe.keys()) {
             String na = (String) name;

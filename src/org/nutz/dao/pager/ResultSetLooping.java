@@ -49,8 +49,9 @@ public abstract class ResultSetLooping {
 
     public void doLoop(ResultSet rs, SqlContext context) throws SQLException {
         Pager pager = context.getPager();
-        if (null == rs)
+        if (null == rs) {
             return;
+        }
         int warnSize = (context.attr(KEY_WARN_SIZE) == null ? WARN_BIG_SIZE : ((Number)(context.attr(KEY_WARN_SIZE))).intValue());
         int errorSize = (context.attr(KEY_ERROR_SIZE) == null ? ERROR_BIG_SIZE : ((Number)(context.attr(KEY_ERROR_SIZE))).intValue());
         boolean warnBigResult = log.isWarnEnabled() && warnSize > 0;
@@ -92,21 +93,23 @@ public abstract class ResultSetLooping {
          */
         else if (rs.last()) {
             // 设置结果集合的 FetchSize
-            if (pager.getPageSize() <= 0)
+            if (pager.getPageSize() <= 0) {
                 rs.setFetchSize(Pager.DEFAULT_PAGE_SIZE);
-            else if (pager.getPageSize() > Pager.MAX_FETCH_SIZE)
+            } else if (pager.getPageSize() > Pager.MAX_FETCH_SIZE) {
                 rs.setFetchSize(Pager.MAX_FETCH_SIZE);
-            else
+            } else {
                 rs.setFetchSize(pager.getPageSize());
+            }
 
             // 开始循环
             int rowCount = rs.getRow();
             LoopScope ls = LoopScope.eval(pager, rowCount);
-            if (rs.absolute(ls.start + 1))
+            if (rs.absolute(ls.start + 1)) {
                 for (int i = ls.start; i < ls.max; i++) {
                     createObject(++index, rs, context, rowCount);
-                    if (!rs.next())
+                    if (!rs.next()) {
                         break;
+                    }
                     if (warnBigResult && index > warnSize) {
                         warnBigResult = false;
                         this.warnBig(rs, context, index, warnSize);
@@ -116,6 +119,7 @@ public abstract class ResultSetLooping {
                         this.errorBig(rs, context, index, errorSize);
                     }
                 }
+            }
         }
     }
 

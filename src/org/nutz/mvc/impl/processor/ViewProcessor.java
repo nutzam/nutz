@@ -37,10 +37,12 @@ public class ViewProcessor extends AbstractProcessor {
                 break;
             }
         }
-        if (view instanceof ViewZone)
-            ((ViewZone)view).setIndex(index);
+        if (view instanceof ViewZone) {
+            ((ViewZone) view).setIndex(index);
+        }
     }
 
+    @Override
     public void process(ActionContext ac) throws Throwable {
         Object re = ac.getMethodReturn();
         Object err = ac.getError();
@@ -50,13 +52,15 @@ public class ViewProcessor extends AbstractProcessor {
             return;
         }
         if (re != null && re instanceof View) {
-            if (re instanceof ViewWrapper)
-                putRequestAttribute(ac.getRequest(), ((ViewWrapper)re).getData());
+            if (re instanceof ViewWrapper) {
+                putRequestAttribute(ac.getRequest(), ((ViewWrapper) re).getData());
+            }
             ((View) re).render(ac.getRequest(), ac.getResponse(), err);
         } else {
             if (view instanceof ViewZone) {
-                if (index > -1)
+                if (index > -1) {
                     putRequestAttribute(ac.getRequest(), ac.getMethodArgs()[index]);
+                }
                 view.render(ac.getRequest(), ac.getResponse(), re);
             } else {
                 if (index > -1 && re == null && err == null) {

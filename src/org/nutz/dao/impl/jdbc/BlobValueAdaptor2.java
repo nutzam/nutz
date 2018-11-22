@@ -13,6 +13,7 @@ public class BlobValueAdaptor2 extends BlobValueAdaptor {
         super(pool);
     }
 
+    @Override
     public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
         if (null == obj) {
             stat.setNull(i, Types.BLOB);

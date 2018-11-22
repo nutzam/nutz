@@ -13,6 +13,7 @@ public class FetchMapCallback implements SqlCallback {
     
     public static SqlCallback me = new FetchMapCallback();
 
+    @Override
     public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
         if (null != rs && rs.next()) {
             NutMap re = new NutMap();

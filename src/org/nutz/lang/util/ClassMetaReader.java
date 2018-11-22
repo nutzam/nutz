@@ -29,8 +29,9 @@ public class ClassMetaReader {
     public static Map<String, List<String>> getParamNames(Class<?> klass) throws IOException {
         InputStream in = klass.getResourceAsStream("/" + klass.getName().replace('.', '/') + ".class");
         try {
-            if (in == null)
+            if (in == null) {
                 return new HashMap<String, List<String>>();
+            }
             return build(in).paramNames;
         }
         finally {
@@ -164,12 +165,15 @@ public class ClassMetaReader {
                                 dis.skipBytes(2);
                                 int varSlot = dis.readUnsignedShort();//这是变量的位置
                                 if (!"this".equals(varName)) //非静态方法,第一个参数是this
+                                {
                                     varSlotNameMap.put(varSlot, varName);
+                                }
                             }
                             
                             List<String> varNames = new ArrayList<String>(varSlotNameMap.values());
-                            if (!names.containsKey(key))
+                            if (!names.containsKey(key)) {
                                 names.put(key, varNames);
+                            }
                         } 
                         else if ("LineNumberTable".equals(codeAttrName)) {
                             int len = dis.readUnsignedShort();
@@ -179,8 +183,9 @@ public class ClassMetaReader {
                                 dis.skipBytes(code_attribute_length - 6);
                                 lines.put(key, line);
                             }
-                        } else
+                        } else {
                             dis.skipBytes(code_attribute_length);
+                        }
                     }
                 } else if ("MethodParameters".equals(attrName)) {
                     // JDK 8的参数名存储, 需要编译时加了-parameters 选项
@@ -191,11 +196,14 @@ public class ClassMetaReader {
                         String varName = strs.get(dis.readUnsignedShort());
                         dis.skipBytes(2);
                         if (!"this".equals(varName)) //非静态方法,第一个参数是this
+                        {
                             varNames.add(varName);
+                        }
                     }
                     names.put(key, varNames);
-                } else
+                } else {
                     dis.skipBytes(attribute_length);
+                }
             }
         }
         dis.close();
@@ -215,23 +223,26 @@ public class ClassMetaReader {
         } else if (obj instanceof Constructor) {
             sb.append("<init>,"); //只有非静态构造方法才能用有方法参数的,而且通过反射API拿不到静态构造方法
             getDescriptor(sb, (Constructor<?>)obj);
-        } else
+        } else {
             throw new RuntimeException("Not Method or Constructor!");
+        }
         return sb.toString();
     }
     
     public static void getDescriptor(StringBuilder sb ,Method method){
         sb.append('(');
-        for (Class<?> klass : method.getParameterTypes())
+        for (Class<?> klass : method.getParameterTypes()) {
             getDescriptor(sb, klass);
+        }
         sb.append(')');
         getDescriptor(sb, method.getReturnType());
     }
     
     public static void getDescriptor(StringBuilder sb , Constructor<?> constructor){
         sb.append('(');
-        for (Class<?> klass : constructor.getParameterTypes())
+        for (Class<?> klass : constructor.getParameterTypes()) {
             getDescriptor(sb, klass);
+        }
         sb.append(')');
         sb.append('V');
     }

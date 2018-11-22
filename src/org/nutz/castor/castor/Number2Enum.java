@@ -38,23 +38,24 @@ public class Number2Enum extends Castor<Number, Enum> {
             }
         }
         // 搞不定，则试图根据顺序号获取
-        if (null == o)
+        if (null == o) {
             try {
                 for (Field field : toType.getFields()) {
                     if (field.getType() == toType) {
                         Enum em = (Enum) field.get(null);
-                        if (em.ordinal() == v)
+                        if (em.ordinal() == v) {
                             return em;
+                        }
                     }
                 }
                 throw Lang.makeThrow(FailToCastObjectException.class,
-                                     "Can NO find enum value in [%s] by int value '%d'",
-                                     toType.getName(),
-                                     src.intValue());
-            }
-            catch (Exception e2) {
+                        "Can NO find enum value in [%s] by int value '%d'",
+                        toType.getName(),
+                        src.intValue());
+            } catch (Exception e2) {
                 throw Lang.wrapThrow(e2, FailToCastObjectException.class);
             }
+        }
 
         return o;
     }

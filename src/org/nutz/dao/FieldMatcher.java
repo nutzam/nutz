@@ -30,10 +30,12 @@ public class FieldMatcher {
     public static FieldMatcher make(String actived, String locked, boolean ignoreNull) {
         FieldMatcher fm = new FieldMatcher();
         fm.ignoreNull = ignoreNull;
-        if (!Strings.isBlank(actived))
+        if (!Strings.isBlank(actived)) {
             fm.actived = Regex.getPattern(actived);
-        if (!Strings.isBlank(locked))
+        }
+        if (!Strings.isBlank(locked)) {
             fm.locked = Regex.getPattern(locked);
+        }
         return fm;
     }
     
@@ -164,16 +166,20 @@ public class FieldMatcher {
         if (null != actived && !actived.matcher(fieldName).find()) {
             return false;
         }
-        if (ignoreId != null && ignoreId && mf.isId())
+        if (ignoreId != null && ignoreId && mf.isId()) {
             return false;
-        if (ignoreName != null && ignoreName && mf.isName())
+        }
+        if (ignoreName != null && ignoreName && mf.isName()) {
             return false;
-        if (ignorePk != null && ignorePk && mf.isCompositePk())
+        }
+        if (ignorePk != null && ignorePk && mf.isCompositePk()) {
             return false;
+        }
         Object val = mf.getValue(obj);
         if (val == null) {
-            if (ignoreNull != null && ignoreNull)
+            if (ignoreNull != null && ignoreNull) {
                 return false;
+            }
         } else {
             if (ignoreZero != null && ignoreZero
                 && val instanceof Number
@@ -188,8 +194,9 @@ public class FieldMatcher {
                 && Strings.isBlank((CharSequence) val)) {
                 return false;
             }
-            if (val instanceof Boolean && ignoreFalse != null && ignoreFalse && !((Boolean)val))
+            if (val instanceof Boolean && ignoreFalse != null && ignoreFalse && !((Boolean)val)) {
                 return false;
+            }
         }
         return true;
     }
@@ -234,10 +241,11 @@ public class FieldMatcher {
      * @return 原对象,用于链式调用
      */
     public FieldMatcher setActived(String actived) {
-        if (actived != null)
+        if (actived != null) {
             this.actived = Regex.getPattern(actived);
-        else
+        } else {
             this.actived = null;
+        }
         return this;
     }
 
@@ -247,10 +255,11 @@ public class FieldMatcher {
      * @return 原对象,用于链式调用
      */
     public FieldMatcher setLocked(String locked) {
-        if (locked != null)
+        if (locked != null) {
             this.locked = Regex.getPattern(locked);
-        else
+        } else {
             this.locked = null;
+        }
         return this;
     }
 
@@ -360,9 +369,11 @@ public class FieldMatcher {
     public static FieldMatcher simple(String ...fields) {
         final Set<String> m = new HashSet<String>(Arrays.asList(fields));
         return new FieldMatcher() {
+            @Override
             public boolean match(String str) {
                 return m.contains(str);
             }
+            @Override
             public boolean match(MappingField mf, Object obj) {
                 return this.match(mf.getName());
             }

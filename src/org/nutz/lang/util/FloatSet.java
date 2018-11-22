@@ -6,8 +6,9 @@ import org.nutz.lang.Strings;
 public class FloatSet {
 
     public static FloatSet make(String s) {
-        if (s.length() < 3)
+        if (s.length() < 3) {
             throw Lang.makeThrow("Invalid FloatSet : '%s'", s);
+        }
         s = Strings.trim(s);
         char l = s.charAt(0);
         char r = s.charAt(s.length() - 1);

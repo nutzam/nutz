@@ -22,10 +22,12 @@ public class SimpleCondition implements Condition {
         this.content = String.format(format, args);
     }
 
+    @Override
     public String toSql(Entity<?> entity) {
         return content;
     }
 
+    @Override
     public String toString() {
     	return toSql(null);
     }

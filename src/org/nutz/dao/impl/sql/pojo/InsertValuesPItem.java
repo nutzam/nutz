@@ -19,15 +19,18 @@ public class InsertValuesPItem extends AbstractPItem {
     protected List<MappingField> mfs;
 
     protected List<MappingField> _mfs(Entity<?> en) {
-        if (null == mfs)
+        if (null == mfs) {
             return Pojos.getFieldsForInsert(_en(en), getFieldMatcher());
+        }
         return mfs;
     }
 
+    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
         List<MappingField> mfs = _mfs(en);
-        if (mfs.isEmpty())
+        if (mfs.isEmpty()) {
             throw Lang.makeThrow("No fields be insert nearby \"%s\"", sb);
+        }
 
         Iterator<MappingField> it = mfs.iterator();
         it.next();
@@ -39,13 +42,16 @@ public class InsertValuesPItem extends AbstractPItem {
         sb.append(") ");
     }
 
+    @Override
     public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
         List<MappingField> mfs = _mfs(en);
-        for (MappingField mf : mfs)
+        for (MappingField mf : mfs) {
             adaptors[off++] = mf.getAdaptor();
+        }
         return off;
     }
 
+    @Override
     public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
         List<MappingField> mfs = _mfs(en);
         for (MappingField mf : mfs) {
@@ -55,6 +61,7 @@ public class InsertValuesPItem extends AbstractPItem {
         return off;
     }
 
+    @Override
     public int paramCount(Entity<?> en) {
         return _mfs(en).size();
     }

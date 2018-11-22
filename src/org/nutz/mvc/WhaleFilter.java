@@ -54,6 +54,7 @@ public class WhaleFilter implements Filter {
         return _me;
     }
 
+    @Override
     public void init(FilterConfig c) throws ServletException {
         sc = c.getServletContext();
         _me = this;
@@ -62,14 +63,16 @@ public class WhaleFilter implements Filter {
             while (keys.hasMoreElements()) {
                 String key = keys.nextElement();
                 String value = c.getInitParameter(key);
-                if (!Strings.isBlank(value) && !"null".equals(value))
+                if (!Strings.isBlank(value) && !"null".equals(value)) {
                     props.put(key, c.getInitParameter(key));
+                }
             }
             String path = c.getInitParameter("config-file");
             if (path != null) {
                 InputStream ins = getClass().getClassLoader().getResourceAsStream(path);
-                if (ins == null)
+                if (ins == null) {
                     ins = c.getServletContext().getResourceAsStream(path);
+                }
                 if (ins == null) {
                     throw new ServletException("config-file=" + path + " not found");
                 }
@@ -90,8 +93,9 @@ public class WhaleFilter implements Filter {
     }
     
     public void init(InputStream ins) throws Exception {
-        if (ins != null)
+        if (ins != null) {
             props.load(ins);
+        }
         if (props.containsKey("log.adapter")) {
             LogAdapter la = (LogAdapter) Class.forName(props.getProperty("log.adapter")).newInstance();
             Logs.setAdapter(la);
@@ -129,11 +133,13 @@ public class WhaleFilter implements Filter {
         final HttpServletResponse resp = (HttpServletResponse) response;
 
         // 设置req的编码
-        if (inputEnc != null)
+        if (inputEnc != null) {
             req.setCharacterEncoding(inputEnc);
+        }
         // 设置resp的编码
-        if (outputEnc != null)
+        if (outputEnc != null) {
             resp.setCharacterEncoding(outputEnc);
+        }
 
         // 如果是POST请求,有很多可以hack的东西
         if ("POST".equals(req.getMethod())) {
@@ -143,6 +149,7 @@ public class WhaleFilter implements Filter {
                 if (qs != null && qs.contains("_method=")) {
                     final NutMap map = Mvcs.toParamMap(new StringReader(qs), inputEnc == null ? Charset.defaultCharset().name() : inputEnc);
                     request = new HttpServletRequestWrapper(req) {
+                        @Override
                         public String getMethod() {
                             return map.getString(methodParam);
                         }
@@ -152,6 +159,7 @@ public class WhaleFilter implements Filter {
             // 处理 X-HTTP-Method-Override
             else if (allowHTTPMethodOverride && req.getHeader("X-HTTP-Method-Override") != null) {
                 request = new HttpServletRequestWrapper(req) {
+                    @Override
                     public String getMethod() {
                         return req.getHeader("X-HTTP-Method-Override");
                     }
@@ -174,8 +182,9 @@ public class WhaleFilter implements Filter {
                 List<TempFile> files = (List<TempFile>) req.getAttribute("_files");
                 if (files != null) {
                     for (TempFile tf : files) {
-                        if (tf != null)
+                        if (tf != null) {
                             tf.delete();
+                        }
                     }
                 }
             }
@@ -185,6 +194,7 @@ public class WhaleFilter implements Filter {
        
     }
 
+    @Override
     public void destroy() {}
     
     @SuppressWarnings("unchecked")
@@ -198,6 +208,7 @@ public class WhaleFilter implements Filter {
                 Object obj = it.next().getValue();
                 final boolean[] re = new boolean[1];
                 Lang.each(obj, new Each<Object>() {
+                    @Override
                     public void invoke(int index, Object ele, int length){
                         if (ele != null && ele instanceof TempFile) {
                             files.add((TempFile) ele);
@@ -205,26 +216,32 @@ public class WhaleFilter implements Filter {
                         }
                     }
                 });
-                if (re[0])
+                if (re[0]) {
                     it.remove();
+                }
             }
             req.setAttribute("_files", files);
             params.putAll(req.getParameterMap());
             return new HttpServletRequestWrapper(req) {
+                @Override
                 public String getParameter(String name) {
                     return (String) params.get(name);
                 }
+                @Override
                 @SuppressWarnings("rawtypes")
                 public Map getParameterMap() {
                     return params;
                 }
+                @Override
                 @SuppressWarnings("rawtypes")
                 public Enumeration getParameterNames() {
                     return Collections.enumeration(params.keySet());
                 }
+                @Override
                 public String[] getParameterValues(String name) {
-                    if (params.containsKey(name))
+                    if (params.containsKey(name)) {
                         return new String[]{(String) params.get(name)};
+                    }
                     return null;
                 }
             };

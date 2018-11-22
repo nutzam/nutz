@@ -44,8 +44,9 @@ public class Files {
      */
     public static String read(String path) {
         File f = Files.findFile(path);
-        if (null == f)
+        if (null == f) {
             throw Lang.makeThrow("Can not find file '%s'", path);
+        }
         return read(f);
     }
 
@@ -69,8 +70,9 @@ public class Files {
      */
     public static byte[] readBytes(String path) {
         File f = Files.findFile(path);
-        if (null == f)
+        if (null == f) {
             throw Lang.makeThrow("Can not find file '%s'", path);
+        }
         return readBytes(f);
     }
 
@@ -100,8 +102,9 @@ public class Files {
      *            内容对象
      */
     public static void write(String path, Object obj) {
-        if (null == path || null == obj)
+        if (null == path || null == obj) {
             return;
+        }
         try {
             write(Files.createFileIfNoExists(path), obj);
         }
@@ -126,15 +129,18 @@ public class Files {
      *            内容
      */
     public static void write(File f, Object obj) {
-        if (null == f || null == obj)
+        if (null == f || null == obj) {
             return;
-        if (f.isDirectory())
+        }
+        if (f.isDirectory()) {
             throw Lang.makeThrow("Directory '%s' can not be write as File", f);
+        }
 
         try {
             // 保证文件存在
-            if (!f.exists())
+            if (!f.exists()) {
                 Files.createNewFile(f);
+            }
             // 输入流
             if (obj instanceof InputStream) {
                 Streams.writeAndClose(Streams.fileOut(f), (InputStream) obj);
@@ -172,15 +178,18 @@ public class Files {
      *            内容
      */
     public static void appendWrite(File f, Object obj) {
-        if (null == f || null == obj)
+        if (null == f || null == obj) {
             return;
-        if (f.isDirectory())
+        }
+        if (f.isDirectory()) {
             throw Lang.makeThrow("Directory '%s' can not be write as File", f);
+        }
 
         try {
             // 保证文件存在
-            if (!f.exists())
+            if (!f.exists()) {
                 Files.createNewFile(f);
+            }
             // 输入流
             if (obj instanceof InputStream) {
                 // TODO
@@ -216,8 +225,9 @@ public class Files {
      * @return 新文件对象
      */
     public static File renameSuffix(File f, String suffix) {
-        if (null == f || null == suffix || suffix.length() == 0)
+        if (null == f || null == suffix || suffix.length() == 0) {
             return f;
+        }
         return new File(renameSuffix(f.getAbsolutePath(), suffix));
     }
 
@@ -233,15 +243,17 @@ public class Files {
     public static String renameSuffix(String path, String suffix) {
         int pos = path.length();
         for (--pos; pos > 0; pos--) {
-            if (path.charAt(pos) == '.')
+            if (path.charAt(pos) == '.') {
                 break;
+            }
             if (path.charAt(pos) == '/' || path.charAt(pos) == '\\') {
                 pos = -1;
                 break;
             }
         }
-        if (0 >= pos)
+        if (0 >= pos) {
             return path + suffix;
+        }
         return path.substring(0, pos) + suffix;
     }
 
@@ -257,10 +269,11 @@ public class Files {
         int l = 0;
         int r = len;
         for (int i = r - 1; i > 0; i--) {
-            if (r == len)
+            if (r == len) {
                 if (path.charAt(i) == '.') {
                     r = i;
                 }
+            }
             if (path.charAt(i) == '/' || path.charAt(i) == '\\') {
                 l = i + 1;
                 break;
@@ -284,8 +297,9 @@ public class Files {
      * @see #getSuffixName(String)
      */
     public static String getSuffixName(File f) {
-        if (null == f)
+        if (null == f) {
             return null;
+        }
         return getSuffixName(f.getAbsolutePath());
     }
 
@@ -297,12 +311,14 @@ public class Files {
      * @return 文件后缀名
      */
     public static String getSuffixName(String path) {
-        if (null == path)
+        if (null == path) {
             return null;
+        }
         int p0 = path.lastIndexOf('.');
         int p1 = path.lastIndexOf('/');
-        if (-1 == p0 || p0 < p1)
+        if (-1 == p0 || p0 < p1) {
             return "";
+        }
         return path.substring(p0 + 1);
     }
 
@@ -310,8 +326,9 @@ public class Files {
      * @see #getSuffix(String)
      */
     public static String getSuffix(File f) {
-        if (null == f)
+        if (null == f) {
             return null;
+        }
         return getSuffix(f.getAbsolutePath());
     }
 
@@ -323,12 +340,14 @@ public class Files {
      * @return 文件后缀
      */
     public static String getSuffix(String path) {
-        if (null == path)
+        if (null == path) {
             return null;
+        }
         int p0 = path.lastIndexOf('.');
         int p1 = path.lastIndexOf('/');
-        if (-1 == p0 || p0 < p1)
+        if (-1 == p0 || p0 < p1) {
             return "";
+        }
         return path.substring(p0);
     }
 
@@ -346,8 +365,9 @@ public class Files {
         Enumeration<? extends ZipEntry> en = zip.entries();
         while (en.hasMoreElements()) {
             ZipEntry ze = en.nextElement();
-            if (null == regex || Regex.match(regex, ze.getName()))
+            if (null == regex || Regex.match(regex, ze.getName())) {
                 list.add(ze);
+            }
         }
         return list.toArray(new ZipEntry[list.size()]);
     }
@@ -364,13 +384,16 @@ public class Files {
      */
     public static File createFileIfNoExists(String path) throws IOException {
         String thePath = Disks.absolute(path);
-        if (null == thePath)
+        if (null == thePath) {
             thePath = Disks.normalize(path);
+        }
         File f = new File(thePath);
-        if (!f.exists())
+        if (!f.exists()) {
             Files.createNewFile(f);
-        if (!f.isFile())
+        }
+        if (!f.isFile()) {
             throw Lang.makeThrow("'%s' should be a file!", path);
+        }
         return f;
     }
 
@@ -391,17 +414,19 @@ public class Files {
      * @return 传入的文件对象，以便为调用者省略一行代码
      */
     public static File createFileIfNoExists(File f) {
-        if (null == f)
+        if (null == f) {
             return f;
-        if (!f.exists())
+        }
+        if (!f.exists()) {
             try {
                 Files.createNewFile(f);
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 throw Lang.wrapThrow(e);
             }
-        if (!f.isFile())
+        }
+        if (!f.isFile()) {
             throw Lang.makeThrow("'%s' should be a file!", f);
+        }
         return f;
     }
 
@@ -415,8 +440,9 @@ public class Files {
      */
     public static File createDirIfNoExists(String path) {
         String thePath = Disks.absolute(path);
-        if (null == thePath)
+        if (null == thePath) {
             thePath = Disks.normalize(path);
+        }
         File f = new File(thePath);
         if (!f.exists()) {
             boolean flag = Files.makeDir(f);
@@ -424,8 +450,9 @@ public class Files {
                 Logs.get().warnf("create filepool dir(%s) fail!!", f.getPath());
             }
         }
-        if (!f.isDirectory())
+        if (!f.isDirectory()) {
             throw Lang.makeThrow("'%s' should be a directory or don't have permission to create it!", path);
+        }
         return f;
     }
 
@@ -437,15 +464,17 @@ public class Files {
      * @return 文件目录对象，以便调用者省略一行代码
      */
     public static File createDirIfNoExists(File d) {
-        if (null == d)
+        if (null == d) {
             return d;
+        }
         if (!d.exists()) {
             if (!Files.makeDir(d)) {
                 throw Lang.makeThrow("fail to create '%s', permission deny?", d.getAbsolutePath());
             }
         }
-        if (!d.isDirectory())
+        if (!d.isDirectory()) {
             throw Lang.makeThrow("'%s' should be a directory!", d);
+        }
         return d;
     }
 
@@ -463,8 +492,9 @@ public class Files {
      */
     public static File findFile(String path, ClassLoader klassLoader, String enc) {
         path = Disks.absolute(path, klassLoader, enc);
-        if (null == path)
+        if (null == path) {
             return null;
+        }
         return new File(path);
     }
 
@@ -533,6 +563,7 @@ public class Files {
         // 全部
         else if (null == mode || LsMode.ALL == mode) {
             return d.listFiles(new FileFilter() {
+                @Override
                 public boolean accept(File f) {
                     return p.matcher(f.getName()).find() ^ exclude;
                 }
@@ -541,9 +572,11 @@ public class Files {
         // 仅文件
         else if (LsMode.FILE == mode) {
             return d.listFiles(new FileFilter() {
+                @Override
                 public boolean accept(File f) {
-                    if (!f.isFile())
+                    if (!f.isFile()) {
                         return false;
+                    }
                     return p.matcher(f.getName()).find() ^ exclude;
                 }
             });
@@ -551,9 +584,11 @@ public class Files {
         // 仅目录
         else if (LsMode.DIR == mode) {
             return d.listFiles(new FileFilter() {
+                @Override
                 public boolean accept(File f) {
-                    if (!f.isDirectory())
+                    if (!f.isDirectory()) {
                         return false;
+                    }
                     return p.matcher(f.getName()).find() ^ exclude;
                 }
             });
@@ -658,8 +693,9 @@ public class Files {
      */
     public static File checkFile(String path) {
         File f = findFile(path);
-        if (null == f)
+        if (null == f) {
             throw Lang.makeThrow("Fail to found file '%s'", path);
+        }
         return f;
     }
 
@@ -677,19 +713,21 @@ public class Files {
      */
     public static InputStream findFileAsStream(String path, Class<?> klass, String enc) {
         File f = new File(path);
-        if (f.exists())
+        if (f.exists()) {
             try {
                 return new FileInputStream(f);
-            }
-            catch (FileNotFoundException e1) {
+            } catch (FileNotFoundException e1) {
                 return null;
             }
+        }
         if (null != klass) {
             InputStream ins = klass.getClassLoader().getResourceAsStream(path);
-            if (null == ins)
+            if (null == ins) {
                 ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
-            if (null != ins)
+            }
+            if (null != ins) {
                 return ins;
+            }
         }
         return ClassLoader.getSystemResourceAsStream(path);
     }
@@ -738,12 +776,15 @@ public class Files {
      * 文件对象是否是目录，可接受 null
      */
     public static boolean isDirectory(File f) {
-        if (null == f)
+        if (null == f) {
             return false;
-        if (!f.exists())
+        }
+        if (!f.exists()) {
             return false;
-        if (!f.isDirectory())
+        }
+        if (!f.isDirectory()) {
             return false;
+        }
         return true;
     }
 
@@ -763,8 +804,9 @@ public class Files {
      * @throws IOException
      */
     public static boolean createNewFile(File f) throws IOException {
-        if (null == f || f.exists())
+        if (null == f || f.exists()) {
             return false;
+        }
         makeDir(f.getParentFile());
         return f.createNewFile();
     }
@@ -778,8 +820,9 @@ public class Files {
      * @throws IOException
      */
     public static boolean makeDir(File dir) {
-        if (null == dir || dir.exists())
+        if (null == dir || dir.exists()) {
             return false;
+        }
         return dir.mkdirs();
     }
 
@@ -791,20 +834,24 @@ public class Files {
      * @return 是否删除成功
      */
     public static boolean deleteDir(File dir) {
-        if (null == dir || !dir.exists())
+        if (null == dir || !dir.exists()) {
             return false;
-        if (!dir.isDirectory())
+        }
+        if (!dir.isDirectory()) {
             throw new RuntimeException("\"" + dir.getAbsolutePath() + "\" should be a directory!");
+        }
         File[] files = dir.listFiles();
         boolean re = false;
         if (null != files) {
-            if (files.length == 0)
+            if (files.length == 0) {
                 return dir.delete();
+            }
             for (File f : files) {
-                if (f.isDirectory())
+                if (f.isDirectory()) {
                     re |= deleteDir(f);
-                else
+                } else {
                     re |= deleteFile(f);
+                }
             }
             re |= dir.delete();
         }
@@ -820,8 +867,9 @@ public class Files {
      * @throws IOException
      */
     public static boolean deleteFile(File f) {
-        if (null == f)
+        if (null == f) {
             return false;
+        }
         return f.delete();
     }
 
@@ -833,17 +881,20 @@ public class Files {
      * @return 是否清除成功
      */
     public static boolean clearDir(File dir) {
-        if (null == dir)
+        if (null == dir) {
             return false;
-        if (!dir.exists())
+        }
+        if (!dir.exists()) {
             return false;
+        }
         File[] fs = dir.listFiles();
         if (fs != null) {
             for (File f : fs) {
-                if (f.isFile())
+                if (f.isFile()) {
                     Files.deleteFile(f);
-                else if (f.isDirectory())
+                } else if (f.isDirectory()) {
                     Files.deleteDir(f);
+                }
             }
         }
         return true;
@@ -871,15 +922,19 @@ public class Files {
      * @throws IOException
      */
     public static boolean copyFile(File src, File target, long count) throws IOException {
-        if (src == null || target == null || !src.exists())
+        if (src == null || target == null || !src.exists()) {
             return false;
-        if (!target.exists())
-            if (!createNewFile(target))
+        }
+        if (!target.exists()) {
+            if (!createNewFile(target)) {
                 return false;
+            }
+        }
 
         // 0 字节？ 那就啥都不做咯
-        if (count == 0)
+        if (count == 0) {
             return true;
+        }
 
         FileInputStream ins = null;
         FileOutputStream ops = null;
@@ -893,8 +948,9 @@ public class Files {
             out = ops.getChannel();
 
             long maxCount = in.size();
-            if (count < 0 || count > maxCount)
+            if (count < 0 || count > maxCount) {
                 count = maxCount;
+            }
 
             in.transferTo(0, count, out);
         }
@@ -931,8 +987,9 @@ public class Files {
      */
     public static boolean copy(File src, File target) {
         try {
-            if (src.isDirectory())
+            if (src.isDirectory()) {
                 return copyDir(src, target);
+            }
             return copyFile(src, target);
         }
         catch (IOException e) {
@@ -951,21 +1008,26 @@ public class Files {
      * @throws IOException
      */
     public static boolean copyDir(File src, File target) throws IOException {
-        if (src == null || target == null || !src.exists())
+        if (src == null || target == null || !src.exists()) {
             return false;
-        if (!src.isDirectory())
+        }
+        if (!src.isDirectory()) {
             throw new IOException(src.getAbsolutePath() + " should be a directory!");
-        if (!target.exists())
-            if (!makeDir(target))
+        }
+        if (!target.exists()) {
+            if (!makeDir(target)) {
                 return false;
+            }
+        }
         boolean re = true;
         File[] files = src.listFiles();
         if (null != files) {
             for (File f : files) {
-                if (f.isFile())
+                if (f.isFile()) {
                     re &= copyFile(f, new File(target.getAbsolutePath() + "/" + f.getName()));
-                else
+                } else {
                     re &= copyDir(f, new File(target.getAbsolutePath() + "/" + f.getName()));
+                }
             }
         }
         return re;
@@ -982,8 +1044,9 @@ public class Files {
      * @throws IOException
      */
     public static boolean move(File src, File target) throws IOException {
-        if (src == null || target == null)
+        if (src == null || target == null) {
             return false;
+        }
         makeDir(target.getParentFile());
         if (src.isDirectory()) {
             src = new File(src.getCanonicalPath() + File.separator);
@@ -1002,12 +1065,14 @@ public class Files {
      * @return 改名是否成功
      */
     public static boolean rename(File src, String newName) {
-        if (src == null || newName == null)
+        if (src == null || newName == null) {
             return false;
+        }
         if (src.exists()) {
             File newFile = new File(src.getParent() + "/" + newName);
-            if (newFile.exists())
+            if (newFile.exists()) {
                 return false;
+            }
             Files.makeDir(newFile.getParentFile());
             return src.renameTo(newFile);
         }
@@ -1026,8 +1091,9 @@ public class Files {
     public static String renamePath(String path, String newName) {
         if (!Strings.isBlank(path)) {
             int pos = path.replace('\\', '/').lastIndexOf('/');
-            if (pos > 0)
+            if (pos > 0) {
                 return path.substring(0, pos) + "/" + newName;
+            }
         }
         return newName;
     }
@@ -1038,11 +1104,13 @@ public class Files {
      * @return 父路径
      */
     public static String getParent(String path) {
-        if (Strings.isBlank(path))
+        if (Strings.isBlank(path)) {
             return path;
+        }
         int pos = path.replace('\\', '/').lastIndexOf('/');
-        if (pos > 0)
+        if (pos > 0) {
             return path.substring(0, pos);
+        }
         return "/";
     }
 
@@ -1063,8 +1131,9 @@ public class Files {
     public static String getName(String path) {
         if (!Strings.isBlank(path)) {
             int pos = path.replace('\\', '/').lastIndexOf('/');
-            if (pos != -1)
+            if (pos != -1) {
                 return path.substring(pos + 1);
+            }
         }
         return path;
     }
@@ -1080,14 +1149,17 @@ public class Files {
      */
     public static void cleanAllFolderInSubFolderes(File dir, String name) throws IOException {
         File[] files = dir.listFiles();
-        if (files == null)
-        	return;
+        if (files == null) {
+            return;
+        }
         for (File d : files) {
-            if (d.isDirectory())
-                if (d.getName().equalsIgnoreCase(name))
+            if (d.isDirectory()) {
+                if (d.getName().equalsIgnoreCase(name)) {
                     deleteDir(d);
-                else
+                } else {
                     cleanAllFolderInSubFolderes(d, name);
+                }
+            }
         }
     }
 
@@ -1105,8 +1177,9 @@ public class Files {
      *         </ul>
      */
     public static boolean isEquals(File f1, File f2) {
-        if (null == f1 || null == f2 || !f1.isFile() || !f2.isFile())
+        if (null == f1 || null == f2 || !f1.isFile() || !f2.isFile()) {
             return false;
+        }
         InputStream ins1 = null;
         InputStream ins2 = null;
         try {
@@ -1134,8 +1207,9 @@ public class Files {
      */
     public static File getFile(File dir, String path) {
         if (dir.exists()) {
-            if (dir.isDirectory())
+            if (dir.isDirectory()) {
                 return new File(dir.getAbsolutePath() + "/" + path);
+            }
             return new File(dir.getParent() + "/" + path);
         }
         throw Lang.makeThrow("dir noexists: %s", dir);
@@ -1150,6 +1224,7 @@ public class Files {
      */
     public static File[] dirs(File dir) {
         return dir.listFiles(new FileFilter() {
+            @Override
             public boolean accept(File f) {
                 return !f.isHidden() && f.isDirectory() && !f.getName().startsWith(".");
             }
@@ -1174,6 +1249,7 @@ public class Files {
 
     private static void scanDirs(File rootDir, List<File> list) {
         File[] dirs = rootDir.listFiles(new FileFilter() {
+            @Override
             public boolean accept(File f) {
                 return !f.isHidden() && f.isDirectory() && !f.getName().startsWith(".");
             }
@@ -1197,6 +1273,7 @@ public class Files {
      */
     public static File[] files(File dir, final String suffix) {
         return dir.listFiles(new FileFilter() {
+            @Override
             public boolean accept(File f) {
                 return !f.isHidden()
                        && f.isFile()
@@ -1235,8 +1312,9 @@ public class Files {
             if (tmp.renameTo(f)) {
                 tmp2.delete();
                 return true;
-            } else if (flag)
+            } else if (flag) {
                 tmp2.renameTo(f); // 如果这里也失败的话,起码.old还在...
+            }
             return false;
         }
         finally {
@@ -1253,8 +1331,9 @@ public class Files {
         BufferedReader br = null;
         try {
             br = Streams.buffr(Streams.fileInr(f));
-            while (br.ready())
+            while (br.ready()) {
                 lines.add(br.readLine());
+            }
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);
@@ -1269,8 +1348,9 @@ public class Files {
         BufferedReader br = null;
         try {
             br = Streams.buffr(Streams.fileInr(f));
-            while (br.ready())
+            while (br.ready()) {
                 callback.invoke(br.readLine());
+            }
         }
         catch (ExitLoop e) {}
         catch (IOException e) {
@@ -1283,11 +1363,13 @@ public class Files {
     
     public static int readRange(File f, int pos, byte[] buf, int at, int len) {
         try {
-            if (f == null || !f.exists())
+            if (f == null || !f.exists()) {
                 return 0;
+            }
             long fsize = f.length();
-            if (pos > fsize)
+            if (pos > fsize) {
                 return 0;
+            }
             len = Math.min(len, buf.length - at);
             if (pos + len > fsize) {
                 len = (int)(fsize - pos);
@@ -1305,8 +1387,9 @@ public class Files {
     
     public static int writeRange(File f, int pos, byte[] buf, int at, int len) {
         try {
-            if (f == null || !f.exists())
+            if (f == null || !f.exists()) {
                 return 0;
+            }
             RandomAccessFile raf = new RandomAccessFile(f, "rw");
             raf.seek(pos);
             raf.write(buf, at, len);

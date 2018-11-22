@@ -44,10 +44,12 @@ public class MapLoader implements IocLoader {
         this.map = map;
     }
 
+    @Override
     public String[] getName() {
         return map.keySet().toArray(new String[map.size()]);
     }
 
+    @Override
     public boolean has(String name) {
         return map.containsKey(name);
     }
@@ -55,10 +57,12 @@ public class MapLoader implements IocLoader {
     /**
      * {@link ObjectLoadException}
      */
+    @Override
     public IocObject load(IocLoading loading, String name) throws ObjectLoadException {
         Map<String, Object> m = getMap(name);
-        if (null == m)
+        if (null == m) {
             throw new ObjectLoadException("Object '" + name + "' without define!");
+        }
         // If has parent
         Object p = m.get("parent");
         if (null != p) {
@@ -67,8 +71,9 @@ public class MapLoader implements IocLoader {
             // create new map without parent
             Map<String, Object> newMap = new HashMap<String, Object>();
             for (Entry<String, Object> en : m.entrySet()) {
-                if ("parent".equals(en.getKey()))
+                if ("parent".equals(en.getKey())) {
                     continue;
+                }
                 newMap.put(en.getKey(), en.getValue());
             }
             // Create self IocObject
@@ -94,20 +99,23 @@ public class MapLoader implements IocLoader {
         list.add(name);
         String currentParent = map.get(name).get("parent").toString();
         while (true) {
-            if (currentParent == null)
+            if (currentParent == null) {
                 break;
-            if (list.contains(currentParent))
-                throw Lang.makeThrow(    ObjectLoadException.class,
-                                        "!!!Inheritance cycle! id = %s",
-                                        name);
+            }
+            if (list.contains(currentParent)) {
+                throw Lang.makeThrow(ObjectLoadException.class,
+                        "!!!Inheritance cycle! id = %s",
+                        name);
+            }
             list.add(currentParent);
             Object obj = map.get(currentParent);
-            if (obj != null && obj instanceof Map)
+            if (obj != null && obj instanceof Map) {
                 currentParent = (String) ((Map<String, Object>) obj).get("parent");
-            else
-                throw Lang.makeThrow(    ObjectLoadException.class,
-                                        "!!!Inheritance errors! id = %s",
-                                        name);
+            } else {
+                throw Lang.makeThrow(ObjectLoadException.class,
+                        "!!!Inheritance errors! id = %s",
+                        name);
+            }
         }
     }
 

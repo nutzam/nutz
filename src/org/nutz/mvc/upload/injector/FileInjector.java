@@ -20,15 +20,17 @@ public class FileInjector extends AbstractUploadInjector {
 
     protected File getFile(Object refer) {
         TempFile tmp = getTempFile(refer, name);
-        if (tmp == null)
-        	return null;
+        if (tmp == null) {
+            return null;
+        }
         return tmp.getFile();
     }
 
-    public Object get(    ServletContext sc,
-                        HttpServletRequest req,
-                        HttpServletResponse resp,
-                        Object refer) {
+    @Override
+    public Object get(ServletContext sc,
+                      HttpServletRequest req,
+                      HttpServletResponse resp,
+                      Object refer) {
         return getFile(refer);
     }
 

@@ -38,24 +38,25 @@ public class NutActionChain implements ActionChain {
         this.lineNumber = ai.getLineNumber();
     }
 
+    @Override
     public void doChain(ActionContext ac) {
-        if (null != head)
+        if (null != head) {
             try {
                 head.process(ac);
-            }
-            catch (Throwable e) {
+            } catch (Throwable e) {
                 ac.setError(e);
                 try {
                     errorProcessor.process(ac);
-                }
-                catch (Throwable ee) {
+                } catch (Throwable ee) {
                     throw Lang.wrapThrow(ee);
                 }
+            }
         }
     }
 
     
     String methodStr;
+    @Override
     public String toString() {
         if (methodStr == null) {
             if (lineNumber != null) {

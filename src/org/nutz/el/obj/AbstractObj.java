@@ -13,9 +13,11 @@ public class AbstractObj implements Elobj{
     public AbstractObj(String val) {
         this.val = val;
     }
+    @Override
     public String getVal() {
         return val;
     }
+    @Override
     public Object fetchVal(){
         Context context = ec.getContext();
         if(context != null && context.has(val)){
@@ -23,9 +25,11 @@ public class AbstractObj implements Elobj{
         }
         return null;
     }
+    @Override
     public String toString() {
         return val;
     }
+    @Override
     public void setEc(ElCache ec) {
         this.ec = ec;
     }

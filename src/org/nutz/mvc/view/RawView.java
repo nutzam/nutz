@@ -76,11 +76,13 @@ public class RawView implements View {
     protected RawView() {}
 
     public RawView(String contentType) {
-        if (Strings.isBlank(contentType))
+        if (Strings.isBlank(contentType)) {
             contentType = "text/plain";
+        }
         this.contentType = Strings.sNull(contentTypeMap.get(contentType.toLowerCase()), contentType);
     }
 
+    @Override
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
             throws Throwable {
         // 如果用户自行设置了,那就不要再设置了!
@@ -93,27 +95,30 @@ public class RawView implements View {
             }
             resp.setContentType(contentType);
         }
-        if (obj == null)
+        if (obj == null) {
             return;
+        }
         // 图片?难道是验证码?
         if (!Lang.isAndroid && obj instanceof BufferedImage) {
             OutputStream out = resp.getOutputStream();
-            if (contentType.contains("png"))
+            if (contentType.contains("png")) {
                 ImageIO.write((BufferedImage) obj, "png", out);
-            // @see
+            }// @see
             // https://code.google.com/p/webm/source/browse/java/src/main/java/com/google/imageio/?repo=libwebp&name=sandbox%2Fpepijnve%2Fwebp-imageio#imageio%2Fwebp
-            else if (contentType.contains("webp"))
+            else if (contentType.contains("webp")) {
                 ImageIO.write((BufferedImage) obj, "webp", out);
-            else
+            } else {
                 Images.writeJpeg((BufferedImage) obj, out, 0.8f);
+            }
             return;
         }
         // 文件
         else if (obj instanceof File) {
             File file = (File) obj;
             long fileSz = file.length();
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug("File downloading ... " + file.getAbsolutePath());
+            }
             if (!file.exists() || file.isDirectory()) {
                 log.debug("File downloading ... Not Exist : " + file.getAbsolutePath());
                 resp.sendError(404);
@@ -220,17 +225,22 @@ public class RawView implements View {
             return String.format("bytes %d-%d/%d", start, end - 1, maxLen);
         }
         
+        @Override
         public boolean equals(Object obj) {
-            if (obj == null || !(obj instanceof RangeRange))
+            if (obj == null || !(obj instanceof RangeRange)) {
                 return false;
+            }
             return this.start == ((RangeRange)obj).start && this.end == ((RangeRange)obj).end;
         }
 
+        @Override
         public int compareTo(RangeRange other) {
-            if (this.start > other.start)
+            if (this.start > other.start) {
                 return 1;
-            if (this.start < other.start)
+            }
+            if (this.start < other.start) {
                 return -1;
+            }
             return 0;
         }
     }
@@ -292,8 +302,9 @@ public class RawView implements View {
                 return false;
             }
         }
-        if (rs.size() > 1)
+        if (rs.size() > 1) {
             Collections.sort(rs);
+        }
         return !rs.isEmpty();
     }
     
@@ -310,8 +321,9 @@ public class RawView implements View {
         try {
             if (rangeRange.start > 0) {
                 long start = rangeRange.start;
-                if (preRangeRange != null)
+                if (preRangeRange != null) {
                     start -= preRangeRange.end;
+                }
                 while (start > 0) {
                     if (start > big4G) {
                         start -= big4G;

@@ -21,6 +21,7 @@ public class ServerRedirectView extends AbstractPathView {
         super(dest);
     }
 
+    @Override
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
             throws Exception {
 

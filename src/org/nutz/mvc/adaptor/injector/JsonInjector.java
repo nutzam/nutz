@@ -25,18 +25,21 @@ public class JsonInjector implements ParamInjector {
         this.name = name;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public Object get(    ServletContext sc,
                         HttpServletRequest req,
                         HttpServletResponse resp,
                         Object refer) {
-        if (null == name)
+        if (null == name) {
             return Mapl.maplistToObj(refer, type);
+        }
 
         Map<String, Object> map = (Map<String, Object>)refer;
         Object theObj = map.get(name);
-        if (null == theObj)
+        if (null == theObj) {
             return null;
+        }
         return Mapl.maplistToObj(map, type);
     }
 

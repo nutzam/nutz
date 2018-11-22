@@ -30,8 +30,9 @@ public abstract class Params {
     public static ParamConvertor makeParamConvertor(Class<?> type,
                                                     String datefmt,
                                                     String locale) {
-        if (type.isArray())
+        if (type.isArray()) {
             return new ArrayParamConvertor(type.getComponentType());
+        }
 
         Mirror<?> mirror = Mirror.me(type);
         if (mirror.isDateTimeLike()) {

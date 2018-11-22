@@ -39,16 +39,19 @@ public class XmlAdaptor extends PairAdaptor {
         this.alwaysAsList = Arrays.asList(Strings.splitIgnoreBlank(alwaysAsList));
     }
 
+    @Override
     protected ParamInjector evalInjector(Type type, Param param) {
         if (param == null || "..".equals(param.value())) {
             Class<?> clazz = Lang.getTypeClass(type);
-            if (clazz != null && AdaptorErrorContext.class.isAssignableFrom(clazz))
+            if (clazz != null && AdaptorErrorContext.class.isAssignableFrom(clazz)) {
                 return new VoidInjector();
+            }
             return new XmlInjector(type, null);
         }
         return super.evalInjector(type, param);
     }
 
+    @Override
     public Object getReferObject(ServletContext sc,
                                  HttpServletRequest req,
                                  HttpServletResponse resp, String[] pathArgs) {

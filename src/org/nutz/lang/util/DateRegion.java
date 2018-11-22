@@ -16,17 +16,21 @@ public class DateRegion extends Region<Date> {
         this.valueOf(str);
     }
 
+    @Override
     public Date fromString(String str) {
         str = Strings.trim(str);
-        if (Strings.isEmpty(str))
+        if (Strings.isEmpty(str)) {
             return null;
+        }
         return Times.D(str);
     }
 
+    @Override
     public String toString(Date d) {
         String str = Times.sDT(d);
-        if (str.endsWith(" 00:00:00"))
+        if (str.endsWith(" 00:00:00")) {
             return str.substring(0, 10);
+        }
         return str;
     }
 }

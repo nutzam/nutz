@@ -12,6 +12,7 @@ public class TempFileInjector extends AbstractUploadInjector {
         super(name);
     }
 
+    @Override
     public TempFile get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
         return getTempFile(refer, name);
     }

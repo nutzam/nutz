@@ -9,6 +9,7 @@ import org.nutz.el.Parse;
  *
  */
 public class StringParse implements Parse {
+    @Override
     public Object fetchItem(CharQueue exp) {
         //@ JKTODO 添加转意字符
         switch(exp.peek()){
@@ -52,8 +53,9 @@ public class StringParse implements Parse {
             break;
         case 'u':
             char[] hex = new char[4];
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++) {
                 hex[i] = exp.poll();
+            }
             sb.append((char)Integer.valueOf(new String(hex), 16).intValue());
             break;
         case 'b': //这个支持一下又何妨?

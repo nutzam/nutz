@@ -18,13 +18,16 @@ import org.nutz.lang.LoopException;
 
 public class DoInsertLinkVisitor extends AbstractLinkVisitor {
 
+    @Override
     public void visit(final Object obj, final LinkField lnk) {
         final Object value = lnk.getValue(obj);
-        if (Lang.eleSize(value) == 0)
+        if (Lang.eleSize(value) == 0) {
             return;
+        }
 
         // 从宿主对象更新关联对象
         opt.add(Pojos.createRun(new PojoCallback() {
+            @Override
             public Object invoke(Connection conn, ResultSet rs, Pojo pojo, Statement stmt) throws SQLException {
                 lnk.updateLinkedField(obj, value);
                 return pojo.getOperatingObject();
@@ -34,13 +37,16 @@ public class DoInsertLinkVisitor extends AbstractLinkVisitor {
         // 为其循环生成插入语句 : holder.getEntityBy 会考虑到集合和数组的情况的
         final Entity<?> en = lnk.getLinkedEntity();
         Lang.each(value, new Each<Object>() {
+            @Override
             public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
-            	if (ele == null)
-            		throw new NullPointerException("null ele in linked field!!");
+            	if (ele == null) {
+                    throw new NullPointerException("null ele in linked field!!");
+                }
                 // 执行插入
                 opt.addInsert(en, ele);
                 // 更新字段
                 opt.add(Pojos.createRun(new PojoCallback() {
+                    @Override
                     public Object invoke(Connection conn, ResultSet rs, Pojo pojo, Statement stmt)
                             throws SQLException {
                         lnk.saveLinkedField(obj, pojo.getOperatingObject());

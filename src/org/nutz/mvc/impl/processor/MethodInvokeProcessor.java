@@ -19,14 +19,15 @@ public class MethodInvokeProcessor extends AbstractProcessor{
     
     protected FastMethod fm;
 	
-	public void process(ActionContext ac) throws Throwable {
+	@Override
+    public void process(ActionContext ac) throws Throwable {
         Object module = ac.getModule();
         Method method = ac.getMethod();
         Object[] args = ac.getMethodArgs();
         try {
-        	if (Mvcs.disableFastClassInvoker)
-        		ac.setMethodReturn(method.invoke(module, args));
-        	else {
+        	if (Mvcs.disableFastClassInvoker) {
+                ac.setMethodReturn(method.invoke(module, args));
+            } else {
         	    _check(method);
         		ac.setMethodReturn(fm.invoke(module, args));
         	}
@@ -44,11 +45,13 @@ public class MethodInvokeProcessor extends AbstractProcessor{
     }
 	
 	protected void _check(Method method) {
-	    if (fm != null)
-	        return;
+	    if (fm != null) {
+            return;
+        }
 	    synchronized (this) {
-            if (fm != null)
+            if (fm != null) {
                 return;
+            }
             fm = FastClassFactory.get(method);
         }
 	}

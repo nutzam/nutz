@@ -10,6 +10,7 @@ public class InjectToMap implements Injecting {
         this.key = key;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void inject(Object obj, Object value) {
         ((Map<String, Object>) obj).put(key, value);

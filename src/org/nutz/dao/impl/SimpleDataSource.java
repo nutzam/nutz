@@ -37,15 +37,18 @@ public class SimpleDataSource implements DataSource, Closeable {
     /**
      * 这是唯一会被NutDao调用的方法
      */
+    @Override
     public Connection getConnection() throws SQLException {
         Connection conn;
-        if (username != null)
+        if (username != null) {
             conn = DriverManager.getConnection(jdbcUrl, username, password);
-        else
+        } else {
             conn = DriverManager.getConnection(jdbcUrl);
+        }
         return conn;
     }
     
+    @Override
     public void close() {}
     
     public void setDriverClassName(String driverClassName) throws ClassNotFoundException {
@@ -89,33 +92,41 @@ public class SimpleDataSource implements DataSource, Closeable {
     
 //---------------------------------------------------------------
 
+    @Override
     public PrintWriter getLogWriter() throws SQLException {
         throw Lang.noImplement();
     }
 
+    @Override
     public void setLogWriter(PrintWriter out) throws SQLException {
         throw Lang.noImplement();
     }
 
+    @Override
     public void setLoginTimeout(int seconds) throws SQLException {throw Lang.noImplement();}
 
+    @Override
     public int getLoginTimeout() throws SQLException {
         throw Lang.noImplement();
     }
 
+    @Override
     public <T> T unwrap(Class<T> iface) throws SQLException {
         throw Lang.noImplement();
     }
 
+    @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
         throw Lang.noImplement();
     }
 
+    @Override
     public Connection getConnection(String username, String password)
             throws SQLException {
         throw Lang.noImplement();
     }
 
+    @Override
     public Logger getParentLogger()  {
         throw Lang.noImplement();
     }

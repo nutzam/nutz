@@ -82,13 +82,15 @@ public class Response {
         String contentType = header.get("Content-Type");
         if (null != contentType) {
             for (String tmp : contentType.split(";")) {
-                if (tmp == null)
+                if (tmp == null) {
                     continue;
+                }
                 tmp = tmp.trim();
                 if (tmp.startsWith("charset=")) {
                     tmp = Strings.trim(tmp.substring(8)).trim();
-                    if (tmp.contains(","))
+                    if (tmp.contains(",")) {
                         tmp = tmp.substring(0, tmp.indexOf(',')).trim();
+                    }
                     return tmp;
                 }
             }
@@ -110,15 +112,17 @@ public class Response {
 
     public Reader getReader() {
         String encoding = this.getEncodeType();
-        if (null == encoding)
+        if (null == encoding) {
             return getReader(Encoding.defaultEncoding());
-        else
+        } else {
             return getReader(encoding);
+        }
     }
 
     public Reader getReader(String charsetName) {
-        if (content != null)
+        if (content != null) {
             return new StringReader(charsetName);
+        }
         return new InputStreamReader(getStream(), Charset.forName(charsetName));
     }
 
@@ -142,10 +146,11 @@ public class Response {
     public void print(Writer writer, String charsetName) {
         Reader reader = null;
         try {
-            if (null == charsetName)
+            if (null == charsetName) {
                 reader = getReader();
-            else
+            } else {
                 reader = this.getReader(charsetName);
+            }
             int c;
             char[] buf = new char[8192];
             while (-1 != (c = reader.read(buf))) {
@@ -164,10 +169,11 @@ public class Response {
 
     public String getContent(String charsetName) {
         if (content == null) {
-            if (charsetName == null)
+            if (charsetName == null) {
                 content = Streams.readAndClose(getReader(encode));
-            else
+            } else {
                 content = Streams.readAndClose(getReader(charsetName));
+            }
         }
         return content;
     }

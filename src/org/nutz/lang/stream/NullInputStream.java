@@ -9,6 +9,7 @@ import java.io.InputStream;
 @Deprecated 
 public class NullInputStream extends InputStream {
 
+    @Override
     public int read() throws IOException {
         return -1;
     }

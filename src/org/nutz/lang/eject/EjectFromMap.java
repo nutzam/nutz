@@ -10,6 +10,7 @@ public class EjectFromMap implements Ejecting {
         this.key = key;
     }
 
+    @Override
     public Object eject(Object obj) {
         return null == obj ? null : ((Map<?, ?>) obj).get(key);
     }

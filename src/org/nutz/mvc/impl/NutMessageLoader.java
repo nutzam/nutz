@@ -20,11 +20,13 @@ public class NutMessageLoader implements MessageLoader {
 
     private static final Log log = Logs.get();
 
+    @Override
     public Map<String, Map<String, Object>> load(String refer) {
         Map<String, Map<String, Object>> re = new HashMap<String, Map<String, Object>>();
         List<NutResource> allnrs = Scans.me().scan(refer, "^.+[.]properties$");
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debugf("Load Messages in %s resource : [%s]", allnrs.size(), allnrs);
+        }
         // 求取路径的最大长度
         int max = 0;
         for (NutResource nr : allnrs) {
@@ -37,12 +39,13 @@ public class NutMessageLoader implements MessageLoader {
         for (NutResource nr : allnrs) {
             String langType;
             String resName = nr.getName();
-            if (resName.contains("/"))
+            if (resName.contains("/")) {
                 langType = resName.substring(0, resName.indexOf('/'));
-            else if (resName.contains("\\"))
+            } else if (resName.contains("\\")) {
                 langType = resName.substring(0, resName.indexOf('\\'));
-            else
+            } else {
                 langType = Mvcs.DEFAULT_MSGS;
+            }
             // 按语言类型编制
             List<NutResource> list = map.get(langType);
             if (null == list) {
@@ -91,8 +94,9 @@ public class NutMessageLoader implements MessageLoader {
             }
         }
 
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debugf("Message Loaded, size = %s", re.size());
+        }
 
         // 返回结果
         return re;

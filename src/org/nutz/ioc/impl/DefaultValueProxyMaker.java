@@ -15,6 +15,7 @@ import org.nutz.lang.Lang;
 
 public class DefaultValueProxyMaker implements ValueProxyMaker {
 
+    @Override
     @SuppressWarnings("unchecked")
     public ValueProxy make(IocMaking ing, IocValue iv) {
         Object value = iv.getValue();
@@ -32,8 +33,9 @@ public class DefaultValueProxyMaker implements ValueProxyMaker {
             if (value.getClass().isArray()) {
                 Object[] vs = (Object[]) value;
                 IocValue[] tmp = new IocValue[vs.length];
-                for (int i = 0; i < tmp.length; i++)
+                for (int i = 0; i < tmp.length; i++) {
                     tmp[i] = (IocValue) vs[i];
+                }
                 return new ArrayValue(ing, tmp);
             }
             // Map
@@ -114,6 +116,7 @@ public class DefaultValueProxyMaker implements ValueProxyMaker {
         return null;
     }
 
+    @Override
     public String[] supportedTypes() {
         return Lang.array("refer", "refer_type", "java", "env", "file", "sys", "jndi", "el");
     }
