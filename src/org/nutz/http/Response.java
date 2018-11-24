@@ -15,6 +15,7 @@ import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.NutMap;
 
 public class Response {
     private static final String DEF_PROTOCAL_VERSION = "HTTP/1.1";
@@ -23,6 +24,18 @@ public class Response {
     }
 
     public Response(HttpURLConnection conn, Map<String, String> reHeader) throws IOException {
+        status = conn.getResponseCode();
+        detail = conn.getResponseMessage();
+        this.header = Header.create(reHeader);
+        String s = header.get("Set-Cookie");
+        if (null != s) {
+            this.cookie = new Cookie();
+            this.cookie.afterResponse(null, conn, null); // 解决多个Set-Cookie丢失的问题
+        }
+        encode = getEncodeType();
+    }
+    
+    public Response(HttpURLConnection conn, NutMap reHeader) throws IOException {
         status = conn.getResponseCode();
         detail = conn.getResponseMessage();
         this.header = Header.create(reHeader);
