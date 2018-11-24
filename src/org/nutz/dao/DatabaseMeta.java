@@ -30,7 +30,6 @@ public class DatabaseMeta {
         return productName;
     }
 
-    @Override
     public String toString() {
         return String.format("%s:[%s - %s]", type.name(), productName, version);
     }

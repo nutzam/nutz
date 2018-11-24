@@ -9,11 +9,8 @@ public class RecurArrayRandom<T> implements Random<T> {
         this.array = array;
     }
 
-    @Override
     public T next() {
-        if(array == null || array.length ==0) {
-            return null;
-        }
+        if(array == null || array.length ==0) return null;
         return array[r.nextInt(array.length)];
     }
 

@@ -225,7 +225,6 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      * 按Java属性/字段属性进行升序. <b>不进行SQL特殊字符抹除<b/>  cnd.asc("age")
      * @param name Java属性/字段属性
      */
-    @Override
     public OrderBy asc(String name) {
         cri.asc(name);
         return this;
@@ -235,7 +234,6 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      * 按Java属性/字段属性进行降序. <b>不进行SQL特殊字符抹除<b/> cnd.desc("age")
      * @param name Java属性/字段属性
      */
-    @Override
     public OrderBy desc(String name) {
         cri.desc(name);
         return this;
@@ -247,7 +245,6 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      * @param dir asc或其他
      * @return OrderBy实例,事实上就是当前对象
      */
-    @Override
     public OrderBy orderBy(String name, String dir) {
         if ("asc".equalsIgnoreCase(dir)) {
             this.asc(name);
@@ -338,7 +335,6 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     /**
      * 获取分页对象,默认是null
      */
-    @Override
     public Pager getPager() {
         return cri.getPager();
     }
@@ -346,7 +342,6 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     /**
      * 根据实体Entity将本对象转化为sql语句, 条件表达式中的name属性将转化为数据库字段名称
      */
-    @Override
     public String toSql(Entity<?> en) {
         return cri.toSql(en);
     }
@@ -354,7 +349,6 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     /**
      * 判断两个Cnd是否相等
      */
-    @Override
     public boolean equals(Object obj) {
         return cri.equals(obj);
     }
@@ -362,7 +356,6 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     /**
      * 直接转为SQL语句, 如果setPojo未曾调用, 条件表达式中的name属性未映射为数据库字段
      */
-    @Override
     public String toString() {
         return cri.toString();
     }
@@ -370,7 +363,6 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     /**
      * 关联的Pojo,可以用于toString时的name属性映射
      */
-    @Override
     public void setPojo(Pojo pojo) {
         cri.setPojo(pojo);
     }
@@ -378,27 +370,22 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     /**
      * 获取已设置的Pojo, 默认为null
      */
-    @Override
     public Pojo getPojo() {
         return cri.getPojo();
     }
 
-    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
         cri.joinSql(en, sb);
     }
 
-    @Override
     public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
         return cri.joinAdaptor(en, adaptors, off);
     }
 
-    @Override
     public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
         return cri.joinParams(en, obj, params, off);
     }
 
-    @Override
     public int paramCount(Entity<?> en) {
         return cri.paramCount(en);
     }
@@ -406,7 +393,6 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     /**
      * 获取Cnd中的where部分,注意,对SqlExpressionGroup的修改也会反映到Cnd中,因为是同一个对象
      */
-    @Override
     public SqlExpressionGroup where() {
         return cri.where();
     }
@@ -415,7 +401,6 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      * 分组
      * @param names java属性或数据库字段名称
      */
-    @Override
     public GroupBy groupBy(String... names) {
         cri.groupBy(names);
         return this;
@@ -425,7 +410,6 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      * 分组中的having条件
      * @param cnd 条件语句
      */
-    @Override
     public GroupBy having(Condition cnd) {
         cri.having(cnd);
         return this;
@@ -434,7 +418,6 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     /**
      * 单独获取排序条件,建议使用asc或desc,而非直接取出排序条件. 取出的对象仅包含分组条件, 不包含where等部分
      */
-    @Override
     public OrderBy getOrderBy() {
         return cri.getOrderBy();
     }
@@ -494,14 +477,12 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     public static Cnd from(Dao dao, Object obj, FieldMatcher matcher) {
         final SqlExpressionGroup exps = new SqlExpressionGroup();
         boolean re = Daos.filterFields(obj, matcher, dao, new Callback2<MappingField, Object>() {
-            @Override
             public void invoke(MappingField mf, Object val) {
                 exps.and(mf.getName(), "=", val);
             }
         });
-        if (re) {
+        if (re)
             return Cnd.where(exps);
-        }
         return null;
     }
 
@@ -522,9 +503,8 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     }
 
     public static SqlExpression expEX(String name, String op, Object value) {
-        if (_ex(value)) {
+        if (_ex(value))
             return null;
-        }
         return Cnd.exp(name, op, value);
     }
 
@@ -536,7 +516,6 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
                 || (value.getClass().isArray() && Array.getLength(value) == 0);
     }
 
-    @Override
     public GroupBy getGroupBy() {
         return cri.getGroupBy();
     }
@@ -552,7 +531,6 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      * 克隆当前Cnd实例
      * @return 一模一样的兄弟
      */
-    @Override
     public Cnd clone() {
         return Lang.fromBytes(Lang.toBytes(this),Cnd.class);
     }

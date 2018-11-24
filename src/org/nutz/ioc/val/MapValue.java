@@ -32,13 +32,11 @@ public class MapValue implements ValueProxy {
         }
     }
 
-    @Override
     public Object get(IocMaking ing) {
         try {
             Map<String, Object> map = Mirror.me(type).born();
-            for (Pair<ValueProxy> p : list) {
+            for (Pair<ValueProxy> p : list)
                 map.put(p.getName(), p.getValue().get(ing));
-            }
             return map;
         }
         catch (Exception e) {

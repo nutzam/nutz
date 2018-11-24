@@ -10,8 +10,7 @@ import org.nutz.log.LogAdapter;
  */
 public class NopLog implements Log, LogAdapter {
 
-	@Override
-    public Log getLogger(String className) {
+	public Log getLogger(String className) {
 		return NOP;
 	}
 	
@@ -20,104 +19,79 @@ public class NopLog implements Log, LogAdapter {
 	protected NopLog() {
 	}
 	
-	@Override
-    public void warnf(String fmt, Object... args) {}
+	public void warnf(String fmt, Object... args) {}
 	
-	@Override
-    public void warn(Object message, Throwable t) {}
+	public void warn(Object message, Throwable t) {}
 	
-	@Override
-    public void warn(Object message) {}
+	public void warn(Object message) {}
 	
-	@Override
-    public void tracef(String fmt, Object... args) {}
+	public void tracef(String fmt, Object... args) {}
 	
-	@Override
-    public void trace(Object message, Throwable t) {}
+	public void trace(Object message, Throwable t) {}
 	
-	@Override
-    public void trace(Object message) {}
+	public void trace(Object message) {}
 	
-	@Override
-    public boolean isWarnEnabled() {
+	public boolean isWarnEnabled() {
 		return false;
 	}
 	
-	@Override
-    public boolean isTraceEnabled() {
+	public boolean isTraceEnabled() {
 		return false;
 	}
 	
-	@Override
-    public boolean isInfoEnabled() {
+	public boolean isInfoEnabled() {
 		return false;
 	}
 	
-	@Override
-    public boolean isFatalEnabled() {
+	public boolean isFatalEnabled() {
 		return false;
 	}
 	
-	@Override
-    public boolean isErrorEnabled() {
+	public boolean isErrorEnabled() {
 		return false;
 	}
 	
-	@Override
-    public boolean isDebugEnabled() {
+	public boolean isDebugEnabled() {
 		return false;
 	}
 	
-	@Override
-    public void infof(String fmt, Object... args) {
+	public void infof(String fmt, Object... args) {
 	}
 	
-	@Override
-    public void info(Object message, Throwable t) {
+	public void info(Object message, Throwable t) {
 	}
 	
-	@Override
-    public void info(Object message) {
+	public void info(Object message) {
 	}
 	
-	@Override
-    public void fatalf(String fmt, Object... args) {
+	public void fatalf(String fmt, Object... args) {
 	}
 	
-	@Override
-    public void fatal(Object message, Throwable t) {
+	public void fatal(Object message, Throwable t) {
 	}
 	
-	@Override
-    public void fatal(Object message) {
+	public void fatal(Object message) {
 	}
 	
-	@Override
-    public void errorf(String fmt, Object... args) {
+	public void errorf(String fmt, Object... args) {
 	}
 	
-	@Override
-    public void error(Object message, Throwable t) {
+	public void error(Object message, Throwable t) {
 	}
 	
-	@Override
-    public void error(Object message) {
+	public void error(Object message) {
 	}
 	
-	@Override
-    public void debugf(String fmt, Object... args) {
+	public void debugf(String fmt, Object... args) {
 	}
 	
-	@Override
-    public void debug(Object message, Throwable t) {
+	public void debug(Object message, Throwable t) {
 	}
 	
-	@Override
-    public void debug(Object message) {
+	public void debug(Object message) {
 	}
 	
-	@Override
-    public Log setTag(String tag) {
+	public Log setTag(String tag) {
 		return this;
 	}
 }

@@ -11,12 +11,10 @@ import org.nutz.lang.Lang;
  */
 public class OrOpt2 extends TwoTernary {
 
-    @Override
     public int fetchPriority() {
         return 12;
     }
 
-    @Override
     public Object calculate() {
         Object lval = calculateItem(left);
         if (Lang.eleSize(lval) > 0) {
@@ -25,7 +23,6 @@ public class OrOpt2 extends TwoTernary {
         return calculateItem(right);
     }
 
-    @Override
     public String fetchSelf() {
         return "|||";
     }

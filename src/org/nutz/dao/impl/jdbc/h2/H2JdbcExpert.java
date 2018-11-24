@@ -21,12 +21,10 @@ public class H2JdbcExpert extends PsqlJdbcExpert {
         super(conf);
     }
 
-    @Override
     public String getDatabaseType() {
         return DB.H2.name();
     }
 
-    @Override
     public Pojo fetchPojoId(Entity<?> en, MappingField idField) {
         String autoSql = "SELECT IDENTITY() as $field from $view";
         Pojo autoInfo = new SqlFieldMacro(idField, autoSql);
@@ -48,7 +46,6 @@ public class H2JdbcExpert extends PsqlJdbcExpert {
         return names;
     }
 
-    @Override
     public void checkDataSource(Connection conn) throws SQLException {
     }
 }

@@ -16,7 +16,6 @@ public class OrderByItem extends NoParamsPItem {
         this.by = by;
     }
 
-    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
         sb.append(_fmtcolnm(en, name)).append(' ').append(by);
     }

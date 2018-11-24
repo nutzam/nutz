@@ -17,7 +17,6 @@ public class DaoTimeInterceptor implements DaoInterceptor {
 
     private static final Log log = Logs.get();
 
-    @Override
     public void filter(DaoInterceptorChain chain) throws DaoException {
         Stopwatch sw = Stopwatch.begin();
         try {
@@ -25,11 +24,10 @@ public class DaoTimeInterceptor implements DaoInterceptor {
         }
         finally {
             sw.stop();
-            if (log.isDebugEnabled()) {
+            if (log.isDebugEnabled())
                 log.debugf("time=%sms, sql=%s",
-                        sw.getDuration(),
-                        chain.getDaoStatement().toString());
-            }
+                           sw.getDuration(),
+                           chain.getDaoStatement().toString());
         }
     }
 

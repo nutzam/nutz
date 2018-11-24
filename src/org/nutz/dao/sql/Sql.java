@@ -87,7 +87,6 @@ public interface Sql extends DaoStatement {
     /**
      * 重写父接口返回值
      */
-    @Override
     Sql setEntity(Entity<?> entity);
 
     /**

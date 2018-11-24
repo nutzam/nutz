@@ -22,9 +22,8 @@ public abstract class ChainNode {
     private Object eval(IocMaking ing, Object obj) {
         try {
             Object v = getValue(ing, obj);
-            if (null == next) {
+            if (null == next)
                 return v;
-            }
             return next.eval(ing, v);
         }
         catch (Exception e) {
@@ -35,9 +34,8 @@ public abstract class ChainNode {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(asString());
-        if (null != next) {
+        if (null != next)
             sb.append('.').append(next.toString());
-        }
         return sb.toString();
     }
 

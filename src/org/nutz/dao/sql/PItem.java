@@ -74,7 +74,6 @@ public interface PItem extends Serializable {
     /**
      * @return 当前语句组成元素的日志打印字符串
      */
-    @Override
     String toString();
 
 }

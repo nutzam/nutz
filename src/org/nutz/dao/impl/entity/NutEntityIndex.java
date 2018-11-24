@@ -21,7 +21,6 @@ public class NutEntityIndex implements EntityIndex {
         this.fields = new ArrayList<EntityField>(3);
     }
 
-    @Override
     public boolean isUnique() {
         return unique;
     }
@@ -30,26 +29,22 @@ public class NutEntityIndex implements EntityIndex {
         this.unique = unique;
     }
     
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public String getName(Entity<?> en) {
-        if (name.contains("$")) {
+        if (name.contains("$"))
             return TableName.render(new CharSegment(name));
-        } else if (name.isEmpty()) {
+        else if (name.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             sb.append(isUnique() ? "UX_" : "IX_");
             sb.append(en.getTableName());
-            for (EntityField field : getFields()) {
+            for (EntityField field : getFields())
                 sb.append("_").append(field.getName());
-            }
             return sb.toString();
-        } else {
+        } else
             return name;
-        }
     }
 
     public void setName(String name) {
@@ -60,7 +55,6 @@ public class NutEntityIndex implements EntityIndex {
         fields.add(field);
     }
 
-    @Override
     public List<EntityField> getFields() {
         return fields;
     }

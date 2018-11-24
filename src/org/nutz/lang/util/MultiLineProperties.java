@@ -47,31 +47,25 @@ public class MultiLineProperties implements Map<String, String> {
     }
 
     public synchronized void load(Reader reader, boolean clear) throws IOException {
-        if (clear) {
+        if (clear)
             this.clear();
-        }
         BufferedReader tr = null;
-        if (reader instanceof BufferedReader) {
+        if (reader instanceof BufferedReader)
             tr = (BufferedReader) reader;
-        } else {
+        else
             tr = new BufferedReader(reader);
-        }
         String s;
         while (null != (s = tr.readLine())) {
-            if (Strings.isBlank(s)) {
+            if (Strings.isBlank(s))
                 continue;
-            }
             if (s.length() > 0 && s.trim().charAt(0) == '#') // 只要第一个非空白字符是#,就认为是注释
-            {
                 continue;
-            }
             int pos;
             char c = '0';
             for (pos = 0; pos < s.length(); pos++) {
                 c = s.charAt(pos);
-                if (c == '=' || c == ':') {
+                if (c == '=' || c == ':')
                     break;
-                }
             }
             if (c == '=') {
                 String name = s.substring(0, pos);
@@ -79,9 +73,8 @@ public class MultiLineProperties implements Map<String, String> {
                 if (value.endsWith("\\") && !value.endsWith("\\\\")) {
                     StringBuilder sb = new StringBuilder(value.substring(0, value.length() - 1));
                     while (null != (s = tr.readLine())) {
-                        if (Strings.isBlank(s)) {
+                        if (Strings.isBlank(s))
                             break;
-                        }
                         if (s.endsWith("\\") && !s.endsWith("\\\\")) {
                             sb.append(s.substring(0, s.length() - 1));
                         } else {
@@ -103,37 +96,31 @@ public class MultiLineProperties implements Map<String, String> {
                 sb.append(s.substring(pos + 1));
                 String ss;
                 while (null != (ss = tr.readLine())) {
-                    if (ss.length() > 0 && ss.charAt(0) == '#') {
+                    if (ss.length() > 0 && ss.charAt(0) == '#')
                         break;
-                    }
                     sb.append("\r\n" + ss);
                 }
                 maps.put(Strings.trim(name), sb.toString());
-                if (null == ss) {
+                if (null == ss)
                     return;
-                }
             } else {
                 maps.put(Strings.trim(s), "");
             }
         }
     }
 
-    @Override
     public void clear() {
         maps.clear();
     }
 
-    @Override
     public boolean containsKey(Object key) {
         return maps.containsKey(key);
     }
 
-    @Override
     public boolean containsValue(Object value) {
         return maps.containsValue(value);
     }
 
-    @Override
     public Set<Entry<String, String>> entrySet() {
         return maps.entrySet();
     }
@@ -148,12 +135,10 @@ public class MultiLineProperties implements Map<String, String> {
         return maps.hashCode();
     }
 
-    @Override
     public boolean isEmpty() {
         return maps.isEmpty();
     }
 
-    @Override
     public Set<String> keySet() {
         return maps.keySet();
     }
@@ -162,33 +147,27 @@ public class MultiLineProperties implements Map<String, String> {
         return new ArrayList<String>(maps.keySet());
     }
 
-    @Override
     public synchronized String put(String key, String value) {
         return maps.put(key, value);
     }
 
-    @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void putAll(Map t) {
         maps.putAll(t);
     }
 
-    @Override
     public String remove(Object key) {
         return maps.remove(key);
     }
 
-    @Override
     public int size() {
         return maps.size();
     }
 
-    @Override
     public Collection<String> values() {
         return maps.values();
     }
 
-    @Override
     public String get(Object key) {
         return maps.get(key);
     }

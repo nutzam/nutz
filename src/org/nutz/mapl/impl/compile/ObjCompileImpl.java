@@ -26,7 +26,6 @@ public class ObjCompileImpl implements MaplCompile<Object> {
 
     private Map<Object, Object> memo = new LinkedHashMap<Object, Object>();
 
-    @Override
     @SuppressWarnings("rawtypes")
     public Object parse(Object obj) {
         if (null == obj) {
@@ -99,9 +98,8 @@ public class ObjCompileImpl implements MaplCompile<Object> {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private Map<String, Object> map2Json(Map map, Map<String, Object> valMap) {
-        if (null == map) {
+        if (null == map)
             return null;
-        }
         ArrayList<Pair> list = new ArrayList<Pair>(map.size());
         Set<Entry<?, ?>> entrySet = map.entrySet();
         for (Entry entry : entrySet) {
@@ -113,9 +111,8 @@ public class ObjCompileImpl implements MaplCompile<Object> {
     }
 
     private Map<String, Object> pojo2Json(Object obj, Map<String, Object> map) {
-        if (null == obj) {
+        if (null == obj)
             return null;
-        }
         Class<? extends Object> type = obj.getClass();
         JsonEntity jen = Json.getEntity(Mirror.me(type));
         List<JsonEntityField> fields = jen.getFields();

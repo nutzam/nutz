@@ -79,7 +79,6 @@ public class HttpStatusView implements View {
         return this;
     }
 
-    @Override
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj) {
         HttpEnhanceResponse info = this.info.clone();
 

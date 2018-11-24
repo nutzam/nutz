@@ -13,7 +13,6 @@ public class InnerValue implements ValueProxy {
         this.iobj = iobj;
     }
 
-    @Override
     public Object get(IocMaking ing) {
         IocMaking innering = ing.clone(null);
         ObjectProxy op = ing.getObjectMaker().make(innering, iobj);

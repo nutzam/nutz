@@ -224,7 +224,6 @@ public class ActionContext extends SimpleContext {
         return get(REFER_OBJECT);
     }
 
-    @Override
     public String toString() {
         return getInnerMap().toString();
     }

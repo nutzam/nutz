@@ -82,9 +82,8 @@ public class ComboIocLoader extends AbstractLifeCycle implements IocLoader {
         String currentClassName = null;
         for (String str : args) {
             if (str.length() > 0 && str.charAt(0) == '*') {
-                if (argsList != null) {
+                if (argsList != null)
                     createIocLoader(currentClassName, argsList);
-                }
                 currentClassName = str.substring(1);
                 argsList = new ArrayList<String>();
             } else {
@@ -95,9 +94,8 @@ public class ComboIocLoader extends AbstractLifeCycle implements IocLoader {
                 argsList.add(str);
             }
         }
-        if (currentClassName != null) {
+        if (currentClassName != null)
             createIocLoader(currentClassName, argsList);
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -120,52 +118,42 @@ public class ComboIocLoader extends AbstractLifeCycle implements IocLoader {
                     }
                 }
             }
-            if (klass == null) {
+            if (klass == null)
                 klass = (Class<? extends IocLoader>) Lang.loadClass(className);
-            }
         }
         iocLoaders.add((IocLoader) Mirror.me(klass).born(args.toArray(new Object[args.size()])));
     }
 
     public ComboIocLoader(IocLoader... loaders) {
-        for (IocLoader iocLoader : loaders) {
-            if (iocLoader != null) {
+        for (IocLoader iocLoader : loaders)
+            if (iocLoader != null)
                 iocLoaders.add(iocLoader);
-            }
-        }
     }
 
-    @Override
     public String[] getName() {
         ArrayList<String> list = new ArrayList<String>();
         for (IocLoader iocLoader : iocLoaders) {
-            for (String name : iocLoader.getName()) {
+            for (String name : iocLoader.getName())
                 list.add(name);
-            }
         }
         return list.toArray(new String[list.size()]);
     }
 
-    @Override
     public boolean has(String name) {
-        for (IocLoader iocLoader : iocLoaders) {
-            if (iocLoader.has(name)) {
+        for (IocLoader iocLoader : iocLoaders)
+            if (iocLoader.has(name))
                 return true;
-            }
-        }
         return false;
     }
 
-    @Override
     public IocObject load(IocLoading loading, String name) throws ObjectLoadException {
-        for (IocLoader loader : iocLoaders) {
+        for (IocLoader loader : iocLoaders)
             if (loader.has(name)) {
                 IocObject iocObject = loader.load(loading, name);
                 printFoundIocBean(name, loader);
                 iobjs.put(name, iocObject);
                 return iocObject;
             }
-        }
         throw new ObjectLoadException("Object '" + name + "' without define!");
     }
     
@@ -173,14 +161,12 @@ public class ComboIocLoader extends AbstractLifeCycle implements IocLoader {
        Set<String> names = new HashSet<String>();
        for (IocLoader loader : iocLoaders) {
            for (String name : loader.getName()) {
-               if (names.contains(name)) {
+               if (names.contains(name))
                    continue;
-               }
                try {
                    IocObject iobj = loader.load(loading, name);
-                   if (iobj.getType() != null && klass.isAssignableFrom(iobj.getType())) {
+                   if (iobj.getType() != null && klass.isAssignableFrom(iobj.getType()))
                        names.add(name);
-                   }
                }
                catch (ObjectLoadException e) {
                    // nop
@@ -194,14 +180,12 @@ public class ComboIocLoader extends AbstractLifeCycle implements IocLoader {
         Set<String> names = new HashSet<String>();
         for (IocLoader loader : iocLoaders) {
             for (String name : loader.getName()) {
-                if (names.contains(name)) {
+                if (names.contains(name))
                     continue;
-                }
                 try {
                     IocObject iobj = loader.load(loading, name);
-                    if (iobj.getType() != null && iobj.getType().getAnnotation(klass) != null) {
+                    if (iobj.getType() != null && iobj.getType().getAnnotation(klass) != null)
                         names.add(name);
-                    }
                 }
                 catch (ObjectLoadException e) {
                     // nop
@@ -221,9 +205,8 @@ public class ComboIocLoader extends AbstractLifeCycle implements IocLoader {
 
     public void addLoader(IocLoader loader) {
         if (null != loader) {
-            if (iocLoaders.contains(loader)) {
+            if (iocLoaders.contains(loader))
                 return;
-            }
             iocLoaders.add(loader);
         }
     }
@@ -248,9 +231,8 @@ public class ComboIocLoader extends AbstractLifeCycle implements IocLoader {
         for (IocLoader loader : iocLoaders) {
             if (loader.has(beanName)) {
                 IocObject iobj = loader.load(loading, beanName);
-                if (iobj.getType() != null) {
+                if (iobj.getType() != null)
                     return iobj.getType();
-                }
             }
         }
         return null;
@@ -262,7 +244,6 @@ public class ComboIocLoader extends AbstractLifeCycle implements IocLoader {
     protected static Map<String, Class<? extends IocLoader>> loaders = new HashMap<String, Class<? extends IocLoader>>();
 
     // TODO 这个方法好好整理一下 ...
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("/*ComboIocLoader*/\n{");
@@ -278,21 +259,17 @@ public class ComboIocLoader extends AbstractLifeCycle implements IocLoader {
         return sb.toString();
     }
     
-    @Override
     public void init() throws Exception {
         for (IocLoader loader : iocLoaders) {
-            if (loader instanceof LifeCycle) {
+            if (loader instanceof LifeCycle)
                 ((LifeCycle) loader).init();
-            }
         }
     }
     
-    @Override
     public void depose() throws Exception {
         for (IocLoader loader : iocLoaders) {
-            if (loader instanceof LifeCycle) {
+            if (loader instanceof LifeCycle)
                 ((LifeCycle) loader).depose();
-            }
         }
     }
     

@@ -8,7 +8,6 @@ public class EmptyArgsConstructorBorning<T> extends AbstractConstructorBorning i
         super(c);
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public T born(Object... args) {
         try {

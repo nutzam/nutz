@@ -11,12 +11,10 @@ public class NumberNode extends ChainNode {
         v = Json.fromJson(num);
     }
 
-    @Override
     protected String asString() {
         return v.toString();
     }
 
-    @Override
     protected Object getValue(IocMaking ing, Object obj) throws Exception {
         return v;
     }

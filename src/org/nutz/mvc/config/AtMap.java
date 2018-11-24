@@ -23,9 +23,8 @@ public class AtMap {
     }
 
     public void add(String key, String actionPath) {
-        if (actionPath.endsWith("/*")) {
+        if (actionPath.endsWith("/*"))
             actionPath = actionPath.substring(0, actionPath.length() - 2);
-        }
         ats.put(Strings.trim(key), Strings.trim(actionPath));
     }
 
@@ -63,15 +62,14 @@ public class AtMap {
         Set<Entry<String, String>> ens = ats.entrySet();
         for (Entry<String, String> en : ens) {
             String key = en.getKey();
-            if (null == prefixes || prefixes.length == 0) {
+            if (null == prefixes || prefixes.length == 0)
                 list.add(new Pair<String>(key, en.getValue()));
-            } else {
-                for (String prefix : prefixes) {
+            else {
+                for (String prefix : prefixes)
                     if (key.startsWith(prefix)) {
                         list.add(new Pair<String>(key, en.getValue()));
                         break;
                     }
-                }
             }
         }
         return list;

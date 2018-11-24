@@ -13,7 +13,6 @@ public class TimeRegion extends Region<Integer> {
         this.valueOf(str);
     }
 
-    @Override
     public Integer fromString(String str) {
         return Times.T(str);
     }

@@ -48,7 +48,6 @@ public class El {
         return rc.calculate(context, rpn);
     }
     
-    @Override
     public String toString() {
         return elstr.toString();
     }
@@ -80,9 +79,8 @@ public class El {
         Context main = Lang.context();
         for (String key : seg.keys()) {
             El el = els.get(key);
-            if (el == null) {
+            if (el == null)
                 el = new El(key);
-            }
             main.putAll(key, el.eval(ctx));
         }
         return seg.render(main).toString();

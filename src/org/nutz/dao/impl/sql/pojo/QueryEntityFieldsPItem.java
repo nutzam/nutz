@@ -11,7 +11,6 @@ public class QueryEntityFieldsPItem extends NoParamsPItem {
 
     private static final long serialVersionUID = 1L;
 
-    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
         FieldMatcher fm = getFieldMatcher();
         if (null == fm) {
@@ -22,14 +21,12 @@ public class QueryEntityFieldsPItem extends NoParamsPItem {
             int old = sb.length();
 
             for (MappingField ef : efs) {
-                if (fm.match(ef.getName())) {
+                if (fm.match(ef.getName()))
                     sb.append(ef.getColumnNameInSql()).append(',');
-                }
             }
 
-            if (sb.length() == old) {
+            if (sb.length() == old)
                 throw Lang.makeThrow("No columns be queryed: '%s'", _en(en));
-            }
 
             sb.setCharAt(sb.length() - 1, ' ');
         }

@@ -6,7 +6,6 @@ public class EnvValue extends ListableValueProxy {
         super(obj);
     }
 
-    @Override
     protected Object getValue(String key) {
         return System.getenv(key);
     }

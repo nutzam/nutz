@@ -8,11 +8,9 @@ import org.nutz.el.opt.TwoTernary;
  *
  */
 public class ModOpt extends TwoTernary {
-    @Override
     public int fetchPriority() {
         return 3;
     }
-    @Override
     public Object calculate() {
         Number lval = (Number) calculateItem(this.left);
         Number rval = (Number) calculateItem(this.right);
@@ -28,7 +26,6 @@ public class ModOpt extends TwoTernary {
         return lval.intValue() % rval.intValue();
     }
 
-    @Override
     public String fetchSelf() {
         return "%";
     }

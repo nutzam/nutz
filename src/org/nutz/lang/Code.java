@@ -64,7 +64,6 @@ public class Code {
             return normalLines + commentLines + whiteLines + importLines;
         }
 
-        @Override
         public String toString() {
             return String.format("All      : %d lines\n"
                                          + "comments : %d lines\n"

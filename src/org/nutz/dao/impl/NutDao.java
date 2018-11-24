@@ -122,23 +122,19 @@ public class NutDao extends DaoSupport implements Dao {
     // 上面是 4 个构造函数
     // ==========================================================
 
-    @Override
     public <T> T getObject(Class<T> classOfT, ResultSet rs, FieldMatcher fm) {
         return getObject(classOfT, rs, fm, null);
     }
 
-    @Override
     public <T> T getObject(Class<T> classOfT, ResultSet rs, FieldMatcher fm, String prefix) {
         return holder.getEntity(classOfT).getObject(rs, fm, prefix);
     }
 
-    @Override
     public <T> T insert(final T obj) {
         Object first = Lang.first(obj);
         final EntityOperator opt = _optBy(first);
-        if (null == opt) {
+        if (null == opt)
             return null;
-        }
         int size = Lang.eleSize(obj);
     	opt.addInsert(opt.entity, first);
         if (size > 1) {
@@ -147,11 +143,9 @@ public class NutDao extends DaoSupport implements Dao {
         		return fastInsert(obj);
         	}
         	Lang.each(obj, false, new Each<Object>() {
-        		@Override
-                public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
-        			if (i != 0) {
-                        opt.addInsert(opt.entity, ele);
-                    }
+        		public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
+        			if (i != 0)
+        				opt.addInsert(opt.entity, ele);
         		}
         	});
         }
@@ -159,13 +153,10 @@ public class NutDao extends DaoSupport implements Dao {
         return obj;
     }
 
-    @Override
     public <T> T insert(final T obj, FieldFilter filter) {
-        if (filter == null) {
+        if (filter == null)
             return insert(obj);
-        }
         filter.run(new Atom() {
-            @Override
             public void run() {
                 insert(obj);
             }
@@ -173,21 +164,18 @@ public class NutDao extends DaoSupport implements Dao {
         return obj;
     }
 
-    @Override
     public void insert(String tableName, Chain chain) {
         if (chain.isSpecial()) {
             Daos.insertBySpecialChain(this, null, tableName, chain);
             return;
         }
         EntityOperator opt = _optBy(chain.toEntityMap(tableName));
-        if (null == opt) {
+        if (null == opt)
             return;
-        }
         opt.addInsert();
         opt.exec();
     }
 
-    @Override
     public void insert(Class<?> classOfT, Chain chain) {
         if (chain.isSpecial()) {
             Daos.insertBySpecialChain(this, getEntity(classOfT), null, chain);
@@ -200,34 +188,28 @@ public class NutDao extends DaoSupport implements Dao {
         opt.exec();
     }
 
-    @Override
     public <T> T fastInsert(T obj) {
         return fastInsert(obj, false);
     }
 
-    @Override
     public <T> T fastInsert(T obj, boolean detectAllColumns) {
         EntityOperator opt = _optBy(obj, detectAllColumns);
-        if (null == opt) {
+        if (null == opt)
             return null;
-        }
         opt.addInsertSelfOnly();
         opt.exec();
         return obj;
     }
 
-    @Override
     public <T> T insertWith(T obj, String regex) {
         EntityOperator opt = _optBy(obj);
-        if (null == opt) {
+        if (null == opt)
             return null;
-        }
         final LinkVisitor one = doInsert(opt);
         final boolean[] flag = new boolean[1];
         // issue 889. hostField是@Id(auto=true)的时候
         // 需要把相应的@One对象,押后到host对象插入之后
         opt.entity.visitOne(obj, regex, new LinkVisitor() {
-            @Override
             public void visit(Object obj, LinkField lnk) {
                 if (lnk.getHostField().isId()) {
                     flag[0] = true;
@@ -246,11 +228,9 @@ public class NutDao extends DaoSupport implements Dao {
             opt = _optBy(obj);
             final LinkVisitor _one = doInsert(opt);
             opt.entity.visitOne(obj, regex, new LinkVisitor() {
-                @Override
                 public void visit(Object obj, LinkField lnk) {
-                    if (!lnk.getHostField().isId()) {
+                    if (!lnk.getHostField().isId())
                         return;
-                    }
                     _one.visit(obj, lnk);
                 }
             });
@@ -260,14 +240,12 @@ public class NutDao extends DaoSupport implements Dao {
         return obj;
     }
 
-    @Override
     public <T> T insertLinks(T obj, String regex) {
         // TODO 天啊,每个调用都有4个正则表达式,能快起来不?
         // TODO zzh: NutEntity 会缓存正则表达式计算的结果的，会很快的
         EntityOperator opt = _optBy(obj);
-        if (null == opt) {
+        if (null == opt)
             return null;
-        }
 
         opt.entity.visitOne(obj, regex, doInsert(opt));
         opt.entity.visitMany(obj, regex, doInsert(opt));
@@ -278,12 +256,10 @@ public class NutDao extends DaoSupport implements Dao {
         return obj;
     }
 
-    @Override
     public <T> T insertRelation(T obj, String regex) {
         EntityOperator opt = _optBy(obj);
-        if (null == opt) {
+        if (null == opt)
             return null;
-        }
 
         opt.entity.visitManyMany(obj, regex, doInsertRelation(opt));
         opt.exec();
@@ -291,104 +267,83 @@ public class NutDao extends DaoSupport implements Dao {
         return obj;
     }
 
-    @Override
     public int update(Object obj) {
         EntityOperator opt = _optBy(obj);
-        if (null == opt) {
+        if (null == opt)
             return 0;
-        }
         opt.addUpdate();
         opt.exec();
         return opt.getUpdateCount();
     }
 
-    @Override
     public int update(final Object obj, String actived) {
         Object first = Lang.first(obj);
-        if (null == first) {
+        if (null == first)
             return 0;
-        }
 
-        if (Strings.isBlank(actived)) {
+        if (Strings.isBlank(actived))
             return update(obj);
-        }
         
         return update(obj, FieldFilter.create(first.getClass(), actived));
     }
     
-    @Override
     public int update(final Object obj, String actived, String locked, boolean ignoreNull) {
         Object first = Lang.first(obj);
-        if (null == first) {
+        if (null == first)
             return 0;
-        }
         return update(obj, FieldFilter.create(first.getClass(), actived, locked, ignoreNull));
     }
     
-    @Override
     public int update(final Object obj, FieldFilter fieldFilter) {
-        if (fieldFilter == null) {
+        if (fieldFilter == null)
             return update(obj);
-        }
         
         return fieldFilter.run(new Molecule<Integer>() {
-            @Override
             public void run() {
                 setObj(update(obj));
             }
         });
     }
     
-    @Override
     public int update(final Object obj, FieldFilter fieldFilter, final Condition cnd) {
-        if (fieldFilter == null) {
+        if (fieldFilter == null)
             return update(obj, cnd);
-        }
         return fieldFilter.run(new Molecule<Integer>() {
-            @Override
             public void run() {
                 setObj(update(obj, cnd));
             }
         });
     }
     
-    @Override
     public int update(Object obj, Condition cnd) {
-        if (cnd == null) {
+        if (cnd == null)
             return update(obj);
-        }
         EntityOperator opt = _optBy(obj);
-        if (null == opt) {
+        if (null == opt)
             return 0;
-        }
         opt.addUpdateByPkAndCnd(cnd);
         opt.exec();
         return opt.getUpdateCount();
     }
 
-    @Override
     public int updateIgnoreNull(final Object obj) {
         EntityOperator opt = _optBy(obj);
-        if (null == opt) {
+        if (null == opt)
             return 0;
-        }
         opt.addUpdateForIgnoreNull(opt.entity, obj, FieldFilter.get(opt.entity.getType()));
         opt.exec();
         return opt.getUpdateCount();
     }
 
-    @Override
     public int update(String tableName, Chain chain, Condition cnd) {
         EntityOperator opt = _optBy(chain.toEntityMap(tableName));
-        if (null == opt) {
+        if (null == opt)
             return 0;
-        }
         opt.addUpdate(chain, cnd);
         opt.exec();
         return opt.getUpdateCount();
     }
 
-    @Override
     public int update(Class<?> classOfT, Chain chain, Condition cnd) {
         EntityOperator opt = _opt(classOfT);
         opt.addUpdate(chain, cnd);
@@ -396,19 +351,15 @@ public class NutDao extends DaoSupport implements Dao {
         return opt.getUpdateCount();
     }
 
-    @Override
     public <T> T updateWith(T obj, final String regex) {
-        if (null == obj) {
+        if (null == obj)
             return null;
-        }
         Lang.each(obj, false, new Each<Object>() {
-            @Override
             public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop,
                     LoopException {
                 EntityOperator opt = _optBy(ele);
-                if (null == opt) {
+                if (null == opt)
                     return;
-                }
 
                 opt.entity.visitOne(ele, regex, doUpdate(opt));
                 opt.addUpdate();
@@ -421,19 +372,15 @@ public class NutDao extends DaoSupport implements Dao {
         return obj;
     }
 
-    @Override
     public <T> T updateLinks(T obj, final String regex) {
-        if (null == obj) {
+        if (null == obj)
             return null;
-        }
         Lang.each(obj, false, new Each<Object>() {
-            @Override
             public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop,
                     LoopException {
                 EntityOperator opt = _optBy(ele);
-                if (null == opt) {
+                if (null == opt)
                     return;
-                }
 
                 opt.entity.visitOne(ele, regex, doUpdate(opt));
                 opt.entity.visitMany(ele, regex, doUpdate(opt));
@@ -445,11 +392,9 @@ public class NutDao extends DaoSupport implements Dao {
         return obj;
     }
 
-    @Override
     public int updateRelation(Class<?> classOfT, String regex, Chain chain, Condition cnd) {
-        if (chain.isSpecial()) {
+        if (chain.isSpecial())
             throw Lang.noImplement();
-        }
 
         EntityOperator opt = this._opt(classOfT);
 
@@ -459,7 +404,6 @@ public class NutDao extends DaoSupport implements Dao {
         return opt.getUpdateCount();
     }
 
-    @Override
     public int delete(Class<?> classOfT, long id) {
         Entity<?> en = holder.getEntity(classOfT);
         Pojo pojo = pojoMaker.makeDelete(en).append(Pojos.Items.cndId(en, id));
@@ -468,7 +412,6 @@ public class NutDao extends DaoSupport implements Dao {
         return pojo.getUpdateCount();
     }
 
-    @Override
     public int delete(Class<?> classOfT, String name) {
         Entity<?> en = holder.getEntity(classOfT);
         Pojo pojo = pojoMaker.makeDelete(en)
@@ -478,7 +421,6 @@ public class NutDao extends DaoSupport implements Dao {
         return pojo.getUpdateCount();
     }
 
-    @Override
     public <T> int deletex(Class<T> classOfT, Object... pks) {
         Entity<T> en = holder.getEntity(classOfT);
         Pojo pojo = pojoMaker.makeDelete(en).append(Pojos.Items.cndPk(en, pks));
@@ -486,31 +428,25 @@ public class NutDao extends DaoSupport implements Dao {
         return pojo.getUpdateCount();
     }
 
-    @Override
     public int delete(Object obj) {
         EntityOperator opt = _optBy(obj);
-        if (null == opt) {
+        if (null == opt)
             return 0;
-        }
         opt.addDeleteSelfOnly();
         opt.exec();
         return opt.getUpdateCount();
     }
 
-    @Override
     public int deleteWith(Object obj, final String regex) {
-        if (null == obj) {
+        if (null == obj)
             return 0;
-        }
         final int[] re = new int[1];
         Lang.each(obj, false, new Each<Object>() {
-            @Override
             public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop,
                     LoopException {
                 EntityOperator opt = _optBy(ele);
-                if (null == opt) {
+                if (null == opt)
                     return;
-                }
                 opt.entity.visitMany(ele, regex, doDelete(opt));
                 opt.entity.visitManyMany(ele, regex, doClearRelationByLinkedField(opt));
                 opt.entity.visitManyMany(ele, regex, doDelete(opt));
@@ -523,20 +459,16 @@ public class NutDao extends DaoSupport implements Dao {
         return re[0];
     }
 
-    @Override
     public int deleteLinks(Object obj, final String regex) {
-        if (null == obj) {
+        if (null == obj)
             return 0;
-        }
         final int[] re = new int[1];
         Lang.each(obj, false, new Each<Object>() {
-            @Override
             public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop,
                     LoopException {
                 EntityOperator opt = _optBy(ele);
-                if (null == opt) {
+                if (null == opt)
                     return;
-                }
                 opt.entity.visitMany(ele, regex, doDelete(opt));
                 opt.entity.visitManyMany(ele, regex, doClearRelationByLinkedField(opt));
                 opt.entity.visitManyMany(ele, regex, doDelete(opt));
@@ -548,7 +480,6 @@ public class NutDao extends DaoSupport implements Dao {
         return re[0];
     }
 
-    @Override
     public <T> List<T> query(Class<T> classOfT, Condition cnd, Pager pager) {
         Pojo pojo = pojoMaker.makeQuery(holder.getEntity(classOfT))
                              .append(Pojos.Items.cnd(cnd))
@@ -560,12 +491,10 @@ public class NutDao extends DaoSupport implements Dao {
         return pojo.getList(classOfT);
     }
 
-    @Override
     public <T> List<T> query(Class<T> classOfT, Condition cnd) {
         return query(classOfT, cnd, Pojos.Items.pager(cnd));
     }
 
-    @Override
     public <T> int each(Class<T> classOfT, Condition cnd, Pager pager, Each<T> callback) {
         Pojo pojo = pojoMaker.makeQuery(holder.getEntity(classOfT))
                              .append(Pojos.Items.cnd(cnd))
@@ -580,17 +509,14 @@ public class NutDao extends DaoSupport implements Dao {
         return pojo.getInt();
     }
     
-    @Override
     public <T> int each(Class<T> classOfT, Condition cnd, Each<T> callback) {
         return each(classOfT, cnd, Pojos.Items.pager(cnd), callback);
     }
     
-    @Override
     public List<Record> query(String tableName, Condition cnd, Pager pager) {
         return query(tableName, cnd, pager, "*");
     }
     
-    @Override
     public List<Record> query(String tableName, Condition cnd, Pager pager, String fields) {
         Pojo pojo = pojoMaker.makeQuery(tableName, fields)
                              .addParamsBy(fields)
@@ -602,12 +528,10 @@ public class NutDao extends DaoSupport implements Dao {
         return pojo.getList(Record.class);
     }
 
-    @Override
     public List<Record> query(String tableName, Condition cnd) {
         return query(tableName, cnd, Pojos.Items.pager(cnd));
     }
 
-    @Override
     public int each(String tableName, Condition cnd, Pager pager, Each<Record> callback, String fields) {
         Pojo pojo = pojoMaker.makeQuery(tableName, fields)
                              .addParamsBy(fields)
@@ -621,22 +545,18 @@ public class NutDao extends DaoSupport implements Dao {
         return pojo.getInt();
     }
     
-    @Override
     public int each(String tableName, Condition cnd, Pager pager, Each<Record> callback) {
         return each(tableName, cnd, pager, callback, "*");
     }
 
-    @Override
     public int each(String tableName, Condition cnd, Each<Record> callback) {
         return each(tableName, cnd, Pojos.Items.pager(cnd), callback);
     }
 
-    @Override
     public <T> T fetch(Class<T> classOfT, long id) {
         Entity<T> en = holder.getEntity(classOfT);
-        if (en.getIdField() == null) {
+        if (en.getIdField() == null)
             throw new DaoException("Need @Id for " + classOfT);
-        }
         Pojo pojo = pojoMaker.makeQuery(en)
                              .append(Pojos.Items.cndId(en, id))
                              .addParamsBy(id)
@@ -645,15 +565,12 @@ public class NutDao extends DaoSupport implements Dao {
         return pojo.getObject(classOfT);
     }
 
-    @Override
     public <T> T fetch(Class<T> classOfT, String name) {
-        if (name == null) {
+        if (name == null)
             throw new IllegalArgumentException("name MUST NOT NULL!");
-        }
         Entity<T> en = holder.getEntity(classOfT);
-        if (en.getNameField() == null) {
+        if (en.getNameField() == null)
             throw new DaoException("Need @Name for " + classOfT);
-        }
         Pojo pojo = pojoMaker.makeQuery(en)
                              .append(Pojos.Items.cndName(en, name))
                              .addParamsBy(name)
@@ -662,7 +579,6 @@ public class NutDao extends DaoSupport implements Dao {
         return pojo.getObject(classOfT);
     }
 
-    @Override
     public <T> T fetchx(Class<T> classOfT, Object... pks) {
         Entity<T> en = holder.getEntity(classOfT);
         Pojo pojo = pojoMaker.makeQuery(en)
@@ -672,7 +588,6 @@ public class NutDao extends DaoSupport implements Dao {
         return pojo.getObject(classOfT);
     }
 
-    @Override
     public <T> T fetch(Class<T> classOfT, Condition cnd) {
         Pojo pojo = pojoMaker.makeQuery(holder.getEntity(classOfT))
                              .append(Pojos.Items.cnd(cnd))
@@ -684,12 +599,10 @@ public class NutDao extends DaoSupport implements Dao {
         return pojo.getObject(classOfT);
     }
 
-    @Override
     public Record fetch(String tableName, Condition cnd) {
         return fetch(tableName, cnd, "*");
     }
     
-    @Override
     public Record fetch(String tableName, Condition cnd, String fields) {
         Pojo pojo = pojoMaker.makeQuery(tableName, fields)
                              .append(Pojos.Items.cnd(cnd))
@@ -701,7 +614,6 @@ public class NutDao extends DaoSupport implements Dao {
         return pojo.getObject(Record.class);
     }
 
-    @Override
     @SuppressWarnings("unchecked")
     public <T> T fetch(T obj) {
         Entity<?> en = holder.getEntityBy(obj);
@@ -713,27 +625,21 @@ public class NutDao extends DaoSupport implements Dao {
         return (T) pojo.getResult();
     }
 
-    @Override
     public <T> T fetch(Class<T> classOfT) {
         List<T> list = query(classOfT, null, createPager(1, 1));
-        if (null != list && !list.isEmpty()) {
+        if (null != list && !list.isEmpty())
             return list.get(0);
-        }
         return null;
     }
 
-    @Override
     public <T> T fetchLinks(T obj, final String regex) {
         return fetchLinks(obj, regex, null);
     }
 
-    @Override
     public <T> T fetchLinks(final T obj, final String regex, final Condition cnd) {
-        if (null == obj) {
+        if (null == obj)
             return null;
-        }
         Lang.each(obj, false, new Each<Object>() {
-            @Override
             public void invoke(int index, Object ele, int length) {
                 _fetchLinks(ele, regex, true, true, true, cnd);
             }
@@ -741,42 +647,34 @@ public class NutDao extends DaoSupport implements Dao {
         return obj;
     }
 
-    @Override
     public int clear(Class<?> classOfT, Condition cnd) {
         Pojo pojo = pojoMaker.makeDelete(holder.getEntity(classOfT)).append(Pojos.Items.cnd(cnd));
         _exec(pojo);
         return pojo.getUpdateCount();
     }
 
-    @Override
     public int clear(String tableName, Condition cnd) {
         Pojo pojo = pojoMaker.makeDelete(tableName).append(Pojos.Items.cnd(cnd));
         _exec(pojo);
         return pojo.getUpdateCount();
     }
 
-    @Override
     public int clear(Class<?> classOfT) {
         return clear(classOfT, null);
     }
 
-    @Override
     public int clear(String tableName) {
         return clear(tableName, null);
     }
 
-    @Override
     public <T> T clearLinks(T obj, final String regex) {
-        if (null == obj) {
+        if (null == obj)
             return null;
-        }
         Lang.each(obj, false, new Each<Object>() {
-            @Override
             public void invoke(int index, Object ele, int length) {
                 EntityOperator opt = _optBy(ele);
-                if (null == opt) {
+                if (null == opt)
                     return;
-                }
                 opt.entity.visitMany(ele, regex, doClear(opt));
                 opt.entity.visitManyMany(ele, regex, doClearRelationByHostField(opt));
                 opt.entity.visitOne(ele, regex, doClear(opt));
@@ -787,29 +685,24 @@ public class NutDao extends DaoSupport implements Dao {
         return obj;
     }
 
-    @Override
     public <T> Entity<T> getEntity(Class<T> classOfT) {
         return holder.getEntity(classOfT);
     }
 
-    @Override
     public int count(Class<?> classOfT, Condition cnd) {
         Entity<?> en = holder.getEntity(classOfT);
         return _count(en, en.getViewName(), cnd);
     }
 
-    @Override
     public int count(Class<?> classOfT) {
         Entity<?> en = holder.getEntity(classOfT);
         return _count(en, en.getViewName(), null);
     }
 
-    @Override
     public int count(String tableName) {
         return count(tableName, null);
     }
 
-    @Override
     public int count(String tableName, Condition cnd) {
         return _count(null, tableName, cnd);
     }
@@ -823,9 +716,8 @@ public class NutDao extends DaoSupport implements Dao {
             if (cnd instanceof Criteria) {
                 if (cnd instanceof SimpleCriteria) {
                     String beforeWhere = ((SimpleCriteria)cnd).getBeforeWhere();
-                    if (!Strings.isBlank(beforeWhere)) {
+                    if (!Strings.isBlank(beforeWhere))
                         pojo.addParamsBy(Pojos.Items.wrap(beforeWhere));
-                    }
                 }
                 pojo.append(((Criteria) cnd).where());
                 // MySQL/PgSQL/SqlServer 与 Oracle/H2的结果会不一样,奇葩啊
@@ -849,28 +741,23 @@ public class NutDao extends DaoSupport implements Dao {
         return func(tableName, "COUNT", "*");
     }
 
-    @Override
     public int getMaxId(Class<?> classOfT) {
         Entity<?> en = holder.getEntity(classOfT);
         return func(en.getViewName(), "MAX", en.getIdField().getColumnNameInSql());
     }
 
-    @Override
     public int func(Class<?> classOfT, String funcName, String fieldName) {
         return func(classOfT, funcName, fieldName, null);
     }
 
-    @Override
     public int func(String tableName, String funcName, String colName) {
         return func(tableName, funcName, colName, null);
     }
 
-    @Override
     public int func(Class<?> classOfT, String funcName, String colName, Condition cnd) {
         Entity<?> en = holder.getEntity(classOfT);
-        if (null != en.getField(colName)) {
+        if (null != en.getField(colName))
             colName = en.getField(colName).getColumnNameInSql();
-        }
         DaoStatement pojo = pojoMaker.makeFunc(en.getViewName(), funcName, colName)
                                      .append(Pojos.Items.cnd(cnd))
                                      .setAfter(_pojo_fetchInt)
@@ -879,7 +766,6 @@ public class NutDao extends DaoSupport implements Dao {
         return pojo.getInt();
     }
 
-    @Override
     public int func(String tableName, String funcName, String colName, Condition cnd) {
         DaoStatement pojo = pojoMaker.makeFunc(tableName, funcName, colName)
                                      .append(Pojos.Items.cnd(cnd))
@@ -888,22 +774,18 @@ public class NutDao extends DaoSupport implements Dao {
         return pojo.getInt();
     }
 
-    @Override
     public Object func2(Class<?> classOfT, String func2Name, String fieldName) {
         return func2(classOfT, func2Name, fieldName, null);
     }
 
-    @Override
     public Object func2(String tableName, String func2Name, String colName) {
         return func2(tableName, func2Name, colName, null);
     }
 
-    @Override
     public Object func2(Class<?> classOfT, String func2Name, String colName, Condition cnd) {
         Entity<?> en = holder.getEntity(classOfT);
-        if (null != en.getField(colName)) {
+        if (null != en.getField(colName))
             colName = en.getField(colName).getColumnNameInSql();
-        }
         DaoStatement pojo = pojoMaker.makeFunc(en.getViewName(), func2Name, colName)
                                      .append(Pojos.Items.cnd(cnd))
                                      .setAfter(_pojo_fetchObject)
@@ -912,7 +794,6 @@ public class NutDao extends DaoSupport implements Dao {
         return pojo.getResult();
     }
 
-    @Override
     public Object func2(String tableName, String func2Name, String colName, Condition cnd) {
         DaoStatement pojo = pojoMaker.makeFunc(tableName, func2Name, colName)
                                      .append(Pojos.Items.cnd(cnd))
@@ -921,7 +802,6 @@ public class NutDao extends DaoSupport implements Dao {
         return pojo.getResult();
     }
 
-    @Override
     public Pager createPager(int pageNumber, int pageSize) {
         Pager pager = new Pager();
         pager.setPageNumber(pageNumber);
@@ -929,7 +809,6 @@ public class NutDao extends DaoSupport implements Dao {
         return pager;
     }
 
-    @Override
     public synchronized <T> Entity<T> create(Class<T> classOfT, boolean dropIfExists) {
         Entity<T> en = holder.getEntity(classOfT);
         if (exists(en.getTableName())) {
@@ -945,7 +824,6 @@ public class NutDao extends DaoSupport implements Dao {
         expert.createEntity(this, _en);
         // 最后在数据库中验证一下实体各个字段
         run(new ConnCallback() {
-            @Override
             public void invoke(Connection conn) throws Exception {
                 expert.setupEntityField(conn, _en);
             }
@@ -953,35 +831,28 @@ public class NutDao extends DaoSupport implements Dao {
         return en;
     }
 
-    @Override
     public boolean drop(Class<?> classOfT) {
         Entity<?> en = holder.getEntity(classOfT);
-        if (!exists(en.getTableName())) {
+        if (!exists(en.getTableName()))
             return false;
-        }
         return expert.dropEntity(this, en);
     }
 
-    @Override
     public boolean drop(String tableName) {
-        if (!exists(tableName)) {
+        if (!exists(tableName))
             return false;
-        }
         Sql sql = Sqls.createf("DROP TABLE %s", tableName);
         _exec(sql);
         return true;
     }
 
-    @Override
     public boolean exists(Class<?> classOfT) {
         return exists(getEntity(classOfT).getViewName());
     }
 
-    @Override
     public boolean exists(final String tableName) {
         final boolean[] ee = {false};
         this.run(new ConnCallback() {
-            @Override
             public void invoke(Connection conn) {
                 Statement stat = null;
                 ResultSet rs = null;
@@ -990,9 +861,8 @@ public class NutDao extends DaoSupport implements Dao {
                     // 增加不等式,减少sql执行时间
                     String sql = "SELECT COUNT(1) FROM " + tableName + " where 1!=1";
                     rs = stat.executeQuery(sql);
-                    if (rs.next()) {
+                    if (rs.next())
                         ee[0] = true;
-                    }
                 }
                 catch (SQLException e) {}
                 finally {
@@ -1040,7 +910,6 @@ public class NutDao extends DaoSupport implements Dao {
 
     private LinkVisitor doFetch(final EntityOperator opt) {
         return new LinkVisitor() {
-            @Override
             public void visit(final Object obj, final LinkField lnk) {
                 Pojo pojo = opt.maker().makeQuery(lnk.getLinkedEntity());
                 pojo.setOperatingObject(obj);
@@ -1054,7 +923,6 @@ public class NutDao extends DaoSupport implements Dao {
 
     private LinkVisitor doLinkQuery(final EntityOperator opt, final Condition cnd) {
         return new LinkVisitor() {
-            @Override
             public void visit(final Object obj, final LinkField lnk) {
                 Pojo pojo = opt.maker().makeQuery(lnk.getLinkedEntity());
                 pojo.setOperatingObject(obj);
@@ -1112,9 +980,8 @@ public class NutDao extends DaoSupport implements Dao {
 
     EntityOperator _optBy(Object obj, boolean detectAllColumns) {
         // 阻止空对象
-        if (null == obj) {
+        if (null == obj)
             return null;
-        }
         Entity<?> en = null;
         // for issue 1425
         if (detectAllColumns && Lang.eleSize(obj) > 1) {
@@ -1122,7 +989,6 @@ public class NutDao extends DaoSupport implements Dao {
             if (first != null && first instanceof Map) {
                 final Map<String, Object> tmp = new HashMap<String, Object>();
                 Lang.each(obj, new Each<Object>() {
-                    @Override
                     @SuppressWarnings({"unchecked", "rawtypes"})
                     public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop, LoopException {
                         tmp.putAll((Map)ele);
@@ -1136,9 +1002,8 @@ public class NutDao extends DaoSupport implements Dao {
         }
         // 对象是否有内容，这里会考虑集合与数组
         
-        if (null == en) {
+        if (null == en)
             return null;
-        }
         // 创建操作对象
         EntityOperator re = _opt(en);
         re.myObj = obj.getClass().isArray() ? Lang.array2list((Object[]) obj) : obj;
@@ -1148,11 +1013,9 @@ public class NutDao extends DaoSupport implements Dao {
     // ---------------------------------------------------------------
     // 专属于NutDao的一些帮助方法
 
-    @Override
     public void setExpert(Object obj) throws Exception {
-        if (obj == null) {
+        if (obj == null)
             throw new NullPointerException("expert MUST NOT NULL!!");
-        }
         if (obj instanceof JdbcExpert) {
             this.expert = (JdbcExpert) obj;
         } else {
@@ -1180,15 +1043,12 @@ public class NutDao extends DaoSupport implements Dao {
         }
     }
     
-    @Override
     public Sql execute(Sql sql) {
-        if (sql != null) {
+        if (sql != null)
             execute(new Sql[]{sql});
-        }
         return sql;
     }
     
-    @Override
     public <T> T insert(final T t, boolean ignoreNull, boolean ignoreZero, boolean ignoreBlankStr) {
     	Object obj = Lang.first(t);
     	Entity<?> en = getEntity(obj.getClass());
@@ -1205,15 +1065,13 @@ public class NutDao extends DaoSupport implements Dao {
 			if (ignoreZero && (tmp == null || (tmp instanceof Number && ((Number)tmp).intValue() == 0))) {
 				continue;
 			}
-			if (ignoreBlankStr && (tmp instanceof CharSequence && Strings.isBlank((CharSequence)tmp))) {
-                continue;
-            }
+			if (ignoreBlankStr && (tmp instanceof CharSequence && Strings.isBlank((CharSequence)tmp)))
+				continue;
 			names.add(mf.getName());
 		}
     	FieldFilter ff = FieldFilter.create(obj.getClass(), "^("+Strings.join("|", names.toArray())+")$");
     	Molecule<T> m = new Molecule<T>() {
-    		@Override
-            public void run() {
+    		public void run() {
     			insert(t);
     			setObj(t);
     		}
@@ -1221,14 +1079,11 @@ public class NutDao extends DaoSupport implements Dao {
 		return ff.run(m);
     }
     
-    @Override
     public <T> List<T> query(final Class<T> classOfT, final Condition cnd, final Pager pager, FieldMatcher matcher) {
-        if (matcher == null) {
+        if (matcher == null)
             return query(classOfT, cnd, pager);
-        }
         FieldFilter ff = FieldFilter.create(classOfT, matcher);
         Molecule<List<T>> m = new Molecule<List<T>>() {
-            @Override
             public void run() {
                 setObj(query(classOfT, cnd, pager));
             }
@@ -1236,14 +1091,11 @@ public class NutDao extends DaoSupport implements Dao {
         return ff.run(m);
     }
     
-    @Override
     public <T> List<T> query(final Class<T> classOfT, final Condition cnd, final Pager pager, String regex) {
-        if (regex == null) {
+        if (regex == null)
             return query(classOfT, cnd, pager);
-        }
         FieldFilter ff = FieldFilter.create(classOfT, FieldMatcher.make(regex, null, false));
         Molecule<List<T>> m = new Molecule<List<T>>() {
-            @Override
             public void run() {
                 setObj(query(classOfT, cnd, pager));
             }
@@ -1251,21 +1103,17 @@ public class NutDao extends DaoSupport implements Dao {
         return ff.run(m);
     }
     
-    @Override
     public <T> T insertOrUpdate(T t) {
         return insertOrUpdate(t, null, null);
     }
     
-    @Override
     public <T> T insertOrUpdate(T t, final FieldFilter insertFieldFilter, final FieldFilter updateFieldFilter) {
-        if (t == null) {
+        if (t == null)
             return null;
-        }
         Object obj = Lang.first(t);
         final Entity<?> en = getEntity(obj.getClass());
         Lang.each(t, new Each<Object>() {
 
-            @Override
             public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop, LoopException {
 
                 boolean shall_update = false;
@@ -1286,28 +1134,24 @@ public class NutDao extends DaoSupport implements Dao {
                 else {
                     shall_update = fetch(ele) != null;
                 }
-                if (shall_update) {
+                if (shall_update)
                     update(ele, updateFieldFilter);
-                } else {
+                else
                     insert(ele, insertFieldFilter);
-                }
             }
         });
         return t;
     }
     
-    @Override
     public int updateAndIncrIfMatch(final Object obj, FieldFilter fieldFilter, String fieldName) {
         final EntityOperator opt = _optBy(obj);
-        if (null == opt) {
+        if (null == opt)
             return 0;
-        }
-        if (fieldName == null) {
+        if (fieldName == null)
             fieldName = "version";
-        }
-        if (fieldFilter == null) {
-            fieldFilter = FieldFilter.create(opt.entity.getType(), null, "^" + fieldName + "$", false);
-        } else {
+        if (fieldFilter == null)
+            fieldFilter = FieldFilter.create(opt.entity.getType(), null, "^"+fieldName+"$", false);
+        else {
             FieldMatcher fieldMatcher = fieldFilter.map().get(opt.entity.getType());
             if (fieldMatcher == null) {
                 fieldMatcher = FieldMatcher.make(null, "^"+fieldName+"$", false);
@@ -1320,7 +1164,6 @@ public class NutDao extends DaoSupport implements Dao {
         }
         final String _fieldName = fieldName;
         fieldFilter.run(new Atom() {
-            @Override
             public void run() {
                 opt.addUpdateAndIncrIfMatch(opt.entity, obj, _fieldName);
                 opt.exec();}
@@ -1328,24 +1171,20 @@ public class NutDao extends DaoSupport implements Dao {
         return opt.getUpdateCount();
     }
 
-    @Override
     public int updateWithVersion(Object obj) {
         return updateWithVersion(obj, null);
     }
     
-    @Override
     public int updateWithVersion(Object obj, FieldFilter fieldFilter) {
         return updateAndIncrIfMatch(obj, fieldFilter, getEntity(Lang.first(obj).getClass()).getVersionField().getName());
     }
     
-    @Override
     public <T> T fetchByJoin(Class<T> klass, String regex, long id) {
         Entity<T> en = getEntity(klass);
         MappingField mf = en.getIdField();
         return fetchByJoin(klass, regex, en, mf, id);
     }
     
-    @Override
     public <T> T fetchByJoin(Class<T> klass, String regex, String name) {
         Entity<T> en = getEntity(klass);
         MappingField mf = en.getNameField();
@@ -1355,13 +1194,11 @@ public class NutDao extends DaoSupport implements Dao {
     public <T> T fetchByJoin(Class<T> klass, String regex, Entity<T> en, MappingField mf, Object value) {
         String key = en.getTableName() + "." + mf.getColumnNameInSql();
         T t = fetchByJoin(klass, regex, Cnd.where(key, "=", value));
-        if (t != null) {
+        if (t != null)
             _fetchLinks(t, regex, false, true, true, null);
-        }
         return t;
     }
     
-    @Override
     public <T> T fetchByJoin(Class<T> classOfT, String regex, Condition cnd) {
         Pojo pojo = pojoMaker.makeQueryByJoin(holder.getEntity(classOfT), regex)
                 .append(Pojos.Items.cnd(cnd))
@@ -1371,18 +1208,15 @@ public class NutDao extends DaoSupport implements Dao {
         expert.formatQuery(pojo);
         _exec(pojo);
         T t = pojo.getObject(classOfT);
-        if (t != null) {
+        if (t != null)
             _fetchLinks(t, regex, false, true, true, null);
-        }
         return t;
     }
     
-    @Override
     public <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd) {
         return this.queryByJoin(classOfT, regex, cnd, null);
     }
     
-    @Override
     public <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd, Pager pager) {
     	Pojo pojo = pojoMaker.makeQueryByJoin(holder.getEntity(classOfT), regex)
     			.append(Pojos.Items.cnd(cnd))
@@ -1392,15 +1226,13 @@ public class NutDao extends DaoSupport implements Dao {
     	expert.formatQuery(pojo);
     	_exec(pojo);
     	List<T> list = pojo.getList(classOfT);
-    	if (list != null && list.size() > 0) {
-            for (T t : list) {
-                _fetchLinks(t, regex, false, true, true, null);
-            }
-        }
+    	if (list != null && list.size() > 0) 
+    		for (T t : list) {
+    			_fetchLinks(t, regex, false, true, true, null);
+    		}
     	return list;
     }
 
-    @Override
     public <T> int countByJoin(Class<T> classOfT, String regex, Condition cnd) {
         Pojo pojo = pojoMaker.makeCountByJoin(holder.getEntity(classOfT), regex)
                 .append(Pojos.Items.cnd(cnd))
@@ -1413,37 +1245,29 @@ public class NutDao extends DaoSupport implements Dao {
     
     protected Object _fetchLinks(Object t, String regex, boolean visitOne, boolean visitMany, boolean visitManyMany, final Condition cnd) {
         EntityOperator opt = _optBy(t);
-        if (null == opt) {
+        if (null == opt)
             return t;
-        }
-        if (visitMany) {
+        if (visitMany)
             opt.entity.visitMany(t, regex, doLinkQuery(opt, cnd));
-        }
-        if (visitManyMany) {
+        if (visitManyMany)
             opt.entity.visitManyMany(t, regex, doLinkQuery(opt, cnd));
-        }
-        if (visitOne) {
+        if (visitOne)
             opt.entity.visitOne(t, regex, doFetch(opt));
-        }
         opt.exec();
         return t;
     }
     
-    @Override
     public EntityHolder getEntityHolder() {
         return holder;
     }
     
-    @Override
     public <T> T insert(T obj, String actived) {
         Object first = Lang.first(obj);
-        if (null == first) {
+        if (null == first)
             return null;
-        }
 
-        if (Strings.isBlank(actived)) {
+        if (Strings.isBlank(actived))
             return insert(obj);
-        }
         
         return insert(obj, FieldFilter.create(first.getClass(), actived));
     }
@@ -1456,9 +1280,8 @@ public class NutDao extends DaoSupport implements Dao {
     
     @Override
     public void truncate(String tableName) {
-        if (!exists(tableName)) {
+        if (!exists(tableName))
             return;
-        }
         Sql sql = Sqls.createf("TRUNCATE TABLE %s", tableName);
         _exec(sql);
         return;

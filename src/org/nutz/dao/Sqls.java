@@ -366,14 +366,13 @@ public abstract class Sqls {
      * @return 格式化后的 Sql 字段值，可以直接拼装在 SQL 里面
      */
     public static CharSequence formatFieldValue(Object v) {
-        if (null == v) {
+        if (null == v)
             return "NULL";
-        } else if (Sqls.isNotNeedQuote(v.getClass())) {
+        else if (Sqls.isNotNeedQuote(v.getClass()))
             return Sqls.escapeFieldValue(v.toString());
-        } else {
+        else
             return new StringBuilder("'").append(Sqls.escapeFieldValue(Castors.me().castToString(v)))
-                    .append('\'');
-        }
+                                         .append('\'');
     }
 
     /**
@@ -384,14 +383,13 @@ public abstract class Sqls {
      * @return 格式化后的 Sql 字段值，可以直接拼装在 SQL 里面
      */
     public static CharSequence formatSqlFieldValue(Object v) {
-        if (null == v) {
+        if (null == v)
             return "NULL";
-        } else if (Sqls.isNotNeedQuote(v.getClass())) {
+        else if (Sqls.isNotNeedQuote(v.getClass()))
             return Sqls.escapeSqlFieldValue(v.toString());
-        } else {
+        else
             return new StringBuilder("'").append(Sqls.escapeSqlFieldValue(v.toString()))
-                    .append('\'');
-        }
+                                         .append('\'');
     }
 
     /**
@@ -402,9 +400,8 @@ public abstract class Sqls {
      * @return 格式化后的 Sql 字段值，可以直接拼装在 SQL 里面
      */
     public static CharSequence escapeFieldValue(CharSequence s) {
-        if (null == s) {
+        if (null == s)
             return null;
-        }
         return ES_FLD_VAL.escape(s);
     }
 
@@ -417,9 +414,8 @@ public abstract class Sqls {
      * @return 格式化后的 Sql 字段值，可以直接拼装在 SQL 里面
      */
     public static CharSequence escapeSqlFieldValue(CharSequence s) {
-        if (null == s) {
+        if (null == s)
             return null;
-        }
         return ES_SQL_FLD.escape(s);
     }
 
@@ -431,9 +427,8 @@ public abstract class Sqls {
      * @return 格式化后的 Sql 字段值，可以直接拼装在 SQL 里面
      */
     public static CharSequence escapteConditionValue(CharSequence s) {
-        if (null == s) {
+        if (null == s)
             return null;
-        }
         return ES_CND_VAL.escape(s);
     }
 

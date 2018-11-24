@@ -11,7 +11,6 @@ import org.nutz.lang.Strings;
 
 public abstract class SocketLineHandler implements SocketHandler {
 
-    @Override
     public void handle(Socket socket) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         Writer bw = new OutputStreamWriter(socket.getOutputStream());

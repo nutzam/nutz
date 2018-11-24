@@ -25,7 +25,6 @@ public class QueueInputStream extends InputStream{
     public QueueInputStream(InputStream is) {
         this.is = is;
     }
-    @Override
     public int read() throws IOException {
         return poll();
     }
@@ -142,7 +141,6 @@ public class QueueInputStream extends InputStream{
     /**
      * 跳过和丢弃输入流中的数据
      */
-    @Override
     public long skip(long n) throws IOException {
         int s = cache.size();
         if(s > 0){

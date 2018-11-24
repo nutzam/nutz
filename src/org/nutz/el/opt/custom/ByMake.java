@@ -22,16 +22,13 @@ import org.nutz.plugin.Plugin;
  */
 public class ByMake implements RunMethod, Plugin{
 
-    @Override
     public boolean canWork() {
         return true;
     }
 
-    @Override
     public Object run(List<Object> fetchParam) {
-        if (fetchParam.isEmpty()) {
+        if (fetchParam.isEmpty())
             throw new ElException("'by' must have params");
-        }
         String p = (String)fetchParam.remove(0);
         String className = p;
         String methodName = null;
@@ -61,7 +58,6 @@ public class ByMake implements RunMethod, Plugin{
         }
     }
 
-    @Override
     public String fetchSelf() {
         return "by";
     }

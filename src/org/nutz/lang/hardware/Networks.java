@@ -39,13 +39,11 @@ public class Networks {
                 try {
                     if (data != null && data.length > 0) {
                         StringBuilder sb = new StringBuilder();
-                        for (byte b : data) {
+                        for (byte b : data)
                             sb.append(Strings.toHex(b, 2));
-                        }
                         netItem.setMac(sb.toString().toUpperCase());
-                        if (netItem.getMac().startsWith("000000000")) {
+                        if (netItem.getMac().startsWith("000000000"))
                             continue;
-                        }
                     }
                 }
                 catch (Throwable e) {}
@@ -53,22 +51,19 @@ public class Networks {
                 if (addrs != null && !addrs.isEmpty()) {
                     for (InterfaceAddress interfaceAddress : addrs) {
                         String ip = interfaceAddress.getAddress().getHostAddress();
-                        if (ip == null || ip.length() == 0) {
+                        if (ip == null || ip.length() == 0)
                             continue;
-                        }
-                        if (ip.contains(".")) {
+                        if (ip.contains("."))
                             netItem.setIpv4(ip);
-                        } else {
+                        else
                             netItem.setIpv6(ip);
-                        }
                     }
                 }
                 netItem.setMtu(face.getMTU());
                 netItem.setDisplay(face.getDisplayName());
                 
-                if (netItem.getIpv4() == null && netItem.getMac() == null && netItem.getMtu() < 1 && !face.getName().startsWith("eth")) {
-                    continue;
-                }
+                if (netItem.getIpv4() == null && netItem.getMac() == null && netItem.getMtu() < 1 && !face.getName().startsWith("eth"))
+                	continue;
                 netFaces.put(face.getName(), netItem);
             }
         }
@@ -95,16 +90,14 @@ public class Networks {
             NetworkItem item = items.get("eth"+i);
             if (item != null) {
                 String ip = item.getIpv4();
-                if (ipOk(ip)) {
+                if (ipOk(ip))
                     return ip;
-                }
             }
         }
     	for (NetworkItem item : items.values()) {
     	    String ip = item.getIpv4();
-			if (ipOk(ip)) {
-                return ip;
-            }
+			if (ipOk(ip))
+				return ip;
 		}
     	return null;
     }
@@ -120,9 +113,8 @@ public class Networks {
         }
         List<NetworkItem> list = getNetworkByTypes(netFaces, ntMap.get(nt));
         for (NetworkItem item : list) {
-            if (!Strings.isBlank(item.getIpv4())) {
+            if (!Strings.isBlank(item.getIpv4()))
                 return item.getIpv4();
-            }
         }
         return null;
     }
@@ -132,17 +124,14 @@ public class Networks {
      */
     public static String mac() {
         String mac = mac(NetworkType.LAN);
-        if (mac != null) {
+        if (mac != null)
             return mac;
-        }
         mac = mac(NetworkType.WIFI);
-        if (mac != null) {
+        if (mac != null)
             return mac;
-        }
         NetworkItem network = firstNetwokrItem();
-        if (network != null) {
+        if (network != null)
             return network.getMac();
-        }
         return null;
     }
 
@@ -157,9 +146,8 @@ public class Networks {
         }
         List<NetworkItem> list = getNetworkByTypes(netFaces, ntMap.get(nt));
         for (NetworkItem item : list) {
-            if (!Strings.isBlank(item.getMac())) {
+            if (!Strings.isBlank(item.getMac()))
                 return item.getMac();
-            }
         }
         return null;
     }
@@ -183,12 +171,10 @@ public class Networks {
         }
         if (re.isEmpty()) {
         	for (Entry<String, NetworkItem> en : netFaces.entrySet()) {
-				if (Strings.isBlank(en.getValue().getIpv4())) {
-                    continue;
-                }
-				if (Strings.isBlank(en.getValue().getMac())) {
-                    continue;
-                }
+				if (Strings.isBlank(en.getValue().getIpv4()))
+					continue;
+				if (Strings.isBlank(en.getValue().getMac()))
+					continue;
 				return en.getValue();
 			}
         }
@@ -200,9 +186,8 @@ public class Networks {
         String[] nss = Strings.splitIgnoreBlank(nt, ",");
         for (String ns : nss) {
             for (int i = 0; i < 10; i++) {
-                if (netFaces.containsKey(ns + i)) {
+                if (netFaces.containsKey(ns + i))
                     list.add(netFaces.get(ns + i));
-                }
             }
         }
         return list;

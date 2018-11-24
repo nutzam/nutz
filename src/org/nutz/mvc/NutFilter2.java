@@ -19,8 +19,7 @@ public class NutFilter2 implements Filter {
 	
 	private String selfName;
 	
-	@Override
-    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
+	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
 			throws IOException, ServletException {
 		if (selfName == null) {
 			selfName = Mvcs.ctx().nutConfigs.keySet().iterator().next();
@@ -40,16 +39,13 @@ public class NutFilter2 implements Filter {
 		try {
 			chain.doFilter(req, resp);
 		} finally {
-			if (needReset) {
-                Mvcs.resetALL();
-            }
+			if (needReset)
+				Mvcs.resetALL();
 		}
 	}
 
-	@Override
-    public void init(FilterConfig conf) throws ServletException {}
+	public void init(FilterConfig conf) throws ServletException {}
 
-	@Override
-    public void destroy() {}
+	public void destroy() {}
 
 }

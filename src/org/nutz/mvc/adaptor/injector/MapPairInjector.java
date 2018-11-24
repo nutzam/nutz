@@ -31,7 +31,6 @@ public class MapPairInjector implements ParamInjector {
     public MapPairInjector(Type type) {
         this.type = type;
     }
-    @Override
     @SuppressWarnings("unchecked")
     public Object get(ServletContext sc,
                       HttpServletRequest req,

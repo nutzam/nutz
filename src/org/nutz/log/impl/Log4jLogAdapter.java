@@ -20,7 +20,6 @@ import org.nutz.plugin.Plugin;
  */
 public class Log4jLogAdapter implements LogAdapter, Plugin {
 
-    @Override
     public boolean canWork() {
         try {
             org.apache.log4j.Logger.class.getName();
@@ -30,7 +29,6 @@ public class Log4jLogAdapter implements LogAdapter, Plugin {
         return false;
     }
 
-    @Override
     public Log getLogger(String className) {
         return new Log4JLogger(className);
     }
@@ -59,54 +57,41 @@ public class Log4jLogAdapter implements LogAdapter, Plugin {
             isWarnEnabled = logger.isEnabledFor(Level.WARN);
             isInfoEnabled = logger.isEnabledFor(Level.INFO);
             isDebugEnabled = logger.isEnabledFor(Level.DEBUG);
-            if (hasTrace) {
+            if (hasTrace)
                 isTraceEnabled = logger.isEnabledFor(Level.TRACE);
-            }
         }
 
-        @Override
         public void debug(Object message, Throwable t) {
-            if (isDebugEnabled()) {
+            if (isDebugEnabled())
                 logger.log(SELF_FQCN, Level.DEBUG, message, t);
-            }
         }
 
-        @Override
         public void error(Object message, Throwable t) {
-            if (isErrorEnabled()) {
+            if (isErrorEnabled())
                 logger.log(SELF_FQCN, Level.ERROR, message, t);
-            }
 
         }
 
-        @Override
         public void fatal(Object message, Throwable t) {
-            if (isFatalEnabled()) {
+            if (isFatalEnabled())
                 logger.log(SELF_FQCN, Level.FATAL, message, t);
-            }
         }
 
-        @Override
         public void info(Object message, Throwable t) {
-            if (isInfoEnabled()) {
+            if (isInfoEnabled())
                 logger.log(SELF_FQCN, Level.INFO, message, t);
-            }
         }
 
-        @Override
         public void trace(Object message, Throwable t) {
-            if (isTraceEnabled()) {
+            if (isTraceEnabled())
                 logger.log(SELF_FQCN, Level.TRACE, message, t);
-            } else if ((!hasTrace) && isDebugEnabled()) {
+            else if ((!hasTrace) && isDebugEnabled())
                 logger.log(SELF_FQCN, Level.DEBUG, message, t);
-            }
         }
 
-        @Override
         public void warn(Object message, Throwable t) {
-            if (isWarnEnabled()) {
+            if (isWarnEnabled())
                 logger.log(SELF_FQCN, Level.WARN, message, t);
-            }
         }
 
         @Override
@@ -128,11 +113,10 @@ public class Log4jLogAdapter implements LogAdapter, Plugin {
                 logger.log(SUPER_FQCN, Level.DEBUG, message, tx);
                 break;
             case LEVEL_TRACE:
-                if (hasTrace) {
+                if (hasTrace)
                     logger.log(SUPER_FQCN, Level.TRACE, message, tx);
-                } else {
+                else
                     logger.log(SUPER_FQCN, Level.DEBUG, message, tx);
-                }
                 break;
             default:
                 break;
@@ -161,9 +145,8 @@ public class Log4jLogAdapter implements LogAdapter, Plugin {
 
         @Override
         public boolean isTraceEnabled() {
-            if (!hasTrace) {
+            if (!hasTrace)
                 return logger.isDebugEnabled();
-            }
             return logger.isTraceEnabled();
         }
 

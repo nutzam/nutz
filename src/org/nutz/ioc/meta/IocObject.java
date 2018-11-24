@@ -127,7 +127,6 @@ public class IocObject implements Cloneable {
         return fields.containsKey(name);
     }
 
-    @Override
     public IocObject clone() {
         return Json.fromJson(IocObject.class, Json.toJson(this));
     }

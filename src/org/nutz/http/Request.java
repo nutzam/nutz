@@ -111,11 +111,9 @@ public class Request {
             for (Entry<String, Object> en : params.entrySet()) {
                 final String key = en.getKey();
                 Object val = en.getValue();
-                if (val == null) {
+                if (val == null)
                     val = "";
-                }
                 Lang.each(val, new Each<Object>() {
-                    @Override
                     public void invoke(int index, Object ele, int length)
                             throws ExitLoop, ContinueLoop, LoopException {
                         if (offEncode) {
@@ -129,9 +127,8 @@ public class Request {
                     }
                 });
             }
-            if (sb.length() > 0) {
+            if (sb.length() > 0)
                 sb.setLength(sb.length() - 1);
-            }
         }
         return sb.toString();
     }
@@ -140,9 +137,8 @@ public class Request {
         if (inputStream != null) {
             return inputStream;
         } else {
-            if (header.get("Content-Type") == null) {
+            if (header.get("Content-Type") == null)
                 header.asFormContentType(enc);
-            }
             if (null == data) {
                 try {
                     return new ByteArrayInputStream(getURLEncodedParams().getBytes(enc));
@@ -187,11 +183,9 @@ public class Request {
     public Request setUrl(String url) {
         if (url != null && !url.contains("://"))
             // 默认采用http协议
-        {
             this.url = "http://" + url;
-        } else {
+        else
             this.url = url;
-        }
         return this;
     }
 
@@ -225,9 +219,8 @@ public class Request {
     }
 
     public Request setHeader(Header header) {
-        if (header == null) {
+        if (header == null)
             header = new Header();
-        }
         this.header = header;
         return this;
     }
@@ -239,9 +232,8 @@ public class Request {
 
     public Cookie getCookie() {
         String s = header.get("Cookie");
-        if (null == s) {
+        if (null == s)
             return new Cookie();
-        }
         return new Cookie(s);
     }
 
@@ -249,9 +241,8 @@ public class Request {
      * 设置发送内容的编码,仅对String或者Map<String,Object>类型的data有效
      */
     public Request setEnc(String reqEnc) {
-        if (reqEnc != null) {
+        if (reqEnc != null)
             this.enc = reqEnc;
-        }
         return this;
     }
 

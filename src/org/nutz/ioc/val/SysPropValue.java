@@ -8,12 +8,10 @@ public class SysPropValue extends ListableValueProxy {
         super(obj);
     }
 
-    @Override
     public Object getValue(String key) {
         Properties properties = System.getProperties();
-        if (properties != null) {
+        if (properties != null)
             return properties.get(key);
-        }
         return null;
     }
 

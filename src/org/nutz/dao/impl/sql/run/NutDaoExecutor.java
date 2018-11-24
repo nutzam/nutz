@@ -34,7 +34,6 @@ public class NutDaoExecutor implements DaoExecutor {
 
     private static final Log log = Logs.get();
 
-    @Override
     public void exec(Connection conn, DaoStatement st) {
         // 这个变量声明，后面两 case 要用到
         Object[][] paramMatrix;
@@ -79,9 +78,8 @@ public class NutDaoExecutor implements DaoExecutor {
             		_runSelect(conn, st);
                     break;
             	}
-                if (st.getSqlType() == SqlType.OTHER && log.isInfoEnabled()) {
+                if (st.getSqlType() == SqlType.OTHER && log.isInfoEnabled())
                     log.info("Can't identify SQL type :   " + st);
-                }
                 paramMatrix = st.getParamMatrix();
                 // 木有参数，直接运行
                 if (null == paramMatrix || paramMatrix.length == 0) {
@@ -98,9 +96,8 @@ public class NutDaoExecutor implements DaoExecutor {
             if (log.isDebugEnabled()) {
             	log.debug("SQLException", e);
             	SQLException nextException = e.getNextException();
-                if (nextException != null) {
-                    log.debug("SQL NextException", nextException);
-                }
+                if (nextException != null)
+                	log.debug("SQL NextException", nextException);
             }
             throw new DaoException(format(    "!Nutz SQL Error: '%s'\nPreparedStatement: \n'%s'",
                                             st.toString(),
@@ -117,9 +114,8 @@ public class NutDaoExecutor implements DaoExecutor {
 		
 		// 打印调试信息
 		String sql = st.toPreparedStatement();
-        if (log.isDebugEnabled()) {
+        if (log.isDebugEnabled())
             log.debug(sql);
-        }
 		
 		Object[][] paramMatrix = st.getParamMatrix();
 		
@@ -146,11 +142,10 @@ public class NutDaoExecutor implements DaoExecutor {
                 Object[] pm = paramMatrix[0];
                 for (int i = 0; i < pm.length; i++) {
                     OutParam outParam = outParams.get(i);
-                    if (outParam == null) {
+                    if (outParam == null)
                         adaptors[i].set(pst, pm[i], i + 1);
-                    } else {
+                    else
                         stmt.registerOutParameter(i + 1, outParam.jdbcType);
-                    }
                 }
             }
 
@@ -189,32 +184,28 @@ public class NutDaoExecutor implements DaoExecutor {
 				st.onAfter(conn, rs, null);
 			}
 			finally {
-				if (rs != null) {
-                    rs.close();
-                }
+				if (rs != null)
+					rs.close();
 			}
 			
 			while (true) {
 				if (stmt.getMoreResults()) {
 					rs = stmt.getResultSet();
 					try {
-						if (rs != null) {
-                            st.onAfter(conn, rs, null);
-                        }
+						if (rs != null)
+							st.onAfter(conn, rs, null);
 					}
 					finally {
-						if (rs != null) {
-                            rs.close();
-                        }
+						if (rs != null)
+							rs.close();
 					}
 				}
 				break;
 			}
 		}
 		finally {
-			if (stmt != null) {
-                stmt.close();
-            }
+			if (stmt != null)
+				stmt.close();
 		}
 	}
 
@@ -248,12 +239,10 @@ public class NutDaoExecutor implements DaoExecutor {
                     || paramMatrix[0].length == 0) {
                 stat = conn.createStatement(st.getContext()
                         .getResultSetType(), ResultSet.CONCUR_READ_ONLY);
-                if (lastRow > 0) {
+                if (lastRow > 0)
                     stat.setMaxRows(lastRow); // 游标分页,现在总行数
-                }
-                if (st.getContext().getFetchSize() != 0) {
+                if (st.getContext().getFetchSize() != 0)
                     stat.setFetchSize(st.getContext().getFetchSize());
-                }
                 rs = stat.executeQuery(sql);
             }
             // 有参数，用缓冲语句
@@ -261,10 +250,9 @@ public class NutDaoExecutor implements DaoExecutor {
 
                 // 打印调试信息
                 if (paramMatrix.length > 1) {
-                    if (log.isWarnEnabled()) {
+                    if (log.isWarnEnabled())
                         log.warnf("Drop last %d rows parameters for:\n%s",
                                 paramMatrix.length - 1, st);
-                    }
                 }
 
                 // 准备运行语句
@@ -273,38 +261,33 @@ public class NutDaoExecutor implements DaoExecutor {
                 stat = conn.prepareStatement(sql, st
                         .getContext().getResultSetType(),
                         ResultSet.CONCUR_READ_ONLY);
-                if (lastRow > 0) {
+                if (lastRow > 0)
                     stat.setMaxRows(lastRow);
-                }
-                if (st.getContext().getFetchSize() != 0) {
+                if (st.getContext().getFetchSize() != 0)
                     stat.setFetchSize(st.getContext().getFetchSize());
-                }
                 for (int i = 0; i < paramMatrix[0].length; i++) {
                     adaptors[i].set((PreparedStatement) stat,
                             paramMatrix[0][i], i + 1);
                 }
                 rs = ((PreparedStatement) stat).executeQuery();
             }
-            if (startRow > 0) {
+            if (startRow > 0)
                 rs.absolute(startRow);
-            }
             // 执行回调
             st.onAfter(conn, rs, stat);
         } finally {
             Daos.safeClose(stat, rs);
         }
         // 打印更详细的调试信息
-        if (log.isTraceEnabled()) {
+        if (log.isTraceEnabled())
             log.trace("...DONE");
-        }
     }
 
     private void _runPreparedStatement(Connection conn, DaoStatement st, Object[][] paramMatrix)
             throws SQLException {
         ValueAdaptor[] adaptors = st.getAdaptors();
-        if (adaptors.length != paramMatrix[0].length) {
+        if (adaptors.length != paramMatrix[0].length)
             throw Lang.makeThrow("DaoStatement adaptor MUST same width with param matrix.");
-        }
 
         boolean statIsClosed = false;
         String sql = st.toPreparedStatement();
@@ -312,11 +295,10 @@ public class NutDaoExecutor implements DaoExecutor {
 
         try {
             // 创建 SQL 语句
-        	if (st.getContext().attr("RETURN_GENERATED_KEYS") == null) {
-                pstat = conn.prepareStatement(sql);
-            } else {
-                pstat = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            }
+        	if (st.getContext().attr("RETURN_GENERATED_KEYS") == null)
+        		pstat = conn.prepareStatement(sql);
+        	else
+        		pstat = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             // 就一条记录，不要批了吧
             if (paramMatrix.length == 1) {
@@ -341,15 +323,12 @@ public class NutDaoExecutor implements DaoExecutor {
 
                 // 计算总共影响的行数
                 int sum = 0;
-                for (int i : counts) {
-                    if (i > 0) {
+                for (int i : counts)
+                    if (i > 0)
                         sum += i;
-                    }
-                }
                         
-                if (sum == 0) {
+                if (sum == 0)
                     sum = pstat.getUpdateCount();
-                }
 
                 st.onAfter(conn, null, pstat);
                 pstat.close();
@@ -359,15 +338,13 @@ public class NutDaoExecutor implements DaoExecutor {
             }
         }
         finally {
-            if (!statIsClosed) {
+            if (!statIsClosed)
                 Daos.safeClose(pstat);
-            }
         }
 
         // 打印更详细的调试信息
-        if (log.isTraceEnabled()) {
+        if (log.isTraceEnabled())
             log.trace("...DONE");
-        }
     }
 
     private void _runStatement(Connection conn, DaoStatement st) throws SQLException {
@@ -384,14 +361,12 @@ public class NutDaoExecutor implements DaoExecutor {
             statIsClosed = true;
         }
         finally {
-            if (!statIsClosed) {
+            if (!statIsClosed)
                 Daos.safeClose(stat);
-            }
         }
         // 打印更详细的调试信息
-        if (log.isTraceEnabled()) {
+        if (log.isTraceEnabled())
             log.trace("...DONE");
-        }
     }
     
     protected DatabaseMeta meta;
@@ -409,9 +384,8 @@ public class NutDaoExecutor implements DaoExecutor {
     // 写在这里完全是为了兼容老版本的log4j配置
     public static void printSQL(DaoStatement sql) {
         // 打印调试信息
-        if (log.isDebugEnabled()) {
+        if (log.isDebugEnabled())
             log.debug(sql.forPrint());
-        }
     }
     
     static class OutParam implements Serializable {
