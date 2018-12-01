@@ -61,11 +61,9 @@ public class NutFilePool implements FilePool {
     }
 
     public File createFile(String suffix) {
-        if (size > 0 && cursor >= size)
+        if (size > 0 && cursor >= size-1)
             cursor = -1;
         long id = ++cursor;
-        if (size > 0 && id >= size)
-            Lang.makeThrow("Id (%d) is out of range (%d)", id, size);
         File re = Pools.getFileById(home, id, suffix);
         if (!re.exists())
             try {
