@@ -46,7 +46,7 @@ public class NestExps {
 			return inSql(name, value).setNot(op.startsWith("NOT"));
 		} else if ("EXISTS".equals(op) || "NOT EXISTS".equals(op)) {
 			// TODO op为EXITSTS的情况下,name!=null or name.length!=0 是否需要报错?
-			return exusts(value).setNot(op.startsWith("NOT"));
+			return exists(value).setNot(op.startsWith("NOT"));
 		}
 		return otherSymbol(name, op, value);
 	}
