@@ -24,7 +24,7 @@ public class NestExps {
 		return new NestingExpression(name, "IN", value);
 	}
 
-	public static NestingExpression exusts(Nesting value) {
+	public static NestingExpression exists(Nesting value) {
 		return new NestingExpression(null, "EXISTS", value);
 	}
 
@@ -46,7 +46,7 @@ public class NestExps {
 			return inSql(name, value).setNot(op.startsWith("NOT"));
 		} else if ("EXISTS".equals(op) || "NOT EXISTS".equals(op)) {
 			// TODO op为EXITSTS的情况下,name!=null or name.length!=0 是否需要报错?
-			return exusts(value).setNot(op.startsWith("NOT"));
+			return exists(value).setNot(op.startsWith("NOT"));
 		}
 		return otherSymbol(name, op, value);
 	}
