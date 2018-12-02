@@ -24,7 +24,7 @@ public class NestExps {
 		return new NestingExpression(name, "IN", value);
 	}
 
-	public static NestingExpression exusts(Nesting value) {
+	public static NestingExpression exists(Nesting value) {
 		return new NestingExpression(null, "EXISTS", value);
 	}
 
