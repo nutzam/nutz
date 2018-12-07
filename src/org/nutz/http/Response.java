@@ -1,22 +1,14 @@
 package org.nutz.http;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.Writer;
-import java.net.HttpURLConnection;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.Objects;
-
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.nio.charset.Charset;
+import java.util.Map;
 
 public class Response {
     private static final String DEF_PROTOCAL_VERSION = "HTTP/1.1";
@@ -121,7 +113,11 @@ public class Response {
     }
 
 	public Reader getReader(Charset charset) {
-        Objects.requireNonNull(charset);
+
+        if (charset == null) {
+            throw new IllegalArgumentException("charset can not be null");
+        }
+
 
         return getReader(charset.name());
     }
