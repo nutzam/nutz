@@ -1,21 +1,15 @@
 package org.nutz.http;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.Writer;
-import java.net.HttpURLConnection;
-import java.nio.charset.Charset;
-import java.util.Map;
-
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.NutMap;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.nio.charset.Charset;
+import java.util.Map;
 
 public class Response {
     private static final String DEF_PROTOCAL_VERSION = "HTTP/1.1";
@@ -50,14 +44,14 @@ public class Response {
     private Header header;
     private InputStream stream;
     private Cookie cookie;
-    private String protocal = DEF_PROTOCAL_VERSION;
+    private String protocol = DEF_PROTOCAL_VERSION;
     private int status;
     private String detail;
     private String content;
     private String encode;
 
-    public String getProtocal() {
-        return protocal;
+    public String getProtocol() {
+        return protocol;
     }
 
     public int getStatus() {
@@ -135,6 +129,15 @@ public class Response {
         return new InputStreamReader(getStream(), Charset.forName(charsetName));
     }
 
+	public Reader getReader(Charset charset) {
+
+        if (charset == null) {
+            throw new IllegalArgumentException("charset can not be null");
+        }
+
+
+        return getReader(charset.name());
+    }
     public Cookie getCookie() {
         return cookie;
     }
