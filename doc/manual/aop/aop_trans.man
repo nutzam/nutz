@@ -50,10 +50,10 @@
 			fields : {
 				itemList : [
 				    //[类名的正则表达式,方法名的正则表达式,事务拦截器名称] 事务拦截器的名称请看TransAop类
-					["net.wendal.nutzcn.servie..+Service$", "^save.+", "txREAD_COMMITTED"],
-					["net.wendal.nutzcn.servie..+Service$", "^query.+", "txNONE"],
-					["net.wendal.nutzcn.servie..+Service$", "^update.+", "txSERIALIZABLE"],
-					["net.wendal.nutzcn.module..+Module$", ".+", "txREAD_COMMITTED"],
+					["net.wendal.nutzcn.servie..+Service$", "^save.+", "ioc:txREAD_COMMITTED"],
+					["net.wendal.nutzcn.servie..+Service$", "^query.+", "ioc:txNONE"],
+					["net.wendal.nutzcn.servie..+Service$", "^update.+", "ioc:txSERIALIZABLE"],
+					["net.wendal.nutzcn.module..+Module$", ".+", "ioc:txREAD_COMMITTED"],
 				]
 			}
 		}
