@@ -37,14 +37,14 @@ public class Response {
     private Header header;
     private InputStream stream;
     private Cookie cookie;
-    private String protocal = DEF_PROTOCAL_VERSION;
+    private String protocol = DEF_PROTOCAL_VERSION;
     private int status;
     private String detail;
     private String content;
     private String encode;
 
-    public String getProtocal() {
-        return protocal;
+    public String getProtocol() {
+        return protocol;
     }
 
     public int getStatus() {

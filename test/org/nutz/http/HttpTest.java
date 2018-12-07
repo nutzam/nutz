@@ -19,7 +19,7 @@ public class HttpTest {
         assertNotNull(response.getContent());
         assertNotNull(response.getDetail());
         assertNotNull(response.getHeader());
-        assertNotNull(response.getProtocal());
+        assertNotNull(response.getProtocol());
         assertTrue(response.getStatus() > 0);
         assertNotNull(response.getStream());
     }
