@@ -1,25 +1,7 @@
 package org.nutz.ioc.impl;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import org.nutz.castor.Castors;
-import org.nutz.lang.Files;
-import org.nutz.lang.Lang;
-import org.nutz.lang.Mirror;
-import org.nutz.lang.Streams;
-import org.nutz.lang.Strings;
+import org.nutz.lang.*;
 import org.nutz.lang.inject.Injecting;
 import org.nutz.lang.util.Disks;
 import org.nutz.lang.util.FileVisitor;
@@ -29,6 +11,10 @@ import org.nutz.log.Logs;
 import org.nutz.mapl.Mapl;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
+
+import java.io.*;
+import java.lang.management.ManagementFactory;
+import java.util.*;
 
 /**
  * 代理Properties文件,以便直接在Ioc配置文件中使用
@@ -41,7 +27,7 @@ import org.nutz.resource.Scans;
 public class PropertiesProxy extends MultiLineProperties {
 
     private static final Log log = Logs.get();
-
+    private static final String VM_NUTZ_CONF_PATH = "-Dnutz.conf.path=";
     // 是否为UTF8格式的Properties文件
     private final boolean utf8;
     // 是否忽略无法加载的文件
@@ -159,6 +145,16 @@ public class PropertiesProxy extends MultiLineProperties {
      */
     private List<NutResource> getResources(String... paths) {
         List<NutResource> list = new ArrayList<NutResource>();
+        List<String> params = ManagementFactory.getRuntimeMXBean().getInputArguments();
+        String vmPath = "";
+        for (String param : params) {
+            if (param.startsWith(VM_NUTZ_CONF_PATH)) {
+                vmPath = param.replace(VM_NUTZ_CONF_PATH, "").trim();
+            }
+        }
+        if (Strings.isNotBlank(vmPath)) {
+            paths = vmPath.split("\\,");
+        }
         for (String path : paths) {
             try {
                 List<NutResource> resources = Scans.me().loadResource("^.+[.]properties$", path);
