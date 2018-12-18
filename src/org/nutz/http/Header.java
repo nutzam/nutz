@@ -1,29 +1,43 @@
 package org.nutz.http;
 
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
+import org.nutz.lang.util.NutMap;
 
+@SuppressWarnings("unchecked")
 public class Header {
 
-    protected Header() {
-        items = new HashMap<String, String>();
-    }
+    protected NutMap items;
 
-    private Map<String, String> items;
+    protected Header() {
+        items = new NutMap();
+    }
 
     public Collection<String> keys() {
         return items.keySet();
     }
 
+    @SuppressWarnings("rawtypes")
     public String get(String key) {
-        return items.get(key);
+        Object value = items.get(key);
+        if (value == null)
+            return null;
+        if (value instanceof List) {
+            if (((List)value).isEmpty())
+                return null;
+            return (String) ((List)value).get(0);
+        }
+        return (String) value;
     }
 
     public Header set(String key, String value) {
@@ -43,7 +57,13 @@ public class Header {
     }
 
     public Set<Entry<String, String>> getAll() {
-        return items.entrySet();
+        Map<String, String> tmp = new HashMap<String, String>();
+        for (String key : items.keySet()) {
+            String value = get(key);
+            if (value != null)
+                tmp.put(key, value);
+        }
+        return tmp.entrySet();
     }
 
     public Header addAll(Map<String, String> map) {
@@ -60,8 +80,13 @@ public class Header {
     public static Header create(Map<String, String> properties) {
         return new Header().addAll(properties);
     }
+    
+    public static Header create(NutMap reHeader) {
+        Header header = new Header();
+        header.items.putAll(reHeader);
+        return header;
+    }
 
-    @SuppressWarnings("unchecked")
     public static Header create(String properties) {
         return create((Map<String, String>) Json.fromJson(properties));
     }
@@ -106,5 +131,23 @@ public class Header {
             enc = Charset.defaultCharset().name();
         set("Content-Type", "application/x-www-form-urlencoded; charset="+enc.toUpperCase());
         return this;
+    }
+    
+    public void addv(String name, String value) {
+        if (value == null) {
+            items.remove(name);
+        }
+        else {
+            items.addv(name, value);
+        }
+    }
+    
+    public List<String> getValues(String name) {
+        Object value = items.get(name);
+        if (value == null)
+            return Collections.EMPTY_LIST;
+        if (value instanceof String)
+            return Arrays.asList((String)value);
+        return (List<String>)value;
     }
 }

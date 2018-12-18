@@ -909,6 +909,10 @@ public abstract class Jdbcs {
             throw Lang.wrapThrow(e);
         }
     }
+    
+    public static JdbcExpertConfigFile getConf() {
+        return conf;
+    }
 }
 
 class ReadOnceInputStream extends FilterInputStream implements Serializable {

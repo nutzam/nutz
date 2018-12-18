@@ -32,9 +32,15 @@ public class Platoon {
 
     @Column("leader")
     private String leaderName;
+    
+    @Column("leader2")
+    private String leaderName2;
 
     @One(target = Soldier.class, field = "leaderName")
     private Soldier leader;
+    
+    @One(target = Soldier.class, field = "leaderName2")
+    private Soldier leader2;
 
     @Many(target = Soldier.class, field = "")
     private List<Soldier> soliders;
@@ -111,4 +117,19 @@ public class Platoon {
         this.tanks = tanks;
     }
 
+    public void setLeader2(Soldier leader2) {
+        this.leader2 = leader2;
+    }
+    
+    public void setLeaderName2(String leaderName2) {
+        this.leaderName2 = leaderName2;
+    }
+    
+    public Soldier getLeader2() {
+        return leader2;
+    }
+    
+    public String getLeaderName2() {
+        return leaderName2;
+    }
 }

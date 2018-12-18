@@ -12,7 +12,9 @@ import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
@@ -234,7 +236,7 @@ public class Http {
                 req.setData(String.valueOf(body));
             }
         }
-        return Sender.create(req).setTimeout(timeout).send();
+        return Sender.create(req).setTimeout(timeout).setConnTimeout(connTimeout).send();
     }
     
     public static Response upload(String url,
@@ -375,6 +377,12 @@ public class Http {
     }
     
     protected static SSLSocketFactory sslSocketFactory;
+    protected static HostnameVerifier hostnameVerifier;
+    public static HostnameVerifier nopHostnameVerifier = new HostnameVerifier() {
+        public boolean verify(String hostname, SSLSession session) {
+            return true;
+        }
+    };
 
     /**
      * 禁用JVM的https证书验证机制, 例如访问12306, 360 openapi之类的自签名证书
@@ -384,6 +392,7 @@ public class Http {
     public static boolean disableJvmHttpsCheck() {
         try {
             setSSLSocketFactory(nopSSLSocketFactory());
+            hostnameVerifier = nopHostnameVerifier;
         }
         catch (Exception e) {
             return false;
@@ -410,6 +419,10 @@ public class Http {
     
     public static void setSSLSocketFactory(SSLSocketFactory sslSocketFactory) {
         Http.sslSocketFactory = sslSocketFactory;
+    }
+    
+    public static void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
+        Http.hostnameVerifier = hostnameVerifier;
     }
     
     public static HashMap<String, String> DEFAULT_HEADERS = new HashMap<String, String>();

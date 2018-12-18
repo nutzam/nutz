@@ -16,12 +16,12 @@ public class DisksTest {
         assertEquals("B", Disks.getCanonicalPath("A/B/../../B"));
         assertEquals("B/A", Disks.getCanonicalPath("../B/A"));
         assertEquals("B/A", Disks.getCanonicalPath("../../B/A"));
-        
+
         assertEquals("/a/c", Disks.getCanonicalPath("/a/b/../c"));
         assertEquals("/a/b/c", Disks.getCanonicalPath("/a/b/./c"));
         assertEquals("/a/b", Disks.getCanonicalPath("/a/b/c/.."));
         assertEquals("/a/b", Disks.getCanonicalPath("/a/b/c//.."));
-        assertEquals("/a/c", Disks.getCanonicalPath("/a/./c/"));
+        assertEquals("/a/c/", Disks.getCanonicalPath("/a/./c/"));
     }
 
     @Test
@@ -37,18 +37,24 @@ public class DisksTest {
 
         path = Disks.getRelativePath("D:/uu.txt", "D:/abc.gif");
         assertEquals("abc.gif", path);
-        
+
         path = Disks.getRelativePath("/a/b/x.html", "/a/b/f.html");
         assertEquals("f.html", path);
-        
+
         path = Disks.getRelativePath("/a/x.html", "/a/b/f.html");
         assertEquals("b/f.html", path);
-        
+
         path = Disks.getRelativePath("/a/b/", "/a/b/f.html");
         assertEquals("f.html", path);
-        
+
         path = Disks.getRelativePath("/a/b/x.html", "/a/b/f.html");
         assertEquals("f.html", path);
+        
+        path = Disks.getRelativePath("abc.html", "./");
+        assertEquals("./", path);
+        
+        path = Disks.getRelativePath("abc.html", "./", "--");
+        assertEquals("--", path);
     }
 
     @Test
@@ -57,7 +63,7 @@ public class DisksTest {
         File d2 = Files.findFile("org/nutz/json");
 
         String path = Disks.getRelativePath(d1, d2);
-        assertEquals("../json", path);
+        assertEquals("../json/", path);
 
         d1 = Files.findFile("org/nutz/lang");
         d2 = Files.findFile("org/nutz/lang");
@@ -69,13 +75,13 @@ public class DisksTest {
         d2 = Files.findFile("org/nutz/lang/util");
 
         path = Disks.getRelativePath(d1, d2);
-        assertEquals("util", path);
+        assertEquals("util/", path);
 
         d1 = Files.findFile("org/nutz/dao");
         d2 = Files.findFile("org/nutz/lang/util");
 
         path = Disks.getRelativePath(d1, d2);
-        assertEquals("../lang/util", path);
+        assertEquals("../lang/util/", path);
     }
 
 }

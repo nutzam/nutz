@@ -13,8 +13,10 @@ import org.nutz.ioc.ObjectProxy;
 import org.nutz.ioc.impl.NutIoc;
 import org.nutz.ioc.loader.annotation.meta.Issue1060;
 import org.nutz.ioc.loader.annotation.meta.issue1280.Issue1280Bean;
+import org.nutz.ioc.loader.annotation.meta.issue1427.Issue1427Top;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.json.Json;
+import org.nutz.lang.util.NutMap;
 import org.nutz.log.Logs;
 
 public class AnnotationIocLoaderTest {
@@ -65,6 +67,26 @@ public class AnnotationIocLoaderTest {
         assertNotNull(ioc.get(Dao.class));
         assertNotNull(ioc.get(Dao.class, "dao2"));
         assertNotNull(ioc.get(Dao.class, "dao3"));
+        ioc.depose();
+    }
+    
+    @Test
+    public void test_issue_1427() throws ObjectLoadException {
+        AnnotationIocLoader loader = new AnnotationIocLoader(Issue1427Top.class.getPackage().getName());
+        assertTrue(loader.has("issue_1427_mapa"));
+        assertTrue(loader.has("issue_1427_mapb"));
+        assertTrue(loader.has("issue_1427_mapc"));
+        assertTrue(loader.has("issue1427AAA"));
+        assertTrue(loader.has("issue1427BBB"));
+        NutIoc ioc = new NutIoc(loader);
+        assertNotNull(ioc.get(NutMap.class, "issue_1427_mapa"));
+        assertNotNull(ioc.get(NutMap.class, "issue_1427_mapb"));
+        assertNotNull(ioc.get(NutMap.class, "issue_1427_mapc"));
+        assertNotNull(ioc.get(Issue1427Top.class, "issue1427AAA"));
+        assertNotNull(ioc.get(Issue1427Top.class, "issue1427BBB"));
+        assertEquals(ioc.get(Issue1427Top.class, "issue1427AAA"), ioc.get(NutMap.class, "issue_1427_mapa").get("obj"));
+        assertEquals(ioc.get(Issue1427Top.class, "issue1427BBB"), ioc.get(NutMap.class, "issue_1427_mapb").get("obj"));
+        assertEquals(ioc.get(Issue1427Top.class, "issue1427BBB"), ioc.get(NutMap.class, "issue_1427_mapc").get("obj"));
         ioc.depose();
     }
 }

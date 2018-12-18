@@ -26,7 +26,17 @@ public class Number2Enum extends Castor<Number, Enum> {
             }
         }
         catch (Exception e) {}
-
+        // 再试图用采用该类型的 from 的静态方法
+        if (null == o) {
+            try {
+                Method m = toType.getMethod("from", int.class);
+                if (Modifier.isStatic(m.getModifiers())
+                        && toType.isAssignableFrom(m.getReturnType())) {
+                    o = (Enum) m.invoke(null, v);
+                }
+            } catch (Exception e) {
+            }
+        }
         // 搞不定，则试图根据顺序号获取
         if (null == o)
             try {

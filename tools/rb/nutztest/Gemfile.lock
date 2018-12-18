@@ -6,8 +6,8 @@ GEM
     eventmachine (1.2.0.1)
     eventmachine (1.2.0.1-x86-mingw32)
     multi_json (1.12.1)
-    rack (1.6.4)
-    rack-protection (1.5.3)
+    rack (1.6.11)
+    rack-protection (1.5.5)
       rack
     rack-test (0.6.3)
       rack (>= 1.0)

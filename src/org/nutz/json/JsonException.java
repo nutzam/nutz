@@ -11,6 +11,13 @@ public class JsonException extends RuntimeException {
         super(msg);
     }
 
+
+    public JsonException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+
+
     public JsonException(int row, int col, char cursor, String message) {
         super(String.format("!Json syntax error nearby [row:%d,col:%d char '%c'], reason: '%s'",
                             row,

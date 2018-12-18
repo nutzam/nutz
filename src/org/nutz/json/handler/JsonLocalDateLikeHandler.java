@@ -1,6 +1,7 @@
 package org.nutz.json.handler;
 
 import java.io.IOException;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Locale;
@@ -34,7 +35,7 @@ public class JsonLocalDateLikeHandler extends JsonTypeHandler {
             locale = Locale.forLanguageTag(tmp);
         else
             locale = Locale.getDefault();
-        r.string2Json(DateTimeFormatter.ofPattern(df, locale).format((TemporalAccessor) currentObj));
+        r.string2Json(DateTimeFormatter.ofPattern(df, locale).withZone(ZoneId.systemDefault()).format((TemporalAccessor) currentObj));
     }
 
     @Override

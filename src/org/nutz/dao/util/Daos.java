@@ -732,7 +732,7 @@ public abstract class Daos {
                                  final boolean del,
                                  final boolean checkIndex,
                                  final Object tableName) {
-        migration(dao, dao.getEntity(klass), add, del, false, tableName);
+        migration(dao, dao.getEntity(klass), add, del, checkIndex, tableName);
     }
     public static void migration(Dao dao,
                                  final Entity<?> en,

@@ -456,6 +456,14 @@ public class Castors {
         defaultCastorList.add(org.nutz.castor.castor.Timestamp2SqlTime.class);
         defaultCastorList.add(org.nutz.castor.castor.Timestamp2String.class);
         defaultCastorList.add(org.nutz.castor.castor.String2DateFormat.class);
+
+        defaultCastorList.add(org.nutz.castor.castor.String2TmInfo.class);
+        defaultCastorList.add(org.nutz.castor.castor.Integer2TmInfo.class);
+        defaultCastorList.add(org.nutz.castor.castor.Long2TmInfo.class);
+        defaultCastorList.add(org.nutz.castor.castor.TmInfo2String.class);
+        defaultCastorList.add(org.nutz.castor.castor.TmInfo2Long.class);
+        defaultCastorList.add(org.nutz.castor.castor.TmInfo2Integer.class);
+
         if (NutConf.HAS_LOCAL_DATE_TIME) {
             defaultCastorList.add(org.nutz.castor.castor.String2LocalDateTime.class);
             defaultCastorList.add(org.nutz.castor.castor.String2LocalTime.class);

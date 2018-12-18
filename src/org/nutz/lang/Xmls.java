@@ -48,7 +48,40 @@ public abstract class Xmls {
      * @throws ParserConfigurationException
      */
     public static DocumentBuilder xmls() throws ParserConfigurationException {
-        return DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        String FEATURE = null;
+        
+        // This is the PRIMARY defense. If DTDs (doctypes) are disallowed, almost all XML entity attacks are prevented
+        // Xerces 2 only - http://xerces.apache.org/xerces2-j/features.html#disallow-doctype-decl
+
+        FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
+        dbf.setFeature(FEATURE, true);
+
+        // If you can't completely disable DTDs, then at least do the following:
+        // Xerces 1 - http://xerces.apache.org/xerces-j/features.html#external-general-entities
+
+        // Xerces 2 - http://xerces.apache.org/xerces2-j/features.html#external-general-entities
+
+        // JDK7+ - http://xml.org/sax/features/external-general-entities 
+        FEATURE = "http://xml.org/sax/features/external-general-entities";
+        dbf.setFeature(FEATURE, false);
+
+        // Xerces 1 - http://xerces.apache.org/xerces-j/features.html#external-parameter-entities
+
+        // Xerces 2 - http://xerces.apache.org/xerces2-j/features.html#external-parameter-entities
+
+        // JDK7+ - http://xml.org/sax/features/external-parameter-entities 
+        FEATURE = "http://xml.org/sax/features/external-parameter-entities";
+        dbf.setFeature(FEATURE, false);
+
+        // Disable external DTDs as well
+        FEATURE = "http://apache.org/xml/features/nonvalidating/load-external-dtd";
+        dbf.setFeature(FEATURE, false);
+
+        // and these as well, per Timothy Morgan's 2014 paper: "XML Schema, DTD, and Entity Attacks"
+        dbf.setXIncludeAware(false);
+        dbf.setExpandEntityReferences(false);
+        return dbf.newDocumentBuilder();
     }
     
     public static Document xml(InputStream ins) {
@@ -498,13 +531,19 @@ public abstract class Xmls {
     }
     public static NutMap asMap(Element ele, final XmlParserOpts opts) {
         final NutMap map = new NutMap();
+        if (opts.isAttrAsKeyValue()) {
+            NamedNodeMap attrs = ele.getAttributes();
+            for (int i = 0; i < attrs.getLength(); i++) {
+                map.put(attrs.item(i).getNodeName(), attrs.item(i).getNodeValue());
+            }
+        }
         eachChildren(ele, new Each<Element>() {
             public void invoke(int index, Element _ele, int length)
                     throws ExitLoop, ContinueLoop, LoopException {
                 String key = _ele.getNodeName();
                 if (opts.lowerFirst)
                     key = Strings.lowerFirst(key);
-                Map<String, Object> tmp = asMap(_ele, opts.lowerFirst, opts.dupAsList, opts.alwaysAsList);
+                Map<String, Object> tmp = asMap(_ele, opts);
                 if (!tmp.isEmpty()) {
                     if (opts.alwaysAsList != null && opts.alwaysAsList.contains(key)) {
                         map.addv2(key, tmp);
@@ -520,7 +559,7 @@ public abstract class Xmls {
                 String val = getText(_ele);
                 if (opts.keeyBlankNode || !Strings.isBlank(val)) {
                     if (opts.alwaysAsList != null && opts.alwaysAsList.contains(key)) {
-                        map.addv2(key, map);
+                        map.addv2(key, val);
                     }
                     else if (opts.dupAsList)
                         map.addv(key, val);
@@ -654,6 +693,7 @@ public abstract class Xmls {
         private boolean dupAsList;
         private List<String> alwaysAsList;
         private boolean keeyBlankNode;
+        private boolean attrAsKeyValue;
         public XmlParserOpts() {
         }
         
@@ -691,5 +731,16 @@ public abstract class Xmls {
         public void setKeeyBlankNode(boolean keeyBlankNode) {
             this.keeyBlankNode = keeyBlankNode;
         }
+
+
+        public boolean isAttrAsKeyValue() {
+            return attrAsKeyValue;
+        }
+
+
+        public void setAttrAsKeyValue(boolean attrAsKeyValue) {
+            this.attrAsKeyValue = attrAsKeyValue;
+        }
+        
     }
 }

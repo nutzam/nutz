@@ -9,10 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.Socket;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,13 +18,16 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
 import org.nutz.http.sender.DefaultSenderFactory;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Strings;
 import org.nutz.lang.stream.VoidInputStream;
 import org.nutz.lang.util.Callback;
+import org.nutz.lang.util.NutMap;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -79,6 +79,8 @@ public abstract class Sender implements Callable<Response> {
     protected boolean followRedirects = true;
 
     protected SSLSocketFactory sslSocketFactory;
+    
+    protected HostnameVerifier hostnameVerifier;
 
     protected Proxy proxy;
 
@@ -90,7 +92,7 @@ public abstract class Sender implements Callable<Response> {
 
     public abstract Response send() throws HttpException;
 
-    protected Response createResponse(Map<String, String> reHeaders) throws IOException {
+    protected Response createResponse(NutMap reHeaders) throws IOException {
         Response rep = null;
         if (reHeaders != null) {
             rep = new Response(conn, reHeaders);
@@ -134,16 +136,13 @@ public abstract class Sender implements Callable<Response> {
         }
     }
 
-    protected Map<String, String> getResponseHeader() throws IOException {
-        if (conn.getResponseCode() < 0)
+    protected NutMap getResponseHeader() throws IOException {
+        if (conn.getResponseCode() < 0) {
             throw new IOException("Network error!! resp code=" + conn.getResponseCode());
-        Map<String, String> reHeaders = new HashMap<String, String>();
-        for (Entry<String, List<String>> en : conn.getHeaderFields().entrySet()) {
-            List<String> val = en.getValue();
-            if (null != val && val.size() > 0)
-                reHeaders.put(en.getKey(), en.getValue().get(0));
         }
-        return reHeaders;
+        NutMap re = new NutMap();
+        re.putAll(conn.getHeaderFields());
+        return re;
     }
 
     protected void setupDoInputOutputFlag() {
@@ -196,10 +195,15 @@ public abstract class Sender implements Callable<Response> {
         String host = url.getHost();
         conn = (HttpURLConnection) url.openConnection();
         if (conn instanceof HttpsURLConnection) {
+            HttpsURLConnection httpsc = (HttpsURLConnection)conn;
             if (sslSocketFactory != null)
-                ((HttpsURLConnection) conn).setSSLSocketFactory(sslSocketFactory);
+                httpsc.setSSLSocketFactory(sslSocketFactory);
             else if (Http.sslSocketFactory != null)
-                ((HttpsURLConnection) conn).setSSLSocketFactory(Http.sslSocketFactory);
+                httpsc.setSSLSocketFactory(Http.sslSocketFactory);
+            if (hostnameVerifier != null)
+                httpsc.setHostnameVerifier(hostnameVerifier);
+            else if (Http.hostnameVerifier != null)
+                httpsc.setHostnameVerifier(Http.hostnameVerifier);
         }
         if (!Lang.isIPv4Address(host)) {
             if (url.getPort() > 0 && url.getPort() != 80)
@@ -222,9 +226,16 @@ public abstract class Sender implements Callable<Response> {
 
     protected void setupRequestHeader() {
         Header header = request.getHeader();
-        if (null != header)
-            for (Entry<String, String> entry : header.getAll())
-                conn.addRequestProperty(entry.getKey(), entry.getValue());
+        if (null != header) {
+            for (String name : header.keys()) {
+                List<String> values = header.getValues(name);
+                for (String value : values) {
+                    if (Strings.isBlank(value))
+                        continue;
+                    conn.addRequestProperty(name, value);
+                }
+            }
+        }
     }
 
     public Sender setTimeout(int timeout) {
@@ -335,5 +346,9 @@ public abstract class Sender implements Callable<Response> {
 
     public static void setFactory(SenderFactory factory) {
         Sender.factory = factory;
+    }
+    
+    public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
+        this.hostnameVerifier = hostnameVerifier;
     }
 }

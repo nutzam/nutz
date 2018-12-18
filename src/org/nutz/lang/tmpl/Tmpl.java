@@ -22,7 +22,7 @@ import org.nutz.lang.util.NutMap;
  * <li><b>double</b>: %f 格式化字符串
  * <li><b>boolean</b>: 否/是 格式化字符串
  * <li><b>date</b> : yyyyMMdd 格式化字符串
- * <li><b>string</b>: %s 格式化字符串
+ * <li><b>string</b>: %s 格式化字符串。或者 (string::A=Apple,B=Banana,C=Cherry) 表映射数据
  * <li><b>json<b> : cqn 输出一段 JSON 文本,c紧凑，q输出引号,n忽略null
  * </ul>
  * <p/>
@@ -51,10 +51,14 @@ public class Tmpl {
      * @see #parse(String, Pattern, int, int)
      */
     public static Tmpl parse(String tmpl) {
+        if (null == tmpl)
+            return null;
         return new Tmpl(tmpl, null, -1, -1, null);
     }
 
     public static Tmpl parsef(String fmt, Object... args) {
+        if (null == fmt)
+            return null;
         return new Tmpl(String.format(fmt, args), null, -1, -1, null);
     }
 
@@ -83,6 +87,8 @@ public class Tmpl {
                              int groupIndex,
                              int escapeIndex,
                              TmplEscapeStr getEscapeStr) {
+        if (null == tmpl)
+            return null;
         return new Tmpl(tmpl, ptn, groupIndex, escapeIndex, getEscapeStr);
     }
 
@@ -103,6 +109,8 @@ public class Tmpl {
                              final String startChar,
                              String leftBrace,
                              String rightBrace) {
+        if (null == tmpl)
+            return null;
         String regex = "((?<!["
                        + startChar
                        + "])["

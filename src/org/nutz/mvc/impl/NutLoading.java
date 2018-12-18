@@ -276,7 +276,7 @@ public class NutLoading implements Loading {
             Setup setup = Loadings.evalObj(config, sb.value(), sb.args());
             config.setAttributeIgnoreNull(Setup.class.getName(), setup);
             setup.init(config);
-        } else if (config.getIoc() != null && config.getIoc().has(Setup.IOCNAME)) {
+        } else if (config.getIoc() != null) {
             String[] names = config.getIoc().getNames();
             Arrays.sort(names);
             boolean flag = true;
@@ -287,8 +287,8 @@ public class NutLoading implements Loading {
                         if (log.isInfoEnabled())
                             log.info("Setup application...");
                     }
-                    log.debug("load Setup from Ioc by name=" + Setup.IOCNAME);
-                    Setup setup = config.getIoc().get(Setup.class, Setup.IOCNAME);
+                    log.debug("load Setup from Ioc by name=" + name);
+                    Setup setup = config.getIoc().get(Setup.class, name);
                     config.setAttributeIgnoreNull(Setup.class.getName(), setup);
                     setup.init(config);
                 }

@@ -93,6 +93,8 @@ import org.nutz.dao.test.meta.issue726.Issue726;
 import org.nutz.dao.test.meta.issue901.XPlace;
 import org.nutz.dao.test.meta.issue918.Region;
 import org.nutz.dao.test.meta.issue928.BeanWithSet;
+import org.nutz.dao.test.meta.issueXXX.IotObject;
+import org.nutz.dao.test.meta.issueXXX.IotProductStatus;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.blob.SimpleBlob;
 import org.nutz.dao.util.blob.SimpleClob;
@@ -469,7 +471,8 @@ public class SimpleDaoTest extends DaoCase {
         assertEquals(9090, pet.getId());
     }
 
-    @Test
+    @SuppressWarnings("resource")
+	@Test
     public void test_use_blob_clob() throws FileNotFoundException, IOException, SQLException {
         dao.create(UseBlobClob.class, true);
         UseBlobClob use = new UseBlobClob();
@@ -936,9 +939,12 @@ public class SimpleDaoTest extends DaoCase {
         platoon.setLeader(soldier);
         platoon1.setLeader(soldier1);
         platoon2.setLeader(soldier2);
-        dao.insertWith(platoon, null);
-        dao.insertWith(platoon1, null);
-        dao.insertWith(platoon2, null);
+        platoon.setLeader2(soldier);
+        platoon1.setLeader2(soldier1);
+        platoon2.setLeader2(soldier2);
+        dao.insertWith(platoon, "^(base|leader)$");
+        dao.insertWith(platoon1, "^(base|leader)$");
+        dao.insertWith(platoon2, "^(base|leader)$");
 
         // =======================================
         // 用条件查
@@ -950,6 +956,7 @@ public class SimpleDaoTest extends DaoCase {
         assertEquals("wendal", platoon.getName());
 
         assertNotNull(platoon.getLeader());
+        System.out.println(Json.toJson(platoon.getLeader()));
         assertEquals("stone", platoon.getLeader().getName());
 
         assertNotNull(platoon.getBase());
@@ -1341,5 +1348,21 @@ public class SimpleDaoTest extends DaoCase {
         Pet zozoh = dao.fetch(Pet.class, "zozoh");
         assertEquals(null, zozoh.getNickName());
         assertEquals(30, zozoh.getAge());
+    }
+    
+    @Test
+    public void test_wizzer() {
+        dao.create(IotObject.class, true);
+        
+        IotObject a = new IotObject();
+        a.setStat(IotProductStatus.DEVELOP);
+        dao.insert(a);
+        a = dao.fetch(IotObject.class, a.getId());
+        assertNotNull(a);
+        assertEquals(IotProductStatus.DEVELOP, a.getStat());
+        System.out.println(a.getStat().value());
+        for (IotProductStatus stat : IotProductStatus.values()) {
+            System.out.println("-->"+stat.value());
+        }
     }
 }

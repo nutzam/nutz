@@ -12,6 +12,13 @@ import org.nutz.lang.util.NutMap;
 public class TmplTest {
 
     @Test
+    public void test_string_mapping() {
+        NutMap context = Lang.map("fruit:'A'");
+        assertEquals("Apple", Tmpl.exec("${fruit(::A=Apple,B=Banana,C=Cherry)}", context, true));
+        assertEquals("Apple", Tmpl.exec("${fruit<::A=Apple,B=Banana,C=Cherry>}", context, true));
+    }
+
+    @Test
     public void test_customized_a() {
         assertEquals("A100C", Tmpl.exec("A@<b(int)?89>C", "@", "<", ">", Lang.map("b:100"), true));
         assertEquals("A100C", Tmpl.exec("A@{b(int)?89}C", "@", Lang.map("b:100"), true));
