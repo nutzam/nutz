@@ -18,6 +18,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
@@ -78,6 +79,8 @@ public abstract class Sender implements Callable<Response> {
     protected boolean followRedirects = true;
 
     protected SSLSocketFactory sslSocketFactory;
+    
+    protected HostnameVerifier hostnameVerifier;
 
     protected Proxy proxy;
 
@@ -192,10 +195,15 @@ public abstract class Sender implements Callable<Response> {
         String host = url.getHost();
         conn = (HttpURLConnection) url.openConnection();
         if (conn instanceof HttpsURLConnection) {
+            HttpsURLConnection httpsc = (HttpsURLConnection)conn;
             if (sslSocketFactory != null)
-                ((HttpsURLConnection) conn).setSSLSocketFactory(sslSocketFactory);
+                httpsc.setSSLSocketFactory(sslSocketFactory);
             else if (Http.sslSocketFactory != null)
-                ((HttpsURLConnection) conn).setSSLSocketFactory(Http.sslSocketFactory);
+                httpsc.setSSLSocketFactory(Http.sslSocketFactory);
+            if (hostnameVerifier != null)
+                httpsc.setHostnameVerifier(hostnameVerifier);
+            else if (Http.hostnameVerifier != null)
+                httpsc.setHostnameVerifier(Http.hostnameVerifier);
         }
         if (!Lang.isIPv4Address(host)) {
             if (url.getPort() > 0 && url.getPort() != 80)
@@ -338,5 +346,9 @@ public abstract class Sender implements Callable<Response> {
 
     public static void setFactory(SenderFactory factory) {
         Sender.factory = factory;
+    }
+    
+    public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
+        this.hostnameVerifier = hostnameVerifier;
     }
 }
