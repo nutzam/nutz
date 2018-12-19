@@ -190,4 +190,6 @@ public class NutConf {
             return defaultValue;
         return re;
     }
+
+    public static boolean SQLSERVER_USE_NVARCHAR = true;
 }
