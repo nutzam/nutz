@@ -13,21 +13,20 @@ import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
 
 import java.io.*;
-import java.lang.management.ManagementFactory;
 import java.util.*;
 
 /**
  * 代理Properties文件,以便直接在Ioc配置文件中使用
- * 
+ *
  * @author wendal(wendal1985@gmail.com)
  * @author zozoh(zozohtnt@gmail.com)
- * 
+ *
  * @since 1.b.37
  */
 public class PropertiesProxy extends MultiLineProperties {
 
     private static final Log log = Logs.get();
-    private static final String VM_NUTZ_CONF_PATH = "-Dnutz.conf.path=";
+    private static final String VM_NUTZ_CONF_PATH = "nutz.conf.path.";
     // 是否为UTF8格式的Properties文件
     private final boolean utf8;
     // 是否忽略无法加载的文件
@@ -36,7 +35,9 @@ public class PropertiesProxy extends MultiLineProperties {
     public PropertiesProxy() {
         this(true);
     }
-    
+
+    private Integer keyIndex;
+
     public PropertiesProxy(boolean utf8, String... paths) {
         this(utf8);
         this.setPaths(paths);
@@ -82,11 +83,16 @@ public class PropertiesProxy extends MultiLineProperties {
         }
     }
 
+    public void setKeyIndex(Integer keyIndex) {
+        this.keyIndex = keyIndex;
+    }
+
     /**
      * 加载指定文件/文件夹的Properties文件,合并成一个Properties对象
      * <p>
      * <b style=color:red>如果有重复的key,请务必注意加载的顺序!!<b/>
-     * 
+     *
+     *
      * @param paths
      *            需要加载的Properties文件路径
      */
@@ -138,22 +144,29 @@ public class PropertiesProxy extends MultiLineProperties {
 
     /**
      * 加载指定文件/文件夹的Properties文件
-     * 
+     *
      * @param paths
      *            需要加载的Properties文件路径
      * @return 加载到的Properties文件Resource列表
      */
     private List<NutResource> getResources(String... paths) {
         List<NutResource> list = new ArrayList<NutResource>();
-        List<String> params = ManagementFactory.getRuntimeMXBean().getInputArguments();
-        String vmPath = "";
-        for (String param : params) {
-            if (param.startsWith(VM_NUTZ_CONF_PATH)) {
-                vmPath = param.replace(VM_NUTZ_CONF_PATH, "").trim();
+        if (null != keyIndex) {
+            try {
+                String vmJsonStr = "";
+                Properties p = System.getProperties();
+                for (Object key : p.keySet()) {
+                    if (((String) key).startsWith(VM_NUTZ_CONF_PATH + keyIndex))
+                        vmJsonStr = p.getProperty((String) key).trim();
+                }
+                if (Strings.isNotBlank(vmJsonStr)) {
+                    paths = vmJsonStr.split("\\,");
+                }
+            } catch (Exception e) {
+                if (log.isDebugEnabled()) {
+                    log.debug("-D" + VM_NUTZ_CONF_PATH + keyIndex + " value is invalid:  " + e.getMessage());
+                }
             }
-        }
-        if (Strings.isNotBlank(vmPath)) {
-            paths = vmPath.split("\\,");
         }
         for (String path : paths) {
             try {
@@ -229,7 +242,7 @@ public class PropertiesProxy extends MultiLineProperties {
         }
         return re;
     }
-    
+
     public String trim(String key) {
         return Strings.trim(get(key));
     }
@@ -290,7 +303,7 @@ public class PropertiesProxy extends MultiLineProperties {
      * 根据自身的一个键对应的值扩展自身的属性。
      * <p>
      * 本函数假设你可能有下面的键值:
-     * 
+     *
      * <pre>
      * ...
      * files:
@@ -298,12 +311,12 @@ public class PropertiesProxy extends MultiLineProperties {
      * path/to_b.properties
      * #End files
      * </pre>
-     * 
+     *
      * 那么如果你调用 <code>joinByKey("files");</code> <br>
      * 则会将其值的两个属性文件展开，加入到自身。
      * <p>
      * 属性文件的路径可以是磁盘全路径，或者在 CLASSPATH 里的路径
-     * 
+     *
      * @param key
      *            键
      * @return 自身
@@ -343,7 +356,7 @@ public class PropertiesProxy extends MultiLineProperties {
 
     /**
      * 将另外一个 Properties 文本加入本散列表
-     * 
+     *
      * @param r
      *            文本输入流
      * @return 自身
@@ -366,7 +379,7 @@ public class PropertiesProxy extends MultiLineProperties {
     public Map<String, String> toMap() {
         return new LinkedHashMap<String, String>(this);
     }
-    
+
     public String get(String key) {
         return super.get(key);
     }
