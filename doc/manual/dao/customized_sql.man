@@ -88,6 +88,7 @@ Sql 对象 -- org.nutz.dao.sql.Sql
 				}}}
 			 * 在执行 SQL 前，该占位符会被字符 "{#F0F;*?}" 替换，用来创建 PreparedStatement
 			 * Nutz.Dao 会自动计算 PreparedStatement的索引值
+	     * 从1.r.67的2018-12-23号起的快照版,支持带定界符的`${abc}` 和 `@{abc}` 形式
 		
 		所有的占位符可以同样的名称出现的多个地方。并且变量占位符和参数占位符的名称不互相干扰，比如:
 		{{{<JAVA>
