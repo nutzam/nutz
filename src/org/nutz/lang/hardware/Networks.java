@@ -22,7 +22,7 @@ public class Networks {
     private static Map<NetworkType, String> ntMap = new HashMap<NetworkType, String>();
 
     static {
-        ntMap.put(NetworkType.LAN, "eth, en");
+        ntMap.put(NetworkType.LAN, "eth, en, em");
         ntMap.put(NetworkType.WIFI, "wlan");
         ntMap.put(NetworkType.ThreeG, "ppp");
         ntMap.put(NetworkType.VPN, "tun");
