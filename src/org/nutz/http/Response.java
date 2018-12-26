@@ -53,6 +53,11 @@ public class Response {
     public String getProtocol() {
         return protocol;
     }
+    
+    @Deprecated
+    public String getProtocal() {
+        return protocol;
+    }
 
     public int getStatus() {
         return status;
