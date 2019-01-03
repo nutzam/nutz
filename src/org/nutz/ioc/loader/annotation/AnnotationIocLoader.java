@@ -133,9 +133,16 @@ public class AnnotationIocLoader implements IocLoader {
                 iocField.setName(field.getName());
                 IocValue iocValue;
                 if (Strings.isBlank(inject.value())) {
-                    iocValue = new IocValue();
-                    iocValue.setType(IocValue.TYPE_REFER_TYPE);
-                    iocValue.setValue(field);
+                    if (field.getName().equals("ioc")) {
+                        iocValue = new IocValue();
+                        iocValue.setType(IocValue.TYPE_REFER);
+                        iocValue.setValue("$ioc");
+                    }
+                    else {
+                        iocValue = new IocValue();
+                        iocValue.setType(IocValue.TYPE_REFER_TYPE);
+                        iocValue.setValue(field);
+                    }
                 } else
                     iocValue = Iocs.convert(inject.value(), true);
                 iocField.setValue(iocValue);
