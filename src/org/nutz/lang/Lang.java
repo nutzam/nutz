@@ -216,6 +216,21 @@ public abstract class Lang {
         return e;
     }
 
+    /**
+     * 将传入的异常直接抛出
+     *
+     * @param e
+     *              被抛出的异常
+     * @param <T>
+     *              异常的类型，其实主要是为了绕过 Java 不允许抛 Exception 的检查
+     * @return      永远不会返回任何东西，返回值只是为了方便在必须有返回值的方法中 throw 出去来通过语法检查的。
+     * @throws T 直接抛出传入的异常
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Throwable> RuntimeException throwAny(Throwable e) throws T {
+        throw (T) e;
+    }
+
     public static boolean isCauseBy(Throwable e, Class<? extends Throwable> causeType) {
         if (e.getClass() == causeType)
             return true;
@@ -2789,7 +2804,7 @@ public abstract class Lang {
             return null;
         }
     }
-    
+
     public static class JdkTool {
         public static String getVersionLong() {
             Properties sys = System.getProperties();
@@ -2813,7 +2828,7 @@ public abstract class Lang {
                 return false;
             return ver.contains("-ea");
         }
-        
+
         /**
          * 获取进程id
          * @param fallback 如果获取失败,返回什么呢?
@@ -2833,7 +2848,7 @@ public abstract class Lang {
             return fallback;
         }
     }
-    
+
     /**
      * 判断一个对象是否不为空。它支持如下对象类型：
      * <ul>
