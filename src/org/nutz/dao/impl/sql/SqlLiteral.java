@@ -146,6 +146,16 @@ public class SqlLiteral implements Cloneable, Serializable {
     }
 
     private static int readTokenName(char[] cs, int i, StringBuilder sb) {
+        // 自定义SQL 支持 ${abc} @{abc} 这种形式
+        if (cs[i+1] == '{') {
+            for (i+=2; i < cs.length; i++) {
+                if (cs[i] == '}')
+                    return i;
+                else
+                    sb.append(cs[i]);
+            }
+            return i;
+        }
         for (++i; i < cs.length; i++) {
             int b = (int) cs[i];
             // Special case for underline ('_')
@@ -154,7 +164,7 @@ public class SqlLiteral implements Cloneable, Serializable {
             }
             // 遇到了 '$'
             else if (b == 36) {
-                return i;
+                return i; // 事实上这里是BUG, 应该返回i-1, 应不应该fix呢?
             }
             // 正常的不可忽略的字符
             else if ((b >= 0 && b <= 47)

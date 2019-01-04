@@ -531,13 +531,19 @@ public abstract class Xmls {
     }
     public static NutMap asMap(Element ele, final XmlParserOpts opts) {
         final NutMap map = new NutMap();
+        if (opts.isAttrAsKeyValue()) {
+            NamedNodeMap attrs = ele.getAttributes();
+            for (int i = 0; i < attrs.getLength(); i++) {
+                map.put(attrs.item(i).getNodeName(), attrs.item(i).getNodeValue());
+            }
+        }
         eachChildren(ele, new Each<Element>() {
             public void invoke(int index, Element _ele, int length)
                     throws ExitLoop, ContinueLoop, LoopException {
                 String key = _ele.getNodeName();
                 if (opts.lowerFirst)
                     key = Strings.lowerFirst(key);
-                Map<String, Object> tmp = asMap(_ele, opts.lowerFirst, opts.dupAsList, opts.alwaysAsList);
+                Map<String, Object> tmp = asMap(_ele, opts);
                 if (!tmp.isEmpty()) {
                     if (opts.alwaysAsList != null && opts.alwaysAsList.contains(key)) {
                         map.addv2(key, tmp);
@@ -553,7 +559,7 @@ public abstract class Xmls {
                 String val = getText(_ele);
                 if (opts.keeyBlankNode || !Strings.isBlank(val)) {
                     if (opts.alwaysAsList != null && opts.alwaysAsList.contains(key)) {
-                        map.addv2(key, map);
+                        map.addv2(key, val);
                     }
                     else if (opts.dupAsList)
                         map.addv(key, val);
@@ -687,6 +693,7 @@ public abstract class Xmls {
         private boolean dupAsList;
         private List<String> alwaysAsList;
         private boolean keeyBlankNode;
+        private boolean attrAsKeyValue;
         public XmlParserOpts() {
         }
         
@@ -724,5 +731,16 @@ public abstract class Xmls {
         public void setKeeyBlankNode(boolean keeyBlankNode) {
             this.keeyBlankNode = keeyBlankNode;
         }
+
+
+        public boolean isAttrAsKeyValue() {
+            return attrAsKeyValue;
+        }
+
+
+        public void setAttrAsKeyValue(boolean attrAsKeyValue) {
+            this.attrAsKeyValue = attrAsKeyValue;
+        }
+        
     }
 }

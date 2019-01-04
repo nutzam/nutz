@@ -22,7 +22,7 @@ public class Networks {
     private static Map<NetworkType, String> ntMap = new HashMap<NetworkType, String>();
 
     static {
-        ntMap.put(NetworkType.LAN, "eth, en");
+        ntMap.put(NetworkType.LAN, "eth, en, em");
         ntMap.put(NetworkType.WIFI, "wlan");
         ntMap.put(NetworkType.ThreeG, "ppp");
         ntMap.put(NetworkType.VPN, "tun");
@@ -123,10 +123,16 @@ public class Networks {
      * @return 返回当前第一个可用的MAC地址
      */
     public static String mac() {
-        NetworkItem networkItem = firstNetwokrItem();
-        if (networkItem == null)
-            return null;
-        return networkItem.getMac();
+        String mac = mac(NetworkType.LAN);
+        if (mac != null)
+            return mac;
+        mac = mac(NetworkType.WIFI);
+        if (mac != null)
+            return mac;
+        NetworkItem network = firstNetwokrItem();
+        if (network != null)
+            return network.getMac();
+        return null;
     }
 
     /**

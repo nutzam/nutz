@@ -30,7 +30,7 @@ public class PojoQueryEntityByJoinCallback implements PojoCallback {
                 pojo.getEntity().visitOne(mainObject, regex, new LinkVisitor() {
                     public void visit(Object obj, LinkField lnk) {
                         Entity<?> en  = lnk.getLinkedEntity();
-                        String prefix = en.getTableName() + "_z_";
+                        String prefix = lnk.getName() + "_z_";
                         Object linkObject = en.getObject(rs, FieldFilter.get(en.getType()), prefix);
                         lnk.setValue(mainObject, linkObject);
                     }

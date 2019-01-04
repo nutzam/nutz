@@ -24,8 +24,8 @@ public class NestExps {
 		return new NestingExpression(name, "IN", value);
 	}
 
-	public static NestingExpression exitsts(Nesting value) {
-		return new NestingExpression(null, "EXITSTS", value);
+	public static NestingExpression exists(Nesting value) {
+		return new NestingExpression(null, "EXISTS", value);
 	}
 
 	public static NestingExpression otherSymbol(String name, String op, Nesting value) {
@@ -44,9 +44,9 @@ public class NestExps {
 			return notEq(name, value);
 		} else if ("IN".equals(op) || "NOT IN".equals(op)) {
 			return inSql(name, value).setNot(op.startsWith("NOT"));
-		} else if ("EXITSTS".equals(op) || "NOT EXITSTS".equals(op)) {
+		} else if ("EXISTS".equals(op) || "NOT EXISTS".equals(op)) {
 			// TODO op为EXITSTS的情况下,name!=null or name.length!=0 是否需要报错?
-			return exitsts(value).setNot(op.startsWith("NOT"));
+			return exists(value).setNot(op.startsWith("NOT"));
 		}
 		return otherSymbol(name, op, value);
 	}

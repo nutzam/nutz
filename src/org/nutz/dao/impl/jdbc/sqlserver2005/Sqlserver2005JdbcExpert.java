@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.nutz.conf.NutConf;
 import org.nutz.dao.DB;
 import org.nutz.dao.Dao;
 import org.nutz.dao.Sqls;
@@ -143,6 +144,10 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
             if (mf.getTypeMirror().isDouble())
                 return "decimal(15,10)";
             return "float";
+        case VARCHAR:
+            if (NutConf.SQLSERVER_USE_NVARCHAR)
+                return "NVARCHAR(" + mf.getWidth() + ")";
+            return "VARCHAR(" + mf.getWidth() + ")";
         case BINARY:
             return "varbinary(max)";
         //case TEXT :
@@ -150,6 +155,7 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
         default :
             break;
         }
+        
         return super.evalFieldType(mf);
     }
 

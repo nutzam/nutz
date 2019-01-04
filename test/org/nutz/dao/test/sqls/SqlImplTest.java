@@ -29,4 +29,13 @@ public class SqlImplTest {
         assertTrue(re == list);
     }
 
+    // https://nutz.cn/yvr/t/2emsd1ma36g99rmnqtq6o87skj
+    @Test
+    public void test_sql_with_many_vars() {
+        String str = Sqls.create("${a}${b}").setVar("a", 1).setVar("b", 2).toString();
+        assertEquals(str, "12");
+        
+        str = Sqls.create("${a}_${b}").setVar("a", 1).setVar("b", 2).toString();
+        assertEquals(str, "1_2");
+    }
 }

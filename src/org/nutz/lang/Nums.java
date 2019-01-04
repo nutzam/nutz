@@ -13,6 +13,79 @@ import org.nutz.lang.util.Regex;
 public abstract class Nums {
 
     /**
+     * @param a
+     *            数字
+     * @param b
+     *            数字
+     * @return 两个数的最大公约数 <code>greatest common divisor(gcd)</code>
+     */
+    public static int gcd(int a, int b) {
+        a = Math.round(a);
+        b = Math.round(b);
+        if (b != 0) {
+            return gcd(b, a % b);
+        }
+        return a;
+    }
+
+    /**
+     * @param list
+     *            一组整数
+     * @return 一组整数的最大公约数 <code>greatest common divisor(gcd)</code>
+     */
+    public static int gcds(int... list) {
+        // 没数
+        if (list.length == 0)
+            return Integer.MIN_VALUE;
+        // 一个是自己
+        if (list.length == 1) {
+            return list[0];
+        }
+        // 两个以上
+        int gcd = gcd(list[0], list[1]);
+        for (int i = 2; i < list.length; i++) {
+            gcd = gcd(gcd, list[i]);
+        }
+        // 返回
+        return gcd;
+    }
+
+    /**
+     * @param a
+     *            数字
+     * @param b
+     *            数字
+     * @return 两个数的最小公倍数 <code>lowest common multiple (LCM)</code>
+     */
+    public static int lcm(int a, int b) {
+        a = Math.round(a);
+        b = Math.round(b);
+        return a * b / gcd(a, b);
+    }
+
+    /**
+     * @param list
+     *            一组整数
+     * @return 一组整数的最小公倍数 <code>lowest common multiple (LCM)</code>
+     */
+    public static int lcms(int... list) {
+        // 没数
+        if (list.length == 0)
+            return Integer.MAX_VALUE;
+        // 一个是自己
+        if (list.length == 1) {
+            return list[0];
+        }
+        // 两个以上
+        int lcm = lcm(list[0], list[1]);
+        for (int i = 2; i < list.length; i++) {
+            lcm = lcm(lcm, list[i]);
+        }
+        // 返回
+        return lcm;
+    }
+
+    /**
      * 计算尺寸
      * 
      * @param v

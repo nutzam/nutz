@@ -15,6 +15,7 @@ import org.nutz.lang.Encoding;
 import org.nutz.lang.ExitLoop;
 import org.nutz.lang.Lang;
 import org.nutz.lang.LoopException;
+import org.nutz.repo.Base64;
 
 public class Request {
 
@@ -266,5 +267,10 @@ public class Request {
 
     public String getMethodString() {
         return methodString;
+    }
+    
+    public Request basicAuth(String user, String password) {
+        header("Authorization", "Basic "+Base64.encodeToString((user+":"+password).getBytes(), false));
+        return this;
     }
 }

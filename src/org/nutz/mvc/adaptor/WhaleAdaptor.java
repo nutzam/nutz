@@ -10,6 +10,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.conf.NutConf;
 import org.nutz.filepool.FilePool;
 import org.nutz.filepool.UU32FilePool;
 import org.nutz.json.Json;
@@ -52,7 +53,7 @@ public class WhaleAdaptor extends PairAdaptor {
             }
         }
         if (path.isEmpty()) {
-            path = "${app.root}/WEB-INF/tmp/nutzupload2";
+            path = (String) NutConf.getOrDefault("nutz.mvc.whale.defaultpath", "${app.root}/WEB-INF/tmp/nutzupload2");
         }
         if (path.contains("${app.root}"))
             path = path.replace("${app.root}", appRoot);

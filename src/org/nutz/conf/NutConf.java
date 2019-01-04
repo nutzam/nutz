@@ -174,4 +174,22 @@ public class NutConf {
         catch (Throwable e) {
         }
     }
+    
+    public static boolean AOP_ENABLED = !"false".equals(System.getProperty("nutz.aop.enable"));
+    
+    public static void set(String key, Object value) {
+        if (value == null)
+            me().map.remove(key);
+        else
+            me().map.put(key, value);
+    }
+    
+    public static Object getOrDefault(String key, Object defaultValue) {
+        Object re = me().map.get(key);
+        if (re == null)
+            return defaultValue;
+        return re;
+    }
+
+    public static boolean SQLSERVER_USE_NVARCHAR = true;
 }
