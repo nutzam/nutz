@@ -5,10 +5,10 @@
 	<artifactId>nutz</artifactId>
 	<packaging>jar</packaging>
 	<name>Nutz</name>
-	<version>1.r.67-SNAPSHOT</version>
+	<version>1.r.67</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jetty.version>9.4.8.v20171121</jetty.version>
+		<jetty.version>9.4.14.v20181114</jetty.version>
 	</properties>
 	<description>Nutz, which is a collections of lightweight frameworks, each of them can be used independently</description>
 
@@ -166,6 +166,12 @@
 			<version>${jetty.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+    <groupId>com.microsoft.sqlserver</groupId>
+    <artifactId>mssql-jdbc</artifactId>
+    <version>7.0.0.jre10</version>
+    <scope>test</scope>
+</dependency>
 	</dependencies>
 
 	<build>
@@ -216,7 +222,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.0.2</version>
+				<version>3.1.1</version>
 				<configuration>
 					<excludes>
 						<exclude>**/package-info.class</exclude>
