@@ -921,13 +921,16 @@ public class NutDao extends DaoSupport implements Dao {
         };
     }
 
-    private LinkVisitor doLinkQuery(final EntityOperator opt, final Condition cnd) {
+    private LinkVisitor doLinkQuery(final EntityOperator opt, final Condition _cnd, final Map<String, Condition> cnds) {
         return new LinkVisitor() {
             public void visit(final Object obj, final LinkField lnk) {
                 Pojo pojo = opt.maker().makeQuery(lnk.getLinkedEntity());
                 pojo.setOperatingObject(obj);
                 PItem[] _cndItems = Pojos.Items.cnd(lnk.createCondition(obj));
                 pojo.append(_cndItems);
+                Condition cnd = _cnd;
+                if (_cnd == null && cnds != null)
+                    cnd = cnds.get(lnk.getLinkedField().getName());
                 if (cnd != null) {
                     if (cnd instanceof Criteria) {
                         Criteria cri = (Criteria) cnd;
@@ -1216,8 +1219,12 @@ public class NutDao extends DaoSupport implements Dao {
     public <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd) {
         return this.queryByJoin(classOfT, regex, cnd, null);
     }
-    
+
     public <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd, Pager pager) {
+        return queryByJoin(classOfT, regex, cnd, pager, null);
+    }
+
+    public <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd, Pager pager, Map<String, Condition> cnds) {
     	Pojo pojo = pojoMaker.makeQueryByJoin(holder.getEntity(classOfT), regex)
     			.append(Pojos.Items.cnd(cnd))
     			.addParamsBy("*")
@@ -1228,7 +1235,7 @@ public class NutDao extends DaoSupport implements Dao {
     	List<T> list = pojo.getList(classOfT);
     	if (list != null && list.size() > 0) 
     		for (T t : list) {
-    			_fetchLinks(t, regex, false, true, true, null);
+    			_fetchLinks(t, regex, false, true, true, null, cnds);
     		}
     	return list;
     }
@@ -1244,13 +1251,17 @@ public class NutDao extends DaoSupport implements Dao {
     }
     
     protected Object _fetchLinks(Object t, String regex, boolean visitOne, boolean visitMany, boolean visitManyMany, final Condition cnd) {
+        return _fetchLinks(t, regex, visitOne, visitMany, visitManyMany, cnd, null);
+    }
+    
+    protected Object _fetchLinks(Object t, String regex, boolean visitOne, boolean visitMany, boolean visitManyMany, final Condition cnd, final Map<String, Condition> cnds) {
         EntityOperator opt = _optBy(t);
         if (null == opt)
             return t;
         if (visitMany)
-            opt.entity.visitMany(t, regex, doLinkQuery(opt, cnd));
+            opt.entity.visitMany(t, regex, doLinkQuery(opt, cnd, cnds));
         if (visitManyMany)
-            opt.entity.visitManyMany(t, regex, doLinkQuery(opt, cnd));
+            opt.entity.visitManyMany(t, regex, doLinkQuery(opt, cnd, cnds));
         if (visitOne)
             opt.entity.visitOne(t, regex, doFetch(opt));
         opt.exec();

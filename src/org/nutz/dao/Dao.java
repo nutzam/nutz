@@ -11,6 +11,7 @@ import org.nutz.lang.Each;
 
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Nutz.Dao 核心接口。 封装了所有的数据库操作
@@ -1204,6 +1205,9 @@ public interface Dao {
      * @return 实体对象的列表,符合regex的关联属性也会取出
      */
     <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd, Pager pager);
+    
+
+    <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd, Pager pager, Map<String, Condition> cnds);
     
     /**
      * 根据查询条件获取分页对象.<b>注意: 条件语句需要加上主表名或关联属性的JAVA属性名!!!</b>
