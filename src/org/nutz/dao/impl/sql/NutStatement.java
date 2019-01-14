@@ -339,4 +339,9 @@ public abstract class NutStatement implements DaoStatement {
         Jdbcs.guessEntityFieldColumnType(mf);
         return expert.getAdaptor(mf);
     }
+
+    public DaoStatement setQueryTimeout(int timeout) {
+        getContext().setQueryTimeout(timeout);
+        return this;
+    }
 }

@@ -233,7 +233,6 @@ public class NutDaoExecutor implements DaoExecutor {
         ResultSet rs = null;
         Statement stat = null;
         try {
-
             // 木有参数，直接运行
             if (null == paramMatrix || paramMatrix.length == 0
                     || paramMatrix[0].length == 0) {
@@ -241,8 +240,7 @@ public class NutDaoExecutor implements DaoExecutor {
                         .getResultSetType(), ResultSet.CONCUR_READ_ONLY);
                 if (lastRow > 0)
                     stat.setMaxRows(lastRow); // 游标分页,现在总行数
-                if (st.getContext().getFetchSize() != 0)
-                    stat.setFetchSize(st.getContext().getFetchSize());
+                afterCreateStatement(stat, st);
                 rs = stat.executeQuery(sql);
             }
             // 有参数，用缓冲语句
@@ -263,8 +261,7 @@ public class NutDaoExecutor implements DaoExecutor {
                         ResultSet.CONCUR_READ_ONLY);
                 if (lastRow > 0)
                     stat.setMaxRows(lastRow);
-                if (st.getContext().getFetchSize() != 0)
-                    stat.setFetchSize(st.getContext().getFetchSize());
+                afterCreateStatement(stat, st);
                 for (int i = 0; i < paramMatrix[0].length; i++) {
                     adaptors[i].set((PreparedStatement) stat,
                             paramMatrix[0][i], i + 1);
@@ -398,5 +395,12 @@ public class NutDaoExecutor implements DaoExecutor {
             this.name = name;
             this.jdbcType = jdbcType;
         }
+    }
+    
+    protected void afterCreateStatement(Statement stat, DaoStatement st) throws SQLException {
+        if (st.getContext().getFetchSize() != 0)
+            stat.setFetchSize(st.getContext().getFetchSize());
+        if (st.getContext().getQueryTimeout() > 0)
+            stat.setQueryTimeout(st.getContext().getQueryTimeout());
     }
 }
