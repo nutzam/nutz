@@ -1203,6 +1203,10 @@ public class NutDao extends DaoSupport implements Dao {
     }
     
     public <T> T fetchByJoin(Class<T> classOfT, String regex, Condition cnd) {
+        return fetchByJoin(classOfT, regex, cnd, null);
+    }
+    
+    public <T> T fetchByJoin(Class<T> classOfT, String regex, Condition cnd, Map<String, Condition> cnds) {
         Pojo pojo = pojoMaker.makeQueryByJoin(holder.getEntity(classOfT), regex)
                 .append(Pojos.Items.cnd(cnd))
                 .addParamsBy("*")
@@ -1212,7 +1216,7 @@ public class NutDao extends DaoSupport implements Dao {
         _exec(pojo);
         T t = pojo.getObject(classOfT);
         if (t != null)
-            _fetchLinks(t, regex, false, true, true, null);
+            _fetchLinks(t, regex, false, true, true, null, cnds);
         return t;
     }
     

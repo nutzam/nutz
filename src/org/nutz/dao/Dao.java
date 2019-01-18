@@ -1194,6 +1194,8 @@ public interface Dao {
      */
     <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd);
     
+    <T> T fetchByJoin(Class<T> classOfT, String regex, Condition cnd, Map<String, Condition> cnds);
+    
     /**
      * 根据查询条件获取分页对象.<b>注意: 条件语句需要加上主表名或关联属性的JAVA属性名!!!</b>
      * <p/>
