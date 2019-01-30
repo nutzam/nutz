@@ -56,6 +56,7 @@ import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.json.Json;
+import org.nutz.lang.Encoding;
 import org.nutz.lang.reflect.ReflectTool;
 import org.nutz.lang.stream.StringInputStream;
 import org.nutz.lang.stream.StringOutputStream;
@@ -2869,10 +2870,10 @@ public abstract class Lang {
             throw new NullPointerException("secret is null");
         byte[] bytes = null;
         try {
-            SecretKey secretKey = new SecretKeySpec(secret.getBytes("utf-8"), "HmacMD5");
+            SecretKey secretKey = new SecretKeySpec(secret.getBytes(Encoding.UTF8), "HmacMD5");
             Mac mac = Mac.getInstance(secretKey.getAlgorithm());
             mac.init(secretKey);
-            bytes = mac.doFinal(data.getBytes("utf-8"));
+            bytes = mac.doFinal(data.getBytes(Encoding.UTF8));
         } catch (Exception e) {
             e.printStackTrace();
             throw Lang.wrapThrow(e);
