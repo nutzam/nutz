@@ -45,6 +45,9 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import javax.crypto.Mac;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
@@ -2850,5 +2853,30 @@ public abstract class Lang {
      */
     public static boolean isNotEmpty(Object obj) {
         return !isEmpty(obj);
+    }
+
+    /**
+     * 获取指定字符串的 HmacMD5 值
+     *
+     * @param data   字符串
+     * @param secret 密钥
+     * @return 指定字符串的 HmacMD5 值
+     */
+    public static String hmacmd5(String data, String secret) {
+        if (isEmpty(data))
+            throw new NullPointerException("data is null");
+        if (isEmpty(secret))
+            throw new NullPointerException("secret is null");
+        byte[] bytes = null;
+        try {
+            SecretKey secretKey = new SecretKeySpec(secret.getBytes("utf-8"), "HmacMD5");
+            Mac mac = Mac.getInstance(secretKey.getAlgorithm());
+            mac.init(secretKey);
+            bytes = mac.doFinal(data.getBytes("utf-8"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw Lang.wrapThrow(e);
+        }
+        return fixedHexString(bytes);
     }
 }
