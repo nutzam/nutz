@@ -167,11 +167,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-    <groupId>com.microsoft.sqlserver</groupId>
-    <artifactId>mssql-jdbc</artifactId>
-    <version>7.0.0.jre10</version>
-    <scope>test</scope>
-</dependency>
+    			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>mssql-jdbc</artifactId>
+         	        <version>7.0.0.jre10</version>
+                        <scope>test</scope>
+                </dependency>
 	</dependencies>
 
 	<build>
