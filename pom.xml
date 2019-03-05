@@ -8,7 +8,7 @@
 	<version>1.r.68-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jetty.version>9.4.14.v20181114</jetty.version>
+		<jetty.version>9.4.15.v20190215</jetty.version>
 	</properties>
 	<description>Nutz, which is a collections of lightweight frameworks, each of them can be used independently</description>
 
