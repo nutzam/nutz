@@ -10,7 +10,7 @@ public abstract class NumberRange extends AbstractSqlExpression {
 
     protected long[] ids;
 
-    protected NumberRange(String name) {
+    public NumberRange(String name) {
         super(name);
     }
 

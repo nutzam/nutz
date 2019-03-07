@@ -4,7 +4,7 @@ public class IntRange extends NumberRange {
 
     private static final long serialVersionUID = 1L;
 
-    IntRange(String name, int... ids) {
+    public IntRange(String name, int... ids) {
         super(name);
         this.not = false;
         this.ids = new long[ids.length];
@@ -12,7 +12,7 @@ public class IntRange extends NumberRange {
             this.ids[i] = ids[i];
     }
     
-    IntRange(String name, Integer[] ids) {
+    public IntRange(String name, Integer[] ids) {
     	super(name);
     	this.not = false;
     	this.ids = new long[ids.length];
