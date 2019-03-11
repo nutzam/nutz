@@ -323,4 +323,20 @@ public class DaoSupport {
     public DataSource getDataSource() {
         return dataSource;
     }
+    
+    public boolean setExtProp(String key, Object value) {
+        if (Strings.isBlank(key))
+            return false;
+        if (value == null)
+            return false;
+        if ("defaultQueryTimeout".equals(key)) {
+            ((NutDaoExecutor)executor).setDefaultQueryTimeout((Integer)value);
+            return true;
+        }
+        if ("defaultFetchSize".equals(key)) {
+            ((NutDaoExecutor)executor).setDefaultFetchSize((Integer)value);
+            return true;
+        }
+        return false;
+    }
 }

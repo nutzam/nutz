@@ -12,6 +12,7 @@ import org.nutz.lang.Each;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * Nutz.Dao 核心接口。 封装了所有的数据库操作
@@ -1225,4 +1226,12 @@ public interface Dao {
     void truncate(Class<?> klass);
     
     void truncate(String tableName);
+    
+    /**
+         * 设置额外属性, 例如defaultQueryTimeout,默认查询超时, defaultFetchSize,默认fetch大小
+     * @param key 不能是null或者空白
+     * @param value 不能是null
+     * @return true如果合法
+     */
+    boolean setExtProp(String key, Object value);
 }

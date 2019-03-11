@@ -33,6 +33,10 @@ import org.nutz.log.Logs;
 public class NutDaoExecutor implements DaoExecutor {
 
     private static final Log log = Logs.get();
+    
+    protected int defaultQueryTimeout;
+    
+    protected int defaultFetchSize;
 
     public void exec(Connection conn, DaoStatement st) {
         // 这个变量声明，后面两 case 要用到
@@ -400,7 +404,31 @@ public class NutDaoExecutor implements DaoExecutor {
     protected void afterCreateStatement(Statement stat, DaoStatement st) throws SQLException {
         if (st.getContext().getFetchSize() != 0)
             stat.setFetchSize(st.getContext().getFetchSize());
+        else if (defaultFetchSize > 0) {
+            stat.setFetchSize(defaultFetchSize);
+        }
         if (st.getContext().getQueryTimeout() > 0)
             stat.setQueryTimeout(st.getContext().getQueryTimeout());
+        else if (defaultQueryTimeout > 0) {
+            stat.setQueryTimeout(defaultQueryTimeout);
+        }
     }
+
+    public int getDefaultQueryTimeout() {
+        return defaultQueryTimeout;
+    }
+
+    public void setDefaultQueryTimeout(int defaultQueryTimeout) {
+        this.defaultQueryTimeout = defaultQueryTimeout;
+    }
+
+    public int getDefaultFetchSize() {
+        return defaultFetchSize;
+    }
+
+    public void setDefaultFetchSize(int defaultFetchSize) {
+        this.defaultFetchSize = defaultFetchSize;
+    }
+    
+    
 }
