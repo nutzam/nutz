@@ -29,9 +29,11 @@ import org.nutz.dao.sql.PojoMaker;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlContext;
 import org.nutz.dao.util.Daos;
+import org.nutz.lang.Configurable;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.NutMap;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -40,7 +42,7 @@ import org.nutz.log.Logs;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public class DaoSupport {
+public class DaoSupport implements Configurable {
 
     private static final Log log = Logs.get();
 
@@ -324,19 +326,12 @@ public class DaoSupport {
         return dataSource;
     }
     
-    public boolean setExtProp(String key, Object value) {
-        if (Strings.isBlank(key))
-            return false;
-        if (value == null)
-            return false;
-        if ("defaultQueryTimeout".equals(key)) {
-            ((NutDaoExecutor)executor).setDefaultQueryTimeout((Integer)value);
-            return true;
-        }
-        if ("defaultFetchSize".equals(key)) {
-            ((NutDaoExecutor)executor).setDefaultFetchSize((Integer)value);
-            return true;
-        }
-        return false;
+    public void setupProperties(NutMap conf) {
+        if (expert instanceof Configurable)
+            ((Configurable)expert).setupProperties(conf);
+        if (executor instanceof Configurable)
+            ((Configurable)executor).setupProperties(conf);
+        if (runner instanceof Configurable)
+            ((Configurable)runner).setupProperties(conf);
     }
 }

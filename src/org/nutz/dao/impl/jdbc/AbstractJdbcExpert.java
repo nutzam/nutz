@@ -33,10 +33,12 @@ import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlContext;
 import org.nutz.dao.sql.SqlType;
 import org.nutz.dao.util.Daos;
+import org.nutz.lang.Configurable;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.segment.CharSegment;
+import org.nutz.lang.util.NutMap;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -45,7 +47,7 @@ import org.nutz.log.Logs;
  *
  * @author zozoh(zozohtnt@gmail.com)
  */
-public abstract class AbstractJdbcExpert implements JdbcExpert {
+public abstract class AbstractJdbcExpert implements JdbcExpert, Configurable {
 
     private static final Log log = Logs.get();
 
@@ -480,5 +482,8 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
             names.add(index);
         }
         return names;
+    }
+
+    public void setupProperties(NutMap conf) {
     }
 }

@@ -26,16 +26,18 @@ import org.nutz.dao.sql.SqlType;
 import org.nutz.dao.sql.VarIndex;
 import org.nutz.dao.sql.VarSet;
 import org.nutz.dao.util.Daos;
+import org.nutz.lang.Configurable;
 import org.nutz.lang.Lang;
+import org.nutz.lang.util.NutMap;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
-public class NutDaoExecutor implements DaoExecutor {
+public class NutDaoExecutor implements DaoExecutor, Configurable {
 
     private static final Log log = Logs.get();
-    
+
     protected int defaultQueryTimeout;
-    
+
     protected int defaultFetchSize;
 
     public void exec(Connection conn, DaoStatement st) {
@@ -429,6 +431,10 @@ public class NutDaoExecutor implements DaoExecutor {
     public void setDefaultFetchSize(int defaultFetchSize) {
         this.defaultFetchSize = defaultFetchSize;
     }
-    
-    
+
+    public void setupProperties(NutMap conf) {
+        defaultQueryTimeout = conf.getInt("nutz.dao.query.timeout", 0);
+        defaultFetchSize = conf.getInt("nutz.dao.query.fetchSize", 0);
+    }
+
 }

@@ -8,11 +8,11 @@ import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.PojoMaker;
 import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Each;
+import org.nutz.lang.util.NutMap;
 
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Nutz.Dao 核心接口。 封装了所有的数据库操作
@@ -1233,5 +1233,5 @@ public interface Dao {
      * @param value 不能是null
      * @return true如果合法
      */
-    boolean setExtProp(String key, Object value);
+    void setupProperties(NutMap conf);
 }
