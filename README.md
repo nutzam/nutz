@@ -3,8 +3,6 @@
 
 [![Build Status](https://travis-ci.org/nutzam/nutz.png?branch=master)](https://travis-ci.org/nutzam/nutz)
 [![Circle CI](https://circleci.com/gh/nutzam/nutz/tree/master.svg?style=svg)](https://circleci.com/gh/nutzam/nutz/tree/master)
-[![Backers on Open Collective](https://opencollective.com/nutz/backers/badge.svg)](#backers) 
-[![Sponsors on Open Collective](https://opencollective.com/nutz/sponsors/badge.svg)](#sponsors) 
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/4917/badge.svg)](https://scan.coverity.com/projects/4917/)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.nutz/nutz/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.nutz/nutz/)
 [![codecov.io](http://codecov.io/github/nutzam/nutz/coverage.svg?branch=master)](http://codecov.io/github/nutzam/nutz?branch=master)
@@ -47,7 +45,7 @@ Nutz遵循Apache协议,完全开源,文档齐全,永远免费(商用也是)
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.r.65</version>
+			<version>1.r.68.v20190220</version>
 		</dependency>
 ```
 
@@ -57,7 +55,7 @@ Nutz遵循Apache协议,完全开源,文档齐全,永远免费(商用也是)
 ## Gradle 依赖
 
 ```gradle
-compile(group: 'org.nutz', name: 'nutz', version:'1.r.65')
+compile(group: 'org.nutz', name: 'nutz', version:'1.r.68.v20190220')
 ```
 
 ## 采用Nutz的公司

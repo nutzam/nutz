@@ -1,5 +1,9 @@
 package org.nutz.dao;
 
+import java.sql.ResultSet;
+import java.util.List;
+import java.util.Map;
+
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.impl.EntityHolder;
@@ -7,19 +11,15 @@ import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.PojoMaker;
 import org.nutz.dao.sql.Sql;
+import org.nutz.lang.Configurable;
 import org.nutz.lang.Each;
-import org.nutz.lang.util.NutMap;
-
-import java.sql.ResultSet;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Nutz.Dao 核心接口。 封装了所有的数据库操作
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public interface Dao {
+public interface Dao extends Configurable {
 
     /**
      * @return 数据源的元数据
@@ -1226,12 +1226,4 @@ public interface Dao {
     void truncate(Class<?> klass);
     
     void truncate(String tableName);
-    
-    /**
-         * 设置额外属性, 例如defaultQueryTimeout,默认查询超时, defaultFetchSize,默认fetch大小
-     * @param key 不能是null或者空白
-     * @param value 不能是null
-     * @return true如果合法
-     */
-    void setupProperties(NutMap conf);
 }
