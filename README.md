@@ -33,7 +33,7 @@ Nutz遵循Apache协议,完全开源,文档齐全,永远免费(商用也是)
 *   [好玩的Nutzbook](http://nutzbook.wendal.net) 几分钟搭建一个demo有何不可? 入门从这里开始
 *	[在线javadoc](https://nutzam.com/javadoc/) 注释就是这么全
 *	[NutzWk](https://github.com/Wizzercn/NutzWk) 基于Nutz的Java开源企业级开发框架
-*	[Nutz-Onekey](https://github.com/Kerbores/NUTZ-ONEKEY) NUTZ一键脚手架
+*	[Idea插件](https://github.com/threefish/NutzCodeInsight) idea 插件
 
 ## Nutz生态系统
 
