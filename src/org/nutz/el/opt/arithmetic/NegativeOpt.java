@@ -1,6 +1,5 @@
 package org.nutz.el.opt.arithmetic;
 
-import java.lang.reflect.Array;
 import java.util.Queue;
 
 import org.nutz.el.opt.AbstractOpt;

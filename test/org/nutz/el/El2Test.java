@@ -11,13 +11,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.nutz.conf.NutConf;
-import org.nutz.el.arithmetic.ShuntingYard;
 import org.nutz.el.issue.Issue293;
 import org.nutz.el.issue.Issue303;
 import org.nutz.el.issue.Issue314;
