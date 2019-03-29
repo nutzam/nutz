@@ -5,7 +5,7 @@
 	<artifactId>nutz</artifactId>
 	<packaging>jar</packaging>
 	<name>Nutz</name>
-	<version>1.r.68-SNAPSHOT</version>
+	<version>1.r.68.v20190329</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jetty.version>9.4.15.v20190215</jetty.version>
@@ -205,11 +205,6 @@
 					<source>1.6</source>
 					<target>1.6</target>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<version>7.6.16.v20140903</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
