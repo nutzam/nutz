@@ -12,6 +12,8 @@ import org.nutz.dao.DaoInterceptorChain;
 import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.impl.DaoRunner;
 import org.nutz.dao.sql.DaoStatement;
+import org.nutz.lang.Configurable;
+import org.nutz.lang.util.NutMap;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.trans.Atom;
@@ -23,11 +25,13 @@ import org.nutz.trans.Transaction;
  * @author wendal
  *
  */
-public class NutDaoRunner implements DaoRunner {
+public class NutDaoRunner implements DaoRunner, Configurable {
 
     private static final Log log = Logs.get();
     
     protected DataSource slaveDataSource;
+    
+    protected boolean supportSavePoint = true;
     
     public void run(final DataSource dataSource, final ConnCallback callback) {
         if (callback instanceof DaoInterceptorChain) {
@@ -99,7 +103,7 @@ public class NutDaoRunner implements DaoRunner {
         Savepoint sp = null;
         try {
             conn = t.getConnection(selectDataSource(t, dataSource, callback));
-            if (meta != null && meta.isPostgresql()) {
+            if (supportSavePoint && meta != null && meta.isPostgresql()) {
                 sp = conn.setSavepoint();
             }
             runCallback(conn, callback);
@@ -180,5 +184,10 @@ public class NutDaoRunner implements DaoRunner {
             }
         }
         return master;
+    }
+    
+    @Override
+    public void setupProperties(NutMap conf) {
+        supportSavePoint = conf.getBoolean("nutz.dao.jdbc.psql.supportSavePoint", true);
     }
 }
