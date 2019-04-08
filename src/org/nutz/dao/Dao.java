@@ -1032,6 +1032,36 @@ public interface Dao extends Configurable {
      * @return 实体对象
      */
     <T> Entity<T> create(Class<T> classOfT, boolean dropIfExists);
+    /**
+     * 根据一个实体的配置信息为其创建一张表
+     * 
+     * @param en
+     *            实体类型,抽象后的
+     * @param dropIfExists
+     *            如果表存在是否强制移除
+     * @return 实体对象
+     */
+    <T> Entity<T> create(Entity<T> en, boolean dropIfExists);
+    /**
+     * 根据一个实体的配置信息为其创建一张表
+     * @param tableName
+     *            表名
+     * @param map
+     *            实体描述,参考文档中的非Pojo操作
+     * @param dropIfExists
+     *            如果表存在是否强制移除
+     * @return 实体对象
+     */
+    <T extends Map<String, ?>> Entity<T> create(String tableName, T map, boolean dropIfExists);
+    /**
+     * 根据一个实体的配置信息为其创建一张表, 其中表名从map.get(".table")获取
+     * @param map
+     *            实体描述,参考文档中的非Pojo操作
+     * @param dropIfExists
+     *            如果表存在是否强制移除
+     * @return 实体对象
+     */
+    <T extends Map<String, ?>> Entity<T> create(T map, boolean dropIfExists);
 
     /**
      * 如果一个实体的数据表存在，移除它

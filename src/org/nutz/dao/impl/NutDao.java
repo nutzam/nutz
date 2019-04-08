@@ -830,6 +830,52 @@ public class NutDao extends DaoSupport implements Dao {
         });
         return en;
     }
+    
+    public synchronized <T> Entity<T> create(final Entity<T> en, boolean dropIfExists) {
+        if (exists(en.getTableName())) {
+            if (dropIfExists) {
+                expert.dropEntity(this, en);
+            } else {
+                expert.createRelation(this, en);
+                return en;
+            }
+        }
+        expert.createEntity(this, en);
+        // 最后在数据库中验证一下实体各个字段
+        run(new ConnCallback() {
+            public void invoke(Connection conn) throws Exception {
+                expert.setupEntityField(conn, en);
+            }
+        });
+        return en;
+    }
+    
+    public synchronized <T extends Map<String, ?>> Entity<T> create(T map, boolean dropIfExists) {
+        String tableName = (String) map.get(".table");
+        if (Strings.isBlank(tableName))
+            throw new DaoException("need .table!!");
+        return create(tableName, map, dropIfExists);
+    }
+    
+    public synchronized <T extends Map<String, ?>> Entity<T> create(String tableName, T map, boolean dropIfExists) {
+        final Entity<T> en = holder.makeEntity(tableName, map);
+        if (exists(en.getTableName())) {
+            if (dropIfExists) {
+                expert.dropEntity(this, en);
+            } else {
+                expert.createRelation(this, en);
+                return en;
+            }
+        }
+        expert.createEntity(this, en);
+        // 最后在数据库中验证一下实体各个字段
+        run(new ConnCallback() {
+            public void invoke(Connection conn) throws Exception {
+                expert.setupEntityField(conn, en);
+            }
+        });
+        return en;
+    }
 
     public boolean drop(Class<?> classOfT) {
         Entity<?> en = holder.getEntity(classOfT);
