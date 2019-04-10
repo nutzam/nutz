@@ -43,6 +43,7 @@ import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
 import org.nutz.dao.util.tables.TablesFilter;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.random.R;
 import org.nutz.lang.util.Callback2;
@@ -272,7 +273,7 @@ public abstract class Daos {
         Iterator<Class<?>> it = ks.iterator();
         while (it.hasNext()) {
             Class<?> klass = it.next();
-            if (klass.getAnnotation(Table.class) == null)
+            if (Mirror.me(klass).getAnnotation(Table.class) == null)
                 it.remove();
         }
         // log.infof("Found %d table class", ks.size());
@@ -458,7 +459,7 @@ public abstract class Daos {
     public static void createTablesInPackage(final Dao dao, String packageName, boolean force) {
         List<Class<?>> list = new ArrayList<Class<?>>();
         for(Class<?> klass: Scans.me().scanPackage(packageName)) {
-            if (klass.getAnnotation(Table.class) != null)
+            if (Mirror.me(klass).getAnnotation(Table.class) != null)
                 list.add(klass);
         };
         createTables(dao,list,force);
@@ -510,7 +511,7 @@ public abstract class Daos {
     public static void createTablesInPackage(final Dao dao, String packageName, boolean force,TablesFilter filter) {
         List<Class<?>> list = new ArrayList<Class<?>>();
         for(Class<?> klass: Scans.me().scanPackage(packageName)) {
-            Table table = klass.getAnnotation(Table.class);
+            Table table = Mirror.me(klass).getAnnotation(Table.class);
             if (table != null && filter.match(klass,table))
                 list.add(klass);
         }
@@ -916,7 +917,7 @@ public abstract class Daos {
                                  boolean checkIndex,
                                  Object nameTable) {
         for (Class<?> klass : Scans.me().scanPackage(packageName)) {
-            if (klass.getAnnotation(Table.class) != null) {
+            if (Mirror.me(klass).getAnnotation(Table.class) != null) {
                 migration(dao, klass, add, del, checkIndex, nameTable);
             }
         }
@@ -964,7 +965,7 @@ public abstract class Daos {
                                  boolean del,
                                  boolean checkIndex) {
         for (Class<?> klass : Scans.me().scanPackage(packageName)) {
-            if (klass.getAnnotation(Table.class) != null) {
+            if (Mirror.me(klass).getAnnotation(Table.class) != null) {
                 migration(dao, klass, add, del, checkIndex, null);
             }
         }
