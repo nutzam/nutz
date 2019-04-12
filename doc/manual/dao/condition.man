@@ -88,6 +88,10 @@ Nutz 给你的快速实现
         cri.where().andIn("id", 3,4,5).andIn("name", "Peter", "Wendal", "Juqkai");
     }else if(...){
         cri.where().andLT("id", 9);
+    }else if(...){
+        cri.where().andInBySql("关联字段","select id from 关联表 where name = '%s'",变量);
+    }else if(...){
+        cri.where().andInBySql("关联字段","select id from 关联表 where name like '%%%s%%'",变量);
     }
 
     if(...){
