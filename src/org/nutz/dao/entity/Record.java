@@ -253,7 +253,7 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      * @return 指定的类型的对象
      */
     public <T> T toPojo(Class<T> type) {
-        return Lang.map2Object(map, type);
+        return Lang.map2Object(this, type);
     }
 
     public <T> T toEntity(Entity<T> en) {
