@@ -2880,4 +2880,29 @@ public abstract class Lang {
         }
         return fixedHexString(bytes);
     }
+    
+        /**
+     * 获取指定字符串的 HmacSHA256 值
+     *
+     * @param data   字符串
+     * @param secret 密钥
+     * @return 指定字符串的 HmacSHA256 值
+     */
+    public static String hmacSHA256(String data, String secret) {
+        if (isEmpty(data))
+            throw new NullPointerException("data is null");
+        if (isEmpty(secret))
+            throw new NullPointerException("secret is null");
+        byte[] bytes = null;
+        try {
+            SecretKey secretKey = new SecretKeySpec(secret.getBytes(Encoding.UTF8), "HmacSHA256");
+            Mac mac = Mac.getInstance(secretKey.getAlgorithm());
+            mac.init(secretKey);
+            bytes = mac.doFinal(data.getBytes(Encoding.UTF8));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw Lang.wrapThrow(e);
+        }
+        return fixedHexString(bytes);
+    }
 }
