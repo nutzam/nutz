@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.junit.Test;
@@ -13,6 +14,7 @@ import org.junit.Test;
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.dao.Chain;
+import org.nutz.dao.Cnd;
 import org.nutz.dao.entity.annotation.*;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.lang.Lang;
@@ -111,6 +113,10 @@ public class SupportedFieldTypeTest extends DaoCase {
 
         @Column
         public LocalDateTime localdt;
+    
+        @Column
+        public LocalDate locald;
+        
     }
 
     @Test
@@ -191,7 +197,7 @@ public class SupportedFieldTypeTest extends DaoCase {
             Object expValue;
             Object ttValue;
             // Mysql 5.0.18， 会去掉毫秒数
-            if (f.getName().equals("sqlTime") &&  
+            if (f.getName().equals("sqlTime") &&
                     (dao.meta().isMySql() || dao.meta().isHsql())) {
                 expValue = me.getValue(exp, f).toString();
                 ttValue = me.getValue(et, f).toString();
@@ -227,6 +233,16 @@ public class SupportedFieldTypeTest extends DaoCase {
         exp.localdt = LocalDateTime.now();
         dao.insert(exp);
         assertNotNull(dao.fetch(EntityTypes.class, exp.name));
+    }
+    
+    @Test
+    public void check_insert_local_date() {
+        EntityTypes exp = new EntityTypes();
+        exp.name = R.UU32();
+        exp.locald = LocalDate.now();
+        dao.insert(exp);
+        assertNotNull(dao.fetch(EntityTypes.class, exp.name));
+        assertNotNull(dao.fetch(EntityTypes.class, Cnd.where("locald", "=", LocalDate.now())));
     }
 
 }
