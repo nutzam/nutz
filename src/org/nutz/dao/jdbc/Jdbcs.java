@@ -22,11 +22,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Map;
+import java.time.*;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
@@ -256,6 +253,8 @@ public abstract class Jdbcs {
             return Jdbcs.Adaptor.asBinaryStream;
         if (mirror.isOf(Reader.class))
             return Jdbcs.Adaptor.asReader;
+        if (mirror.isLocalDateLike())
+            return Adaptor.asLocalDate;
         if (mirror.isLocalDateTimeLike())
             return Jdbcs.Adaptor.asLocalDateTime;
         // 默认情况
@@ -779,6 +778,24 @@ public abstract class Jdbcs {
                     stat.setNull(i, Types.TIMESTAMP);
                 } else {
                     v = Timestamp.valueOf((LocalDateTime)obj);
+                    stat.setTimestamp(i, v);
+                }
+            }
+        };
+    
+        public static final ValueAdaptor asLocalDate = new ValueAdaptor() {
+        
+            public Object get(ResultSet rs, String colName) throws SQLException {
+                Timestamp ts = rs.getTimestamp(colName);
+                return null == ts ? null : ts.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            }
+        
+            public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
+                Timestamp v;
+                if (null == obj) {
+                    stat.setNull(i, Types.TIMESTAMP);
+                } else {
+                    v = Timestamp.valueOf(((LocalDate)obj).atStartOfDay(ZoneId.systemDefault()).toLocalDateTime());
                     stat.setTimestamp(i, v);
                 }
             }
