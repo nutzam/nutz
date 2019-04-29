@@ -67,13 +67,14 @@ import org.nutz.lang.util.NutType;
 import org.nutz.lang.util.Regex;
 import org.nutz.lang.util.SimpleContext;
 
+
 /**
  * 这些帮助函数让 Java 的某些常用功能变得更简单
  *
- * @author zozoh(zozohtnt@gmail.com)
- * @author wendal(wendal1985@gmail.com)
- * @author bonyfish(mc02cxj@gmail.com)
- * @author wizzer(wizzer.cn@gmail.com)
+ * @author zozoh(zozohtnt @ gmail.com)
+ * @author wendal(wendal1985 @ gmail.com)
+ * @author bonyfish(mc02cxj @ gmail.com)
+ * @author wizzer(wizzer.cn @ gmail.com)
  */
 public abstract class Lang {
 
@@ -103,8 +104,9 @@ public abstract class Lang {
 
     public static ComboException comboThrow(Throwable... es) {
         ComboException ce = new ComboException();
-        for (Throwable e : es)
+        for (Throwable e : es) {
             ce.add(e);
+        }
         return ce;
     }
 
@@ -129,10 +131,8 @@ public abstract class Lang {
     /**
      * 根据格式化字符串，生成运行时异常
      *
-     * @param format
-     *            格式
-     * @param args
-     *            参数
+     * @param format 格式
+     * @param args   参数
      * @return 运行时异常
      */
     public static RuntimeException makeThrow(String format, Object... args) {
@@ -142,32 +142,27 @@ public abstract class Lang {
     /**
      * 根据格式化字符串，生成一个指定的异常。
      *
-     * @param classOfT
-     *            异常类型， 需要有一个字符串为参数的构造函数
-     * @param format
-     *            格式
-     * @param args
-     *            参数
+     * @param classOfT 异常类型， 需要有一个字符串为参数的构造函数
+     * @param format   格式
+     * @param args     参数
      * @return 异常对象
      */
     @SuppressWarnings("unchecked")
     public static <T extends Throwable> T makeThrow(Class<T> classOfT,
                                                     String format,
                                                     Object... args) {
-        if (classOfT == RuntimeException.class)
+        if (classOfT == RuntimeException.class) {
             return (T) new RuntimeException(String.format(format, args));
+        }
         return Mirror.me(classOfT).born(String.format(format, args));
     }
 
     /**
      * 将抛出对象包裹成运行时异常，并增加自己的描述
      *
-     * @param e
-     *            抛出对象
-     * @param fmt
-     *            格式
-     * @param args
-     *            参数
+     * @param e    抛出对象
+     * @param fmt  格式
+     * @param args 参数
      * @return 运行时异常
      */
     public static RuntimeException wrapThrow(Throwable e, String fmt, Object... args) {
@@ -179,53 +174,58 @@ public abstract class Lang {
      * <p>
      * 如果是 InvocationTargetException，那么将其剥离，只包裹其 TargetException
      *
-     * @param e
-     *            抛出对象
+     * @param e 抛出对象
      * @return 运行时异常
      */
     public static RuntimeException wrapThrow(Throwable e) {
-        if (e instanceof RuntimeException)
+        if (e instanceof RuntimeException) {
             return (RuntimeException) e;
-        if (e instanceof InvocationTargetException)
+        }
+        if (e instanceof InvocationTargetException) {
             return wrapThrow(((InvocationTargetException) e).getTargetException());
+        }
         return new RuntimeException(e);
     }
 
     /**
      * 用一个指定可抛出类型来包裹一个抛出对象。这个指定的可抛出类型需要有一个构造函数 接受 Throwable 类型的对象
      *
-     * @param e
-     *            抛出对象
-     * @param wrapper
-     *            包裹类型
+     * @param e       抛出对象
+     * @param wrapper 包裹类型
      * @return 包裹后对象
      */
     @SuppressWarnings("unchecked")
     public static <T extends Throwable> T wrapThrow(Throwable e, Class<T> wrapper) {
-        if (wrapper.isAssignableFrom(e.getClass()))
+        if (wrapper.isAssignableFrom(e.getClass())) {
             return (T) e;
+        }
         return Mirror.me(wrapper).born(e);
     }
 
     public static Throwable unwrapThrow(Throwable e) {
-        if (e == null)
+        if (e == null) {
             return null;
+        }
         if (e instanceof InvocationTargetException) {
             InvocationTargetException itE = (InvocationTargetException) e;
-            if (itE.getTargetException() != null)
+            if (itE.getTargetException() != null) {
                 return unwrapThrow(itE.getTargetException());
+            }
         }
-        if (e instanceof RuntimeException && e.getCause() != null)
+        if (e instanceof RuntimeException && e.getCause() != null) {
             return unwrapThrow(e.getCause());
+        }
         return e;
     }
 
     public static boolean isCauseBy(Throwable e, Class<? extends Throwable> causeType) {
-        if (e.getClass() == causeType)
+        if (e.getClass() == causeType) {
             return true;
+        }
         Throwable cause = e.getCause();
-        if (null == cause)
+        if (null == cause) {
             return false;
+        }
         return isCauseBy(cause, causeType);
     }
 
@@ -238,25 +238,27 @@ public abstract class Lang {
      * </ul>
      * 当然，如果你重写的 equals 方法会优先
      *
-     * @param a0
-     *            比较对象1
-     * @param a1
-     *            比较对象2
+     * @param a0 比较对象1
+     * @param a1 比较对象2
      * @return 是否相等
      */
     public static boolean equals(Object a0, Object a1) {
-        if (a0 == a1)
+        if (a0 == a1) {
             return true;
+        }
 
-        if (a0 == null && a1 == null)
+        if (a0 == null && a1 == null) {
             return true;
+        }
 
-        if (a0 == null || a1 == null)
+        if (a0 == null || a1 == null) {
             return false;
+        }
 
         // 简单的判断是否等于
-        if (a0.equals(a1))
+        if (a0.equals(a1)) {
             return true;
+        }
 
         Mirror<?> mi = Mirror.me(a0);
 
@@ -267,30 +269,35 @@ public abstract class Lang {
 
         // 如果类型就不能互相转换，那么一定是错的
         if (!a0.getClass().isAssignableFrom(a1.getClass())
-            && !a1.getClass().isAssignableFrom(a0.getClass()))
+                && !a1.getClass().isAssignableFrom(a0.getClass())) {
             return false;
+        }
 
         // Map
         if (a0 instanceof Map && a1 instanceof Map) {
             Map<?, ?> m1 = (Map<?, ?>) a0;
             Map<?, ?> m2 = (Map<?, ?>) a1;
-            if (m1.size() != m2.size())
+            if (m1.size() != m2.size()) {
                 return false;
+            }
             for (Entry<?, ?> e : m1.entrySet()) {
                 Object key = e.getKey();
-                if (!m2.containsKey(key) || !equals(m1.get(key), m2.get(key)))
+                if (!m2.containsKey(key) || !equals(m1.get(key), m2.get(key))) {
                     return false;
+                }
             }
             return true;
         }
         // 数组
         else if (a0.getClass().isArray() && a1.getClass().isArray()) {
             int len = Array.getLength(a0);
-            if (len != Array.getLength(a1))
+            if (len != Array.getLength(a1)) {
                 return false;
+            }
             for (int i = 0; i < len; i++) {
-                if (!equals(Array.get(a0, i), Array.get(a1, i)))
+                if (!equals(Array.get(a0, i), Array.get(a1, i))) {
                     return false;
+                }
             }
             return true;
         }
@@ -298,8 +305,9 @@ public abstract class Lang {
         else if (a0 instanceof Collection && a1 instanceof Collection) {
             Collection<?> c0 = (Collection<?>) a0;
             Collection<?> c1 = (Collection<?>) a1;
-            if (c0.size() != c1.size())
+            if (c0.size() != c1.size()) {
                 return false;
+            }
 
             Iterator<?> it0 = c0.iterator();
             Iterator<?> it1 = c1.iterator();
@@ -307,8 +315,9 @@ public abstract class Lang {
             while (it0.hasNext()) {
                 Object o0 = it0.next();
                 Object o1 = it1.next();
-                if (!equals(o0, o1))
+                if (!equals(o0, o1)) {
                     return false;
+                }
             }
 
             return true;
@@ -321,18 +330,18 @@ public abstract class Lang {
     /**
      * 判断一个数组内是否包括某一个对象。 它的比较将通过 equals(Object,Object) 方法
      *
-     * @param array
-     *            数组
-     * @param ele
-     *            对象
+     * @param array 数组
+     * @param ele   对象
      * @return true 包含 false 不包含
      */
     public static <T> boolean contains(T[] array, T ele) {
-        if (null == array)
+        if (null == array) {
             return false;
+        }
         for (T e : array) {
-            if (equals(e, ele))
+            if (equals(e, ele)) {
                 return true;
+            }
         }
         return false;
     }
@@ -340,29 +349,28 @@ public abstract class Lang {
     /**
      * 从一个文本输入流读取所有内容，并将该流关闭
      *
-     * @param reader
-     *            文本输入流
+     * @param reader 文本输入流
      * @return 输入流所有内容
      */
     public static String readAll(Reader reader) {
-        if (!(reader instanceof BufferedReader))
+        if (!(reader instanceof BufferedReader)) {
             reader = new BufferedReader(reader);
+        }
         try {
             StringBuilder sb = new StringBuilder();
 
             char[] data = new char[64];
             int len;
             while (true) {
-                if ((len = reader.read(data)) == -1)
+                if ((len = reader.read(data)) == -1) {
                     break;
+                }
                 sb.append(data, 0, len);
             }
             return sb.toString();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw Lang.wrapThrow(e);
-        }
-        finally {
+        } finally {
             Streams.safeClose(reader);
         }
     }
@@ -370,20 +378,16 @@ public abstract class Lang {
     /**
      * 将一段字符串写入一个文本输出流，并将该流关闭
      *
-     * @param writer
-     *            文本输出流
-     * @param str
-     *            字符串
+     * @param writer 文本输出流
+     * @param str    字符串
      */
     public static void writeAll(Writer writer, String str) {
         try {
             writer.write(str);
             writer.flush();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw Lang.wrapThrow(e);
-        }
-        finally {
+        } finally {
             Streams.safeClose(writer);
         }
     }
@@ -391,8 +395,7 @@ public abstract class Lang {
     /**
      * 根据一段文本模拟出一个输入流对象
      *
-     * @param cs
-     *            文本
+     * @param cs 文本
      * @return 输出流对象
      */
     public static InputStream ins(CharSequence cs) {
@@ -402,8 +405,7 @@ public abstract class Lang {
     /**
      * 根据一段文本模拟出一个文本输入流对象
      *
-     * @param cs
-     *            文本
+     * @param cs 文本
      * @return 文本输出流对象
      */
     public static Reader inr(CharSequence cs) {
@@ -413,8 +415,7 @@ public abstract class Lang {
     /**
      * 根据一个 StringBuilder 模拟一个文本输出流对象
      *
-     * @param sb
-     *            StringBuilder 对象
+     * @param sb StringBuilder 对象
      * @return 文本输出流对象
      */
     public static Writer opw(StringBuilder sb) {
@@ -424,8 +425,7 @@ public abstract class Lang {
     /**
      * 根据一个 StringBuilder 模拟一个输出流对象
      *
-     * @param sb
-     *            StringBuilder 对象
+     * @param sb StringBuilder 对象
      * @return 输出流对象
      */
     public static StringOutputStream ops(StringBuilder sb) {
@@ -439,8 +439,7 @@ public abstract class Lang {
      * String[] strs = Lang.array("A", "B", "A"); => ["A","B","A"]
      * </pre>
      *
-     * @param eles
-     *            可变参数
+     * @param eles 可变参数
      * @return 数组对象
      */
     public static <T> T[] array(T... eles) {
@@ -454,17 +453,17 @@ public abstract class Lang {
      * String[] strs = Lang.arrayUniq("A","B","A");  => ["A","B"]
      * String[] strs = Lang.arrayUniq();  => null
      * </pre>
-     *
+     * <p>
      * 返回的顺序会遵循输入的顺序
      *
-     * @param eles
-     *            可变参数
+     * @param eles 可变参数
      * @return 数组对象
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] arrayUniq(T... eles) {
-        if (null == eles || eles.length == 0)
+        if (null == eles || eles.length == 0) {
             return null;
+        }
         // 记录重复
         HashSet<T> set = new HashSet<T>(eles.length);
         for (T ele : eles) {
@@ -474,8 +473,9 @@ public abstract class Lang {
         T[] arr = (T[]) Array.newInstance(eles[0].getClass(), set.size());
         int index = 0;
         for (T ele : eles) {
-            if (set.remove(ele))
+            if (set.remove(ele)) {
                 Array.set(arr, index++, ele);
+            }
         }
         return arr;
 
@@ -491,27 +491,29 @@ public abstract class Lang {
      * <li>其他对象 : 一定不为空
      * </ul>
      *
-     * @param obj
-     *            任意对象
+     * @param obj 任意对象
      * @return 是否为空
      */
     public static boolean isEmpty(Object obj) {
-        if (obj == null)
+        if (obj == null) {
             return true;
-        if (obj.getClass().isArray())
+        }
+        if (obj.getClass().isArray()) {
             return Array.getLength(obj) == 0;
-        if (obj instanceof Collection<?>)
+        }
+        if (obj instanceof Collection<?>) {
             return ((Collection<?>) obj).isEmpty();
-        if (obj instanceof Map<?, ?>)
+        }
+        if (obj instanceof Map<?, ?>) {
             return ((Map<?, ?>) obj).isEmpty();
+        }
         return false;
     }
 
     /**
      * 判断一个数组是否是空数组
      *
-     * @param ary
-     *            数组
+     * @param ary 数组
      * @return null 或者空数组都为 true 否则为 false
      */
     public static <T> boolean isEmptyArray(T[] ary) {
@@ -524,51 +526,55 @@ public abstract class Lang {
      * <pre>
      * List&lt;Pet&gt; pets = Lang.list(pet1, pet2, pet3);
      * </pre>
-     *
+     * <p>
      * 注，这里的 List，是 ArrayList 的实例
      *
-     * @param eles
-     *            可变参数
+     * @param eles 可变参数
      * @return 列表对象
      */
     public static <T> ArrayList<T> list(T... eles) {
         ArrayList<T> list = new ArrayList<T>(eles.length);
-        for (T ele : eles)
+        for (T ele : eles) {
             list.add(ele);
+        }
         return list;
     }
 
     /**
      * 创建一个 Hash 集合
      *
-     * @param eles
-     *            可变参数
+     * @param eles 可变参数
      * @return 集合对象
      */
     public static <T> Set<T> set(T... eles) {
         Set<T> set = new HashSet<T>();
-        for (T ele : eles)
+        for (T ele : eles) {
             set.add(ele);
+        }
         return set;
     }
 
     /**
      * 将多个数组，合并成一个数组。如果这些数组为空，则返回 null
      *
-     * @param arys
-     *            数组对象
+     * @param arys 数组对象
      * @return 合并后的数组对象
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] merge(T[]... arys) {
         Queue<T> list = new LinkedList<T>();
-        for (T[] ary : arys)
-            if (null != ary)
-                for (T e : ary)
-                    if (null != e)
+        for (T[] ary : arys) {
+            if (null != ary) {
+                for (T e : ary) {
+                    if (null != e) {
                         list.add(e);
-        if (list.isEmpty())
+                    }
+                }
+            }
+        }
+        if (list.isEmpty()) {
             return null;
+        }
         Class<T> type = (Class<T>) list.peek().getClass();
         return list.toArray((T[]) Array.newInstance(type, list.size()));
     }
@@ -576,10 +582,8 @@ public abstract class Lang {
     /**
      * 将一个对象添加成为一个数组的第一个元素，从而生成一个新的数组
      *
-     * @param e
-     *            对象
-     * @param eles
-     *            数组
+     * @param e    对象
+     * @param eles 数组
      * @return 新数组
      */
     @SuppressWarnings("unchecked")
@@ -596,8 +600,7 @@ public abstract class Lang {
                 arr[i + 1] = eles[i];
             }
             return arr;
-        }
-        catch (NegativeArraySizeException e1) {
+        } catch (NegativeArraySizeException e1) {
             throw Lang.wrapThrow(e1);
         }
     }
@@ -605,10 +608,8 @@ public abstract class Lang {
     /**
      * 将一个对象添加成为一个数组的最后一个元素，从而生成一个新的数组
      *
-     * @param e
-     *            对象
-     * @param eles
-     *            数组
+     * @param e    对象
+     * @param eles 数组
      * @return 新数组
      */
     @SuppressWarnings("unchecked")
@@ -625,8 +626,7 @@ public abstract class Lang {
             }
             arr[eles.length] = e;
             return arr;
-        }
-        catch (NegativeArraySizeException e1) {
+        } catch (NegativeArraySizeException e1) {
             throw Lang.wrapThrow(e1);
         }
     }
@@ -636,16 +636,15 @@ public abstract class Lang {
      * <p>
      * 所有的元素都被格式化字符串包裹。 这个格式话字符串只能有一个占位符， %s, %d 等，均可，请视你的数组内容而定
      *
-     * @param fmt
-     *            格式
-     * @param objs
-     *            数组
+     * @param fmt  格式
+     * @param objs 数组
      * @return 拼合后的字符串
      */
     public static <T> StringBuilder concatBy(String fmt, T[] objs) {
         StringBuilder sb = new StringBuilder();
-        for (T obj : objs)
+        for (T obj : objs) {
             sb.append(String.format(fmt, obj));
+        }
         return sb;
     }
 
@@ -656,20 +655,19 @@ public abstract class Lang {
      * <p>
      * 每个元素之间，都会用一个给定的字符分隔
      *
-     * @param ptn
-     *            格式
-     * @param c
-     *            分隔符
-     * @param objs
-     *            数组
+     * @param ptn  格式
+     * @param c    分隔符
+     * @param objs 数组
      * @return 拼合后的字符串
      */
     public static <T> StringBuilder concatBy(String ptn, Object c, T[] objs) {
         StringBuilder sb = new StringBuilder();
-        for (T obj : objs)
+        for (T obj : objs) {
             sb.append(String.format(ptn, obj)).append(c);
-        if (sb.length() > 0)
+        }
+        if (sb.length() > 0) {
             sb.deleteCharAt(sb.length() - 1);
+        }
         return sb;
     }
 
@@ -678,20 +676,20 @@ public abstract class Lang {
      * <p>
      * 每个元素之间，都会用一个给定的字符分隔
      *
-     * @param c
-     *            分隔符
-     * @param objs
-     *            数组
+     * @param c    分隔符
+     * @param objs 数组
      * @return 拼合后的字符串
      */
     public static <T> StringBuilder concat(Object c, T[] objs) {
         StringBuilder sb = new StringBuilder();
-        if (null == objs || 0 == objs.length)
+        if (null == objs || 0 == objs.length) {
             return sb;
+        }
 
         sb.append(objs[0]);
-        for (int i = 1; i < objs.length; i++)
+        for (int i = 1; i < objs.length; i++) {
             sb.append(c).append(objs[i]);
+        }
 
         return sb;
     }
@@ -699,10 +697,8 @@ public abstract class Lang {
     /**
      * 清除数组中的特定值
      *
-     * @param objs
-     *            数组
-     * @param val
-     *            值，可以是 null，如果是对象，则会用 equals 来比较
+     * @param objs 数组
+     * @param val  值，可以是 null，如果是对象，则会用 equals 来比较
      * @return 新的数组实例
      */
     @SuppressWarnings("unchecked")
@@ -713,10 +709,12 @@ public abstract class Lang {
         List<T> list = new ArrayList<T>(objs.length);
         Class<?> eleType = null;
         for (T obj : objs) {
-            if (obj == val || (null != obj && null != val && obj.equals(val)))
+            if (obj == val || (null != obj && null != val && obj.equals(val))) {
                 continue;
-            if (null == eleType && obj != null)
+            }
+            if (null == eleType && obj != null) {
                 eleType = obj.getClass();
+            }
             list.add(obj);
         }
         if (list.isEmpty()) {
@@ -730,20 +728,20 @@ public abstract class Lang {
      * <p>
      * 每个元素之间，都会用一个给定的字符分隔
      *
-     * @param c
-     *            分隔符
-     * @param vals
-     *            数组
+     * @param c    分隔符
+     * @param vals 数组
      * @return 拼合后的字符串
      */
     public static StringBuilder concat(Object c, long[] vals) {
         StringBuilder sb = new StringBuilder();
-        if (null == vals || 0 == vals.length)
+        if (null == vals || 0 == vals.length) {
             return sb;
+        }
 
         sb.append(vals[0]);
-        for (int i = 1; i < vals.length; i++)
+        for (int i = 1; i < vals.length; i++) {
             sb.append(c).append(vals[i]);
+        }
 
         return sb;
     }
@@ -753,20 +751,20 @@ public abstract class Lang {
      * <p>
      * 每个元素之间，都会用一个给定的字符分隔
      *
-     * @param c
-     *            分隔符
-     * @param vals
-     *            数组
+     * @param c    分隔符
+     * @param vals 数组
      * @return 拼合后的字符串
      */
     public static StringBuilder concat(Object c, int[] vals) {
         StringBuilder sb = new StringBuilder();
-        if (null == vals || 0 == vals.length)
+        if (null == vals || 0 == vals.length) {
             return sb;
+        }
 
         sb.append(vals[0]);
-        for (int i = 1; i < vals.length; i++)
+        for (int i = 1; i < vals.length; i++) {
             sb.append(c).append(vals[i]);
+        }
 
         return sb;
     }
@@ -776,20 +774,17 @@ public abstract class Lang {
      * <p>
      * 每个元素之间，都会用一个给定的字符分隔
      *
-     * @param offset
-     *            开始元素的下标
-     * @param len
-     *            元素数量
-     * @param c
-     *            分隔符
-     * @param objs
-     *            数组
+     * @param offset 开始元素的下标
+     * @param len    元素数量
+     * @param c      分隔符
+     * @param objs   数组
      * @return 拼合后的字符串
      */
     public static <T> StringBuilder concat(int offset, int len, Object c, T[] objs) {
         StringBuilder sb = new StringBuilder();
-        if (null == objs || len < 0 || 0 == objs.length)
+        if (null == objs || len < 0 || 0 == objs.length) {
             return sb;
+        }
 
         if (offset < objs.length) {
             sb.append(objs[offset]);
@@ -803,26 +798,23 @@ public abstract class Lang {
     /**
      * 将一个数组所有元素拼合成一个字符串
      *
-     * @param objs
-     *            数组
+     * @param objs 数组
      * @return 拼合后的字符串
      */
     public static <T> StringBuilder concat(T[] objs) {
         StringBuilder sb = new StringBuilder();
-        for (T e : objs)
+        for (T e : objs) {
             sb.append(e.toString());
+        }
         return sb;
     }
 
     /**
      * 将一个数组部分元素拼合成一个字符串
      *
-     * @param offset
-     *            开始元素的下标
-     * @param len
-     *            元素数量
-     * @param array
-     *            数组
+     * @param offset 开始元素的下标
+     * @param len    元素数量
+     * @param array  数组
      * @return 拼合后的字符串
      */
     public static <T> StringBuilder concat(int offset, int len, T[] array) {
@@ -838,16 +830,15 @@ public abstract class Lang {
      * <p>
      * 每个元素之间，都会用一个给定的字符分隔
      *
-     * @param c
-     *            分隔符
-     * @param coll
-     *            集合
+     * @param c    分隔符
+     * @param coll 集合
      * @return 拼合后的字符串
      */
     public static <T> StringBuilder concat(Object c, Collection<T> coll) {
         StringBuilder sb = new StringBuilder();
-        if (null == coll || coll.isEmpty())
+        if (null == coll || coll.isEmpty()) {
             return sb;
+        }
         return concat(c, coll.iterator());
     }
 
@@ -856,58 +847,54 @@ public abstract class Lang {
      * <p>
      * 每个元素之间，都会用一个给定的字符分隔
      *
-     * @param c
-     *            分隔符
-     * @param it
-     *            集合
+     * @param c  分隔符
+     * @param it 集合
      * @return 拼合后的字符串
      */
     public static <T> StringBuilder concat(Object c, Iterator<T> it) {
         StringBuilder sb = new StringBuilder();
-        if (it == null || !it.hasNext())
+        if (it == null || !it.hasNext()) {
             return sb;
+        }
         sb.append(it.next());
-        while (it.hasNext())
+        while (it.hasNext()) {
             sb.append(c).append(it.next());
+        }
         return sb;
     }
 
     /**
      * 将一个或者多个数组填入一个集合。
      *
-     * @param <C>
-     *            集合类型
-     * @param <T>
-     *            数组元素类型
-     * @param coll
-     *            集合
-     * @param objss
-     *            数组 （数目可变）
+     * @param <C>   集合类型
+     * @param <T>   数组元素类型
+     * @param coll  集合
+     * @param objss 数组 （数目可变）
      * @return 集合对象
      */
     public static <C extends Collection<T>, T> C fill(C coll, T[]... objss) {
-        for (T[] objs : objss)
-            for (T obj : objs)
+        for (T[] objs : objss) {
+            for (T obj : objs) {
                 coll.add(obj);
+            }
+        }
         return coll;
     }
 
     /**
      * 将一个集合变成 Map。
      *
-     * @param mapClass
-     *            Map 的类型
-     * @param coll
-     *            集合对象
-     * @param keyFieldName
-     *            采用集合中元素的哪个一个字段为键。
+     * @param mapClass     Map 的类型
+     * @param coll         集合对象
+     * @param keyFieldName 采用集合中元素的哪个一个字段为键。
      * @return Map 对象
      */
     public static <T extends Map<Object, Object>> T collection2map(Class<T> mapClass,
                                                                    Collection<?> coll,
                                                                    String keyFieldName) {
-        if (null == coll)
+        if (null == coll) {
             return null;
+        }
         T map = createMap(mapClass);
         if (coll.size() > 0) {
             Iterator<?> it = coll.iterator();
@@ -915,7 +902,7 @@ public abstract class Lang {
             Mirror<?> mirror = Mirror.me(obj.getClass());
             Object key = mirror.getValue(obj, keyFieldName);
             map.put(key, obj);
-            for (; it.hasNext();) {
+            for (; it.hasNext(); ) {
                 obj = it.next();
                 key = mirror.getValue(obj, keyFieldName);
                 map.put(key, obj);
@@ -927,16 +914,17 @@ public abstract class Lang {
     /**
      * 将集合变成 ArrayList
      *
-     * @param col
-     *            集合对象
+     * @param col 集合对象
      * @return 列表对象
      */
     @SuppressWarnings("unchecked")
     public static <E> List<E> collection2list(Collection<E> col) {
-        if (null == col)
+        if (null == col) {
             return null;
-        if (col.size() == 0)
+        }
+        if (col.size() == 0) {
             return new ArrayList<E>(0);
+        }
         Class<E> eleType = (Class<E>) col.iterator().next().getClass();
         return collection2list(col, eleType);
     }
@@ -944,34 +932,35 @@ public abstract class Lang {
     /**
      * 将集合编程变成指定类型的列表
      *
-     * @param col
-     *            集合对象
-     * @param eleType
-     *            列表类型
+     * @param col     集合对象
+     * @param eleType 列表类型
      * @return 列表对象
      */
     public static <E> List<E> collection2list(Collection<?> col, Class<E> eleType) {
-        if (null == col)
+        if (null == col) {
             return null;
+        }
         List<E> list = new ArrayList<E>(col.size());
-        for (Object obj : col)
+        for (Object obj : col) {
             list.add(Castors.me().castTo(obj, eleType));
+        }
         return list;
     }
 
     /**
      * 将集合变成数组，数组的类型为集合的第一个元素的类型。如果集合为空，则返回 null
      *
-     * @param coll
-     *            集合对象
+     * @param coll 集合对象
      * @return 数组
      */
     @SuppressWarnings("unchecked")
     public static <E> E[] collection2array(Collection<E> coll) {
-        if (null == coll)
+        if (null == coll) {
             return null;
-        if (coll.size() == 0)
+        }
+        if (coll.size() == 0) {
             return (E[]) new Object[0];
+        }
 
         Class<E> eleType = (Class<E>) Lang.first(coll).getClass();
         return collection2array(coll, eleType);
@@ -980,24 +969,24 @@ public abstract class Lang {
     /**
      * 将集合变成指定类型的数组
      *
-     * @param col
-     *            集合对象
-     * @param eleType
-     *            数组元素类型
+     * @param col     集合对象
+     * @param eleType 数组元素类型
      * @return 数组
      */
     @SuppressWarnings("unchecked")
     public static <E> E[] collection2array(Collection<?> col, Class<E> eleType) {
-        if (null == col)
+        if (null == col) {
             return null;
+        }
         Object re = Array.newInstance(eleType, col.size());
         int i = 0;
-        for (Iterator<?> it = col.iterator(); it.hasNext();) {
+        for (Iterator<?> it = col.iterator(); it.hasNext(); ) {
             Object obj = it.next();
-            if (null == obj)
+            if (null == obj) {
                 Array.set(re, i++, null);
-            else
+            } else {
                 Array.set(re, i++, Castors.me().castTo(obj, eleType));
+            }
         }
         return (E[]) re;
     }
@@ -1005,19 +994,17 @@ public abstract class Lang {
     /**
      * 将一个数组变成 Map
      *
-     * @param mapClass
-     *            Map 的类型
-     * @param array
-     *            数组
-     * @param keyFieldName
-     *            采用集合中元素的哪个一个字段为键。
+     * @param mapClass     Map 的类型
+     * @param array        数组
+     * @param keyFieldName 采用集合中元素的哪个一个字段为键。
      * @return Map 对象
      */
     public static <T extends Map<Object, Object>> T array2map(Class<T> mapClass,
                                                               Object array,
                                                               String keyFieldName) {
-        if (null == array)
+        if (null == array) {
             return null;
+        }
         T map = createMap(mapClass);
         int len = Array.getLength(array);
         if (len > 0) {
@@ -1037,8 +1024,7 @@ public abstract class Lang {
         T map;
         try {
             map = mapClass.newInstance();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             map = (T) new HashMap<Object, Object>();
         }
         if (!mapClass.isAssignableFrom(map.getClass())) {
@@ -1050,35 +1036,33 @@ public abstract class Lang {
     /**
      * 将数组转换成一个列表。
      *
-     * @param array
-     *            原始数组
+     * @param array 原始数组
      * @return 新列表
-     *
      * @see org.nutz.castor.Castors
      */
     public static <T> List<T> array2list(T[] array) {
-        if (null == array)
+        if (null == array) {
             return null;
+        }
         List<T> re = new ArrayList<T>(array.length);
-        for (T obj : array)
+        for (T obj : array) {
             re.add(obj);
+        }
         return re;
     }
 
     /**
      * 将数组转换成一个列表。将会采用 Castor 来深层转换数组元素
      *
-     * @param array
-     *            原始数组
-     * @param eleType
-     *            新列表的元素类型
+     * @param array   原始数组
+     * @param eleType 新列表的元素类型
      * @return 新列表
-     *
      * @see org.nutz.castor.Castors
      */
     public static <T, E> List<E> array2list(Object array, Class<E> eleType) {
-        if (null == array)
+        if (null == array) {
             return null;
+        }
         int len = Array.getLength(array);
         List<E> re = new ArrayList<E>(len);
         for (int i = 0; i < len; i++) {
@@ -1091,19 +1075,17 @@ public abstract class Lang {
     /**
      * 将数组转换成另外一种类型的数组。将会采用 Castor 来深层转换数组元素
      *
-     * @param array
-     *            原始数组
-     * @param eleType
-     *            新数组的元素类型
+     * @param array   原始数组
+     * @param eleType 新数组的元素类型
      * @return 新数组
      * @throws FailToCastObjectException
-     *
      * @see org.nutz.castor.Castors
      */
     public static Object array2array(Object array, Class<?> eleType)
             throws FailToCastObjectException {
-        if (null == array)
+        if (null == array) {
             return null;
+        }
         int len = Array.getLength(array);
         Object re = Array.newInstance(eleType, len);
         for (int i = 0; i < len; i++) {
@@ -1115,19 +1097,17 @@ public abstract class Lang {
     /**
      * 将数组转换成Object[] 数组。将会采用 Castor 来深层转换数组元素
      *
-     * @param args
-     *            原始数组
-     * @param pts
-     *            新数组的元素类型
+     * @param args 原始数组
+     * @param pts  新数组的元素类型
      * @return 新数组
      * @throws FailToCastObjectException
-     *
      * @see org.nutz.castor.Castors
      */
     public static <T> Object[] array2ObjectArray(T[] args, Class<?>[] pts)
             throws FailToCastObjectException {
-        if (null == args)
+        if (null == args) {
             return null;
+        }
         Object[] newArgs = new Object[args.length];
         for (int i = 0; i < args.length; i++) {
             newArgs[i] = Castors.me().castTo(args[i], pts[i]);
@@ -1138,21 +1118,21 @@ public abstract class Lang {
     /**
      * 根据一个 Map，和给定的对象类型，创建一个新的 JAVA 对象
      *
-     * @param src
-     *            Map 对象
-     * @param toType
-     *            JAVA 对象类型
+     * @param src    Map 对象
+     * @param toType JAVA 对象类型
      * @return JAVA 对象
      * @throws FailToCastObjectException
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T> T map2Object(Map<?, ?> src, Class<T> toType)
             throws FailToCastObjectException {
-        if (null == toType)
+        if (null == toType) {
             throw new FailToCastObjectException("target type is Null");
+        }
         // 类型相同
-        if (toType == Map.class)
+        if (toType == Map.class) {
             return (T) src;
+        }
         // 也是一种 Map
         if (Map.class.isAssignableFrom(toType)) {
             Map map;
@@ -1160,15 +1140,15 @@ public abstract class Lang {
                 map = (Map) toType.newInstance();
                 map.putAll(src);
                 return (T) map;
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new FailToCastObjectException("target type fail to born!", unwrapThrow(e));
             }
 
         }
         // 数组
-        if (toType.isArray())
+        if (toType.isArray()) {
             return (T) Lang.collection2array(src.values(), toType.getComponentType());
+        }
         // List
         if (List.class == toType) {
             return (T) Lang.collection2list(src.values());
@@ -1206,7 +1186,7 @@ public abstract class Lang {
                         Collection newCol;
                         //Class eleType = Mirror.getGenericTypes(field, 0);
                         Class<?> eleType = ReflectTool.getParameterRealGenericClass(toType,
-                                field.getGenericType(),0);
+                                field.getGenericType(), 0);
                         if (ft == List.class) {
                             newCol = new ArrayList(c.size());
                         } else if (ft == Set.class) {
@@ -1214,8 +1194,7 @@ public abstract class Lang {
                         } else {
                             try {
                                 newCol = (Collection) ft.newInstance();
-                            }
-                            catch (Exception e) {
+                            } catch (Exception e) {
                                 throw Lang.wrapThrow(e);
                             }
                         }
@@ -1238,8 +1217,7 @@ public abstract class Lang {
                     else {
                         try {
                             map = (Map) ft.newInstance();
-                        }
-                        catch (Exception e) {
+                        } catch (Exception e) {
                             throw new FailToCastObjectException("target type fail to born!", e);
                         }
                     }
@@ -1247,10 +1225,11 @@ public abstract class Lang {
                     //final Class<?> valType = Mirror.getGenericTypes(field, 1);
                     //map的key和value字段类型
                     final Class<?> keyType = ReflectTool.getParameterRealGenericClass(toType,
-                            field.getGenericType(),0);
-                    final Class<?> valType =ReflectTool.getParameterRealGenericClass(toType,
-                            field.getGenericType(),1);
+                            field.getGenericType(), 0);
+                    final Class<?> valType = ReflectTool.getParameterRealGenericClass(toType,
+                            field.getGenericType(), 1);
                     each(v, new Each<Entry>() {
+                        @Override
                         public void invoke(int i, Entry en, int length) {
                             map.put(Castors.me().castTo(en.getKey(), keyType),
                                     Castors.me().castTo(en.getValue(), valType));
@@ -1271,16 +1250,16 @@ public abstract class Lang {
     /**
      * 根据一段字符串，生成一个 Map 对象。
      *
-     * @param str
-     *            参照 JSON 标准的字符串，但是可以没有前后的大括号
+     * @param str 参照 JSON 标准的字符串，但是可以没有前后的大括号
      * @return Map 对象
      */
     public static NutMap map(String str) {
-        if (null == str)
+        if (null == str) {
             return null;
+        }
         str = Strings.trim(str);
         if (!Strings.isEmpty(str)
-            && (Strings.isQuoteBy(str, '{', '}') || Strings.isQuoteBy(str, '(', ')'))) {
+                && (Strings.isQuoteBy(str, '{', '}') || Strings.isQuoteBy(str, '(', ')'))) {
             return Json.fromJson(NutMap.class, str);
         }
         return Json.fromJson(NutMap.class, "{" + str + "}");
@@ -1288,17 +1267,12 @@ public abstract class Lang {
 
     /**
      * 将一个 Map 所有的键都按照回调进行修改
-     *
+     * <p>
      * 本函数遇到数组或者集合，会自动处理每个元素
      *
-     * @param obj
-     *            要转换的 Map 或者 集合或者数组
-     *
-     * @param mkc
-     *            键值修改的回调
-     * @param recur
-     *            遇到 Map 是否递归
-     *
+     * @param obj   要转换的 Map 或者 集合或者数组
+     * @param mkc   键值修改的回调
+     * @param recur 遇到 Map 是否递归
      * @see MapKeyConvertor
      */
     @SuppressWarnings("unchecked")
@@ -1311,8 +1285,9 @@ public abstract class Lang {
                 String key = en.getKey();
                 Object val = en.getValue();
 
-                if (recur)
+                if (recur) {
                     convertMapKey(val, mkc, recur);
+                }
 
                 String newKey = mkc.convertKey(key);
                 map2.put(newKey, val);
@@ -1337,10 +1312,8 @@ public abstract class Lang {
     /**
      * 创建一个一个键的 Map 对象
      *
-     * @param key
-     *            键
-     * @param v
-     *            值
+     * @param key 键
+     * @param v   值
      * @return Map 对象
      */
     public static NutMap map(String key, Object v) {
@@ -1350,10 +1323,8 @@ public abstract class Lang {
     /**
      * 根据一个格式化字符串，生成 Map 对象
      *
-     * @param fmt
-     *            格式化字符串
-     * @param args
-     *            字符串参数
+     * @param fmt  格式化字符串
+     * @param args 字符串参数
      * @return Map 对象
      */
     public static NutMap mapf(String fmt, Object... args) {
@@ -1372,9 +1343,7 @@ public abstract class Lang {
     /**
      * 根据一个 Map 包裹成一个上下文对象
      *
-     * @param map
-     *            Map 对象
-     *
+     * @param map Map 对象
      * @return 一个新创建的上下文对象
      */
     public static Context context(Map<String, Object> map) {
@@ -1384,11 +1353,8 @@ public abstract class Lang {
     /**
      * 根据一段 JSON 字符串，生产一个新的上下文对象
      *
-     * @param fmt
-     *            JSON 字符串模板
-     * @param args
-     *            模板参数
-     *
+     * @param fmt  JSON 字符串模板
+     * @param args 模板参数
      * @return 一个新创建的上下文对象
      */
     public static Context contextf(String fmt, Object... args) {
@@ -1407,16 +1373,17 @@ public abstract class Lang {
     /**
      * 根据一段字符串，生成一个List 对象。
      *
-     * @param str
-     *            参照 JSON 标准的字符串，但是可以没有前后的中括号
+     * @param str 参照 JSON 标准的字符串，但是可以没有前后的中括号
      * @return List 对象
      */
     @SuppressWarnings("unchecked")
     public static List<Object> list4(String str) {
-        if (null == str)
+        if (null == str) {
             return null;
-        if ((str.length() > 0 && str.charAt(0) == '[') && str.endsWith("]"))
+        }
+        if ((str.length() > 0 && str.charAt(0) == '[') && str.endsWith("]")) {
             return (List<Object>) Json.fromJson(str);
+        }
         return (List<Object>) Json.fromJson("[" + str + "]");
     }
 
@@ -1437,8 +1404,9 @@ public abstract class Lang {
      */
     @Deprecated
     public static int length(Object obj) {
-        if (null == obj)
+        if (null == obj) {
             return 0;
+        }
         if (obj.getClass().isArray()) {
             return Array.getLength(obj);
         } else if (obj instanceof Collection<?>) {
@@ -1448,8 +1416,8 @@ public abstract class Lang {
         }
         try {
             return (Integer) Mirror.me(obj.getClass()).invoke(obj, "length");
+        } catch (Exception e) {
         }
-        catch (Exception e) {}
         return 1;
     }
 
@@ -1469,8 +1437,9 @@ public abstract class Lang {
      */
     public static int eleSize(Object obj) {
         // 空指针，就是 0
-        if (null == obj)
+        if (null == obj) {
             return 0;
+        }
         // 数组
         if (obj.getClass().isArray()) {
             return Array.getLength(obj);
@@ -1490,21 +1459,22 @@ public abstract class Lang {
     /**
      * 如果是数组或集合取得第一个对象。 否则返回自身
      *
-     * @param obj
-     *            任意对象
+     * @param obj 任意对象
      * @return 第一个代表对象
      */
     public static Object first(Object obj) {
-        if (null == obj)
+        if (null == obj) {
             return obj;
+        }
 
         if (obj instanceof Collection<?>) {
             Iterator<?> it = ((Collection<?>) obj).iterator();
             return it.hasNext() ? it.next() : null;
         }
 
-        if (obj.getClass().isArray())
+        if (obj.getClass().isArray()) {
             return Array.getLength(obj) > 0 ? Array.get(obj, 0) : null;
+        }
 
         return obj;
     }
@@ -1512,26 +1482,26 @@ public abstract class Lang {
     /**
      * 获取集合中的第一个元素，如果集合为空，返回 null
      *
-     * @param coll
-     *            集合
+     * @param coll 集合
      * @return 第一个元素
      */
     public static <T> T first(Collection<T> coll) {
-        if (null == coll || coll.isEmpty())
+        if (null == coll || coll.isEmpty()) {
             return null;
+        }
         return coll.iterator().next();
     }
 
     /**
      * 获得表中的第一个名值对
      *
-     * @param map
-     *            表
+     * @param map 表
      * @return 第一个名值对
      */
     public static <K, V> Entry<K, V> first(Map<K, V> map) {
-        if (null == map || map.isEmpty())
+        if (null == map || map.isEmpty()) {
             return null;
+        }
         return map.entrySet().iterator().next();
     }
 
@@ -1558,10 +1528,8 @@ public abstract class Lang {
      * <li>单一元素
      * </ul>
      *
-     * @param obj
-     *            对象
-     * @param callback
-     *            回调
+     * @param obj      对象
+     * @param callback 回调
      */
     public static <T> void each(Object obj, Each<T> callback) {
         each(obj, true, callback);
@@ -1576,70 +1544,70 @@ public abstract class Lang {
      * <li>单一元素
      * </ul>
      *
-     * @param obj
-     *            对象
-     * @param loopMap
-     *            是否循环 Map，如果循环 Map 则主要看 callback 的 T，如果是 Map.Entry 则循环 Entry
-     *            否循环 value。如果本值为 false， 则将 Map 当作一个完整的对象来看待
-     * @param callback
-     *            回调
+     * @param obj      对象
+     * @param loopMap  是否循环 Map，如果循环 Map 则主要看 callback 的 T，如果是 Map.Entry 则循环 Entry
+     *                 否循环 value。如果本值为 false， 则将 Map 当作一个完整的对象来看待
+     * @param callback 回调
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static <T> void each(Object obj, boolean loopMap, Each<T> callback) {
-        if (null == obj || null == callback)
+        if (null == obj || null == callback) {
             return;
+        }
         try {
             // 循环开始
-            if (callback instanceof Loop)
-                if (!((Loop) callback).begin())
+            if (callback instanceof Loop) {
+                if (!((Loop) callback).begin()) {
                     return;
+                }
+            }
 
             // 进行循环
             if (obj.getClass().isArray()) {
                 int len = Array.getLength(obj);
-                for (int i = 0; i < len; i++)
+                for (int i = 0; i < len; i++) {
                     try {
                         callback.invoke(i, (T) Array.get(obj, i), len);
-                    }
-                    catch (ContinueLoop e) {}
-                    catch (ExitLoop e) {
+                    } catch (ContinueLoop e) {
+                    } catch (ExitLoop e) {
                         break;
                     }
+                }
             } else if (obj instanceof Collection) {
                 int len = ((Collection) obj).size();
                 int i = 0;
-                for (Iterator<T> it = ((Collection) obj).iterator(); it.hasNext();)
+                for (Iterator<T> it = ((Collection) obj).iterator(); it.hasNext(); ) {
                     try {
                         callback.invoke(i++, it.next(), len);
-                    }
-                    catch (ContinueLoop e) {}
-                    catch (ExitLoop e) {
+                    } catch (ContinueLoop e) {
+                    } catch (ExitLoop e) {
                         break;
                     }
+                }
             } else if (loopMap && obj instanceof Map) {
                 Map map = (Map) obj;
                 int len = map.size();
                 int i = 0;
                 Class<T> eType = Mirror.getTypeParam(callback.getClass(), 0);
                 if (null != eType && eType != Object.class && eType.isAssignableFrom(Entry.class)) {
-                    for (Object v : map.entrySet())
+                    for (Object v : map.entrySet()) {
                         try {
                             callback.invoke(i++, (T) v, len);
-                        }
-                        catch (ContinueLoop e) {}
-                        catch (ExitLoop e) {
+                        } catch (ContinueLoop e) {
+                        } catch (ExitLoop e) {
                             break;
                         }
+                    }
 
                 } else {
-                    for (Object v : map.entrySet())
+                    for (Object v : map.entrySet()) {
                         try {
                             callback.invoke(i++, (T) ((Entry) v).getValue(), len);
-                        }
-                        catch (ContinueLoop e) {}
-                        catch (ExitLoop e) {
+                        } catch (ContinueLoop e) {
+                        } catch (ExitLoop e) {
                             break;
                         }
+                    }
                 }
             } else if (obj instanceof Iterator<?>) {
                 Iterator<?> it = (Iterator<?>) obj;
@@ -1647,24 +1615,24 @@ public abstract class Lang {
                 while (it.hasNext()) {
                     try {
                         callback.invoke(i++, (T) it.next(), -1);
-                    }
-                    catch (ContinueLoop e) {}
-                    catch (ExitLoop e) {
+                    } catch (ContinueLoop e) {
+                    } catch (ExitLoop e) {
                         break;
                     }
                 }
-            } else
+            } else {
                 try {
                     callback.invoke(0, (T) obj, 1);
+                } catch (ContinueLoop e) {
+                } catch (ExitLoop e) {
                 }
-                catch (ContinueLoop e) {}
-                catch (ExitLoop e) {}
+            }
 
             // 循环结束
-            if (callback instanceof Loop)
+            if (callback instanceof Loop) {
                 ((Loop) callback).end();
-        }
-        catch (LoopException e) {
+            }
+        } catch (LoopException e) {
             throw Lang.wrapThrow(e.getCause());
         }
     }
@@ -1675,26 +1643,25 @@ public abstract class Lang {
      * 如果该下标越界，则返回 null
      *
      * @param <T>
-     * @param array
-     *            数组，如果为 null 则直接返回 null
-     * @param index
-     *            下标，-1 表示倒数第一个， -2 表示倒数第二个，以此类推
+     * @param array 数组，如果为 null 则直接返回 null
+     * @param index 下标，-1 表示倒数第一个， -2 表示倒数第二个，以此类推
      * @return 数组元素
      */
     public static <T> T get(T[] array, int index) {
-        if (null == array)
+        if (null == array) {
             return null;
+        }
         int i = index < 0 ? array.length + index : index;
-        if (i < 0 || i >= array.length)
+        if (i < 0 || i >= array.length) {
             return null;
+        }
         return array[i];
     }
 
     /**
      * 将一个抛出对象的异常堆栈，显示成一个字符串
      *
-     * @param e
-     *            抛出对象
+     * @param e 抛出对象
      * @return 异常堆栈文本
      */
     public static String getStackTrace(Throwable e) {
@@ -1715,17 +1682,19 @@ public abstract class Lang {
      * <li>true | false
      * </ul>
      *
-     * @param s
-     *            字符串
+     * @param s 字符串
      * @return 布尔值
      */
     public static boolean parseBoolean(String s) {
-        if (null == s || s.length() == 0)
+        if (null == s || s.length() == 0) {
             return false;
-        if (s.length() > 5)
+        }
+        if (s.length() > 5) {
             return true;
-        if ("0".equals(s))
+        }
+        if ("0".equals(s)) {
             return false;
+        }
         s = s.toLowerCase();
         return !"false".equals(s) && !"off".equals(s) && !"no".equals(s);
     }
@@ -1743,15 +1712,15 @@ public abstract class Lang {
     /**
      * 对Thread.sleep(long)的简单封装,不抛出任何异常
      *
-     * @param millisecond
-     *            休眠时间
+     * @param millisecond 休眠时间
      */
     public static void quiteSleep(long millisecond) {
         try {
-            if (millisecond > 0)
+            if (millisecond > 0) {
                 Thread.sleep(millisecond);
+            }
+        } catch (Throwable e) {
         }
-        catch (Throwable e) {}
     }
 
     /**
@@ -1764,8 +1733,7 @@ public abstract class Lang {
      * <li>69 - 普通整数 Integer</li>
      * </ul>
      *
-     * @param s
-     *            参数
+     * @param s 参数
      * @return 数字对象
      */
     public static Number str2number(String s) {
@@ -1792,8 +1760,9 @@ public abstract class Lang {
         }
         // 普通整数
         Long re = Long.parseLong(s);
-        if (Integer.MAX_VALUE >= re && re >= Integer.MIN_VALUE)
+        if (Integer.MAX_VALUE >= re && re >= Integer.MIN_VALUE) {
             return re.intValue();
+        }
         return re;
     }
 
@@ -1802,8 +1771,9 @@ public abstract class Lang {
                                                                 T map,
                                                                 final Map<Object, Object> memo) {
         // 已经转换过了，不要递归转换
-        if (null == obj || memo.containsKey(obj))
+        if (null == obj || memo.containsKey(obj)) {
             return;
+        }
         memo.put(obj, "");
 
         // Fix issue #497
@@ -1834,6 +1804,7 @@ public abstract class Lang {
             else if (mr.isColl()) {
                 final List<Object> list = new ArrayList<Object>(Lang.length(v));
                 Lang.each(v, new Each<Object>() {
+                    @Override
                     public void invoke(int index, Object ele, int length) {
                         __join_ele_to_list_as_map(list, ele, memo);
                     }
@@ -1850,8 +1821,7 @@ public abstract class Lang {
                 T sub;
                 try {
                     sub = (T) map.getClass().newInstance();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     throw Lang.wrapThrow(e);
                 }
                 obj2map(v, sub, memo);
@@ -1866,8 +1836,9 @@ public abstract class Lang {
         NutMap re = new NutMap();
         for (Map.Entry<String, Object> en : map.entrySet()) {
             Object v = en.getValue();
-            if (null == v)
+            if (null == v) {
                 continue;
+            }
             Mirror<?> mr = Mirror.me(v);
             // 普通值
             if (mr.isSimple()) {
@@ -1881,6 +1852,7 @@ public abstract class Lang {
             else if (mr.isColl()) {
                 final List<Object> list2 = new ArrayList<Object>(Lang.length(v));
                 Lang.each(v, new Each<Object>() {
+                    @Override
                     public void invoke(int index, Object ele, int length) {
                         __join_ele_to_list_as_map(list2, ele, memo);
                     }
@@ -1929,6 +1901,7 @@ public abstract class Lang {
         else if (mr.isColl()) {
             final List<Object> list2 = new ArrayList<Object>(Lang.length(o));
             Lang.each(o, new Each<Object>() {
+                @Override
                 public void invoke(int index, Object ele, int length) {
                     __join_ele_to_list_as_map(list2, ele, memo);
                 }
@@ -1950,8 +1923,7 @@ public abstract class Lang {
     /**
      * 将对象转换成 Map
      *
-     * @param obj
-     *            POJO 对象
+     * @param obj POJO 对象
      * @return Map 对象
      */
     @SuppressWarnings("unchecked")
@@ -1962,8 +1934,7 @@ public abstract class Lang {
     /**
      * 将对象转为 Nutz 的标准 Map 封装
      *
-     * @param obj
-     *            POJO du对象
+     * @param obj POJO du对象
      * @return NutMap 对象
      */
     public static NutMap obj2nutmap(Object obj) {
@@ -1974,10 +1945,8 @@ public abstract class Lang {
      * 将对象转换成 Map
      *
      * @param <T>
-     * @param obj
-     *            POJO 对象
-     * @param mapType
-     *            Map 的类型
+     * @param obj     POJO 对象
+     * @param mapType Map 的类型
      * @return Map 对象
      */
     public static <T extends Map<String, Object>> T obj2map(Object obj, Class<T> mapType) {
@@ -1985,8 +1954,7 @@ public abstract class Lang {
             T map = mapType.newInstance();
             Lang.obj2map(obj, map, new HashMap<Object, Object>());
             return map;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw Lang.wrapThrow(e);
         }
     }
@@ -1994,17 +1962,18 @@ public abstract class Lang {
     /**
      * 返回一个集合对象的枚举对象。实际上就是对 Iterator 接口的一个封装
      *
-     * @param col
-     *            集合对象
+     * @param col 集合对象
      * @return 枚举对象
      */
     public static <T> Enumeration<T> enumeration(Collection<T> col) {
         final Iterator<T> it = col.iterator();
         return new Enumeration<T>() {
+            @Override
             public boolean hasMoreElements() {
                 return it.hasNext();
             }
 
+            @Override
             public T nextElement() {
                 return it.next();
             }
@@ -2014,43 +1983,42 @@ public abstract class Lang {
     /**
      * 将枚举对象，变成集合
      *
-     * @param enums
-     *            枚举对象
-     * @param cols
-     *            集合对象
+     * @param enums 枚举对象
+     * @param cols  集合对象
      * @return 集合对象
      */
     public static <T extends Collection<E>, E> T enum2collection(Enumeration<E> enums, T cols) {
-        while (enums.hasMoreElements())
+        while (enums.hasMoreElements()) {
             cols.add(enums.nextElement());
+        }
         return cols;
     }
 
     /**
      * 将字符数组强制转换成字节数组。如果字符为双字节编码，则会丢失信息
      *
-     * @param cs
-     *            字符数组
+     * @param cs 字符数组
      * @return 字节数组
      */
     public static byte[] toBytes(char[] cs) {
         byte[] bs = new byte[cs.length];
-        for (int i = 0; i < cs.length; i++)
+        for (int i = 0; i < cs.length; i++) {
             bs[i] = (byte) cs[i];
+        }
         return bs;
     }
 
     /**
      * 将整数数组强制转换成字节数组。整数的高位将会被丢失
      *
-     * @param is
-     *            整数数组
+     * @param is 整数数组
      * @return 字节数组
      */
     public static byte[] toBytes(int[] is) {
         byte[] bs = new byte[is.length];
-        for (int i = 0; i < is.length; i++)
+        for (int i = 0; i < is.length; i++) {
             bs[i] = (byte) is[i];
+        }
         return bs;
     }
 
@@ -2063,8 +2031,7 @@ public abstract class Lang {
         try {
             String os = System.getenv("OS");
             return os != null && os.indexOf("Windows") > -1;
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
             return false;
         }
     }
@@ -2075,8 +2042,7 @@ public abstract class Lang {
     public static Class<?> loadClass(String className) throws ClassNotFoundException {
         try {
             return Thread.currentThread().getContextClassLoader().loadClass(className);
-        }
-        catch (Throwable e) {
+        } catch (Throwable e) {
             return Class.forName(className);
         }
     }
@@ -2093,27 +2059,34 @@ public abstract class Lang {
     /**
      * 获取基本类型的默认值
      *
-     * @param pClass
-     *            基本类型
+     * @param pClass 基本类型
      * @return 0/false,如果传入的pClass不是基本类型的类,则返回null
      */
     public static Object getPrimitiveDefaultValue(Class<?> pClass) {
-        if (int.class.equals(pClass))
+        if (int.class.equals(pClass)) {
             return Integer.valueOf(0);
-        if (long.class.equals(pClass))
+        }
+        if (long.class.equals(pClass)) {
             return Long.valueOf(0);
-        if (short.class.equals(pClass))
+        }
+        if (short.class.equals(pClass)) {
             return Short.valueOf((short) 0);
-        if (float.class.equals(pClass))
+        }
+        if (float.class.equals(pClass)) {
             return Float.valueOf(0f);
-        if (double.class.equals(pClass))
+        }
+        if (double.class.equals(pClass)) {
             return Double.valueOf(0);
-        if (byte.class.equals(pClass))
+        }
+        if (byte.class.equals(pClass)) {
             return Byte.valueOf((byte) 0);
-        if (char.class.equals(pClass))
+        }
+        if (char.class.equals(pClass)) {
             return Character.valueOf((char) 0);
-        if (boolean.class.equals(pClass))
+        }
+        if (boolean.class.equals(pClass)) {
             return Boolean.FALSE;
+        }
         return null;
     }
 
@@ -2196,8 +2169,7 @@ public abstract class Lang {
     /**
      * 获取一个 Type 类型实际对应的Class
      *
-     * @param type
-     *            类型
+     * @param type 类型
      * @return 与Type类型实际对应的Class
      */
     @SuppressWarnings("rawtypes")
@@ -2215,13 +2187,15 @@ public abstract class Lang {
         } else if (type instanceof TypeVariable) {
             TypeVariable tv = (TypeVariable) type;
             Type[] ts = tv.getBounds();
-            if (ts != null && ts.length > 0)
+            if (ts != null && ts.length > 0) {
                 return getTypeClass(ts[0]);
+            }
         } else if (type instanceof WildcardType) {
             WildcardType wt = (WildcardType) type;
             Type[] t_low = wt.getLowerBounds();// 取其下界
-            if (t_low.length > 0)
+            if (t_low.length > 0) {
                 return getTypeClass(t_low[0]);
+            }
             Type[] t_up = wt.getUpperBounds(); // 没有下界?取其上界
             return getTypeClass(t_up[0]);// 最起码有Object作为上界
         }
@@ -2231,8 +2205,7 @@ public abstract class Lang {
     /**
      * 返回一个 Type 的泛型数组, 如果没有, 则直接返回null
      *
-     * @param type
-     *            类型
+     * @param type 类型
      * @return 一个 Type 的泛型数组, 如果没有, 则直接返回null
      */
     public static Type[] getGenericsTypes(Type type) {
@@ -2247,10 +2220,8 @@ public abstract class Lang {
      * 强制从字符串转换成一个 Class，将 ClassNotFoundException 包裹成 RuntimeException
      *
      * @param <T>
-     * @param name
-     *            类名
-     * @param type
-     *            这个类型的边界
+     * @param name 类名
+     * @param type 这个类型的边界
      * @return 类对象
      */
     @SuppressWarnings("unchecked")
@@ -2259,8 +2230,7 @@ public abstract class Lang {
         try {
             re = Lang.loadClass(name);
             return (Class<T>) re;
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             throw Lang.wrapThrow(e);
         }
     }
@@ -2268,8 +2238,7 @@ public abstract class Lang {
     /**
      * 获取指定文件的 MD5 值
      *
-     * @param f
-     *            文件
+     * @param f 文件
      * @return 指定文件的 MD5 值
      * @see #digest(String, File)
      */
@@ -2280,8 +2249,7 @@ public abstract class Lang {
     /**
      * 获取指定输入流的 MD5 值
      *
-     * @param ins
-     *            输入流
+     * @param ins 输入流
      * @return 指定输入流的 MD5 值
      * @see #digest(String, InputStream)
      */
@@ -2292,8 +2260,7 @@ public abstract class Lang {
     /**
      * 获取指定字符串的 MD5 值
      *
-     * @param cs
-     *            字符串
+     * @param cs 字符串
      * @return 指定字符串的 MD5 值
      * @see #digest(String, CharSequence)
      */
@@ -2304,8 +2271,7 @@ public abstract class Lang {
     /**
      * 获取指定文件的 SHA1 值
      *
-     * @param f
-     *            文件
+     * @param f 文件
      * @return 指定文件的 SHA1 值
      * @see #digest(String, File)
      */
@@ -2316,8 +2282,7 @@ public abstract class Lang {
     /**
      * 获取指定输入流的 SHA1 值
      *
-     * @param ins
-     *            输入流
+     * @param ins 输入流
      * @return 指定输入流的 SHA1 值
      * @see #digest(String, InputStream)
      */
@@ -2328,8 +2293,7 @@ public abstract class Lang {
     /**
      * 获取指定字符串的 SHA1 值
      *
-     * @param cs
-     *            字符串
+     * @param cs 字符串
      * @return 指定字符串的 SHA1 值
      * @see #digest(String, CharSequence)
      */
@@ -2340,8 +2304,7 @@ public abstract class Lang {
     /**
      * 获取指定文件的 SHA256 值
      *
-     * @param f
-     *            文件
+     * @param f 文件
      * @return 指定文件的 SHA256 值
      * @see #digest(String, File)
      */
@@ -2352,8 +2315,7 @@ public abstract class Lang {
     /**
      * 获取指定输入流的 SHA256 值
      *
-     * @param ins
-     *            输入流
+     * @param ins 输入流
      * @return 指定输入流的 SHA256 值
      * @see #digest(String, InputStream)
      */
@@ -2364,8 +2326,7 @@ public abstract class Lang {
     /**
      * 获取指定字符串的 SHA256 值
      *
-     * @param cs
-     *            字符串
+     * @param cs 字符串
      * @return 指定字符串的 SHA256 值
      * @see #digest(String, CharSequence)
      */
@@ -2376,10 +2337,8 @@ public abstract class Lang {
     /**
      * 从数据文件计算出数字签名
      *
-     * @param algorithm
-     *            算法，比如 "SHA1" "SHA-256" 或者 "MD5" 等
-     * @param f
-     *            文件
+     * @param algorithm 算法，比如 "SHA1" "SHA-256" 或者 "MD5" 等
+     * @param f         文件
      * @return 数字签名
      */
     public static String digest(String algorithm, File f) {
@@ -2389,10 +2348,8 @@ public abstract class Lang {
     /**
      * 从流计算出数字签名，计算完毕流会被关闭
      *
-     * @param algorithm
-     *            算法，比如 "SHA1" 或者 "MD5" 等
-     * @param ins
-     *            输入流
+     * @param algorithm 算法，比如 "SHA1" 或者 "MD5" 等
+     * @param ins       输入流
      * @return 数字签名
      */
     public static String digest(String algorithm, InputStream ins) {
@@ -2408,17 +2365,13 @@ public abstract class Lang {
             byte[] hashBytes = md.digest();
 
             return fixedHexString(hashBytes);
-        }
-        catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             throw Lang.wrapThrow(e);
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             throw Lang.wrapThrow(e);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw Lang.wrapThrow(e);
-        }
-        finally {
+        } finally {
             Streams.safeClose(ins);
         }
     }
@@ -2426,10 +2379,8 @@ public abstract class Lang {
     /**
      * 从字符串计算出数字签名
      *
-     * @param algorithm
-     *            算法，比如 "SHA1" 或者 "MD5" 等
-     * @param cs
-     *            字符串
+     * @param algorithm 算法，比如 "SHA1" 或者 "MD5" 等
+     * @param cs        字符串
      * @return 数字签名
      */
     public static String digest(String algorithm, CharSequence cs) {
@@ -2439,14 +2390,10 @@ public abstract class Lang {
     /**
      * 从字节数组计算出数字签名
      *
-     * @param algorithm
-     *            算法，比如 "SHA1" 或者 "MD5" 等
-     * @param bytes
-     *            字节数组
-     * @param salt
-     *            随机字节数组
-     * @param iterations
-     *            迭代次数
+     * @param algorithm  算法，比如 "SHA1" 或者 "MD5" 等
+     * @param bytes      字节数组
+     * @param salt       随机字节数组
+     * @param iterations 迭代次数
      * @return 数字签名
      */
     public static String digest(String algorithm, byte[] bytes, byte[] salt, int iterations) {
@@ -2465,13 +2412,14 @@ public abstract class Lang {
             }
 
             return fixedHexString(hashBytes);
-        }
-        catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             throw Lang.wrapThrow(e);
         }
     }
 
-    /** 当前运行的 Java 虚拟机是否是在安卓环境 */
+    /**
+     * 当前运行的 Java 虚拟机是否是在安卓环境
+     */
     public static final boolean isAndroid;
 
     static {
@@ -2479,16 +2427,15 @@ public abstract class Lang {
         try {
             Class.forName("android.Manifest");
             flag = true;
+        } catch (Throwable e) {
         }
-        catch (Throwable e) {}
         isAndroid = flag;
     }
 
     /**
      * 将指定的数组的内容倒序排序。注意，这会破坏原数组的内容
      *
-     * @param arrays
-     *            指定的数组
+     * @param arrays 指定的数组
      */
     public static <T> void reverse(T[] arrays) {
         int size = arrays.length;
@@ -2512,8 +2459,8 @@ public abstract class Lang {
 
     public static String simpleMethodDesc(Method method) {
         return String.format("%s.%s(...)",
-                             method.getDeclaringClass().getSimpleName(),
-                             method.getName());
+                method.getDeclaringClass().getSimpleName(),
+                method.getName());
     }
 
     public static String fixedHexString(byte[] hashBytes) {
@@ -2528,14 +2475,12 @@ public abstract class Lang {
     /**
      * 一个便利的方法，将当前线程睡眠一段时间
      *
-     * @param ms
-     *            要睡眠的时间 ms
+     * @param ms 要睡眠的时间 ms
      */
     public static void sleep(long ms) {
         try {
             Thread.sleep(ms);
-        }
-        catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             throw Lang.wrapThrow(e);
         }
     }
@@ -2543,34 +2488,32 @@ public abstract class Lang {
     /**
      * 一个便利的等待方法同步一个对象
      *
-     * @param lock
-     *            锁对象
-     * @param ms
-     *            要等待的时间 ms
+     * @param lock 锁对象
+     * @param ms   要等待的时间 ms
      */
     public static void wait(Object lock, long ms) {
-        if (null != lock)
+        if (null != lock) {
             synchronized (lock) {
                 try {
                     lock.wait(ms);
-                }
-                catch (InterruptedException e) {
+                } catch (InterruptedException e) {
                     throw Lang.wrapThrow(e);
                 }
             }
+        }
     }
 
     /**
      * 通知对象的同步锁
      *
-     * @param lock
-     *            锁对象
+     * @param lock 锁对象
      */
     public static void notifyAll(Object lock) {
-        if (null != lock)
+        if (null != lock) {
             synchronized (lock) {
                 lock.notifyAll();
             }
+        }
     }
 
     public static void runInAnThread(Runnable runnable) {
@@ -2580,17 +2523,12 @@ public abstract class Lang {
     /**
      * map对象浅过滤,返回值是一个新的map
      *
-     * @param source
-     *            原始的map对象
-     * @param prefix
-     *            包含什么前缀,并移除前缀
-     * @param include
-     *            正则表达式 仅包含哪些key(如果有前缀要求,则已经移除了前缀)
-     * @param exclude
-     *            正则表达式 排除哪些key(如果有前缀要求,则已经移除了前缀)
-     * @param keyMap
-     *            映射map, 原始key--目标key (如果有前缀要求,则已经移除了前缀)
-     * @return 经过过滤的map,与原始map不是同一个对象
+     * @param source  原始的map对象
+     * @param prefix  包含什么前缀,并移除前缀
+     * @param include 正则表达式 仅包含哪些key(如果有前缀要求,则已经移除了前缀)
+     * @param exclude 正则表达式 排除哪些key(如果有前缀要求,则已经移除了前缀)
+     * @param keyMap  映射map, 原始key--目标key (如果有前缀要求,则已经移除了前缀)
+     * @return 经过过滤的map, 与原始map不是同一个对象
      */
     public static Map<String, Object> filter(Map<String, Object> source,
                                              String prefix,
@@ -2598,8 +2536,9 @@ public abstract class Lang {
                                              String exclude,
                                              Map<String, String> keyMap) {
         LinkedHashMap<String, Object> dst = new LinkedHashMap<String, Object>();
-        if (source == null || source.isEmpty())
+        if (source == null || source.isEmpty()) {
             return dst;
+        }
 
         Pattern includePattern = include == null ? null : Regex.getPattern(include);
         Pattern excludePattern = exclude == null ? null : Regex.getPattern(exclude);
@@ -2607,19 +2546,23 @@ public abstract class Lang {
         for (Entry<String, Object> en : source.entrySet()) {
             String key = en.getKey();
             if (prefix != null) {
-                if (key.startsWith(prefix))
+                if (key.startsWith(prefix)) {
                     key = key.substring(prefix.length());
-                else
+                } else {
                     continue;
+                }
             }
-            if (includePattern != null && !includePattern.matcher(key).find())
+            if (includePattern != null && !includePattern.matcher(key).find()) {
                 continue;
-            if (excludePattern != null && excludePattern.matcher(key).find())
+            }
+            if (excludePattern != null && excludePattern.matcher(key).find()) {
                 continue;
-            if (keyMap != null && keyMap.containsKey(key))
+            }
+            if (keyMap != null && keyMap.containsKey(key)) {
                 dst.put(keyMap.get(key), en.getValue());
-            else
+            } else {
                 dst.put(key, en.getValue());
+            }
         }
         return dst;
     }
@@ -2627,13 +2570,13 @@ public abstract class Lang {
     /**
      * 获得访问者的IP地址, 反向代理过的也可以获得
      *
-     * @param request
-     *            请求的req对象
+     * @param request 请求的req对象
      * @return 来源ip
      */
     public static String getIP(HttpServletRequest request) {
-        if (request == null)
+        if (request == null) {
             return "";
+        }
         String ip = request.getHeader("X-Forwarded-For");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
@@ -2661,13 +2604,135 @@ public abstract class Lang {
                 }
             }
         }
-        if (Strings.isBlank(ip))
+        if (Strings.isBlank(ip)) {
             return "";
+        }
         if (isIPv4Address(ip) || isIPv6Address(ip)) {
             return ip;
         }
         return "";
     }
+
+    /**
+     * 将IPv4地址转换成字节
+     *
+     * @param text IPv4地址
+     * @return byte 字节
+     */
+    public static byte[] textToNumericFormatV4(String text) {
+        if (text.length() == 0) {
+            return null;
+        }
+
+        byte[] bytes = new byte[4];
+        String[] elements = text.split("\\.", -1);
+        try {
+            long l;
+            int i;
+            switch (elements.length) {
+                case 1:
+                    l = Long.parseLong(elements[0]);
+                    if ((l < 0L) || (l > 4294967295L)) {
+                        return null;
+                    }
+                    bytes[0] = (byte) (int) (l >> 24 & 0xFF);
+                    bytes[1] = (byte) (int) ((l & 0xFFFFFF) >> 16 & 0xFF);
+                    bytes[2] = (byte) (int) ((l & 0xFFFF) >> 8 & 0xFF);
+                    bytes[3] = (byte) (int) (l & 0xFF);
+                    break;
+                case 2:
+                    l = Integer.parseInt(elements[0]);
+                    if ((l < 0L) || (l > 255L)) {
+                        return null;
+                    }
+                    bytes[0] = (byte) (int) (l & 0xFF);
+                    l = Integer.parseInt(elements[1]);
+                    if ((l < 0L) || (l > 16777215L)) {
+                        return null;
+                    }
+                    bytes[1] = (byte) (int) (l >> 16 & 0xFF);
+                    bytes[2] = (byte) (int) ((l & 0xFFFF) >> 8 & 0xFF);
+                    bytes[3] = (byte) (int) (l & 0xFF);
+                    break;
+                case 3:
+                    for (i = 0; i < 2; ++i) {
+                        l = Integer.parseInt(elements[i]);
+                        if ((l < 0L) || (l > 255L)) {
+                            return null;
+                        }
+                        bytes[i] = (byte) (int) (l & 0xFF);
+                    }
+                    l = Integer.parseInt(elements[2]);
+                    if ((l < 0L) || (l > 65535L)) {
+                        return null;
+                    }
+                    bytes[2] = (byte) (int) (l >> 8 & 0xFF);
+                    bytes[3] = (byte) (int) (l & 0xFF);
+                    break;
+                case 4:
+                    for (i = 0; i < 4; ++i) {
+                        l = Integer.parseInt(elements[i]);
+                        if ((l < 0L) || (l > 255L)) {
+                            return null;
+                        }
+                        bytes[i] = (byte) (int) (l & 0xFF);
+                    }
+                    break;
+                default:
+                    return null;
+            }
+        } catch (NumberFormatException e) {
+            return null;
+        }
+        return bytes;
+    }
+
+    /**
+     * 判断是否是内网
+     *
+     * @param addr
+     * @return
+     */
+    private static boolean internalIp(byte[] addr) {
+        final byte b0 = addr[0];
+        final byte b1 = addr[1];
+        // 10.x.x.x/8
+        final byte SECTION_1 = 0x0A;
+        // 172.16.x.x/12
+        final byte SECTION_2 = (byte) 0xAC;
+        final byte SECTION_3 = (byte) 0x10;
+        final byte SECTION_4 = (byte) 0x1F;
+        // 192.168.x.x/16
+        final byte SECTION_5 = (byte) 0xC0;
+        final byte SECTION_6 = (byte) 0xA8;
+        switch (b0) {
+            case SECTION_1:
+                return true;
+            case SECTION_2:
+                if (b1 >= SECTION_3 && b1 <= SECTION_4) {
+                    return true;
+                }
+            case SECTION_5:
+                switch (b1) {
+                    case SECTION_6:
+                        return true;
+                }
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * 判断是否是内网
+     *
+     * @param ip
+     * @return
+     */
+    public static boolean internalIp(String ip) {
+        byte[] addr = textToNumericFormatV4(ip);
+        return internalIp(addr) || "127.0.0.1".equals(ip);
+    }
+
 
     /**
      * @return 返回当前程序运行的根目录
@@ -2690,10 +2755,12 @@ public abstract class Lang {
                                        String lock,
                                        boolean ignoreNull,
                                        boolean ignoreStatic) {
-        if (origin == null)
+        if (origin == null) {
             throw new IllegalArgumentException("origin is null");
-        if (target == null)
+        }
+        if (target == null) {
             throw new IllegalArgumentException("target is null");
+        }
         Pattern at = active == null ? null : Regex.getPattern(active);
         Pattern lo = lock == null ? null : Regex.getPattern(lock);
         Mirror<Object> originMirror = Mirror.me(origin);
@@ -2701,15 +2768,19 @@ public abstract class Lang {
         Field[] fields = targetMirror.getFields();
         for (Field field : originMirror.getFields()) {
             String name = field.getName();
-            if (at != null && !at.matcher(name).find())
+            if (at != null && !at.matcher(name).find()) {
                 continue;
-            if (lo != null && lo.matcher(name).find())
+            }
+            if (lo != null && lo.matcher(name).find()) {
                 continue;
-            if (ignoreStatic && Modifier.isStatic(field.getModifiers()))
+            }
+            if (ignoreStatic && Modifier.isStatic(field.getModifiers())) {
                 continue;
+            }
             Object val = originMirror.getValue(origin, field);
-            if (ignoreNull && val == null)
+            if (ignoreNull && val == null) {
                 continue;
+            }
             for (Field _field : fields) {
                 if (_field.getName().equals(field.getName())) {
                     targetMirror.setValue(target, _field, val);
@@ -2763,8 +2834,7 @@ public abstract class Lang {
     public static Class<?> loadClassQuite(String className) {
         try {
             return loadClass(className);
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             return null;
         }
     }
@@ -2775,8 +2845,7 @@ public abstract class Lang {
             ObjectOutputStream oos = new ObjectOutputStream(bao);
             oos.writeObject(obj);
             return bao.toByteArray();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             return null;
         }
     }
@@ -2785,41 +2854,46 @@ public abstract class Lang {
     public static <T> T fromBytes(byte[] buf, Class<T> klass) {
         try {
             return (T) new ObjectInputStream(new ByteArrayInputStream(buf)).readObject();
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             return null;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             return null;
         }
     }
-    
+
     public static class JdkTool {
         public static String getVersionLong() {
             Properties sys = System.getProperties();
             return sys.getProperty("java.version");
         }
+
         public static int getMajorVersion() {
             String ver = getVersionLong();
-            if (Strings.isBlank(ver))
+            if (Strings.isBlank(ver)) {
                 return 6;
+            }
             String[] tmp = ver.split("\\.");
-            if (tmp.length < 2)
+            if (tmp.length < 2) {
                 return 6;
+            }
             int t = Integer.parseInt(tmp[0]);
-            if (t > 1)
+            if (t > 1) {
                 return t;
+            }
             return Integer.parseInt(tmp[1]);
         }
+
         public static boolean isEarlyAccess() {
             String ver = getVersionLong();
-            if (Strings.isBlank(ver))
+            if (Strings.isBlank(ver)) {
                 return false;
+            }
             return ver.contains("-ea");
         }
-        
+
         /**
          * 获取进程id
+         *
          * @param fallback 如果获取失败,返回什么呢?
          * @return 进程id
          */
@@ -2831,13 +2905,12 @@ public abstract class Lang {
             }
             try {
                 return Long.toString(Long.parseLong(jvmName.substring(0, index)));
-            }
-            catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
             }
             return fallback;
         }
     }
-    
+
     /**
      * 判断一个对象是否不为空。它支持如下对象类型：
      * <ul>
@@ -2848,8 +2921,7 @@ public abstract class Lang {
      * <li>其他对象 : 一定不为空
      * </ul>
      *
-     * @param obj
-     *            任意对象
+     * @param obj 任意对象
      * @return 是否为空
      */
     public static boolean isNotEmpty(Object obj) {
@@ -2864,10 +2936,12 @@ public abstract class Lang {
      * @return 指定字符串的 HmacMD5 值
      */
     public static String hmacmd5(String data, String secret) {
-        if (isEmpty(data))
+        if (isEmpty(data)) {
             throw new NullPointerException("data is null");
-        if (isEmpty(secret))
+        }
+        if (isEmpty(secret)) {
             throw new NullPointerException("secret is null");
+        }
         byte[] bytes = null;
         try {
             SecretKey secretKey = new SecretKeySpec(secret.getBytes(Encoding.UTF8), "HmacMD5");
@@ -2880,8 +2954,8 @@ public abstract class Lang {
         }
         return fixedHexString(bytes);
     }
-    
-        /**
+
+    /**
      * 获取指定字符串的 HmacSHA256 值
      *
      * @param data   字符串
@@ -2889,10 +2963,12 @@ public abstract class Lang {
      * @return 指定字符串的 HmacSHA256 值
      */
     public static String hmacSHA256(String data, String secret) {
-        if (isEmpty(data))
+        if (isEmpty(data)) {
             throw new NullPointerException("data is null");
-        if (isEmpty(secret))
+        }
+        if (isEmpty(secret)) {
             throw new NullPointerException("secret is null");
+        }
         byte[] bytes = null;
         try {
             SecretKey secretKey = new SecretKeySpec(secret.getBytes(Encoding.UTF8), "HmacSHA256");
