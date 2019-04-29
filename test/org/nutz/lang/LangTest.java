@@ -20,6 +20,8 @@ import org.nutz.lang.meta.Issue1288User;
 import org.nutz.lang.meta.TestR;
 import org.nutz.lang.util.NutMap;
 
+import static org.nutz.lang.Lang.internalIp;
+
 public class LangTest extends Assert {
 
     /**
@@ -410,5 +412,12 @@ public class LangTest extends Assert {
         assertNotNull(user);
         Long id = user.getId();
         assertEquals(1L, id.longValue());
+    }
+
+    @Test
+    public void test_internalIp(){
+        internalIp("127.0.0.1");
+        internalIp("192.168.0.113");
+
     }
 }
