@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 
 import javax.sql.DataSource;
 
+import org.nutz.conf.NutConf;
 import org.nutz.dao.DB;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.entity.Entity;
@@ -46,6 +47,7 @@ import org.nutz.dao.impl.entity.info.TableInfo;
 import org.nutz.dao.impl.entity.info._Infos;
 import org.nutz.dao.impl.entity.macro.ElFieldMacro;
 import org.nutz.dao.impl.entity.macro.SqlFieldMacro;
+import org.nutz.dao.interceptor.PojoInterceptor;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.sql.Pojo;
@@ -324,6 +326,12 @@ public class AnnotationEntityMaker implements EntityMaker {
 			holder.remove(en);
 			throw Lang.wrapThrow(e);
 		}
+        // 处理Pojo拦截器
+        if (NutConf.DAO_USE_POJO_INTERCEPTOR && ti.annTable != null) {
+            PojoInterceptor pint = Mirror.me(ti.annTable.interceptor()).born();
+            pint.setupEntity(en, expert);
+            en.setInterceptor(pint);
+        }
 
         // 搞定收工，哦耶 ^_^
         en.setComplete(true);
