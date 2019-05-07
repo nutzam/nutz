@@ -1199,11 +1199,19 @@ public class JsonTest {
     }
 
 	
-	@Test
-	public void test_instant_field() throws ParseException {
-		Instant instant = Times.parse("yyyy-MM-dd HH:mm:ss", "2018-06-30 18:27:10").toInstant();
-		String json = Json.toJson(instant,JsonFormat.compact().setDateFormat("yyyy-MM-dd HH:mm:ss"));
-		assertEquals("\"2018-06-30 18:27:10\"", json);
-	}
+//	@Test
+//	public void test_instant_field() throws ParseException {
+//		Instant instant = Times.parse("yyyy-MM-dd HH:mm:ss", "2018-06-30 18:27:10").toInstant();
+//		String json = Json.toJson(instant,JsonFormat.compact().setDateFormat("yyyy-MM-dd HH:mm:ss"));
+//		assertEquals("\"2018-06-30 18:27:10\"", json);
+//	}
 
+
+    
+    @Test
+    public void test_bignumber() throws ParseException {
+        String json = "{abc:10012319000008971306}";
+        Object re = Json.fromJson(json);
+        System.out.println(Json.toJson(re));
+    }
 }
