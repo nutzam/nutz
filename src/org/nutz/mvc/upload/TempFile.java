@@ -7,6 +7,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.tika.Tika;
+import org.apache.tika.mime.MimeType;
+import org.apache.tika.mime.MimeTypeException;
+import org.apache.tika.mime.MimeTypes;
 import org.nutz.lang.Files;
 
 /**
@@ -87,7 +91,27 @@ public class TempFile {
     public void delete() throws IOException {
     	file.delete();
     }
-    
+
+    /**
+     * 获取文件扩展名
+     *
+     * @return
+     */
+    public String getExtension() {
+        Tika tika = new Tika();
+        try {
+            String contentType = tika.detect(file);
+            MimeTypes allTypes = MimeTypes.getDefaultMimeTypes();
+            MimeType mimeType = allTypes.forName(contentType);
+            return mimeType.getExtension();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (MimeTypeException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * 未实现
      */
@@ -108,4 +132,6 @@ public class TempFile {
     public Collection<String> getHeaderNames() {
     	return new ArrayList<String>();
     }
+
+
 }

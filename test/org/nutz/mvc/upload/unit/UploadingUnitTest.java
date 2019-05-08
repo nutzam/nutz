@@ -434,4 +434,44 @@ public class UploadingUnitTest {
         FieldMeta fm = new FieldMeta(str);
         assertEquals("2.1检举、控告危害航标的行为，对破案有功; 及时制止危害航标的行为，防止事故发生或者减少损失;捞获水上漂流航标，主动送交航标管理机关奖励.xls", fm.getFileLocalName());
     }
+
+    /**
+     * 获取文件后缀测试
+     * @throws Exception
+     */
+    @Test
+    public void test_upload_getExtension() throws Exception {
+        MockHttpServletRequest req = Mock.servlet.request();
+        req.setPathInfo("/nutz/junit/uploading");
+        File txt = Files.findFile("org/nutz/mvc/upload/files/quick/abc.zdoc");
+        File empty = Files.findFile("org/nutz/mvc/upload/files/empty.txt");
+        File red = Files.findFile("org/nutz/mvc/upload/files/quick/red.png");
+
+        MultipartInputStream ins = Mock.servlet.insmulti(charset);
+        ins.append("abc", txt);
+        ins.append("empty", empty);
+        ins.append("red", red);
+        req.setInputStream(ins);
+        req.init();
+
+        /*
+         * 默认不忽略空文件
+         */
+        Uploading up = UploadUnit.TYPE.born();
+        Map<String, Object> map = up.parse(req, UploadingContext.create(tmps));
+        assertEquals(3, map.size());
+        TempFile txt2 = (TempFile) map.get("abc");
+        TempFile empty2 = (TempFile) map.get("empty");
+        TempFile red2 = (TempFile) map.get("red");
+
+        assertEquals(".txt", txt2.getExtension());
+        assertTrue(Streams.equals(Streams.fileIn(txt), txt2.getInputStream()));
+
+        assertEquals(".txt", empty2.getExtension());
+        assertTrue(Streams.equals(Streams.fileIn(empty), empty2.getInputStream()));
+
+        assertEquals(".png", red2.getExtension());
+        assertTrue(Streams.equals(Streams.fileIn(red), red2.getInputStream()));
+
+    }
 }
