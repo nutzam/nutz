@@ -79,11 +79,11 @@ public class JsonRenderImpl implements JsonRender {
                         return;
                     }
                     memo.add(obj);
-                    handler.toJson(null, obj, this, format);
+                    handler.toJson(mirror, obj, this, format);
                     memo.remove(obj);
                 }
                 else
-                    handler.toJson(null, obj, this, format);
+                    handler.toJson(mirror, obj, this, format);
                 return;
             }
         }

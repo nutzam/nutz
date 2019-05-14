@@ -29,7 +29,7 @@ public class JsonEnumHandler extends JsonTypeHandler {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void toJson(Mirror<?> mirror, Object currentObj, JsonRender r, JsonFormat jf) throws IOException {
-		Mirror mr = Mirror.me(currentObj.getClass());
+		Mirror mr = mirror;
 		// 枚举
 		if (mr.isEnum()) {
 			JsonShape shape = Mirror.getAnnotationDeep(mr.getType(), JsonShape.class);
