@@ -16,5 +16,6 @@ import org.junit.runners.Suite;
                      ContextTest.class,
                      NutMapTest.class,
                      RegionTest.class,
-                     MultiLinePropertiesTest.class})
+                     MultiLinePropertiesTest.class,
+                     ResidentStatusTest.class})
 public class AllUtil {}

@@ -1,10 +1,13 @@
 package org.nutz.el;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Queue;
 
-import org.nutz.el.arithmetic.ShuntingYard;
 import org.nutz.el.arithmetic.RPN;
+import org.nutz.el.arithmetic.ShuntingYard;
+import org.nutz.el.opt.RunMethod;
+import org.nutz.el.opt.custom.CustomMake;
 import org.nutz.lang.Lang;
 import org.nutz.lang.segment.CharSegment;
 import org.nutz.lang.util.Context;
@@ -84,5 +87,13 @@ public class El {
             main.putAll(key, el.eval(ctx));
         }
         return seg.render(main).toString();
+    }
+    
+    public static void register(String name, RunMethod run) {
+        CustomMake.me().register(name, run);
+    }
+    
+    public static void register(String name, Method method) {
+        CustomMake.me().register(name, method);
     }
 }
