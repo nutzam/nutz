@@ -2,6 +2,16 @@
 #index:0,1
 #author:wendal(wendal1985@gmail.com)
 
+1.r.68.v20190516
+
+	* add: 添加@PrevInsert/@PrevUpdate/@PrevDelete注解
+	* add: EL类添加2个帮助方法,方便添加自定义函数
+	* add: 添加dao层的LocalDate类的支持 by gengxiaoxiaoxin
+	* add: hmacSHA256方法 by howe
+	* fix: Mirror处理特殊枚举类时,没有正确判断枚举类型
+	* fix: 登出的时候, session可能已经销毁, 但AbstractPathView不应该抛异常
+	* fix: update:Daos中获取Table注解方式与AnnotationEntityMaker保持一致 by happyday517
+
 --------------------------------------------------------------------------------------------------------
 1.r.68.v20190329
 
