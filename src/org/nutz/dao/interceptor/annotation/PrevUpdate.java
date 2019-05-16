@@ -8,12 +8,24 @@ import java.lang.annotation.Target;
 
 import org.nutz.dao.entity.annotation.EL;
 
+/**
+ * 在执行更新操作时触发
+ * @author wendal
+ *
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Documented
 public @interface PrevUpdate {
 
+
+    /**
+     * 执行一个EL表达式,如果返回值不是null,赋值到当前字段
+     */
     EL[] els() default {};
     
+    /**
+     * 设置为当前时间,通常是updateTime字段
+     */
     boolean now() default false;
 }

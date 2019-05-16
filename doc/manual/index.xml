@@ -65,6 +65,7 @@
 		<doc path="dao_create.man"></doc>
 		<doc path="questions.man"></doc>
 		<doc path="update_with_version.man"></doc>
+		<doc path="pojo_interceptor.man"></doc>
 	</doc>
 	<doc path="ioc"	title="Ioc 手册">
 		<doc path="hello.man"/>

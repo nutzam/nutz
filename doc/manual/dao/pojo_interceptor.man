@@ -1,0 +1,57 @@
+#title: Pojo拦截器
+#index:0,1
+---------------------------------------------------------------------------------------------------
+PojoInterceptor能解决什么问题
+
+	* 自定义主键生成策略
+	* 更新对象时自动更新时间戳
+	* 删除对象时自动清除缓存
+	* 其他自定义Pojo行为
+	
+---------------------------------------------------------------------------------------------------
+默认实现类DefaultPojoInterceptor
+
+	拦截器类型是通过@Table(interceptor=XXX.class)配置的,默认是DefaultPojoInterceptor
+	
+	DefaultPojoInterceptor当前实现了3个注解, @PrevInsert/@PrevUpdate/@PrevDelete, 具体用法请查阅[next_prev.man 插入前后的设置]
+
+----------------------------------------------------------------------------------------------------
+当前支持的事件及其触发条件
+
+	* prevInsert 执行dao.insert/dao.fastInsert
+	* prevUpdate 执行dao.update
+	* prevDelete 执行dao.delete
+	
+----------------------------------------------------------------------------------------------------
+扩展示例
+
+	自定义更新行为 @MyUpdateTime
+
+	{{{<JAVA>
+	public MyPojoInterceptor extends DefaultPojoInterceptor {
+	
+		protected void setupFieldAnnotation(final MappingField mf, final Field field, final Annotation anno) {
+			super.setupFieldAnnotation(mf,field,anno);
+			if (anno instanceof MyUpdateTime) {
+				super.list.add(new BasicPojoInterceptor() {
+					public void onEvent(Object obj, Entity<?> en, String event, Object... args) {
+						if ("prevUpdate".equals(event) {
+							// 对obj进行操作
+							// MappingField有字段信息
+							// Field的java属性反射对象
+						}
+    				}
+				});
+			}
+		}
+	}
+	}}}
+	
+-------------------------------------------------------------------------------------------------------
+禁用该特性
+
+	{{{<JAVA>
+	static {
+		NutConf.DAO_USE_POJO_INTERCEPTOR = false;
+	}
+	}}}
