@@ -289,6 +289,7 @@ public class AnnotationIocLoader implements IocLoader {
             eventSet.setDepose(ib.depose().trim().intern());
         if (!Strings.isBlank(ib.fetch()))
             eventSet.setFetch(ib.fetch().trim().intern());
+        iobj.setSingleton(ib.singleton());
         map.put(beanName, iobj);
     }
 
