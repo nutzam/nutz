@@ -1,15 +1,5 @@
 package org.nutz.dao.impl.sql;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.nutz.dao.Condition;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Record;
@@ -17,16 +7,17 @@ import org.nutz.dao.impl.sql.pojo.AbstractPItem;
 import org.nutz.dao.impl.sql.pojo.StaticPItem;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
-import org.nutz.dao.sql.DaoStatement;
-import org.nutz.dao.sql.PItem;
-import org.nutz.dao.sql.Sql;
-import org.nutz.dao.sql.SqlCallback;
-import org.nutz.dao.sql.VarIndex;
-import org.nutz.dao.sql.VarSet;
+import org.nutz.dao.sql.*;
 import org.nutz.dao.util.Pojos;
 import org.nutz.lang.Each;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.*;
 
 public class NutSql extends NutStatement implements Sql {
 
@@ -42,7 +33,7 @@ public class NutSql extends NutStatement implements Sql {
     protected Map<String, ValueAdaptor> customValueAdaptor;
     protected List<PItem> items;
     protected char[] placeholder;
-    
+
     public NutSql() {
         this(null, null);
     }
@@ -205,7 +196,7 @@ public class NutSql extends NutStatement implements Sql {
     class SqlVarPItem extends AbstractPItem {
 
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 2655530650031939556L;
 		public String name;
@@ -227,7 +218,7 @@ public class NutSql extends NutStatement implements Sql {
                 }
             }
         }
-        
+
         public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
             Object val = vars.get(name);
             if (val != null) {
@@ -237,7 +228,7 @@ public class NutSql extends NutStatement implements Sql {
             }
             return off;
         }
-        
+
         public int paramCount(Entity<?> en) {
             Object val = vars.get(name);
             if (val != null) {
@@ -247,7 +238,7 @@ public class NutSql extends NutStatement implements Sql {
             }
             return 0;
         }
-        
+
         public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
             Object val = vars.get(name);
             if (val != null) {
@@ -262,7 +253,7 @@ public class NutSql extends NutStatement implements Sql {
     class SqlParamPItem extends AbstractPItem {
 
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1494513192752663060L;
 		public String name;
@@ -362,7 +353,7 @@ public class NutSql extends NutStatement implements Sql {
             }
         }
     }
-    
+
     /**
      * 若需要定制参数字符和变量字符,覆盖本方法,通过SqlLiteral的构造方法指定之
      */
@@ -371,27 +362,41 @@ public class NutSql extends NutStatement implements Sql {
             return new SqlLiteral().valueOf(sourceSql);
         return new SqlLiteral(placeholder[0], placeholder[1]).valueOf(sourceSql);
     }
-    
+
     public Sql setParam(String name, Object value) {
         params().set(name, value);
         return this;
     }
-    
+
+    public Sql setParams(HashMap<String, Object> params) {
+        for (String key : params.keySet()) {
+            setParam(key,params.get(key));
+        }
+        return this;
+    }
+
     public Sql setVar(String name, Object value) {
         vars().set(name, value);
         return this;
     }
-    
+
+    public Sql setVars(HashMap<String, Object> vars) {
+        for (String key : vars.keySet()) {
+            setVar(key,vars.get(key));
+        }
+        return this;
+    }
+
     public Record getOutParams() {
         return getContext().attr(Record.class, "OUT");
     }
-    
+
     public Sql changePlaceholder (char param, char var) {
         placeholder = new char[]{param, var};
         setSourceSql(getSourceSql());
         return null;
     }
-    
+
     public Sql appendSourceSql(String ext) {
         if (ext != null)
             setSourceSql(getSourceSql() + " " + ext);
