@@ -368,10 +368,8 @@ public class NutSql extends NutStatement implements Sql {
         return this;
     }
 
-    public Sql setParams(HashMap<String, Object> params) {
-        for (String key : params.keySet()) {
-            setParam(key,params.get(key));
-        }
+    public Sql setParams(Map<String, Object> params) {
+        params().putAll(params);
         return this;
     }
 
@@ -380,10 +378,8 @@ public class NutSql extends NutStatement implements Sql {
         return this;
     }
 
-    public Sql setVars(HashMap<String, Object> vars) {
-        for (String key : vars.keySet()) {
-            setVar(key,vars.get(key));
-        }
+    public Sql setVars(Map<String, Object> vars) {
+        vars().putAll(vars);
         return this;
     }
 

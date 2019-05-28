@@ -5,7 +5,7 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.jdbc.ValueAdaptor;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 封装了自定义 SQL
@@ -39,7 +39,7 @@ public interface Sql extends DaoStatement {
      * @return 原Sql对象,用于链式调用
      * @see #params()
      */
-    Sql setVars(HashMap<String,Object> vars);
+    Sql setVars(Map<String,Object> vars);
 
     /**
      * 所谓"参数"，就是当 Sql 对象转换成 PreparedStatement 对象前，会被填充成 ? 的占位符
@@ -66,7 +66,7 @@ public interface Sql extends DaoStatement {
      * @return 原Sql对象,用于链式调用
      * @see #params()
      */
-    Sql setParams(HashMap<String,Object> params);
+    Sql setParams(Map<String,Object> params);
 
     /**
      * 手动为某个语句参数设置适配器。

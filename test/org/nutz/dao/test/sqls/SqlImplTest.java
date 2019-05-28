@@ -51,7 +51,6 @@ public class SqlImplTest {
         params.put("a", 1);
         params.put("b", 2);
         String str = Sqls.create("select * from x where a=@a and b=@b and c=@c").setParams(params).setParam("c", 3).toString();
-        System.out.println(str);
         assertEquals(str, "select * from x where a=1 and b=2 and c=3");
     }
 }
