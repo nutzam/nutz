@@ -73,9 +73,9 @@ public class El {
     public static String render(CharSegment seg, Context ctx) {
         Context main = Lang.context();
         for (String key : seg.keys()) {
-            main.putAll(key, new El(key).eval(ctx));
+            main.set(key, new El(key).eval(ctx));
         }
-        return seg.render(main).toString();
+        return String.valueOf(seg.render(main));
     }
     
     public static String render(CharSegment seg, Map<String, El> els, Context ctx) {
@@ -84,9 +84,9 @@ public class El {
             El el = els.get(key);
             if (el == null)
                 el = new El(key);
-            main.putAll(key, el.eval(ctx));
+            main.set(key, el.eval(ctx));
         }
-        return seg.render(main).toString();
+        return String.valueOf(seg.render(main));
     }
     
     public static void register(String name, RunMethod run) {
