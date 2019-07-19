@@ -37,10 +37,26 @@ Mvc中使用Json
 	内置的模式,一对一对应JsonFormat中的几个快捷方法
 	
 	{{{<Java>
+    /**
+     * 一般模式 -- 换行,但忽略null值
+     */
 	@Ok("json:nice")
+    /**
+     * 全部输出模式 -- 换行,不忽略null值
+     */
 	@Ok("json:full")
+    /**
+     * 为了打印出来容易看，把名字去掉引号
+     */
 	@Ok("json:forLook")
+    /**
+    * 紧凑模式 -- 无换行,忽略null值
+    */
 	@Ok("json:compact")
+    /**
+     * 不换行,不忽略空值
+     */
+	@Ok("json:tidy")
 	}}}
 	
 	详细配置, 后面的就是JsonFormat的json形式而已,与JsonFormat的属性一一对应
