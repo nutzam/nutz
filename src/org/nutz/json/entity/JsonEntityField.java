@@ -218,4 +218,12 @@ public class JsonEntityField {
     public void setEjecting(Ejecting ejecting) {
         this.ejecting = ejecting;
     }
+    
+    public Ejecting getEjecting() {
+        return ejecting;
+    }
+    
+    public Injecting getInjecting() {
+        return injecting;
+    }
 }
