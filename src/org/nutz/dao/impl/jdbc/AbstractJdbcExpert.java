@@ -258,7 +258,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert, Configurable {
         }
     }
 
-    protected static List<DaoStatement> wrap(String... sqls) {
+    protected static List<DaoStatement> getNumberOfRecords(String... sqls) {
         List<DaoStatement> sts = new ArrayList<DaoStatement>(sqls.length);
         for (String sql : sqls)
             if (!Strings.isBlank(sql))
