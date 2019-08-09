@@ -215,6 +215,10 @@ public class AnnotationIocLoader implements IocLoader {
                         iocField.setValue(Iocs.convert(datas[1], true));
                         iocObject.addField(iocField);
                     } else {
+                        if (fieldInfo.endsWith("!optional")) {
+                            iocField.setOptional(true);
+                            fieldInfo = fieldInfo.substring(0, fieldInfo.indexOf("!optional"));
+                        }
                         // 基本形式, 引用与自身同名的bean
                         iocField.setName(fieldInfo);
                         IocValue iocValue = new IocValue();
