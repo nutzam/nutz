@@ -192,6 +192,7 @@ public class AnnotationIocLoader implements IocLoader {
                     } else
                         iocValue = Iocs.convert(inject.value(), true);
                     iocField.setValue(iocValue);
+                    iocField.setOptional(inject.optional()); //对setter方法上的@Inject注解，也支持optional设置
                     iocObject.addField(iocField);
                     fieldList.add(iocField.getName());
                 }
@@ -207,6 +208,10 @@ public class AnnotationIocLoader implements IocLoader {
                         String[] datas = fieldInfo.split(":", 2);
                         // 完整形式, 与@Inject完全一致了
                         iocField.setName(datas[0]);
+                        if (datas[1].endsWith("!optional")) { //fields中支持optional设置
+                            iocField.setOptional(true);
+                            datas[1] = datas[1].substring(0, datas[1].indexOf("!optional"));
+                        }
                         iocField.setValue(Iocs.convert(datas[1], true));
                         iocObject.addField(iocField);
                     } else {
