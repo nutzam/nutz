@@ -23,6 +23,8 @@ public abstract class String2Number<T> extends Castor<String, T> {
     }
 
     protected abstract T getPrimitiveDefaultValue();
+    protected abstract T getFalseValue();
+    protected abstract T getTrueValue();
 
     protected abstract T valueOf(String str);
 
@@ -35,6 +37,19 @@ public abstract class String2Number<T> extends Castor<String, T> {
             && ("null".equals(src) || "NULL".equals(src) || "Null".equals(src))) {
             return null;
         }
+
+
+        if (src.equalsIgnoreCase("true")) {
+
+            return getTrueValue();
+        }
+
+
+        if (src.equalsIgnoreCase("false")) {
+
+            return getFalseValue();
+        }
+
         try {
             return valueOf(src);
         }
