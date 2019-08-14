@@ -18,6 +18,7 @@ import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Pojos;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.util.NutMap;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
                                  + " END IF;"
                                  + " END ${T}_${F}_ST;";
 
+    protected boolean ignoreOneRowPager;
 
     public OracleJdbcExpert(JdbcExpertConfigFile conf) {
         super(conf);
@@ -163,6 +165,8 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         Pager pager = pojo.getContext().getPager();
         // 需要进行分页
         if (null != pager && pager.getPageNumber() > 0) {
+            if (ignoreOneRowPager && pager.getPageNumber() == 1 && pager.getPageSize() == 1)
+                return;
             pojo.insertFirst(Pojos.Items.wrap("SELECT * FROM (SELECT T.*, ROWNUM RN FROM ("));
             pojo.append(Pojos.Items.wrapf(") T WHERE ROWNUM <= %d) WHERE RN > %d",
                                           pager.getOffset() + pager.getPageSize(),
@@ -175,6 +179,8 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         Pager pager = sql.getContext().getPager();
         // 需要进行分页
         if (null != pager && pager.getPageNumber() > 0) {
+            if (ignoreOneRowPager && pager.getPageNumber() == 1 && pager.getPageSize() == 1)
+                return;
             String pre = "SELECT * FROM (SELECT T.*, ROWNUM RN FROM (";
             String last = String.format(") T WHERE ROWNUM <= %d) WHERE RN > %d",
                                         pager.getOffset() + pager.getPageSize(),
@@ -279,5 +285,10 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
             names.add(index);
         }
         return names;
+    }
+
+    public void setupProperties(NutMap conf) {
+        super.setupProperties(conf);
+        this.ignoreOneRowPager = conf.getBoolean("nutz.dao.jdbc.oracle.ignoreOneRowPager", false);
     }
 }

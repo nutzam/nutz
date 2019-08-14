@@ -226,7 +226,21 @@ public class Http {
     }
     
     public static Response post3(String url, Object body, Header header, int timeout, int connTimeout) {
-        Request req = Request.create(url, METHOD.POST).setHeader(header);
+        return httpReq(url,METHOD.POST, body, header, timeout, Sender.Default_Conn_Timeout);
+    }
+
+    /**
+     * 可定义请求方法
+     * @param url 请求地址
+     * @param method 请求方法
+     * @param body 内容
+     * @param header 请求头
+     * @param timeout 超时时间
+     * @param connTimeout
+     * @return
+     */
+    public static Response httpReq(String url, Request.METHOD method, Object body, Header header, int timeout, int connTimeout) {
+        Request req = Request.create(url, method).setHeader(header);
         if (body != null) {
             if (body instanceof InputStream) {
                 req.setInputStream((InputStream) body);

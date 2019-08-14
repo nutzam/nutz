@@ -138,8 +138,9 @@ public class ObjectMakerImpl implements ObjectMaker {
                 dw.fill(ing, obj);
 
             // 对象创建完毕，如果有 create 事件，调用它
-            dw.onCreate(obj);
-
+            Object tmp = dw.onCreate(obj);
+            if (tmp != null)
+                op.setObj(tmp);
         }
         catch (IocException e) {
             ing.getContext().remove(iobj.getScope(), ing.getObjectName());

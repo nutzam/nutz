@@ -964,6 +964,9 @@ public class Images {
             if (img instanceof File)
                 return ImageIO.read((File) img);
 
+            if(img instanceof byte[])
+                return ImageIO.read(new ByteArrayInputStream((byte[])img));
+
             if (img instanceof URL)
                 img = ((URL) img).openStream();
 

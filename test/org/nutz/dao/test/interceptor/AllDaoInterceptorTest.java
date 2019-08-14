@@ -6,7 +6,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    SimpleDaoInterceptorTest.class
+    SimpleDaoInterceptorTest.class,
+    SimplePojoInterceptorTest.class
 })
 public class AllDaoInterceptorTest {
 

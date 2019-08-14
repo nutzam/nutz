@@ -2,14 +2,26 @@ package org.nutz.dao.test.meta;
 
 import java.sql.Timestamp;
 
+import org.nutz.dao.entity.annotation.EL;
+import org.nutz.dao.entity.annotation.Id;
+import org.nutz.dao.entity.annotation.Name;
 import org.nutz.dao.entity.annotation.Table;
+import org.nutz.dao.interceptor.annotation.PrevInsert;
+import org.nutz.dao.interceptor.annotation.PrevUpdate;
 
 @Table("t_xpet")
 public class XPet {
 
+    @Id
 	private long id;
+    @Name
+    @PrevInsert(uu32=true)
 	private String name;
+	
+	@PrevInsert(now=true)
 	private Timestamp createTime;
+	@PrevUpdate(els=@EL("now()"))
+	@PrevInsert(now=true)
 	private Timestamp updateTime;
 	private Timestamp otherTime;
 	public long getId() {

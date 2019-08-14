@@ -54,6 +54,26 @@
 	
 	@Next 的规则和 @Prev 是一样的
 -----------------------------------------------------------------------------------------------------------------
+拦截类注解 - @PrevInsert/@PrevUpdate@PrevDelete
+
+	与@Prev/@Next不同, 这几个注解不涉及SQL操作,这是最大的区别!
+	
+	因为不涉及到sql操作, 所以不影响批量操作,尤其是批量插入.
+	
+	先举个例子,生成uuid,说一下两者的区别:
+	{{{<JAVA>
+	@Name
+	@Prev(els={@EL("uuid()")} // 使用dao.fastInsert(list)会出现name为null,因为@Prev不执行
+	@PrevInsert(@EL("uuid()"} // 使用dao.fastInsert(list)依然正常,@PrevInsert会执行
+	private String name; // 一个字段上不要同时写@Prev和@PrevInsert,上述示例只是为了说明功能
+	
+	@PrevUpdate(now=true) // 执行update时,自动设置为当前时间
+	private Date updateTime;
+	}}}
+
+	上述例子中,@PrevInsert可完美替代@Prev, 实现批量插入,而且可以简写为@PrevInsert(uu32=true)
+	
+-----------------------------------------------------------------------------------------------------------------
 以 @Prev 来举例
 
 	下面让我们举两个例子，详细说明一下 {*变量} 和 {*参数} 的异同点。

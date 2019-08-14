@@ -1,6 +1,7 @@
 package org.nutz.dao.entity;
 
 import org.nutz.dao.FieldMatcher;
+import org.nutz.dao.interceptor.PojoInterceptor;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.util.Context;
@@ -284,4 +285,10 @@ public interface Entity<T> {
      * @return 实体version字段映射
      */
     MappingField getVersionField();
+    
+    PojoInterceptor getInterceptor();
+    
+    void setInterceptor(PojoInterceptor interceptor);
+    
+    boolean hasInsertMacroes();
 }

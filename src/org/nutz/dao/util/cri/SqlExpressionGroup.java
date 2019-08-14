@@ -118,6 +118,14 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     	return and(inStr(name, names.toArray(new String[names.size()])));
     }
 
+    /**
+     * 用法
+     * cnd.where().andInBySql("dept_id","SELECT id FROM sys_dept  WHERE FIND_IN_SET ('%s',ancestors)", deptId)；
+     * @param name 查询条件
+     * @param subSql sql
+     * @param args 参数
+     * @return
+     */
     public SqlExpressionGroup andInBySql(String name, String subSql, Object... args) {
         return and(inSql(name, subSql, args));
     }

@@ -60,6 +60,6 @@ Session机制是什么?
 --------------------------------------------------------------------------------------------
 哪里有现成的实现?
 
-	* [nutzmore项目 https://github.com/nutzam/nutzmore/tree/master/nutz-integration-shiro]
+	* [https://github.com/nutzam/nutzmore/tree/master/nutz-integration-shiro nutzmore项目 ]
 	* [https://git.oschina.net/nutz/nutzmore/tree/master/nutz-integration-shiro Git@OSC镜像]
 	* 有ShiroSessionProvider,使用Shiro的Session代替原生session

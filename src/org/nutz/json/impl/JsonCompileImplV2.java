@@ -3,6 +3,7 @@ package org.nutz.json.impl;
 import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -276,7 +277,7 @@ final class JsonTokenScan {
                     switch (token.value.charAt(token.value.length() - 1)) {
                     case 'l':
                     case 'L':
-                        return Long.parseLong(token.value.substring(0, token.value.length() - 1));
+                        return toLong(token.value.substring(0, token.value.length() - 1));
                     case 'f':
                     case 'F':
                         return Float.parseFloat(token.value.substring(0, token.value.length() - 1));
@@ -289,15 +290,9 @@ final class JsonTokenScan {
                         }
                     }
                 }
-                Nums.Radix r = Nums.evalRadix(token.value);
-                long n = 0;
-                try {
-                    n = Long.parseLong(r.val, r.radix);
-                } catch (Throwable e) {
-                    n = Long.parseLong(token.value);
-                }
-                if (Integer.MAX_VALUE >= n && n >= Integer.MIN_VALUE) {
-                    return (int) n;
+                Number n = toLong(token.value);
+                if (n instanceof Long && Integer.MAX_VALUE >= n.longValue() && n.longValue() >= Integer.MIN_VALUE) {
+                    return n.intValue();
                 }
                 return n;
             }
@@ -308,6 +303,20 @@ final class JsonTokenScan {
             if (token.type == Comma)
                 return COMMA;
             throw unexpectChar((char) token.type);
+        }
+    }
+    
+    protected Number toLong(String value) {
+        Nums.Radix r = Nums.evalRadix(value);
+        try {
+            return Long.parseLong(r.val, r.radix);
+        } catch (Throwable e) {
+            try {
+                return Long.parseLong(value);
+            }
+            catch (NumberFormatException e1) {
+                return new BigInteger(value);
+            }
         }
     }
 

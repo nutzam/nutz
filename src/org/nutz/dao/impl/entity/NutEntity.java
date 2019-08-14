@@ -3,6 +3,7 @@ package org.nutz.dao.impl.entity;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.*;
+import org.nutz.dao.interceptor.PojoInterceptor;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -157,6 +158,8 @@ public class NutEntity<T> implements Entity<T> {
     private PkType pkType;
     
     private boolean complete;
+    
+    private PojoInterceptor interceptor;
 
     public NutEntity(final Class<T> type) {
         this.type = type;
@@ -503,5 +506,17 @@ public class NutEntity<T> implements Entity<T> {
         if (null != bornByRS)
             return bornByRS.born(rs);
         return bornByDefault.born(EMTRY_ARG);
+    }
+
+    public PojoInterceptor getInterceptor() {
+        return this.interceptor;
+    }
+
+    public void setInterceptor(PojoInterceptor interceptor) {
+        this.interceptor = interceptor;
+    }
+
+    public boolean hasInsertMacroes() {
+        return beforeInsertMacroes.size() > 0 || afterInsertMacroes.size() > 0;
     }
 }

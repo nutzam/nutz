@@ -1,6 +1,46 @@
 #title: 变更历史
 #index:0,1
 #author:wendal(wendal1985@gmail.com)
+
+1.r.68.v20190516
+
+	* add: 添加@PrevInsert/@PrevUpdate/@PrevDelete注解
+	* add: EL类添加2个帮助方法,方便添加自定义函数
+	* add: 添加dao层的LocalDate类的支持 by gengxiaoxiaoxin
+	* add: hmacSHA256方法 by howe
+	* fix: Mirror处理特殊枚举类时,没有正确判断枚举类型
+	* fix: 登出的时候, session可能已经销毁, 但AbstractPathView不应该抛异常
+	* fix: update:Daos中获取Table注解方式与AnnotationEntityMaker保持一致 by happyday517
+
+--------------------------------------------------------------------------------------------------------
+1.r.68.v20190329
+
+	* add: 支持配置psql是否支持supportSavePoint
+	* fix: IocEventListener返回新对象的时候,并没有生效
+	* fix: EL表达式在使用负数时的bug
+	* update: Images.read 支持byte[]对象
+	* 配置项: nutz.dao.jdbc.psql.supportSavePoint 腾讯的Psql数据库不支持SavePoint操作
+	
+--------------------------------------------------------------------------------------------------------
+1.r.68.v20190318
+
+	* add: 新增Configurable
+	* add: Dao接口继承Configurable
+	* 配置项: nutz.dao.jdbc.oracle.ignoreOneRowPager fetch的时候不分页
+	* fix: IntRange类在dubbo rpc传递时抛NPE
+	* fix: JsonPojoHandler存在递归死循环的路径
+	* fix: queryCount时需要设置count语句的Entity信息
+--------------------------------------------------------------------------------------------------------
+1.r.68.v20190220
+
+	* add: hmacmd5方法
+	* fix: 加个通用方法,控制QueryTimeout
+	* add: Dao添加更强大的fetchByJoin
+
+--------------------------------------------------------------------------------------------------------
+中途的版本看release note吧
+	
+
 --------------------------------------------------------------------------------------------------------
 1.r.63.r3 维护版本,无代号
 

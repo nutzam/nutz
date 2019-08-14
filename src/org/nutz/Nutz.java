@@ -33,10 +33,7 @@ public final class Nutz {
      * @return nutz 项目的版本号
      */
     public static String version() {
-        return String.format("%d.%s.%d-SNAPSHOT",
-                             majorVersion(),
-                             releaseLevel(),
-                             minorVersion());
+        return "1.r.68-SNAPSHOT";
     }
 
     /**
@@ -50,7 +47,7 @@ public final class Nutz {
      * 发布流水
      */
     public static int minorVersion() {
-        return 67;
+        return 68;
     }
 
     /**

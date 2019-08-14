@@ -129,7 +129,9 @@ public class ScopeContext implements IocContext {
 
     public Set<String> names() {
         if (objs == null)
-            return new HashSet<String>();
-        return objs.keySet();
+            return Collections.emptySet();
+        synchronized (this) {
+            return new HashSet<String>(objs.keySet());
+        }
     }
 }

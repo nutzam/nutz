@@ -195,7 +195,7 @@ public class Scans {
      */
     public List<NutResource> scan(String src, String regex) {
         if (src.isEmpty())
-            throw new RuntimeException("emtry src is NOT allow");
+            throw new RuntimeException("empty src is NOT allow");
         if ("/".equals(src))
             throw new RuntimeException("root path is NOT allow");
         List<NutResource> list = new ArrayList<NutResource>();
@@ -374,7 +374,7 @@ public class Scans {
     /**
      * 将一组 NutResource 转换成 class 对象
      * 
-     * @param packagePath
+     * @param pkg
      *            包前缀
      * @param list
      *            列表

@@ -6,6 +6,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.nutz.dao.interceptor.PojoInterceptor;
+import org.nutz.dao.interceptor.impl.DefaultPojoInterceptor;
+
 /**
  * 声明的一个 POJO 所对应的数据表名。
  *
@@ -69,4 +72,9 @@ public @interface Table {
 
     /** 表名后缀 */
     String suffix() default "";
+    
+    /**
+     * Pojo行为拦截器
+     */
+    Class<? extends PojoInterceptor> interceptor() default DefaultPojoInterceptor.class;
 }

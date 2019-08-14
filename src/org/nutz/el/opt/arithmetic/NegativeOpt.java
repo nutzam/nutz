@@ -3,6 +3,7 @@ package org.nutz.el.opt.arithmetic;
 import java.util.Queue;
 
 import org.nutz.el.opt.AbstractOpt;
+import org.nutz.el.opt.object.CommaOpt;
 
 /**
  * 负号:'-'
@@ -39,6 +40,12 @@ public class NegativeOpt extends AbstractOpt {
         if(prev == null){
             return true;
         }
+        if (prev instanceof Object[]) {
+            Object[] tmp = (Object[])prev;
+            if (tmp.length == 0)
+                return true;
+            prev = tmp[tmp.length - 1];// 最后一个
+        }
         if(prev instanceof LBracketOpt){
             return true;
         }
@@ -57,6 +64,8 @@ public class NegativeOpt extends AbstractOpt {
         if(prev instanceof SubOpt){
             return true;
         }
+        if (prev instanceof CommaOpt)
+            return true;
         return false;
     }
 

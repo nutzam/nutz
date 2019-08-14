@@ -30,3 +30,6 @@
 || {#888;@TableIndexes}	|| 表索引	|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.TableIndexes} ||
 || {#888;@Index}	||具体的索引内容 || @see JDoc: {#56F;org.nutz.dao.entity.annotation.Index} ||
 || {#888;@Comment}	||表或者字段的注释|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.Comment} ||
+|| {#888;@PrevInsert}	||表或者字段的注释|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.PrevInsert} ||
+|| {#888;@PrevUpdate}	||表或者字段的注释|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.PrevUpdate} ||
+|| {#888;@PrevDelete}	||表或者字段的注释|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.PrevDelete} ||

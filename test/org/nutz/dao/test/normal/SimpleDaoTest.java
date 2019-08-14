@@ -20,9 +20,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -95,6 +97,8 @@ import org.nutz.dao.test.meta.issue918.Region;
 import org.nutz.dao.test.meta.issue928.BeanWithSet;
 import org.nutz.dao.test.meta.issueXXX.IotObject;
 import org.nutz.dao.test.meta.issueXXX.IotProductStatus;
+import org.nutz.dao.test.meta.nutzcn.AbcPet;
+import org.nutz.dao.test.meta.nutzcn.AbcUser;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.blob.SimpleBlob;
 import org.nutz.dao.util.blob.SimpleClob;
@@ -1364,5 +1368,33 @@ public class SimpleDaoTest extends DaoCase {
         for (IotProductStatus stat : IotProductStatus.values()) {
             System.out.println("-->"+stat.value());
         }
+        dao.setupProperties(new NutMap());
+    }
+    
+    @Test
+    public void test_queryByJoin_2() {
+        dao.create(AbcUser.class, true);
+        dao.create(AbcPet.class, true);
+        Map<String, Condition> cnds = new HashMap<String, Condition>();
+        cnds.put("pet", Cnd.where("id", ">", 0));
+        dao.queryByJoin(AbcUser.class, null, null, null, cnds);
+    }
+    
+    @Test
+    public void test_create_table_by_map() {
+        String tableName = "t_from_map";
+        dao.drop(tableName);
+        NutMap map = new NutMap();
+        map.put("*+id", 0);
+        map.put("*name", "");
+        map.put("age", 0);
+        // 指定表名称
+        dao.create(tableName, map, true);
+        // 通过.table指定
+        map.put(".table", tableName);
+        dao.create(map, true);
+        dao.insert(new NutMap(".table", tableName).setv("name", "wendal").setv("age", 18));
+        Record re = dao.fetch(tableName, Cnd.where("name", "=", "wendal"));
+        assertEquals(18, re.getInt("age"));
     }
 }

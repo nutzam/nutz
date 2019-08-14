@@ -9,6 +9,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -131,12 +132,14 @@ public class Mirror<T> {
      *            对象。
      * @return Mirror， 如果 对象 null，则返回 null
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T> Mirror<T> me(T obj) {
         if (obj == null)
             return null;
         if (obj instanceof Class<?>)
             return (Mirror<T>) me((Class<?>) obj);
+        if (obj instanceof Enum)
+            return (Mirror<T>) me(((Enum)obj).getDeclaringClass());
         return (Mirror<T>) me(obj.getClass());
     }
 
@@ -1631,9 +1634,18 @@ public class Mirror<T> {
                || java.sql.Time.class.isAssignableFrom(klass);
     }
     
+    public boolean isLocalDateLike() {
+        try {
+            return NutConf.HAS_LOCAL_DATE_TIME && is(LocalDate.class);
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
+    
     public boolean isLocalDateTimeLike() {
         try {
-            return NutConf.HAS_LOCAL_DATE_TIME && TemporalAccessor.class.isAssignableFrom(klass);
+            return NutConf.HAS_LOCAL_DATE_TIME && is(TemporalAccessor.class);
         }
         catch (Exception e) {
             return false;

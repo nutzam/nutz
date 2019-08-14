@@ -255,4 +255,6 @@ public interface DaoStatement extends Serializable {
     String forPrint();
     
     void setExpert(JdbcExpert expert);
+    
+    DaoStatement setQueryTimeout(int timeout);
 }

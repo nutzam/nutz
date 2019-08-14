@@ -91,14 +91,19 @@ public abstract class AbstractPathView implements View {
         if (ac != null)
             context.set("pathargs", Mvcs.getActionContext().getPathArgs());
 
-        HttpSession session = Mvcs.getHttpSession(false);
-        if (session != null) {
-            Map<String, Object> session_attr = new HashMap<String, Object>();
-            for (Enumeration<String> en = session.getAttributeNames(); en.hasMoreElements();) {
-                String tem = en.nextElement();
-                session_attr.put(tem, session.getAttribute(tem));
+        try {
+            HttpSession session = Mvcs.getHttpSession(false);
+            if (session != null) {
+                Map<String, Object> session_attr = new HashMap<String, Object>();
+                for (Enumeration<String> en = session.getAttributeNames(); en.hasMoreElements();) {
+                    String tem = en.nextElement();
+                    session_attr.put(tem, session.getAttribute(tem));
+                }
+                context.set("session_attr", session_attr);
             }
-            context.set("session_attr", session_attr);
+        }
+        catch (Throwable e) {
+            // noop
         }
         // 请求的参数表,需要兼容之前的p.参数, Fix issue 418
         Map<String, String> p = new HashMap<String, String>();

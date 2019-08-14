@@ -26,13 +26,19 @@ import org.nutz.dao.sql.SqlType;
 import org.nutz.dao.sql.VarIndex;
 import org.nutz.dao.sql.VarSet;
 import org.nutz.dao.util.Daos;
+import org.nutz.lang.Configurable;
 import org.nutz.lang.Lang;
+import org.nutz.lang.util.NutMap;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
-public class NutDaoExecutor implements DaoExecutor {
+public class NutDaoExecutor implements DaoExecutor, Configurable {
 
     private static final Log log = Logs.get();
+
+    protected int defaultQueryTimeout;
+
+    protected int defaultFetchSize;
 
     public void exec(Connection conn, DaoStatement st) {
         // 这个变量声明，后面两 case 要用到
@@ -233,7 +239,6 @@ public class NutDaoExecutor implements DaoExecutor {
         ResultSet rs = null;
         Statement stat = null;
         try {
-
             // 木有参数，直接运行
             if (null == paramMatrix || paramMatrix.length == 0
                     || paramMatrix[0].length == 0) {
@@ -241,8 +246,7 @@ public class NutDaoExecutor implements DaoExecutor {
                         .getResultSetType(), ResultSet.CONCUR_READ_ONLY);
                 if (lastRow > 0)
                     stat.setMaxRows(lastRow); // 游标分页,现在总行数
-                if (st.getContext().getFetchSize() != 0)
-                    stat.setFetchSize(st.getContext().getFetchSize());
+                afterCreateStatement(stat, st);
                 rs = stat.executeQuery(sql);
             }
             // 有参数，用缓冲语句
@@ -263,8 +267,7 @@ public class NutDaoExecutor implements DaoExecutor {
                         ResultSet.CONCUR_READ_ONLY);
                 if (lastRow > 0)
                     stat.setMaxRows(lastRow);
-                if (st.getContext().getFetchSize() != 0)
-                    stat.setFetchSize(st.getContext().getFetchSize());
+                afterCreateStatement(stat, st);
                 for (int i = 0; i < paramMatrix[0].length; i++) {
                     adaptors[i].set((PreparedStatement) stat,
                             paramMatrix[0][i], i + 1);
@@ -399,4 +402,39 @@ public class NutDaoExecutor implements DaoExecutor {
             this.jdbcType = jdbcType;
         }
     }
+    
+    protected void afterCreateStatement(Statement stat, DaoStatement st) throws SQLException {
+        if (st.getContext().getFetchSize() != 0)
+            stat.setFetchSize(st.getContext().getFetchSize());
+        else if (defaultFetchSize > 0) {
+            stat.setFetchSize(defaultFetchSize);
+        }
+        if (st.getContext().getQueryTimeout() > 0)
+            stat.setQueryTimeout(st.getContext().getQueryTimeout());
+        else if (defaultQueryTimeout > 0) {
+            stat.setQueryTimeout(defaultQueryTimeout);
+        }
+    }
+
+    public int getDefaultQueryTimeout() {
+        return defaultQueryTimeout;
+    }
+
+    public void setDefaultQueryTimeout(int defaultQueryTimeout) {
+        this.defaultQueryTimeout = defaultQueryTimeout;
+    }
+
+    public int getDefaultFetchSize() {
+        return defaultFetchSize;
+    }
+
+    public void setDefaultFetchSize(int defaultFetchSize) {
+        this.defaultFetchSize = defaultFetchSize;
+    }
+
+    public void setupProperties(NutMap conf) {
+        defaultQueryTimeout = conf.getInt("nutz.dao.query.timeout", 0);
+        defaultFetchSize = conf.getInt("nutz.dao.query.fetchSize", 0);
+    }
+
 }

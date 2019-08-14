@@ -217,7 +217,10 @@ public class Tag extends SimpleNode<HtmlToken> {
     }
 
     public String getNodeValue() {
-        return this.get().getValue();
+        HtmlToken ht = this.get();
+        if (null != ht)
+            return ht.getValue();
+        return null;
     }
 
     public String getText() {
@@ -238,6 +241,17 @@ public class Tag extends SimpleNode<HtmlToken> {
             }
         }
         return sb.toString();
+    }
+
+    public String getTextContent() {
+        String re = this.getText();
+        if (Strings.isBlank(re)) {
+            re = this.getNodeValue();
+        }
+        if (Strings.isBlank(re)) {
+            re = this.htmlSegment;
+        }
+        return re;
     }
 
     public Tag setText(String text) {

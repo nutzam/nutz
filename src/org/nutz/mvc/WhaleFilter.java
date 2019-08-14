@@ -88,7 +88,7 @@ public class WhaleFilter implements Filter {
             throw new ServletException(e);
         }
     }
-    
+
     public void init(InputStream ins) throws Exception {
         if (ins != null)
             props.load(ins);
@@ -112,7 +112,7 @@ public class WhaleFilter implements Filter {
                     continue;
                 }
                 key = key.substring("upload.".length());
-                if ("tmpdir".equals(key) || "exclusions".equals(key)) {
+                if ("tmpdir".equals(key) || "exclusions".equals(key) || "enable".equals(key)) {
                     continue;
                 }
                 mirror.setValue(uc, key, props.get(_key));
@@ -182,11 +182,11 @@ public class WhaleFilter implements Filter {
             catch (Exception e) {
             }
         }
-       
+
     }
 
     public void destroy() {}
-    
+
     @SuppressWarnings("unchecked")
     public HttpServletRequest handleUpload(HttpServletRequest req) throws ServletException {
         try {

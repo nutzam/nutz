@@ -42,6 +42,9 @@ public class JsonPojoHandler extends JsonTypeHandler {
          * Default
          */
         Class<?> type = obj.getClass();
+        if (type == JsonPojoHandler.class) {
+            return;
+        }
         JsonEntity jen = Json.getEntity(Mirror.me(type));
         JsonCallback jsonCallback = jen.getJsonCallback();
         if (jsonCallback != null) {
