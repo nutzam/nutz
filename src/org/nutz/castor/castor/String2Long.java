@@ -10,6 +10,16 @@ public class String2Long extends String2Number<Long> {
     }
 
     @Override
+    protected Long getFalseValue() {
+        return 0L;
+    }
+
+    @Override
+    protected Long getTrueValue() {
+        return 1L;
+    }
+
+    @Override
     protected Long valueOf(String str) {
         try {
             Nums.Radix ni = Nums.evalRadix(str);
