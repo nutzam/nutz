@@ -267,7 +267,7 @@ public abstract class Lang {
 
         // 如果类型就不能互相转换，那么一定是错的
         if (!a0.getClass().isAssignableFrom(a1.getClass())
-            && !a1.getClass().isAssignableFrom(a0.getClass()))
+                && !a1.getClass().isAssignableFrom(a0.getClass()))
             return false;
 
         // Map
@@ -1280,7 +1280,7 @@ public abstract class Lang {
             return null;
         str = Strings.trim(str);
         if (!Strings.isEmpty(str)
-            && (Strings.isQuoteBy(str, '{', '}') || Strings.isQuoteBy(str, '(', ')'))) {
+                && (Strings.isQuoteBy(str, '{', '}') || Strings.isQuoteBy(str, '(', ')'))) {
             return Json.fromJson(NutMap.class, str);
         }
         return Json.fromJson(NutMap.class, "{" + str + "}");
@@ -1367,6 +1367,16 @@ public abstract class Lang {
      */
     public static Context context() {
         return new SimpleContext();
+    }
+
+    /**
+     * 根据key,val创建一个新的上下文对象
+     * @param key
+     * @param val
+     * @return
+     */
+    public static Context context(String key, Object val) {
+        return context().set(key, val);
     }
 
     /**
@@ -2512,8 +2522,8 @@ public abstract class Lang {
 
     public static String simpleMethodDesc(Method method) {
         return String.format("%s.%s(...)",
-                             method.getDeclaringClass().getSimpleName(),
-                             method.getName());
+                method.getDeclaringClass().getSimpleName(),
+                method.getName());
     }
 
     public static String fixedHexString(byte[] hashBytes) {
@@ -2793,7 +2803,7 @@ public abstract class Lang {
             return null;
         }
     }
-    
+
     public static class JdkTool {
         public static String getVersionLong() {
             Properties sys = System.getProperties();
@@ -2817,7 +2827,7 @@ public abstract class Lang {
                 return false;
             return ver.contains("-ea");
         }
-        
+
         /**
          * 获取进程id
          * @param fallback 如果获取失败,返回什么呢?
@@ -2837,7 +2847,7 @@ public abstract class Lang {
             return fallback;
         }
     }
-    
+
     /**
      * 判断一个对象是否不为空。它支持如下对象类型：
      * <ul>
@@ -2880,8 +2890,8 @@ public abstract class Lang {
         }
         return fixedHexString(bytes);
     }
-    
-        /**
+
+    /**
      * 获取指定字符串的 HmacSHA256 值
      *
      * @param data   字符串

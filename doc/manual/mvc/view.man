@@ -575,3 +575,18 @@ RawView2
 		[https://github.com/nutzam/nutzmore/tree/master/nutz-plugins-views 官方扩展集]
 		[https://ibeetl.com ibeetl模板自带BeetlViewMaker]
 		[http://nutzbook.wendal.net/templates/templates.html nutzbook中集成第三方模板引擎的描述]
+
+------------------------------------------------------------------------------------------
+扩展视图上下文默认变量
+    实现ViewContextCollector接口并将对象注入到ioc中，在渲染视图时会将定义的变量应用到模块上下文中。
+    {{{<JAVA>
+        @IocBean
+        public class DefaultViewContext implements ViewContextCollector {
+            @Override
+            public Context collect(HttpServletRequest req, Object obj) {
+                Context ctx = Lang.context();
+                ctx.set("codeUtil", new CodeUtil());
+                return ctx;
+            }
+        }
+    }}}
