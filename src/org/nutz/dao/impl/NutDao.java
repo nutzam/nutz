@@ -717,7 +717,7 @@ public class NutDao extends DaoSupport implements Dao {
                 if (cnd instanceof SimpleCriteria) {
                     String beforeWhere = ((SimpleCriteria)cnd).getBeforeWhere();
                     if (!Strings.isBlank(beforeWhere))
-                        pojo.addParamsBy(Pojos.Items.wrap(beforeWhere));
+                        pojo.append(Pojos.Items.wrap(beforeWhere));
                 }
                 pojo.append(((Criteria) cnd).where());
                 // MySQL/PgSQL/SqlServer 与 Oracle/H2的结果会不一样,奇葩啊
