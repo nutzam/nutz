@@ -273,4 +273,8 @@ public class Request {
         header("Authorization", "Basic "+Base64.encodeToString((user+":"+password).getBytes(), false));
         return this;
     }
+    
+    public boolean hasInputStream() {
+        return inputStream != null;
+    }
 }
