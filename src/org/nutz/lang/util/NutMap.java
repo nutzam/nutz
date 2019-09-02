@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.nutz.castor.Castors;
@@ -31,11 +32,11 @@ import org.nutz.lang.born.Borning;
 public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
 
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
-	public static NutMap WRAP(Map<String, Object> map) {
+    public static NutMap WRAP(Map<String, Object> map) {
         if (null == map)
             return null;
         if (map instanceof NutMap)
@@ -887,7 +888,14 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
             // 其他的值，匹配一下
             else {
                 Object val = map.get(key);
-                if (!__match_val(mtc, val)) {
+                // 空串"" 表示必须有这个键，且不能为空
+                if (Strings.isEmpty(mtc.toString())) {
+                    if (null == val || Strings.isBlank(val.toString())) {
+                        return false;
+                    }
+                }
+                // 复杂匹配
+                else if (!__match_val(mtc, val)) {
                     return false;
                 }
             }
@@ -896,6 +904,72 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         return true;
     }
 
+    private static final Pattern _M_RG_TP = Regex.getPattern("^(int|float|double|long|time|date)?"
+                                                             + "([\\[(][^\\[\\]()]+[\\])])$");
+
+    /**
+     * 将自己的字段（仅第一层）预编译，即：
+     * <ul>
+     * <li><code>"^xxx"</code> : 变正则</li>
+     * <li><code>"$TYPE[12,43)"</code> : 变区间，类型支持
+     * `int|float|double|long|time|date`</li>
+     * <li>其他维持不变
+     * </ul>
+     * 以便可以提高 match 函数执行的效率
+     * 
+     * @return 自身以便链式赋值
+     */
+    public NutMap evalSelfForMatching() {
+        for (Map.Entry<String, Object> en : this.entrySet()) {
+            Object val = en.getValue();
+            if (null != val && val instanceof String) {
+                String str = (String) val;
+                // 正则
+                if (str.startsWith("^")) {
+                    en.setValue(Pattern.compile(str));
+                    continue;
+                }
+                // 区间
+                Matcher m = _M_RG_TP.matcher(str);
+                if (m.find()) {
+                    String type = Strings.sBlank(m.group(1), "int");
+                    String rval = m.group(2);
+                    Region<?> rg = null;
+                    // 整数区间
+                    if ("int".equals(type)) {
+                        rg = Region.Int(rval);
+                    }
+                    // 长整数区间
+                    else if ("long".equals(type)) {
+                        rg = Region.Long(rval);
+                    }
+                    // 浮点区间
+                    else if ("float".equals(type)) {
+                        rg = Region.Float(rval);
+                    }
+                    // 双精度浮点区间
+                    else if ("double".equals(type)) {
+                        rg = Region.Double(rval);
+                    }
+                    // 日期区间
+                    else if ("date".equals(type)) {
+                        rg = Region.Date(rval);
+                    }
+                    // 时间区间
+                    else if ("time".equals(type)) {
+                        rg = Region.Time(rval);
+                    }
+                    // Update
+                    if (null != rg) {
+                        en.setValue(rg);
+                    }
+                }
+            }
+        }
+        return this;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private boolean __match_val(final Object mtc, Object val) {
         Mirror<?> mi = Mirror.me(mtc);
 
@@ -959,8 +1033,12 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
             return re[0];
         }
         // 范围的话...
-        else if (mi.is(Region.class)) {
-            throw Lang.noImplement();
+        else if (mi.isOf(Region.class)) {
+            if (val instanceof Comparable) {
+                Comparable cp = (Comparable) val;
+                Region rg = (Region) mtc;
+                return rg.match(cp);
+            }
         }
         // 其他的统统为不匹配
         return false;

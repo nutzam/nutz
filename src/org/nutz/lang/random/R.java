@@ -17,7 +17,7 @@ import org.nutz.lang.Strings;
  */
 public abstract class R {
 
-    static Random r = new Random();
+    static Random r = new Random(System.currentTimeMillis());
 
     /**
      * 根据一个范围，生成一个随机的整数
@@ -59,6 +59,7 @@ public abstract class R {
 
     private static final char[] _UU64 = "-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz".toCharArray();
     private static final char[] _UU32 = "0123456789abcdefghijklmnopqrstuv".toCharArray();
+    private static final char[] _C = "23456789abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ".toCharArray();
 
     /**
      * @return 64进制表示的紧凑格式的 UUID
@@ -259,27 +260,9 @@ public abstract class R {
      */
     public static String captchaChar(int length, boolean caseSensitivity) {
         StringBuilder sb = new StringBuilder();
-        Random rand = new Random();// 随机用以下三个随机生成器
-        Random randdata = new Random();
-        int data = 0;
-        for (int i = 0; i < length; i++) {
-            int index = rand.nextInt(caseSensitivity ? 3 : 2);
-            // 目的是随机选择生成数字，大小写字母
-            switch (index) {
-            case 0:
-                data = randdata.nextInt(10);// 仅仅会生成0~9, 0~9的ASCII为48~57
-                sb.append(data);
-                break;
-            case 1:
-                data = randdata.nextInt(26) + 97;// 保证只会产生ASCII为97~122(a-z)之间的整数,
-                sb.append((char) data);
-                break;
-            case 2: // caseSensitivity为true的时候, 才会有大写字母
-                data = randdata.nextInt(26) + 65;// 保证只会产生ASCII为65~90(A~Z)之间的整数
-                sb.append((char) data);
-                break;
-            }
-        }
+        int t = caseSensitivity ? _C.length : _C.length - 24;
+        for (int i = 0; i < length; i++)
+            sb.append(_C[r.nextInt(t)]);
         return sb.toString();
     }
 
