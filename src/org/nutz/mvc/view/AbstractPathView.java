@@ -32,6 +32,7 @@ public abstract class AbstractPathView implements View {
         defVcc.add(new PathargsCollector());
         defVcc.add(new SessionCollector());
         defVcc.add(new ParamCollector());
+        defVcc.add(new RefCollector());
         defVcc.add(new AtCollector());
         defVcc.add(new ReturnCollector());
     }
