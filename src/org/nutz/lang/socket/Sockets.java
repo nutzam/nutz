@@ -8,10 +8,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Streams;
@@ -23,7 +22,7 @@ import org.nutz.log.Logs;
 public abstract class Sockets {
 
     private static final Log log = Logs.get();
-    
+
     public static void send(String host, int port, InputStream ins, OutputStream ops) {
     	send(host, port, ins, ops, 0);
     }
@@ -149,11 +148,15 @@ public abstract class Sockets {
      *      ExecutorService)
      */
     public static void localListenByLine(int port, Map<String, SocketAction> actions, int poolSize) {
+        //创建线程池
+        ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(Runtime.getRuntime()
+                .availableProcessors()
+                * poolSize,
+                new BasicThreadFactory.Builder().namingPattern("Sockets-localListenByLine-pool-%d").daemon(true).build());
+
         Sockets.localListenByLine(    port,
                                     actions,
-                                    Executors.newFixedThreadPool(Runtime.getRuntime()
-                                                                        .availableProcessors()
-                                                                    * poolSize));
+                executorService);
     }
 
     /**
@@ -206,8 +209,9 @@ public abstract class Sockets {
                 throw Lang.wrapThrow(e1);
             }
 
-            if (log.isInfoEnabled())
+            if (log.isInfoEnabled()) {
                 log.infof("Local socket is up at :%d with %d action ready", port, actions.size());
+            }
 
             final Context context = Lang.context();
             context.set("stop", false);

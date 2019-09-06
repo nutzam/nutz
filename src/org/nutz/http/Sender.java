@@ -10,10 +10,7 @@ import java.net.Proxy;
 import java.net.Socket;
 import java.net.URL;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
@@ -22,6 +19,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.nutz.http.sender.DefaultSenderFactory;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
@@ -121,8 +119,9 @@ public abstract class Sender implements Callable<Response> {
                 }
             }
         }
-        if (this.interceptor != null)
+        if (this.interceptor != null) {
             this.interceptor.afterResponse(request, conn, rep);
+        }
         return rep;
     }
 
@@ -151,8 +150,9 @@ public abstract class Sender implements Callable<Response> {
     }
 
     protected void openConnection() throws IOException {
-        if (this.interceptor != null)
+        if (this.interceptor != null) {
             this.interceptor.beforeConnect(request);
+        }
         Proxy proxy = this.proxy;
         if (proxy == null && Http.proxySwitcher != null) {
             proxy = Http.proxySwitcher.getProxy(request);
@@ -170,18 +170,20 @@ public abstract class Sender implements Callable<Response> {
                         out.flush();
                     }
                     finally {
-                        if (socket != null)
+                        if (socket != null) {
                             socket.close();
+                        }
                     }
                 }
                 log.debug("connect via proxy : " + proxy + " for " + request.getUrl());
                 conn = (HttpURLConnection) request.getUrl().openConnection(proxy);
                 conn.setConnectTimeout(connTime);
                 conn.setInstanceFollowRedirects(followRedirects);
-                if (timeout > 0)
+                if (timeout > 0) {
                     conn.setReadTimeout(timeout);
-                else
+                } else {
                     conn.setReadTimeout(Default_Read_Timeout);
+                }
                 return;
             }
             catch (IOException e) {
@@ -196,32 +198,38 @@ public abstract class Sender implements Callable<Response> {
         conn = (HttpURLConnection) url.openConnection();
         if (conn instanceof HttpsURLConnection) {
             HttpsURLConnection httpsc = (HttpsURLConnection)conn;
-            if (sslSocketFactory != null)
+            if (sslSocketFactory != null) {
                 httpsc.setSSLSocketFactory(sslSocketFactory);
-            else if (Http.sslSocketFactory != null)
+            } else if (Http.sslSocketFactory != null) {
                 httpsc.setSSLSocketFactory(Http.sslSocketFactory);
-            if (hostnameVerifier != null)
+            }
+            if (hostnameVerifier != null) {
                 httpsc.setHostnameVerifier(hostnameVerifier);
-            else if (Http.hostnameVerifier != null)
+            } else if (Http.hostnameVerifier != null) {
                 httpsc.setHostnameVerifier(Http.hostnameVerifier);
+            }
         }
         if (!Lang.isIPv4Address(host)) {
-            if (url.getPort() > 0 && url.getPort() != 80)
+            if (url.getPort() > 0 && url.getPort() != 80) {
                 host += ":" + url.getPort();
+            }
             conn.addRequestProperty("Host", host);
         }
         conn.setConnectTimeout(connTime);
-        if (request.getMethodString() == null)
+        if (request.getMethodString() == null) {
             conn.setRequestMethod(request.getMethod().name());
-        else
+        } else {
             conn.setRequestMethod(request.getMethodString());
-        if (timeout > 0)
+        }
+        if (timeout > 0) {
             conn.setReadTimeout(timeout);
-        else
+        } else {
             conn.setReadTimeout(Default_Read_Timeout);
+        }
         conn.setInstanceFollowRedirects(followRedirects);
-        if (interceptor != null)
+        if (interceptor != null) {
             this.interceptor.afterConnect(request, conn);
+        }
     }
 
     protected void setupRequestHeader() {
@@ -230,8 +238,9 @@ public abstract class Sender implements Callable<Response> {
             for (String name : header.keys()) {
                 List<String> values = header.getValues(name);
                 for (String value : values) {
-                    if (Strings.isBlank(value))
+                    if (Strings.isBlank(value)) {
                         continue;
+                    }
                     conn.addRequestProperty(name, value);
                 }
             }
@@ -266,16 +275,19 @@ public abstract class Sender implements Callable<Response> {
         return this;
     }
 
+    @Override
     public Response call() throws Exception {
         Response resp = send();
-        if (callback != null)
+        if (callback != null) {
             callback.invoke(resp);
+        }
         return resp;
     }
 
     public Future<Response> send(Callback<Response> callback) throws HttpException {
-        if (es == null)
+        if (es == null) {
             throw new IllegalStateException("Sender ExecutorService is null, Call setup first");
+        }
         this.callback = callback;
         return es.submit(this);
     }
@@ -283,10 +295,15 @@ public abstract class Sender implements Callable<Response> {
     protected static ExecutorService es;
 
     public static ExecutorService setup(ExecutorService es) {
-        if (Sender.es != null)
+        if (Sender.es != null) {
             shutdown();
-        if (es == null)
-            es = Executors.newFixedThreadPool(64);
+        }
+        if (es == null) {
+            //创建线程池
+            ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(64,
+                    new BasicThreadFactory.Builder().namingPattern("Sender-setup-pool-%d").daemon(true).build());
+            es = executorService;
+        }
         Sender.es = es;
         return es;
     }
@@ -294,8 +311,9 @@ public abstract class Sender implements Callable<Response> {
     public static List<Runnable> shutdown() {
         ExecutorService _es = es;
         es = null;
-        if (_es == null)
+        if (_es == null) {
             return null;
+        }
         return _es.shutdownNow();
     }
 
@@ -310,11 +328,13 @@ public abstract class Sender implements Callable<Response> {
 
     protected OutputStream getOutputStream() throws IOException {
         OutputStream out = conn.getOutputStream();
-        if (progressListener == null)
+        if (progressListener == null) {
             return out;
+        }
         return new FilterOutputStream(out) {
             int count;
 
+            @Override
             public void write(byte[] b, int off, int len) throws IOException {
                 super.write(b, off, len);
                 count += len;
