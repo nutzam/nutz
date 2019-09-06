@@ -30,6 +30,32 @@ import org.nutz.lang.random.R;
 public final class Colors {
 
     /**
+     * RGB: #FFF
+     */
+    private static Pattern FFF_PATTERN = Pattern.compile("^([0-9A-F])([0-9A-F])([0-9A-F])$");
+    /**
+     *  RRGGBB: #F0F0F0
+     */
+    private static Pattern F0F0F0_PATTERN = Pattern.compile("^([0-9A-F]{2})([0-9A-F]{2})([0-9A-F]{2})$");
+
+    /**
+     *  ARGB: #9FE5
+     */
+    private static Pattern ARGB = Pattern.compile("^([0-9A-F])([0-9A-F])([0-9A-F])([0-9A-F])$");
+    /**
+     *  AARRGGBB: #88FF8899
+     */
+    private static Pattern AARRGGBB_PATTERN = Pattern.compile("^([0-9A-F]{2})([0-9A-F]{2})([0-9A-F]{2})([0-9A-F]{2})$");
+    /**
+     *  RGB值: rgb(255,33,89)
+     */
+    private static Pattern RGB_PATTERN = Pattern.compile("^RGB\\s*[(]\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*[)]$");
+
+    /**
+     * RGBA值: rgba(6,6,6,0.9)
+     */
+    private static Pattern RGBA_PATTERN = Pattern.compile("^RGBA\\s*[(]\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*((\\d[.])?\\d+)\\s*[)]$");
+    /**
      * @see #as(String)
      * 
      * @deprecated
@@ -47,8 +73,9 @@ public final class Colors {
      * @return 颜色对象
      */
     public static Color as(String str) {
-        if (null == str)
+        if (null == str) {
             return Color.BLACK;
+        }
 
         // 整理一下字符串以便后面匹配分析
         str = Strings.trim(str.toUpperCase());
@@ -57,11 +84,12 @@ public final class Colors {
             str = str.substring(1);
         }
 
-        if (str.endsWith(";"))
+        if (str.endsWith(";")) {
             str = str.substring(0, str.length() - 1);
+        }
 
         // RGB: #FFF
-        Pattern p = Pattern.compile("^([0-9A-F])([0-9A-F])([0-9A-F])$");
+        Pattern p = FFF_PATTERN;
         Matcher m = p.matcher(str);
         if (m.find()) {
             return new Color(parseInt(dup(m.group(1), 2), 16),
@@ -70,7 +98,7 @@ public final class Colors {
         }
 
         // RRGGBB: #F0F0F0
-        p = Pattern.compile("^([0-9A-F]{2})([0-9A-F]{2})([0-9A-F]{2})$");
+        p = F0F0F0_PATTERN;
         m = p.matcher(str);
         if (m.find()) {
             return new Color(parseInt(m.group(1), 16),
@@ -79,7 +107,7 @@ public final class Colors {
         }
 
         // ARGB: #9FE5
-        p = Pattern.compile("^([0-9A-F])([0-9A-F])([0-9A-F])([0-9A-F])$");
+        p = ARGB;
         m = p.matcher(str);
         if (m.find()) {
             return new Color(parseInt(dup(m.group(2), 2), 16),
@@ -89,7 +117,7 @@ public final class Colors {
         }
 
         // AARRGGBB: #88FF8899
-        p = Pattern.compile("^([0-9A-F]{2})([0-9A-F]{2})([0-9A-F]{2})([0-9A-F]{2})$");
+        p = AARRGGBB_PATTERN;
         m = p.matcher(str);
         if (m.find()) {
             return new Color(parseInt(m.group(2), 16),
@@ -99,7 +127,7 @@ public final class Colors {
         }
 
         // RGB值: rgb(255,33,89)
-        p = Pattern.compile("^RGB\\s*[(]\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*[)]$");
+        p = RGB_PATTERN;
         m = p.matcher(str);
         if (m.find()) {
             return new Color(parseInt(m.group(1), 10),
@@ -119,7 +147,7 @@ public final class Colors {
         // }
 
         // RGBA值: rgba(6,6,6,0.9)
-        p = Pattern.compile("^RGBA\\s*[(]\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*((\\d[.])?\\d+)\\s*[)]$");
+        p = RGBA_PATTERN;
         m = p.matcher(str);
         if (m.find()) {
             float alpha = Float.parseFloat(m.group(4));
