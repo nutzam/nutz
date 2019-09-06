@@ -19,7 +19,6 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.nutz.http.sender.DefaultSenderFactory;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
@@ -300,9 +299,7 @@ public abstract class Sender implements Callable<Response> {
         }
         if (es == null) {
             //创建线程池
-            ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(64,
-                    new BasicThreadFactory.Builder().namingPattern("Sender-setup-pool-%d").daemon(true).build());
-            es = executorService;
+            es = Executors.newScheduledThreadPool(64);
         }
         Sender.es = es;
         return es;
