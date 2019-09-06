@@ -39,13 +39,13 @@ public abstract class String2Number<T> extends Castor<String, T> {
         }
 
 
-        if (src.equalsIgnoreCase("true")) {
+        if ("true".equalsIgnoreCase(src)) {
 
             return getTrueValue();
         }
 
 
-        if (src.equalsIgnoreCase("false")) {
+        if ("false".equalsIgnoreCase(src)) {
 
             return getFalseValue();
         }

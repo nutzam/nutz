@@ -30,16 +30,19 @@ public class PropertiesIocLoader extends PropertiesProxy implements IocLoader {
         log.debug("beans = " + objs.keySet());
     }
 
+    @Override
     public String[] getName() {
         reload();
         return objs.keySet().toArray(new String[objs.size()]);
     }
 
+    @Override
     public IocObject load(IocLoading loading, String name) throws ObjectLoadException {
         reload();
         return objs.get(name);
     }
 
+    @Override
     public boolean has(String name) {
         reload();
         return objs.containsKey(name);
@@ -49,11 +52,12 @@ public class PropertiesIocLoader extends PropertiesProxy implements IocLoader {
     public void reload() {
         List<String> beanNames = new ArrayList<String>();
         for (String key : keys()) {
-            if (!key.startsWith("ioc.") || key.length() < 5)
+            if (!key.startsWith("ioc.") || key.length() < 5) {
                 continue;
+            }
             String[] tmp = key.split("[.]");
             if (tmp.length == 3) {
-                if (tmp[2].equals("type") || tmp[2].equals("factory")) {
+                if ("type".equals(tmp[2]) || "factory".equals(tmp[2])) {
                     beanNames.add(tmp[1]);
                 }
             }

@@ -94,21 +94,24 @@ public class StructureConvert extends MaplEach implements MaplConvert{
      * 转换
      * @param obj 目标对象
      */
+    @Override
     public Object convert(Object obj){
         each(obj);
         return structure.fetchNewobj();
     }
     
+    @Override
     protected void LRD(String path, Object item) {}
 
     /**
      * 重建新对象
      */
+    @Override
     protected void DLR(String path, Object object) {
         if(relation.containsKey(path)){
             List<String> dests = relation.get(path);
             for(String dest : dests){
-                if(dest.equals("")){
+                if("".equals(dest)){
                     structure.put(path, object, arrayIndex);
                     continue;
                 } 
