@@ -41,123 +41,131 @@ import org.nutz.el.opt.object.AccessOpt;
  */
 public class OptParse implements Parse {
 
+    @Override
     public Object fetchItem(CharQueue exp){
-        switch(exp.peek()){
-        case '+':
-            exp.poll();
-            return new PlusOpt();
-        case '-':
-            exp.poll();
-            return new SubOpt();
-        case '*':
-            exp.poll();
-            return new MulOpt();
-        case '/':
-            exp.poll();
-            return new DivOpt();
-        case '%':
-            exp.poll();
-            return new ModOpt();
-        case '(':
-            exp.poll();
-            return new LBracketOpt();
-        case ')':
-            exp.poll();
-            return new RBracketOpt();
-        case '>':
-            exp.poll();
-            switch(exp.peek()){
-            case '=':
+        switch (exp.peek()) {
+            case '+':
                 exp.poll();
-                return new GTEOpt();
+                return new PlusOpt();
+            case '-':
+                exp.poll();
+                return new SubOpt();
+            case '*':
+                exp.poll();
+                return new MulOpt();
+            case '/':
+                exp.poll();
+                return new DivOpt();
+            case '%':
+                exp.poll();
+                return new ModOpt();
+            case '(':
+                exp.poll();
+                return new LBracketOpt();
+            case ')':
+                exp.poll();
+                return new RBracketOpt();
             case '>':
                 exp.poll();
-                if(exp.peek() == '>'){
-                    exp.poll();
-                    return new UnsignedLeftShift();
+                switch (exp.peek()) {
+                    case '=':
+                        exp.poll();
+                        return new GTEOpt();
+                    case '>':
+                        exp.poll();
+                        if (exp.peek() == '>') {
+                            exp.poll();
+                            return new UnsignedLeftShift();
+                        }
+                        return new RightShift();
+                    default:
                 }
-                return new RightShift();
-            }
-            return new GTOpt();
-        case '<':
-            exp.poll();
-            switch(exp.peek()){
-            case '=':
-                exp.poll();
-                return new LTEOpt();
+                return new GTOpt();
             case '<':
                 exp.poll();
-                return new LeftShift();
-            }
-            return new LTOpt();
-        case '=':
-            exp.poll();
-            switch(exp.peek()){
+                switch (exp.peek()) {
+                    case '=':
+                        exp.poll();
+                        return new LTEOpt();
+                    case '<':
+                        exp.poll();
+                        return new LeftShift();
+                    default:
+                }
+                return new LTOpt();
             case '=':
                 exp.poll();
-                return new EQOpt();
-            }
-            throw new ElException("表达式错误,请检查'='后是否有非法字符!");
-        case '!':
-            exp.poll();
-            switch(exp.peek()){
-            case '=':
-                exp.poll();
-                return new NEQOpt();
+                switch (exp.peek()) {
+                    case '=':
+                        exp.poll();
+                        return new EQOpt();
+                    default:
+                }
+                throw new ElException("表达式错误,请检查'='后是否有非法字符!");
             case '!':
                 exp.poll();
-                return new NullableOpt();
-            }
-            return new NotOpt();
-        case '|':
-            exp.poll();
-            switch(exp.peek()){
+                switch (exp.peek()) {
+                    case '=':
+                        exp.poll();
+                        return new NEQOpt();
+                    case '!':
+                        exp.poll();
+                        return new NullableOpt();
+                    default:
+                }
+                return new NotOpt();
             case '|':
                 exp.poll();
-                if (exp.peek() == '|') {
-                    exp.poll();
-                    return new OrOpt2();
+                switch (exp.peek()) {
+                    case '|':
+                        exp.poll();
+                        if (exp.peek() == '|') {
+                            exp.poll();
+                            return new OrOpt2();
+                        }
+                        return new OrOpt();
+                    default:
                 }
-                return new OrOpt();
-            }
-            return new BitOr();
-        case '&':
-            exp.poll();
-            switch(exp.peek()){
+                return new BitOr();
             case '&':
                 exp.poll();
-                return new AndOpt();
-            }
-            return new BitAnd();
-        case '~':
-            exp.poll();
-            return new BitNot();
-        case '^':
-            exp.poll();
-            return new BitXro();
-        case '?':
-            exp.poll();
-            return new QuestionOpt();
-        case ':':
-            exp.poll();
-            return new QuestionSelectOpt();
-        
-        case '.':
-        	char p = exp.peek(1);
-        	if (p != '\'' && p != '"' && !Character.isJavaIdentifierStart(p)){
-                return nullobj;
-            }
-            exp.poll();
-            return new AccessOpt();
-        case ',':
-            exp.poll();
-            return new CommaOpt();
-        case '[':
-            exp.poll();
-            return new Object[]{new ArrayOpt(),new LBracketOpt()};
-        case ']':
-            exp.poll();
-            return new Object[]{new RBracketOpt(), new FetchArrayOpt()};
+                switch (exp.peek()) {
+                    case '&':
+                        exp.poll();
+                        return new AndOpt();
+                    default:
+                }
+                return new BitAnd();
+            case '~':
+                exp.poll();
+                return new BitNot();
+            case '^':
+                exp.poll();
+                return new BitXro();
+            case '?':
+                exp.poll();
+                return new QuestionOpt();
+            case ':':
+                exp.poll();
+                return new QuestionSelectOpt();
+
+            case '.':
+                char p = exp.peek(1);
+                if (p != '\'' && p != '"' && !Character.isJavaIdentifierStart(p)) {
+                    return nullobj;
+                }
+                exp.poll();
+                return new AccessOpt();
+            case ',':
+                exp.poll();
+                return new CommaOpt();
+            case '[':
+                exp.poll();
+                return new Object[]{new ArrayOpt(), new LBracketOpt()};
+            case ']':
+                exp.poll();
+                return new Object[]{new RBracketOpt(), new FetchArrayOpt()};
+            default:
         }
         return nullobj;
     }
