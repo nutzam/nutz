@@ -63,16 +63,17 @@ public class ObjectNaviNode {
                 for (; i < chars.length; i++) {
                     char c2 = chars[i];
                     switch (c2) {
-                    case ']':
-                    case ')':
-                        if ((c == '[' && c2 == ']') || (c == '(' && c2 == ')')) {
-                            if (isNumber && !(c == '(')) {
-                                sb.append(':').append(sb2);
-                            } else {
-                                sb.append('.').append(sb2);
+                        case ']':
+                        case ')':
+                            if ((c == '[' && c2 == ']') || (c == '(' && c2 == ')')) {
+                                if (isNumber && !(c == '(')) {
+                                    sb.append(':').append(sb2);
+                                } else {
+                                    sb.append('.').append(sb2);
+                                }
+                                continue OUT;
                             }
-                            continue OUT;
-                        }
+                        default:
                     }
                     isNumber = isNumber && Character.isDigit(c2);
                     sb2.append(c2);
