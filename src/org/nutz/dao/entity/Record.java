@@ -43,9 +43,8 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
         String name = null;
         int i = 0;
         try {
-            if (meta == null) {
+            if (meta == null)
                 meta = rs.getMetaData();
-            }
             int count = meta.getColumnCount();
             for (i = 1; i <= count; i++) {
                 name = meta.getColumnLabel(i);
@@ -145,9 +144,8 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
     public int getInt(String name, int dft) {
         try {
             Object val = get(name);
-            if (null == val) {
+            if (null == val)
                 return dft;
-            }
             return Castors.me().castTo(val, int.class);
         } catch (Exception e) {
         }
@@ -161,9 +159,8 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
     public long getLong(String name, long dft) {
         try {
             Object val = get(name);
-            if (null == val) {
+            if (null == val)
                 return dft;
-            }
             return Castors.me().castTo(val, long.class);
         } catch (Exception e) {
         }
@@ -177,9 +174,8 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
     public double getDouble(String name, double dft) {
         try {
             Object val = get(name);
-            if (null == val) {
+            if (null == val)
                 return dft;
-            }
             return Castors.me().castTo(val, double.class);
         } catch (Exception e) {
         }
@@ -196,9 +192,8 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      */
     public String getString(String name) {
         Object val = get(name);
-        if (null == val) {
+        if (null == val)
             return null;
-        }
         return Castors.me().castToString(val);
     }
 
@@ -212,9 +207,8 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      */
     public Blob getBlob(String name) {
         Object val = get(name);
-        if (null == val) {
+        if (null == val)
             return null;
-        }
         return Castors.me().castTo(val, Blob.class);
     }
 
@@ -228,9 +222,8 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      */
     public Timestamp getTimestamp(String name) {
         Object val = get(name);
-        if (null == val) {
+        if (null == val)
             return null;
-        }
         return Castors.me().castTo(val, Timestamp.class);
     }
 
@@ -249,7 +242,6 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      *
      * @return 该记录 JSON 格式的字符串表示
      */
-    @Override
     public String toString() {
         return Json.toJson(map, JsonFormat.full());
     }
@@ -275,7 +267,6 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
     /**
      * 从记录中移除所有字段与值的对应关系
      */
-    @Override
     public void clear() {
         map.clear();
         keys.clear();
@@ -287,7 +278,6 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      * @param key 字段名
      * @return true 该字段在记录中存在
      */
-    @Override
     public boolean containsKey(Object key) {
         return map.containsKey(key.toString().toLowerCase());
     }
@@ -298,17 +288,14 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      * @param value 字段值
      * @return true 该字段值在记录中存在
      */
-    @Override
     public boolean containsValue(Object value) {
         return map.containsValue(value);
     }
 
-    @Override
     public Set<Entry<String, Object>> entrySet() {
         return map.entrySet();
     }
 
-    @Override
     public boolean equals(Object out) {
         return map.equals(out);
     }
@@ -321,18 +308,15 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      * @param name 字段名
      * @return 指定字段的值。如果该字段在记录中不存在，返回 null
      */
-    @Override
     public Object get(Object name) {
-        if (null == name) {
+        if (null == name)
             return null;
-        }
         return map.get(name.toString().toLowerCase());
     }
 
     /**
      * 返回该记录的哈希码值
      */
-    @Override
     public int hashCode() {
         return map.hashCode();
     }
@@ -342,7 +326,6 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      *
      * @return true 记录中不存在字段与值的对应关系
      */
-    @Override
     public boolean isEmpty() {
         return map.isEmpty();
     }
@@ -352,7 +335,6 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      *
      * @return 记录中所有的字段名
      */
-    @Override
     public Set<String> keySet() {
         return map.keySet();
     }
@@ -364,17 +346,14 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      * @param value 字段值
      * @return 该字段之前所对应的值；如果之前该字段在该记录中不存在，则返回 null
      */
-    @Override
     public Object put(String name, Object value) {
         keys.add(name);
         return map.put(name.toLowerCase(), value);
     }
 
-    @Override
     public void putAll(Map<? extends String, ? extends Object> out) {
-        for (Entry<? extends String, ? extends Object> entry : out.entrySet()) {
+        for (Entry<? extends String, ? extends Object> entry : out.entrySet())
             put(entry.getKey(), entry.getValue());
-        }
     }
 
     /**
@@ -383,7 +362,6 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      * @param key 字段名
      * @return 该字段所对应的值；如果该字段在该记录中不存在，则返回 null
      */
-    @Override
     public Object remove(Object key) {
         return map.remove(key.toString().toLowerCase());
     }
@@ -393,7 +371,6 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      *
      * @return 记录的记录数
      */
-    @Override
     public int size() {
         return map.size();
     }
@@ -403,7 +380,6 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
      *
      * @return 记录中所有的字段的值
      */
-    @Override
     public Collection<Object> values() {
         return map.values();
     }
@@ -417,10 +393,8 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
         return Chain.from(map);
     }
 
-    @Override
     public Record clone() {
         Record re = create();
-        re.clone();
         re.putAll(this);
         return re;
     }
@@ -433,14 +407,11 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
         return map;
     }
 
-    @Override
     public int compareTo(Record re) {
-        if (re == null) {
+        if (re == null)
             return 1;
-        }
-        if (re.size() == this.size()) {
+        if (re.size() == this.size())
             return 0;
-        }
         return re.size() > this.size() ? -1 : 1;
     }
 
@@ -449,13 +420,12 @@ public class Record implements Map<String, Object>, java.io.Serializable, Clonea
     }
 
     public static Record create() {
-        if (factory != null) {
+        if (factory != null)
             try {
                 return factory.call();
             } catch (Exception e) {
                 throw Lang.wrapThrow(e);
             }
-        }
         return new Record();
     }
 }

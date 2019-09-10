@@ -41,16 +41,13 @@ public class HttpEnhanceResponse implements Cloneable {
         this.header = new NutMap();
     }
 
-    @Override
     public HttpEnhanceResponse clone() {
         HttpEnhanceResponse re = new HttpEnhanceResponse();
-        re.clone();
         re.statusCode = statusCode;
         re.statusText = statusText;
         re.header = new NutMap();
-        if (header != null) {
+        if (header != null)
             re.header.putAll(header);
-        }
         re.body = body;
         return re;
     }
@@ -69,15 +66,13 @@ public class HttpEnhanceResponse implements Cloneable {
                 // 读取返回码
                 String sStatus = str.substring(0, pos);
                 Matcher m = _P.matcher(sStatus);
-                if (!m.find()) {
+                if (!m.find())
                     throw Lang.makeThrow("invalid HTTP status line: %s", sStatus);
-                }
 
                 statusCode = Integer.parseInt(m.group(1));
                 statusText = Strings.trim(m.group(3));
-                if (Strings.isBlank(statusText)) {
+                if (Strings.isBlank(statusText))
                     statusText = Http.getStatusText(statusCode);
-                }
 
                 // 读取头部信息
                 pos++;
@@ -127,9 +122,8 @@ public class HttpEnhanceResponse implements Cloneable {
             String key = en.getKey().toString();
             Object val = en.getValue();
 
-            if (null == val) {
+            if (null == val)
                 continue;
-            }
 
             // statusCode
             if ("statusCode".equals(key)) {
@@ -163,14 +157,13 @@ public class HttpEnhanceResponse implements Cloneable {
     }
 
     public void updateBody(String body) {
-        if (!Strings.isBlank(body)) {
+        if (!Strings.isBlank(body))
             try {
                 this.body = body.getBytes(Encoding.UTF8);
             }
             catch (UnsupportedEncodingException e) {
                 throw Lang.wrapThrow(e);
             }
-        }
     }
 
     public void render(final HttpServletResponse resp) {
@@ -185,11 +178,9 @@ public class HttpEnhanceResponse implements Cloneable {
                 final String key = en.getKey();
                 Object val = en.getValue();
                 Lang.each(val, new Each<Object>() {
-                    @Override
                     public void invoke(int index, Object ele, int length) {
-                        if (null != ele) {
+                        if (null != ele)
                             resp.addHeader(key, ele.toString());
-                        }
                     }
                 });
             }

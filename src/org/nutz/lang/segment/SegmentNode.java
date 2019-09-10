@@ -19,10 +19,8 @@ public class SegmentNode implements Cloneable {
         return node;
     }
 
-    @Override
     public SegmentNode clone() throws CloneNotSupportedException {
         SegmentNode node = new SegmentNode();
-        node.clone();
         node.isKey = this.isKey;
         node.value = this.value;
         return node;
