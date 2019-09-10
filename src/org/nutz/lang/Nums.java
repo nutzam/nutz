@@ -20,8 +20,8 @@ public abstract class Nums {
      * @return 两个数的最大公约数 <code>greatest common divisor(gcd)</code>
      */
     public static int gcd(int a, int b) {
-        a = Math.round(a);
-        b = Math.round(b);
+        a = Math.round(Float.valueOf(a));
+        b = Math.round(Float.valueOf(b));
         if (b != 0) {
             return gcd(b, a % b);
         }
@@ -35,8 +35,9 @@ public abstract class Nums {
      */
     public static int gcds(int... list) {
         // 没数
-        if (list.length == 0)
+        if (list.length == 0) {
             return Integer.MIN_VALUE;
+        }
         // 一个是自己
         if (list.length == 1) {
             return list[0];
@@ -58,8 +59,8 @@ public abstract class Nums {
      * @return 两个数的最小公倍数 <code>lowest common multiple (LCM)</code>
      */
     public static int lcm(int a, int b) {
-        a = Math.round(a);
-        b = Math.round(b);
+        a = Math.round(Float.valueOf(a));
+        b = Math.round(Float.valueOf(b));
         return a * b / gcd(a, b);
     }
 
@@ -70,8 +71,9 @@ public abstract class Nums {
      */
     public static int lcms(int... list) {
         // 没数
-        if (list.length == 0)
+        if (list.length == 0) {
             return Integer.MAX_VALUE;
+        }
         // 一个是自己
         if (list.length == 1) {
             return list[0];
@@ -140,8 +142,9 @@ public abstract class Nums {
      */
     public static int sum(int... nbs) {
         int re = 0;
-        for (int nb : nbs)
+        for (int nb : nbs) {
             re += nb;
+        }
         return re;
     }
 
@@ -166,12 +169,15 @@ public abstract class Nums {
      * @see org.nutz.lang.Nums.Radix
      */
     public static Radix evalRadix(String str) {
-        if (str.startsWith("0x"))
+        if (str.startsWith("0x")) {
             return new Radix(str.substring(2), 16);
-        if (str.startsWith("0") && str.length() > 1)
+        }
+        if (str.startsWith("0") && str.length() > 1) {
             return new Radix(str.substring(1), 8);
-        if (str.startsWith("0b"))
+        }
+        if (str.startsWith("0b")) {
             return new Radix(str.substring(2), 2);
+        }
         return new Radix(str, 10);
     }
 
@@ -190,8 +196,9 @@ public abstract class Nums {
      */
     public static int[] splitInt(String str) {
         String[] ss = Strings.splitIgnoreBlank(str);
-        if (null == ss)
+        if (null == ss) {
             return null;
+        }
         int[] ns = new int[ss.length];
         for (int i = 0; i < ns.length; i++) {
             try {
@@ -209,8 +216,9 @@ public abstract class Nums {
      */
     public static long[] splitLong(String str) {
         String[] ss = Strings.splitIgnoreBlank(str);
-        if (null == ss)
+        if (null == ss) {
             return null;
+        }
         long[] ns = new long[ss.length];
         for (int i = 0; i < ns.length; i++) {
             try {
@@ -238,8 +246,9 @@ public abstract class Nums {
      */
     public static float[] splitFloat(String str) {
         String[] ss = Strings.splitIgnoreBlank(str);
-        if (null == ss)
+        if (null == ss) {
             return null;
+        }
         float[] ns = new float[ss.length];
         for (int i = 0; i < ns.length; i++) {
             try {
@@ -261,8 +270,9 @@ public abstract class Nums {
      */
     public static double[] splitDouble(String str) {
         String[] ss = Strings.splitIgnoreBlank(str);
-        if (null == ss)
+        if (null == ss) {
             return null;
+        }
         double[] ns = new double[ss.length];
         for (int i = 0; i < ns.length; i++) {
             try {
@@ -280,8 +290,9 @@ public abstract class Nums {
      */
     public static boolean[] splitBoolean(String str) {
         String[] ss = Strings.splitIgnoreBlank(str);
-        if (null == ss)
+        if (null == ss) {
             return null;
+        }
         boolean[] ns = new boolean[ss.length];
         for (int i = 0; i < ns.length; i++) {
             try {
@@ -311,11 +322,13 @@ public abstract class Nums {
      * @return 第一个匹配元素的下标
      */
     public static int indexOf(int[] arr, int v, int off) {
-        if (null != arr)
+        if (null != arr) {
             for (int i = off; i < arr.length; i++) {
-                if (arr[i] == v)
+                if (arr[i] == v) {
                     return i;
+                }
             }
+        }
         return -1;
     }
 
@@ -325,11 +338,13 @@ public abstract class Nums {
      * @return 最后一个匹配元素的下标
      */
     public static int lastIndexOf(int[] arr, int v) {
-        if (null != arr)
+        if (null != arr) {
             for (int i = arr.length - 1; i >= 0; i--) {
-                if (arr[i] == v)
+                if (arr[i] == v) {
                     return i;
+                }
             }
+        }
         return -1;
     }
 
@@ -337,11 +352,13 @@ public abstract class Nums {
      * @see #indexOf(char[], char, int)
      */
     public static int indexOf(char[] arr, char v) {
-        if (null != arr)
+        if (null != arr) {
             for (int i = 0; i < arr.length; i++) {
-                if (arr[i] == v)
+                if (arr[i] == v) {
                     return i;
+                }
             }
+        }
         return -1;
     }
 
@@ -355,11 +372,13 @@ public abstract class Nums {
      * @return 第一个匹配元素的下标
      */
     public static int indexOf(char[] arr, char v, int off) {
-        if (null != arr)
+        if (null != arr) {
             for (int i = off; i < arr.length; i++) {
-                if (arr[i] == v)
+                if (arr[i] == v) {
                     return i;
+                }
             }
+        }
         return -1;
     }
 
@@ -369,11 +388,13 @@ public abstract class Nums {
      * @return 第一个匹配元素的下标
      */
     public static int lastIndexOf(char[] arr, char v) {
-        if (null != arr)
+        if (null != arr) {
             for (int i = arr.length - 1; i >= 0; i--) {
-                if (arr[i] == v)
+                if (arr[i] == v) {
                     return i;
+                }
             }
+        }
         return -1;
     }
 
@@ -394,11 +415,13 @@ public abstract class Nums {
      * @return 第一个匹配元素的下标
      */
     public static int indexOf(long[] arr, long v, int off) {
-        if (null != arr)
+        if (null != arr) {
             for (int i = off; i < arr.length; i++) {
-                if (arr[i] == v)
+                if (arr[i] == v) {
                     return i;
+                }
             }
+        }
         return -1;
     }
 
@@ -408,11 +431,13 @@ public abstract class Nums {
      * @return 第一个匹配元素的下标
      */
     public static int lastIndexOf(long[] arr, long v) {
-        if (null != arr)
+        if (null != arr) {
             for (int i = arr.length - 1; i >= 0; i--) {
-                if (arr[i] == v)
+                if (arr[i] == v) {
                     return i;
+                }
             }
+        }
         return -1;
     }
 
@@ -446,14 +471,16 @@ public abstract class Nums {
      * @return 新的整合过的数组
      */
     public static int[] join(int[] arr, int... is) {
-        if (null == arr)
+        if (null == arr) {
             return is;
+        }
         int length = arr.length + is.length;
         int[] re = new int[length];
         System.arraycopy(arr, 0, re, 0, arr.length);
         int i = arr.length;
-        for (int num : is)
+        for (int num : is) {
             re[i++] = num;
+        }
         return re;
     }
 
@@ -487,14 +514,16 @@ public abstract class Nums {
      * @return 新的整合过的数组
      */
     public static long[] join(long[] arr, long... is) {
-        if (null == arr)
+        if (null == arr) {
             return is;
+        }
         int length = arr.length + is.length;
         long[] re = new long[length];
         System.arraycopy(arr, 0, re, 0, arr.length);
         int i = arr.length;
-        for (long num : is)
+        for (long num : is) {
             re[i++] = num;
+        }
         return re;
     }
 
@@ -528,14 +557,16 @@ public abstract class Nums {
      * @return 新的整合过的数组
      */
     public static char[] join(char[] arr, char... is) {
-        if (null == arr)
+        if (null == arr) {
             return is;
+        }
         int length = arr.length + is.length;
         char[] re = new char[length];
         System.arraycopy(arr, 0, re, 0, arr.length);
         int i = arr.length;
-        for (char num : is)
+        for (char num : is) {
             re[i++] = num;
+        }
         return re;
     }
 }
