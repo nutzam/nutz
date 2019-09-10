@@ -28,7 +28,7 @@ public abstract class MaplEach {
      * @param obj
      */
     private void convertMap(Map<?, ?> obj) {
-        for(Object key : obj.keySet()){
+        for(Object key : obj.entrySet()){
             paths.addLast(key.toString());
             DLR(fetchPath(), obj.get(key));
             each(obj.get(key));

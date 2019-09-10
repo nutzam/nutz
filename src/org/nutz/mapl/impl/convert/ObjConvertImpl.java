@@ -139,7 +139,7 @@ public class ObjConvertImpl implements MaplConvert {
             keyType = ts[0];
             valueType = ts[1];
         }
-        for (Object key : map.keySet()) {
+        for (Object key : map.entrySet()) {
             Object val = map.get(key);
             // 转换Key
             if (isLeaf(key)) {

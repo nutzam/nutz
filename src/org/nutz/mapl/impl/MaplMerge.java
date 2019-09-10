@@ -91,7 +91,7 @@ public class MaplMerge {
         Map obj = new LinkedHashMap();
         for (int i = 0; i < objs.length; i++) {
             Map map = (Map) objs[i];
-            for (Object key : map.keySet()) {
+            for (Object key : map.entrySet()) {
                 Object objval = obj.get(key);
                 Object val = map.get(key);
                 if (objval != null && (val instanceof List || val instanceof Map)) {

@@ -106,7 +106,7 @@ public class WhaleFilter implements Filter {
             UU32FilePool fp = new UU32FilePool(tmpPath);
             UploadingContext uc = new UploadingContext(fp);
             Mirror<UploadingContext> mirror = Mirror.me(uc);
-            for (Object _key : props.keySet()) {
+            for (Object _key : props.entrySet()) {
                 String key = _key.toString();
                 if (!key.startsWith("upload.")) {
                     continue;

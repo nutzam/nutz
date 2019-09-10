@@ -156,7 +156,7 @@ public class StructureConvert extends MaplEach implements MaplConvert{
      * @param path
      */
     private void loadMapRelation(Map<?, ?> obj, String path) {
-        for(Object key : obj.keySet()){
+        for(Object key : obj.entrySet()){
             Object val = obj.get(key);
             if(val instanceof String){
                 relation.put(path + space(path) + key.toString(), Lang.list(val.toString()));
