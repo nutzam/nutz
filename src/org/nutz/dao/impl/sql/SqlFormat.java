@@ -81,6 +81,8 @@ public class SqlFormat implements Cloneable, Serializable {
 
     @Override
     public SqlFormat clone() {
-        return new SqlFormat(this.printParam, this.paramRowLimit, this.paramLengthLimit, this.printExample);
+        SqlFormat sqlFormat = new SqlFormat(this.printParam, this.paramRowLimit, this.paramLengthLimit, this.printExample);
+        sqlFormat.clone();
+        return sqlFormat;
     }
 }

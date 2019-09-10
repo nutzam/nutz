@@ -19,8 +19,9 @@ public class Email implements Cloneable {
         catch (Exception e) {
             throw Lang.makeThrow("Error email format [%s]", str);
         }
-        if (Strings.isBlank(account) || Strings.isBlank(host) || host.indexOf('.') < 0)
+        if (Strings.isBlank(account) || Strings.isBlank(host) || host.indexOf('.') < 0) {
             throw Lang.makeThrow("Error email format [%s]", str);
+        }
     }
 
     public Email(String account, String host) {
@@ -46,26 +47,33 @@ public class Email implements Cloneable {
 
     @Override
     public int hashCode() {
-        if (null == account)
+        if (null == account) {
             return 0;
+        }
         return account.hashCode();
     }
 
     @Override
     public Email clone() throws CloneNotSupportedException {
-        return new Email(account, host);
+        Email email = new Email(account, host);
+        email.clone();
+        return email;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (null == obj)
+        if (null == obj) {
             return false;
-        if (!Email.class.isAssignableFrom(obj.getClass()))
+        }
+        if (!Email.class.isAssignableFrom(obj.getClass())) {
             return false;
-        if (!account.equals(((Email) obj).account))
+        }
+        if (!account.equals(((Email) obj).account)) {
             return false;
-        if (!host.equals(((Email) obj).host))
+        }
+        if (!host.equals(((Email) obj).host)) {
             return false;
+        }
         return true;
     }
 
