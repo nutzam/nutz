@@ -48,7 +48,6 @@ public class DaoInterceptorChain implements ConnCallback {
      */
     public DaoInterceptorChain(DaoStatement... sts) {
         this.sts = sts;
-        id = R.UU32();
     }
 
     /**
@@ -221,7 +220,10 @@ public class DaoInterceptorChain implements ConnCallback {
      * 
      * @return 本拦截器链的id
      */
-    public String getId() {
+    @Deprecated
+    public synchronized String getId() {
+        if (id == null)
+            id = R.UU32();
         return id;
     }
     
