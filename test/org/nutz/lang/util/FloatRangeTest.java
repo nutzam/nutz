@@ -29,4 +29,10 @@ public class FloatRangeTest {
         assertTrue(3f == r.getRight());
     }
 
+    @Test
+    public void onTest() {
+        FloatRange r = FloatRange.make(".3 : .5");
+        assertTrue(r.on(.3f));
+    }
+
 }
