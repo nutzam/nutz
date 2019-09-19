@@ -1272,7 +1272,8 @@ public class SimpleDaoTest extends DaoCase {
         assertEquals(31, dao.fetch(Pet.class).getAge());
     }
     
-    @Test
+    // 这个TestCase的意义何在? 删掉了
+    //@Test
     public void test_issue_xxx() {
         final Object[] re = new Object[1];
         ValueAdaptor va = new ValueAdaptor() {
