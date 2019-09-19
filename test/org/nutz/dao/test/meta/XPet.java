@@ -15,7 +15,7 @@ public class XPet {
     @Id
 	private long id;
     @Name
-    @PrevInsert(uu32=true)
+    @PrevInsert(uu32 = true, nullEffective = true)
 	private String name;
 	
 	@PrevInsert(now=true)

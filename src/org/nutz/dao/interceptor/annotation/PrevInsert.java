@@ -32,4 +32,9 @@ public @interface PrevInsert {
      * 设置为UUID, 为nutz定义的UU32格式,通常配合@Name使用
      */
     boolean uu32() default false;
+
+    /**
+     * nullEffective=true时上面的赋值规则要起效必须是在[当前字段==null]时才能生效
+     */
+    boolean nullEffective() default false;
 }
