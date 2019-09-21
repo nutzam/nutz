@@ -44,30 +44,37 @@ public class Cookie implements HttpReqRespInterceptor {
     }
 
     public void parse(String str) {
-        if (debug)
+        if (debug) {
             log.debug("parse " + str);
+        }
         String[] ss = Strings.splitIgnoreBlank(str, ";");
         for (String s : ss) {
             Pair<String> p = Pair.create(Strings.trim(s));
-            if (p.getValueString() == null)
+            if (p.getValueString() == null) {
                 continue;
-            if ("Path".equals(p.getName()) || "Expires".equals(p.getName()))
+            }
+            if ("Path".equals(p.getName()) || "Expires".equals(p.getName())) {
                 continue;
+            }
             if ("Max-Age".equals(p.getName())) {
                 long age = Long.parseLong(p.getValue());
-                if (age == 0)
+                if (age == 0) {
                     return;
+                }
             }
             String val = p.getValueString();
-            if (debug)
+            if (debug) {
                 log.debugf("add cookie [%s=%s]",  p.getName(), val);
+            }
             map.put(p.getName(), val);
         }
     }
 
+    @Override
     public String toString() {
-        if (map.isEmpty())
+        if (map.isEmpty()) {
             return "";
+        }
         StringBuilder sb = new StringBuilder();
         for (Entry<String, String> en : map.entrySet()) {
             sb.append(en.getKey()).append('=').append(en.getValue()).append("; ");
@@ -76,28 +83,35 @@ public class Cookie implements HttpReqRespInterceptor {
         return sb.toString();
     }
 
+    @Override
     public void beforeConnect(Request request) {
     }
     
+    @Override
     public void afterConnect(Request request, HttpURLConnection conn) {
-        if (this.map.isEmpty())
+        if (this.map.isEmpty()) {
             return;
+        }
         String c = toString();
-        if (debug)
+        if (debug) {
             log.debugf("add Cookie for req [%s]", c);
-        if (!Strings.isBlank(c))
+        }
+        if (!Strings.isBlank(c)) {
             conn.addRequestProperty("Cookie", c);
+        }
     }
     
+    @Override
     public void afterResponse(Request request, HttpURLConnection conn, Response response) {
         Map<String, List<String>> props = conn.getHeaderFields();
         for (Entry<String, List<String>> en : props.entrySet()) {
-            if (en.getKey() == null || !en.getKey().equalsIgnoreCase("Set-Cookie")) {
+            if (en.getKey() == null || !"Set-Cookie".equalsIgnoreCase(en.getKey())) {
                 continue;
             }
             for (String e : en.getValue()) {
-                if (debug)
+                if (debug) {
                     log.debugf("found Set-Cookie [%s]", e);
+                }
                 this.parse(e);
             }
             break;

@@ -268,7 +268,7 @@ public class NutSql extends NutStatement implements Sql {
                 sb.append("?");
             } else if (val instanceof PItem) {
                 ((PItem) val).joinSql(en, sb);
-            } else if (val.getClass().isArray()) {
+            } else if (val.getClass().isArray() || Collection.class.isAssignableFrom(val.getClass())) {
                 sb.append(Strings.dup("?,", Lang.eleSize(val)));
                 sb.setLength(sb.length() - 1);
             } else if (val instanceof Condition) {
@@ -322,7 +322,7 @@ public class NutSql extends NutStatement implements Sql {
                 return off + 1;
             } else if (val instanceof PItem) {
                 return ((PItem) val).joinParams(en, null, params, off);
-            } else if (val.getClass().isArray()) {
+            } else if (val.getClass().isArray() || Collection.class.isAssignableFrom(val.getClass())) {
                 int len = Lang.eleSize(val);
                 Lang.each(val, new Each<Object>() {
                     public void invoke(int index, Object ele, int length) {
@@ -344,7 +344,7 @@ public class NutSql extends NutStatement implements Sql {
                 return 1;
             } else if (val instanceof PItem) {
                 return ((PItem) val).paramCount(en);
-            } else if (val.getClass().isArray()) {
+            } else if (val.getClass().isArray() || Collection.class.isAssignableFrom(val.getClass())) {
                 return Lang.eleSize(val);
             } else if (val instanceof Condition) {
                 return 0;

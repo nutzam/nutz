@@ -11,6 +11,7 @@ import org.nutz.el.obj.IdentifierObj;
  */
 public class IdentifierParse implements Parse{
 
+    @Override
     public Object fetchItem(CharQueue exp) {
         StringBuilder sb = new StringBuilder();
         if(Character.isJavaIdentifierStart(exp.peek())){
@@ -18,13 +19,13 @@ public class IdentifierParse implements Parse{
             while(!exp.isEmpty() && Character.isJavaIdentifierPart(exp.peek())){
                 sb.append(exp.poll());
             }
-            if(sb.toString().equals("null")){
+            if("null".equals(sb.toString())){
                 return new IdentifierObj(null);
             }
-            if(sb.toString().equals("true")){
+            if("true".equals(sb.toString())){
                 return Boolean.TRUE;
             }
-            if(sb.toString().equals("false")){
+            if("false".equals(sb.toString())){
                 return Boolean.FALSE;
             }
             return new AbstractObj(sb.toString());

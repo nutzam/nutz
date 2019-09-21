@@ -9,23 +9,25 @@ import org.nutz.el.Parse;
  *
  */
 public class StringParse implements Parse {
+    @Override
     public Object fetchItem(CharQueue exp) {
         //@ JKTODO 添加转意字符
-        switch(exp.peek()){
-        case '\'':
-        case '"':
-            StringBuilder sb = new StringBuilder();
-            char end = exp.poll();
+        switch (exp.peek()) {
+            case '\'':
+            case '"':
+                StringBuilder sb = new StringBuilder();
+                char end = exp.poll();
 //            while(!exp.isEmpty() && !exp.peek().equals(end)){
-            while(!exp.isEmpty() && exp.peek() != end){
-                if(exp.peek() == '\\') {//转义字符?
-                    parseSp(exp, sb);
-                }else{
-                    sb.append(exp.poll());
+                while (!exp.isEmpty() && exp.peek() != end) {
+                    if (exp.peek() == '\\') {//转义字符?
+                        parseSp(exp, sb);
+                    } else {
+                        sb.append(exp.poll());
+                    }
                 }
-            }
-            exp.poll();
-            return sb.toString();
+                exp.poll();
+                return sb.toString();
+            default:
         }
         return nullobj;
     }
@@ -52,8 +54,9 @@ public class StringParse implements Parse {
             break;
         case 'u':
             char[] hex = new char[4];
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++) {
                 hex[i] = exp.poll();
+            }
             sb.append((char)Integer.valueOf(new String(hex), 16).intValue());
             break;
         case 'b': //这个支持一下又何妨?

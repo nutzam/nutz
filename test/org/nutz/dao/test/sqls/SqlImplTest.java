@@ -3,6 +3,8 @@ package org.nutz.dao.test.sqls;
 import org.junit.Test;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.sql.Sql;
+import org.nutz.dao.test.DaoCase;
+import org.nutz.dao.test.meta.Pet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +14,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SqlImplTest {
+public class SqlImplTest extends DaoCase {
 
     @Test
     public void test_sql_get_list() {
@@ -52,5 +54,25 @@ public class SqlImplTest {
         params.put("b", 2);
         String str = Sqls.create("select * from x where a=@a and b=@b and c=@c").setParams(params).setParam("c", 3).toString();
         assertEquals(str, "select * from x where a=1 and b=2 and c=3");
+    }
+    
+    @Test
+    public void test_sql_in_list() {
+        List<String> list = new ArrayList<String>();
+        list.add("wendal");
+        list.add("zozoh");
+        list.add("pangwu");
+        Sql sql = Sqls.queryEntity("select id from t_pet where name in (@list)");
+        sql.setParam("list", list);
+        sql.setEntity(dao.getEntity(Pet.class));
+        System.out.println(sql.forPrint());
+        System.out.println(sql.toPreparedStatement());
+        assertEquals(3, sql.getParamMatrix()[0].length);
+        dao.create(Pet.class, true);
+        dao.insert(Pet.create("wendal"));
+        dao.insert(Pet.create("zozoh"));
+        dao.insert(Pet.create("pangwu"));
+        List<Pet> pets = dao.execute(sql).getList(Pet.class);
+        assertEquals(3, pets.size());
     }
 }

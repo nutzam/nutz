@@ -8,10 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
+import java.util.concurrent.*;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Streams;
@@ -23,7 +20,7 @@ import org.nutz.log.Logs;
 public abstract class Sockets {
 
     private static final Log log = Logs.get();
-    
+
     public static void send(String host, int port, InputStream ins, OutputStream ops) {
     	send(host, port, ins, ops, 0);
     }
@@ -150,10 +147,10 @@ public abstract class Sockets {
      */
     public static void localListenByLine(int port, Map<String, SocketAction> actions, int poolSize) {
         Sockets.localListenByLine(    port,
-                                    actions,
-                                    Executors.newFixedThreadPool(Runtime.getRuntime()
-                                                                        .availableProcessors()
-                                                                    * poolSize));
+                actions,
+                Executors.newScheduledThreadPool(Runtime.getRuntime()
+                        .availableProcessors()
+                        * poolSize));
     }
 
     /**
@@ -206,8 +203,9 @@ public abstract class Sockets {
                 throw Lang.wrapThrow(e1);
             }
 
-            if (log.isInfoEnabled())
+            if (log.isInfoEnabled()) {
                 log.infof("Local socket is up at :%d with %d action ready", port, actions.size());
+            }
 
             final Context context = Lang.context();
             context.set("stop", false);
@@ -248,15 +246,17 @@ public abstract class Sockets {
              */
             while (!context.getBoolean("stop")) {
                 try {
-                    if (log.isDebugEnabled())
+                    if (log.isDebugEnabled()) {
                         log.debug("Waiting for new socket");
+                    }
                     Socket socket = server.accept();
                     if (context.getBoolean("stop")) {
                         Sockets.safeClose(socket);
                         break;// 监护线程也许还是睡觉,还没来得及关掉哦,所以自己检查一下
                     }
-                    if (log.isDebugEnabled())
+                    if (log.isDebugEnabled()) {
                         log.debug("accept a new socket, create new SocketAtom to handle it ...");
+                    }
                     Runnable runnable = (Runnable) borning.born(new Object[]{    context,
                                                                                 socket,
                                                                                 saTable});
@@ -290,13 +290,15 @@ public abstract class Sockets {
             throw e;
         }
         finally {
-            if (log.isInfoEnabled())
+            if (log.isInfoEnabled()) {
                 log.info("Stop services ...");
+            }
             service.shutdown();
         }
 
-        if (log.isInfoEnabled())
+        if (log.isInfoEnabled()) {
             log.infof("Local socket is down for :%d", port);
+        }
 
     }
 
@@ -308,7 +310,7 @@ public abstract class Sockets {
      * @return 一定会返回 null
      */
     public static Socket safeClose(Socket socket) {
-        if (null != socket)
+        if (null != socket) {
             try {
                 socket.close();
                 socket = null;
@@ -316,6 +318,7 @@ public abstract class Sockets {
             catch (IOException e) {
                 throw Lang.wrapThrow(e);
             }
+        }
         return null;
     }
 
@@ -326,6 +329,7 @@ public abstract class Sockets {
      */
     public static SocketAction doClose() {
         return new SocketAction() {
+            @Override
             public void run(SocketContext context) {
                 throw new CloseSocketException();
             }

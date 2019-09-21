@@ -911,22 +911,23 @@ public class GeneratorAdapter extends LocalVariablesSorter {
 
     private static Type getBoxedType(final Type type) {
         switch (type.getSort()) {
-        case Type.BYTE:
-            return BYTE_TYPE;
-        case Type.BOOLEAN:
-            return BOOLEAN_TYPE;
-        case Type.SHORT:
-            return SHORT_TYPE;
-        case Type.CHAR:
-            return CHARACTER_TYPE;
-        case Type.INT:
-            return INTEGER_TYPE;
-        case Type.FLOAT:
-            return FLOAT_TYPE;
-        case Type.LONG:
-            return LONG_TYPE;
-        case Type.DOUBLE:
-            return DOUBLE_TYPE;
+            case Type.BYTE:
+                return BYTE_TYPE;
+            case Type.BOOLEAN:
+                return BOOLEAN_TYPE;
+            case Type.SHORT:
+                return SHORT_TYPE;
+            case Type.CHAR:
+                return CHARACTER_TYPE;
+            case Type.INT:
+                return INTEGER_TYPE;
+            case Type.FLOAT:
+                return FLOAT_TYPE;
+            case Type.LONG:
+                return LONG_TYPE;
+            case Type.DOUBLE:
+                return DOUBLE_TYPE;
+            default:
         }
         return type;
     }
@@ -994,29 +995,30 @@ public class GeneratorAdapter extends LocalVariablesSorter {
         Type t = NUMBER_TYPE;
         Method sig = null;
         switch (type.getSort()) {
-        case Type.VOID:
-            return;
-        case Type.CHAR:
-            t = CHARACTER_TYPE;
-            sig = CHAR_VALUE;
-            break;
-        case Type.BOOLEAN:
-            t = BOOLEAN_TYPE;
-            sig = BOOLEAN_VALUE;
-            break;
-        case Type.DOUBLE:
-            sig = DOUBLE_VALUE;
-            break;
-        case Type.FLOAT:
-            sig = FLOAT_VALUE;
-            break;
-        case Type.LONG:
-            sig = LONG_VALUE;
-            break;
-        case Type.INT:
-        case Type.SHORT:
-        case Type.BYTE:
-            sig = INT_VALUE;
+            case Type.VOID:
+                return;
+            case Type.CHAR:
+                t = CHARACTER_TYPE;
+                sig = CHAR_VALUE;
+                break;
+            case Type.BOOLEAN:
+                t = BOOLEAN_TYPE;
+                sig = BOOLEAN_VALUE;
+                break;
+            case Type.DOUBLE:
+                sig = DOUBLE_VALUE;
+                break;
+            case Type.FLOAT:
+                sig = FLOAT_VALUE;
+                break;
+            case Type.LONG:
+                sig = LONG_VALUE;
+                break;
+            case Type.INT:
+            case Type.SHORT:
+            case Type.BYTE:
+                sig = INT_VALUE;
+            default:
         }
         if (sig == null) {
             checkCast(type);
@@ -1074,53 +1076,54 @@ public class GeneratorAdapter extends LocalVariablesSorter {
      */
     public void ifCmp(final Type type, final int mode, final Label label) {
         switch (type.getSort()) {
-        case Type.LONG:
-            mv.visitInsn(Opcodes.LCMP);
-            break;
-        case Type.DOUBLE:
-            mv.visitInsn(mode == GE || mode == GT ? Opcodes.DCMPL
-                    : Opcodes.DCMPG);
-            break;
-        case Type.FLOAT:
-            mv.visitInsn(mode == GE || mode == GT ? Opcodes.FCMPL
-                    : Opcodes.FCMPG);
-            break;
-        case Type.ARRAY:
-        case Type.OBJECT:
-            switch (mode) {
-            case EQ:
-                mv.visitJumpInsn(Opcodes.IF_ACMPEQ, label);
+            case Type.LONG:
+                mv.visitInsn(Opcodes.LCMP);
+                break;
+            case Type.DOUBLE:
+                mv.visitInsn(mode == GE || mode == GT ? Opcodes.DCMPL
+                        : Opcodes.DCMPG);
+                break;
+            case Type.FLOAT:
+                mv.visitInsn(mode == GE || mode == GT ? Opcodes.FCMPL
+                        : Opcodes.FCMPG);
+                break;
+            case Type.ARRAY:
+            case Type.OBJECT:
+                switch (mode) {
+                    case EQ:
+                        mv.visitJumpInsn(Opcodes.IF_ACMPEQ, label);
+                        return;
+                    case NE:
+                        mv.visitJumpInsn(Opcodes.IF_ACMPNE, label);
+                        return;
+                }
+                throw new IllegalArgumentException("Bad comparison for type "
+                        + type);
+            default:
+                int intOp = -1;
+                switch (mode) {
+                    case EQ:
+                        intOp = Opcodes.IF_ICMPEQ;
+                        break;
+                    case NE:
+                        intOp = Opcodes.IF_ICMPNE;
+                        break;
+                    case GE:
+                        intOp = Opcodes.IF_ICMPGE;
+                        break;
+                    case LT:
+                        intOp = Opcodes.IF_ICMPLT;
+                        break;
+                    case LE:
+                        intOp = Opcodes.IF_ICMPLE;
+                        break;
+                    case GT:
+                        intOp = Opcodes.IF_ICMPGT;
+                        break;
+                    default:
+                }
+                mv.visitJumpInsn(intOp, label);
                 return;
-            case NE:
-                mv.visitJumpInsn(Opcodes.IF_ACMPNE, label);
-                return;
-            }
-            throw new IllegalArgumentException("Bad comparison for type "
-                    + type);
-        default:
-            int intOp = -1;
-            switch (mode) {
-            case EQ:
-                intOp = Opcodes.IF_ICMPEQ;
-                break;
-            case NE:
-                intOp = Opcodes.IF_ICMPNE;
-                break;
-            case GE:
-                intOp = Opcodes.IF_ICMPGE;
-                break;
-            case LT:
-                intOp = Opcodes.IF_ICMPLT;
-                break;
-            case LE:
-                intOp = Opcodes.IF_ICMPLE;
-                break;
-            case GT:
-                intOp = Opcodes.IF_ICMPGT;
-                break;
-            }
-            mv.visitJumpInsn(intOp, label);
-            return;
         }
         mv.visitJumpInsn(mode, label);
     }

@@ -20,6 +20,8 @@ import org.nutz.lang.util.Regex;
  */
 public abstract class Times {
 
+    private static final Pattern _p_tm = Pattern.compile("^([0-9]{1,2}):([0-9]{1,2})(:([0-9]{1,2})([.,]([0-9]{1,3}))?)?$");
+
     /**
      * 判断一年是否为闰年，如果给定年份小于1全部为 false
      * 
@@ -28,8 +30,9 @@ public abstract class Times {
      * @return 给定年份是否是闰年
      */
     public static boolean leapYear(int year) {
-        if (year < 4)
+        if (year < 4) {
             return false;
+        }
         return (year % 400 == 0) || (year % 100 != 0 && year % 4 == 0);
     }
 
@@ -100,8 +103,6 @@ public abstract class Times {
         ti.__recound_by_valueInMilliSecond();
         return ti;
     }
-
-    private static final Pattern _p_tm = Pattern.compile("^([0-9]{1,2}):([0-9]{1,2})(:([0-9]{1,2})([.,]([0-9]{1,3}))?)?$");
 
     /**
      * 将一个时间字符串，转换成一个一天中的绝对时间对象
@@ -180,8 +181,9 @@ public abstract class Times {
             // 负数表示后退
             else if (this.valueInMillisecond < 0) {
                 this.valueInMillisecond = this.valueInMillisecond % 86400000;
-                if (this.valueInMillisecond < 0)
+                if (this.valueInMillisecond < 0) {
                     this.valueInMillisecond = 86400000 + this.valueInMillisecond;
+                }
             }
             // 计算其他值
             this.value = this.valueInMillisecond / 1000;
@@ -421,8 +423,9 @@ public abstract class Times {
                 tz = TimeZone.getTimeZone(String.format("GMT%s%s:00", m.group(19), m.group(20)));
             }
             // 指定时区 ...
-            if (null != tz)
+            if (null != tz) {
                 df.setTimeZone(tz);
+            }
             // 解析返回
             try {
                 return df.parse(str).getTime();
@@ -431,8 +434,9 @@ public abstract class Times {
                 throw Lang.wrapThrow(e);
             }
         } else if (_P_TIME_LONG.matcher(ds).find()) {
-            if (ds.endsWith("L"))
+            if (ds.endsWith("L")) {
                 ds.substring(0, ds.length() - 1);
+            }
             return Long.parseLong(ds);
         }
         throw Lang.makeThrow("Unexpect date format '%s'", ds);
@@ -570,8 +574,9 @@ public abstract class Times {
 
     private static int _int(Matcher m, int index, int dft) {
         String s = m.group(index);
-        if (Strings.isBlank(s))
+        if (Strings.isBlank(s)) {
             return dft;
+        }
         return Integer.parseInt(s);
     }
 
@@ -1140,10 +1145,11 @@ public abstract class Times {
         Date d1 = parseq(DF_DATE_TIME, t1);
         Date d2 = parseq(DF_DATE_TIME, t2);
         // Date类的一个方法，如果a早于b返回true，否则返回false
-        if (d1.before(d2))
+        if (d1.before(d2)) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     /**
@@ -1206,18 +1212,18 @@ public abstract class Times {
      */
     public static int getDaysOfMonth(String year, String month) {
         int days = 0;
-        if (month.equals("1")
-            || month.equals("3")
-            || month.equals("5")
-            || month.equals("7")
-            || month.equals("8")
-            || month.equals("10")
-            || month.equals("12")) {
+        if ("1".equals(month)
+            || "3".equals(month)
+            || "5".equals(month)
+            || "7".equals(month)
+            || "8".equals(month)
+            || "10".equals(month)
+            || "12".equals(month)) {
             days = 31;
-        } else if (month.equals("4")
-                   || month.equals("6")
-                   || month.equals("9")
-                   || month.equals("11")) {
+        } else if ("4".equals(month)
+                   || "6".equals(month)
+                   || "9".equals(month)
+                   || "11".equals(month)) {
             days = 30;
         } else {
             if ((Integer.parseInt(year) % 4 == 0 && Integer.parseInt(year) % 100 != 0)
