@@ -12,6 +12,7 @@ import org.nutz.mvc.config.AtMap;
 import org.nutz.mvc.impl.NutMessageMap;
 import org.nutz.mvc.ioc.SessionIocContext;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -216,6 +217,16 @@ public abstract class Mvcs {
      *            HTTP 请求对象
      */
     public static RequestPath getRequestPathObject(HttpServletRequest req) {
+        Object includeUrl = req.getAttribute(RequestDispatcher.INCLUDE_PATH_INFO);
+        if (includeUrl != null) {
+            return getRequestPathObject(includeUrl.toString());
+        }
+
+        includeUrl = req.getAttribute(RequestDispatcher.INCLUDE_SERVLET_PATH);
+        if (includeUrl != null) {
+            return getRequestPathObject(includeUrl.toString());
+        }
+
         String url = req.getPathInfo();
         if (null == url)
             url = req.getServletPath();
