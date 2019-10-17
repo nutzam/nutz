@@ -16,7 +16,7 @@
 	 * 目录，通过 @Localization("路径/") 声明在主模块上
 	 * 当应用启动时，一次读入所有的字符串，并存入 ServletContext，属性名称为：“org.nutz.mvc.annotation.Localization”
 	 * 应用可以自行设置当前 Session 是哪一个国家和地区
-		 * Mvcs.setLocaleName(String localeName)
+		 * Mvcs.setLocalizationKey(String localeName)
 	 * 每次请求时，会根据 Session 中的 localeName，从 ServletContext 中将对应 Locale 的字符串取出，设入 Request 对象
 		 * 属性名为 "msg",无论@Localization声明的路径是什么,在页面(JSP/JSTL/其他模板引擎)中, 它的名字都不会变化.
 		 * 如果当前会话没有被设置 Locale，则将 "msg" 设置成默认本地化字符串
