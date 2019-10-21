@@ -503,8 +503,8 @@ public abstract class Mvcs {
             HttpSession session = getHttpSession(false);
             return session != null ? session.getAttribute(key) : null;
         }
-        catch (Exception e) {
-            return false;
+        catch (Throwable e) {
+            return null;
         }
     }
 
