@@ -9,6 +9,7 @@ import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 import org.nutz.lang.util.NutMap;
 import org.nutz.mvc.config.AtMap;
+import org.nutz.mvc.i18n.LocalizationManager;
 import org.nutz.mvc.impl.NutMessageMap;
 import org.nutz.mvc.ioc.SessionIocContext;
 
@@ -51,14 +52,25 @@ public abstract class Mvcs {
     public static boolean DISABLE_X_POWERED_BY = false;
 
     public static String X_POWERED_BY = "nutz/"+Nutz.version()+" <nutzam.com>";
+    
+    public static LocalizationManager localizationManager;
+    
+    public static void setLocalizationManager(LocalizationManager localizationManager) {
+        Mvcs.localizationManager = localizationManager;
+    }
 
     // ====================================================================
 
-    public static Map<String, Object> getLocaleMessage(String key) {
-        Map<String, Map<String, Object>> msgss = getMessageSet();
-        if (null != msgss)
-            return msgss.get(key);
-        return null;
+    public static Map<String, Object> getLocaleMessage(String local) {
+        if (localizationManager != null) {
+            return localizationManager.getMessageMap(local);
+        }
+        else {
+            Map<String, Map<String, Object>> msgss = getMessageSet();
+            if (null != msgss)
+                return msgss.get(local);
+            return null;
+        }
     }
 
     /**
@@ -175,24 +187,30 @@ public abstract class Mvcs {
      */
     public static void updateRequestAttributes(HttpServletRequest req) {
         // 初始化本次请求的多国语言字符串
-        Map<String, Map<String, Object>> msgss = getMessageSet();
-        if (msgss == null && !ctx().localizations.isEmpty())
-            msgss = ctx().localizations.values().iterator().next();
-        if (null != msgss) {
-            Map<String, Object> msgs = null;
+        if (localizationManager == null) {
+            Map<String, Map<String, Object>> msgss = getMessageSet();
+            if (msgss == null && !ctx().localizations.isEmpty())
+                msgss = ctx().localizations.values().iterator().next();
+            if (null != msgss) {
+                Map<String, Object> msgs = null;
 
-            String lKey = Strings.sBlank(Mvcs.getLocalizationKey(), getDefaultLocalizationKey());
+                String lKey = Strings.sBlank(Mvcs.getLocalizationKey(), getDefaultLocalizationKey());
 
-            if (!Strings.isBlank(lKey))
-                msgs = msgss.get(lKey);
+                if (!Strings.isBlank(lKey))
+                    msgs = msgss.get(lKey);
 
-            // 没有设定特殊的 Local 名字，随便取一个
-            if (null == msgs) {
-                if (msgss.size() > 0)
-                    msgs = msgss.values().iterator().next();
+                // 没有设定特殊的 Local 名字，随便取一个
+                if (null == msgs) {
+                    if (msgss.size() > 0)
+                        msgs = msgss.values().iterator().next();
+                }
+                // 记录到请求中
+                req.setAttribute(MSG, msgs);
             }
-            // 记录到请求中
-            req.setAttribute(MSG, msgs);
+        }
+        else {
+            NutMessageMap msg = localizationManager.getMessageMap(Mvcs.getLocalizationKey());
+            req.setAttribute(MSG, msg);
         }
 
         // 记录一些数据到请求对象中
