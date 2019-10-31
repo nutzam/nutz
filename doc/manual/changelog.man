@@ -2,6 +2,11 @@
 #index:0,1
 #author:wendal(wendal1985@gmail.com)
 
+1.r.68.v20191031
+
+	* add: 更灵活的国际化方式, Mvcs.setLocalizationManager
+	* fix: Mvcs.getSessionAttrSafe在获取失败时应返回null
+-------------------------------------------------------------------------------------------------------
 1.r.68.v20190516
 
 	* add: 添加@PrevInsert/@PrevUpdate/@PrevDelete注解
