@@ -53,6 +53,10 @@ public class SimpleContext extends AbstractContext {
     public Object get(String name) {
         return map.get(name);
     }
+    
+    public Object remove(String name) {
+        return map.remove(name);
+    }
 
     public SimpleContext clone() {
         SimpleContext context = new SimpleContext();
