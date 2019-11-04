@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
 @Documented
 public @interface ApiVersion {
 
-    String value() default "";
+    String value() default "v1";
 }
