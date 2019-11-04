@@ -1,92 +1,79 @@
 package org.nutz.mvc.impl;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.nutz.lang.Lang;
-import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.ActionChain;
 import org.nutz.mvc.ActionContext;
+import org.nutz.mvc.ActionInfo;
+import org.nutz.mvc.RequestMatcher;
+import org.nutz.mvc.impl.reqmatcher.ApiVersionRequestMatcher;
+import org.nutz.mvc.impl.reqmatcher.DefaultRequestMatcher;
 
 /**
  * 根据 HTTP 请求的方法 (GET|POST|PUT|DELETE) 来调用响应的动作链
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 public class ActionInvoker {
 
     private static final Log log = Logs.get();
-    
-    private ActionChain defaultChain;
 
-    private Map<String, ActionChain> chainMap;
+    protected List<RequestMatcher> matchers;
+
+    protected DefaultRequestMatcher dft = new DefaultRequestMatcher();
 
     public ActionInvoker() {
-        chainMap = new HashMap<String, ActionChain>();
+        matchers = new ArrayList<RequestMatcher>(2);
+        matchers.add(new ApiVersionRequestMatcher());
+        matchers.add(dft);
     }
 
-    /**
-     * 增加 ActionChain
-     * 
-     * @param httpMethod
-     *            HTTP 的请求方法 (GET|POST|PUT|DELETE),如果为空，则会抛错
-     * @param chain
-     *            动作链
-     */
-    public void addChain(String httpMethod, ActionChain chain) {
-        if (Strings.isBlank(httpMethod))
-            throw Lang.makeThrow("chain need a valid HTTP Method, but is is '%s'", httpMethod);
-        ActionChain old = chainMap.put(httpMethod.toUpperCase(), chain);
-        if (old != null) {
-            log.warnf("Duplicate @At mapping with same HttpMethod");
+    public void add(String path, ActionInfo ai, ActionChain chain) {
+        for (RequestMatcher matcher : matchers) {
+            matcher.add(path, ai, chain);
         }
     }
 
-    public void setDefaultChain(ActionChain defaultChain) {
-        this.defaultChain = defaultChain;
+    public ActionChain getActionChain(ActionContext ac) {
+        for (RequestMatcher matcher : matchers) {
+            ActionChain chain = matcher.match(ac);
+            if (chain != null) {
+                ac.set("nutz.mvc.current.chain", chain);
+                return chain;
+            }
+        }
+        if (log.isDebugEnabled())
+            log.debugf("Not chain for req (path=%s, method=%s)", ac.getPath(), ac.getRequest().getMethod());
+        return null;
     }
 
-    /**
-     * 根据动作链上下文对象，调用一个相应的动作链
-     * 
-     * @param ac
-     *            动作链上下文
-     * @return true- 成功的找到一个动作链并执行。 false- 没有找到动作链
-     */
     public boolean invoke(ActionContext ac) {
-        ActionChain chain = getActionChain(ac);
-        if (chain == null) {
-            if (log.isDebugEnabled())
-                log.debugf("Not chain for req (path=%s, method=%s)", ac.getPath(), ac.getRequest().getMethod());
-            return false;
-        }
+        ActionChain chain = (ActionChain) ac.remove("nutz.mvc.current.chain");
         chain.doChain(ac);
         return ac.getBoolean(ActionContext.AC_DONE, true);
     }
 
-    public ActionChain getActionChain(ActionContext ac) {
-        String httpMethod = "";
-        if (!chainMap.isEmpty()) {
-            HttpServletRequest req = ac.getRequest();
-            httpMethod = Strings.sNull(req.getMethod(), "GET").toUpperCase();
-            ActionChain chain = chainMap.get(httpMethod);
-            // 找到了特殊HTTP方法的处理动作链
-            if (null != chain) {
-                return chain;
-            }
-        }
-        // 这个 URL 所有的HTTP方法用统一的动作链处理
-        if (null != defaultChain) {
-            return defaultChain;
-        }
-        if (chainMap.size() != 0 && log.isDebugEnabled()) {
-            log.debugf("Path=[%s] available methods%s but request [%s], using the wrong http method?", ac.getPath(), chainMap.keySet(), httpMethod);
-        }
-        // 否则将认为不能处理
-        return null;
+    // ---------------------------------------------------------------------------
+    // 为了兼容老的ActionInvoker
+    public void addChain(String httpMethod, ActionChain chain) {
+        dft.setDefaultChain(chain);
+    }
+
+    public void setDefaultChain(ActionChain defaultChain) {
+        dft.setDefaultChain(defaultChain);
+    }
+
+    // ---------------------------------------------------------------------------
+    // 预留2个方法吧
+    public void setMatchers(List<RequestMatcher> matchers) {
+        this.matchers = matchers;
+    }
+
+    public List<RequestMatcher> getMatchers() {
+        return matchers;
     }
 }

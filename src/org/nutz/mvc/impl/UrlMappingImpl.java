@@ -64,19 +64,21 @@ public class UrlMappingImpl implements UrlMapping {
                 root.add(path, invoker);
                 // 记录一下方法与 url 的映射
                 config.getAtMap().addMethod(path, ai.getMethod());
-            } else if (!ai.isForSpecialHttpMethod()) {
-                log.warnf("Duplicate @At mapping ? path=" + path);
             }
+            //else if (!ai.isForSpecialHttpMethod()) {
+            //    log.warnf("Duplicate @At mapping ? path=" + path);
+            //}
 
             // 将动作链，根据特殊的 HTTP 方法，保存到调用者内部
-            if (ai.isForSpecialHttpMethod()) {
-                for (String httpMethod : ai.getHttpMethods())
-                    invoker.addChain(httpMethod, chain);
-            }
+            //if (ai.isForSpecialHttpMethod()) {
+            //    for (String httpMethod : ai.getHttpMethods())
+            //        invoker.addChain(httpMethod, chain);
+            //}
             // 否则，将其设置为默认动作链
-            else {
-                invoker.setDefaultChain(chain);
-            }
+            //else {
+            //    invoker.setDefaultChain(chain);
+            //}
+            invoker.add(path, ai, chain);
         }
 
         printActionMapping(ai);
