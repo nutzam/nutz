@@ -13,6 +13,7 @@ public class ApiVersionRequestMatcher implements RequestMatcher {
     
     protected int index = -1;
     protected Map<String, DefaultRequestMatcher> matchers;
+    protected boolean keepPathArg;
 
     public void add(String path, ActionInfo ai, ActionChain chain) {
         ApiVersion panno = ai.getModuleType().getAnnotation(ApiVersion.class);
@@ -33,6 +34,8 @@ public class ApiVersionRequestMatcher implements RequestMatcher {
                             matchers.put(anno.value(), matcher);
                         }
                         matcher.add(path, ai, chain);
+                        if (anno.keepPathArg())
+                            keepPathArg = true;
                         return; // 直接搞定
                     }
                 }
@@ -47,7 +50,15 @@ public class ApiVersionRequestMatcher implements RequestMatcher {
         if (version == null)
             return null;
         DefaultRequestMatcher matcher = matchers.get(version);
-        return matcher == null ? null : matcher.match(ctx);
+        if (matcher != null) {
+            ActionChain chain = matcher.match(ctx);
+            if (chain != null) {
+                if (!keepPathArg)
+                    ctx.getPathArgs().remove(index);
+                return chain;
+            }
+        }
+        return null;
     }
 
 }

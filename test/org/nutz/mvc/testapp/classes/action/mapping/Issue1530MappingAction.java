@@ -10,14 +10,14 @@ import org.nutz.mvc.annotation.Ok;
 public class Issue1530MappingAction {
 
     @ApiVersion("v1")
-    @At("/yourname")
-    public String getYourName() {
-        return "v1";
+    @At("/yourname/?")
+    public String getYourName(String name) {
+        return "v1-" + name;
     }
     
     @ApiVersion("v2")
-    @At("/yourname")
-    public String getYourName2() {
-        return "v2";
+    @At("/yourname/?")
+    public String getYourName2(int age) {
+        return "v2-" + age;
     }
 }
