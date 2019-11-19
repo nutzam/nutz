@@ -1,6 +1,7 @@
 package org.nutz.mvc;
 
 import org.nutz.Nutz;
+import org.nutz.conf.NutConf;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.IocContext;
 import org.nutz.json.Json;
@@ -209,13 +210,21 @@ public abstract class Mvcs {
             }
         }
         else {
-            NutMessageMap msg = localizationManager.getMessageMap(Mvcs.getLocalizationKey());
-            req.setAttribute(MSG, msg);
+            String lKey = Mvcs.getLocalizationKey();
+            if (Strings.isBlank(lKey)) {
+                lKey = localizationManager.getDefaultLocal();
+                if (Strings.isBlank(lKey))
+                    lKey = getDefaultLocalizationKey();
+            }
+            NutMessageMap msg = localizationManager.getMessageMap(lKey);
+            if (msg != null)
+                req.setAttribute(MSG, msg);
         }
 
         // 记录一些数据到请求对象中
         req.setAttribute("base", req.getContextPath());
-        req.setAttribute("$request", req);
+        if (NutConf.MVC_ADD_ATTR_$REQUEST)
+            req.setAttribute("$request", req);
     }
 
     /**

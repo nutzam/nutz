@@ -198,4 +198,6 @@ public class NutConf {
     public static boolean SQLSERVER_USE_NVARCHAR = true;
     
     public static boolean DAO_USE_POJO_INTERCEPTOR = true;
+    
+    public static boolean MVC_ADD_ATTR_$REQUEST = false;
 }
