@@ -32,9 +32,9 @@ public class JsonNumberHandler extends JsonTypeHandler {
             // TODO 怎样才能应用上JsonFormat中是否忽略控制呢?因为此时已经写入了key:
             r.writeRaw("null");
         } else {
-            if (jf.getNumberFormat() != null) {
-                tmp = jf.getNumberFormat().format(currentObj);
-            }
+            // if (jf.getNumberFormat() != null) {
+            // tmp = jf.getNumberFormat().format(currentObj);
+            // }
             r.writeRaw(tmp);
         }
     }
