@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.nutz.conf.NutConf;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.Entity;
@@ -20,6 +21,7 @@ import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.PojoCallback;
 import org.nutz.dao.sql.PojoMaker;
 import org.nutz.dao.sql.SqlType;
+import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.Pojos;
 import org.nutz.lang.ContinueLoop;
 import org.nutz.lang.Each;
@@ -153,12 +155,13 @@ public class NutPojoMaker implements PojoMaker {
         en.visitOne(null, regex, new LinkVisitor() {
             public void visit(Object obj, LinkField lnk) {
                 Entity<?> lnkEntity = lnk.getLinkedEntity();
+                String linkName = safeTableName(lnk.getName());
                 String LJ = String.format("LEFT JOIN %s as %s ON %s.%s = %s.%s",
                                           lnkEntity.getTableName(),
-                                          lnk.getName(),
+                                          linkName,
                                           en.getTableName(),
                                           lnk.getHostField().getColumnNameInSql(),
-                                          lnk.getName(),
+                                          linkName,
                                           lnk.getLinkedField().getColumnNameInSql());
                 pojo.append(Pojos.Items.wrap(LJ));
             }
@@ -176,12 +179,13 @@ public class NutPojoMaker implements PojoMaker {
         en.visitOne(null, regex, new LinkVisitor() {
             public void visit(Object obj, LinkField lnk) {
                 Entity<?> lnkEntity = lnk.getLinkedEntity();
+                String linkName = safeTableName(lnk.getName());
                 String LJ = String.format("LEFT JOIN %s as %s ON %s.%s = %s.%s",
                                           lnkEntity.getTableName(),
-                                          lnk.getName(),
+                                          linkName,
                                           en.getTableName(),
                                           lnk.getHostField().getColumnNameInSql(),
-                                          lnk.getName(),
+                                          linkName,
                                           lnk.getLinkedField().getColumnNameInSql());
                 pojo.append(Pojos.Items.wrap(LJ));
             }
@@ -227,5 +231,12 @@ public class NutPojoMaker implements PojoMaker {
             sb.setCharAt(sb.length() - 1, ' ');
         }
 
+    }
+    
+    protected String safeTableName(String tableName) {
+        if (!Daos.CHECK_COLUMN_NAME_KEYWORD) {
+            //return tableName;
+        }
+        return expert.wrapKeywork(tableName, Daos.FORCE_WRAP_COLUMN_NAME);
     }
 }
