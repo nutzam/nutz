@@ -278,7 +278,7 @@ public class QueryTest extends DaoCase {
         dao.create(Master.class, true);
         Master master = new Master();
         master.setName("zozoh");
-        
+
         Pet petA = new Pet();
         petA.setName("wendal");
         petA.setAge(31);
@@ -287,9 +287,31 @@ public class QueryTest extends DaoCase {
         petB.setAge(30);
         master.setPets(Arrays.asList(petA, petB));
         dao.insertWith(master, null);
-        
+
         master = dao.fetch(Master.class, master.getName());
         dao.fetchLinks(master, null, Cnd.where("age", "=", 31));
         assertEquals(1, master.getPets().size());
+    }
+
+    @Test
+    public void queryByJoin_with_cnd() {
+        dao.create(Pet.class, true);
+        dao.create(Master.class, true);
+        Master master = new Master();
+        master.setName("zozoh");
+
+        Pet petA = new Pet();
+        petA.setName("wendal");
+        petA.setAge(31);
+        Pet petB = new Pet();
+        petB.setName("pangwu");
+        petB.setAge(30);
+        master.setPets(Arrays.asList(petA, petB));
+        dao.insertWith(master, null);
+        Cnd cnd = Cnd.NEW();
+        cnd.asc("name");
+        List<Master> list = dao.queryByJoin(Master.class, "pets",cnd);
+        assertEquals(1,list.size());
+        assertEquals(2,list.get(0).getPets().size());
     }
 }
