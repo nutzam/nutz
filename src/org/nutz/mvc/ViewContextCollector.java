@@ -1,9 +1,8 @@
 package org.nutz.mvc;
 
-import org.nutz.lang.util.Context;
-
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+
+import org.nutz.lang.util.Context;
 
 /**
  * 视图上下文收集器

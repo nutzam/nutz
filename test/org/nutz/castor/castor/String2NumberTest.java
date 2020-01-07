@@ -1,11 +1,10 @@
 package org.nutz.castor.castor;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class String2NumberTest {
-
 
     private String2Number<Integer> string2Number = new String2Number<Integer>() {
 
@@ -36,17 +35,14 @@ public class String2NumberTest {
     @Test
     public void testTrueValue() {
 
-
-        assertEquals(string2Number.cast("true", Integer.class, null), this.trueValue);
+        assertEquals(string2Number.cast("true", Integer.class), this.trueValue);
 
     }
-
 
     @Test
     public void testFalseValue() {
 
-
-        assertEquals(string2Number.cast("false", Integer.class, null), this.falseValue);
+        assertEquals(string2Number.cast("false", Integer.class), this.falseValue);
 
     }
 }

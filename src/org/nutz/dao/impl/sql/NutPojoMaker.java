@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.nutz.conf.NutConf;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.Entity;

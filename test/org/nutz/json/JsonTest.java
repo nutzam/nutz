@@ -15,7 +15,6 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.ParseException;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,14 +52,13 @@ import org.nutz.json.meta.PojoWithLocalDateTime;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
-import org.nutz.lang.Times;
 import org.nutz.lang.stream.StringInputStream;
 import org.nutz.lang.stream.StringOutputStream;
 import org.nutz.lang.util.NutMap;
 import org.nutz.lang.util.NutType;
 import org.nutz.lang.util.PType;
 
-@SuppressWarnings({ "unchecked" })
+@SuppressWarnings({"unchecked"})
 public class JsonTest {
 
     class Issue1393 {
@@ -87,6 +85,7 @@ public class JsonTest {
     public static enum TT {
 
         T("t", 1);
+
         String name;
 
         int index;
@@ -142,7 +141,7 @@ public class JsonTest {
         assertEquals("\"K\"", Json.toJson(K.K));
         String expected = "{\n" + "   \"name\": \"t\",\n" + "   \"index\": 1\n" + "}";
         assertEquals(expected, Json.toJson(TT.T));
-        assertEquals("\"T\"",Json.toJson(TT.T,JsonFormat.full().ignoreJsonShape()));
+        assertEquals("\"T\"", Json.toJson(TT.T, JsonFormat.full().ignoreJsonShape()));
     }
 
     @Test
@@ -1153,25 +1152,23 @@ public class JsonTest {
     public void test_t() {
         System.out.println(Json.toJson(new NutMap("abc", EnumWithFields.STAY_PUSH)));
     }
-    
+
     @Test
     public void test_new_toJson() {
         System.out.println(Json.toJson(new NutMap("name", "t").addv("index", 1)));
         System.out.println(Json.toJson(new NutMap("date", LocalDateTime.now())));
     }
-    
 
     @Test
     public void test_locale_fromJson() {
         LocalDateTime dt = Json.fromJson(LocalDateTime.class, "'2018-02-20 21:53:39'");
         System.out.println(dt);
         assertNotNull(dt);
-        
+
         PojoWithLocalDateTime pojo = Json.fromJson(PojoWithLocalDateTime.class, "{localdt:'2018-02-20 21:53:39'}");
         System.out.println(pojo.localdt);
         assertNotNull(pojo.localdt);
     }
-
 
     @Test
     public void test_json_lost_exception_message() throws Exception {
@@ -1180,13 +1177,13 @@ public class JsonTest {
         try {
             Json.toJson(pojo);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
             assertEquals(e.getMessage(), pojo.message);
 
         }
     }
-
 
     public static class PojoABC {
 
@@ -1198,16 +1195,16 @@ public class JsonTest {
 
     }
 
-	
-//	@Test
-//	public void test_instant_field() throws ParseException {
-//		Instant instant = Times.parse("yyyy-MM-dd HH:mm:ss", "2018-06-30 18:27:10").toInstant();
-//		String json = Json.toJson(instant,JsonFormat.compact().setDateFormat("yyyy-MM-dd HH:mm:ss"));
-//		assertEquals("\"2018-06-30 18:27:10\"", json);
-//	}
+    // @Test
+    // public void test_instant_field() throws ParseException {
+    // Instant instant = Times.parse("yyyy-MM-dd HH:mm:ss", "2018-06-30
+    // 18:27:10").toInstant();
+    // String json =
+    // Json.toJson(instant,JsonFormat.compact().setDateFormat("yyyy-MM-dd
+    // HH:mm:ss"));
+    // assertEquals("\"2018-06-30 18:27:10\"", json);
+    // }
 
-
-    
     @Test
     public void test_bignumber() throws ParseException {
         String json = "{abc:10012319000008971306}";
