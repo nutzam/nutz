@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -175,7 +176,7 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
             return super.getAdaptor(ef);
         }
     }
-    
+
     public String wrapKeywork(String columnName, boolean force) {
         if (force || keywords.contains(columnName.toUpperCase()))
             return "\"" + columnName + "\"";
@@ -215,5 +216,24 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
             rs.close();
             stmt.close();
         }
+    }
+
+    /**
+     * @author enzozhong( haowen.zhong@foxmail.com )
+     */
+    @Override
+    public List<String> getIndexNames(Entity<?> en, Connection conn) throws SQLException {
+
+        String tableName = en.getTableName();
+        String sql = "SELECT * FROM pg_indexes WHERE tablename='" + tableName + "'";
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(sql);
+
+        ArrayList<String> indexNames = new ArrayList<String>(17);
+        while (rs.next()) {
+            indexNames.add(rs.getString("indexname"));
+        }
+
+        return indexNames;
     }
 }
