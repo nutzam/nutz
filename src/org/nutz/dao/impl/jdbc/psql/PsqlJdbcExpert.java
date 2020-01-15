@@ -177,7 +177,7 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
         }
     }
 
-    public String wrapKeywork(String columnName, boolean force) {
+    public String wrapKeyword(String columnName, boolean force) {
         if (force || keywords.contains(columnName.toUpperCase()))
             return "\"" + columnName + "\"";
         return null;

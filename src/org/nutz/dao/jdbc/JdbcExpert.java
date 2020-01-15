@@ -116,7 +116,7 @@ public interface JdbcExpert {
      * @param force
      * @return
      */
-    String wrapKeywork(String columnName, boolean force);
+    String wrapKeyword(String columnName, boolean force);
     
     void checkDataSource(Connection conn) throws SQLException ;
     

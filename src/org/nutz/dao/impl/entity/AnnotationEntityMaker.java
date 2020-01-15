@@ -522,10 +522,10 @@ public class AnnotationEntityMaker implements EntityMaker {
             ef.setColumnName(ef.getColumnName().toUpperCase());
         }
         if (Daos.FORCE_WRAP_COLUMN_NAME || (info.annColumn != null && info.annColumn.wrap())) {
-            ef.setColumnNameInSql(expert.wrapKeywork(columnName, true));
+            ef.setColumnNameInSql(expert.wrapKeyword(columnName, true));
         }
         else if (Daos.CHECK_COLUMN_NAME_KEYWORD) {
-            ef.setColumnNameInSql(expert.wrapKeywork(columnName, false));
+            ef.setColumnNameInSql(expert.wrapKeyword(columnName, false));
         }
     }
 

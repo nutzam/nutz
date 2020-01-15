@@ -421,7 +421,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert, Configurable {
         return keywords;
     }
 
-    public String wrapKeywork(String columnName, boolean force) {
+    public String wrapKeyword(String columnName, boolean force) {
         if (force || keywords.contains(columnName.toUpperCase()))
             return "`" + columnName + "`";
         return null;
