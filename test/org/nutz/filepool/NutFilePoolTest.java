@@ -113,4 +113,25 @@ public class NutFilePoolTest {
         Files.deleteDir(new File(home));
         //assertFalse(res[0]);
     }
+
+    @Test
+    public void test_getOrCreatePool() {
+        String home = Disks.normalize("~/tmp_nutz");
+        new File(home).delete();
+        new File(home).mkdirs();
+        FilePool filePool =NutFilePool.getOrCreatePool(home, 20);
+        assertNotNull(filePool);
+        filePool.clear();
+        assertEquals(0,filePool.current());
+
+        filePool.createDir();
+        assertEquals(1,filePool.current());
+        File file = filePool.createFile("tmp");
+
+        assertNotNull(file);
+        assertNotNull(file.getPath());
+        filePool.removeFile(1, "tmp");
+        assertFalse(filePool.hasFile(1, "tmp"));
+        assertEquals(2,filePool.current());
+    }
 }
