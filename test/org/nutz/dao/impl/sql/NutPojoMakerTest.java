@@ -1,23 +1,17 @@
 package org.nutz.dao.impl.sql;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.Arrays;
+
 import org.junit.Test;
-import org.nutz.Nutzs;
-import org.nutz.dao.Cnd;
-import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
-import org.nutz.dao.impl.EntityHolder;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.PojoMaker;
-import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Master;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.lang.Lang;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * @Author: Haimming

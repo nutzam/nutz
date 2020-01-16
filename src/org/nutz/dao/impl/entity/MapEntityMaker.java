@@ -82,10 +82,10 @@ public class MapEntityMaker {
             }
             // 强制包裹?
             if (Daos.FORCE_WRAP_COLUMN_NAME) {
-                ef.setColumnNameInSql(expert.wrapKeywork(columnName, true));
+                ef.setColumnNameInSql(expert.wrapKeyword(columnName, true));
             }
             else if (Daos.CHECK_COLUMN_NAME_KEYWORD) {
-                ef.setColumnNameInSql(expert.wrapKeywork(columnName, false));
+                ef.setColumnNameInSql(expert.wrapKeyword(columnName, false));
             }
 
             // 类型是啥呢?

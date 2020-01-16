@@ -268,7 +268,7 @@ public class NutPojoMaker implements PojoMaker {
         if (!Daos.CHECK_COLUMN_NAME_KEYWORD) {
             //return tableName;
         }
-        String str = expert.wrapKeywork(tableName, Daos.FORCE_WRAP_COLUMN_NAME);
+        String str = expert.wrapKeyword(tableName, Daos.FORCE_WRAP_COLUMN_NAME);
         return str == null ? tableName : str;
     }
 }
