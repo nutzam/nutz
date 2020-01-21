@@ -20,7 +20,7 @@ import org.nutz.repo.Base64;
 public class Request {
 
     public static enum METHOD {
-        GET, POST, OPTIONS, PUT, DELETE, TRACE, CONNECT, HEAD
+        GET, POST, OPTIONS, PUT, PATCH, DELETE, TRACE, CONNECT, HEAD
     }
 
     public static Request get(String url) {
@@ -114,6 +114,7 @@ public class Request {
                 if (val == null)
                     val = "";
                 Lang.each(val, new Each<Object>() {
+                    @Override
                     public void invoke(int index, Object ele, int length)
                             throws ExitLoop, ContinueLoop, LoopException {
                         if (offEncode) {
@@ -268,12 +269,12 @@ public class Request {
     public String getMethodString() {
         return methodString;
     }
-    
+
     public Request basicAuth(String user, String password) {
-        header("Authorization", "Basic "+Base64.encodeToString((user+":"+password).getBytes(), false));
+        header("Authorization", "Basic " + Base64.encodeToString((user + ":" + password).getBytes(), false));
         return this;
     }
-    
+
     public boolean hasInputStream() {
         return inputStream != null;
     }

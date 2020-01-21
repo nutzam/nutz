@@ -1,8 +1,8 @@
 package org.nutz.dao;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  * @Author: Haimming
@@ -12,10 +12,11 @@ import static org.junit.Assert.*;
 public class SqlNotFoundExceptionTest {
 
     @Test
-    public void SqlNotFoundExceptionTest(){
+    public void sqlNotFoundExceptionTest() {
         try {
             throw new SqlNotFoundException("key");
-        }catch (Exception e){
+        }
+        catch (Exception e) {
             System.out.println(e.getMessage());
             assertEquals("fail to find SQL 'key'!", e.getMessage());
         }

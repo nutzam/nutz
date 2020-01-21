@@ -1,15 +1,15 @@
 package org.nutz.dao;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import java.util.List;
+
 import org.junit.Test;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.json.Json;
-
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.*;
 
 /**
  * @Author: Haimming
@@ -25,8 +25,8 @@ public class QueryResultTest extends DaoCase {
         dao.create(Pet.class, true);
         dao.insert(Pet.create("wendal"));
         Pager pager = dao.createPager(0, 10);
-        Cnd cnd =Cnd.NEW();
-        cnd.orderBy("name","asc");
+        Cnd cnd = Cnd.NEW();
+        cnd.orderBy("name", "asc");
         pager.setRecordCount(dao.count(Pet.class, cnd));
         List<Pet> list = dao.query(Pet.class, cnd, pager);
         pager.setRecordCount(dao.count(Pet.class, cnd));

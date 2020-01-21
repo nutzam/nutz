@@ -1,5 +1,15 @@
 package org.nutz.dao.impl;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.nutz.dao.DaoException;
 import org.nutz.dao.SqlManager;
 import org.nutz.dao.SqlNotFoundException;
@@ -11,11 +21,6 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.*;
 
 /**
  * 基于行解析的SqlManager
@@ -54,6 +59,7 @@ public class FileSqlManager implements SqlManager {
         this.paths = paths;
     }
 
+    @Override
     public void refresh() {
         for (String path : paths) {
             List<NutResource> list = Scans.me().scan(path, regex);
@@ -66,7 +72,8 @@ public class FileSqlManager implements SqlManager {
                     } else {
                         add(res.getReader());
                     }
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     log.warnf("fail to load %s from root=%s", res.getName(), path, e);
                 }
                 log.debugf("load %d sql >> %s from root=%s", (sqls.size() - c), res.getName(), path);
@@ -82,7 +89,6 @@ public class FileSqlManager implements SqlManager {
             else
                 br = new BufferedReader(r);
             int i = 0;
-            OUT:
             while (br.ready()) {
                 i++;
                 String line = Streams.nextLineTrim(br);
@@ -90,7 +96,8 @@ public class FileSqlManager implements SqlManager {
                     break;
                 addSql(fileNmae + "." + i, line);
             }
-        } finally {
+        }
+        finally {
             Streams.safeClose(r);
         }
     }
@@ -104,8 +111,7 @@ public class FileSqlManager implements SqlManager {
                 br = new BufferedReader(r);
             StringBuilder key = new StringBuilder();
             StringBuilder sb = new StringBuilder();
-            OUT:
-            while (br.ready()) {
+            OUT: while (br.ready()) {
                 String line = Streams.nextLineTrim(br);
                 if (line == null)
                     break;
@@ -153,11 +159,13 @@ public class FileSqlManager implements SqlManager {
             if (key.length() > 0 && sb.length() > 0) {
                 addSql(key.toString(), sb.toString());
             }
-        } finally {
+        }
+        finally {
             Streams.safeClose(r);
         }
     }
 
+    @Override
     public String get(String key) throws SqlNotFoundException {
         _check_inited();
         String sql = sqls.get(key);
@@ -166,11 +174,13 @@ public class FileSqlManager implements SqlManager {
         return sql;
     }
 
+    @Override
     public Sql create(String key) throws SqlNotFoundException {
         _check_inited();
         return Sqls.create(get(key));
     }
 
+    @Override
     public List<Sql> createCombo(String... keys) {
         if (keys.length == 0)
             keys = keys();
@@ -181,17 +191,20 @@ public class FileSqlManager implements SqlManager {
         return list;
     }
 
+    @Override
     public int count() {
         _check_inited();
         return sqls.size();
     }
 
+    @Override
     public String[] keys() {
         _check_inited();
         Set<String> keys = sqls.keySet();
         return keys.toArray(new String[keys.size()]);
     }
 
+    @Override
     public synchronized void addSql(String key, String value) {
         log.debugf("key=[%s], sql=[%s]", key, value);
         if (!isAllowDuplicate() && sqls.containsKey(key))
@@ -199,6 +212,7 @@ public class FileSqlManager implements SqlManager {
         sqls.put(key, value);
     }
 
+    @Override
     public void remove(String key) {
         _check_inited();
         sqls.remove(key);
@@ -256,6 +270,7 @@ public class FileSqlManager implements SqlManager {
         }
     }
 
+    @Override
     public void clear() {
         sqls.clear();
     }
