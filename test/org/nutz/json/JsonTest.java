@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.json.JSONException;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -57,6 +58,7 @@ import org.nutz.lang.stream.StringOutputStream;
 import org.nutz.lang.util.NutMap;
 import org.nutz.lang.util.NutType;
 import org.nutz.lang.util.PType;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 @SuppressWarnings({"unchecked"})
 public class JsonTest {
@@ -78,7 +80,7 @@ public class JsonTest {
     public void test_final_field() {
         Issue1393 obj = new Issue1393("test1", 99);
         String json = Json.toJson(obj, JsonFormat.compact());
-        assertEquals("{\"name\":\"test1\",\"age\":99}", json);
+        assertJsonEqualsNonStrict("{\"name\":\"test1\",\"age\":99}", json);
     }
 
     @JsonShape(Type.OBJECT)
@@ -136,11 +138,19 @@ public class JsonTest {
         K, T
     }
 
+    private void assertJsonEqualsNonStrict(String json1, String json2) {
+        try {
+            JSONAssert.assertEquals(json1, json2, false);
+        } catch (JSONException jse) {
+            throw new IllegalArgumentException(jse.getMessage());
+        }
+    }
+
     @Test
     public void test_enum() {
         assertEquals("\"K\"", Json.toJson(K.K));
         String expected = "{\n" + "   \"name\": \"t\",\n" + "   \"index\": 1\n" + "}";
-        assertEquals(expected, Json.toJson(TT.T));
+        assertJsonEqualsNonStrict(expected, Json.toJson(TT.T));
         assertEquals("\"T\"", Json.toJson(TT.T, JsonFormat.full().ignoreJsonShape()));
     }
 
@@ -179,7 +189,7 @@ public class JsonTest {
     @Test
     public void test_empty_obj_toJson() {
         String j = Json.toJson(new Person(), JsonFormat.compact().setQuoteName(true));
-        assertEquals("{\"age\":0,\"num\":0}", j);
+        assertJsonEqualsNonStrict("{\"age\":0,\"num\":0}", j);
     }
 
     @SuppressWarnings("rawtypes")
@@ -747,7 +757,7 @@ public class JsonTest {
         a.list2.add("aaa");
         String json = Json.toJson(a, JsonFormat.compact().setQuoteName(false));
         String exp = "{list1:[\"aaa\"],list2:[\"aaa\"]}";
-        assertEquals(exp, json);
+        assertJsonEqualsNonStrict(exp, json);
     }
 
     @Test
@@ -1028,7 +1038,7 @@ public class JsonTest {
         num.setNum1(1);
         String a = "{\n" + "   \"num1\": \"01.00\",\n" + "   \"num2\": \"02.00\"\n" + "}";
         String str = Json.toJson(num);
-        assertEquals(a, str);
+        assertJsonEqualsNonStrict(a, str);
         System.out.println(str);
     }
 
