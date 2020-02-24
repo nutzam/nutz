@@ -43,12 +43,10 @@ public class Request {
         return create(url, method, new HashMap<String, Object>());
     }
 
-    @SuppressWarnings("unchecked")
     public static Request create(String url, METHOD method, String paramsAsJson, Header header) {
         return create(url, method, (Map<String, Object>) Json.fromJson(paramsAsJson), header);
     }
 
-    @SuppressWarnings("unchecked")
     public static Request create(String url, METHOD method, String paramsAsJson) {
         return create(url, method, (Map<String, Object>) Json.fromJson(paramsAsJson));
     }
@@ -90,7 +88,7 @@ public class Request {
         StringBuilder sb = new StringBuilder(url);
         try {
             if (this.isGet() && null != params && params.size() > 0) {
-                sb.append(url.indexOf('?') > 0 ? '&' : '?');
+                sb.append(url.indexOf('?') >= 0 ? '&' : '?');
                 sb.append(getURLEncodedParams());
             }
             cacheUrl = new URL(sb.toString());
