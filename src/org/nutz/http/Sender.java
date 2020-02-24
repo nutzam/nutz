@@ -219,14 +219,15 @@ public abstract class Sender implements Callable<Response> {
             conn.addRequestProperty("Host", host);
         }
         conn.setConnectTimeout(connTime);
-        if (request.getMethodString() == null) {
-            conn.setRequestMethod(request.getMethod().name());
-        } else {
-            conn.setRequestMethod(request.getMethodString());
-        }
         if (request.getMethod() == METHOD.PATCH) {
             conn.setRequestProperty("X-HTTP-Method-Override", "PATCH");
             conn.setRequestMethod("POST");
+        } else {
+            if (request.getMethodString() == null) {
+                conn.setRequestMethod(request.getMethod().name());
+            } else {
+                conn.setRequestMethod(request.getMethodString());
+            }
         }
         if (timeout > 0) {
             conn.setReadTimeout(timeout);
