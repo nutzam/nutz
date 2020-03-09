@@ -10,7 +10,10 @@ import java.net.Proxy;
 import java.net.Socket;
 import java.net.URL;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
@@ -19,6 +22,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
+import org.nutz.http.Request.METHOD;
 import org.nutz.http.sender.DefaultSenderFactory;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
@@ -76,7 +80,7 @@ public abstract class Sender implements Callable<Response> {
     protected boolean followRedirects = true;
 
     protected SSLSocketFactory sslSocketFactory;
-    
+
     protected HostnameVerifier hostnameVerifier;
 
     protected Proxy proxy;
@@ -196,7 +200,7 @@ public abstract class Sender implements Callable<Response> {
         String host = url.getHost();
         conn = (HttpURLConnection) url.openConnection();
         if (conn instanceof HttpsURLConnection) {
-            HttpsURLConnection httpsc = (HttpsURLConnection)conn;
+            HttpsURLConnection httpsc = (HttpsURLConnection) conn;
             if (sslSocketFactory != null) {
                 httpsc.setSSLSocketFactory(sslSocketFactory);
             } else if (Http.sslSocketFactory != null) {
@@ -215,10 +219,15 @@ public abstract class Sender implements Callable<Response> {
             conn.addRequestProperty("Host", host);
         }
         conn.setConnectTimeout(connTime);
-        if (request.getMethodString() == null) {
-            conn.setRequestMethod(request.getMethod().name());
+        if (request.getMethod() == METHOD.PATCH) {
+            conn.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+            conn.setRequestMethod("POST");
         } else {
-            conn.setRequestMethod(request.getMethodString());
+            if (request.getMethodString() == null) {
+                conn.setRequestMethod(request.getMethod().name());
+            } else {
+                conn.setRequestMethod(request.getMethodString());
+            }
         }
         if (timeout > 0) {
             conn.setReadTimeout(timeout);
@@ -298,7 +307,7 @@ public abstract class Sender implements Callable<Response> {
             shutdown();
         }
         if (es == null) {
-            //创建线程池
+            // 创建线程池
             es = Executors.newScheduledThreadPool(64);
         }
         Sender.es = es;
@@ -364,7 +373,7 @@ public abstract class Sender implements Callable<Response> {
     public static void setFactory(SenderFactory factory) {
         Sender.factory = factory;
     }
-    
+
     public void setHostnameVerifier(HostnameVerifier hostnameVerifier) {
         this.hostnameVerifier = hostnameVerifier;
     }

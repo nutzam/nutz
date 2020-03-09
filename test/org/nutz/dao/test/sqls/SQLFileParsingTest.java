@@ -123,4 +123,12 @@ public class SQLFileParsingTest {
         assertEquals("hi", sqls.keys()[0]);
         assertEquals("/*测试*/select 1 from t_pet", sqls.get("hi"));
     }
+
+    @Test
+    public void test_with_row_sql() throws IOException {
+        FileSqlManager fileSqlManager=new FileSqlManager("org/nutz/dao/test/sqls/row.sqls");
+        fileSqlManager.setByRow(true);
+        assertEquals(4, fileSqlManager.count());
+        assertEquals("row.sqls.1", fileSqlManager.keys()[0]);
+    }
 }

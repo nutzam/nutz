@@ -109,8 +109,14 @@ public interface JdbcExpert {
     boolean supportTimestampDefault();
     
     void setKeywords(Set<String> keywords);
-    
-    String wrapKeywork(String columnName, boolean force);
+
+    /**
+     * 关键字包装
+     * @param columnName
+     * @param force
+     * @return
+     */
+    String wrapKeyword(String columnName, boolean force);
     
     void checkDataSource(Connection conn) throws SQLException ;
     

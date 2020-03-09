@@ -29,6 +29,11 @@ public abstract class Proton<T> implements Atom {
     public void run() {
         obj = exec();
     }
+    
+    public T invoke() {
+        this.run();
+        return this.get();
+    }
 
     /**
      * 需要子类实现的逻辑

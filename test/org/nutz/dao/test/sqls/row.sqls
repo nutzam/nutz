@@ -1,0 +1,5 @@
+INSERT INTO t_abc (name) VALUES('Wizzer1');
+INSERT INTO t_abc (name) VALUES('Wizzer2');
+
+INSERT INTO t_abc (name) VALUES('Wizzer3'),('Wizzer4'),('Wizzer5');
+INSERT INTO t_abc (name) VALUES('Wizzer6');

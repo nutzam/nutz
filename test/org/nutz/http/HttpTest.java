@@ -65,6 +65,12 @@ public class HttpTest {
     }
 
     @Test
+    public void test_http_req() {
+        Response response = Http.httpReq("https://nutz.cn",Request.METHOD.GET,null,null,5000, Sender.Default_Conn_Timeout);
+        assertTrue(response.getStatus() == 200);
+    }
+
+    @Test
     public void test_getBoundary() {
         String boundary = Http.multipart.getBoundary("multipart/form-data; charset=utf-8; boundary=0xKhTmLbOuNdArY-1593BCBB-3B9B-433B-8BC0-4B768CDA81CF");
         assertEquals("0xKhTmLbOuNdArY-1593BCBB-3B9B-433B-8BC0-4B768CDA81CF", boundary);
