@@ -54,6 +54,7 @@ public class Mirror<T> {
 
     private static class DefaultTypeExtractor implements TypeExtractor {
 
+        @Override
         public Class<?>[] extract(Mirror<?> mirror) {
             Class<?> theType = mirror.getType();
             List<Class<?>> re = new ArrayList<Class<?>>(5);
@@ -139,7 +140,7 @@ public class Mirror<T> {
         if (obj instanceof Class<?>)
             return (Mirror<T>) me((Class<?>) obj);
         if (obj instanceof Enum)
-            return (Mirror<T>) me(((Enum)obj).getDeclaringClass());
+            return me(((Enum) obj).getDeclaringClass());
         return (Mirror<T>) me(obj.getClass());
     }
 
@@ -322,8 +323,9 @@ public class Mirror<T> {
             getter = method;
             // 寻找 setter
             try {
-                setter = method.getDeclaringClass().getMethod("set" + Strings.upperFirst(name),
-                                                              method.getReturnType());
+                setter = method.getDeclaringClass()
+                               .getMethod("set" + Strings.upperFirst(name),
+                                          method.getReturnType());
             }
             catch (Exception e) {}
 
@@ -336,8 +338,9 @@ public class Mirror<T> {
             getter = method;
             // 寻找 setter
             try {
-                setter = method.getDeclaringClass().getMethod("set" + Strings.upperFirst(name),
-                                                              method.getReturnType());
+                setter = method.getDeclaringClass()
+                               .getMethod("set" + Strings.upperFirst(name),
+                                          method.getReturnType());
             }
             catch (Exception e) {}
         }
@@ -378,6 +381,7 @@ public class Mirror<T> {
                                         final String errmsgFormat,
                                         Callback3<String, Method, Method> callback) {
         evalGetterSetter(method, callback, new Callback<Method>() {
+            @Override
             public void invoke(Method method) {
                 throw Lang.makeThrow(errmsgFormat,
                                      method.getName(),
@@ -1633,7 +1637,7 @@ public class Mirror<T> {
                || java.sql.Date.class.isAssignableFrom(klass)
                || java.sql.Time.class.isAssignableFrom(klass);
     }
-    
+
     public boolean isLocalDateLike() {
         try {
             return NutConf.HAS_LOCAL_DATE_TIME && is(LocalDate.class);
@@ -1642,16 +1646,17 @@ public class Mirror<T> {
             return false;
         }
     }
-    
+
     public boolean isLocalDateTimeLike() {
         try {
-            return NutConf.HAS_LOCAL_DATE_TIME && is(TemporalAccessor.class);
+            return NutConf.HAS_LOCAL_DATE_TIME && TemporalAccessor.class.isAssignableFrom(klass);
         }
         catch (Exception e) {
             return false;
         }
     }
 
+    @Override
     public String toString() {
         return klass.getName();
     }

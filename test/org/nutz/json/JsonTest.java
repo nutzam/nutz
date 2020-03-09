@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.json.JSONException;
 
+import org.json.JSONException;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.nutz.castor.Castors;
@@ -141,7 +141,8 @@ public class JsonTest {
     private void assertJsonEqualsNonStrict(String json1, String json2) {
         try {
             JSONAssert.assertEquals(json1, json2, false);
-        } catch (JSONException jse) {
+        }
+        catch (JSONException jse) {
             throw new IllegalArgumentException(jse.getMessage());
         }
     }
@@ -1176,6 +1177,20 @@ public class JsonTest {
         assertNotNull(dt);
 
         PojoWithLocalDateTime pojo = Json.fromJson(PojoWithLocalDateTime.class, "{localdt:'2018-02-20 21:53:39'}");
+        System.out.println(pojo.localdt);
+        assertNotNull(pojo.localdt);
+    }
+
+    @Test
+    public void test_locale_toJson() {
+        LocalDateTime dt = Json.fromJson(LocalDateTime.class, "'2018-02-20 21:53:39'");
+        String json = Json.toJson(dt, JsonFormat.compact().setDateFormat("yyyy-MM-dd HH:mm:ss"));
+        System.out.println(json);
+        assertEquals(json, "\"2018-02-20 21:53:39\"");
+
+        PojoWithLocalDateTime pojo = Json.fromJson(PojoWithLocalDateTime.class, "{localdt:'2018-02-20 21:53:39'}");
+        json = Json.toJson(pojo, JsonFormat.compact().setDateFormat("yyyy-MM-dd HH:mm:ss"));
+        System.err.println(json);
         System.out.println(pojo.localdt);
         assertNotNull(pojo.localdt);
     }
