@@ -84,8 +84,8 @@ public class NutDaoExecutor implements DaoExecutor, Configurable {
             		_runSelect(conn, st);
                     break;
             	}
-                if (st.getSqlType() == SqlType.OTHER && log.isInfoEnabled())
-                    log.info("Can't identify SQL type :   " + st);
+                if (st.getSqlType() == SqlType.OTHER && log.isDebugEnabled())
+                    log.debug("Can't identify SQL type :   " + st);
                 paramMatrix = st.getParamMatrix();
                 // 木有参数，直接运行
                 if (null == paramMatrix || paramMatrix.length == 0) {
