@@ -39,16 +39,18 @@ public class JarResourceLocation extends ResourceLocation {
                 name = name.substring(name.lastIndexOf('/') + 1);
             if (null == regex || regex.matcher(name).find()) {
                 NutResource nutResource = new NutResource() {
+                    String url = uriJarPrefix(uri, "!/" + ensName);
+
                     public InputStream getInputStream() throws IOException {
-                        return new URL(uriJarPrefix(uri,"!/" + ensName)).openStream();
+                        return new URL(url).openStream();
                     }
-                    
+
                     public int hashCode() {
                         return (id() + ":" + ensName).hashCode();
                     }
-                    
+
                     public String toString() {
-                        return uriJarPrefix(uri, "!/" + ensName);
+                        return url;
                     }
                 };
                 if (ensName.equals(base))
