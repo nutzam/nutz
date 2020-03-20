@@ -8,6 +8,7 @@ import org.nutz.lang.segment.Segment;
 import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.trans.Proton;
 
 /**
  * 将一个参考对象存入 ThreadLocal
@@ -48,6 +49,36 @@ public class TableName {
                 if (log.isTraceEnabled())
                     log.tracef("TableName.finally: [%s]->[%s]", object, object.get());
             }
+        }
+    }
+
+    /**
+     * 代码模板，这个模板保证了，在 atom 中运行的 POJO 的动态表名，都会被参考对象所影响
+     * 
+     * @param refer
+     *            参考对象
+     * @param proton
+     *            你的业务逻辑（可带返回值）
+     * 
+     * @return 你的业务逻辑的返回对象
+     */
+    public static <T> T run(Object refer, Proton<T> proton) {
+        if (log.isTraceEnabled())
+            log.tracef("TableName.run: [%s]->[%s]", object, object.get());
+
+        Object old = get();
+        set(refer);
+        try {
+            proton.run();
+            return proton.get();
+        }
+        catch (Exception e) {
+            throw Lang.wrapThrow(e);
+        }
+        finally {
+            set(old);
+            if (log.isTraceEnabled())
+                log.tracef("TableName.finally: [%s]->[%s]", object, object.get());
         }
     }
 
