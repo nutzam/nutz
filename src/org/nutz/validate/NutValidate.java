@@ -22,6 +22,21 @@ import org.nutz.validate.impl.*;
        dateRange : "(2018-12-02,2018-12-31]",
        // 验证值的字符串形式，支持 "!" 开头
        regex : "^...$",
+       // 枚举验证·整数
+       intEnum : [1,3,4],
+       intEnum : "1,3,4",
+       // 枚举验证·字符串
+       strEnum : ["A","B","C],
+       strEnum : "A,B,C",
+       // 通配符
+       wildcard : "*A*",
+       // 精确数字
+       intValue : 3,
+       intValue : "3",
+       // 精确字符串
+       strValue : "ABC",
+       // 精确布尔
+       boolValue : true,
        // 确保值非 null
        notNull : true,
        // 针对字符串的值，最大长度不超过多少
@@ -42,16 +57,64 @@ public class NutValidate {
 
     private List<NutValidator> items;
 
+    /**
+     * 构建一个空白的检查器
+     */
     public NutValidate() {
         items = new LinkedList<NutValidator>();
     }
 
+    /**
+     * 根据输入字符串自动判断类型
+     * 
+     * @param str
+     *            输入字符串
+     */
+    /**
+     * @param str
+     */
+    public NutValidate(String str) {
+        this();
+        // 一定是非空的
+        this.add(new NotNullValidator());
+        // 通配符
+        if (str.startsWith("*") || str.endsWith("*")) {
+            this.add(new WildcardValidator(str));
+        }
+        // 正则表达式
+        else if (str.startsWith("^") || str.startsWith("!^")) {
+            this.add(new RegexValidator(str));
+        }
+        // 范围
+        else if (str.matches("^[\\[(].+[\\])]$")) {
+            // 范围·日期
+            if (str.indexOf('/') >= 0 || str.indexOf('-') >= 0) {
+                this.add(new DateRangeValidator(str));
+            }
+            // 范围·数字
+            else {
+                this.add(new IntRangeValidator(str));
+            }
+        }
+        // 精确匹配数字
+        else if (str.matches("^\\d+$")) {
+            this.add(new IntValueValidator(str));
+        }
+        // 精确匹配字符串
+        else {
+            this.add(new StrValueValidator(str));
+        }
+    }
+
+    /**
+     * @param map
+     *            复合条件
+     */
     public NutValidate(Map<String, Object> map) {
         this();
         items.clear();
         this.addAll(map);
         this.ready();
-
     }
 
     /**
@@ -82,6 +145,36 @@ public class NutValidate {
             else if ("regex".equals(key)) {
                 String str = m2.getString(key);
                 this.items.add(new RegexValidator(str));
+            }
+            // 枚举验证·整数
+            else if ("intEnum".equals(key)) {
+                Object val = m2.get(key);
+                this.items.add(new IntEnumValidator(val));
+            }
+            // 枚举验证·字符串
+            else if ("strEnum".equals(key)) {
+                Object val = m2.get(key);
+                this.items.add(new StrEnumValidator(val));
+            }
+            // 通配符
+            else if ("wildcard".equals(key)) {
+                String str = m2.getString(key);
+                this.items.add(new WildcardValidator(str));
+            }
+            // 精确数字
+            else if ("intValue".equals(key)) {
+                Object val = m2.get(key);
+                this.items.add(new IntValueValidator(val));
+            }
+            // 精确字符串
+            else if ("strValue".equals(key)) {
+                Object val = m2.get(key);
+                this.items.add(new StrValueValidator(val));
+            }
+            // 精确布尔
+            else if ("boolValue".equals(key)) {
+                Object val = m2.get(key);
+                this.items.add(new BoolValueValidator(val));
             }
             // 确保值非 null
             else if ("notNull".equals(key)) {
@@ -143,6 +236,7 @@ public class NutValidate {
      * 执行检查
      * 
      * @param val
+     *            被检查的值
      * @return 检查后的结果，可能会被修改，譬如 `trim` 操作
      * @throws NutValidateException
      *             - 如果任何一个检查器除了错误，就会抛出本错误，并中断后续的检查
@@ -153,5 +247,22 @@ public class NutValidate {
             re = nv.check(re);
         }
         return re;
+    }
+
+    /**
+     * 看看某个给定的值是否能通过所有检查器的检查
+     * 
+     * @param val
+     *            被检查的值
+     * @return true 通过了所有的检查。 false 某些检查未被通过
+     */
+    public boolean match(Object val) {
+        try {
+            this.check(val);
+            return true;
+        }
+        catch (NutValidateException e) {
+            return false;
+        }
     }
 }

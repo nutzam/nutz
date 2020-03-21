@@ -109,6 +109,16 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         return map;
     }
 
+    public Object getFallback(String... keys) {
+        for (String key : keys) {
+            Object val = this.get(key);
+            if (null != val) {
+                return val;
+            }
+        }
+        return null;
+    }
+
     /**
      * 从 Map 里挑选一些键生成一个新的 Map
      * 

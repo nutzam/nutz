@@ -111,6 +111,8 @@ public interface NutBean extends Map<String, Object> {
 
     NutBean setAll(Map<String, Object> map);
 
+    Object getFallback(String... keys);
+
     /**
      * 从 Map 里挑选一些键生成一个新的 Map
      * 
