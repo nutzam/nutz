@@ -23,7 +23,7 @@ Nutz实现方式
     * 只支持实体类形式的更新，包括实体类集合
     * 乐观锁更新方法 dao.updateWithVersion
     * 调用dao.updateWithVersion后，version字段值自动加1
-    * 设置为version字段后，dao.insert默认赋值0
+    
 
 代码片段
 
@@ -33,7 +33,7 @@ Nutz实现方式
         	private String name;
         	@Column
         	private int age;
-        	@Column(value="version")
+        	@Column(version = true)
         	private int version;
     }
     
