@@ -1,8 +1,20 @@
 package org.nutz.dao.impl.entity;
 
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.nutz.dao.DaoException;
 import org.nutz.dao.FieldMatcher;
-import org.nutz.dao.entity.*;
+import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.EntityIndex;
+import org.nutz.dao.entity.LinkField;
+import org.nutz.dao.entity.LinkVisitor;
+import org.nutz.dao.entity.MappingField;
+import org.nutz.dao.entity.PkType;
+import org.nutz.dao.entity.Record;
 import org.nutz.dao.interceptor.PojoInterceptor;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.lang.Lang;
@@ -11,12 +23,6 @@ import org.nutz.lang.born.BornContext;
 import org.nutz.lang.born.Borning;
 import org.nutz.lang.born.Borns;
 import org.nutz.lang.util.Context;
-
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 记录一个实体
