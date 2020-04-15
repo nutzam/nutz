@@ -35,7 +35,12 @@ public class JsonNumberHandler extends JsonTypeHandler {
             // if (jf.getNumberFormat() != null) {
             // tmp = jf.getNumberFormat().format(currentObj);
             // }
-            r.writeRaw(tmp);
+        	if (currentObj instanceof Long && jf.isLongAsString()) {
+        		r.string2Json(tmp);
+        	}
+        	else {
+                r.writeRaw(tmp);
+        	}
         }
     }
 

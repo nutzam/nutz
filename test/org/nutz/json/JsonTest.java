@@ -1236,4 +1236,13 @@ public class JsonTest {
         Object re = Json.fromJson(json);
         System.out.println(Json.toJson(re));
     }
+    
+
+    @Test
+    public void test_long_as_string() throws ParseException {
+        NutMap map = new NutMap();
+        map.put("abc", 12345678990012L);
+        System.out.println(Json.toJson(map, JsonFormat.full()));
+        System.out.println(Json.toJson(map, JsonFormat.full().setLongAsString(true)));
+    }
 }

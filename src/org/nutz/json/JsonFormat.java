@@ -146,6 +146,7 @@ public class JsonFormat extends NutMap {
         public static String timeZone = "timeZone";
         public static String locale = "locale";
         public static String dateFormatRaw = "dateFormatRaw";
+        public static String longAsString = "longAsString";
     }
 
     @JsonField(ignore = true)
@@ -544,5 +545,14 @@ public class JsonFormat extends NutMap {
     
     public String getDateFormatRaw() {
         return getString(Function.dateFormatRaw);
+    }
+    
+    public JsonFormat setLongAsString(boolean longAsString) {
+    	put(Function.longAsString, longAsString);
+    	return this;
+    }
+    
+    public boolean isLongAsString() {
+    	return getBoolean(Function.longAsString, false);
     }
 }
