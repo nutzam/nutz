@@ -67,8 +67,12 @@ public class Header {
     }
 
     public Header addAll(Map<String, String> map) {
-        if (null != map)
-            items.putAll(map);
+        if (null != map) {
+        	for (Map.Entry<String, String> en : map.entrySet()) {
+        		if (en.getValue() != null) // 如果值不是String,就立马报错咯
+        			this.items.put(en.getKey(), en.getKey());
+			}
+        }
         return this;
     }
 
