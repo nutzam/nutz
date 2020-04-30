@@ -70,7 +70,7 @@ public class Header {
         if (null != map) {
         	for (Map.Entry<String, String> en : map.entrySet()) {
         		if (en.getValue() != null) // 如果值不是String,就立马报错咯
-        			this.items.put(en.getKey(), en.getKey());
+        			this.items.put(en.getKey(), en.getValue());
 			}
         }
         return this;
