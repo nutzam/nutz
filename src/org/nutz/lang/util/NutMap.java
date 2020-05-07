@@ -344,10 +344,10 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
     }
 
     @Override
-    public Set<Entry<String, Object>> entrySet() {
+    public Set<Map.Entry<String, Object>> entrySet() {
         if (null == _map)
             return super.entrySet();
-        HashSet<Entry<String, Object>> vals = new HashSet<Entry<String, Object>>();
+        HashSet<Map.Entry<String, Object>> vals = new HashSet<Map.Entry<String, Object>>();
         vals.addAll(_map.entrySet());
         vals.addAll(super.entrySet());
         return vals;
