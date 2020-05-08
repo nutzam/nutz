@@ -17,6 +17,7 @@ public class TmplJsonEle extends TmplDynamicEle {
             _fmt.setQuoteName(fmt.indexOf('q') >= 0);
             _fmt.setIgnoreNull(fmt.indexOf('n') < 0);
         }
+
     }
 
     @Override
@@ -28,7 +29,8 @@ public class TmplJsonEle extends TmplDynamicEle {
             if ("-obj-".equals(val))
                 return "{}";
             String s = Strings.trim(val.toString());
-            if (Strings.isQuoteBy(s, '[', ']'))
+            // 直接就是数组或者对象
+            if (Strings.isQuoteBy(s, '[', ']') || Strings.isQuoteBy(s, '{', '}'))
                 return s;
             // zozoh 字符串还是应该转 JSON 吧
             // return val.toString();
