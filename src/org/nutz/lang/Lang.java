@@ -1194,7 +1194,7 @@ public abstract class Lang {
                 Class<?> ft = ReflectTool.getGenericFieldType(toType, field);
                 Object vv = null;
                 // 集合
-                if (v instanceof Collection) {
+                if (v instanceof Collection && (ft.isArray() || Collection.class.isAssignableFrom(ft))) {
                     Collection c = (Collection) v;
                     // 集合到数组
                     if (ft.isArray()) {

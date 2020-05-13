@@ -58,6 +58,13 @@ public class LangTest extends Assert {
         assertEquals("aa", t0.getName());
         assertEquals("bb", t0.getT1().getName());
     }
+    
+    @Test
+    public void test_map_to_obj_c2s() {
+    	Map<String, Object> map = Lang.map("{name:['aa']}");
+        ObjT0 t0 = Lang.map2Object(map, ObjT0.class);
+        assertEquals("[\"aa\"]", t0.getName());
+    }
 
     @Test
     public void test_equals_simple() {
