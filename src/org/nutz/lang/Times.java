@@ -1480,7 +1480,7 @@ public abstract class Times {
         if (date != null) {
             cal.setTime(date);
         }
-        cal.add(Calendar.DAY_OF_YEAR, day);
+        cal.add(Calendar.DAY_OF_MONTH, day);
         return cal.getTime();
     }
 
@@ -1523,7 +1523,7 @@ public abstract class Times {
     public static String nextDay(int day) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(now());
-        cal.add(Calendar.DAY_OF_YEAR, day);
+        cal.add(Calendar.DAY_OF_MONTH, day);
         return format(DF_DATE, cal.getTime());
     }
 

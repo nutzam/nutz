@@ -151,4 +151,10 @@ public class TimesTest {
         new SimpleDateFormat(fmt, new Locale("en")).parse(time);
         Times.parse(new SimpleDateFormat(fmt, new Locale("en")), time);
     }
+
+    @Test
+    public void test_next_day()  {
+        Date s = Times.nextDay(new Date(),1);
+        System.out.println(Times.format("yyyy-MM-dd HH:mm:ss",s));
+    }
 }
