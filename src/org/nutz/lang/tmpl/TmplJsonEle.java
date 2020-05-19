@@ -28,6 +28,8 @@ public class TmplJsonEle extends TmplDynamicEle {
         if (val instanceof CharSequence) {
             if ("-obj-".equals(val))
                 return "{}";
+            if ("-array-".equals(val))
+                return "[]";
             String s = Strings.trim(val.toString());
             // 直接就是数组或者对象
             if (Strings.isQuoteBy(s, '[', ']') || Strings.isQuoteBy(s, '{', '}'))
