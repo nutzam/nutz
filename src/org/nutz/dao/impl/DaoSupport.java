@@ -293,6 +293,14 @@ public class DaoSupport implements Configurable {
     }
     
     public DaoInterceptor makeInterceptor(Object it) {
+    	DaoInterceptor re = _makeInterceptor(it);
+    	if (re != null && re instanceof DaoExecutor) {
+    		((NutDaoExecutor)re).setMeta(meta);
+    	}
+    	return re;
+    }
+    
+    protected DaoInterceptor _makeInterceptor(Object it) {
         if (it == null)
             return null;
         if (it instanceof String) {
