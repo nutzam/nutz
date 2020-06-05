@@ -432,6 +432,8 @@ public class StringsTest {
         assertTrue(Strings.isEmail("mc02cxj@gmail.com"));
         assertTrue(Strings.isEmail("mc02cxj@sina.com.cn"));
         assertTrue(Strings.isEmail("mc02cxj.test@sina.com.cn"));
+        assertTrue(Strings.isEmail("ab1-23@1a.2b.3c.com"));
+        assertTrue(Strings.isEmail("xiaobai2-wu12.ji42@a1.b2.com"));
         Strings.isEmail(null);
     }
 

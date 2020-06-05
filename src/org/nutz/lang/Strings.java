@@ -1563,7 +1563,7 @@ public class Strings {
     public static Pattern P_ZipCode = Pattern.compile("\\d{6}");
     public static Pattern P_Money = Pattern.compile("^(\\d+(?:\\.\\d+)?)$");
     public static Pattern P_Number = Pattern.compile("^[\\d]+$");
-    public static Pattern P_Email = Pattern.compile("^([a-zA-Z0-9]*[-_]?[\\w.]+)*@([a-zA-Z0-9]*[-_]?[a-zA-Z0-9]+)+[\\\\.][A-Za-z]{2,3}([\\\\.][A-Za-z]{2})?$");
+    public static Pattern P_Email = Pattern.compile("^[.\\d\\w_-]+@[\\d\\w_-]+(\\.[\\d\\w]+)+$");
     public static Pattern P_QQ = Pattern.compile("[1-9][0-9]{4,10}");
     public static Pattern P_USCC = Pattern.compile("^(11|12|13|19|51|52|53|59|91|92|93|Y1)[1-9]{1}[0-9]{5}[0-9A-HJ-NP-RT-UW-Y0-9]{9}[0-90-9A-HJ-NP-RT-UW-Y]{1}$");
     public static Pattern P_UnionPayCard = Pattern.compile("^62[0-5]\\d{13,16}$");
