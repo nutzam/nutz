@@ -65,6 +65,17 @@ public class NutValidate {
     }
 
     /**
+     * @param map
+     *            复合条件
+     */
+    public NutValidate(Map<String, Object> map) {
+        this();
+        items.clear();
+        this.addAll(map);
+        this.ready();
+    }
+
+    /**
      * 根据输入字符串自动判断类型
      * 
      * @param str
@@ -75,6 +86,7 @@ public class NutValidate {
      */
     public NutValidate(String str) {
         this();
+
         // 一定是非空的
         this.add(new NotNullValidator());
         // 通配符
@@ -104,17 +116,6 @@ public class NutValidate {
         else {
             this.add(new StrValueValidator(str));
         }
-    }
-
-    /**
-     * @param map
-     *            复合条件
-     */
-    public NutValidate(Map<String, Object> map) {
-        this();
-        items.clear();
-        this.addAll(map);
-        this.ready();
     }
 
     /**
