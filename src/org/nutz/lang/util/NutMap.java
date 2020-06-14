@@ -360,15 +360,15 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
             _map.clear();
     }
 
-    private NutMap _map;
+    private Map<String, Object> _map;
 
-    public NutMap attach(NutMap map) {
+    public NutMap attach(Map<String, Object> map) {
         _map = map;
         return this;
     }
 
-    public NutMap detach() {
-        NutMap re = _map;
+    public Map<String, Object> detach() {
+        Map<String, Object> re = _map;
         _map = null;
         return re;
     }
