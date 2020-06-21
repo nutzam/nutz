@@ -1,6 +1,7 @@
 package org.nutz.lang.tmpl;
 
 import org.nutz.castor.Castors;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
 class TmplBooleanEle extends TmplDynamicEle {
@@ -9,7 +10,16 @@ class TmplBooleanEle extends TmplDynamicEle {
 
     public TmplBooleanEle(String key, String fmt, String dft) {
         super("boolean", key, fmt, dft);
-        this.texts = Strings.splitIgnoreBlank(Strings.sNull(fmt, "false/true"), "\\/");
+        if (Strings.isBlank(fmt)) {
+            this.texts = Lang.array("false", "true");
+        }
+        // 定制了
+        else {
+            this.texts = Strings.sNull(fmt, "false/true").split("/");
+            if (this.texts.length == 1) {
+                this.texts = Lang.array("", this.texts[0]);
+            }
+        }
     }
 
     @Override
