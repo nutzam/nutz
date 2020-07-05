@@ -69,8 +69,8 @@ public class ReflectTool {
                                     ProtectionDomain protectionDomain) throws Exception {
         Object[] args = new Object[]{className,
                                      b,
-                                     new Integer(0),
-                                     new Integer(b.length),
+                                     Integer.valueOf(0),
+                                     Integer.valueOf(b.length),
                                      protectionDomain};
         if (loader == null)
             loader = ReflectTool.class.getClassLoader();
