@@ -32,6 +32,20 @@ public class StringOutputStream extends OutputStream {
         baos.write(b);
     }
 
+    @Override
+    public void write(byte[] b) throws IOException {
+        if (null == baos)
+            throw new IOException("Stream is closed");
+        baos.write(b);
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+        if (null == baos)
+            throw new IOException("Stream is closed");
+        baos.write(b, off, len);
+    }
+
     /**
      * 使用StringBuilder前,务必调用
      */
