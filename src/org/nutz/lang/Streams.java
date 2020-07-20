@@ -124,15 +124,61 @@ public abstract class Streams {
      * @throws IOException
      */
     public static long write(OutputStream ops, InputStream ins, int bufferSize) throws IOException {
+        return write(ops, ins, -1, bufferSize);
+    }
+
+    /**
+     * 将输入流写入一个输出流。
+     * <p>
+     * <b style=color:red>注意</b>，它并不会关闭输入/出流
+     * 
+     * @param ops
+     *            输出流
+     * @param ins
+     *            输入流
+     * @param limit
+     *            最多写入多少字节，0 或负数表示不限
+     * @param bufferSize
+     *            缓冲块大小
+     * 
+     * @return 写入的字节数
+     * 
+     * @throws IOException
+     */
+    public static long write(OutputStream ops, InputStream ins, long limit, int bufferSize)
+            throws IOException {
         if (null == ops || null == ins)
             return 0;
 
         byte[] buf = new byte[bufferSize];
         int len;
         long bytesCount = 0;
-        while (-1 != (len = ins.read(buf))) {
-            bytesCount += len;
-            ops.write(buf, 0, len);
+        if (limit > 0) {
+            long remain = limit;
+            while (-1 != (len = ins.read(buf))) {
+                // 还可以写入的字节数
+                if (len > remain) {
+                    len = (int) remain;
+                    remain = 0;
+                }
+                // 减去
+                else {
+                    remain -= len;
+                }
+                bytesCount += len;
+                ops.write(buf, 0, len);
+                // 写够了
+                if (remain <= 0) {
+                    break;
+                }
+            }
+        }
+        // 全写
+        else {
+            while (-1 != (len = ins.read(buf))) {
+                bytesCount += len;
+                ops.write(buf, 0, len);
+            }
         }
         // 啥都没写，强制触发一下写
         // 这是考虑到 walnut 的输出流实现，比如你写一个空文件
