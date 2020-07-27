@@ -86,6 +86,7 @@ public abstract class Streams {
             throw Lang.wrapThrow(e);
         }
         finally {
+            safeFlush(writer);
             safeClose(writer);
         }
     }
@@ -211,6 +212,7 @@ public abstract class Streams {
             throw Lang.wrapThrow(e);
         }
         finally {
+            safeFlush(ops);
             safeClose(ops);
             safeClose(ins);
         }
@@ -261,6 +263,7 @@ public abstract class Streams {
             throw Lang.wrapThrow(e);
         }
         finally {
+            safeFlush(writer);
             safeClose(writer);
             safeClose(reader);
         }
@@ -301,6 +304,7 @@ public abstract class Streams {
             throw Lang.wrapThrow(e);
         }
         finally {
+            safeFlush(ops);
             safeClose(ops);
         }
     }
@@ -762,6 +766,7 @@ public abstract class Streams {
             throw Lang.wrapThrow(e);
         }
         finally {
+            safeFlush(ops);
             safeClose(ops);
             safeClose(ins);
         }
