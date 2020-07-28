@@ -299,6 +299,7 @@ public class Files {
     public static String getSuffixName(String path) {
         if (null == path)
             return null;
+        path = path.replace('\\', '/');
         int p0 = path.lastIndexOf('.');
         int p1 = path.lastIndexOf('/');
         if (-1 == p0 || p0 < p1)
@@ -325,6 +326,7 @@ public class Files {
     public static String getSuffix(String path) {
         if (null == path)
             return null;
+        path = path.replace('\\', '/');
         int p0 = path.lastIndexOf('.');
         int p1 = path.lastIndexOf('/');
         if (-1 == p0 || p0 < p1)
@@ -425,7 +427,8 @@ public class Files {
             }
         }
         if (!f.isDirectory())
-            throw Lang.makeThrow("'%s' should be a directory or don't have permission to create it!", path);
+            throw Lang.makeThrow("'%s' should be a directory or don't have permission to create it!",
+                                 path);
         return f;
     }
 
@@ -502,12 +505,14 @@ public class Files {
         /**
          * 仅文件
          */
-        FILE, /**
-               * 仅目录
-               */
-        DIR, /**
-              * 文件和目录
-              */
+        FILE,
+        /**
+         * 仅目录
+         */
+        DIR,
+        /**
+         * 文件和目录
+         */
         ALL
     }
 
@@ -1081,7 +1086,7 @@ public class Files {
     public static void cleanAllFolderInSubFolderes(File dir, String name) throws IOException {
         File[] files = dir.listFiles();
         if (files == null)
-        	return;
+            return;
         for (File d : files) {
             if (d.isDirectory())
                 if (d.getName().equalsIgnoreCase(name))
@@ -1280,7 +1285,7 @@ public class Files {
             Streams.safeClose(br);
         }
     }
-    
+
     public static int readRange(File f, int pos, byte[] buf, int at, int len) {
         try {
             if (f == null || !f.exists())
@@ -1290,7 +1295,7 @@ public class Files {
                 return 0;
             len = Math.min(len, buf.length - at);
             if (pos + len > fsize) {
-                len = (int)(fsize - pos);
+                len = (int) (fsize - pos);
             }
             RandomAccessFile raf = new RandomAccessFile(f, "r");
             raf.seek(pos);
@@ -1302,7 +1307,7 @@ public class Files {
             return -1;
         }
     }
-    
+
     public static int writeRange(File f, int pos, byte[] buf, int at, int len) {
         try {
             if (f == null || !f.exists())
