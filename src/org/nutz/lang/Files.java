@@ -1075,6 +1075,30 @@ public class Files {
     }
 
     /**
+     * 获取一个文件对象绝对路径，并且是跨平台统一的格式。即，分隔符均为<code>/</code>
+     * 
+     * @param f
+     *            文件对象
+     * @return 格式化后的路径，所有分隔符会统一替换为 <code>/</code>
+     * @see #formedPath(String)
+     */
+    public static String getAbsPath(File f) {
+        return formedPath(f.getAbsolutePath());
+    }
+
+    /**
+     * @param path
+     *            路径
+     * @return 格式化后的路径，所有分隔符会统一替换为 <code>/</code>
+     */
+    public static String formedPath(String path) {
+        if (null == path) {
+            return null;
+        }
+        return path.replace('\\', '/');
+    }
+
+    /**
      * 将一个目录下的特殊名称的目录彻底删除，比如 '.svn' 或者 '.cvs'
      * 
      * @param dir
