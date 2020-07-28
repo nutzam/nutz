@@ -121,6 +121,9 @@ public class TmplTest {
 
         assertEquals("false", Tmpl.exec("${v<boolean>}", null));
         assertEquals("false", Tmpl.exec("${v<boolean>}", Lang.map("{}")));
+
+        assertEquals("yes", Tmpl.exec("${v<boolean:/yes>}", Lang.map("v:true")));
+        assertEquals("", Tmpl.exec("${v<boolean:/yes>}", Lang.map("v:false")));
     }
 
 }
