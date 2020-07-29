@@ -217,6 +217,7 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
      * 
      * @see #pickAndRemoveBy(Pattern, boolean)
      */
+    @Override
     public NutMap pickAndRemoveBy(String regex) {
         if (Strings.isBlank(regex))
             return new NutMap();

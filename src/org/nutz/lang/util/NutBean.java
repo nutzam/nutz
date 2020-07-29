@@ -163,6 +163,17 @@ public interface NutBean extends Map<String, Object> {
     NutBean pickAndRemoveBy(Pattern p, boolean isNot);
 
     /**
+     * 就是 pickAndRemoveBy 的一个便利写法
+     * 
+     * @param regex
+     *            正则表达式，! 开头表示取反
+     * @return 新 Map
+     * 
+     * @see #pickAndRemoveBy(Pattern, boolean)
+     */
+    NutMap pickAndRemoveBy(String regex);
+
+    /**
      * 从 Map 里将指定的键过滤，生成一个新的 Map
      * 
      * @param keys
