@@ -22,6 +22,8 @@ import java.io.PushbackInputStream;
 import java.io.Reader;
 import java.io.Writer;
 
+import org.nutz.lang.stream.FileChannelInputStream;
+import org.nutz.lang.stream.FileChannelOutputStream;
 import org.nutz.lang.stream.VoidInputStream;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
@@ -475,6 +477,61 @@ public abstract class Streams {
             return (BufferedInputStream) ins;
         // BufferedInputStream的构造方法,竟然是允许null参数的!! 我&$#^$&%
         return new BufferedInputStream(ins);
+    }
+
+    /**
+     * 创建采用 nio 方式更快速的文件输入流
+     * 
+     * @param f
+     *            文件对象
+     * @return 管道文件数据流
+     * 
+     * @throws FileNotFoundException
+     */
+    public static FileChannelInputStream chanIn(File f) throws FileNotFoundException {
+        return chan(new FileInputStream(f));
+    }
+
+    /**
+     * 包裹采用 nio 方式更快速的文件输入流
+     * 
+     * @param ins
+     *            文件输入流
+     * @return 管道文件数据流
+     */
+    public static FileChannelInputStream chan(FileInputStream ins) {
+        if (ins == null)
+            throw new NullPointerException("ins is null!");
+        return new FileChannelInputStream(ins);
+    }
+
+    /**
+     * 创建采用 nio 方式更快速的文件输出流
+     * 
+     * @param f
+     *            文件对象
+     * @param append
+     *            true 为末尾附加模式，false 表示从开头开始写
+     * 
+     * @return 管道文件数据流
+     * @throws FileNotFoundException
+     */
+    public static FileChannelOutputStream chanOps(File f, boolean append)
+            throws FileNotFoundException {
+        return chan(new FileOutputStream(f, append));
+    }
+
+    /**
+     * 包裹采用 nio 方式更快速的文件输出流
+     * 
+     * @param ins
+     *            文件输入流
+     * @return 管道文件数据流
+     */
+    public static FileChannelOutputStream chan(FileOutputStream ops) {
+        if (ops == null)
+            throw new NullPointerException("ops is null!");
+        return new FileChannelOutputStream(ops);
     }
 
     /**
