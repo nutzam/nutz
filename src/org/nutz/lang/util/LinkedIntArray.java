@@ -1,13 +1,11 @@
 package org.nutz.lang.util;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 
-public class LinkedIntArray implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class LinkedIntArray {
 
     public LinkedIntArray() {
         this(256);
@@ -81,10 +79,7 @@ public class LinkedIntArray implements Serializable {
 
     private void checkBound(int index) {
         if (index >= size() || index < 0)
-            throw new IndexOutOfBoundsException("Index: "
-                                                + index
-                                                + ", Size: "
-                                                + size());
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size());
     }
 
     public LinkedIntArray clear() {

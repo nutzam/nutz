@@ -56,7 +56,6 @@ import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.json.Json;
-import org.nutz.lang.Encoding;
 import org.nutz.lang.reflect.ReflectTool;
 import org.nutz.lang.stream.StringInputStream;
 import org.nutz.lang.stream.StringOutputStream;
@@ -267,7 +266,7 @@ public abstract class Lang {
 
         // 如果类型就不能互相转换，那么一定是错的
         if (!a0.getClass().isAssignableFrom(a1.getClass())
-                && !a1.getClass().isAssignableFrom(a0.getClass()))
+            && !a1.getClass().isAssignableFrom(a0.getClass()))
             return false;
 
         // Map
@@ -1189,12 +1188,13 @@ public abstract class Lang {
             }
 
             if (null != v) {
-                //Class<?> ft = field.getType();
-                //获取泛型基类中的字段真实类型, https://github.com/nutzam/nutz/issues/1288
+                // Class<?> ft = field.getType();
+                // 获取泛型基类中的字段真实类型, https://github.com/nutzam/nutz/issues/1288
                 Class<?> ft = ReflectTool.getGenericFieldType(toType, field);
                 Object vv = null;
                 // 集合
-                if (v instanceof Collection && (ft.isArray() || Collection.class.isAssignableFrom(ft))) {
+                if (v instanceof Collection
+                    && (ft.isArray() || Collection.class.isAssignableFrom(ft))) {
                     Collection c = (Collection) v;
                     // 集合到数组
                     if (ft.isArray()) {
@@ -1204,9 +1204,10 @@ public abstract class Lang {
                     else {
                         // 创建
                         Collection newCol;
-                        //Class eleType = Mirror.getGenericTypes(field, 0);
+                        // Class eleType = Mirror.getGenericTypes(field, 0);
                         Class<?> eleType = ReflectTool.getParameterRealGenericClass(toType,
-                                field.getGenericType(),0);
+                                                                                    field.getGenericType(),
+                                                                                    0);
                         if (ft == List.class) {
                             newCol = new ArrayList(c.size());
                         } else if (ft == Set.class) {
@@ -1244,12 +1245,15 @@ public abstract class Lang {
                         }
                     }
                     // 赋值
-                    //final Class<?> valType = Mirror.getGenericTypes(field, 1);
-                    //map的key和value字段类型
+                    // final Class<?> valType = Mirror.getGenericTypes(field,
+                    // 1);
+                    // map的key和value字段类型
                     final Class<?> keyType = ReflectTool.getParameterRealGenericClass(toType,
-                            field.getGenericType(),0);
-                    final Class<?> valType =ReflectTool.getParameterRealGenericClass(toType,
-                            field.getGenericType(),1);
+                                                                                      field.getGenericType(),
+                                                                                      0);
+                    final Class<?> valType = ReflectTool.getParameterRealGenericClass(toType,
+                                                                                      field.getGenericType(),
+                                                                                      1);
                     each(v, new Each<Entry>() {
                         public void invoke(int i, Entry en, int length) {
                             map.put(Castors.me().castTo(en.getKey(), keyType),
@@ -1280,7 +1284,7 @@ public abstract class Lang {
             return null;
         str = Strings.trim(str);
         if (!Strings.isEmpty(str)
-                && (Strings.isQuoteBy(str, '{', '}') || Strings.isQuoteBy(str, '(', ')'))) {
+            && (Strings.isQuoteBy(str, '{', '}') || Strings.isQuoteBy(str, '(', ')'))) {
             return Json.fromJson(NutMap.class, str);
         }
         return Json.fromJson(NutMap.class, "{" + str + "}");
@@ -1371,6 +1375,7 @@ public abstract class Lang {
 
     /**
      * 根据key,val创建一个新的上下文对象
+     * 
      * @param key
      * @param val
      * @return
@@ -2522,8 +2527,8 @@ public abstract class Lang {
 
     public static String simpleMethodDesc(Method method) {
         return String.format("%s.%s(...)",
-                method.getDeclaringClass().getSimpleName(),
-                method.getName());
+                             method.getDeclaringClass().getSimpleName(),
+                             method.getName());
     }
 
     public static String fixedHexString(byte[] hashBytes) {
@@ -2809,6 +2814,7 @@ public abstract class Lang {
             Properties sys = System.getProperties();
             return sys.getProperty("java.version");
         }
+
         public static int getMajorVersion() {
             String ver = getVersionLong();
             if (Strings.isBlank(ver))
@@ -2821,6 +2827,7 @@ public abstract class Lang {
                 return t;
             return Integer.parseInt(tmp[1]);
         }
+
         public static boolean isEarlyAccess() {
             String ver = getVersionLong();
             if (Strings.isBlank(ver))
@@ -2830,7 +2837,9 @@ public abstract class Lang {
 
         /**
          * 获取进程id
-         * @param fallback 如果获取失败,返回什么呢?
+         * 
+         * @param fallback
+         *            如果获取失败,返回什么呢?
          * @return 进程id
          */
         public static String getProcessId(final String fallback) {
@@ -2842,8 +2851,7 @@ public abstract class Lang {
             try {
                 return Long.toString(Long.parseLong(jvmName.substring(0, index)));
             }
-            catch (NumberFormatException e) {
-            }
+            catch (NumberFormatException e) {}
             return fallback;
         }
     }
@@ -2869,8 +2877,10 @@ public abstract class Lang {
     /**
      * 获取指定字符串的 HmacMD5 值
      *
-     * @param data   字符串
-     * @param secret 密钥
+     * @param data
+     *            字符串
+     * @param secret
+     *            密钥
      * @return 指定字符串的 HmacMD5 值
      */
     public static String hmacmd5(String data, String secret) {
@@ -2884,7 +2894,8 @@ public abstract class Lang {
             Mac mac = Mac.getInstance(secretKey.getAlgorithm());
             mac.init(secretKey);
             bytes = mac.doFinal(data.getBytes(Encoding.UTF8));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
             throw Lang.wrapThrow(e);
         }
@@ -2894,8 +2905,10 @@ public abstract class Lang {
     /**
      * 获取指定字符串的 HmacSHA256 值
      *
-     * @param data   字符串
-     * @param secret 密钥
+     * @param data
+     *            字符串
+     * @param secret
+     *            密钥
      * @return 指定字符串的 HmacSHA256 值
      */
     public static String hmacSHA256(String data, String secret) {
@@ -2909,7 +2922,8 @@ public abstract class Lang {
             Mac mac = Mac.getInstance(secretKey.getAlgorithm());
             mac.init(secretKey);
             bytes = mac.doFinal(data.getBytes(Encoding.UTF8));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
             throw Lang.wrapThrow(e);
         }
