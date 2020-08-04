@@ -1,6 +1,7 @@
 package org.nutz.lang.util;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -35,7 +36,9 @@ import org.nutz.lang.Lang;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public class LinkedByteArray {
+public class LinkedByteArray implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
     // 为了防止内存爆掉，这里指定一个上限吧
     private int maxLimit;

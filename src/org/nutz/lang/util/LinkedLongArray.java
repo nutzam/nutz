@@ -3,9 +3,12 @@ package org.nutz.lang.util;
 import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class LinkedLongArray {
+public class LinkedLongArray implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
     public LinkedLongArray() {
         this(256);

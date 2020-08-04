@@ -1,5 +1,6 @@
 package org.nutz.lang.util;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -8,7 +9,9 @@ import java.util.List;
 import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 
-public class LinkedArray<T> {
+public class LinkedArray<T> implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
     public LinkedArray() {
         this(256);
