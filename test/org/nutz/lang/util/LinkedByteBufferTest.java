@@ -7,11 +7,11 @@ import java.io.IOException;
 import org.junit.Test;
 import org.nutz.lang.Lang;
 
-public class LinkedByteArrayTest {
+public class LinkedByteBufferTest {
 
     @Test
     public void test_str_get_set() throws IOException {
-        LinkedByteArray lba = new LinkedByteArray(3, 1);
+        LinkedByteBuffer lba = new LinkedByteBuffer(3, 1);
         lba.write("1234567890");
 
         assertEquals('1', lba.get(0));
@@ -62,7 +62,7 @@ public class LinkedByteArrayTest {
 
     @Test
     public void test_str_seek_read_write2() throws IOException {
-        LinkedByteArray lba = new LinkedByteArray(3, 1);
+        LinkedByteBuffer lba = new LinkedByteBuffer(3, 1);
         lba.write("1234567890");
 
         String str = lba.readAll();
@@ -73,7 +73,8 @@ public class LinkedByteArrayTest {
         assertEquals("4567890", str);
 
         assertNull(lba.readAll());
-        assertEquals(10, lba.getLast());
+        assertEquals(10, lba.getLimit());
+        assertEquals(10, lba.getWriteIndex());
 
         lba.seekWrite(2);
         lba.write("abc");
@@ -86,7 +87,7 @@ public class LinkedByteArrayTest {
 
     @Test
     public void test_str_seek_read_write() throws IOException {
-        LinkedByteArray lba = new LinkedByteArray(3, 1);
+        LinkedByteBuffer lba = new LinkedByteBuffer(3, 1);
         lba.write("123456789");
 
         String str = lba.readAll();
@@ -97,7 +98,8 @@ public class LinkedByteArrayTest {
         assertEquals("456789", str);
 
         assertNull(lba.readAll());
-        assertEquals(9, lba.getLast());
+        assertEquals(9, lba.getLimit());
+        assertEquals(9, lba.getWriteIndex());
 
         lba.seekWrite(2);
         lba.write("abc");
@@ -110,7 +112,7 @@ public class LinkedByteArrayTest {
 
     @Test
     public void test_str_read_write() throws IOException {
-        LinkedByteArray lba = new LinkedByteArray(3, 1);
+        LinkedByteBuffer lba = new LinkedByteBuffer(3, 1);
         lba.write("1234567890");
 
         String str = lba.readAll();
@@ -121,7 +123,7 @@ public class LinkedByteArrayTest {
 
     @Test
     public void test_str_write_readAll() throws IOException {
-        LinkedByteArray lba = new LinkedByteArray(3, 1);
+        LinkedByteBuffer lba = new LinkedByteBuffer(3, 1);
         lba.write("hello");
         lba.write(" world");
 
@@ -139,7 +141,7 @@ public class LinkedByteArrayTest {
 
     @Test
     public void test_str_write_readLine() throws IOException {
-        LinkedByteArray lba = new LinkedByteArray(3, 1);
+        LinkedByteBuffer lba = new LinkedByteBuffer(3, 1);
         lba.write("hello");
         lba.write(" world");
 

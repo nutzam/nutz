@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({LinkedArrayTest.class,
-                     LinkedByteArrayTest.class,
+                     LinkedByteBufferTest.class,
                      LinkedCharArrayTest.class,
                      LinkedIntArrayTest.class,
                      IntRangeTest.class,
