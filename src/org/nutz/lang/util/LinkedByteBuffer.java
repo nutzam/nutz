@@ -1,6 +1,7 @@
 package org.nutz.lang.util;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
