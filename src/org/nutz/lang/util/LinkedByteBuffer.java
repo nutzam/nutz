@@ -1,7 +1,6 @@
 package org.nutz.lang.util;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -310,7 +309,7 @@ public class LinkedByteBuffer {
      * 
      * @param buf
      *            目标数组
-     * @return 一共实际 copy 的字节数
+     * @return 一共实际 copy 的字节数。 -1 表示不在有字节可以被 copy 了
      * 
      * @see #read(byte[], int, int)
      */
@@ -327,10 +326,14 @@ public class LinkedByteBuffer {
      *            起始位置下标
      * @param len
      *            最多 copy 多少字节
-     * @return 一共实际 copy 的字节数
+     * @return 一共实际 copy 的字节数。 -1 表示不在有字节可以被 copy 了
      */
     public int read(byte[] buf, int off, int len) {
-        len = Math.min(len, limit - rIndex);
+        int remain = limit - rIndex;
+        if (remain <= 0) {
+            return -1;
+        }
+        len = Math.min(len, remain);
         if (0 >= len) {
             return len;
         }

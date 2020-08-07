@@ -10,6 +10,14 @@ import org.nutz.lang.Lang;
 public class LinkedByteBufferTest {
 
     @Test
+    public void test_read_empty() throws IOException {
+        LinkedByteBuffer lba = new LinkedByteBuffer(3, 1);
+        byte[] bs = new byte[100];
+        int len = lba.read(bs);
+        assertEquals(-1, len);
+    }
+
+    @Test
     public void test_str_get_set() throws IOException {
         LinkedByteBuffer lba = new LinkedByteBuffer(3, 1);
         lba.write("1234567890");
