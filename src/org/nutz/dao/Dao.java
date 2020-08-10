@@ -108,6 +108,8 @@ public interface Dao extends Configurable {
      */
     <T> T insert(T obj);
 
+    <T> T insert(Entity<T> entity, T obj);
+
     /**
      * 将一个对象按FieldFilter过滤后,插入到一个数据源。
      * <p/>
@@ -121,7 +123,7 @@ public interface Dao extends Configurable {
      * @see org.nutz.dao.Dao#insert(Object)
      */
     <T> T insert(T obj, FieldFilter filter);
-    
+
     <T> T insert(T obj, String actived);
 
     /**
@@ -147,6 +149,8 @@ public interface Dao extends Configurable {
      */
     void insert(Class<?> classOfT, Chain chain);
 
+    void insert(Entity<?> entity, Chain chain);
+
     /**
      * 快速插入一个对象。 对象的 '@Prev' 以及 '@Next' 在这个函数里不起作用。
      * <p>
@@ -166,7 +170,7 @@ public interface Dao extends Configurable {
      * 
      */
     <T> T fastInsert(T obj);
-    
+
     <T> T fastInsert(T obj, boolean detectAllColumns);
 
     /**
@@ -270,6 +274,20 @@ public interface Dao extends Configurable {
     int update(Object obj, FieldFilter fieldFilter, Condition cnd);
 
     int update(Object obj, Condition cnd);
+
+    int update(Entity<?> entity, Object obj);
+
+    int update(Entity<?> entity, Object obj, String actived);
+
+    int update(Entity<?> entity, Object obj, String actived, String locked, boolean ignoreNull);
+
+    int update(Entity<?> entity, Object obj, FieldFilter fieldFilter);
+
+    int update(Entity<?> entity, Object obj, FieldFilter fieldFilter, Condition cnd);
+
+    int update(Entity<?> entity, Object obj, Condition cnd);
+
+    int update(Entity<?> entity, Chain chain, Condition cnd);
 
     /**
      * 更新一个对象，并且忽略所有 null 字段。
@@ -394,6 +412,8 @@ public interface Dao extends Configurable {
      */
     <T> List<T> query(Class<T> classOfT, Condition cnd, Pager pager);
 
+    <T> List<T> query(Entity<T> entity, Condition cnd, Pager pager);
+
     /**
      * 查询一组对象。你可以为这次查询设定条件
      * 
@@ -472,6 +492,8 @@ public interface Dao extends Configurable {
      * @return 一共迭代的数量
      */
     <T> int each(Class<T> classOfT, Condition cnd, Pager pager, Each<T> callback);
+
+    <T> int each(Entity<T> entity, Condition cnd, Pager pager, Each<T> callback);
 
     /**
      * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
@@ -554,6 +576,8 @@ public interface Dao extends Configurable {
      */
     int delete(Class<?> classOfT, long id);
 
+    int delete(Entity<?> entity, long id);
+
     /**
      * 根据对象 Name 删除一个对象。它只会删除这个对象，关联对象不会被删除。
      * <p>
@@ -570,6 +594,8 @@ public interface Dao extends Configurable {
      * @see org.nutz.dao.entity.annotation.Name
      */
     int delete(Class<?> classOfT, String name);
+
+    int delete(Entity<?> entity, String name);
 
     /**
      * 根据复合主键，删除一个对象。该对象必须声明 '@PK'，并且，给定的参数顺序 必须同 '@PK' 中声明的顺序一致，否则会产生不可预知的错误。
@@ -651,6 +677,8 @@ public interface Dao extends Configurable {
      */
     <T> T fetch(Class<T> classOfT, long id);
 
+    <T> T fetch(Entity<T> entity, long id);
+
     /**
      * 根据对象 Name 获取一个对象。它只会获取这个对象，关联对象不会被获取。
      * <p>
@@ -666,6 +694,8 @@ public interface Dao extends Configurable {
      */
     <T> T fetch(Class<T> classOfT, String name);
 
+    <T> T fetch(Entity<T> entity, String name);
+
     /**
      * 根据复合主键，获取一个对象。该对象必须声明 '@PK'，并且，给定的参数顺序 必须同 '@PK' 中声明的顺序一致，否则会产生不可预知的错误。
      * 
@@ -674,6 +704,8 @@ public interface Dao extends Configurable {
      *            复合主键需要的参数，必须同 '@PK'中声明的顺序一致
      */
     <T> T fetchx(Class<T> classOfT, Object... pks);
+
+    <T> T fetchx(Entity<T> entity, Object... pks);
 
     /**
      * 根据 WHERE 条件获取一个对象。如果有多个对象符合条件，将只获取 ResultSet 第一个记录
@@ -688,6 +720,8 @@ public interface Dao extends Configurable {
      * @see org.nutz.dao.entity.annotation.Name
      */
     <T> T fetch(Class<T> classOfT, Condition cnd);
+
+    <T> T fetch(Entity<T> entity, Condition cnd);
 
     /**
      * 根据条件获取一个 Record 对象
@@ -777,6 +811,8 @@ public interface Dao extends Configurable {
      */
     int clear(Class<?> classOfT, Condition cnd);
 
+    int clear(Entity<?> entity, Condition cnd);
+
     /**
      * 根据一个 WHERE 条件，清除一组记录
      * 
@@ -848,6 +884,8 @@ public interface Dao extends Configurable {
      */
     int count(Class<?> classOfT, Condition cnd);
 
+    int count(Entity<?> entity, Condition cnd);
+
     /**
      * 计算某个对象在数据库中有多少条记录
      * 
@@ -856,6 +894,8 @@ public interface Dao extends Configurable {
      * @return 数量
      */
     int count(Class<?> classOfT);
+
+    int count(Entity<?> entity);
 
     /**
      * 根据条件，计算某个数据表或视图中有多少条记录
@@ -897,7 +937,7 @@ public interface Dao extends Configurable {
      * @return 计算结果
      */
     int func(Class<?> classOfT, String funcName, String fieldName);
-    
+
     /**
      * 对某一个对象字段，进行计算。
      * 
@@ -1015,6 +1055,8 @@ public interface Dao extends Configurable {
      */
     boolean exists(Class<?> classOfT);
 
+    boolean exists(Entity<?> entity);
+
     /**
      * @param tableName
      *            表名
@@ -1032,6 +1074,7 @@ public interface Dao extends Configurable {
      * @return 实体对象
      */
     <T> Entity<T> create(Class<T> classOfT, boolean dropIfExists);
+
     /**
      * 根据一个实体的配置信息为其创建一张表
      * 
@@ -1042,8 +1085,10 @@ public interface Dao extends Configurable {
      * @return 实体对象
      */
     <T> Entity<T> create(Entity<T> en, boolean dropIfExists);
+
     /**
      * 根据一个实体的配置信息为其创建一张表
+     * 
      * @param tableName
      *            表名
      * @param map
@@ -1053,8 +1098,10 @@ public interface Dao extends Configurable {
      * @return 实体对象
      */
     <T extends Map<String, ?>> Entity<T> create(String tableName, T map, boolean dropIfExists);
+
     /**
      * 根据一个实体的配置信息为其创建一张表, 其中表名从map.get(".table")获取
+     * 
      * @param map
      *            实体描述,参考文档中的非Pojo操作
      * @param dropIfExists
@@ -1130,7 +1177,7 @@ public interface Dao extends Configurable {
      * @return 原对象
      */
     <T> T insertOrUpdate(T t);
-    
+
     /**
      * 根据对象的主键(@Id/@Name/@Pk)先查询, 如果存在就更新, 不存在就插入
      * 
@@ -1161,28 +1208,42 @@ public interface Dao extends Configurable {
      */
     int updateAndIncrIfMatch(Object obj, FieldFilter fieldFilter, String fieldName);
 
+    int updateAndIncrIfMatch(Entity<?> entity,
+                             Object obj,
+                             FieldFilter fieldFilter,
+                             String fieldName);
+
     /**
      * 基于版本的更新，版本不一样无法更新到数据
-     * @param obj 需要更新的对象, 必须有version属性
+     * 
+     * @param obj
+     *            需要更新的对象, 必须有version属性
      * @return 若更新成功,大于0, 否则小于0
      */
     int updateWithVersion(Object obj);
-    
+
     /**
      * 基于版本的更新，版本不一样无法更新到数据
-     * @param obj 需要更新的对象, 必须有version属性
-     * @param fieldFilter 需要过滤的字段设置
+     * 
+     * @param obj
+     *            需要更新的对象, 必须有version属性
+     * @param fieldFilter
+     *            需要过滤的字段设置
      * @return 若更新成功,大于0, 否则小于0
      */
     int updateWithVersion(Object obj, FieldFilter fieldFilter);
-    
+
     /**
      * 根据查询条件获取一个对象.<b>注意: 条件语句需要加上表名!!!</b>
      * <p/>
      * 这个方法是让@One关联的属性,通过left join一次性取出. 与fetch+fetchLinks是等价的
-     * @param classOfT 实体类
-     * @param regex 需要过滤的关联属性,可以是null,取出全部关联属性.
-     * @param cnd 查询条件,必须带表名!!!
+     * 
+     * @param classOfT
+     *            实体类
+     * @param regex
+     *            需要过滤的关联属性,可以是null,取出全部关联属性.
+     * @param cnd
+     *            查询条件,必须带表名!!!
      * @return 实体对象,符合regex的关联属性也会取出
      */
     <T> T fetchByJoin(Class<T> classOfT, String regex, Condition cnd);
@@ -1193,13 +1254,17 @@ public interface Dao extends Configurable {
      * 你的对象必须在某个字段声明了注解 '@Id'，否则本操作会抛出一个运行时异常
      * <p/>
      * 这个方法是让@One关联的属性,通过left join一次性取出. 与fetch+fetchLinks是等价的
-     * @param classOfT 实体类
-     * @param regex 需要取出的关联属性,是正则表达式哦,匹配的是Java属性名
-     * @param id 对象id
+     * 
+     * @param classOfT
+     *            实体类
+     * @param regex
+     *            需要取出的关联属性,是正则表达式哦,匹配的是Java属性名
+     * @param id
+     *            对象id
      * @return 实体
      */
     <T> T fetchByJoin(Class<T> classOfT, String regex, long id);
-    
+
     /**
      * 根据对象 NAME 获取一个对象。它只会获取这个对象，关联对象不会被获取。
      * <p>
@@ -1207,53 +1272,72 @@ public interface Dao extends Configurable {
      * <p/>
      * 这个方法是让@One关联的属性,通过left join一次性取出. 与fetch+fetchLinks是等价的
      * 
-     * @param classOfT 实体类
-     * @param regex 需要取出的关联属性,是正则表达式哦,匹配的是Java属性名
-     * @param name 对象name
+     * @param classOfT
+     *            实体类
+     * @param regex
+     *            需要取出的关联属性,是正则表达式哦,匹配的是Java属性名
+     * @param name
+     *            对象name
      * @return 实体
      */
     <T> T fetchByJoin(Class<T> classOfT, String regex, String name);
-    
+
     /**
      * 根据查询条件获取所有对象.<b>注意: 条件语句需要加上主表名或关联属性的JAVA属性名!!!</b>
      * <p/>
      * 这个方法是让@One关联的属性,通过left join一次性取出. 与query+fetchLinks是等价的
-     * @param classOfT 实体类
-     * @param regex 需要过滤的关联属性,可以是null,取出全部关联属性.
-     * @param cnd 查询条件, 主表写表名, 子表写关联属性的JAVA属性名!
+     * 
+     * @param classOfT
+     *            实体类
+     * @param regex
+     *            需要过滤的关联属性,可以是null,取出全部关联属性.
+     * @param cnd
+     *            查询条件, 主表写表名, 子表写关联属性的JAVA属性名!
      * @return 实体对象的列表,符合regex的关联属性也会取出
      */
     <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd);
-    
+
     <T> T fetchByJoin(Class<T> classOfT, String regex, Condition cnd, Map<String, Condition> cnds);
-    
+
     /**
      * 根据查询条件获取分页对象.<b>注意: 条件语句需要加上主表名或关联属性的JAVA属性名!!!</b>
      * <p/>
      * 这个方法是让@One关联的属性,通过left join一次性取出. 与query+fetchLinks是等价的
-     * @param classOfT 实体类
-     * @param regex 需要过滤的关联属性,可以是null,取出全部关联属性.
-     * @param cnd 查询条件, 主表写表名, 子表写关联属性的JAVA属性名!
-     * @param pager 分页对象 <b>注意: 分页不要在cnd中传入!</b>
+     * 
+     * @param classOfT
+     *            实体类
+     * @param regex
+     *            需要过滤的关联属性,可以是null,取出全部关联属性.
+     * @param cnd
+     *            查询条件, 主表写表名, 子表写关联属性的JAVA属性名!
+     * @param pager
+     *            分页对象 <b>注意: 分页不要在cnd中传入!</b>
      * @return 实体对象的列表,符合regex的关联属性也会取出
      */
     <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd, Pager pager);
-    
 
-    <T> List<T> queryByJoin(Class<T> classOfT, String regex, Condition cnd, Pager pager, Map<String, Condition> cnds);
-    
+    <T> List<T> queryByJoin(Class<T> classOfT,
+                            String regex,
+                            Condition cnd,
+                            Pager pager,
+                            Map<String, Condition> cnds);
+
     /**
      * 根据查询条件获取分页对象.<b>注意: 条件语句需要加上主表名或关联属性的JAVA属性名!!!</b>
-     * @param classOfT 实体类
-     * @param regex 需要过滤的关联属性,可以是null,取出全部关联属性.
-     * @param cnd 查询条件, 主表写表名, 子表写关联属性的JAVA属性名!
+     * 
+     * @param classOfT
+     *            实体类
+     * @param regex
+     *            需要过滤的关联属性,可以是null,取出全部关联属性.
+     * @param cnd
+     *            查询条件, 主表写表名, 子表写关联属性的JAVA属性名!
      * @return 数量
      */
     <T> int countByJoin(Class<T> classOfT, String regex, Condition cnd);
-    
+
     EntityHolder getEntityHolder();
-    
+
     void truncate(Class<?> klass);
-    
+
     void truncate(String tableName);
 }
