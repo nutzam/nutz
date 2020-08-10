@@ -40,7 +40,12 @@ public class EntityOperator {
     private int updateCount;
 
     public void setMyObj(Object obj) {
-        this.myObj = Lang.first(obj);
+        if (obj.getClass().isArray()) {
+            this.myObj = Lang.array2list((Object[]) obj);
+        } else {
+            this.myObj = obj;
+        }
+
     }
 
     /**
