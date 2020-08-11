@@ -100,7 +100,7 @@ public class HsqldbJdbcExpert extends AbstractJdbcExpert {
                 return "NUMERIC(" + mf.getWidth() + "," + mf.getPrecision() + ")";
             }
             // 用默认精度
-            if (mf.getTypeMirror().isDouble())
+            if (mf.getMirror().isDouble())
                 return "NUMERIC(15,10)";
             return "FLOAT";
         case BINARY:

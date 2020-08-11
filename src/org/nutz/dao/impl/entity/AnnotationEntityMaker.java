@@ -450,7 +450,7 @@ public class AnnotationEntityMaker implements EntityMaker {
             // 用 @PK 的方式声明的主键
             if (info.annPK.value().length == 1) {
                 if (Lang.contains(info.annPK.value(), info.name)) {
-                    if (ef.getTypeMirror().isIntLike())
+                    if (ef.getMirror().isIntLike())
                         ef.setAsId();
                     else
                         ef.setAsName();

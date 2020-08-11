@@ -11,19 +11,19 @@ import org.nutz.lang.inject.Injecting;
 
 public abstract class AbstractEntityField implements EntityField {
 
-    private Entity<?> entity;
+    protected Entity<?> entity;
 
-    private String name;
+    protected String name;
 
-    private Type type;
+    protected Type type;
 
-    private Class<?> typeClass;
+    protected Class<?> typeClass;
 
-    private Mirror<?> mirror;
+    protected Mirror<?> mirror;
 
-    private Injecting injecting;
+    protected Injecting injecting;
 
-    private Ejecting ejecting;
+    protected Ejecting ejecting;
 
     public AbstractEntityField(Entity<?> entity) {
         this.entity = entity;
@@ -45,7 +45,7 @@ public abstract class AbstractEntityField implements EntityField {
         return typeClass;
     }
 
-    public Mirror<?> getTypeMirror() {
+    public Mirror<?> getMirror() {
         return mirror;
     }
 
@@ -73,6 +73,18 @@ public abstract class AbstractEntityField implements EntityField {
         this.type = type;
         this.typeClass = Lang.getTypeClass(type);
         this.mirror = Mirror.me(typeClass);
+    }
+
+    public void setEntity(Entity<?> entity) {
+        this.entity = entity;
+    }
+
+    public void setTypeClass(Class<?> typeClass) {
+        this.typeClass = typeClass;
+    }
+
+    public void setMirror(Mirror<?> mirror) {
+        this.mirror = mirror;
     }
 
     public String toString() {

@@ -173,6 +173,8 @@ public interface Dao extends Configurable {
 
     <T> T fastInsert(T obj, boolean detectAllColumns);
 
+    void fastInsert(Entity<?> entity, Object obj);
+
     /**
      * 将对象插入数据库同时，也将符合一个正则表达式的所有关联字段关联的对象统统插入相应的数据库
      * <p>

@@ -28,7 +28,7 @@ public class NutEntityIndex implements EntityIndex {
     public void setUnique(boolean unique) {
         this.unique = unique;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -57,6 +57,10 @@ public class NutEntityIndex implements EntityIndex {
 
     public List<EntityField> getFields() {
         return fields;
+    }
+
+    public void setFields(List<EntityField> fields) {
+        this.fields = fields;
     }
 
 }

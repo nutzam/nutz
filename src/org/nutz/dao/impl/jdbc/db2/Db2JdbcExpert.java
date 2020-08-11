@@ -108,7 +108,7 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
                 return "decimal(" + mf.getWidth() + "," + mf.getPrecision() + ")";
             }
             // 用默认精度
-            if (mf.getTypeMirror().isDouble())
+            if (mf.getMirror().isDouble())
                 return "decimal(15,10)";
             return "FLOAT";
         case TIMESTAMP:
@@ -146,7 +146,7 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
     }
     
     public ValueAdaptor getAdaptor(MappingField ef) {
-        if (ef.getTypeMirror().isBoolean())
+        if (ef.getMirror().isBoolean())
             return new DB2BooleanAdaptor();
         return super.getAdaptor(ef);
     }

@@ -74,7 +74,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert, Configurable {
     public void setupEntityField(Connection conn, Entity<?> en) {
         List<MappingField> mfs = new ArrayList<MappingField>();
         for (MappingField mf : en.getMappingFields()) {
-            if (mf.getTypeMirror().isEnum()) {
+            if (mf.getMirror().isEnum()) {
                 mfs.add(mf);
             }
         }
@@ -125,7 +125,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert, Configurable {
     }
 
     public ValueAdaptor getAdaptor(MappingField ef) {
-        Mirror<?> mirror = ef.getTypeMirror();
+        Mirror<?> mirror = ef.getMirror();
         // 为数字型枚举的特殊判断
         if (mirror.isEnum() && ColType.INT == ef.getColumnType())
             return Jdbcs.Adaptor.asEnumInt;
@@ -240,7 +240,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert, Configurable {
                 return "NUMERIC(" + mf.getWidth() + "," + mf.getPrecision() + ")";
             }
             // 用默认精度
-            if (mf.getTypeMirror().isDouble())
+            if (mf.getMirror().isDouble())
                 return "NUMERIC(15,10)";
             return "FLOAT";
 
@@ -399,7 +399,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert, Configurable {
             return;
         String dft = getDefaultValue(mf);
         if (mf.getColumnType() == ColType.VARCHAR
-                || mf.getTypeMirror().isStringLike())
+                || mf.getMirror().isStringLike())
             sb.append(" DEFAULT '").append(dft).append('\'');
         else
             sb.append(" DEFAULT ").append(dft);

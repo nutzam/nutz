@@ -809,7 +809,7 @@ public abstract class Jdbcs {
      *            映射字段
      */
     public static void guessEntityFieldColumnType(NutMappingField ef) {
-        Mirror<?> mirror = ef.getTypeMirror();
+        Mirror<?> mirror = ef.getMirror();
 
         // 整型
         if (mirror.isInt()) {

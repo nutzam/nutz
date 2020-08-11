@@ -59,6 +59,10 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 
     private static final Log log = Logs.get();
 
+    public NutMappingField() {
+        this(null);
+    }
+
     public NutMappingField(Entity<?> entity) {
         super(entity);
         casesensitive = true;
@@ -314,4 +318,43 @@ public class NutMappingField extends AbstractEntityField implements MappingField
         this.unsigned = unsigned;
     }
 
+    public NutMappingField clone() {
+        NutMappingField mf = new NutMappingField(entity);
+        mf.entity = this.entity;
+        mf.name = this.name;
+        mf.type = this.type;
+        mf.typeClass = this.typeClass;
+        mf.mirror = this.mirror;
+        mf.injecting = this.injecting;
+        mf.ejecting = this.ejecting;
+        mf.columnName = this.columnName;
+        mf.columnNameInSql = this.columnNameInSql;
+        mf.columnType = this.columnType;
+        mf.defaultValue = this.defaultValue;
+        mf.columnComment = this.columnComment;
+        mf.width = this.width;
+        mf.precision = this.precision;
+        mf.isCompositePk = this.isCompositePk;
+        mf.isId = this.isId;
+        mf.isName = this.isName;
+        mf.isVersion = this.isVersion;
+        mf.readonly = this.readonly;
+        mf.notNull = this.notNull;
+        mf.unsigned = this.unsigned;
+        mf.autoIncreasement = this.autoIncreasement;
+        mf.casesensitive = this.casesensitive;
+        mf.hasColumnComment = this.hasColumnComment;
+        mf.customDbType = this.customDbType;
+        mf.adaptor = this.adaptor;
+        mf.insert = this.insert;
+        mf.update = this.update;
+        return mf;
+    }
+
+    public NutMappingField duplicate(String newName) {
+        NutMappingField mf = this.clone();
+        if (null != newName)
+            mf.setName(newName);
+        return mf;
+    }
 }

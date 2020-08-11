@@ -163,7 +163,8 @@ public class NutDao extends DaoSupport implements Dao {
         if (size > 1) {
             if (!opt.entity.hasInsertMacroes()) {
                 // 单一操作,可以转为批量插入
-                return fastInsert(obj);
+                fastInsert(entity, obj);
+                return obj;
             }
         }
         Lang.each(obj, false, new Each<Object>() {
@@ -234,6 +235,13 @@ public class NutDao extends DaoSupport implements Dao {
         opt.addInsertSelfOnly();
         opt.exec();
         return obj;
+    }
+
+    public void fastInsert(Entity<?> entity, Object obj) {
+        EntityOperator opt = _opt(entity);
+        opt.setMyObj(obj);
+        opt.addInsertSelfOnly();
+        opt.exec();
     }
 
     public <T> T insertWith(T obj, String regex) {

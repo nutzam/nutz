@@ -30,7 +30,7 @@ public class DerbyJdbcExpert extends MysqlJdbcExpert {
     
     @Override
     public ValueAdaptor getAdaptor(MappingField ef) {
-        if (ef.getTypeMirror().isBoolean())
+        if (ef.getMirror().isBoolean())
             return new DerbyBooleanAdaptor();
         return super.getAdaptor(ef);
     }

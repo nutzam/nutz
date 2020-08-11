@@ -24,7 +24,7 @@ public interface EntityField {
     /**
      * @return 获取该字段 Java 对象的类型
      */
-    Mirror<?> getTypeMirror();
+    Mirror<?> getMirror();
 
     /**
      * 为当前实体字段注入值，优先通过 setter 注入
