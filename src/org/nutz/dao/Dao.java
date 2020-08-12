@@ -128,13 +128,15 @@ public interface Dao extends Configurable {
 
     /**
      * 自由的向一个数据表插入一条数据。数据用名值链描述
-     * 
+     *
      * @param tableName
      *            数据表名
      * @param chain
      *            数据名值链
+     * @return
+     *            主键
      */
-    void insert(String tableName, Chain chain);
+    Object insert(String tableName, Chain chain);
 
     /**
      * 与 insert(String tableName, Chain chain) 一样，不过，数据表名，将取自 POJO 的数据表声明，请参看
