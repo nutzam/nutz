@@ -351,10 +351,4 @@ public class NutMappingField extends AbstractEntityField implements MappingField
         return mf;
     }
 
-    public NutMappingField duplicate(String newName) {
-        NutMappingField mf = this.clone();
-        if (null != newName)
-            mf.setName(newName);
-        return mf;
-    }
 }
