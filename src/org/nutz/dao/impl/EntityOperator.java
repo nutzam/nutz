@@ -39,6 +39,15 @@ public class EntityOperator {
 
     private int updateCount;
 
+    public void setMyObj(Object obj) {
+        if (obj.getClass().isArray()) {
+            this.myObj = Lang.array2list((Object[]) obj);
+        } else {
+            this.myObj = obj;
+        }
+
+    }
+
     /**
      * 批量执行准备好的 Dao 语句
      * 
@@ -82,25 +91,25 @@ public class EntityOperator {
         _fireEvent("prevUpdate", obj, en);
 
         Pojo pojo = dao.pojoMaker.makeUpdate(en, null)
-                                    .append(Pojos.Items.cndAuto(en, Lang.first(obj)))
-                                    .setOperatingObject(obj);
+                                 .append(Pojos.Items.cndAuto(en, Lang.first(obj)))
+                                 .setOperatingObject(obj);
         pojoList.add(pojo);
         return pojo;
     }
-    
+
     public Pojo addUpdateByPkAndCnd(Condition cnd) {
         return addUpdateByPkAndCnd(entity, myObj, cnd);
     }
-    
+
     public Pojo addUpdateByPkAndCnd(final Entity<?> en, final Object obj, final Condition cnd) {
         if (null == en)
             return null;
 
         // 触发Pojo拦截器
         _fireEvent("prevUpdate", obj, en);
-        
+
         Pojo pojo = dao.pojoMaker.makeUpdate(en, null);
-        
+
         boolean pureCnd = en.getPkType() == PkType.UNKNOWN;
         if (!pureCnd) {
             pojo.append(Pojos.Items.cndAuto(en, Lang.first(obj)));
@@ -108,7 +117,7 @@ public class EntityOperator {
         }
         if (cnd instanceof Criteria) {
             // 只取它的where条件
-            pojo.append(((Criteria)cnd).where().setTop(pureCnd));
+            pojo.append(((Criteria) cnd).where().setTop(pureCnd));
         } else {
             pojo.append(new ConditionPItem(cnd).setTop(pureCnd));
         }
@@ -117,9 +126,9 @@ public class EntityOperator {
         return pojo;
     }
 
-    public List<Pojo> addUpdateForIgnoreNull(    final Entity<?> en,
-                                                final Object obj,
-                                                final FieldMatcher fm) {
+    public List<Pojo> addUpdateForIgnoreNull(final Entity<?> en,
+                                             final Object obj,
+                                             final FieldMatcher fm) {
 
         if (null == en)
             return null;
@@ -138,8 +147,8 @@ public class EntityOperator {
         Lang.each(obj, new Each<Object>() {
             public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
                 Pojo pojo = dao.pojoMaker.makeUpdate(en, ele)
-                                            .append(Pojos.Items.cndAuto(en, ele))
-                                            .setOperatingObject(ele);
+                                         .append(Pojos.Items.cndAuto(en, ele))
+                                         .setOperatingObject(ele);
                 pojo.getContext().setFieldMatcher(newFM);
                 re.add(pojo);
             }
@@ -148,7 +157,7 @@ public class EntityOperator {
 
         return re;
     }
-    
+
     public Pojo addUpdateAndIncrIfMatch(final Entity<?> en, final Object obj, String fieldName) {
         if (null == en)
             return null;
@@ -158,10 +167,15 @@ public class EntityOperator {
 
         MappingField mf = en.getField(fieldName);
         Pojo pojo = dao.pojoMaker.makeUpdate(en, null)
-                                    .append(new Static("," + mf.getColumnNameInSql() + "=" + mf.getColumnNameInSql() + "+1"))
-                                    .append(Pojos.Items.cndAuto(en, Lang.first(obj)))
-                                    .setOperatingObject(obj);
-        pojo.append(new Static("AND")).append(((AbstractPItem)Pojos.Items.cndColumn(mf, null)).setTop(false));
+                                 .append(new Static(","
+                                                    + mf.getColumnNameInSql()
+                                                    + "="
+                                                    + mf.getColumnNameInSql()
+                                                    + "+1"))
+                                 .append(Pojos.Items.cndAuto(en, Lang.first(obj)))
+                                 .setOperatingObject(obj);
+        pojo.append(new Static("AND"))
+            .append(((AbstractPItem) Pojos.Items.cndColumn(mf, null)).setTop(false));
         pojoList.add(pojo);
         return pojo;
     }
@@ -249,7 +263,7 @@ public class EntityOperator {
         if (obj instanceof Chain) {
             pojo = dao.pojoMaker.makePojo(SqlType.INSERT);
             pojo.append(Pojos.Items.entityTableName());
-            pojo.append(new InsertByChainPItem((Chain)obj));
+            pojo.append(new InsertByChainPItem((Chain) obj));
             pojo.setEntity(en);
         } else {
             // 触发Pojo拦截器
@@ -286,9 +300,9 @@ public class EntityOperator {
     }
 
     public int getPojoListSize() {
-    	return pojoList.size();
+        return pojoList.size();
     }
-    
+
     protected void _fireEvent(final String event, Object obj, final Entity<?> entity) {
         final PojoInterceptor pint = entity.getInterceptor();
         if (pint != null && pint.isAvailable()) {
@@ -298,8 +312,7 @@ public class EntityOperator {
                         pint.onEvent(ele, entity, event);
                     }
                 });
-            }
-            else
+            } else
                 pint.onEvent(obj, entity, event);
         }
     }

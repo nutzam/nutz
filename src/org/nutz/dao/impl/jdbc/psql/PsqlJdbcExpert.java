@@ -138,7 +138,7 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
                 return "NUMERIC(" + mf.getWidth() + "," + mf.getPrecision() + ")";
             }
             // 用默认精度
-            if (mf.getTypeMirror().isDouble())
+            if (mf.getMirror().isDouble())
                 return "NUMERIC(15,10)";
             return "NUMERIC";
 
@@ -166,7 +166,7 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
 
     @Override
     public ValueAdaptor getAdaptor(MappingField ef) {
-        if (ef.getTypeMirror().isOf(Blob.class)) {
+        if (ef.getMirror().isOf(Blob.class)) {
             return new BlobValueAdaptor3(Jdbcs.getFilePool());
         } else if (ColType.PSQL_JSON == ef.getColumnType()) {
             return new PsqlJsonAdaptor();

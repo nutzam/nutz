@@ -141,7 +141,7 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
                 return "decimal(" + mf.getWidth() + "," + mf.getPrecision() + ")";
             }
             // 用默认精度
-            if (mf.getTypeMirror().isDouble())
+            if (mf.getMirror().isDouble())
                 return "decimal(15,10)";
             return "float";
         case VARCHAR:

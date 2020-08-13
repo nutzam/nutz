@@ -48,7 +48,7 @@ public class ManyLinkField extends AbstractLinkField {
         }
 
         // 宿主实体的字段 - 应该是主键
-        boolean intLike = linkedField.getTypeMirror().isIntLike();
+        boolean intLike = linkedField.getMirror().isIntLike();
         if (Strings.isBlank(mapKey) || Mirror.me(info.fieldType).isMap()) {
 
             hostField = intLike ? getEntity().getIdField() : getEntity().getNameField();

@@ -162,9 +162,9 @@ public class NutEntity<T> implements Entity<T> {
      * 实体的主键类型
      */
     private PkType pkType;
-    
+
     private boolean complete;
-    
+
     private PojoInterceptor interceptor;
 
     public NutEntity(final Class<T> type) {
@@ -203,7 +203,7 @@ public class NutEntity<T> implements Entity<T> {
         this.manys = new LinkFieldSet();
         this.manymanys = new LinkFieldSet();
     }
-    
+
     public T getObject(ResultSet rs, FieldMatcher matcher) {
         return getObject(rs, matcher, null);
     }
@@ -226,7 +226,7 @@ public class NutEntity<T> implements Entity<T> {
         // 返回构造的对象
         return re;
     }
-    
+
     public T getObject(Record rec) {
         return getObject(rec, null);
     }
@@ -274,10 +274,11 @@ public class NutEntity<T> implements Entity<T> {
             theId = field;
         else if (field.isName())
             theName = field;
-      //wjw(2017-04-10),add,乐观锁
+        // wjw(2017-04-10),add,乐观锁
         else if (field.isVersion())
-        	theVersion =field;
-        
+            theVersion = field;
+
+        field.setEntity(this);
         byJava.put(field.getName(), field);
         byDB.put(field.getColumnName(), field);
         fields.add(field);
@@ -395,7 +396,7 @@ public class NutEntity<T> implements Entity<T> {
     }
 
     public MappingField getVersionField() {
-    	return this.theVersion;
+        return this.theVersion;
     }
 
     public MappingField getIdField() {
@@ -507,7 +508,7 @@ public class NutEntity<T> implements Entity<T> {
     public void setComplete(boolean complete) {
         this.complete = complete;
     }
-    
+
     public T born(ResultSet rs) {
         if (null != bornByRS)
             return bornByRS.born(rs);

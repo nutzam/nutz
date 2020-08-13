@@ -64,7 +64,7 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
     }
 
     public ValueAdaptor getAdaptor(MappingField ef) {
-        Mirror<?> mirror = ef.getTypeMirror();
+        Mirror<?> mirror = ef.getMirror();
         if (mirror.isBoolean())
             return new OracleBooleanAdaptor();
         if (mirror.isOf(Clob.class))
@@ -220,7 +220,7 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
                 return "NUMBER(" + mf.getWidth() + "," + mf.getPrecision() + ")";
             }
             // 用默认精度
-            if (mf.getTypeMirror().isDouble())
+            if (mf.getMirror().isDouble())
                 return "NUMBER(15,10)";
             return "NUMBER";
         case TIME:

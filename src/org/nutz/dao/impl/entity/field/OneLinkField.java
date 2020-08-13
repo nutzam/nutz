@@ -54,7 +54,7 @@ public class OneLinkField extends AbstractLinkField {
         }
 
         // 链接实体的字段
-        linkedField = hostField.getTypeMirror().isIntLike() ? this.getLinkedEntity().getIdField()
+        linkedField = hostField.getMirror().isIntLike() ? this.getLinkedEntity().getIdField()
                                                             : this.getLinkedEntity().getNameField();
         if (null == linkedField)
             throw Lang.makeThrow("Fail to find linkedField for @One(field=%s) '%s' : %s<=>%s By %s",
@@ -62,7 +62,7 @@ public class OneLinkField extends AbstractLinkField {
                                  getName(),
                                  getEntity().getType(),
                                  getLinkedEntity().getType(),
-                                 hostField.getTypeMirror().isIntLike() ? "@Id" : "@Name");
+                                 hostField.getMirror().isIntLike() ? "@Id" : "@Name");
 
     }
 

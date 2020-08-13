@@ -1,7 +1,6 @@
 package org.nutz.lang.util;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -17,46 +16,51 @@ import org.nutz.lang.Lang;
  * 
  * <pre>
  * 实际上的存储 ...
- * |<---  size --->| -----
+ * |<---- unit --->|
+ * |               | -----
  * [0d 0a 18 23 ...]  ^
- * [35 f2 25 0e ...] len
+ * [35 f2 25 0e ...]  nb
  * [12 ae 11 01 ...]  V
  * ...               <- 如果满了，再写会自动延申
  * 
  * 逻辑上可以看作一个数组
  * 
- *    cursor（读）                                              limit 已分配容量
+ *    rIndex（读）                                             capacity 已分配容量
  *      V                            V
  * [0d 0a 18 23 35 f2 25 0e .  .  .  ]
- *                          ^
- *                         last 第一个空位（写）
- *                         如果指向 limit 则无空间
+ *              ^            ^
+ *           wIndex       limit 有效区的位置
+ *            只写下标
+ *      如果指向 capacity则无空间
  * </pre>
  * 
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public class LinkedByteArray implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class LinkedByteBuffer {
 
     // 为了防止内存爆掉，这里指定一个上限吧
-    private int maxLimit;
+    private int maxCapacity;
 
     /**
      * 已加载的缓冲行字节总数
      */
+    private int capacity;
+
+    /**
+     * 表示有效区的长度
+     */
     private int limit;
 
     /**
-     * 指向下一次写入的起始位置
+     * 只读游标
      */
-    private int last;
+    private int rIndex;
 
     /**
-     * 指向下一次读取的起始位置
+     * 只写游标
      */
-    private int cursor;
+    private int wIndex;
     /**
      * 动态增长内存时，需要分配的最小字节单位
      */
@@ -70,7 +74,7 @@ public class LinkedByteArray implements Serializable {
     /**
      * 创建一个 10M上限实例，8K增量单位，默认分配 80K的实例
      */
-    public LinkedByteArray() {
+    public LinkedByteBuffer() {
         this(8192, 10, 1024 * 10240);
     }
 
@@ -80,7 +84,7 @@ public class LinkedByteArray implements Serializable {
      * @param nb
      *            初始分配多少单位的字节
      */
-    public LinkedByteArray(int nb) {
+    public LinkedByteBuffer(int nb) {
         this(8192, nb, 1024 * 10240);
     }
 
@@ -92,7 +96,7 @@ public class LinkedByteArray implements Serializable {
      * @param nb
      *            初始分配多少单位的字节
      */
-    public LinkedByteArray(int unit, int nb) {
+    public LinkedByteBuffer(int unit, int nb) {
         this(unit, nb, 1024 * 10240);
     }
 
@@ -104,14 +108,15 @@ public class LinkedByteArray implements Serializable {
      * @param maxLimit
      *            最大可分配的字节数，譬如 1024*10240(10M)
      */
-    public LinkedByteArray(int unit, int nb, int maxLimit) {
+    public LinkedByteBuffer(int unit, int nb, int maxLimit) {
         this.unit = unit;
-        this.limit = unit * nb;
-        this.last = 0;
-        this.cursor = 0;
+        this.capacity = unit * nb;
+        this.limit = 0;
+        this.rIndex = 0;
+        this.wIndex = 0;
 
         // 默认上限给 10M
-        this.maxLimit = maxLimit;
+        this.maxCapacity = maxLimit;
 
         // 分配内存
         list = new ArrayList<byte[]>(nb);
@@ -121,11 +126,12 @@ public class LinkedByteArray implements Serializable {
     }
 
     /**
-     * 将只读和只写游标同时归0;
+     * 将只读和只写游标同时归0; 并清空有效区
      */
     public void reset() {
-        last = 0;
-        cursor = 0;
+        limit = 0;
+        rIndex = 0;
+        wIndex = 0;
     }
 
     /**
@@ -136,7 +142,7 @@ public class LinkedByteArray implements Serializable {
      * @return 偏移后的只读游标位置
      */
     public int skipRead(int off) {
-        return this.seekRead(cursor + off);
+        return this.seekRead(rIndex + off);
     }
 
     /**
@@ -149,8 +155,8 @@ public class LinkedByteArray implements Serializable {
      * @return 移动后的只读游标位置
      */
     public int seekRead(int pos) {
-        this.cursor = Math.max(0, Math.min(pos, last));
-        return this.cursor;
+        this.rIndex = Math.max(0, Math.min(pos, limit));
+        return this.rIndex;
     }
 
     /**
@@ -161,23 +167,21 @@ public class LinkedByteArray implements Serializable {
      * @return 偏移后的只写游标位置
      */
     public int skipWrite(int off) {
-        return this.seekWrite(last + off);
+        return this.seekWrite(wIndex + off);
     }
 
     /**
-     * 移动只写游标。你给入的新位置不能小于0，也不能大过上限。
+     * 移动只写游标。你给入的新位置不能小于0，也不能大过【有效区】上限。
      * <p>
      * 否则，会自动对齐到两端边界。即，小于0会当作0，大于上限则等于上限。
-     * <p>
-     * !!! 注意，因为读取时，会以只读游标作为边界，所以如果需要临时移动一下，请先保存游标，以便之后通过本方法设置回去
      * 
      * @param pos
      *            新的只写游标位置
      * @return 移动后的只写游标位置
      */
     public int seekWrite(int pos) {
-        this.last = Math.max(0, Math.min(pos, limit));
-        return this.last;
+        this.wIndex = Math.max(0, Math.min(pos, limit));
+        return this.wIndex;
     }
 
     /**
@@ -208,12 +212,12 @@ public class LinkedByteArray implements Serializable {
      */
     public void write(byte[] buf, int off, int len) throws IOException {
         // 超过上限了，不能写了
-        if (limit + len > this.maxLimit) {
-            throw new IOException("Output of MaxLimitation " + this.maxLimit);
+        if (capacity + len > this.maxCapacity) {
+            throw new IOException("Output of MaxLimitation " + this.maxCapacity);
         }
 
         // 还是有多少空间是可写的？
-        int remain = this.limit - this.last;
+        int remain = this.capacity - this.wIndex;
 
         // 超过了，那么还需要分配多少行数据
         if (len > remain) {
@@ -226,12 +230,12 @@ public class LinkedByteArray implements Serializable {
             for (int i = 0; i < n; i++) {
                 list.add(new byte[unit]);
             }
-            limit = list.size() * unit;
+            capacity = list.size() * unit;
         }
 
         // 开始点
-        int row = last / unit; // 从第几行开始
-        int col = last - row * unit; // 从第几列开始
+        int row = wIndex / unit; // 从第几行开始
+        int col = wIndex - row * unit; // 从第几列开始
 
         // 对其的开始（即，如果不从行首 copy，那么对齐到行首，以便计算行数
         int padLen = len + col;
@@ -267,7 +271,8 @@ public class LinkedByteArray implements Serializable {
         }
 
         // 最后移动只写游标
-        this.last += len;
+        this.wIndex += len;
+        this.limit = Math.max(this.limit, this.wIndex);
     }
 
     /**
@@ -304,7 +309,7 @@ public class LinkedByteArray implements Serializable {
      * 
      * @param buf
      *            目标数组
-     * @return 一共实际 copy 的字节数
+     * @return 一共实际 copy 的字节数。 -1 表示不在有字节可以被 copy 了
      * 
      * @see #read(byte[], int, int)
      */
@@ -321,17 +326,21 @@ public class LinkedByteArray implements Serializable {
      *            起始位置下标
      * @param len
      *            最多 copy 多少字节
-     * @return 一共实际 copy 的字节数
+     * @return 一共实际 copy 的字节数。 -1 表示不在有字节可以被 copy 了
      */
     public int read(byte[] buf, int off, int len) {
-        len = Math.min(len, last - cursor);
+        int remain = limit - rIndex;
+        if (remain <= 0) {
+            return -1;
+        }
+        len = Math.min(len, remain);
         if (0 >= len) {
             return len;
         }
 
         // 开始点
-        int row = cursor / unit; // 从第几行开始
-        int col = cursor - row * unit; // 从第几列开始
+        int row = rIndex / unit; // 从第几行开始
+        int col = rIndex - row * unit; // 从第几列开始
 
         // 对其的开始（即，如果不从行首 copy，那么对齐到行首，以便计算行数
         int padLen = len + col;
@@ -367,7 +376,7 @@ public class LinkedByteArray implements Serializable {
         }
 
         // 最后移动只读游标
-        this.cursor += len;
+        this.rIndex += len;
 
         // 返回实际读取的字节数
         return len;
@@ -381,15 +390,15 @@ public class LinkedByteArray implements Serializable {
      */
     public String readLine() {
         // 木有行了
-        if (cursor >= last)
+        if (rIndex >= limit)
             return null;
 
         // 开始点
-        int row = cursor / unit; // 从第几行开始
-        int col = cursor - row * unit; // 从第几列开始
+        int row = rIndex / unit; // 从第几行开始
+        int col = rIndex - row * unit; // 从第几列开始
 
         // 最多寻找的字符数
-        int max = last - cursor;
+        int max = limit - rIndex;
 
         // 试图寻找到下一个 '\n'
         int count = 0;
@@ -434,7 +443,7 @@ public class LinkedByteArray implements Serializable {
      *         null 表示没有可读的内容了
      */
     public String readAll() {
-        int len = last - cursor;
+        int len = limit - rIndex;
         if (len <= 0) {
             return null;
         }
@@ -458,11 +467,11 @@ public class LinkedByteArray implements Serializable {
         }
         // 从后面数
         if (index < 0) {
-            index = Math.max(0, last + index);
+            index = Math.max(0, limit + index);
         }
         // 从前面数
         else {
-            index = Math.min(index, last - 1);
+            index = Math.min(index, limit - 1);
         }
         int row = index / unit; // 从第几行开始
         int col = index - row * unit; // 从第几列开始
@@ -482,11 +491,11 @@ public class LinkedByteArray implements Serializable {
         }
         // 从后面数
         if (index < 0) {
-            index = Math.max(0, last + index);
+            index = Math.max(0, limit + index);
         }
         // 从前面数
         else {
-            index = Math.min(index, last - 1);
+            index = Math.min(index, limit - 1);
         }
         int row = index / unit; // 从第几行开始
         int col = index - row * unit; // 从第几列开始
@@ -497,35 +506,54 @@ public class LinkedByteArray implements Serializable {
      * @return 是否内容空空如也
      */
     public boolean isEmpty() {
-        return this.last <= 0;
+        return this.limit <= 0;
     }
 
     /**
      * @return 本实例能增长的上限。默认为 10M
      */
-    public int getMaxLimit() {
-        return maxLimit;
+    public int getMaxCapacity() {
+        return maxCapacity;
     }
 
     /**
      * @return 已经分配的可写字节总数
+     */
+    public int getCapacity() {
+        return capacity;
+    }
+
+    /**
+     * @return 有效区大小
      */
     public int getLimit() {
         return limit;
     }
 
     /**
+     * 截取内容。给定长度必须要在有效区长度范围以内
+     * 
+     * @param limit
+     *            长度
+     * @return 截取后的内容大小
+     */
+    public int truncate(int limit) {
+        this.limit = Math.min(this.limit, limit);
+        return this.limit;
+    }
+
+    /**
      * @return 只写游标
      */
-    public int getLast() {
-        return last;
+    public int getWriteIndex() {
+        return wIndex;
     }
 
     /**
      * @return 只读游标
      */
-    public int getCursor() {
-        return cursor;
+    public int getReadIndex() {
+        return rIndex;
     }
 
     /**
@@ -572,7 +600,7 @@ public class LinkedByteArray implements Serializable {
         MessageDigest md = MessageDigest.getInstance(algorithm);
 
         // 更新的整行
-        int count = last / unit;
+        int count = limit / unit;
         int row = 0;
         for (; row < count; row++) {
             byte[] buf = this.list.get(row);
@@ -580,7 +608,7 @@ public class LinkedByteArray implements Serializable {
         }
 
         // 更新最后一行
-        int n = last - count * unit;
+        int n = limit - count * unit;
         if (n > 0) {
             byte[] buf = this.list.get(row);
             md.update(buf, 0, n);
@@ -593,10 +621,10 @@ public class LinkedByteArray implements Serializable {
     }
 
     public byte[] toArray() {
-        byte[] re = new byte[last];
+        byte[] re = new byte[limit];
         for (int i = 0; i < list.size(); i++) {
             int from = i * unit;
-            int to = Math.min(last, from + unit);
+            int to = Math.min(limit, from + unit);
             if (to <= from) {
                 break;
             }
