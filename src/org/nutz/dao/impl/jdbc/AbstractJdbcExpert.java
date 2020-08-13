@@ -28,11 +28,13 @@ import org.nutz.dao.jdbc.JdbcExpertConfigFile;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.sql.DaoStatement;
+import org.nutz.dao.sql.PItem;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlContext;
 import org.nutz.dao.sql.SqlType;
 import org.nutz.dao.util.Daos;
+import org.nutz.dao.util.Pojos;
 import org.nutz.lang.Configurable;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -485,5 +487,27 @@ public abstract class AbstractJdbcExpert implements JdbcExpert, Configurable {
     }
 
     public void setupProperties(NutMap conf) {
+    }
+    
+    @Override
+    public PItem formatLeftJoinLink(Object obj, LinkField lnk, Entity<?> en) {
+    	Entity<?> lnkEntity = lnk.getLinkedEntity();
+        String linkName = safeTableName(lnk.getName());
+        String LJ = String.format("LEFT JOIN %s as %s ON %s.%s = %s.%s",
+                                  lnkEntity.getTableName(),
+                                  linkName,
+                                  en.getTableName(),
+                                  lnk.getHostField().getColumnNameInSql(),
+                                  linkName,
+                                  lnk.getLinkedField().getColumnNameInSql());
+    	return Pojos.Items.wrap(LJ);
+    }
+    
+    protected String safeTableName(String tableName) {
+        if (!Daos.CHECK_COLUMN_NAME_KEYWORD) {
+            //return tableName;
+        }
+        String str = wrapKeyword(tableName, Daos.FORCE_WRAP_COLUMN_NAME);
+        return str == null ? tableName : str;
     }
 }

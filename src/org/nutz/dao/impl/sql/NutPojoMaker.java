@@ -16,6 +16,7 @@ import org.nutz.dao.entity.LinkVisitor;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.impl.sql.pojo.NoParamsPItem;
 import org.nutz.dao.jdbc.JdbcExpert;
+import org.nutz.dao.sql.PItem;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.PojoCallback;
 import org.nutz.dao.sql.PojoMaker;
@@ -176,16 +177,9 @@ public class NutPojoMaker implements PojoMaker {
         en.visitOne(null, regex, new LinkVisitor() {
             @Override
             public void visit(Object obj, LinkField lnk) {
-                Entity<?> lnkEntity = lnk.getLinkedEntity();
-                String linkName = safeTableName(lnk.getName());
-                String LJ = String.format("LEFT JOIN %s as %s ON %s.%s = %s.%s",
-                                          lnkEntity.getTableName(),
-                                          linkName,
-                                          en.getTableName(),
-                                          lnk.getHostField().getColumnNameInSql(),
-                                          linkName,
-                                          lnk.getLinkedField().getColumnNameInSql());
-                pojo.append(Pojos.Items.wrap(LJ));
+                PItem item = expert.formatLeftJoinLink(obj, lnk, en);
+                if (item != null)
+                	pojo.append(item);
             }
         });
         return pojo;
@@ -201,16 +195,9 @@ public class NutPojoMaker implements PojoMaker {
         en.visitOne(null, regex, new LinkVisitor() {
             @Override
             public void visit(Object obj, LinkField lnk) {
-                Entity<?> lnkEntity = lnk.getLinkedEntity();
-                String linkName = safeTableName(lnk.getName());
-                String LJ = String.format("LEFT JOIN %s as %s ON %s.%s = %s.%s",
-                                          lnkEntity.getTableName(),
-                                          linkName,
-                                          en.getTableName(),
-                                          lnk.getHostField().getColumnNameInSql(),
-                                          linkName,
-                                          lnk.getLinkedField().getColumnNameInSql());
-                pojo.append(Pojos.Items.wrap(LJ));
+                PItem item = expert.formatLeftJoinLink(obj, lnk, en);
+                if (item != null)
+                	pojo.append(item);
             }
         });
         return pojo;

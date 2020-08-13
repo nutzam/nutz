@@ -9,8 +9,10 @@ import java.util.Set;
 import org.nutz.dao.Dao;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityIndex;
+import org.nutz.dao.entity.LinkField;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.sql.DaoStatement;
+import org.nutz.dao.sql.PItem;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlType;
@@ -131,4 +133,6 @@ public interface JdbcExpert {
     boolean canCommentWhenAddIndex();
 
     List<String> getIndexNames(Entity<?> en, Connection conn) throws SQLException;
+    
+    PItem formatLeftJoinLink(Object obj, LinkField lnk, Entity<?> en);
 }

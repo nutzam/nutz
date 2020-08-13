@@ -4,6 +4,7 @@ import org.nutz.dao.DB;
 import org.nutz.dao.Dao;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.LinkField;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
 import org.nutz.dao.entity.annotation.ColType;
@@ -14,6 +15,7 @@ import org.nutz.dao.jdbc.JdbcExpertConfigFile;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
+import org.nutz.dao.sql.PItem;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Pojos;
@@ -290,5 +292,19 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
     public void setupProperties(NutMap conf) {
         super.setupProperties(conf);
         this.ignoreOneRowPager = conf.getBoolean("nutz.dao.jdbc.oracle.ignoreOneRowPager", false);
+    }
+    
+    @Override
+    public PItem formatLeftJoinLink(Object obj, LinkField lnk, Entity<?> en) {
+    	Entity<?> lnkEntity = lnk.getLinkedEntity();
+        String linkName = safeTableName(lnk.getName());
+        String LJ = String.format("LEFT JOIN %s %s ON %s.%s = %s.%s",
+                                  lnkEntity.getTableName(),
+                                  linkName,
+                                  en.getTableName(),
+                                  lnk.getHostField().getColumnNameInSql(),
+                                  linkName,
+                                  lnk.getLinkedField().getColumnNameInSql());
+    	return Pojos.Items.wrap(LJ);
     }
 }
