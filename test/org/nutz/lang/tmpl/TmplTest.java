@@ -12,6 +12,13 @@ import org.nutz.lang.util.NutMap;
 public class TmplTest {
 
     @Test
+    public void test_string_replace() {
+        NutMap context = Lang.map("path:'  ~/a/b/c  '");
+        assertEquals("-a-b-c",
+                     Tmpl.exec("${path<:@trim;@replace'/','-';@replace'~'>}", context, true));
+    }
+
+    @Test
     public void test_string_mapping() {
         NutMap context = Lang.map("fruit:'A'");
         assertEquals("Apple", Tmpl.exec("${fruit(::A=Apple,B=Banana,C=Cherry)}", context, true));
