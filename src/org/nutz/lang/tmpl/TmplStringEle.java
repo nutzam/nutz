@@ -66,6 +66,9 @@ class TmplStringEle extends TmplDynamicEle {
 
     @Override
     protected String _val(Object val) {
+        if (null == val) {
+            return null;
+        }
         if (null != val) {
             if (val.getClass().isArray()) {
                 return Lang.concat(", ", (Object[]) val).toString();
