@@ -1,5 +1,6 @@
 package org.nutz.lang.hardware;
 
+import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
@@ -50,9 +51,14 @@ public class Networks {
                 List<InterfaceAddress> addrs = face.getInterfaceAddresses();
                 if (addrs != null && !addrs.isEmpty()) {
                     for (InterfaceAddress interfaceAddress : addrs) {
-                        String ip = interfaceAddress.getAddress().getHostAddress();
+                        InetAddress iaddr = interfaceAddress.getAddress();
+                        String ip = iaddr.getHostAddress();
                         if (ip == null || ip.length() == 0)
                             continue;
+
+                        if (!netItem.hasHostName())
+                            netItem.setHostName(iaddr.getHostName());
+
                         if (ip.contains("."))
                             netItem.setIpv4(ip);
                         else
@@ -61,9 +67,16 @@ public class Networks {
                 }
                 netItem.setMtu(face.getMTU());
                 netItem.setDisplay(face.getDisplayName());
-                
-                if (netItem.getIpv4() == null && netItem.getMac() == null && netItem.getMtu() < 1 && !face.getName().startsWith("eth"))
-                	continue;
+
+                if (!netItem.hasHostName()) {
+                    netItem.setHostName(face.getName());
+                }
+
+                if (netItem.getIpv4() == null
+                    && netItem.getMac() == null
+                    && netItem.getMtu() < 1
+                    && !face.getName().startsWith("eth"))
+                    continue;
                 netFaces.put(face.getName(), netItem);
             }
         }
@@ -81,25 +94,45 @@ public class Networks {
     }
 
     /**
+     * @return 返回当前第一个可用的HostName
+     */
+    public static String hostName() {
+        Map<String, NetworkItem> items = networkItems();
+        // 先遍历一次eth开头的
+        for (int i = 0; i < 10; i++) {
+            NetworkItem item = items.get("eth" + i);
+            if (null != item && item.hasHostName()) {
+                return item.getHostName();
+            }
+        }
+        for (NetworkItem item : items.values()) {
+            if (null != item && item.hasHostName()) {
+                return item.getHostName();
+            }
+        }
+        return null;
+    }
+
+    /**
      * @return 返回当前第一个可用的IP地址
      */
     public static String ipv4() {
         Map<String, NetworkItem> items = networkItems();
         // 先遍历一次eth开头的
         for (int i = 0; i < 10; i++) {
-            NetworkItem item = items.get("eth"+i);
+            NetworkItem item = items.get("eth" + i);
             if (item != null) {
                 String ip = item.getIpv4();
                 if (ipOk(ip))
                     return ip;
             }
         }
-    	for (NetworkItem item : items.values()) {
-    	    String ip = item.getIpv4();
-			if (ipOk(ip))
-				return ip;
-		}
-    	return null;
+        for (NetworkItem item : items.values()) {
+            String ip = item.getIpv4();
+            if (ipOk(ip))
+                return ip;
+        }
+        return null;
     }
 
     /**
@@ -170,18 +203,19 @@ public class Networks {
             re = getNetworkByTypes(netFaces, ntMap.get(NetworkType.VPN));
         }
         if (re.isEmpty()) {
-        	for (Entry<String, NetworkItem> en : netFaces.entrySet()) {
-				if (Strings.isBlank(en.getValue().getIpv4()))
-					continue;
-				if (Strings.isBlank(en.getValue().getMac()))
-					continue;
-				return en.getValue();
-			}
+            for (Entry<String, NetworkItem> en : netFaces.entrySet()) {
+                if (Strings.isBlank(en.getValue().getIpv4()))
+                    continue;
+                if (Strings.isBlank(en.getValue().getMac()))
+                    continue;
+                return en.getValue();
+            }
         }
         return re.get(0);
     }
 
-    private static List<NetworkItem> getNetworkByTypes(Map<String, NetworkItem> netFaces, String nt) {
+    private static List<NetworkItem> getNetworkByTypes(Map<String, NetworkItem> netFaces,
+                                                       String nt) {
         List<NetworkItem> list = new ArrayList<NetworkItem>();
         String[] nss = Strings.splitIgnoreBlank(nt, ",");
         for (String ns : nss) {
@@ -192,7 +226,7 @@ public class Networks {
         }
         return list;
     }
-    
+
     public static boolean ipOk(String ip) {
         return (!Strings.isBlank(ip) && !ip.startsWith("127.0") && !ip.startsWith("169."));
     }

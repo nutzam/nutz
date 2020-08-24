@@ -1,18 +1,34 @@
 package org.nutz.lang.hardware;
 
+import org.nutz.lang.Strings;
+
 public class NetworkItem {
+
+    private String hostName;
 
     private String ipv4;
 
     private String ipv6;
 
     private String mac;
-    
+
     private int mtu;
-    
+
     private int signal;
-    
+
     private String display;
+
+    public boolean hasHostName() {
+        return !Strings.isBlank(hostName);
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String name) {
+        this.hostName = name;
+    }
 
     public String getIpv4() {
         return ipv4;
@@ -38,21 +54,21 @@ public class NetworkItem {
         this.mac = mac;
     }
 
-	public int getMtu() {
-		return mtu;
-	}
+    public int getMtu() {
+        return mtu;
+    }
 
-	public void setMtu(int mtu) {
-		this.mtu = mtu;
-	}
+    public void setMtu(int mtu) {
+        this.mtu = mtu;
+    }
 
-	public int getSignal() {
-		return signal;
-	}
-	
-	public void setSignal(int signal) {
-		this.signal = signal;
-	}
+    public int getSignal() {
+        return signal;
+    }
+
+    public void setSignal(int signal) {
+        this.signal = signal;
+    }
 
     public String getDisplay() {
         return display;
