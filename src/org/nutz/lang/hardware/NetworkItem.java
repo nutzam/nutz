@@ -4,7 +4,7 @@ import org.nutz.lang.Strings;
 
 public class NetworkItem {
 
-    private String hostName;
+    private String name;
 
     private String ipv4;
 
@@ -18,16 +18,16 @@ public class NetworkItem {
 
     private String display;
 
-    public boolean hasHostName() {
-        return !Strings.isBlank(hostName);
+    public boolean hasName() {
+        return !Strings.isBlank(name);
     }
 
-    public String getHostName() {
-        return hostName;
+    public String getName() {
+        return name;
     }
 
-    public void setHostName(String name) {
-        this.hostName = name;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getIpv4() {
