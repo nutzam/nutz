@@ -77,4 +77,13 @@ public class NetworkItem {
     public void setDisplay(String display) {
         this.display = display;
     }
+
+    public String toString() {
+        return String.format("%s:%s: (%s/%s) %s",
+                             this.name,
+                             this.mac,
+                             this.ipv4,
+                             this.ipv6,
+                             this.display);
+    }
 }
