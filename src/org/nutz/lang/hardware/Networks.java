@@ -3,6 +3,7 @@ package org.nutz.lang.hardware;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -56,8 +57,8 @@ public class Networks {
                         if (ip == null || ip.length() == 0)
                             continue;
 
-                        if (!netItem.hasHostName())
-                            netItem.setHostName(iaddr.getHostName());
+                        if (!netItem.hasName())
+                            netItem.setName(iaddr.getHostName());
 
                         if (ip.contains("."))
                             netItem.setIpv4(ip);
@@ -68,8 +69,8 @@ public class Networks {
                 netItem.setMtu(face.getMTU());
                 netItem.setDisplay(face.getDisplayName());
 
-                if (!netItem.hasHostName()) {
-                    netItem.setHostName(face.getName());
+                if (!netItem.hasName()) {
+                    netItem.setName(face.getName());
                 }
 
                 if (netItem.getIpv4() == null
@@ -97,17 +98,25 @@ public class Networks {
      * @return 返回当前第一个可用的HostName
      */
     public static String hostName() {
+        try {
+            InetAddress ia = InetAddress.getLocalHost();
+            if (null != ia) {
+                return ia.getHostName();
+            }
+        }
+        catch (UnknownHostException e) {}
+
         Map<String, NetworkItem> items = networkItems();
         // 先遍历一次eth开头的
         for (int i = 0; i < 10; i++) {
             NetworkItem item = items.get("eth" + i);
-            if (null != item && item.hasHostName()) {
-                return item.getHostName();
+            if (null != item && item.hasName()) {
+                return item.getName();
             }
         }
         for (NetworkItem item : items.values()) {
-            if (null != item && item.hasHostName()) {
-                return item.getHostName();
+            if (null != item && item.hasName()) {
+                return item.getName();
             }
         }
         return null;
