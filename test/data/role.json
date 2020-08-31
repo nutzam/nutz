@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "roleName": "管理员",
+    "roleKey": "admin",
+    "roleSort": "1",
+    "status": false,
+    "delFlag": false,
+    "flag": false,
+    "remark": "管理员",
+    "updateBy": "1",
+    "updateTime": "2020-03-30 17:26:37"
+  },
+  {
+    "id": "2",
+    "roleName": "普通角色",
+    "roleKey": "common",
+    "roleSort": "2",
+    "status": false,
+    "delFlag": false,
+    "flag": false,
+    "remark": "普通角色",
+    "createTime": "2019-04-26 14:02:23",
+    "updateTime": "2019-04-26 14:02:30"
+  }
+]

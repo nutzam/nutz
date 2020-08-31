@@ -225,6 +225,10 @@ NutDao 是如何连接关联表的
 	{{{<JAVA>
 	Food food = dao.fetchLinks(dao.fetch(Food.class, "Fish"), "pets");
 	}}}
+    或者
+    {{{<JAVA>
+    List<Food> foodList = dao.queryByJoin(Food.class, "pets",Cnd.NEW().and("name","=","Fish"));
+    }}}
 	然后，你可以通过 food.getPets() 得到 Nutz.Dao 为 food.pets 字段设置的值。
 	
 -------------------------------------------------------------------------------------------------------------
