@@ -53,9 +53,12 @@ public class NutPojoMaker implements PojoMaker {
         pojo.append(Pojos.Items.insertFields());
         pojo.append(Pojos.Items.insertValues());
         if (expert.isSupportAutoIncrement()) {
-            if (expert.isSupportGeneratedKeys()) {
-                pojo.setAfter(new GeneratedKeys());
-                pojo.getContext().attr("RETURN_GENERATED_KEYS", true);
+            MappingField mf = en.getIdField();
+            if (mf != null && mf.isAutoIncreasement()) {
+                if (expert.isSupportGeneratedKeys()) {
+                    pojo.setAfter(new GeneratedKeys());
+                    pojo.getContext().attr("RETURN_GENERATED_KEYS", true);
+                }
             }
         }
         return pojo;
@@ -140,15 +143,7 @@ public class NutPojoMaker implements PojoMaker {
                             throw new ExitLoop();
                         }
                         Object key = _rs.getObject(1);
-                        if (ele instanceof Map) {
-                            ((Map) ele).put("RETURN_GENERATED_KEYS", key);
-                            return;
-                        }
-                        MappingField mf = pojo.getEntity().getIdField();
-                        if (mf == null) {
-                            return;
-                        }
-                        mf.setValue(ele, key);
+                        pojo.getEntity().getIdField().setValue(ele, key);
                     }
                     catch (SQLException e) {
                         throw new DaoException(e);

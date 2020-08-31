@@ -188,18 +188,16 @@ public class NutDao extends DaoSupport implements Dao {
         return obj;
     }
 
-    public Object insert(String tableName, Chain chain) {
+    public void insert(String tableName, Chain chain) {
         if (chain.isSpecial()) {
             Daos.insertBySpecialChain(this, null, tableName, chain);
-            return null;
+            return;
         }
-        Map<String, Object> obj = chain.toEntityMap(tableName);
-        EntityOperator opt = _optBy(obj);
+        EntityOperator opt = _optBy(chain.toEntityMap(tableName));
         if (null == opt)
-            return null;
+            return;
         opt.addInsert();
         opt.exec();
-        return obj.get("RETURN_GENERATED_KEYS");
     }
 
     public void insert(Class<?> classOfT, Chain chain) {
