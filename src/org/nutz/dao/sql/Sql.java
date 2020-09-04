@@ -1,11 +1,11 @@
 package org.nutz.dao.sql;
 
+import java.util.Map;
+
 import org.nutz.dao.Condition;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.jdbc.ValueAdaptor;
-
-import java.util.Map;
 
 /**
  * 封装了自定义 SQL

@@ -1,6 +1,6 @@
 package org.nutz.trans;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.sql.Connection;
 import java.util.concurrent.Callable;
@@ -8,7 +8,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.junit.Assert;
-
 import org.junit.Test;
 import org.nutz.Nutzs;
 import org.nutz.dao.ConnCallback;

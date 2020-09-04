@@ -1,12 +1,9 @@
 package org.nutz.lang.random;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-
 import org.nutz.lang.Lang;
-import org.nutz.lang.random.ArrayRandom;
-import org.nutz.lang.random.Random;
 
 public class ArrayRandomTest {
 

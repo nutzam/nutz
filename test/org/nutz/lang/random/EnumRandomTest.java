@@ -1,6 +1,6 @@
 package org.nutz.lang.random;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashSet;
