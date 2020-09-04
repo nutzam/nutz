@@ -110,6 +110,15 @@
 	{{{<JAVA>
 	Master master = dao.fetchLinks(dao.fetch(Master.class, "Peter"), "pets");
 	}}}
+	或者
+    {{{<JAVA>
+    Master master = dao.fetchByJoin(Master.class, "pets",Cnd.NEW().and("name","=","Peter"));
+    }}}
+    或者
+    {{{<JAVA>
+    List<Master> masters =  dao.queryByJoin(Master.class, "pets",Cnd.NEW().and("name","=","Peter"));
+    }}}
+
 	然后，你可以通过 master.getPets() 得到 Nutz.Dao 为 master.pets 字段设置的值。
 
 -------------------------------------------------------------------------------------------------------------

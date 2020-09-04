@@ -1,10 +1,10 @@
 package org.nutz.lang.util;
 
-import org.nutz.json.Json;
-import org.nutz.lang.Lang;
-
 import java.io.Serializable;
 import java.util.ArrayList;
+
+import org.nutz.json.Json;
+import org.nutz.lang.Lang;
 
 public class LinkedLongArray implements Serializable {
 

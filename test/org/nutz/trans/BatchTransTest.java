@@ -1,12 +1,11 @@
 package org.nutz.trans;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.sql.Connection;
 import java.util.ArrayList;
 
 import org.junit.Test;
-
 import org.nutz.dao.DaoException;
 import org.nutz.dao.TableName;
 import org.nutz.dao.test.DaoCase;
