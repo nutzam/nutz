@@ -13,6 +13,60 @@ import org.nutz.lang.util.Regex;
 public abstract class Nums {
 
     /**
+     * 对齐浮点数精度，超过精度四舍五入
+     * 
+     * @param n
+     *            浮点数
+     * @param dp
+     *            精度
+     * @return 对齐精度的浮点数
+     */
+    public static float precision(float n, int dp) {
+        if (0 == dp) {
+            return Math.round(n);
+        }
+        if (1 == dp) {
+            return Math.round(n * 10f) / 10f;
+        }
+        if (2 == dp) {
+            return Math.round(n * 100f) / 100f;
+        }
+        if (3 == dp) {
+            return Math.round(n * 1000f) / 1000f;
+        }
+        // 其他精度
+        float p = (float) Math.pow(10, dp);
+        return Math.round(n * p) / p;
+    }
+
+    /**
+     * 对齐双精度浮点精度，超过精度四舍五入
+     * 
+     * @param n
+     *            双精度浮点数
+     * @param dp
+     *            精度
+     * @return 对齐精度的双精度浮点数
+     */
+    public static double precision(double n, int dp) {
+        if (0 == dp) {
+            return Math.round(n);
+        }
+        if (1 == dp) {
+            return Math.round(n * 10) / 10.0;
+        }
+        if (2 == dp) {
+            return Math.round(n * 100) / 100.0;
+        }
+        if (3 == dp) {
+            return Math.round(n * 1000) / 1000.0;
+        }
+        // 其他精度
+        double p = Math.pow(10, dp);
+        return Math.round(n * p) / p;
+    }
+
+    /**
      * @param a
      *            数字
      * @param b
