@@ -295,7 +295,7 @@ public abstract class NutRunner implements Runnable {
      */
     @SuppressWarnings("deprecation")
     public void stop(Throwable err) {
-        myThread.stop(err);
+        myThread.stop();
     }
 
     public void setDebug(boolean debug) {
