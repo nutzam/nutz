@@ -236,6 +236,21 @@ public interface NutBean extends Map<String, Object> {
     NutBean setnxAll(Map<String, Object> map);
 
     /**
+     * @param key
+     *            键，支持用 <code>|</code> 分隔，如果一个值为空，则继续寻找下一个候选键。 其中，支持 "."
+     *            作为层级路径分隔
+     * @param dft
+     *            都没有找到时返回的默认值
+     * @return 值
+     */
+    Object getOr(String key, Object dft);
+
+    /**
+     * @see #getOr(String, Object)
+     */
+    Object getOr(String key);
+
+    /**
      * 获取对应的值,若不存在,用factory创建一个,然后设置进去,返回之
      * 
      * @param key

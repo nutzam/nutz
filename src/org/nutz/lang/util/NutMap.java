@@ -21,6 +21,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.born.Borning;
+import org.nutz.mapl.Mapl;
 
 /**
  * 对于 LinkedHashMap 的一个友好封装
@@ -117,6 +118,25 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
             }
         }
         return null;
+    }
+
+    @Override
+    public Object getOr(String key) {
+        return getOr(key, null);
+    }
+
+    @Override
+    public Object getOr(String key, Object dft) {
+        if (Strings.isBlank(key))
+            return null;
+        String[] ks = Strings.splitIgnoreBlank(key, "[|]");
+        for (String k : ks) {
+            Object v = Mapl.cell(this, k);
+            if (null != v) {
+                return v;
+            }
+        }
+        return dft;
     }
 
     /**
