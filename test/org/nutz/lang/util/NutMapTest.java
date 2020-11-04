@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.nutz.json.Json;
+import org.nutz.json.JsonFormat;
 import org.nutz.lang.Lang;
 
 public class NutMapTest {
@@ -90,6 +92,18 @@ public class NutMapTest {
         // 再获取看看
         List<NutMap> sList3 = nutMap.getAs("sList", List.class);
         assertEquals("s1", sList3.get(0).getString("nm"));
+    }
+
+    @Test
+    public void test_attach() {
+        NutMap nutMap = new NutMap();
+        nutMap.setv( "key", "nutMap1");
+        NutMap nutMap2 = new NutMap();
+        nutMap2.setv( "key", "nutMap2");
+        nutMap.attach( nutMap2);
+
+        assertEquals( "nutMap1", nutMap.get("key"));
+        assertEquals( "{\"key\":\"nutMap1\"}", Json.toJson( nutMap, JsonFormat.compact()));
     }
 
 }
