@@ -368,8 +368,14 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
     public Set<Map.Entry<String, Object>> entrySet() {
         if (null == _map)
             return super.entrySet();
+
         HashSet<Map.Entry<String, Object>> vals = new HashSet<Map.Entry<String, Object>>();
         vals.addAll(_map.entrySet());
+        for (Map.Entry entry : _map.entrySet()) {
+            // 如果本身也有这个entry，attach 上来的那个就要删除掉
+            if ( super.containsKey( entry.getKey()))
+                vals.remove( entry);
+        }
         vals.addAll(super.entrySet());
         return vals;
     }
