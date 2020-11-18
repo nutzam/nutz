@@ -1749,7 +1749,7 @@ public class Strings {
      * <p>
      * 比如:
      * <ul>
-     * <li>removeLast("12345",5) => "12345"
+     * <li>removeLast("12345",'5') => "1234"
      * <li>removeLast("ABC",'B') => "ABC"
      * <li>removeLast("A",'B') => "A"
      * <li>removeLast("A",'A') => ""
