@@ -42,7 +42,9 @@ import org.nutz.mvc.annotation.Fail;
 import org.nutz.mvc.annotation.Filters;
 import org.nutz.mvc.annotation.GET;
 import org.nutz.mvc.annotation.Modules;
+import org.nutz.mvc.annotation.OPTIONS;
 import org.nutz.mvc.annotation.Ok;
+import org.nutz.mvc.annotation.PATCH;
 import org.nutz.mvc.annotation.POST;
 import org.nutz.mvc.annotation.PUT;
 import org.nutz.mvc.annotation.PathMap;
@@ -222,6 +224,10 @@ public abstract class Loadings {
             ai.getHttpMethods().add("PUT");
         if (Mirror.getAnnotationDeep(method, DELETE.class) != null)
             ai.getHttpMethods().add("DELETE");
+        if (Mirror.getAnnotationDeep(method, OPTIONS.class) != null)
+            ai.getHttpMethods().add("OPTIONS");
+        if (Mirror.getAnnotationDeep(method, PATCH.class) != null)
+            ai.getHttpMethods().add("PATCH");
         if (at != null) {
             for (String m : at.methods())
                 ai.getHttpMethods().add(m.toUpperCase());

@@ -1,6 +1,14 @@
 package org.nutz.mvc.init.conf;
 
-import org.nutz.mvc.annotation.*;
+import org.nutz.mvc.annotation.At;
+import org.nutz.mvc.annotation.DELETE;
+import org.nutz.mvc.annotation.Fail;
+import org.nutz.mvc.annotation.GET;
+import org.nutz.mvc.annotation.OPTIONS;
+import org.nutz.mvc.annotation.Ok;
+import org.nutz.mvc.annotation.PATCH;
+import org.nutz.mvc.annotation.POST;
+import org.nutz.mvc.annotation.PUT;
 
 @Ok("raw")
 @Fail("json")
@@ -42,4 +50,29 @@ public class RestModule {
         return c + "?a=" + a + "&b=" + b;
     }
 
+    @At("/abc")
+    @OPTIONS
+    public String options() {
+        return "options";
+    }
+
+    @At("/abc")
+    @PATCH
+    public String patch() {
+        return "patch";
+    }
+
+    @At("/oag")
+    @GET
+    @OPTIONS
+    public String optionsAndGet() {
+        return "options&get";
+    }
+
+    @At("/oap")
+    @POST
+    @OPTIONS
+    public String optionsAndPost() {
+        return "options&post";
+    }
 }

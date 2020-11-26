@@ -1,10 +1,10 @@
 package org.nutz.mvc.init;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 import org.nutz.mvc.AbstractMvcTest;
 import org.nutz.mvc.init.conf.RestModule;
+
+import static org.junit.Assert.assertEquals;
 
 public class RestModuleTest extends AbstractMvcTest {
 
@@ -88,5 +88,59 @@ public class RestModuleTest extends AbstractMvcTest {
         servlet.service(request, response);
         String re = response.getAsString();
         assertEquals("xyz?a=45&b=23", re);
+    }
+
+    @Test
+    public void test_abc_options() throws Exception {
+        request.setPathInfo("/abc");
+        request.setMethod("Options");
+        servlet.service(request, response);
+        String re = response.getAsString();
+        assertEquals("options", re);
+    }
+
+    @Test
+    public void test_abc_patch() throws Exception {
+        request.setPathInfo("/abc");
+        request.setMethod("Patch");
+        servlet.service(request, response);
+        String re = response.getAsString();
+        assertEquals("patch", re);
+    }
+
+    @Test
+    public void test_oag_options() throws Exception {
+        request.setPathInfo("/oag");
+        request.setMethod("Options");
+        servlet.service(request, response);
+        String re = response.getAsString();
+        assertEquals("options&get", re);
+    }
+
+    @Test
+    public void test_oag_get() throws Exception {
+        request.setPathInfo("/oag");
+        request.setMethod("Get");
+        servlet.service(request, response);
+        String re = response.getAsString();
+        assertEquals("options&get", re);
+    }
+
+    @Test
+    public void test_oap_options() throws Exception {
+        request.setPathInfo("/oap");
+        request.setMethod("Options");
+        servlet.service(request, response);
+        String re = response.getAsString();
+        assertEquals("options&post", re);
+    }
+
+    @Test
+    public void test_oap_post() throws Exception {
+        request.setPathInfo("/oap");
+        request.setMethod("Post");
+        servlet.service(request, response);
+        String re = response.getAsString();
+        assertEquals("options&post", re);
     }
 }
