@@ -8,6 +8,8 @@ import org.nutz.mvc.EntryDeterminer;
 import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.DELETE;
 import org.nutz.mvc.annotation.GET;
+import org.nutz.mvc.annotation.OPTIONS;
+import org.nutz.mvc.annotation.PATCH;
 import org.nutz.mvc.annotation.POST;
 import org.nutz.mvc.annotation.PUT;
 
@@ -39,7 +41,14 @@ public class NutEntryDeterminer implements EntryDeterminer {
     public boolean isEntry(Class<?> module, Method method) {
         if (!Modifier.isPublic(method.getModifiers()) || method.isBridge())
             return false;
-        return Mirror.isAnnotationExists(method, At.class, GET.class, POST.class, PUT.class, DELETE.class);
+        return Mirror.isAnnotationExists(method,
+                                         At.class,
+                                         GET.class,
+                                         POST.class,
+                                         PUT.class,
+                                         DELETE.class,
+                                         OPTIONS.class,
+                                         PATCH.class);
     }
 
 }
