@@ -15,6 +15,7 @@ import org.nutz.lang.Encoding;
 import org.nutz.lang.ExitLoop;
 import org.nutz.lang.Lang;
 import org.nutz.lang.LoopException;
+import org.nutz.lang.util.NutMap;
 import org.nutz.repo.Base64;
 
 public class Request {
@@ -44,11 +45,11 @@ public class Request {
     }
 
     public static Request create(String url, METHOD method, String paramsAsJson, Header header) {
-        return create(url, method, (Map<String, Object>) Json.fromJson(paramsAsJson), header);
+        return create(url, method, Json.fromJson(NutMap.class, paramsAsJson), header);
     }
 
     public static Request create(String url, METHOD method, String paramsAsJson) {
-        return create(url, method, (Map<String, Object>) Json.fromJson(paramsAsJson));
+        return create(url, method, Json.fromJson(NutMap.class, paramsAsJson));
     }
 
     public static Request create(String url, METHOD method, Map<String, Object> params) {
@@ -269,7 +270,8 @@ public class Request {
     }
 
     public Request basicAuth(String user, String password) {
-        header("Authorization", "Basic " + Base64.encodeToString((user + ":" + password).getBytes(), false));
+        header("Authorization",
+               "Basic " + Base64.encodeToString((user + ":" + password).getBytes(), false));
         return this;
     }
 
