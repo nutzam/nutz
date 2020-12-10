@@ -27,15 +27,24 @@ public class Header {
         return items.keySet();
     }
 
+    public NutMap getMap() {
+        NutMap map = new NutMap();
+        for (String key : this.keys()) {
+            String val = this.get(key);
+            map.put(key, val);
+        }
+        return map;
+    }
+
     @SuppressWarnings("rawtypes")
     public String get(String key) {
         Object value = items.get(key);
         if (value == null)
             return null;
         if (value instanceof List) {
-            if (((List)value).isEmpty())
+            if (((List) value).isEmpty())
                 return null;
-            return (String) ((List)value).get(0);
+            return (String) ((List) value).get(0);
         }
         return (String) value;
     }
@@ -68,10 +77,10 @@ public class Header {
 
     public Header addAll(Map<String, String> map) {
         if (null != map) {
-        	for (Map.Entry<String, String> en : map.entrySet()) {
-        		if (en.getValue() != null) // 如果值不是String,就立马报错咯
-        			this.items.put(en.getKey(), en.getValue());
-			}
+            for (Map.Entry<String, String> en : map.entrySet()) {
+                if (en.getValue() != null) // 如果值不是String,就立马报错咯
+                    this.items.put(en.getKey(), en.getValue());
+            }
         }
         return this;
     }
@@ -84,7 +93,7 @@ public class Header {
     public static Header create(Map<String, String> properties) {
         return new Header().addAll(properties);
     }
-    
+
     public static Header create(NutMap reHeader) {
         Header header = new Header();
         header.items.putAll(reHeader);
@@ -114,44 +123,43 @@ public class Header {
             return defaultValue;
         return Integer.parseInt(value);
     }
-    
+
     public Header asJsonContentType() {
         return this.asJsonContentType(null);
     }
-    
+
     public Header asFormContentType() {
         return this.asFormContentType(null);
     }
-    
+
     public Header asJsonContentType(String enc) {
         if (enc == null)
             enc = Charset.defaultCharset().name();
-        set("Content-Type", "application/json; charset="+enc.toUpperCase());
+        set("Content-Type", "application/json; charset=" + enc.toUpperCase());
         return this;
     }
-    
+
     public Header asFormContentType(String enc) {
         if (enc == null)
             enc = Charset.defaultCharset().name();
-        set("Content-Type", "application/x-www-form-urlencoded; charset="+enc.toUpperCase());
+        set("Content-Type", "application/x-www-form-urlencoded; charset=" + enc.toUpperCase());
         return this;
     }
-    
+
     public void addv(String name, String value) {
         if (value == null) {
             items.remove(name);
-        }
-        else {
+        } else {
             items.addv(name, value);
         }
     }
-    
+
     public List<String> getValues(String name) {
         Object value = items.get(name);
         if (value == null)
             return Collections.EMPTY_LIST;
         if (value instanceof String)
-            return Arrays.asList((String)value);
-        return (List<String>)value;
+            return Arrays.asList((String) value);
+        return (List<String>) value;
     }
 }
