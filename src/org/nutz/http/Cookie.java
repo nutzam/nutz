@@ -59,7 +59,7 @@ public class Cookie implements HttpReqRespInterceptor {
             if ("Path".equalsIgnoreCase(p.getName()) || "Expires".equalsIgnoreCase(p.getName()) || "domain".equalsIgnoreCase(p.getName())) {
                 continue;
             }
-            if ("Max-Age".equals(p.getName())) {
+            if ("Max-Age".equalsIgnoreCase(p.getName())) {
                 long age = Long.parseLong(p.getValue());
                 if (age == 0) {
                     return;
