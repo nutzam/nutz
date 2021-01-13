@@ -19,9 +19,12 @@ public class Cookie implements HttpReqRespInterceptor {
     protected Map<String, String> map;
     
     protected boolean debug;
+    
+    protected boolean ignoreNull;
 
     public Cookie() {
         map = new HashMap<String, String>();
+        ignoreNull = true; // 和之前版本行为保持一致
     }
 
     public Cookie(String s) {
@@ -50,26 +53,26 @@ public class Cookie implements HttpReqRespInterceptor {
         String[] ss = Strings.splitIgnoreBlank(str, ";");
         for (String s : ss) {
             Pair<String> p = Pair.create(Strings.trim(s));
-            if (p.getValueString() == null) {
+            if (p.getValueString() == null && ignoreNull) {
                 continue;
             }
-            if ("Path".equals(p.getName()) || "Expires".equals(p.getName())) {
+            if ("Path".equalsIgnoreCase(p.getName()) || "Expires".equalsIgnoreCase(p.getName()) || "domain".equalsIgnoreCase(p.getName())) {
                 continue;
             }
-            if ("Max-Age".equals(p.getName())) {
+            if ("Max-Age".equalsIgnoreCase(p.getName())) {
                 long age = Long.parseLong(p.getValue());
                 if (age == 0) {
                     return;
                 }
             }
-            String val = p.getValueString();
+            String val = Strings.sNull(p.getValueString());
             if (debug) {
                 log.debugf("add cookie [%s=%s]",  p.getName(), val);
             }
             map.put(p.getName(), val);
         }
     }
-
+    
     @Override
     public String toString() {
         if (map.isEmpty()) {
@@ -128,5 +131,9 @@ public class Cookie implements HttpReqRespInterceptor {
     
     public void setDebug(boolean debug) {
         this.debug = debug;
+    }
+    
+    public void setIgnoreNull(boolean ignoreNull) {
+    	this.ignoreNull = ignoreNull;
     }
 }
