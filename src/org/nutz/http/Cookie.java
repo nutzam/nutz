@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.nutz.json.Json;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.meta.Pair;
 import org.nutz.log.Log;
@@ -16,6 +18,8 @@ public class Cookie implements HttpReqRespInterceptor {
 
     private static final Log log = Logs.get();
     
+    private static Set<String> keyWords = Lang.set("expires", "domain", "path", "secure", "httponly", "samesite");
+
     protected Map<String, String> map;
     
     protected boolean debug;
@@ -56,9 +60,8 @@ public class Cookie implements HttpReqRespInterceptor {
             if (p.getValueString() == null && ignoreNull) {
                 continue;
             }
-            if ("Path".equalsIgnoreCase(p.getName()) || "Expires".equalsIgnoreCase(p.getName()) || "domain".equalsIgnoreCase(p.getName())) {
+            if (keyWords.contains(p.getName().toLowerCase()))
                 continue;
-            }
             if ("Max-Age".equalsIgnoreCase(p.getName())) {
                 long age = Long.parseLong(p.getValue());
                 if (age == 0) {

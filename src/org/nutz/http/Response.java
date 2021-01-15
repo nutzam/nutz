@@ -21,11 +21,12 @@ public class Response {
         status = conn.getResponseCode();
         detail = conn.getResponseMessage();
         this.header = Header.create(reHeader);
-        String s = header.get("Set-Cookie");
-        if (null != s) {
-            this.cookie = new Cookie();
-            this.cookie.afterResponse(null, conn, null); // 解决多个Set-Cookie丢失的问题
-        }
+        for (String name : header.keys())
+        	if ("Set-Cookie".equalsIgnoreCase(name)) {
+        		this.cookie = new Cookie();
+                this.cookie.afterResponse(null, conn, null); // 解决多个Set-Cookie丢失的问题
+        		break;
+        	}
         encode = getEncodeType();
     }
     
@@ -33,11 +34,12 @@ public class Response {
         status = conn.getResponseCode();
         detail = conn.getResponseMessage();
         this.header = Header.create(reHeader);
-        String s = header.get("Set-Cookie");
-        if (null != s) {
-            this.cookie = new Cookie();
-            this.cookie.afterResponse(null, conn, null); // 解决多个Set-Cookie丢失的问题
-        }
+        for (String name : header.keys())
+        	if ("Set-Cookie".equalsIgnoreCase(name)) {
+        		this.cookie = new Cookie();
+                this.cookie.afterResponse(null, conn, null); // 解决多个Set-Cookie丢失的问题
+        		break;
+        	}
         encode = getEncodeType();
     }
 
