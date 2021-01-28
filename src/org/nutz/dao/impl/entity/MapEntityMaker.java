@@ -107,6 +107,11 @@ public class MapEntityMaker {
             } else {
                 ef.setAdaptor(expert.getAdaptor(ef));
             }
+            
+            // 字段长度是多少呢
+            if (map.containsKey("." + key + ".width")) {
+                ef.setWidth((int) map.get("." + key + ".width"));
+            } 
             ef.setInjecting(new InjectToMap(key)); // 这里比较纠结,回设的时候应该用什么呢?
             ef.setEjecting(new EjectFromMap(entry.getKey()));
 
