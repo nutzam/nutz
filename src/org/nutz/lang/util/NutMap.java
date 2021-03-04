@@ -664,6 +664,38 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
     }
 
     /**
+     * 为 Map 增加一个名值对。强制设置为一个列表，如果有同名则合并。<br>
+     * 值如果是集合或者数组则拆包。
+     * 
+     * @param key
+     * @param value
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public NutMap addv3(String key, Object value) {
+        List<Object> list = (List<Object>) get(key);
+        if (null == list) {
+            list = new LinkedList<Object>();
+            put(key, list);
+        }
+        if (null != value) {
+            if (value instanceof Collection<?>) {
+                Collection<?> col = (Collection<?>) value;
+                list.addAll(col);
+            } else if (value.getClass().isArray()) {
+                int len = Array.getLength(value);
+                for (int i = 0; i < len; i++) {
+                    Object ele = Array.get(value, i);
+                    list.add(ele);
+                }
+            } else {
+                list.add(value);
+            }
+        }
+        return this;
+    }
+
+    /**
      * 向某个键增加一组值，如果原来就有值，是集合的话，会被合并，否则原来的值用列表包裹后再加入新值
      * 
      * @param key
