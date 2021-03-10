@@ -9,11 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import org.nutz.ioc.IocException;
-import org.nutz.ioc.IocLoader;
-import org.nutz.ioc.IocLoading;
-import org.nutz.ioc.Iocs;
-import org.nutz.ioc.ObjectLoadException;
+import org.nutz.ioc.*;
 import org.nutz.ioc.annotation.InjectName;
 import org.nutz.ioc.meta.IocEventSet;
 import org.nutz.ioc.meta.IocField;
@@ -158,6 +154,24 @@ public class AnnotationIocLoader implements IocLoader {
                 }
                 iocField.setValue(iocValue);
                 iocField.setOptional(inject.optional());
+                iocObject.addField(iocField);
+                fieldList.add(iocField.getName());
+            }
+            // 处理字段(以@Value方式,位于字段)
+            Field[] valueFields = mirror.getFields(Value.class);
+            for (Field valueField : valueFields) {
+                Value value = valueField.getAnnotation(Value.class);
+                String configName;
+                if(Strings.isBlank(value.name())) {
+                    configName = Strings.lowerFirst(valueField.getName());
+                } else {
+                    configName = value.name();
+                }
+                IocValue iocValue = Iocs.convert(String.format("java:$conf.get('%s')", configName), true);
+                IocField iocField = new IocField();
+                iocField.setName(valueField.getName());
+                iocField.setValue(iocValue);
+                iocField.setOptional(false);
                 iocObject.addField(iocField);
                 fieldList.add(iocField.getName());
             }
