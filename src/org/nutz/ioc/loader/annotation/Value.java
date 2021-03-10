@@ -13,7 +13,7 @@ import java.lang.annotation.*;
 @Documented
 public @interface Value {
     /**
-     * 获取配置项，默认使用字段名获取 配置实例 @Value(name="server.port")
+     * 获取配置项，默认使用字段名获取 配置实例 @Value(name="server.port")  如不配置name，则使用字段名首字母小写作为key获取配置
      * @return
      */
     String name() default "";
