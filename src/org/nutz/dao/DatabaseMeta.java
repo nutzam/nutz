@@ -61,6 +61,8 @@ public class DatabaseMeta {
             type = DB.SYBASE;
         } else if (proName.contains("dm dbms")) {
             type = DB.DM;
+        } else if (proName.contains("tdengine")) {
+            type = DB.TDENGINE;
         } else {
             type = DB.OTHER;
         }

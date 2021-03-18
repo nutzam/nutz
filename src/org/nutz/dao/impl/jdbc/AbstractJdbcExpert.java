@@ -246,6 +246,9 @@ public abstract class AbstractJdbcExpert implements JdbcExpert, Configurable {
                 return "NUMERIC(15,10)";
             return "FLOAT";
 
+        case DOUBLE:
+            return "DOUBLE";
+
         case PSQL_ARRAY:
             return "ARRAY";
 
