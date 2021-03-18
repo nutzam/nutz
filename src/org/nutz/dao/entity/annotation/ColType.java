@@ -63,6 +63,11 @@ public enum ColType {
     FLOAT,
 
     /**
+     * 浮点：双精度
+     */
+    DOUBLE,
+
+    /**
      * JSON：PostgreSQL 的 JSON 类型
      */
     PSQL_JSON,
