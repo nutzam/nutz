@@ -56,6 +56,10 @@ public enum DB {
      */
     DM,
     /**
+     * TDengine
+     */
+    TDENGINE,
+    /**
      * 其他数据库
      */
     OTHER

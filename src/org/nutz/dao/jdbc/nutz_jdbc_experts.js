@@ -21,7 +21,8 @@ var ioc = {
 		".+derby.+" : "org.nutz.dao.impl.jdbc.derby.DerbyJdbcExpert",
 		"gbase.*" : "org.nutz.dao.impl.jdbc.gbase.GBaseJdbcExpert",
 		"sybase.*" : "org.nutz.dao.impl.jdbc.sybase.SybaseIQJdbcExpert",
-		"dm dbms.*" : "org.nutz.dao.impl.jdbc.dm.DmJdbcExpert"
+		"dm dbms.*" : "org.nutz.dao.impl.jdbc.dm.DmJdbcExpert",
+		"tdengine.*" : "org.nutz.dao.impl.jdbc.tdengine.TDengineJdbcExpert"
 	// ~ 映射结束
 	},
 
