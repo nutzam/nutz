@@ -130,11 +130,11 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         if (Strings.isBlank(key))
             return null;
         String[] ks = Strings.splitIgnoreBlank(key, "[|]");
-        return this.getOr(ks, dft);
+        return this.getOrBy(ks, dft);
     }
 
     @Override
-    public Object getOr(String[] keys, Object dft) {
+    public Object getOrBy(String[] keys, Object dft) {
         if (null == keys || keys.length == 0)
             return null;
         for (String k : keys) {
