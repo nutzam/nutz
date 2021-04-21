@@ -246,6 +246,8 @@ public interface NutBean extends Map<String, Object> {
      * @return 值
      */
     Object getOr(String key, Object dft);
+    
+    Object getOrBy(String[] keys, Object dft);
 
     /**
      * @see #getOr(String, Object)

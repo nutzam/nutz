@@ -6,6 +6,7 @@ import org.nutz.lang.Strings;
 
 class TmplBooleanEle extends TmplDynamicEle {
 
+    // [false, true]
     private String[] texts;
 
     public TmplBooleanEle(String key, String fmt, String dft) {
@@ -15,9 +16,23 @@ class TmplBooleanEle extends TmplDynamicEle {
         }
         // 定制了
         else {
-            this.texts = Strings.sNull(fmt, "false/true").split("/");
-            if (this.texts.length == 1) {
-                this.texts = Lang.array("", this.texts[0]);
+            String s = Strings.sNull(fmt, "false/true");
+            int pos = s.indexOf('/');
+            // "xxx"
+            if (pos < 0) {
+                texts = Lang.array("", s.trim());
+            }
+            // "/xxx"
+            else if (pos == 0) {
+                texts = Lang.array("", s.substring(pos + 1).trim());
+            }
+            // "xxx/"
+            else if (pos == s.length() - 1) {
+                texts = Lang.array(s.substring(0, pos).trim(), "");
+            }
+            // must by "xxx/xxx"
+            else {
+                texts = Lang.array(s.substring(0, pos).trim(), s.substring(pos + 1).trim());
             }
         }
     }

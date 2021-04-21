@@ -12,6 +12,15 @@ import org.nutz.lang.util.NutMap;
 public class TmplTest {
 
     @Test
+    public void test_dft_true_false() {
+        NutMap context = Lang.map("a", true);
+        assertEquals("x", Tmpl.exec("${a<boolean:x>}", context));
+        assertEquals("", Tmpl.exec("${a<boolean:x/>}", context));
+        assertEquals("y", Tmpl.exec("${a<boolean:x/y>}", context));
+        assertEquals("x", Tmpl.exec("${a<boolean:/x>}", context));
+    }
+
+    @Test
     public void test_string_replace() {
         NutMap context = Lang.map("path:'  ~/a/b/c  '");
         assertEquals("-a-b-c",
