@@ -3,26 +3,33 @@ package org.nutz.dao.util.cri;
 import org.nutz.dao.Condition;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.sql.GroupBy;
+import org.nutz.dao.util.lambda.LambdaQuery;
+import org.nutz.dao.util.lambda.PFun;
+
 
 public class GroupBySet extends OrderBySet implements GroupBy {
 
     private static final long serialVersionUID = 1L;
 
 	private String[] names;
-	
+
 	private Condition having;
-	
+
 	public GroupBySet() {}
-	
+
 	public GroupBySet(String...names) {
 		this.names = names;
 	}
-	
+
+	public <T> GroupBySet(PFun<T, ?>... names) {
+		this.names = LambdaQuery.resolves(names);
+	}
+
 	public GroupBy having(Condition cnd) {
 		having = cnd;
 		return this;
 	}
-	
+
 	public void joinSql(Entity<?> en, StringBuilder sb) {
 	    if (names == null || names.length == 0)
 	        return;
@@ -45,9 +52,14 @@ public class GroupBySet extends OrderBySet implements GroupBy {
 			}
 		}
 	}
-	
+
 	public GroupBy groupBy(String ... names) {
 	    this.names = names;
 	    return this;
+	}
+
+	public <T> GroupBy groupBy(PFun<T, ?>... names) {
+		this.names = LambdaQuery.resolves(names);
+		return this;
 	}
 }

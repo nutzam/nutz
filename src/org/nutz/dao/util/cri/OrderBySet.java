@@ -7,6 +7,8 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.impl.sql.pojo.NoParamsPItem;
 import org.nutz.dao.sql.OrderBy;
 import org.nutz.dao.sql.Pojo;
+import org.nutz.dao.util.lambda.LambdaQuery;
+import org.nutz.dao.util.lambda.PFun;
 
 public class OrderBySet extends NoParamsPItem implements OrderBy {
 
@@ -42,13 +44,23 @@ public class OrderBySet extends NoParamsPItem implements OrderBy {
         return this;
     }
 
+    @Override
+    public <T> OrderBy asc(PFun<T, ?> name) {
+        return asc(LambdaQuery.resolve(name));
+    }
+
     public OrderBy desc(String name) {
         OrderByItem desc = new OrderByItem(name, "DESC");
         desc.setPojo(pojo);
         list.add(desc);
         return this;
     }
-    
+
+    @Override
+    public <T> OrderBy desc(PFun<T, ?> name) {
+        return desc(LambdaQuery.resolve(name));
+    }
+
     public void setPojo(Pojo pojo) {
         super.setPojo(pojo);
         for (OrderByItem obi : list)
@@ -58,11 +70,11 @@ public class OrderBySet extends NoParamsPItem implements OrderBy {
     public List<OrderByItem> getItems() {
         return list;
     }
-    
+
     public String toString() {
     	return toSql(null);
     }
-    
+
     public OrderBy orderBy(String name, String dir) {
         if ("asc".equalsIgnoreCase(dir)) {
             this.asc(name);
@@ -70,5 +82,10 @@ public class OrderBySet extends NoParamsPItem implements OrderBy {
             this.desc(name);
         }
         return this;
+    }
+
+    @Override
+    public <T> OrderBy orderBy(PFun<T, ?> name, String dir) {
+        return null;
     }
 }

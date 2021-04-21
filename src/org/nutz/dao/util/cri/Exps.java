@@ -3,13 +3,15 @@ package org.nutz.dao.util.cri;
 import java.util.Collection;
 
 import org.nutz.castor.Castors;
+import org.nutz.dao.util.lambda.LambdaQuery;
+import org.nutz.dao.util.lambda.PFun;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 
 /**
  * 表达式的帮助函数
- * 
+ *
  * @author zozoh(zozohtnt@gmail.com)
  */
 public abstract class Exps {
@@ -21,8 +23,16 @@ public abstract class Exps {
     public static Like like(String name, String value) {
         return Like.create(name, value, true);
     }
-    
+
+    public static <T> Like like(PFun<T, ?> name, String value) {
+        return Like.create(name, value, true);
+    }
+
     public static Like like(String name, String value, boolean ignoreCase) {
+        return Like.create(name, value, ignoreCase);
+    }
+
+    public static <T> Like like(PFun<T, ?> name, String value, boolean ignoreCase) {
         return Like.create(name, value, ignoreCase);
     }
 
@@ -30,43 +40,87 @@ public abstract class Exps {
         return new IsNull(name);
     }
 
+    public static <T> IsNull isNull(PFun<T, ?> name) {
+        return new IsNull(name);
+    }
+
     public static SimpleExpression eq(String name, Object val) {
         return new SimpleExpression(name, "=", val);
     }
-    
+
+    public static <T> SimpleExpression eq(PFun<T, ?> name, Object val) {
+        return new SimpleExpression(name, "=", val);
+    }
+
     public static SimpleExpression gt(String name, long val) {
         return new SimpleExpression(name, ">", val);
     }
-    
+
+    public static <T> SimpleExpression gt(PFun<T, ?> name, long val) {
+        return new SimpleExpression(name, ">", val);
+    }
+
     public static SimpleExpression lt(String name, long val) {
         return new SimpleExpression(name, "<", val);
     }
-    
+
+    public static <T> SimpleExpression lt(PFun<T, ?> name, long val) {
+        return new SimpleExpression(name, "<", val);
+    }
+
     public static SimpleExpression gte(String name, long val) {
         return new SimpleExpression(name, ">=", val);
     }
-    
+
+    public static <T> SimpleExpression gte(PFun<T, ?> name, long val) {
+        return new SimpleExpression(name, ">=", val);
+    }
+
     public static SimpleExpression lte(String name, long val) {
         return new SimpleExpression(name, "<=", val);
     }
-    
+
+    public static <T> SimpleExpression lte(PFun<T, ?> name, long val) {
+        return new SimpleExpression(name, "<=", val);
+    }
+
     public static IntRange inInt(String name, int... ids) {
         return new IntRange(name, ids);
     }
-    
+
+    public static <T> IntRange inInt(PFun<T, ?> name, int... ids) {
+        return new IntRange(LambdaQuery.resolve(name), ids);
+    }
+
     public static IntRange inInt(String name, Integer[] ids) {
     	return new IntRange(name, ids);
+    }
+
+    public static <T> IntRange inInt(PFun<T, ?> name, Integer[] ids) {
+    	return new IntRange(LambdaQuery.resolve(name), ids);
     }
 
     public static LongRange inLong(String name, long... ids) {
         return new LongRange(name, ids);
     }
-    
+
+    public static <T> LongRange inLong(PFun<T, ?> name, long... ids) {
+        return new LongRange(LambdaQuery.resolve(name), ids);
+    }
+
     public static LongRange inLong(String name, Long[] ids) {
     	return new LongRange(name, ids);
     }
 
+    public static <T> LongRange inLong(PFun<T, ?> name, Long[] ids) {
+    	return new LongRange(LambdaQuery.resolve(name), ids);
+    }
+
     public static NameRange inStr(String name, String... names) {
+        return new NameRange(name, names);
+    }
+
+    public static <T> NameRange inStr(PFun<T, ?> name, String... names) {
         return new NameRange(name, names);
     }
 
@@ -74,12 +128,28 @@ public abstract class Exps {
         return new SqlRange(name, subSql, args);
     }
 
+    public static <T> SqlRange inSql(PFun<T, ?> name, String subSql, Object... args) {
+        return new SqlRange(name, subSql, args);
+    }
+
     public static SqlValueRange inSql2(String name, String subSql, Object... values) {
+        return new SqlValueRange(name, subSql, values);
+    }
+
+    public static <T> SqlValueRange inSql2(PFun<T, ?> name, String subSql, Object... values) {
         return new SqlValueRange(name, subSql, values);
     }
 
     public static SqlValueRange inSql2(String name, String subSql, Collection<?> collection) {
         return new SqlValueRange(name, subSql, collection.toArray());
+    }
+
+    public static <T> SqlValueRange inSql2(PFun<T, ?> name, String subSql, Collection<?> collection) {
+        return new SqlValueRange(name, subSql, collection.toArray());
+    }
+
+    public static <T> SqlExpression create(PFun<T, ?> name, String op, Object value) {
+        return create(LambdaQuery.resolve(name), op, value);
     }
 
     public static SqlExpression create(String name, String op, Object value) {

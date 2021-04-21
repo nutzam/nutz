@@ -3,6 +3,7 @@ package org.nutz.dao.util.cri;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
+import org.nutz.dao.util.lambda.PFun;
 
 public class NameRange extends AbstractSqlExpression {
 
@@ -11,6 +12,12 @@ public class NameRange extends AbstractSqlExpression {
     private String[] names;
 
     NameRange(String name, String... names) {
+        super(name);
+        this.names = names;
+        this.not = false;
+    }
+
+    <T> NameRange(PFun<T, ?> name, String... names) {
         super(name);
         this.names = names;
         this.not = false;

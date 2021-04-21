@@ -3,6 +3,8 @@ package org.nutz.dao.util.cri;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.impl.sql.pojo.AbstractPItem;
+import org.nutz.dao.util.lambda.LambdaQuery;
+import org.nutz.dao.util.lambda.PFun;
 
 public abstract class AbstractSqlExpression extends AbstractPItem implements SqlExpression {
 
@@ -12,8 +14,15 @@ public abstract class AbstractSqlExpression extends AbstractPItem implements Sql
 
     protected String name;
 
+    protected AbstractSqlExpression() {
+    }
+
     protected AbstractSqlExpression(String name) {
         this.name = name;
+    }
+
+    protected <T> AbstractSqlExpression(PFun<T, ?> name) {
+        this.name = LambdaQuery.resolve(name);
     }
 
     AbstractSqlExpression not() {

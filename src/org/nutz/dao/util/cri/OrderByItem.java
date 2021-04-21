@@ -2,6 +2,8 @@ package org.nutz.dao.util.cri;
 
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.impl.sql.pojo.NoParamsPItem;
+import org.nutz.dao.util.lambda.LambdaQuery;
+import org.nutz.dao.util.lambda.PFun;
 
 public class OrderByItem extends NoParamsPItem {
 
@@ -13,6 +15,11 @@ public class OrderByItem extends NoParamsPItem {
 
     public OrderByItem(String name, String by) {
         this.name = name;
+        this.by = by;
+    }
+
+    public <T> OrderByItem(PFun<T, ?> name, String by) {
+        this.name = LambdaQuery.resolve(name);
         this.by = by;
     }
 

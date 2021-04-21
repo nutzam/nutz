@@ -19,6 +19,8 @@ import org.nutz.dao.util.cri.NestExps;
 import org.nutz.dao.util.cri.SimpleCriteria;
 import org.nutz.dao.util.cri.SqlExpression;
 import org.nutz.dao.util.cri.SqlExpressionGroup;
+import org.nutz.dao.util.lambda.LambdaQuery;
+import org.nutz.dao.util.lambda.PFun;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.segment.CharSegment;
@@ -78,7 +80,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * 用字符串和参数格式化出一个条件语句,注意,不会抹除特殊字符
-     * 
+     *
      * @param format
      *            sql条件
      * @param args
@@ -93,7 +95,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /***
      * 直接用字符串生成一个条件对象
-     * 
+     *
      * @param str
      *            sql条件
      * @return 条件对象
@@ -104,7 +106,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * 使用CharSegment拼装一个条件对象
-     * 
+     *
      * @param sql
      *            sql模板
      * @param value
@@ -119,7 +121,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * 生成一个条件表达式
-     * 
+     *
      * @param name
      *            Java属性或字段名称
      * @param op
@@ -136,8 +138,25 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     }
 
     /**
+     * 生成一个条件表达式
+     *
+     * @param name
+     *            lambda表达式
+     * @param op
+     *            操作符,可以是 = like 等等
+     * @param value
+     *            参数值.
+     * @return 条件表达式
+     */
+    public static <T> SqlExpression exp(PFun<T, ?> name, String op, Object value) {
+        return exps(LambdaQuery.resolve(name),op,value);
+    }
+
+
+
+    /**
      * 生成一个条件表达式组
-     * 
+     *
      * @param name
      *            Java属性或字段名称
      * @param op
@@ -151,8 +170,23 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     }
 
     /**
+     * 生成一个条件表达式组
+     *
+     * @param name
+     *            lambda表达式
+     * @param op
+     *            操作符,可以是 = like 等等
+     * @param value
+     *            参数值.
+     * @return 条件表达式组
+     */
+    public static <T> SqlExpressionGroup exps(PFun<T, ?> name, String op, Object value) {
+        return exps(exp(name, op, value));
+    }
+
+    /**
      * 将一个条件表达式封装为条件表达式组
-     * 
+     *
      * @param exp
      *            原本的条件表达式
      * @return 条件表达式组
@@ -163,7 +197,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * 生成一个新的Cnd实例
-     * 
+     *
      * @param name
      *            java属性或字段名称, 推荐用Java属性
      * @param op
@@ -177,8 +211,23 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     }
 
     /**
+     * 生成一个新的Cnd实例
+     *
+     * @param name
+     *            lambda表达式
+     * @param op
+     *            操作符,可以是= like等等
+     * @param value
+     *            参数值. 如果操作符是between,参数值需要是new Object[]{12,39}形式
+     * @return Cnd实例
+     */
+    public static <T> Cnd where(PFun<T, ?> name, String op, Object value) {
+        return new Cnd(Cnd.exp(name, op, value));
+    }
+
+    /**
      * 用一个条件表达式构建一个Cnd实例
-     * 
+     *
      * @param e
      *            条件表达式
      * @return Cnd实例
@@ -196,7 +245,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * 单纯生成一个Orderby条件
-     * 
+     *
      * @return OrderBy实例
      */
     public static OrderBy orderBy() {
@@ -221,7 +270,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * 用SimpleCriteria生成一个Cnd实例
-     * 
+     *
      * @param cri
      *            SimpleCriteria实例
      * @return Cnd实例
@@ -245,7 +294,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * 获取内部的where属性
-     * 
+     *
      * @return SimpleCriteria实例
      */
     public SimpleCriteria getCri() {
@@ -259,7 +308,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * 按Java属性/字段属性进行升序. <b>不进行SQL特殊字符抹除<b/> cnd.asc("age")
-     * 
+     *
      * @param name
      *            Java属性/字段属性
      */
@@ -270,8 +319,19 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     }
 
     /**
+     * 按Java属性/字段属性进行升序. <b>不进行SQL特殊字符抹除<b/> cnd.asc("age")
+     *
+     * @param name
+     *            Lambda表达式
+     */
+    @Override
+    public <T> OrderBy asc(PFun<T, ?> name) {
+        return asc(LambdaQuery.resolve(name));
+    }
+
+    /**
      * 按Java属性/字段属性进行降序. <b>不进行SQL特殊字符抹除<b/> cnd.desc("age")
-     * 
+     *
      * @param name
      *            Java属性/字段属性
      */
@@ -282,8 +342,19 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     }
 
     /**
+     * 按Java属性/字段属性进行降序. <b>不进行SQL特殊字符抹除<b/> cnd.desc("age")
+     *
+     * @param name
+     *            Lambda表达式
+     */
+    @Override
+    public <T> OrderBy desc(PFun<T, ?> name) {
+        return desc(LambdaQuery.resolve(name));
+    }
+
+    /**
      * 当dir为asc时判断为升序,否则判定为降序. cnd.orderBy("age", "asc")
-     * 
+     *
      * @param name
      *            Java属性/字段属性
      * @param dir
@@ -301,9 +372,23 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     }
 
     /**
+     * 当dir为asc时判断为升序,否则判定为降序. cnd.orderBy("age", "asc")
+     *
+     * @param name
+     *            Lambda表达式
+     * @param dir
+     *            asc或其他
+     * @return OrderBy实例,事实上就是当前对象
+     */
+    @Override
+    public <T> OrderBy orderBy(PFun<T, ?> name, String dir) {
+        return orderBy(LambdaQuery.resolve(name),dir);
+    }
+
+    /**
      * Cnd.where(...).and(Cnd.exp(.........)) 或
      * Cnd.where(...).and(Cnd.exps(.........))
-     * 
+     *
      * @param exp
      *            条件表达式
      * @return 当前对象,用于链式调用
@@ -315,7 +400,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * Cnd.where(...).and("age", "<", 40)
-     * 
+     *
      * @param name
      *            Java属性或字段名称,推荐用Java属性,如果有的话
      * @param op
@@ -328,10 +413,26 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         return and(Cnd.exp(name, op, value));
     }
 
+
+    /**
+     * Cnd.where(...).and("age", "<", 40)
+     *
+     * @param name
+     *            Lambda表达式
+     * @param op
+     *            操作符,可以是 = like等
+     * @param value
+     *            参数值, 如果是between的话需要传入new Object[]{19,28}
+     * @return 当前对象,用于链式调用
+     */
+    public <T> Cnd and(PFun<T, ?> name, String op, Object value) {
+        return and(Cnd.exp(name, op, value));
+    }
+
     /**
      * Cnd.where(...).or(Cnd.exp(.........)) 或
      * Cnd.where(...).or(Cnd.exps(.........))
-     * 
+     *
      * @param exp
      *            条件表达式
      * @return 当前对象,用于链式调用
@@ -343,7 +444,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * Cnd.where(...).or("age", "<", 40)
-     * 
+     *
      * @param name
      *            Java属性或字段名称,推荐用Java属性,如果有的话
      * @param op
@@ -357,8 +458,23 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     }
 
     /**
+     * Cnd.where(...).or("age", "<", 40)
+     *
+     * @param name
+     *            Java属性或字段名称,推荐用Java属性,如果有的话
+     * @param op
+     *            操作符,可以是 = like等
+     * @param value
+     *            参数值, 如果是between的话需要传入new Object[]{19,28}
+     * @return 当前对象,用于链式调用
+     */
+    public <T> Cnd or(PFun<T, ?> name, String op, Object value) {
+        return or(Cnd.exp(name, op, value));
+    }
+
+    /**
      * and一个条件表达式并且取非
-     * 
+     *
      * @param exp
      *            条件表达式
      * @return 当前对象,用于链式调用
@@ -370,7 +486,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * and一个条件,并且取非
-     * 
+     *
      * @param name
      *            Java属性或字段名称,推荐用Java属性,如果有的话
      * @param op
@@ -380,6 +496,21 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      * @return 当前对象,用于链式调用
      */
     public Cnd andNot(String name, String op, Object value) {
+        return andNot(Cnd.exp(name, op, value));
+    }
+
+    /**
+     * and一个条件,并且取非
+     *
+     * @param name
+     *            Lambda表达式
+     * @param op
+     *            操作符,可以是 = like等
+     * @param value
+     *            参数值, 如果是between的话需要传入new Object[]{19,28}
+     * @return 当前对象,用于链式调用
+     */
+    public <T> Cnd andNot(PFun<T, ?> name, String op, Object value) {
         return andNot(Cnd.exp(name, op, value));
     }
 
@@ -395,6 +526,13 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      * @see Cnd#andNot(String, String, Object)
      */
     public Cnd orNot(String name, String op, Object value) {
+        return orNot(Cnd.exp(name, op, value));
+    }
+
+    /**
+     * @see Cnd#andNot(String, String, Object)
+     */
+    public  <T> Cnd orNot(PFun<T, ?> name, String op, Object value) {
         return orNot(Cnd.exp(name, op, value));
     }
 
@@ -476,7 +614,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * 分组
-     * 
+     *
      * @param names
      *            java属性或数据库字段名称
      */
@@ -487,8 +625,20 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     }
 
     /**
+     * 分组
+     *
+     * @param names
+     *            Lambda表达式
+     */
+    @Override
+    public <T> GroupBy groupBy(PFun<T, ?>... names) {
+        cri.groupBy(names);
+        return this;
+    }
+
+    /**
      * 分组中的having条件
-     * 
+     *
      * @param cnd
      *            条件语句
      */
@@ -508,7 +658,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * 分页
-     * 
+     *
      * @param pageNumber
      *            页数, 若小于1则代表全部记录
      * @param pageSize
@@ -522,7 +672,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * 设置每页大小,并设置页数为1
-     * 
+     *
      * @param pageSize
      *            每页大小
      * @return 当前对象,用于链式调用
@@ -535,7 +685,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * 直接设置分页对象, 可以new Pager或dao.createPager得到
-     * 
+     *
      * @param pager
      *            分页对象
      * @return 当前对象,用于链式调用
@@ -549,7 +699,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * 用默认规则(忽略零值和空值)生成Cnd实例
-     * 
+     *
      * @param dao
      *            Dao实例,不能为null
      * @param obj
@@ -564,7 +714,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      * 根据一个对象生成Cnd条件, FieldMatcher详细控制.
      * <p/>
      * <code>assertEquals(" WHERE name='wendal' AND age=0", Cnd.from(dao, pet, FieldMatcher.make("age|name", null, true).setIgnoreDate(true)).toString());</code>
-     * 
+     *
      * @param dao
      *            Dao实例
      * @param obj
@@ -590,7 +740,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * 若value为null/空白字符串/空集合/空数组,则本条件不添加.
-     * 
+     *
      * @see Cnd#and(String, String, Object)
      */
     public Cnd andEX(String name, String op, Object value) {
@@ -599,10 +749,28 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * 若value为null/空白字符串/空集合/空数组,则本条件不添加.
-     * 
+     *
+     * @see Cnd#and(String, String, Object)
+     */
+    public <T> Cnd andEX(PFun<T, ?> name, String op, Object value) {
+        return and(Cnd.expEX(name, op, value));
+    }
+
+    /**
+     * 若value为null/空白字符串/空集合/空数组,则本条件不添加.
+     *
      * @see Cnd#or(String, String, Object)
      */
     public Cnd orEX(String name, String op, Object value) {
+        return or(Cnd.expEX(name, op, value));
+    }
+
+    /**
+     * 若value为null/空白字符串/空集合/空数组,则本条件不添加.
+     *
+     * @see Cnd#or(String, String, Object)
+     */
+    public <T> Cnd orEX(PFun<T, ?> name, String op, Object value) {
         return or(Cnd.expEX(name, op, value));
     }
 
@@ -612,10 +780,18 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         return Cnd.exp(name, op, value);
     }
 
+    public static <T> SqlExpression expEX(PFun<T, ?> name, String op, Object value) {
+        return expEX(LambdaQuery.resolve(name),op,value);
+    }
+
     public static SqlExpression leftLikeEX(String name, Object value) {
         if (_ex(value))
             return null;
         return Cnd.exp(name, "like", String.format("%%%s", value));
+    }
+
+    public static <T>  SqlExpression leftLikeEX(PFun<T, ?> name, Object value) {
+        return leftLikeEX(LambdaQuery.resolve(name), value);
     }
 
     public static SqlExpression rightLikeEX(String name, Object value) {
@@ -624,10 +800,18 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         return Cnd.exp(name, "like", String.format("%s%%", value));
     }
 
+    public static <T> SqlExpression rightLikeEX(PFun<T, ?> name, Object value) {
+        return rightLikeEX(LambdaQuery.resolve(name), value);
+    }
+
     public static SqlExpression likeEX(String name, Object value) {
         if (_ex(value))
             return null;
         return Cnd.exp(name, "like", String.format("%%%s%%", value));
+    }
+
+    public static <T> SqlExpression likeEX(PFun<T, ?> name, Object value) {
+        return likeEX(LambdaQuery.resolve(name),value);
     }
 
     @SuppressWarnings("rawtypes")
@@ -652,7 +836,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /**
      * 克隆当前Cnd实例
-     * 
+     *
      * @return 一模一样的兄弟
      */
     @Override

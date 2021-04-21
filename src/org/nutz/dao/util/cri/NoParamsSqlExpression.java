@@ -2,12 +2,17 @@ package org.nutz.dao.util.cri;
 
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.jdbc.ValueAdaptor;
+import org.nutz.dao.util.lambda.PFun;
 
 public abstract class NoParamsSqlExpression extends AbstractSqlExpression {
 
     private static final long serialVersionUID = 1L;
 
     protected NoParamsSqlExpression(String name) {
+        super(name);
+    }
+
+    protected <T> NoParamsSqlExpression(PFun<T, ?> name) {
         super(name);
     }
 
