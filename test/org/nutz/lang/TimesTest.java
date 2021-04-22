@@ -157,4 +157,11 @@ public class TimesTest {
         Date s = Times.nextDay(new Date(),1);
         System.out.println(Times.format("yyyy-MM-dd HH:mm:ss",s));
     }
+    
+
+    @Test
+    public void test_next_day2()  {
+        long t = Times.ams("2019-01");
+        System.out.println(new Date(t));
+    }
 }
