@@ -3,6 +3,8 @@ package org.nutz.dao.util.cri;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
+import org.nutz.dao.util.lambda.LambdaQuery;
+import org.nutz.dao.util.lambda.PFun;
 
 public class Like extends AbstractSqlExpression {
 
@@ -17,6 +19,10 @@ public class Like extends AbstractSqlExpression {
         return like;
     }
 
+    static <T> Like create(PFun<T, ?> name, String value, boolean ignoreCase) {
+        return create(LambdaQuery.resolve(name),value,ignoreCase);
+    }
+
     private String value;
 
     private boolean ignoreCase;
@@ -28,6 +34,11 @@ public class Like extends AbstractSqlExpression {
     private Like(String name) {
         super(name);
     }
+
+    private <T> Like(PFun<T, ?> name) {
+        super(name);
+    }
+
 
     public void joinSql(Entity<?> en, StringBuilder sb) {
         String colName = _fmtcol(en);

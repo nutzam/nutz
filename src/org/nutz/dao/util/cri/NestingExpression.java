@@ -3,6 +3,7 @@ package org.nutz.dao.util.cri;
 import org.nutz.dao.Nesting;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.jdbc.ValueAdaptor;
+import org.nutz.dao.util.lambda.PFun;
 
 /**
  * 与{@linkplain SimpleExpression}类似,但是
@@ -15,7 +16,19 @@ public class NestingExpression extends AbstractSqlExpression {
 	private String op;
 	private Nesting value;
 
+
+	public NestingExpression(String op, Nesting value) {
+		this.op = op;
+		this.value = value;
+	}
+
 	public NestingExpression(String name, String op, Nesting value) {
+		super(name);
+		this.op = op;
+		this.value = value;
+	}
+
+	public <T> NestingExpression(PFun<T, ?> name, String op, Nesting value) {
 		super(name);
 		this.op = op;
 		this.value = value;

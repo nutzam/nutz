@@ -4,6 +4,7 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
+import org.nutz.dao.util.lambda.PFun;
 
 public class SimpleExpression extends AbstractSqlExpression {
 
@@ -13,6 +14,12 @@ public class SimpleExpression extends AbstractSqlExpression {
     private Object value;
 
     public SimpleExpression(String name, String op, Object val) {
+        super(name);
+        this.op = op;
+        this.value = val;
+    }
+
+    public <T> SimpleExpression(PFun<T, ?> name, String op, Object val) {
         super(name);
         this.op = op;
         this.value = val;

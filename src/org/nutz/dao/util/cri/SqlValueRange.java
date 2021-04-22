@@ -4,17 +4,25 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
+import org.nutz.dao.util.lambda.PFun;
 import org.nutz.lang.Strings;
 
 public class SqlValueRange extends AbstractSqlExpression {
 
     private static final long serialVersionUID = 6899168558668898529L;
-    
+
     protected String sql;
     protected Object[] values;
     protected int size;
-    
+
     protected SqlValueRange(String name, String sql, Object... values) {
+        super(name);
+        this.sql = sql;
+        this.values = values;
+        this.size = values.length;
+    }
+
+    protected <T> SqlValueRange(PFun<T, ?> name, String sql, Object... values) {
         super(name);
         this.sql = sql;
         this.values = values;

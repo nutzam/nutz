@@ -10,6 +10,8 @@ import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.GroupBy;
 import org.nutz.dao.sql.OrderBy;
 import org.nutz.dao.sql.Pojo;
+import org.nutz.dao.util.lambda.PFun;
+
 
 public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy, GroupBy {
 
@@ -18,11 +20,11 @@ public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy, 
     private SqlExpressionGroup where;
 
     private OrderBySet orderBy;
-    
+
     private GroupBySet groupBy;
 
     private Pager pager;
-    
+
     private String beforeWhere;
 
     public SimpleCriteria() {
@@ -30,7 +32,7 @@ public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy, 
         orderBy = new OrderBySet();
         groupBy = new GroupBySet();
     }
-    
+
     public SimpleCriteria(String beforeWhere) {
         this();
         this.beforeWhere = beforeWhere;
@@ -100,19 +102,35 @@ public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy, 
         return orderBy.asc(name);
     }
 
+    @Override
+    public <T> OrderBy asc(PFun<T, ?> name) {
+        return orderBy.asc(name);
+    }
+
     public OrderBy desc(String name) {
+        return orderBy.desc(name);
+    }
+
+    @Override
+    public <T> OrderBy desc(PFun<T, ?> name) {
         return orderBy.desc(name);
     }
 
     public SqlExpressionGroup where() {
         return where;
     }
-    
+
     public GroupBy groupBy(String...names) {
     	groupBy = new GroupBySet(names);
     	return this;
     }
-    
+
+    @Override
+    public <T> GroupBy groupBy(PFun<T, ?>... names) {
+        groupBy = new GroupBySet(names);
+        return this;
+    }
+
     public GroupBy having(Condition cnd) {
     	groupBy.having(cnd);
     	return this;
@@ -125,7 +143,7 @@ public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy, 
     public String toString() {
         return toSql(null);
     }
-    
+
     public OrderBy orderBy(String name, String dir) {
         if ("asc".equalsIgnoreCase(dir)) {
             this.asc(name);
@@ -134,11 +152,21 @@ public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy, 
         }
         return this;
     }
-    
+
+    @Override
+    public <T> OrderBy orderBy(PFun<T, ?> name, String dir) {
+        if ("asc".equalsIgnoreCase(dir)) {
+            this.asc(name);
+        } else {
+            this.desc(name);
+        }
+        return this;
+    }
+
     public GroupBy getGroupBy() {
         return groupBy;
     }
-    
+
     public String getBeforeWhere() {
         return beforeWhere;
     }

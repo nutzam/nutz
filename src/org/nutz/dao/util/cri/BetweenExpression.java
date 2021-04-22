@@ -4,6 +4,7 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
+import org.nutz.dao.util.lambda.PFun;
 
 /**
  * between ? and ?
@@ -16,8 +17,14 @@ public class BetweenExpression extends AbstractSqlExpression {
 
 	private Object min;
 	private Object max;
-	
+
 	public BetweenExpression(String name, Object min, Object max) {
+		super(name);
+		this.min = min;
+		this.max = max;
+	}
+
+	public <T> BetweenExpression(PFun<T, ?> name, Object min, Object max) {
 		super(name);
 		this.min = min;
 		this.max = max;
