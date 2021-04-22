@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.reflect.ReflectTool;
 
 /**
  * 提供ClassAgent的基础实现,拦截不可能插入Aop代码的Class
@@ -36,7 +37,9 @@ public abstract class AbstractClassAgent implements ClassAgent {
     public <T> Class<T> define(ClassDefiner cd, Class<T> klass) {
         if (klass.getName().endsWith(CLASSNAME_SUFFIX))
             return klass;
-        String newName = klass.getName() + (id == null ? "" : "$" + id) +  CLASSNAME_SUFFIX;
+        String newName = ReflectTool.class.getPackageName();
+        newName += "." + Lang.md5(klass.getName());
+        newName += (id == null ? "" : "$" + id) +  CLASSNAME_SUFFIX;
         return define(cd, klass, newName);
     }
     
