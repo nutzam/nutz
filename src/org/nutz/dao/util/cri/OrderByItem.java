@@ -18,11 +18,6 @@ public class OrderByItem extends NoParamsPItem {
         this.by = by;
     }
 
-    public <T> OrderByItem(PFun<T, ?> name, String by) {
-        this.name = LambdaQuery.resolve(name);
-        this.by = by;
-    }
-
     public void joinSql(Entity<?> en, StringBuilder sb) {
         sb.append(_fmtcolnm(en, name)).append(' ').append(by);
     }

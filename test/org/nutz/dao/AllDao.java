@@ -14,6 +14,7 @@ import org.nutz.dao.test.smoke.AllSmoke;
 import org.nutz.dao.test.sqls.AllSqls;
 import org.nutz.dao.texp.ChainTest;
 import org.nutz.dao.texp.CndTest;
+import org.nutz.dao.texp.LamdaCndTest;
 
 /**
  * Prepare a database with URL: jdbc:mysql://localhost:3306/zzhtest support user
@@ -30,6 +31,7 @@ import org.nutz.dao.texp.CndTest;
                      AllMapping.class,
                      AllNormal.class,
                      CndTest.class,
+                     LamdaCndTest.class,
                      ChainTest.class,
                      SqlLiteralTest.class,
                      AllDaoExec.class,

@@ -149,7 +149,10 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      * @return 条件表达式
      */
     public static <T> SqlExpression exp(PFun<T, ?> name, String op, Object value) {
-        return exps(LambdaQuery.resolve(name),op,value);
+        if (value != null && value instanceof Nesting) {
+            return NestExps.create(name, op, (Nesting) value);
+        }
+        return Exps.create(name, op, value);
     }
 
 

@@ -86,6 +86,11 @@ public class OrderBySet extends NoParamsPItem implements OrderBy {
 
     @Override
     public <T> OrderBy orderBy(PFun<T, ?> name, String dir) {
-        return null;
+        if ("asc".equalsIgnoreCase(dir)) {
+            this.asc(name);
+        } else {
+            this.desc(name);
+        }
+        return this;
     }
 }

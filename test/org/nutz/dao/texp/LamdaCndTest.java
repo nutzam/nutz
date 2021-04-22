@@ -5,6 +5,7 @@ import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.sql.Criteria;
+import org.nutz.dao.sql.OrderBy;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.util.cri.SqlExpression;
 
@@ -30,7 +31,7 @@ public class LamdaCndTest extends DaoCase {
 
     @Test
     public void test_gt_like() {
-        Condition c = Cnd.where(Worker::getAge, ">", 45)
+        Condition c = Cnd.where(Worker::getId, ">", 45)
                 .and(Worker::getName, "LIKE", "%ry%");
         String exp = "WHERE wid>45 AND wname LIKE '%ry%'";
         assertEquals(exp, c.toSql(en).trim());
@@ -38,10 +39,13 @@ public class LamdaCndTest extends DaoCase {
 
     @Test
     public void test_bracket() {
-        Condition c = Cnd.where(Cnd.exps(Worker::getId, ">", 45))
-                .and(Worker::getName, "LIKE", "%ry%");
         String exp = "WHERE (wid>45) AND wname LIKE '%ry%'";
-        assertEquals(exp, c.toSql(en).trim());
+        Condition c0 = Cnd.where(Cnd.exps("id", ">", 45))
+                .and("name", "LIKE", "%ry%");
+        Condition c1 = Cnd.where(Cnd.exps(Worker::getId, ">", 45))
+                .and(Worker::getName, "LIKE", "%ry%");
+        assertEquals(exp, c0.toSql(en).trim());
+        assertEquals(exp, c1.toSql(en).trim());
     }
 
     @Test
@@ -118,6 +122,26 @@ public class LamdaCndTest extends DaoCase {
         Criteria cri = Cnd.cri();
         cri.where().andNotInStrList(Worker::getId, ids);
         assertEquals(" WHERE id NOT IN ('bj','sh','gz','sz')", cri.toString());
+    }
+
+    /**
+     * test_orderby
+     */
+    @Test
+    public void test_orderby() {
+        OrderBy orderBy0 = Cnd.orderBy().desc(Worker::getCity).asc(Worker::getCity);
+        OrderBy orderBy1 = Cnd.orderBy().desc("ct").asc("ct");
+        assertEquals(orderBy0.toSql(en), orderBy1.toSql(en));
+    }
+
+    /**
+     * test_orderby
+     */
+    @Test
+    public void test_groupby() {
+        OrderBy orderBy0 = Cnd.cri().groupBy(Worker::getCity,Worker::getId);
+        OrderBy orderBy1 = Cnd.cri().groupBy("ct","id");
+        assertEquals(orderBy0.toSql(en), orderBy1.toSql(en));
     }
 
 }
