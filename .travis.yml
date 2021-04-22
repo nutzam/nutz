@@ -3,7 +3,7 @@ language: java
 script: mvn clean source:jar cobertura:cobertura package
 dist: trusty
 jdk:
-  - oraclejdk8
+  - oraclejdk11
 # whitelist
 branches:
   only:

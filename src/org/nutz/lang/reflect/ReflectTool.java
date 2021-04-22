@@ -3,6 +3,7 @@ package org.nutz.lang.reflect;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericDeclaration;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -14,6 +15,40 @@ import org.nutz.lang.Lang;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ReflectTool {
+	
+	protected static boolean hasLookup = false;
+	protected static Method DEFINE_CLASS;
+	protected static ProtectionDomain PROTECTION_DOMAIN;
+	static {
+		try {
+			MethodHandles.lookup();
+			hasLookup = true;
+		}
+		catch (Throwable e) {
+			PROTECTION_DOMAIN = getProtectionDomain(ReflectTool.class);
+	        AccessController.doPrivileged(new PrivilegedAction() {
+	            public Object run() {
+	                try {
+	                    Class loader = Class.forName("java.lang.ClassLoader"); // JVM
+	                                                                           // crash
+	                                                                           // w/o
+	                                                                           // this
+	                    DEFINE_CLASS = loader.getDeclaredMethod("defineClass",
+	                                                            new Class[]{String.class,
+	                                                                        byte[].class,
+	                                                                        Integer.TYPE,
+	                                                                        Integer.TYPE,
+	                                                                        ProtectionDomain.class});
+	                    DEFINE_CLASS.setAccessible(true);
+	                }
+	                catch (Throwable e) {
+	                    // Lang.impossible();
+	                }
+	                return null;
+	            }
+	        });
+		}
+	}
 
     public static ProtectionDomain getProtectionDomain(final Class source) {
         if (source == null) {
@@ -28,14 +63,29 @@ public class ReflectTool {
 
     public static Class defineClass(String className, byte[] b, ClassLoader loader)
             throws Exception {
-        return defineClass(className, b, loader, null);
+        return defineClass(className, b, loader, PROTECTION_DOMAIN);
     }
 
     public static Class defineClass(String className,
                                     byte[] b,
                                     ClassLoader loader,
                                     ProtectionDomain protectionDomain) throws Exception {
-    	Class c = MethodHandles.lookup().defineClass(b);
+    	if (hasLookup) {
+        	Class c = MethodHandles.lookup().defineClass(b);
+            Class.forName(className, true, loader);
+            return c;
+    	}
+    	if (DEFINE_CLASS == null)
+    		throw Lang.impossible();
+        Object[] args = new Object[]{className,
+                b,
+                new Integer(0),
+                new Integer(b.length),
+                protectionDomain};
+        if (loader == null)
+        	loader = ReflectTool.class.getClassLoader();
+        Class c = (Class) DEFINE_CLASS.invoke(loader, args);
+        // Force static initializers to run.
         Class.forName(className, true, loader);
         return c;
     }

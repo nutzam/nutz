@@ -1,7 +1,7 @@
 machine:
   timezone: Asia/Shanghai
   java:
-    version: oraclejdk8
+    version: oraclejdk11
 
 general:
   branches:
