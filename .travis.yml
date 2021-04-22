@@ -1,6 +1,6 @@
 sudo: false
 language: java
-script: mvn clean source:jar cobertura:cobertura package
+script: mvn clean package
 dist: trusty
 jdk:
   - oraclejdk11
@@ -26,7 +26,7 @@ env:
    - secure : "BaXmGpodQiuU23YgtUThWCHf7Vig2Gv3UfpBjo3FATgn1LRF3i2IOgY5sCSi+XJYqx+05fVNdwVYccxS/9UfhPNSqQuslIwgmg0y9f26DYaX2gaW+jk8padhZRkeBrY3fO+g9nQuu+Epgqi0ITru6+IjH932O0m1JR7iJu2RNhs="
 deploy:
   provider: script
-  script: "mvn -Dmaven.test.skip=true clean compile source:jar javadoc:jar deploy --settings mvn_settings.xml"
+  script: "mvn -Dmaven.test.skip=true clean package source:jar deploy --settings mvn_settings.xml"
   skip_cleanup: true
   on:
     tags: false
