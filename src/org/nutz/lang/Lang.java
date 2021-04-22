@@ -26,6 +26,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.nio.charset.Charset;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -2411,6 +2412,10 @@ public abstract class Lang {
      * @return 数字签名
      */
     public static String digest(String algorithm, InputStream ins) {
+        return fixedHexString(digest2(algorithm, ins));
+    }
+    
+    public static byte[] digest2(String algorithm, InputStream ins) {
         try {
             MessageDigest md = MessageDigest.getInstance(algorithm);
 
@@ -2420,19 +2425,53 @@ public abstract class Lang {
                 md.update(bs, 0, len);
             }
 
-            byte[] hashBytes = md.digest();
-
-            return fixedHexString(hashBytes);
+            return md.digest();
         }
         catch (NoSuchAlgorithmException e) {
-            throw Lang.wrapThrow(e);
-        }
-        catch (FileNotFoundException e) {
             throw Lang.wrapThrow(e);
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);
         }
+        finally {
+            Streams.safeClose(ins);
+        }
+    }
+    
+    public static String digest(String algorithm, InputStream ins, byte[] keyBytes) {
+        return fixedHexString(digest2(algorithm, ins, keyBytes));
+    }
+    
+    public static String digest(String algorithm, File f, byte[] keyBytes) {
+        return fixedHexString(digest2(algorithm, Streams.fileIn(f), keyBytes));
+    }
+    
+    public static String digest(String algorithm, String str, byte[] keyBytes) {
+        return fixedHexString(digest2(algorithm, Streams.wrap(str.getBytes()), keyBytes));
+    }
+    
+    public static byte[] digest2(String algorithm, InputStream ins, byte[] keyBytes) {
+        try {
+            SecretKeySpec signingKey = new SecretKeySpec(keyBytes, "Hmac" + algorithm);
+            Mac mac = Mac.getInstance("Hmac" + algorithm);
+            mac.init(signingKey);
+
+            byte[] bs = new byte[HASH_BUFF_SIZE];
+            int len = 0;
+            while ((len = ins.read(bs)) != -1) {
+                mac.update(bs, 0, len);
+            }
+
+            return mac.doFinal();
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw Lang.wrapThrow(e);
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        } catch (InvalidKeyException e) {
+        	throw Lang.wrapThrow(e);
+		}
         finally {
             Streams.safeClose(ins);
         }
@@ -2929,4 +2968,33 @@ public abstract class Lang {
         }
         return fixedHexString(bytes);
     }
+    
+    /**
+     * 获取指定字符串的 HmacSHA256 值
+    *
+    * @param data
+    *            字符串
+    * @param secret
+    *            密钥
+    * @return 指定字符串的 HmacSHA256 值
+    */
+   public static String hmacSHA1(String data, String secret) {
+       if (isEmpty(data))
+           throw new NullPointerException("data is null");
+       if (isEmpty(secret))
+           throw new NullPointerException("secret is null");
+       byte[] bytes = null;
+       try {
+           SecretKey secretKey = new SecretKeySpec(secret.getBytes(Encoding.UTF8), "HmacSHA1");
+           Mac mac = Mac.getInstance(secretKey.getAlgorithm());
+           mac.init(secretKey);
+           bytes = mac.doFinal(data.getBytes(Encoding.UTF8));
+       }
+       catch (Exception e) {
+           e.printStackTrace();
+           throw Lang.wrapThrow(e);
+       }
+       return fixedHexString(bytes);
+   }
+    
 }
