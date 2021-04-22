@@ -24,8 +24,6 @@ env:
    - secure: "E1z+6z9M4iTdAXZ2a1rYSrxfIOq6PkdXEMutAbIn/bp1e/Qvb5IVoAS0heo7SPwcIlHlN8mDiOtKdzbcu9q8VaftfHwFjff6AoKyuWtfDqE1ecTfflebWwzmtXKJmT5uxBPvu442dS4sIc2zx3zjvnxMsSmvrdSwbMxwdbAKvDc="
    - SONATYPE_USERNAME=wendal
    - secure : "BaXmGpodQiuU23YgtUThWCHf7Vig2Gv3UfpBjo3FATgn1LRF3i2IOgY5sCSi+XJYqx+05fVNdwVYccxS/9UfhPNSqQuslIwgmg0y9f26DYaX2gaW+jk8padhZRkeBrY3fO+g9nQuu+Epgqi0ITru6+IjH932O0m1JR7iJu2RNhs="
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
 deploy:
   provider: script
   script: "mvn -Dmaven.test.skip=true clean compile source:jar javadoc:jar deploy --settings mvn_settings.xml"
@@ -35,10 +33,3 @@ deploy:
     branch: master
 addons:
   postgresql: "9.3"
-  coverity_scan:
-    project:
-      name: "nutzam/nutz"
-    notification_email: wendal1985@gmail.com
-    build_command_prepend: "mvn clean"
-    build_command:   "mvn -DskipTests=true compile"
-    branch_pattern: coverity_scan
