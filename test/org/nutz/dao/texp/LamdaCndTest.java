@@ -7,9 +7,11 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.OrderBy;
 import org.nutz.dao.test.DaoCase;
+import org.nutz.dao.util.cri.Exps;
 import org.nutz.dao.util.cri.SqlExpression;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -142,6 +144,16 @@ public class LamdaCndTest extends DaoCase {
         OrderBy orderBy0 = Cnd.cri().groupBy(Worker::getCity,Worker::getId);
         OrderBy orderBy1 = Cnd.cri().groupBy("ct","id");
         assertEquals(orderBy0.toSql(en), orderBy1.toSql(en));
+    }
+
+    /**
+     * test_exps_insql2
+     */
+    @Test
+    public void test_exps_insql2() {
+        Cnd cnd0 = Cnd.where(Exps.inSql2(Worker::getId, "select user_id from role where id in (%s)", Arrays.asList(1,2,3)));
+        Cnd cnd1 = Cnd.where(Exps.inSql2("wid", "select user_id from role where id in (%s)", Arrays.asList(1,2,3)));
+        assertEquals(cnd0.toSql(en), cnd1.toSql(en));
     }
 
 }
