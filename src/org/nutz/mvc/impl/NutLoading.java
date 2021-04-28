@@ -2,13 +2,8 @@ package org.nutz.mvc.impl;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Set;
 
 import org.nutz.Nutz;
 import org.nutz.ioc.Ioc;
@@ -110,7 +105,7 @@ public class NutLoading implements Loading {
             evalSetup(config, mainModule);
 
             // 应用完成后执行用户自定义的 CommandLineRunner
-            callRunners(config);
+            callRunners(ioc);
         }
         catch (Exception e) {
             if (log.isErrorEnabled())
@@ -292,12 +287,14 @@ public class NutLoading implements Loading {
         }
     }
 
-    protected void callRunners(NutConfig config){
-        String[] names = config.getIoc().getNamesByType(CommandLineRunner.class);
-        Arrays.sort(names);
-        for (String beanName : names) {
-            CommandLineRunner commandLineRunner = config.getIoc().get(CommandLineRunner.class, beanName);
-            callRunner(commandLineRunner);
+    protected void callRunners(Ioc ioc){
+        if(Objects.nonNull(ioc)){
+            String[] names = ioc.getNamesByType(CommandLineRunner.class);
+            Arrays.sort(names);
+            for (String beanName : names) {
+                CommandLineRunner commandLineRunner = ioc.get(CommandLineRunner.class, beanName);
+                callRunner(commandLineRunner);
+            }
         }
     }
 

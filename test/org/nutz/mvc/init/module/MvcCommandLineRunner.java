@@ -10,6 +10,16 @@ import org.nutz.mvc.CommandLineRunner;
 public class MvcCommandLineRunner implements CommandLineRunner {
     @Override
     public void run() throws Exception {
-        System.out.println("call run MvcCommandLineRunner");
+        System.out.println("call run Class CommandLineRunner");
+    }
+
+    @IocBean
+    public CommandLineRunner commandLineRunner(){
+        return new CommandLineRunner(){
+            @Override
+            public void run() throws Exception {
+                System.out.println("call run Method CommandLineRunner");
+            }
+        };
     }
 }
