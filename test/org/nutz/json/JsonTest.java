@@ -38,6 +38,7 @@ import org.nutz.json.JsonShape.Type;
 import org.nutz.json.generic.IntKeyMap;
 import org.nutz.json.impl.JsonRenderImpl;
 import org.nutz.json.meta.EnumWithFields;
+import org.nutz.json.meta.IntelliUserRespVo;
 import org.nutz.json.meta.Issue1199;
 import org.nutz.json.meta.JA;
 import org.nutz.json.meta.JB;
@@ -1244,5 +1245,16 @@ public class JsonTest {
         map.put("abc", 12345678990012L);
         System.out.println(Json.toJson(map, JsonFormat.full()));
         System.out.println(Json.toJson(map, JsonFormat.full().setLongAsString(true)));
+    }
+    
+    @Test
+    public void test_nutzcn_abc() throws IOException {
+    	byte[] buff = Streams.readBytes(getClass().getClassLoader().getResourceAsStream("org/nutz/json/pojo123.json"));
+    	IntelliUserRespVo resp = Json.fromJson(IntelliUserRespVo.class, new String(buff));
+    	assertNotNull(resp);
+    	assertNotNull(resp.getData());
+    	assertTrue(resp.getData().size() > 0);
+    	assertTrue(resp.getData().get(0).getXm() != null);
+    	System.out.println(Json.toJson(resp));
     }
 }
