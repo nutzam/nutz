@@ -60,7 +60,7 @@ import org.nutz.trans.Trans;
  * @author wendal(wendal1985@gmail.com)
  * @author cqyunqin
  * @author rekoe(koukou890@qq.com)
- * @author threefish(306955302@qq.com)
+ * @author 黄川(huchuc@vip.qq.com)
  */
 public abstract class Daos {
 

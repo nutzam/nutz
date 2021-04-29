@@ -2,13 +2,8 @@ package org.nutz.mvc.impl;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Set;
 
 import org.nutz.Nutz;
 import org.nutz.ioc.Ioc;
@@ -24,18 +19,7 @@ import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
-import org.nutz.mvc.ActionChainMaker;
-import org.nutz.mvc.ActionInfo;
-import org.nutz.mvc.EntryDeterminer;
-import org.nutz.mvc.Loading;
-import org.nutz.mvc.LoadingException;
-import org.nutz.mvc.MessageLoader;
-import org.nutz.mvc.Mvcs;
-import org.nutz.mvc.NutConfig;
-import org.nutz.mvc.SessionProvider;
-import org.nutz.mvc.Setup;
-import org.nutz.mvc.UrlMapping;
-import org.nutz.mvc.ViewMaker;
+import org.nutz.mvc.*;
 import org.nutz.mvc.annotation.ChainBy;
 import org.nutz.mvc.annotation.Determiner;
 import org.nutz.mvc.annotation.IocBy;
@@ -119,6 +103,9 @@ public class NutLoading implements Loading {
              * 执行用户自定义 Setup
              */
             evalSetup(config, mainModule);
+
+            // 应用完成后执行用户自定义的 CommandLineRunner
+            callRunners(ioc);
         }
         catch (Exception e) {
             if (log.isErrorEnabled())
@@ -220,7 +207,7 @@ public class NutLoading implements Loading {
         } else {
             log.infof("Found %d module methods", atMethods);
         }
-        
+
         config.setUrlMapping(mapping);
         config.setActionChainMaker(maker);
         config.setViewMakers(makers);
@@ -297,6 +284,26 @@ public class NutLoading implements Loading {
         	Setup setup = (Setup)Mirror.me(mainModule).born();
         	config.setAttributeIgnoreNull(Setup.class.getName(), setup);
         	setup.init(config);
+        }
+    }
+
+    protected void callRunners(Ioc ioc){
+        if(Objects.nonNull(ioc)){
+            String[] names = ioc.getNamesByType(CommandLineRunner.class);
+            Arrays.sort(names);
+            for (String beanName : names) {
+                CommandLineRunner commandLineRunner = ioc.get(CommandLineRunner.class, beanName);
+                callRunner(commandLineRunner);
+            }
+        }
+    }
+
+    private void callRunner(CommandLineRunner runner){
+        try {
+            runner.run();
+        }
+        catch (Exception ex) {
+            throw new IllegalStateException("Failed to execute CommandLineRunner", ex);
         }
     }
 
