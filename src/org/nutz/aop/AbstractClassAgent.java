@@ -37,7 +37,7 @@ public abstract class AbstractClassAgent implements ClassAgent {
     public <T> Class<T> define(ClassDefiner cd, Class<T> klass) {
         if (klass.getName().endsWith(CLASSNAME_SUFFIX))
             return klass;
-        String newName = ReflectTool.class.getPackageName();
+        String newName = "org.nutz.lang.reflect";
         newName += "." + Lang.md5(klass.getName());
         newName += (id == null ? "" : "$" + id) +  CLASSNAME_SUFFIX;
         return define(cd, klass, newName);
