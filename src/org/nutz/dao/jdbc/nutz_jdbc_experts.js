@@ -22,7 +22,8 @@ var ioc = {
 		"gbase.*" : "org.nutz.dao.impl.jdbc.gbase.GBaseJdbcExpert",
 		"sybase.*" : "org.nutz.dao.impl.jdbc.sybase.SybaseIQJdbcExpert",
 		"dm dbms.*" : "org.nutz.dao.impl.jdbc.dm.DmJdbcExpert",
-		"tdengine.*" : "org.nutz.dao.impl.jdbc.tdengine.TDengineJdbcExpert"
+		"tdengine.*" : "org.nutz.dao.impl.jdbc.tdengine.TDengineJdbcExpert",
+		"clickhouse.*" : "org.nutz.dao.impl.jdbc.clickhouse.ClickhouseJdbcExpert"
 	// ~ 映射结束
 	},
 
