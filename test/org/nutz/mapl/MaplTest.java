@@ -35,6 +35,14 @@ import org.nutz.mvc.adaptor.injector.ObjectNaviNode;
  * @author juqkai(juqkai@gmail.com)
  */
 public class MaplTest {
+	
+	@Test
+	public void test_obj_to_simple() {
+		D d = (D) Mapl.maplistToObj(Json.fromJson("{a: [1,2,3], b:\"9\", c: \"yes\"}") ,D.class);
+		assertEquals("[1, 2, 3]", d.a);
+		assertEquals(9, d.b);
+		assertEquals(true, d.c);
+	}
 
     /**
      * Issue #1355

@@ -65,6 +65,9 @@ public class ObjConvertImpl implements MaplConvert {
         if (type == null)
             return model;
         // obj是基本数据类型或String
+        Mirror<?> mirror = Mirror.me(type);
+		if (mirror.isSimple())
+			return Castors.me().castTo(model, mirror.getType());
         if (!(model instanceof Map) && !(model instanceof Iterable)) {
             return Castors.me().castTo(model, Lang.getTypeClass(type));
         }
