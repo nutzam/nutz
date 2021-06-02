@@ -31,7 +31,7 @@ var ioc = {
 	 * 所有 Expert 都能读到这个配置文件
 	 */
 	config : {
-	// 默认的 Clob 以及 Blog 临时目录
+	// 默认的 Clob/Blob 临时目录
 	"pool-home" : "~/.nutz/tmp/dao/",
 	// 临时目录大小，0 为不限大小
 	"pool-max" : 200000,
