@@ -118,18 +118,8 @@ public class ObjCompileImpl implements MaplCompile<Object> {
         List<JsonEntityField> fields = jen.getFields();
         ArrayList<Pair> list = new ArrayList<Pair>(fields.size());
         for (JsonEntityField jef : fields) {
-            String name = jef.getName();
             try {
-                Object value = jef.getValue(obj);
-                if (null != value) {
-                    // 递归
-                    Mirror<?> mirror = Mirror.me(value);
-                    if (mirror.isPojo()) {
-                        value = parse(value);
-                    }
-                }
-                // 加入输出列表 ...
-                list.add(new Pair(name, value));
+                list.add(new Pair(jef.getName(), parse(jef.getValue(obj))));
             }
             catch (FailToGetValueException e) {}
         }
