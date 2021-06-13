@@ -26,7 +26,7 @@ public class String2Integer extends String2Number<Integer> {
             return Integer.valueOf(ni.val, ni.radix);
         }
         catch (NumberFormatException e) {
-            return Integer.valueOf(str);
+            return Double.valueOf(str).intValue();
         }
     }
 

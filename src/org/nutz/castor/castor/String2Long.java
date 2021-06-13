@@ -26,7 +26,7 @@ public class String2Long extends String2Number<Long> {
             return Long.valueOf(ni.val, ni.radix);
         }
         catch (NumberFormatException e) {
-            return Long.valueOf(str);
+            return Double.valueOf(str).longValue();
         }
     }
 
