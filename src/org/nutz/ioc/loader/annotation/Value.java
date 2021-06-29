@@ -17,4 +17,10 @@ public @interface Value {
      * @return
      */
     String name() default "";
+
+    /**
+     * 配置项默认值
+     * @return
+     */
+    String defaultValue() default "";
 }
