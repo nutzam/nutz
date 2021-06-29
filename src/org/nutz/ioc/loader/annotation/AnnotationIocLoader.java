@@ -167,7 +167,13 @@ public class AnnotationIocLoader implements IocLoader {
                 } else {
                     configName = value.name();
                 }
-                IocValue iocValue = Iocs.convert(String.format("java:$conf.get('%s')", configName), true);
+                String defaultValue = value.defaultValue();
+                IocValue iocValue;
+                if(Strings.isBlank(defaultValue)) {
+                    iocValue = Iocs.convert(String.format("java:$conf.get('%s')", configName), true);
+                } else {
+                    iocValue = Iocs.convert(String.format("java:$conf.get('%s', '%s')", configName, defaultValue), true);
+                }
                 IocField iocField = new IocField();
                 iocField.setName(valueField.getName());
                 iocField.setValue(iocValue);
