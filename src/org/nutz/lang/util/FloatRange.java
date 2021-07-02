@@ -2,6 +2,8 @@ package org.nutz.lang.util;
 
 import org.nutz.lang.Strings;
 
+import java.math.BigDecimal;
+
 public class FloatRange {
 
     public static FloatRange make(String s) {
@@ -9,14 +11,16 @@ public class FloatRange {
         int i = 0;
         for (; i < cs.length; i++) {
             char c = cs[i];
-            if (c == ',' || c == ':')
+            if (c == ',' || c == ':') {
                 break;
+            }
         }
-        if (i == cs.length)
+        if (i == cs.length) {
             return make(Float.parseFloat(new String(cs)));
+        }
 
         float left = Float.parseFloat(String.valueOf(cs, 0, i));
-        
+
         return make(left, Float.parseFloat(String.valueOf(cs, ++i, cs.length - i)));
     }
 
@@ -41,7 +45,7 @@ public class FloatRange {
     }
 
     public boolean on(float n) {
-        return n == left || n == right;
+        return new BigDecimal(n).equals(new BigDecimal(left) ) || new BigDecimal(n).equals(new BigDecimal(right));
     }
 
     public boolean inon(float n) {
@@ -88,6 +92,7 @@ public class FloatRange {
         this.right = right;
     }
 
+    @Override
     public String toString() {
         return String.format("%s:%s", left, right);
     }
