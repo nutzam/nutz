@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -1256,5 +1257,13 @@ public class JsonTest {
     	assertTrue(resp.getData().size() > 0);
     	assertTrue(resp.getData().get(0).getXm() != null);
     	System.out.println(Json.toJson(resp));
+    }
+    
+    @Test
+    public void test_json_as_array() throws IOException {
+    	String json = "[{age:1}]";
+    	for (int i = 0; i < 100*10000; i++) {
+			Json.fromJsonAsArray(Pet.class, json);
+		}
     }
 }

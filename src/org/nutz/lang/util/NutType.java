@@ -3,6 +3,7 @@ package org.nutz.lang.util;
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -92,4 +93,38 @@ public class NutType implements ParameterizedType {
     public void setRawType(Type rawType) {
         this.rawType = rawType;
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(actualTypeArguments);
+		result = prime * result + ((ownerType == null) ? 0 : ownerType.hashCode());
+		result = prime * result + ((rawType == null) ? 0 : rawType.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NutType other = (NutType) obj;
+		if (!Arrays.equals(actualTypeArguments, other.actualTypeArguments))
+			return false;
+		if (ownerType == null) {
+			if (other.ownerType != null)
+				return false;
+		} else if (!ownerType.equals(other.ownerType))
+			return false;
+		if (rawType == null) {
+			if (other.rawType != null)
+				return false;
+		} else if (!rawType.equals(other.rawType))
+			return false;
+		return true;
+	}
 }
