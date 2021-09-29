@@ -33,7 +33,7 @@ public final class Nutz {
      * @return nutz 项目的版本号
      */
     public static String version() {
-        return "1.r.69.20210929";
+        return "1.r.69-SNAPSHOT";
     }
 
     /**
