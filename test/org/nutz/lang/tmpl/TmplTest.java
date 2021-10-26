@@ -12,6 +12,12 @@ import org.nutz.lang.util.NutMap;
 public class TmplTest {
 
     @Test
+    public void test_getOr() {
+        NutMap context = Lang.map("a", "AAA");
+        assertEquals("AAA", Tmpl.exec("${b|a?-nil-}", context));
+    }
+
+    @Test
     public void test_dft_true_false() {
         NutMap context = Lang.map("a", true);
         assertEquals("x", Tmpl.exec("${a<boolean:x>}", context));

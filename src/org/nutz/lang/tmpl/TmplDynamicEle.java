@@ -91,7 +91,7 @@ abstract class TmplDynamicEle implements TmplEle {
 
     private Object __get_val(NutBean context, String k) {
         // 得到值
-        Object val = context.get(k);
+        Object val = context.getOr(k);
 
         // 如果没值，看看是否需要用 mapl 搞一下
         if (null == val && _is_key_as_path) {
