@@ -37,7 +37,7 @@ import org.nutz.log.Logs;
 import org.nutz.repo.LevenshteinDistance;
 
 /**
- * 
+ *
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  */
@@ -83,9 +83,9 @@ public class NutIoc implements Ioc2 {
      * </ul>
      */
     private Set<String> supportedTypes;
-    
+
     protected List<IocEventListener> listeners;
-    
+
     protected ThreadLocal<Object> listenerH = new ThreadLocal<Object>();
 
     public NutIoc(IocLoader loader) {
@@ -239,6 +239,9 @@ public class NutIoc implements Ioc2 {
                             _checkIocEventListeners();
                             ing.setListeners(listeners);
                             op = maker.make(ing, iobj);
+                        }
+                        if (iobj.isSingleton() && null != ing.getObjectName()) {
+                            ing.getContext().save(iobj.getScope(), ing.getObjectName(), op);
                         }
                     }
                     // 处理异常
@@ -396,7 +399,7 @@ public class NutIoc implements Ioc2 {
         }
         return re.toArray(new String[re.size()]);
     }
-    
+
     public String[] getNamesByAnnotation(Class<? extends Annotation> klass) {
         return this.getNamesByAnnotation(klass, null);
     }
@@ -460,7 +463,7 @@ public class NutIoc implements Ioc2 {
                                + klass.getName(),
                                "none ioc bean match class=" + klass.getName());
     }
-    
+
     protected void _checkIocEventListeners() {
         if (listeners != null)
             return;
@@ -491,11 +494,11 @@ public class NutIoc implements Ioc2 {
             getIocContext().save("app", name, new ObjectProxy(obj));
         return this;
     }
-    
+
     public Class<?> getType(String beanName) throws ObjectLoadException {
         return getType(beanName, null);
     }
-    
+
     public Class<?> getType(String beanName, IocContext context) throws ObjectLoadException {
         IocContext cntx;
         if (null == context || context == this.context)

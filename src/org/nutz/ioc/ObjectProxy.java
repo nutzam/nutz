@@ -9,7 +9,7 @@ import org.nutz.lang.Lang;
  * 创建一个 ObjectProxy， 存入上下文。 然后慢慢的设置它的 weaver 和 fetch。
  * <p>
  * 在出现异常的时候，一定要将该对象从上下文中移除掉。
- * 
+ *
  * @author zozoh(zozohtnt@gmail.com)
  */
 public class ObjectProxy {
@@ -23,6 +23,12 @@ public class ObjectProxy {
      * 存储静态对象
      */
     private Object obj;
+
+    /**
+     * 声明对象是否为单例。如果为单例，则在整个上下文环境下，只会有一份实例<br>
+     * 内部对象的 singleton 将会被忽略
+     */
+    private boolean singleton;
 
     /**
      * 获取时触发器
@@ -60,13 +66,26 @@ public class ObjectProxy {
         return this;
     }
 
+    public boolean isSingleton() {
+        return singleton;
+    }
+
+    public ObjectProxy setSingleton(boolean singleton) {
+        this.singleton = singleton;
+        return this;
+    }
+
     @SuppressWarnings("unchecked")
     public synchronized <T> T get(Class<T> classOfT, IocMaking ing) {
         Object re;
         if (null != obj) {
             re = obj;
         } else if (null != weaver) {
-            re = weaver.onCreate(weaver.fill(ing, weaver.born(ing)));
+            re = weaver.born(ing);
+            if(singleton){
+                obj = re;
+            }
+            re = weaver.onCreate(weaver.fill(ing, re));
         } else {
             throw Lang.makeThrow("NullProxy for '%s'!", ing.getObjectName());
         }
