@@ -42,6 +42,7 @@ public class ObjectMakerImpl implements ObjectMaker {
         // 就是说，所有内部对象，将会随这其所附属的对象来保存，而自己不会单独保存
         ObjectProxy op = new ObjectProxy();
         op.setSingleton(iobj.isSingleton());
+        op.setScope(iobj.getScope());
 
         try {
             // 准备对象的编织方式

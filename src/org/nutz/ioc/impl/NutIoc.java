@@ -261,12 +261,17 @@ public class NutIoc implements Ioc2 {
         }
 
         synchronized (lock_get) {
-            T re = op.get(type, ing);
-
-            if (!name.startsWith("$") && re instanceof IocLoader) {
-                loader.addLoader((IocLoader) re);
+            try {
+                T re = op.get(type, ing);
+                if (!name.startsWith("$") && re instanceof IocLoader) {
+                    loader.addLoader((IocLoader) re);
+                }
+                return re;
+            } // 当异常发生，从 context 里移除 ObjectProxy
+            catch (Throwable e) {
+                ing.getContext().remove(op.getScope(), ing.getObjectName());
+                throw new IocException(ing.getObjectName(), e, "throw Exception when creating");
             }
-            return re;
         }
     }
 

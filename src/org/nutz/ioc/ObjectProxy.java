@@ -31,6 +31,12 @@ public class ObjectProxy {
     private boolean singleton;
 
     /**
+     * 对象基本，容器根据这个字段，来决定将这个对象保存在哪一个上下文范围中<br>
+     * 默认的为 "app"
+     */
+    private String scope;
+
+    /**
      * 获取时触发器
      */
     private IocEventTrigger<Object> fetch;
@@ -72,6 +78,15 @@ public class ObjectProxy {
 
     public ObjectProxy setSingleton(boolean singleton) {
         this.singleton = singleton;
+        return this;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public ObjectProxy setScope(String scope) {
+        this.scope = scope;
         return this;
     }
 
