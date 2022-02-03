@@ -4,12 +4,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.nutz.ioc.IocEventTrigger;
-import org.nutz.ioc.IocException;
-import org.nutz.ioc.IocMaking;
-import org.nutz.ioc.ObjectMaker;
-import org.nutz.ioc.ObjectProxy;
-import org.nutz.ioc.ValueProxy;
+import org.nutz.ioc.*;
 import org.nutz.ioc.meta.IocEventSet;
 import org.nutz.ioc.meta.IocField;
 import org.nutz.ioc.meta.IocObject;
@@ -33,23 +28,27 @@ import org.nutz.lang.reflect.FastMethod;
 public class ObjectMakerImpl implements ObjectMaker {
 
     public ObjectProxy make(final IocMaking ing, IocObject iobj) {
-
-        // 获取配置的对象事件集合
-        IocEventSet iocEventSet = iobj.getEvents();
-
         // 建立对象代理，并保存在上下文环境中 只有对象为 singleton
         // 并且有一个非 null 的名称的时候才会保存
         // 就是说，所有内部对象，将会随这其所附属的对象来保存，而自己不会单独保存
         ObjectProxy op = new ObjectProxy();
         op.setSingleton(iobj.isSingleton());
         op.setScope(iobj.getScope());
+        op.setWeaver(makeWeaver(ing, iobj));
+        // 为对象代理设置触发事件
+        if (null != iobj.getEvents()) {
+            op.setFetch(createTrigger(iobj.getEvents().getFetch()));
+            op.setDepose(createTrigger(iobj.getEvents().getDepose()));
+        }
+        // 返回
+        return op;
+    }
 
+    protected ObjectWeaver makeWeaver(final IocMaking ing, IocObject iobj){
         try {
             // 准备对象的编织方式
             DefaultWeaver dw = new DefaultWeaver();
             dw.setListeners(ing.getListeners());
-            op.setWeaver(dw);
-
             // 构造函数参数
             ValueProxy[] vps = new ValueProxy[Lang.eleSize(iobj.getArgs())];
             for (int i = 0; i < vps.length; i++)
@@ -101,14 +100,6 @@ public class ObjectMakerImpl implements ObjectMaker {
                 dw.setBorning((Borning<?>) mirror.getBorning(args));
             }
 
-
-            // 为对象代理设置触发事件
-            if (null != iobj.getEvents()) {
-                op.setFetch(createTrigger(mirror, iocEventSet.getFetch()));
-                op.setDepose(createTrigger(mirror, iocEventSet.getDepose()));
-                dw.setCreate(createTrigger(mirror, iocEventSet.getCreate()));
-            }
-
             // 获得每个字段的注入方式
             List<IocField> _fields = new ArrayList<IocField>(iobj.getFields().values());
             FieldInjector[] fields = new FieldInjector[_fields.size()];
@@ -119,10 +110,15 @@ public class ObjectMakerImpl implements ObjectMaker {
                     fields[i] = FieldInjector.create(mirror, ifld.getName(), vp, ifld.isOptional());
                 }
                 catch (Exception e) {
-                	throw Lang.wrapThrow(e, "Fail to eval Injector for field: '%s'", ifld.getName());
+                    throw Lang.wrapThrow(e, "Fail to eval Injector for field: '%s'", ifld.getName());
                 }
             }
             dw.setFields(fields);
+            // 为对象代理设置触发事件
+            if (null != iobj.getEvents()) {
+                dw.setCreate(createTrigger(iobj.getEvents().getCreate()));
+            }
+            return dw;
         }
         catch (IocException e) {
             ing.getContext().remove(iobj.getScope(), ing.getObjectName());
@@ -134,13 +130,10 @@ public class ObjectMakerImpl implements ObjectMaker {
             ing.getContext().remove(iobj.getScope(), ing.getObjectName());
             throw new IocException(ing.getObjectName(), e, "throw Exception when creating");
         }
-
-        // 返回
-        return op;
     }
 
     @SuppressWarnings({"unchecked"})
-    private static IocEventTrigger<Object> createTrigger(Mirror<?> mirror, final String str) {
+    private static IocEventTrigger<Object> createTrigger(final String str) {
         if (Strings.isBlank(str))
             return null;
         if (str.contains(".")) {
