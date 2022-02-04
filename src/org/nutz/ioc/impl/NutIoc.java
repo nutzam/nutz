@@ -188,6 +188,9 @@ public class NutIoc implements Ioc2 {
                 // 如果未发现对象
                 if (null == op) {
                     op = makeObjectProxy(type, name, ing);
+                    if (op.isSingleton() && null != ing.getObjectName()) {
+                        cntx.save(op.getScope(), ing.getObjectName(), op);
+                    }
                 }
             }
         }
@@ -202,7 +205,7 @@ public class NutIoc implements Ioc2 {
             }
             // 当异常发生，从 context 里移除 ObjectProxy
             catch (Throwable e) {
-                ing.getContext().remove(op.getScope(), ing.getObjectName());
+                cntx.remove(op.getScope(), ing.getObjectName());
                 throw new IocException(ing.getObjectName(), e, "throw Exception when creating");
             }
         }
@@ -270,9 +273,6 @@ public class NutIoc implements Ioc2 {
                 _checkIocEventListeners();
                 ing.setListeners(listeners);
                 op = maker.make(ing, iobj);
-            }
-            if (iobj.isSingleton() && null != ing.getObjectName()) {
-                ing.getContext().save(iobj.getScope(), ing.getObjectName(), op);
             }
             return op;
         }
