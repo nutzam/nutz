@@ -142,6 +142,7 @@ public class NutLoading implements Loading {
          * 准备 UrlMapping
          */
         UrlMapping mapping = createUrlMapping(config);
+        config.setUrlMapping(mapping);
         if (log.isInfoEnabled())
             log.infof("Build URL mapping by %s ...", mapping.getClass().getName());
 
@@ -149,16 +150,19 @@ public class NutLoading implements Loading {
          * 创建视图工厂
          */
         ViewMaker[] makers = createViewMakers(mainModule, ioc);
+        config.setViewMakers(makers);
 
         /*
          * 创建动作链工厂
          */
         ActionChainMaker maker = createChainMaker(config, mainModule);
+        config.setActionChainMaker(maker);
 
         /*
          * 创建主模块的配置信息
          */
         ActionInfo mainInfo = Loadings.createInfo(mainModule);
+        mainInfo.setMain(true);
 
         // fix issue #1337
         Determiner ann = mainModule.getAnnotation(Determiner.class);
@@ -182,12 +186,12 @@ public class NutLoading implements Loading {
         if (log.isDebugEnabled())
             log.debugf("Use %s as EntryMethodDeterminer", determiner.getClass().getName());
         for (Class<?> module : modules) {
-            ActionInfo moduleInfo = Loadings.createInfo(module).mergeWith(mainInfo, true);
+            ActionInfo moduleInfo = Loadings.createInfo(module).mergeWith(mainInfo);
             for (Method method : module.getMethods()) {
                 if (!determiner.isEntry(module, method))
                     continue;
                 // 增加到映射中
-                ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo, false);
+                ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);
                 info.setViewMakers(makers);
                 mapping.add(maker, info, config);
                 atMethods++;
@@ -207,10 +211,6 @@ public class NutLoading implements Loading {
         } else {
             log.infof("Found %d module methods", atMethods);
         }
-
-        config.setUrlMapping(mapping);
-        config.setActionChainMaker(maker);
-        config.setViewMakers(makers);
 
         return mapping;
     }

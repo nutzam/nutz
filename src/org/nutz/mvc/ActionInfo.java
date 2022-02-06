@@ -15,6 +15,8 @@ import org.nutz.lang.util.ClassMetaReader;
 
 public class ActionInfo {
 
+    private Boolean main = false;
+
     private String inputEncoding;
 
     private String outputEncoding;
@@ -44,24 +46,24 @@ public class ActionInfo {
     private Class<?> moduleType;
 
     private Method method;
-    
+
     private boolean pathTop;
-    
+
     private ClassMeta meta;
 
     private String[] paramNames;
-    
+
     private Integer lineNumber;
-    
+
     private Object obj;//
-    
+
     private String[] namedPathArgs;
 
     public ActionInfo() {
         httpMethods = new HashSet<String>();
     }
 
-    public ActionInfo mergeWith(ActionInfo parent, boolean fromMain) {
+    public ActionInfo mergeWith(ActionInfo parent) {
         // 组合路径 - 与父路径做一个笛卡尔积
         if (!pathTop && null != paths && null != parent.paths && parent.paths.length > 0) {
             List<String> myPaths = new ArrayList<String>(paths.length * parent.paths.length);
@@ -96,12 +98,12 @@ public class ActionInfo {
         okView = null == okView ? parent.okView : okView;
         failView = null == failView ? parent.failView : failView;
         filterInfos = null == filterInfos ? parent.filterInfos : filterInfos;
-        if (!fromMain) {
+        if (!parent.isMain()) {
             injectName = null == injectName ? parent.injectName : injectName;
             moduleType = null == moduleType ? parent.moduleType : moduleType;
         }
         chainName = null == chainName ? parent.chainName : chainName;
-        
+
         // 继承元数据信息
         if (this.method != null && this.meta == null && parent.meta != null && parent.meta.type != null){
             if (parent.meta.type.equals(this.method.getDeclaringClass().getName())) {
@@ -110,7 +112,7 @@ public class ActionInfo {
                 this.lineNumber = parent.meta.methodLines.get(key);
             }
         }
-        
+
         // 当前仅支持单一路径的时候使用路径占位符
         if (this.method != null && paths != null && paths.length == 1) {
             String path = paths[0];
@@ -132,7 +134,7 @@ public class ActionInfo {
                 namedPathArgs = ph.toArray(new String[ph.size()]);
             }
         }
-        
+
         return this;
     }
 
@@ -145,7 +147,7 @@ public class ActionInfo {
 
     /**
      * 接受各种标准和非标准的Http Method
-     * 
+     *
      * @return 特殊的 HTTP 方法列表
      */
     public Set<String> getHttpMethods() {
@@ -287,16 +289,24 @@ public class ActionInfo {
     public Integer getLineNumber() {
         return lineNumber;
     }
-    
+
     public void setModuleObj(Object obj) {
 		this.obj = obj;
 	}
-    
+
     public Object getModuleObj() {
     	return this.obj;
     }
-    
+
     public String[] getNamedPathArgs() {
         return namedPathArgs;
+    }
+
+    public Boolean isMain() {
+        return main;
+    }
+
+    public void setMain(Boolean main) {
+        this.main = main;
     }
 }
