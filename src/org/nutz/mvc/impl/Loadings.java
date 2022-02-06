@@ -4,12 +4,7 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.annotation.InjectName;
@@ -93,25 +88,19 @@ public abstract class Loadings {
         return ai;
     }
 
-    public static Set<Class<?>> scanModules(Ioc ioc, Class<?> mainModule, EntryDeterminer determiner) {
+    public static Set<Class<?>> scanModules(Ioc ioc, Class<?> mainModule, EntryDeterminer determiner){
         Modules ann = mainModule.getAnnotation(Modules.class);
         boolean scan = null == ann ? true : ann.scanPackage();
         // 准备扫描列表
         Set<Class<?>> forScans = new HashSet<Class<?>>();
-
-        // 准备存放模块类的集合
-        Set<Class<?>> modules = new HashSet<Class<?>>();
-
         // 添加主模块，简直是一定的
         forScans.add(mainModule);
-
-        // 根据配置，扩展扫描列表
+        // 根据配置，扫描所有明确指定的class列表
         if (null != ann) {
             // 指定的类，这些类可以作为种子类，如果 ann.scanPackage 为 true 还要递归搜索所有子包
             for (Class<?> module : ann.value()) {
                 forScans.add(module);
             }
-
             // 如果定义了扩展扫描接口 ...
             for (String str : ann.by()) {
                 ModuleScanner ms;
@@ -133,86 +122,70 @@ public abstract class Loadings {
                 }
                 // 执行扫描，并将结果计入搜索结果
                 Collection<Class<?>> col = ms.scan();
-                if (null != col)
-                    for (Class<?> type : col) {
-                        if (isModule(type, determiner)) {
-                            modules.add(type);
-                        }
-                    }
+                if (null != col) {
+                    forScans.addAll(col);
+                }
             }
-
+        }
+        // 准备存放模块类的集合
+        Set<Class<?>> modules = new HashSet<Class<?>>();
+        if (!scan) {
+            return scanModules(forScans, determiner);
+        }
+        // 扫描包
+        Set<String> pns = new HashSet<>();
+        if (null != ann) {
             // 扫描包，扫描出的类直接计入结果
             if (ann.packages() != null && ann.packages().length > 0) {
-                for (String packageName : ann.packages()) {
-                    scanModuleInPackage(modules, packageName, determiner);
-                }
+                pns.addAll(Lang.list(ann.packages()));
             }
         }
-
-        for (Class<?> type : forScans) {
-            // mawm 为了兼容maven,根据这个type来加载该type所在jar的加载
-            try {
-                URL location = type.getProtectionDomain().getCodeSource().getLocation();
-                if (log.isDebugEnabled())
-                    log.debugf("module class location '%s'", location);
-            }
-            catch (NullPointerException e) {
-                // Android上无法拿到getProtectionDomain,just pass
-            }
-            //Scans.me().registerLocation(type);
+        for (Class<?> clazz : forScans) {
+            pns.add(clazz.getPackage().getName());
         }
+        return scanModuleInPackages(pns, determiner);
+    }
 
-        // 执行扫描
-        for (Class<?> type : forScans) {
-            // 扫描子包
-            if (scan) {
-                scanModuleInPackage(modules, type.getPackage().getName(), determiner);
-            }
-            // 仅仅加载自己
-            else {
-                if (isModule(type, determiner)) {
-                    if (log.isDebugEnabled())
-                        log.debugf(" > Found @At : '%s'", type.getName());
-                    modules.add(type);
-                } else if (log.isTraceEnabled()) {
-                    log.tracef(" > ignore '%s'", type.getName());
-                }
-            }
+    /**
+     * 递归扫描包里所有类，找出所有的模块类
+     * @param packageNames
+     * @param determiner
+     * @return
+     */
+    public static Set<Class<?>> scanModuleInPackages(Set<String> packageNames, EntryDeterminer determiner){
+        Set<Class<?>> modules = new HashSet<>();
+        for (String packageName : packageNames) {
+            List<Class<?>> subs = Scans.me().scanPackage(packageName);
+            modules.addAll(scanModules(subs, determiner));
         }
         return modules;
     }
 
-    public static void scanModuleInPackage(Set<Class<?>> modules, String packageName, EntryDeterminer determiner) {
-        if (log.isDebugEnabled())
-            log.debugf(" > scan '%s'", packageName);
-
-        List<Class<?>> subs = Scans.me().scanPackage(packageName);
-        checkModule(modules, subs, determiner);
-    }
-    
-    public static void scanModuleInPackage(Set<Class<?>> modules, String packageName) {
-        scanModuleInPackage(modules, packageName, new NutEntryDeterminer());
-    }
-
     /**
-     * @param modules
-     * @param subs
+     * 扫描类是否是模块类
+     * @param clazzs
+     * @param determiner
+     * @return
      */
-    private static void checkModule(Set<Class<?>> modules, List<Class<?>> subs, EntryDeterminer determiner) {
-        for (Class<?> sub : subs) {
+    public static Set<Class<?>> scanModules(Collection<Class<?>> clazzs, EntryDeterminer determiner) {
+        // 准备存放模块类的集合
+        Set<Class<?>> modules = new HashSet<Class<?>>();
+        // 执行扫描
+        for (Class<?> type : clazzs) {
             try {
-                if (isModule(sub, determiner)) {
+                if (isModule(type, determiner)) {
                     if (log.isDebugEnabled())
-                        log.debugf("   >> add '%s'", sub.getName());
-                    modules.add(sub);
+                        log.debugf("   >> add '%s'", type.getName());
+                    modules.add(type);
                 } else if (log.isTraceEnabled()) {
-                    log.tracef("   >> ignore '%s'", sub.getName());
+                    log.tracef("   >> ignore '%s'", type.getName());
                 }
             }
             catch (Exception e) {
-                throw new RuntimeException("something happen when handle class=" + sub.getName(), e);
+                throw new RuntimeException("something happen when handle class=" + type.getName(), e);
             }
         }
+        return modules;
     }
 
     public static void evalHttpMethod(ActionInfo ai, Method method, At at) {
@@ -353,7 +326,7 @@ public abstract class Loadings {
                 return true;
         return false;
     }
-    
+
     public static boolean isModule(Class<?> classZ) {
         return isModule(classZ, new NutEntryDeterminer());
     }
