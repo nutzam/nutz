@@ -5,6 +5,7 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLDecoder;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -54,9 +55,9 @@ public abstract class Mvcs {
     public static boolean DISABLE_X_POWERED_BY = false;
 
     public static String X_POWERED_BY = "nutz/"+Nutz.version()+" <nutzam.com>";
-    
+
     public static LocalizationManager localizationManager;
-    
+
     public static void setLocalizationManager(LocalizationManager localizationManager) {
         Mvcs.localizationManager = localizationManager;
     }
@@ -192,7 +193,7 @@ public abstract class Mvcs {
         if (localizationManager == null) {
             Map<String, Map<String, Object>> msgss = getMessageSet();
             if (msgss == null && !ctx().localizations.isEmpty())
-                msgss = ctx().localizations.values().iterator().next();
+                msgss = ctx().getLocalizations();
             if (null != msgss) {
                 Map<String, Object> msgs = null;
 
@@ -339,22 +340,31 @@ public abstract class Mvcs {
      * NutMvc的上下文
      */
     @Deprecated
-    public static NutMvcContext ctx;
+    public static Map<String, NutMvcContext> ctxs;
 
-    public static NutMvcContext ctx() {
+    public static NutMvcContext ctx(){
+        NutMvcContext ctx = ctxs().get(getName());
+        if (ctx == null) {
+            ctx = new NutMvcContext();
+            ctxs().put(getName(), ctx);
+        }
+        return ctx;
+    }
+
+    public static Map<String, NutMvcContext> ctxs() {
         ServletContext sc = getServletContext();
         if (sc == null) {
-            if (ctx == null)
-                ctx = new NutMvcContext();
-            return ctx;
+            if (ctxs == null)
+                ctxs = new HashMap<>();
+            return ctxs;
         }
-        NutMvcContext c = (NutMvcContext) getServletContext().getAttribute("__nutz__mvc__ctx");
-        if (c == null) {
-            c = new NutMvcContext();
-            getServletContext().setAttribute("__nutz__mvc__ctx", c);
-            ctx = c;
+        Map<String, NutMvcContext> cs = (Map<String, NutMvcContext>) getServletContext().getAttribute("__nutz__mvc__ctx");
+        if (cs == null) {
+            cs = new HashMap<>();
+            getServletContext().setAttribute("__nutz__mvc__ctx", cs);
+            ctxs = cs;
         }
-        return c;
+        return cs;
     }
 
     private static ServletContext def_servletContext;
@@ -462,35 +472,35 @@ public abstract class Mvcs {
      * @return 全局的Ioc对象
      */
     public static Ioc getIoc() {
-        return ctx().iocs.get(getName());
+        return ctx().getIoc();
     }
 
     public static void setIoc(Ioc ioc) {
-        ctx().iocs.put(getName(), ioc);
+        ctx().setIoc(ioc);
     }
 
     public static AtMap getAtMap() {
-        return ctx().atMaps.get(getName());
+        return ctx().getAtMap();
     }
 
     public static void setAtMap(AtMap atmap) {
-        ctx().atMaps.put(getName(), atmap);
+        ctx().setAtMap(atmap);
     }
 
     public static Map<String, Map<String, Object>> getMessageSet() {
-        return ctx().localizations.get(getName());
+        return ctx().getLocalizations();
     }
 
     public static void setMessageSet(Map<String, Map<String, Object>> messageSet) {
-        ctx().localizations.put(getName(), messageSet);
+        ctx().setLocalizations(messageSet);
     }
 
     public static void setNutConfig(NutConfig config) {
-        ctx().nutConfigs.put(getName(), config);
+        ctx().setNutConfig(config);
     }
 
     public static NutConfig getNutConfig() {
-        return ctx().nutConfigs.get(getName());
+        return ctx().getNutConfig();
     }
 
     // ==================================================================
@@ -519,7 +529,7 @@ public abstract class Mvcs {
     public static void close() {
         ctx().clear();
         ctx().close();
-        ctx = new NutMvcContext();
+        ctxs = new HashMap<>();
     }
 
     public static Context reqt() {

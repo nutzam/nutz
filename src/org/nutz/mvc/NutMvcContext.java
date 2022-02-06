@@ -12,11 +12,11 @@ import org.nutz.mvc.config.AtMap;
 public class NutMvcContext extends SimpleContext {
 
     private ThreadLocal<Context> reqThreadLocal = new ThreadLocal<Context>();
-    public Map<String, Ioc> iocs = new HashMap<String, Ioc>();
-    public Map<String, AtMap> atMaps = new HashMap<String, AtMap>();
-    public Map<String, NutConfig> nutConfigs = new HashMap<String, NutConfig>();
-    public Map<String, Map<String, Map<String, Object>>> localizations = new HashMap<String, Map<String, Map<String, Object>>>();
-    
+    public Ioc ioc;
+    public AtMap atMap;
+    public NutConfig nutConfig;
+    public Map<String, Map<String, Object>> localizations = new HashMap<String, Map<String, Object>>();
+
     public Context reqCtx() {
     	Context ctx = reqThreadLocal.get();
     	if (ctx == null) {
@@ -25,35 +25,63 @@ public class NutMvcContext extends SimpleContext {
     	}
     	return ctx;
     }
-    
+
     public void reqCtx(Context ctx) {
     	reqThreadLocal.set(ctx);
     }
-    
+
     public void removeReqCtx() {
     	reqThreadLocal.remove();
     }
-    
+
     public void close() {
         reqThreadLocal.remove();
-        iocs.clear();
-        atMaps.clear();
-        nutConfigs.clear();
-        localizations.clear();
+        ioc = null;
+        atMap = null;
+        nutConfig = null;
+        localizations = null;
     }
-    
+
     /**
      * 获取默认Ioc,在单个NutFilter/NutServlet中非常合用
      */
     public Ioc getDefaultIoc() {
-        if (iocs.isEmpty())
-            return null;
-        return iocs.values().iterator().next();
+        return ioc;
     }
-    
+
     public NutConfig getDefaultNutConfig() {
-        if (nutConfigs.isEmpty())
-            return null;
-        return nutConfigs.values().iterator().next();
+        return nutConfig;
+    }
+
+    public Ioc getIoc() {
+        return ioc;
+    }
+
+    public void setIoc(Ioc ioc) {
+        this.ioc = ioc;
+    }
+
+    public AtMap getAtMap() {
+        return atMap;
+    }
+
+    public void setAtMap(AtMap atMap) {
+        this.atMap = atMap;
+    }
+
+    public NutConfig getNutConfig() {
+        return nutConfig;
+    }
+
+    public void setNutConfig(NutConfig nutConfig) {
+        this.nutConfig = nutConfig;
+    }
+
+    public Map<String, Map<String, Object>> getLocalizations() {
+        return localizations;
+    }
+
+    public void setLocalizations(Map<String, Map<String, Object>> localizations) {
+        this.localizations = localizations;
     }
 }

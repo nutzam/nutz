@@ -16,13 +16,13 @@ import javax.servlet.http.HttpServletResponse;
  *
  */
 public class NutFilter2 implements Filter {
-	
+
 	private String selfName;
-	
+
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
 			throws IOException, ServletException {
 		if (selfName == null) {
-			selfName = Mvcs.ctx().nutConfigs.keySet().iterator().next();
+			selfName = Mvcs.ctxs().keySet().iterator().next();
 			if (selfName == null) {
 				chain.doFilter(req, resp);
 				return;
