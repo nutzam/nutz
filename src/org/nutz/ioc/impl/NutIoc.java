@@ -37,7 +37,7 @@ import org.nutz.log.Logs;
 import org.nutz.repo.LevenshteinDistance;
 
 /**
- * 
+ *
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  */
@@ -83,9 +83,9 @@ public class NutIoc implements Ioc2 {
      * </ul>
      */
     private Set<String> supportedTypes;
-    
+
     protected List<IocEventListener> listeners;
-    
+
     protected ThreadLocal<Object> listenerH = new ThreadLocal<Object>();
 
     public NutIoc(IocLoader loader) {
@@ -187,83 +187,106 @@ public class NutIoc implements Ioc2 {
                 op = cntx.fetch(name);
                 // 如果未发现对象
                 if (null == op) {
-                    try {
-                        if (log.isDebugEnabled())
-                            log.debug("\t >> Load definition name=" + name);
-
-                        // 读取对象定义
-                        IocObject iobj = loader.load(createLoading(), name);
-                        if (null == iobj) {
-                            for (String iocBeanName : loader.getName()) {
-                                // 相似性少于3 --> 大小写错误,1-2个字符调换顺序或写错
-                                // 感觉没必要..没有就没有呗
-                                if (3 > LevenshteinDistance.computeLevenshteinDistance(name.toLowerCase(),
-                                                                                       iocBeanName.toLowerCase())) {
-                                    throw new IocException(name,
-                                                           "Undefined object '%s' but found similar name '%s'",
-                                                           name,
-                                                           iocBeanName);
-                                }
-                            }
-                            throw new IocException(name, "Undefined object '%s'", name);
-                        }
-
-                        // 修正对象类型
-                        if (null == iobj.getType())
-                            if (null == type && Strings.isBlank(iobj.getFactory()))
-                                throw new IocException(name, "NULL TYPE object '%s'", name);
-                            else
-                                iobj.setType(type);
-                        // 检查对象级别
-                        if (Strings.isBlank(iobj.getScope()))
-                            iobj.setScope(defaultScope);
-
-                        // 根据对象定义，创建对象，maker 会自动的缓存对象到 context 中
-                        if (log.isDebugEnabled())
-                            log.debugf("\t >> Make...'%s'<%s>", name, type == null ? "" : type);
-                        if (iobj.getType() != null && IocEventListener.class.isAssignableFrom(iobj.getType())) {
-                            if (listenerH.get() != null) {
-                                op = maker.make(ing, iobj);
-                            }
-                            else {
-                                try {
-                                    listenerH.set(Boolean.TRUE);
-                                    op = maker.make(ing, iobj);
-                                }
-                                finally {
-                                    listenerH.remove();
-                                }
-                            }
-                        }
-                        else {
-                            _checkIocEventListeners();
-                            ing.setListeners(listeners);
-                            op = maker.make(ing, iobj);
-                        }
-                    }
-                    // 处理异常
-                    catch (IocException e) {
-                        ((IocException) e).addBeanNames(name);
-                        throw e;
-                    }
-                    catch (Throwable e) {
-                        throw new IocException(name,
-                                               e,
-                                               "For object [%s] - type:[%s]",
-                                               name,
-                                               type == null ? "" : type);
+                    op = makeObjectProxy(type, name, ing);
+                    if (op.isSingleton() && null != ing.getObjectName()) {
+                        cntx.save(op.getScope(), ing.getObjectName(), op);
                     }
                 }
             }
         }
 
         synchronized (lock_get) {
-            T re = op.get(type, ing);
-
-            if (!name.startsWith("$") && re instanceof IocLoader) {
-                loader.addLoader((IocLoader) re);
+            try {
+                T re = op.get(type, ing);
+                if (!name.startsWith("$") && re instanceof IocLoader) {
+                    loader.addLoader((IocLoader) re);
+                }
+                return re;
             }
-            return re;
+            // 当异常发生，从 context 里移除 ObjectProxy
+            catch (Throwable e) {
+                cntx.remove(op.getScope(), ing.getObjectName());
+                throw new IocException(ing.getObjectName(), e, "throw Exception when creating");
+            }
+        }
+    }
+
+    /**
+     * 生成ObjectProxy
+     * @param type
+     * @param name
+     * @param ing
+     * @param <T>
+     * @return
+     */
+    protected <T> ObjectProxy makeObjectProxy(Class<T> type, String name, IocMaking ing){
+        try {
+            ObjectProxy op = null;
+            if (log.isDebugEnabled())
+                log.debug("\t >> Load definition name=" + name);
+
+            // 读取对象定义
+            IocObject iobj = loader.load(createLoading(), name);
+            if (null == iobj) {
+                for (String iocBeanName : loader.getName()) {
+                    // 相似性少于3 --> 大小写错误,1-2个字符调换顺序或写错
+                    // 感觉没必要..没有就没有呗
+                    if (3 > LevenshteinDistance.computeLevenshteinDistance(name.toLowerCase(),
+                            iocBeanName.toLowerCase())) {
+                        throw new IocException(name,
+                                "Undefined object '%s' but found similar name '%s'",
+                                name,
+                                iocBeanName);
+                    }
+                }
+                throw new IocException(name, "Undefined object '%s'", name);
+            }
+
+            // 修正对象类型
+            if (null == iobj.getType())
+                if (null == type && Strings.isBlank(iobj.getFactory()))
+                    throw new IocException(name, "NULL TYPE object '%s'", name);
+                else
+                    iobj.setType(type);
+            // 检查对象级别
+            if (Strings.isBlank(iobj.getScope()))
+                iobj.setScope(defaultScope);
+
+            // 根据对象定义，创建对象，maker 会自动的缓存对象到 context 中
+            if (log.isDebugEnabled())
+                log.debugf("\t >> Make...'%s'<%s>", name, type == null ? "" : type);
+            if (iobj.getType() != null && IocEventListener.class.isAssignableFrom(iobj.getType())) {
+                if (listenerH.get() != null) {
+                    op = maker.make(ing, iobj);
+                }
+                else {
+                    try {
+                        listenerH.set(Boolean.TRUE);
+                        op = maker.make(ing, iobj);
+                    }
+                    finally {
+                        listenerH.remove();
+                    }
+                }
+            }
+            else {
+                _checkIocEventListeners();
+                ing.setListeners(listeners);
+                op = maker.make(ing, iobj);
+            }
+            return op;
+        }
+        // 处理异常
+        catch (IocException e) {
+            ((IocException) e).addBeanNames(name);
+            throw e;
+        }
+        catch (Throwable e) {
+            throw new IocException(name,
+                    e,
+                    "For object [%s] - type:[%s]",
+                    name,
+                    type == null ? "" : type);
         }
     }
 
@@ -396,7 +419,7 @@ public class NutIoc implements Ioc2 {
         }
         return re.toArray(new String[re.size()]);
     }
-    
+
     public String[] getNamesByAnnotation(Class<? extends Annotation> klass) {
         return this.getNamesByAnnotation(klass, null);
     }
@@ -460,7 +483,7 @@ public class NutIoc implements Ioc2 {
                                + klass.getName(),
                                "none ioc bean match class=" + klass.getName());
     }
-    
+
     protected void _checkIocEventListeners() {
         if (listeners != null)
             return;
@@ -491,11 +514,11 @@ public class NutIoc implements Ioc2 {
             getIocContext().save("app", name, new ObjectProxy(obj));
         return this;
     }
-    
+
     public Class<?> getType(String beanName) throws ObjectLoadException {
         return getType(beanName, null);
     }
-    
+
     public Class<?> getType(String beanName, IocContext context) throws ObjectLoadException {
         IocContext cntx;
         if (null == context || context == this.context)

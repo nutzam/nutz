@@ -26,25 +26,30 @@ import org.nutz.resource.Scans;
 
 /**
  * 基于注解的Ioc配置
- * 
+ *
  * @author wendal(wendal1985@gmail.com)
- * 
+ *
  */
 public class AnnotationIocLoader implements IocLoader {
 
     private static final Log log = Logs.get();
 
     private HashMap<String, IocObject> map = new HashMap<String, IocObject>();
-    
+
     protected String[] packages;
-    
+
     public AnnotationIocLoader() {
         packages = new String[0];
     }
 
     public AnnotationIocLoader(String... packages) {
+        this.packages = packages;
+        loadForPackages(packages);
+    }
+
+    public void loadForPackages(String... packages){
         for (String pkg : packages) {
-        	log.infof(" > scan '%s'", pkg);
+            log.infof(" > scan '%s'", pkg);
             for (Class<?> classZ : Scans.me().scanPackage(pkg)) {
                 addClass(classZ);
             }
@@ -52,7 +57,6 @@ public class AnnotationIocLoader implements IocLoader {
         if (map.isEmpty()) {
             log.warnf("NONE @IocBean found!! Check your ioc configure!! packages=%s", Arrays.toString(packages));
         }
-        this.packages = packages;
     }
 
     public void addClass(Class<?> classZ) {
@@ -95,7 +99,7 @@ public class AnnotationIocLoader implements IocLoader {
             IocObject iocObject = new IocObject();
             iocObject.setType(classZ);
             map.put(beanName, iocObject);
-            
+
             log.infof("   > add '%-40s' - %s", beanName, classZ.getName());
 
             iocObject.setSingleton(iocBean.singleton());
@@ -271,7 +275,7 @@ public class AnnotationIocLoader implements IocLoader {
             if (!Strings.isBlank(iocBean.factory())) {
                 iocObject.setFactory(iocBean.factory());
             }
-            
+
             // 看看有没有方法标注了@IocBean
             for (Method method : methods) {
                 IocBean ib = method.getAnnotation(IocBean.class);
@@ -284,7 +288,7 @@ public class AnnotationIocLoader implements IocLoader {
             // 不再检查其他类.
         }
     }
-    
+
     protected void handleIocBeanMethod(Method method, IocBean ib, String facotryBeanName) {
         String beanName = ib.name();
         if (Strings.isBlank(beanName)) {
@@ -372,7 +376,7 @@ public class AnnotationIocLoader implements IocLoader {
     public String toString() {
         return "/*AnnotationIocLoader*/\n" + Json.toJson(map);
     }
-    
+
     public String[] getPackages() {
         return packages;
     }

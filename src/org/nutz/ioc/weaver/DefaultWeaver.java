@@ -7,11 +7,12 @@ import org.nutz.ioc.IocEventTrigger;
 import org.nutz.ioc.IocMaking;
 import org.nutz.ioc.ObjectWeaver;
 import org.nutz.ioc.ValueProxy;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.born.Borning;
 
 /**
  * 默认的对象编织过程
- * 
+ *
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  */
@@ -36,9 +37,9 @@ public class DefaultWeaver implements ObjectWeaver {
      * 字段注入器列表
      */
     private FieldInjector[] fields;
-    
+
     protected List<IocEventListener> listeners;
-    
+
     protected String beanName;
 
     public void setCreate(IocEventTrigger<Object> create) {
@@ -56,15 +57,16 @@ public class DefaultWeaver implements ObjectWeaver {
     public void setFields(FieldInjector[] fields) {
         this.fields = fields;
     }
-    
+
     public void setListeners(List<IocEventListener> listeners) {
         this.listeners = listeners;
     }
 
     public <T> T fill(IocMaking ing, T obj) {
         // 设置字段的值
-        for (FieldInjector fi : fields)
+        for (FieldInjector fi : fields) {
             fi.inject(ing, obj);
+        }
         return obj;
     }
 
@@ -94,11 +96,11 @@ public class DefaultWeaver implements ObjectWeaver {
         }
         return obj;
     }
-    
+
     protected boolean shallTrigger(Object obj) {
         return obj != null && listeners != null && !(obj instanceof IocEventListener) && listeners.size() > 0;
     }
-    
+
     public void setBeanName(String beanName) {
         this.beanName = beanName;
     }
