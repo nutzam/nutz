@@ -161,7 +161,7 @@ public class NutLoading implements Loading {
         /*
          * 创建主模块的配置信息
          */
-        ActionInfo mainInfo = Loadings.createInfo(mainModule);
+        ActionInfo mainInfo = Loadings.createInfo(mainModule).mergeWith(fetchDefaultActionInfo());
         mainInfo.setMain(true);
 
         // fix issue #1337
@@ -213,6 +213,14 @@ public class NutLoading implements Loading {
         }
 
         return mapping;
+    }
+
+    /**
+     * 外部提供默认的一些ActionInfo配置
+     * @return
+     */
+    protected  ActionInfo fetchDefaultActionInfo(){
+        return null;
     }
 
     protected void createContext(NutConfig config) {

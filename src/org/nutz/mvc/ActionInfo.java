@@ -64,6 +64,9 @@ public class ActionInfo {
     }
 
     public ActionInfo mergeWith(ActionInfo parent) {
+        if (parent == null) {
+            return this;
+        }
         // 组合路径 - 与父路径做一个笛卡尔积
         if (!pathTop && null != paths && null != parent.paths && parent.paths.length > 0) {
             List<String> myPaths = new ArrayList<String>(paths.length * parent.paths.length);
