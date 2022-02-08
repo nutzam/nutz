@@ -31,17 +31,11 @@ import org.nutz.resource.Scans;
 public abstract class AbstractNutConfig implements NutConfig {
 
     private static final Log log = Logs.get();
-    
+
     protected SessionProvider sessionProvider;
-    
-    protected UrlMapping urlMapping;
-    
-    protected ActionChainMaker chainMaker;
-    
-    protected ViewMaker[] viewMakers;
-    
+
     protected Class<?> mainModule;
-    
+
     public AbstractNutConfig(ServletContext context) {
         Scans.me().init(context);
         Json.clearEntityCache();
@@ -52,7 +46,7 @@ public abstract class AbstractNutConfig implements NutConfig {
          * 确保用户声明了 MainModule
          */
         Class<?> mainModule = getMainModule();
-        
+
         /*
          * 获取 Loading
          */
@@ -157,35 +151,11 @@ public abstract class AbstractNutConfig implements NutConfig {
     public void setSessionProvider(SessionProvider provider) {
         this.sessionProvider = provider;
     }
-    
+
     public SessionProvider getSessionProvider() {
         return sessionProvider;
     }
 
-	public UrlMapping getUrlMapping() {
-		return urlMapping;
-	}
-
-	public void setUrlMapping(UrlMapping urlMapping) {
-		this.urlMapping = urlMapping;
-	}
-	
-	public ActionChainMaker getActionChainMaker() {
-		return chainMaker;
-	}
-	
-	public void setActionChainMaker(ActionChainMaker acm) {
-		this.chainMaker = acm;
-	}
-	
-	public void setViewMakers(ViewMaker[] makers) {
-		this.viewMakers = makers;
-	}
-	
-	public ViewMaker[] getViewMakers() {
-		return viewMakers;
-	}
-	
 	public void setMainModule(Class<?> mainModule) {
         this.mainModule = mainModule;
     }

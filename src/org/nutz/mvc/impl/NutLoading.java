@@ -142,7 +142,7 @@ public class NutLoading implements Loading {
          * 准备 UrlMapping
          */
         UrlMapping mapping = createUrlMapping(config);
-        config.setUrlMapping(mapping);
+        Mvcs.ctx().setUrlMapping(mapping);
         if (log.isInfoEnabled())
             log.infof("Build URL mapping by %s ...", mapping.getClass().getName());
 
@@ -150,19 +150,20 @@ public class NutLoading implements Loading {
          * 创建视图工厂
          */
         ViewMaker[] makers = createViewMakers(mainModule, ioc);
-        config.setViewMakers(makers);
+        Mvcs.ctx().setViewMakers(makers);
 
         /*
          * 创建动作链工厂
          */
         ActionChainMaker maker = createChainMaker(config, mainModule);
-        config.setActionChainMaker(maker);
+        Mvcs.ctx().setActionChainMaker(maker);
 
         /*
          * 创建主模块的配置信息
          */
         ActionInfo mainInfo = Loadings.createInfo(mainModule).mergeWith(fetchDefaultActionInfo());
         mainInfo.setMain(true);
+        Mvcs.ctx().setMainInfo(mainInfo);
 
         // fix issue #1337
         Determiner ann = mainModule.getAnnotation(Determiner.class);
@@ -172,7 +173,7 @@ public class NutLoading implements Loading {
          * 准备要加载的模块列表
          */
         // TODO 为什么用Set呢? 用List不是更快吗?
-        Set<Class<?>> modules = getModuleClasses(ioc, mainModule, determiner);
+        Set<Class<?>> modules = getModuleClasses(config, mainModule);
 
         if (modules.isEmpty()) {
             if (log.isWarnEnabled())
@@ -460,7 +461,7 @@ public class NutLoading implements Loading {
             log.infof("Nutz.Mvc[%s] is down in %sms", config.getAppName(), sw.getDuration());
     }
 
-    protected Set<Class<?>> getModuleClasses(Ioc ioc, Class<?> mainModule, EntryDeterminer determiner) {
-        return Loadings.scanModules(ioc, mainModule, determiner);
+    protected Set<Class<?>> getModuleClasses(NutConfig config, Class<?> mainModule) {
+        return Loadings.scanModules(config, mainModule);
     }
 }

@@ -27,22 +27,7 @@ import org.nutz.mvc.ModuleScanner;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.ObjectInfo;
-import org.nutz.mvc.annotation.AdaptBy;
-import org.nutz.mvc.annotation.At;
-import org.nutz.mvc.annotation.By;
-import org.nutz.mvc.annotation.Chain;
-import org.nutz.mvc.annotation.DELETE;
-import org.nutz.mvc.annotation.Encoding;
-import org.nutz.mvc.annotation.Fail;
-import org.nutz.mvc.annotation.Filters;
-import org.nutz.mvc.annotation.GET;
-import org.nutz.mvc.annotation.Modules;
-import org.nutz.mvc.annotation.OPTIONS;
-import org.nutz.mvc.annotation.Ok;
-import org.nutz.mvc.annotation.PATCH;
-import org.nutz.mvc.annotation.POST;
-import org.nutz.mvc.annotation.PUT;
-import org.nutz.mvc.annotation.PathMap;
+import org.nutz.mvc.annotation.*;
 import org.nutz.resource.Scans;
 
 public abstract class Loadings {
@@ -88,7 +73,7 @@ public abstract class Loadings {
         return ai;
     }
 
-    public static Set<Class<?>> scanModules(Ioc ioc, Class<?> mainModule, EntryDeterminer determiner){
+    public static Set<Class<?>> scanModules(NutConfig config, Class<?> mainModule){
         Modules ann = mainModule.getAnnotation(Modules.class);
         boolean scan = null == ann ? true : ann.scanPackage();
         // 准备扫描列表
@@ -107,7 +92,7 @@ public abstract class Loadings {
                 // 扫描器来自 Ioc 容器
                 if (str.startsWith("ioc:")) {
                     String nm = str.substring("ioc:".length());
-                    ms = ioc.get(ModuleScanner.class, nm);
+                    ms = config.getIoc().get(ModuleScanner.class, nm);
                 }
                 // 扫描器直接无参创建
                 else {
@@ -127,6 +112,13 @@ public abstract class Loadings {
                 }
             }
         }
+
+
+        // fix issue #1337
+        Determiner determinerAnn = mainModule.getAnnotation(Determiner.class);
+        EntryDeterminer determiner = null == determinerAnn
+                ? new NutEntryDeterminer()
+                : Loadings.evalObj(config, determinerAnn.value(), determinerAnn.args());
         // 准备存放模块类的集合
         Set<Class<?>> modules = new HashSet<Class<?>>();
         if (!scan) {
@@ -168,11 +160,33 @@ public abstract class Loadings {
      * @return
      */
     public static Set<Class<?>> scanModules(Collection<Class<?>> clazzs, EntryDeterminer determiner) {
+        if (null == determiner) {
+            determiner = new NutEntryDeterminer();
+        }
         // 准备存放模块类的集合
         Set<Class<?>> modules = new HashSet<Class<?>>();
         // 执行扫描
         for (Class<?> type : clazzs) {
             try {
+                int classModify = type.getModifiers();
+                if (!Modifier.isPublic(classModify)
+                        || Modifier.isAbstract(classModify)
+                        || Modifier.isInterface(classModify)){
+                    continue;
+                }
+                ActionInfo moduleInfo = null;
+                for (Method method : type.getMethods()) {
+                    if (!determiner.isEntry(type, method)){
+                        continue;
+                    }
+                    if (moduleInfo == null) {
+                        moduleInfo = Loadings.createInfo(type).mergeWith(Mvcs.ctx().getMainInfo());
+                    }
+                    ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);
+                    info.setViewMakers(Mvcs.ctx().getViewMakers());
+                }
+
+
                 if (isModule(type, determiner)) {
                     if (log.isDebugEnabled())
                         log.debugf("   >> add '%s'", type.getName());
@@ -186,6 +200,22 @@ public abstract class Loadings {
             }
         }
         return modules;
+    }
+
+    public static boolean isModule(Class<?> classZ, EntryDeterminer determiner) {
+        int classModify = classZ.getModifiers();
+        if (!Modifier.isPublic(classModify)
+                || Modifier.isAbstract(classModify)
+                || Modifier.isInterface(classModify))
+            return false;
+        for (Method method : classZ.getMethods())
+            if (determiner.isEntry(classZ, method))
+                return true;
+        return false;
+    }
+
+    public static boolean isModule(Class<?> classZ) {
+        return isModule(classZ, new NutEntryDeterminer());
     }
 
     public static void evalHttpMethod(ActionInfo ai, Method method, At at) {
@@ -315,19 +345,4 @@ public abstract class Loadings {
         return Mirror.me(type).born((Object[]) args);
     }
 
-    public static boolean isModule(Class<?> classZ, EntryDeterminer determiner) {
-        int classModify = classZ.getModifiers();
-        if (!Modifier.isPublic(classModify)
-            || Modifier.isAbstract(classModify)
-            || Modifier.isInterface(classModify))
-            return false;
-        for (Method method : classZ.getMethods())
-            if (determiner.isEntry(classZ, method))
-                return true;
-        return false;
-    }
-
-    public static boolean isModule(Class<?> classZ) {
-        return isModule(classZ, new NutEntryDeterminer());
-    }
 }

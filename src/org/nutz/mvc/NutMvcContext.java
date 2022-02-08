@@ -17,6 +17,14 @@ public class NutMvcContext extends SimpleContext {
     public NutConfig nutConfig;
     public Map<String, Map<String, Object>> localizations = new HashMap<String, Map<String, Object>>();
 
+    protected UrlMapping urlMapping;
+
+    protected ActionChainMaker chainMaker;
+
+    protected ViewMaker[] viewMakers;
+
+    protected ActionInfo mainInfo;
+
     public Context reqCtx() {
     	Context ctx = reqThreadLocal.get();
     	if (ctx == null) {
@@ -83,5 +91,37 @@ public class NutMvcContext extends SimpleContext {
 
     public void setLocalizations(Map<String, Map<String, Object>> localizations) {
         this.localizations = localizations;
+    }
+
+    public UrlMapping getUrlMapping() {
+        return urlMapping;
+    }
+
+    public void setUrlMapping(UrlMapping urlMapping) {
+        this.urlMapping = urlMapping;
+    }
+
+    public ActionChainMaker getActionChainMaker() {
+        return chainMaker;
+    }
+
+    public void setActionChainMaker(ActionChainMaker acm) {
+        this.chainMaker = acm;
+    }
+
+    public void setViewMakers(ViewMaker[] makers) {
+        this.viewMakers = makers;
+    }
+
+    public ViewMaker[] getViewMakers() {
+        return viewMakers;
+    }
+
+    public ActionInfo getMainInfo() {
+        return mainInfo;
+    }
+
+    public void setMainInfo(ActionInfo mainInfo) {
+        this.mainInfo = mainInfo;
     }
 }
