@@ -5,6 +5,9 @@ import java.util.List;
 import javax.servlet.ServletContext;
 
 import org.nutz.ioc.Ioc;
+import org.nutz.lang.Mirror;
+import org.nutz.lang.Strings;
+import org.nutz.lang.segment.Segments;
 import org.nutz.lang.util.Context;
 import org.nutz.mvc.config.AtMap;
 
@@ -137,4 +140,19 @@ public interface NutConfig {
     SessionProvider getSessionProvider();
 
     void setMainModule(Class<?> mainModule);
+
+    public static <T> T evalObj(NutConfig config, Class<T> type, String[] args) {
+        // 用上下文替换参数
+        Context context = config.getLoadingContext();
+        for (int i = 0; i < args.length; i++) {
+            args[i] = Segments.replace(args[i], context);
+        }
+        // 判断是否是 Ioc 注入
+
+        if (args.length == 1 && args[0].startsWith("ioc:")) {
+            String name = Strings.trim(args[0].substring(4));
+            return config.getIoc().get(type, name);
+        }
+        return Mirror.me(type).born((Object[]) args);
+    }
 }

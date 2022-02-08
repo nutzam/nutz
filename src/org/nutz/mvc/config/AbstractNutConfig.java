@@ -16,16 +16,13 @@ import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
-import org.nutz.mvc.ActionChainMaker;
 import org.nutz.mvc.Loading;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.NutConfigException;
 import org.nutz.mvc.SessionProvider;
-import org.nutz.mvc.UrlMapping;
-import org.nutz.mvc.ViewMaker;
 import org.nutz.mvc.annotation.LoadingBy;
-import org.nutz.mvc.impl.NutLoading;
+import org.nutz.mvc.loader.annotation.NutLoading;
 import org.nutz.resource.Scans;
 
 public abstract class AbstractNutConfig implements NutConfig {

@@ -15,7 +15,7 @@ import org.nutz.lang.Lang;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ReflectTool {
-	
+
 	protected static boolean hasLookup = false;
 	protected static Method DEFINE_CLASS;
 	protected static ProtectionDomain PROTECTION_DOMAIN;

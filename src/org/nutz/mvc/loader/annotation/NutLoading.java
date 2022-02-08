@@ -1,4 +1,4 @@
-package org.nutz.mvc.impl;
+package org.nutz.mvc.loader.annotation;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -28,6 +28,7 @@ import org.nutz.mvc.annotation.SessionBy;
 import org.nutz.mvc.annotation.SetupBy;
 import org.nutz.mvc.annotation.UrlMappingBy;
 import org.nutz.mvc.annotation.Views;
+import org.nutz.mvc.impl.*;
 import org.nutz.mvc.view.DefaultViewMaker;
 
 public class NutLoading implements Loading {
@@ -167,7 +168,7 @@ public class NutLoading implements Loading {
 
         // fix issue #1337
         Determiner ann = mainModule.getAnnotation(Determiner.class);
-        EntryDeterminer determiner = null == ann ? new NutEntryDeterminer() : Loadings.evalObj(config, ann.value(), ann.args());
+        EntryDeterminer determiner = null == ann ? new NutEntryDeterminer() : NutConfig.evalObj(config, ann.value(), ann.args());
 
         /*
          * 准备要加载的模块列表
@@ -251,14 +252,14 @@ public class NutLoading implements Loading {
     protected UrlMapping createUrlMapping(NutConfig config) throws Exception {
         UrlMappingBy umb = config.getMainModule().getAnnotation(UrlMappingBy.class);
         if (umb != null)
-            return Loadings.evalObj(config, umb.value(), umb.args());
+            return NutConfig.evalObj(config, umb.value(), umb.args());
         return new UrlMappingImpl();
     }
 
     protected ActionChainMaker createChainMaker(NutConfig config, Class<?> mainModule) {
         ChainBy ann = mainModule.getAnnotation(ChainBy.class);
         ActionChainMaker maker = null == ann ? new NutActionChainMaker(new String[]{})
-                                            : Loadings.evalObj(config, ann.type(), ann.args());
+                                            : NutConfig.evalObj(config, ann.type(), ann.args());
         if (log.isDebugEnabled())
             log.debugf("@ChainBy(%s)", maker.getClass().getName());
         return maker;
@@ -269,7 +270,7 @@ public class NutLoading implements Loading {
         if (null != sb) {
             if (log.isInfoEnabled())
                 log.info("Setup application...");
-            Setup setup = Loadings.evalObj(config, sb.value(), sb.args());
+            Setup setup = NutConfig.evalObj(config, sb.value(), sb.args());
             config.setAttributeIgnoreNull(Setup.class.getName(), setup);
             setup.init(config);
         } else if (config.getIoc() != null) {

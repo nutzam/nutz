@@ -1,11 +1,6 @@
 package org.nutz.mvc.impl.processor;
 
-import org.nutz.mvc.ActionContext;
-import org.nutz.mvc.ActionInfo;
-import org.nutz.mvc.NutConfig;
-import org.nutz.mvc.ObjectInfo;
-import org.nutz.mvc.Processor;
-import org.nutz.mvc.impl.Loadings;
+import org.nutz.mvc.*;
 
 /**
  * 抽象的Processor实现. 任何Processor实现都应该继承这个类,以获取正确的执行逻辑.
@@ -17,7 +12,7 @@ import org.nutz.mvc.impl.Loadings;
 public abstract class AbstractProcessor implements Processor {
 
     protected Processor next;
-    
+
     /**
      * 建议覆盖这个方法,以便从NutConfig/ActionInfo获取需要的信息
      */
@@ -45,7 +40,7 @@ public abstract class AbstractProcessor implements Processor {
     }
 
     protected static <T> T evalObj(NutConfig config, ObjectInfo<T> info) {
-        return null == info ? null : Loadings.evalObj(config, info.getType(), info.getArgs());
+        return null == info ? null : NutConfig.evalObj(config, info.getType(), info.getArgs());
     }
 
     protected void renderView(ActionContext ac) throws Throwable {
@@ -58,7 +53,7 @@ public abstract class AbstractProcessor implements Processor {
             p = p.getNext();
         }
     }
-    
+
     public Processor getNext() {
         return next;
     }

@@ -1,12 +1,10 @@
-package org.nutz.mvc.impl;
+package org.nutz.mvc.loader.annotation;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.net.URL;
 import java.util.*;
 
-import org.nutz.ioc.Ioc;
 import org.nutz.ioc.annotation.InjectName;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.json.Json;
@@ -28,6 +26,7 @@ import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.ObjectInfo;
 import org.nutz.mvc.annotation.*;
+import org.nutz.mvc.impl.NutEntryDeterminer;
 import org.nutz.resource.Scans;
 
 public abstract class Loadings {
@@ -118,7 +117,7 @@ public abstract class Loadings {
         Determiner determinerAnn = mainModule.getAnnotation(Determiner.class);
         EntryDeterminer determiner = null == determinerAnn
                 ? new NutEntryDeterminer()
-                : Loadings.evalObj(config, determinerAnn.value(), determinerAnn.args());
+                : NutConfig.evalObj(config, determinerAnn.value(), determinerAnn.args());
         // 准备存放模块类的集合
         Set<Class<?>> modules = new HashSet<Class<?>>();
         if (!scan) {
@@ -330,19 +329,19 @@ public abstract class Loadings {
         }
     }
 
-    public static <T> T evalObj(NutConfig config, Class<T> type, String[] args) {
-        // 用上下文替换参数
-        Context context = config.getLoadingContext();
-        for (int i = 0; i < args.length; i++) {
-            args[i] = Segments.replace(args[i], context);
-        }
-        // 判断是否是 Ioc 注入
-
-        if (args.length == 1 && args[0].startsWith("ioc:")) {
-            String name = Strings.trim(args[0].substring(4));
-            return config.getIoc().get(type, name);
-        }
-        return Mirror.me(type).born((Object[]) args);
-    }
+//    public static <T> T evalObj(NutConfig config, Class<T> type, String[] args) {
+//        // 用上下文替换参数
+//        Context context = config.getLoadingContext();
+//        for (int i = 0; i < args.length; i++) {
+//            args[i] = Segments.replace(args[i], context);
+//        }
+//        // 判断是否是 Ioc 注入
+//
+//        if (args.length == 1 && args[0].startsWith("ioc:")) {
+//            String name = Strings.trim(args[0].substring(4));
+//            return config.getIoc().get(type, name);
+//        }
+//        return Mirror.me(type).born((Object[]) args);
+//    }
 
 }
