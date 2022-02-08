@@ -24,10 +24,14 @@ public class ActionHandler {
         ac.setRequest(req).setResponse(resp).setServletContext(config.getServletContext());
 
         Mvcs.setActionContext(ac);
-        
+
         ActionInvoker invoker = mapping.get(ac);
-        if (null == invoker)
-            return false;
+        if (null == invoker) {
+            invoker = loading.fetch(ac);
+            if(null == invoker) {
+                return false;
+            }
+        }
         return invoker.invoke(ac);
     }
 

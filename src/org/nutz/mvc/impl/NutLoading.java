@@ -461,6 +461,11 @@ public class NutLoading implements Loading {
             log.infof("Nutz.Mvc[%s] is down in %sms", config.getAppName(), sw.getDuration());
     }
 
+    @Override
+    public ActionInvoker fetch(ActionContext ac) {
+        return null;
+    }
+
     protected Set<Class<?>> getModuleClasses(NutConfig config, Class<?> mainModule) {
         return Loadings.scanModules(config, mainModule);
     }
