@@ -7,6 +7,8 @@ public interface Loading {
 
     String CONTEXT_NAME = "_NUTZ_LOADING_CONTEXT_";
 
+    void init(NutConfig config);
+
     UrlMapping load(NutConfig config);
 
     void depose(NutConfig config);
@@ -17,5 +19,5 @@ public interface Loading {
      * @param ac
      * @return
      */
-    ActionInvoker fetch(ActionContext ac);
+    ActionInvoker load(ActionContext ac);
 }

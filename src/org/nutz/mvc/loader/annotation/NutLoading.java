@@ -34,6 +34,12 @@ import org.nutz.mvc.view.DefaultViewMaker;
 public class NutLoading implements Loading {
 
     private static final Log log = Logs.get();
+    protected UrlMapping mapping = null;
+
+    @Override
+    public void init(NutConfig config) {
+        mapping = load(config);
+    }
 
     public UrlMapping load(NutConfig config) {
         if (log.isInfoEnabled()) {
@@ -463,8 +469,8 @@ public class NutLoading implements Loading {
     }
 
     @Override
-    public ActionInvoker fetch(ActionContext ac) {
-        return null;
+    public ActionInvoker load(ActionContext ac) {
+        return mapping.get(ac);
     }
 
     protected Set<Class<?>> getModuleClasses(NutConfig config, Class<?> mainModule) {
