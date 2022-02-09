@@ -10,15 +10,16 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.*;
 import org.nutz.mvc.annotation.*;
-import org.nutz.mvc.impl.ModuleProvider;
-import org.nutz.mvc.impl.NutActionChainMaker;
-import org.nutz.mvc.impl.ServletValueProxyMaker;
+import org.nutz.mvc.impl.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 以注解为配置源，生成MVC需要的信息
+ */
 public class AnnotationModuleProvider implements ModuleProvider {
     private static final Log log = Logs.get();
     private Class<?> mainModule;
@@ -26,6 +27,8 @@ public class AnnotationModuleProvider implements ModuleProvider {
     private Ioc ioc;
 
     private SessionProvider sessionProvider;
+    private EntryDeterminer determiner;
+    private UrlMapping mapping;
 
     public AnnotationModuleProvider(NutConfig config, Class<?> mainModule) {
         this.config = config;
@@ -181,6 +184,23 @@ public class AnnotationModuleProvider implements ModuleProvider {
             sessionProvider = sp;
         }
         return sessionProvider;
+    }
+
+    public EntryDeterminer getDeterminer(){
+        if (null != determiner) {
+            return determiner;
+        }
+        Determiner ann = mainModule.getAnnotation(Determiner.class);
+        determiner = null == ann ? new NutEntryDeterminer() : NutConfig.evalObj(config, ann.value(), ann.args());
+        return determiner;
+    }
+
+
+    public UrlMapping getUrlMapping() {
+        UrlMappingBy umb = config.getMainModule().getAnnotation(UrlMappingBy.class);
+        if (umb != null)
+            return NutConfig.evalObj(config, umb.value(), umb.args());
+        return new UrlMappingImpl();
     }
 
 }

@@ -1,10 +1,7 @@
 package org.nutz.mvc.impl;
 
 import org.nutz.ioc.Ioc;
-import org.nutz.mvc.ActionChainMaker;
-import org.nutz.mvc.SessionProvider;
-import org.nutz.mvc.Setup;
-import org.nutz.mvc.ViewMaker;
+import org.nutz.mvc.*;
 
 import java.util.List;
 import java.util.Map;
@@ -32,4 +29,8 @@ public interface ModuleProvider {
     String getDefaultLocalizationKey();
 
     SessionProvider getSessionProvider();
+
+    EntryDeterminer getDeterminer();
+
+    UrlMapping getUrlMapping();
 }

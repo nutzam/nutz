@@ -1,35 +1,25 @@
 package org.nutz.mvc.loader.annotation;
 
-import java.io.File;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.Map.Entry;
-
 import org.nutz.Nutz;
 import org.nutz.ioc.Ioc;
-import org.nutz.ioc.Ioc2;
-import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
-import org.nutz.lang.Mirror;
 import org.nutz.lang.Stopwatch;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.*;
-import org.nutz.mvc.annotation.ChainBy;
-import org.nutz.mvc.annotation.Determiner;
-import org.nutz.mvc.annotation.IocBy;
-import org.nutz.mvc.annotation.Localization;
-import org.nutz.mvc.annotation.SessionBy;
-import org.nutz.mvc.annotation.SetupBy;
-import org.nutz.mvc.annotation.UrlMappingBy;
-import org.nutz.mvc.annotation.Views;
-import org.nutz.mvc.impl.*;
+import org.nutz.mvc.impl.ActionInvoker;
+import org.nutz.mvc.impl.ModuleProvider;
 import org.nutz.mvc.view.DefaultViewMaker;
+
+import java.io.File;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class NutLoading implements Loading {
 
@@ -153,7 +143,7 @@ public class NutLoading implements Loading {
         /*
          * 准备 UrlMapping
          */
-        UrlMapping mapping = createUrlMapping(config);
+        UrlMapping mapping = moduleProvider.getUrlMapping();
         Mvcs.ctx().setUrlMapping(mapping);
         if (log.isInfoEnabled())
             log.infof("Build URL mapping by %s ...", mapping.getClass().getName());
@@ -177,9 +167,9 @@ public class NutLoading implements Loading {
         mainInfo.setMain(true);
         Mvcs.ctx().setMainInfo(mainInfo);
 
-        // fix issue #1337
-        Determiner ann = mainModule.getAnnotation(Determiner.class);
-        EntryDeterminer determiner = null == ann ? new NutEntryDeterminer() : NutConfig.evalObj(config, ann.value(), ann.args());
+//        // fix issue #1337
+//        Determiner ann = mainModule.getAnnotation(Determiner.class);
+//        EntryDeterminer determiner = null == ann ? new NutEntryDeterminer() : NutConfig.evalObj(config, ann.value(), ann.args());
 
         /*
          * 准备要加载的模块列表
@@ -197,11 +187,11 @@ public class NutLoading implements Loading {
          * 分析所有的子模块
          */
         if (log.isDebugEnabled())
-            log.debugf("Use %s as EntryMethodDeterminer", determiner.getClass().getName());
+            log.debugf("Use %s as EntryMethodDeterminer", moduleProvider.getDeterminer().getClass().getName());
         for (Class<?> module : modules) {
             ActionInfo moduleInfo = Loadings.createInfo(module).mergeWith(mainInfo);
             for (Method method : module.getMethods()) {
-                if (!determiner.isEntry(module, method))
+                if (!moduleProvider.getDeterminer().isEntry(module, method))
                     continue;
                 // 增加到映射中
                 ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);
@@ -258,13 +248,6 @@ public class NutLoading implements Loading {
             log.tracef(">>\nCONTEXT %s", Json.toJson(context, JsonFormat.nice()));
         }
         config.getServletContext().setAttribute(Loading.CONTEXT_NAME, context);
-    }
-
-    protected UrlMapping createUrlMapping(NutConfig config) throws Exception {
-        UrlMappingBy umb = config.getMainModule().getAnnotation(UrlMappingBy.class);
-        if (umb != null)
-            return NutConfig.evalObj(config, umb.value(), umb.args());
-        return new UrlMappingImpl();
     }
 
     protected void evalSetup(NutConfig config) throws Exception {
