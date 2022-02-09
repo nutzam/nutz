@@ -109,7 +109,7 @@ public class NutLoading implements Loading {
             evalLocalization(config, mainModule);
 
             // 初始化SessionProvider
-            createSessionProvider(config, mainModule);
+            config.setSessionProvider(moduleProvider.getSessionProvider());
 
             /*
              * 执行用户自定义 Setup
@@ -167,8 +167,8 @@ public class NutLoading implements Loading {
         /*
          * 创建动作链工厂
          */
-        ActionChainMaker maker = createChainMaker(config, mainModule);
-        Mvcs.ctx().setActionChainMaker(maker);
+//        ActionChainMaker maker = moduleProvider.getChainMaker();
+        Mvcs.ctx().setActionChainMaker(moduleProvider.getChainMaker());
 
         /*
          * 创建主模块的配置信息
@@ -206,7 +206,7 @@ public class NutLoading implements Loading {
                 // 增加到映射中
                 ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);
                 info.setViewMakers(makers);
-                mapping.add(maker, info, config);
+                mapping.add(Mvcs.ctx().getActionChainMaker(), info, config);
                 atMethods++;
             }
 
@@ -267,15 +267,6 @@ public class NutLoading implements Loading {
         return new UrlMappingImpl();
     }
 
-    protected ActionChainMaker createChainMaker(NutConfig config, Class<?> mainModule) {
-        ChainBy ann = mainModule.getAnnotation(ChainBy.class);
-        ActionChainMaker maker = null == ann ? new NutActionChainMaker(new String[]{})
-                                            : NutConfig.evalObj(config, ann.type(), ann.args());
-        if (log.isDebugEnabled())
-            log.debugf("@ChainBy(%s)", maker.getClass().getName());
-        return maker;
-    }
-
     protected void evalSetup(NutConfig config) throws Exception {
         List<Setup> setups = moduleProvider.getSetup();
         for (Setup setup : setups) {
@@ -315,17 +306,8 @@ public class NutLoading implements Loading {
     }
 
     protected ViewMaker[] createViewMakers(Class<?> mainModule, Ioc ioc) throws Exception {
-        Views vms = mainModule.getAnnotation(Views.class);
         List<ViewMaker> makers = new ArrayList<ViewMaker>();
-        if (null != vms) {
-            for (int i = 0; i < vms.value().length; i++) {
-                if (vms.value()[i].getAnnotation(IocBean.class) != null && ioc != null) {
-                    makers.add(ioc.get(vms.value()[i]));
-                } else {
-                    makers.add(Mirror.me(vms.value()[i]).born());
-                }
-            }
-        }
+        makers.addAll(moduleProvider.getViewMakers());
         if (ioc != null) {
             String[] names = ioc.getNames();
             Arrays.sort(names);
@@ -348,21 +330,6 @@ public class NutLoading implements Loading {
         }
 
         return makers.toArray(new ViewMaker[makers.size()]);
-    }
-
-    @SuppressWarnings({"all"})
-    protected void createSessionProvider(NutConfig config, Class<?> mainModule) throws Exception {
-        SessionBy sb = mainModule.getAnnotation(SessionBy.class);
-        if (sb != null) {
-            SessionProvider sp = null;
-            if (sb.args() != null && sb.args().length == 1 && sb.args()[0].startsWith("ioc:"))
-                sp = config.getIoc().get(sb.value(), sb.args()[0].substring(4));
-            else
-                sp = Mirror.me(sb.value()).born((Object[])sb.args());
-            if (log.isInfoEnabled())
-                log.info("SessionBy --> " + sp);
-            config.setSessionProvider(sp);
-        }
     }
 
     public void depose(NutConfig config) {
