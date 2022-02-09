@@ -73,7 +73,7 @@ public class AnnotationModuleProvider implements ModuleProvider {
         if (null != sb) {
             if (log.isInfoEnabled())
                 log.info("Setup application...");
-            Setup setup = NutConfig.evalObj(config, sb.value(), sb.args());
+            Setup setup = config.evalObj(sb.value(), sb.args());
             setups.add(setup);
         }
         if (Setup.class.isAssignableFrom(mainModule)) { // MainModule自己就实现了Setup接口呢?
@@ -118,7 +118,7 @@ public class AnnotationModuleProvider implements ModuleProvider {
     public ActionChainMaker getChainMaker() {
         ChainBy ann = mainModule.getAnnotation(ChainBy.class);
         ActionChainMaker maker = null == ann ? new NutActionChainMaker(new String[]{})
-                : NutConfig.evalObj(config, ann.type(), ann.args());
+                : config.evalObj(ann.type(), ann.args());
         if (log.isDebugEnabled())
             log.debugf("@ChainBy(%s)", maker.getClass().getName());
         return maker;
@@ -215,7 +215,7 @@ public class AnnotationModuleProvider implements ModuleProvider {
             return determiner;
         }
         Determiner ann = mainModule.getAnnotation(Determiner.class);
-        determiner = null == ann ? new NutEntryDeterminer() : NutConfig.evalObj(config, ann.value(), ann.args());
+        determiner = null == ann ? new NutEntryDeterminer() : config.evalObj(ann.value(), ann.args());
         return determiner;
     }
 
@@ -223,7 +223,7 @@ public class AnnotationModuleProvider implements ModuleProvider {
     public UrlMapping getUrlMapping() {
         UrlMappingBy umb = mainModule.getAnnotation(UrlMappingBy.class);
         if (umb != null)
-            return NutConfig.evalObj(config, umb.value(), umb.args());
+            return config.evalObj(umb.value(), umb.args());
         return new UrlMappingImpl();
     }
 

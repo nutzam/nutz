@@ -40,7 +40,7 @@ public abstract class AbstractProcessor implements Processor {
     }
 
     protected static <T> T evalObj(NutConfig config, ObjectInfo<T> info) {
-        return null == info ? null : NutConfig.evalObj(config, info.getType(), info.getArgs());
+        return null == info ? null : config.evalObj(info.getType(), info.getArgs());
     }
 
     protected void renderView(ActionContext ac) throws Throwable {
