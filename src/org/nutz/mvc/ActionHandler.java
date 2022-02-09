@@ -25,7 +25,7 @@ public class ActionHandler {
 
         Mvcs.setActionContext(ac);
 
-        ActionInvoker invoker = loading.load(ac);
+        ActionInvoker invoker = loading.fetch(ac);
         if(null == invoker) {
             return false;
         }

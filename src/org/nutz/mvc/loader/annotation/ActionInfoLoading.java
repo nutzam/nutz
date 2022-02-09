@@ -2,7 +2,6 @@ package org.nutz.mvc.loader.annotation;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.*;
 
 import org.nutz.ioc.annotation.InjectName;
@@ -17,17 +16,12 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.ActionFilter;
 import org.nutz.mvc.ActionInfo;
-import org.nutz.mvc.EntryDeterminer;
 import org.nutz.mvc.HttpAdaptor;
-import org.nutz.mvc.ModuleScanner;
 import org.nutz.mvc.Mvcs;
-import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.ObjectInfo;
 import org.nutz.mvc.annotation.*;
-import org.nutz.mvc.impl.NutEntryDeterminer;
-import org.nutz.resource.Scans;
 
-public abstract class Loadings {
+public abstract class ActionInfoLoading {
 
     private static final Log log = Logs.get();
 

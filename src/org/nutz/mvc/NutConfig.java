@@ -108,7 +108,7 @@ public interface NutConfig {
      *
      * @return 配置的主模块，null - 如果没有定义这个参数
      */
-    Class<?> getMainModule();
+    String getMainModulePackage();
 
     /**
      * 获取主模块的配置

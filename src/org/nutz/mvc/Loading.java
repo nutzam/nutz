@@ -19,5 +19,5 @@ public interface Loading {
      * @param ac
      * @return
      */
-    ActionInvoker load(ActionContext ac);
+    ActionInvoker fetch(ActionContext ac);
 }

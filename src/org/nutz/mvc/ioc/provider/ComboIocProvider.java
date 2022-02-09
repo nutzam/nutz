@@ -15,7 +15,7 @@ public class ComboIocProvider implements IocProvider {
             //TODO 扩展语法
             for (int i = 0; i < args.length; i++) {
                 if (args[i].contains("${main}"))
-                    args[i] = args[i].replace("${main}", config.getMainModule().getPackage().getName());
+                    args[i] = args[i].replace("${main}", config.getMainModulePackage());
             }
             return new NutIoc(new ComboIocLoader(args), new ScopeContext("app"), "app");
         }

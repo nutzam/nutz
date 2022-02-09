@@ -20,6 +20,8 @@ import java.util.*;
 
 /**
  * 以注解为配置源，生成MVC需要的信息
+ *
+ * @author juqkai(juqkai@gmail.com)
  */
 public class AnnotationModuleProvider implements ModuleProvider {
     private static final Log log = Logs.get();
@@ -198,7 +200,7 @@ public class AnnotationModuleProvider implements ModuleProvider {
 
 
     public UrlMapping getUrlMapping() {
-        UrlMappingBy umb = config.getMainModule().getAnnotation(UrlMappingBy.class);
+        UrlMappingBy umb = mainModule.getAnnotation(UrlMappingBy.class);
         if (umb != null)
             return NutConfig.evalObj(config, umb.value(), umb.args());
         return new UrlMappingImpl();
@@ -314,9 +316,9 @@ public class AnnotationModuleProvider implements ModuleProvider {
                         continue;
                     }
                     if (moduleInfo == null) {
-                        moduleInfo = Loadings.createInfo(type).mergeWith(fetchMainInfo());
+                        moduleInfo = ActionInfoLoading.createInfo(type).mergeWith(fetchMainInfo());
                     }
-                    ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);
+                    ActionInfo info = ActionInfoLoading.createInfo(method).mergeWith(moduleInfo);
                     modules.add(info);
                     if (log.isDebugEnabled()) {
                         log.debugf("   >> add '%s'", type.getName());
@@ -343,7 +345,7 @@ public class AnnotationModuleProvider implements ModuleProvider {
         /*
          * 创建主模块的配置信息
          */
-        ActionInfo mainInfo = Loadings.createInfo(mainModule).mergeWith(fetchDefaultActionInfo());
+        ActionInfo mainInfo = ActionInfoLoading.createInfo(mainModule).mergeWith(fetchDefaultActionInfo());
         mainInfo.setInjectName(null);
         mainInfo.setModuleType(null);
         this.mainInfo = mainInfo;

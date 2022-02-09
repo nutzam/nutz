@@ -1,4 +1,4 @@
-package org.nutz.mvc.loader.annotation;
+package org.nutz.mvc.impl;
 
 import org.nutz.Nutz;
 import org.nutz.ioc.Ioc;
@@ -33,29 +33,6 @@ public class NutLoading implements Loading {
     }
 
     public UrlMapping load(NutConfig config) {
-        if (log.isInfoEnabled()) {
-            log.infof("Nutz Version : %s ", Nutz.version());
-            log.infof("Nutz.Mvc[%s] is initializing ...", config.getAppName());
-        }
-        if (log.isDebugEnabled()) {
-            Properties sys = System.getProperties();
-            log.debug("Web Container Information:");
-            log.debugf(" - Default Charset : %s", Encoding.defaultEncoding());
-            log.debugf(" - Current . path  : %s", new File(".").getAbsolutePath());
-            log.debugf(" - Java Version    : %s", sys.get("java.version"));
-            log.debugf(" - File separator  : %s", sys.get("file.separator"));
-            log.debugf(" - Timezone        : %s", sys.get("user.timezone"));
-            log.debugf(" - OS              : %s %s", sys.get("os.name"), sys.get("os.arch"));
-            log.debugf(" - ServerInfo      : %s", config.getServletContext().getServerInfo());
-            log.debugf(" - Servlet API     : %d.%d",
-                       config.getServletContext().getMajorVersion(),
-                       config.getServletContext().getMinorVersion());
-            if (config.getServletContext().getMajorVersion() > 2
-                || config.getServletContext().getMinorVersion() > 4)
-                log.debugf(" - ContextPath     : %s", config.getServletContext().getContextPath());
-            log.debugf(" - context.tempdir : %s", config.getAttribute("javax.servlet.context.tempdir"));
-            log.debugf(" - MainModule      : %s", config.getMainModule().getName());
-        }
         /*
          * 准备返回值
          */
@@ -68,12 +45,6 @@ public class NutLoading implements Loading {
         Stopwatch sw = Stopwatch.begin();
 
         try {
-
-            /*
-             * 检查主模块，调用本函数前，已经确保过有声明 MainModule 了
-             */
-            Class<?> mainModule = config.getMainModule();
-
             /*
              * 创建上下文
              */
@@ -91,12 +62,12 @@ public class NutLoading implements Loading {
             /*
              * 组装UrlMapping
              */
-            mapping = evalUrlMapping(config, mainModule, ioc);
+            mapping = evalUrlMapping(config, ioc);
 
             /*
              * 分析本地化字符串
              */
-            evalLocalization(config, mainModule);
+            evalLocalization(config);
 
             // 初始化SessionProvider
             config.setSessionProvider(moduleProvider.getSessionProvider());
@@ -133,12 +104,18 @@ public class NutLoading implements Loading {
 
     }
 
-    protected UrlMapping evalUrlMapping(NutConfig config, Class<?> mainModule, Ioc ioc)
-            throws Exception {
+    protected UrlMapping evalUrlMapping(NutConfig config, Ioc ioc) throws Exception {
         /*
-         * @ TODO 个人建议可以将这个方法所涉及的内容转换到Loadings类或相应的组装类中,
-         * 以便将本类加以隔离,使本的职责仅限于MVC整体的初使化,而不再负责UrlMapping的加载
+         * 创建视图工厂
          */
+        List<ViewMaker> makers = createViewMakers(ioc);
+        Mvcs.ctx().setViewMakers(makers);
+
+        /*
+         * 创建动作链工厂
+         */
+//        ActionChainMaker maker = moduleProvider.getChainMaker();
+        Mvcs.ctx().setActionChainMaker(moduleProvider.getChainMaker());
 
         /*
          * 准备 UrlMapping
@@ -147,18 +124,6 @@ public class NutLoading implements Loading {
         Mvcs.ctx().setUrlMapping(mapping);
         if (log.isInfoEnabled())
             log.infof("Build URL mapping by %s ...", mapping.getClass().getName());
-
-        /*
-         * 创建视图工厂
-         */
-        List<ViewMaker> makers = createViewMakers(mainModule, ioc);
-        Mvcs.ctx().setViewMakers(makers);
-
-        /*
-         * 创建动作链工厂
-         */
-//        ActionChainMaker maker = moduleProvider.getChainMaker();
-        Mvcs.ctx().setActionChainMaker(moduleProvider.getChainMaker());
 
         /*
          * 准备要加载的模块列表
@@ -231,7 +196,7 @@ public class NutLoading implements Loading {
         }
     }
 
-    protected void evalLocalization(NutConfig config, Class<?> mainModule) {
+    protected void evalLocalization(NutConfig config) {
         // 保存消息 Map
         Mvcs.setMessageSet(moduleProvider.getMessageSet());
 
@@ -241,7 +206,7 @@ public class NutLoading implements Loading {
         }
     }
 
-    protected List<ViewMaker> createViewMakers(Class<?> mainModule, Ioc ioc) throws Exception {
+    protected List<ViewMaker> createViewMakers(Ioc ioc) throws Exception {
         List<ViewMaker> makers = new ArrayList<ViewMaker>();
         makers.addAll(moduleProvider.getViewMakers());
         if (ioc != null) {
@@ -298,8 +263,10 @@ public class NutLoading implements Loading {
             log.infof("Nutz.Mvc[%s] is down in %sms", config.getAppName(), sw.getDuration());
     }
 
+
     @Override
-    public ActionInvoker load(ActionContext ac) {
+    public ActionInvoker fetch(ActionContext ac) {
         return mapping.get(ac);
     }
+
 }
