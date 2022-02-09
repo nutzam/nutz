@@ -4,11 +4,15 @@ import org.nutz.ioc.Ioc;
 import org.nutz.ioc.Ioc2;
 import org.nutz.json.Json;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.mvc.MessageLoader;
+import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.Setup;
 import org.nutz.mvc.annotation.IocBy;
+import org.nutz.mvc.annotation.Localization;
 import org.nutz.mvc.annotation.SetupBy;
 import org.nutz.mvc.impl.ModuleProvider;
 import org.nutz.mvc.impl.ServletValueProxyMaker;
@@ -16,6 +20,7 @@ import org.nutz.mvc.impl.ServletValueProxyMaker;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class AnnotationModuleProvider implements ModuleProvider {
     private static final Log log = Logs.get();
@@ -88,6 +93,53 @@ public class AnnotationModuleProvider implements ModuleProvider {
             }
         }
         return setups;
+    }
+
+    @Override
+    public Map<String, Map<String, Object>> getMessageSet() {
+        Localization lc = mainModule.getAnnotation(Localization.class);
+        if (null == lc) {
+            // 否则记录一下
+            if (log.isDebugEnabled()) {
+                log.debug("@Localization not define");
+            }
+            return null;
+        }
+        if (log.isDebugEnabled())
+            log.debugf("Localization: %s('%s') %s dft<%s>",
+                    lc.type().getName(),
+                    lc.value(),
+                    Strings.isBlank(lc.beanName()) ? "" : "$ioc->" + lc.beanName(),
+                    lc.defaultLocalizationKey());
+
+        MessageLoader msgLoader = null;
+        // 通过 Ioc 方式加载 MessageLoader ...
+        if (!Strings.isBlank(lc.beanName())) {
+            msgLoader = config.getIoc().get(lc.type(), lc.beanName());
+        }
+        // 普通方式加载
+        else {
+            msgLoader = Mirror.me(lc.type()).born();
+        }
+        // 加载数据
+        return msgLoader.load(lc.value());
+
+    }
+
+    @Override
+    public String getDefaultLocalizationKey() {
+        Localization lc = mainModule.getAnnotation(Localization.class);
+        if (null != lc) {
+            // 如果有声明默认语言 ...
+            if (!Strings.isBlank(lc.defaultLocalizationKey())){
+                return lc.defaultLocalizationKey();
+            }
+        }
+        // 否则记录一下
+        else if (log.isDebugEnabled()) {
+            log.debug("@Localization not define");
+        }
+        return null;
     }
 
 }

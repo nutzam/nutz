@@ -305,38 +305,12 @@ public class NutLoading implements Loading {
     }
 
     protected void evalLocalization(NutConfig config, Class<?> mainModule) {
-        Localization lc = mainModule.getAnnotation(Localization.class);
-        if (null != lc) {
-            if (log.isDebugEnabled())
-                log.debugf("Localization: %s('%s') %s dft<%s>",
-                           lc.type().getName(),
-                           lc.value(),
-                           Strings.isBlank(lc.beanName()) ? "" : "$ioc->" + lc.beanName(),
-                           lc.defaultLocalizationKey());
+        // 保存消息 Map
+        Mvcs.setMessageSet(moduleProvider.getMessageSet());
 
-            MessageLoader msgLoader = null;
-            // 通过 Ioc 方式加载 MessageLoader ...
-            if (!Strings.isBlank(lc.beanName())) {
-                msgLoader = config.getIoc().get(lc.type(), lc.beanName());
-            }
-            // 普通方式加载
-            else {
-                msgLoader = Mirror.me(lc.type()).born();
-            }
-            // 加载数据
-            Map<String, Map<String, Object>> msgss = msgLoader.load(lc.value());
-
-            // 保存消息 Map
-            Mvcs.setMessageSet(msgss);
-
-            // 如果有声明默认语言 ...
-            if (!Strings.isBlank(lc.defaultLocalizationKey()))
-                Mvcs.setDefaultLocalizationKey(lc.defaultLocalizationKey());
-
-        }
-        // 否则记录一下
-        else if (log.isDebugEnabled()) {
-            log.debug("@Localization not define");
+        // 如果有声明默认语言 ...
+        if (!Strings.isBlank(moduleProvider.getDefaultLocalizationKey())) {
+            Mvcs.setDefaultLocalizationKey(moduleProvider.getDefaultLocalizationKey());
         }
     }
 
