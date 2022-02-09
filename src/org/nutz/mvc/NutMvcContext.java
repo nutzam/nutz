@@ -6,22 +6,27 @@ import java.util.Map;
 
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
+import org.nutz.lang.Strings;
+import org.nutz.lang.segment.Segments;
 import org.nutz.lang.util.Context;
 import org.nutz.lang.util.SimpleContext;
 import org.nutz.mvc.config.AtMap;
+import org.nutz.mvc.impl.ModuleProvider;
 
+/**
+ * NutMvc上下文，根据nutConfig以及moduleProvider生成运行过程中需要的各项数据
+ */
 public class NutMvcContext extends SimpleContext {
 
     private ThreadLocal<Context> reqThreadLocal = new ThreadLocal<Context>();
     public Ioc ioc;
     public AtMap atMap;
     public NutConfig nutConfig;
+    protected ModuleProvider moduleProvider;
     public Map<String, Map<String, Object>> localizations = new HashMap<String, Map<String, Object>>();
-
     protected UrlMapping urlMapping;
-
     protected ActionChainMaker chainMaker;
-
     protected List<ViewMaker> viewMakers;
 
     public Context reqCtx() {
@@ -117,5 +122,20 @@ public class NutMvcContext extends SimpleContext {
 
     public List<ViewMaker> getViewMakers() {
         return viewMakers;
+    }
+
+    public ModuleProvider getModuleProvider() {
+        if (moduleProvider == null) {
+            moduleProvider = getNutConfig().getModuleProvider();
+        }
+        return moduleProvider;
+    }
+
+    public void setModuleProvider(ModuleProvider moduleProvider) {
+        this.moduleProvider = moduleProvider;
+    }
+
+    public <T> T evalObj(Class<T> type, String[] args) {
+        return getNutConfig().evalObj(type, args);
     }
 }
