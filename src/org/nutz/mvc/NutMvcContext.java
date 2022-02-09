@@ -90,6 +90,9 @@ public class NutMvcContext extends SimpleContext {
     }
 
     public void setLocalizations(Map<String, Map<String, Object>> localizations) {
+        if (localizations == null) {
+            localizations = new HashMap<>();
+        }
         this.localizations = localizations;
     }
 
