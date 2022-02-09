@@ -151,7 +151,7 @@ public class NutLoading implements Loading {
         /*
          * 创建视图工厂
          */
-        ViewMaker[] makers = createViewMakers(mainModule, ioc);
+        List<ViewMaker> makers = createViewMakers(mainModule, ioc);
         Mvcs.ctx().setViewMakers(makers);
 
         /*
@@ -161,71 +161,22 @@ public class NutLoading implements Loading {
         Mvcs.ctx().setActionChainMaker(moduleProvider.getChainMaker());
 
         /*
-         * 创建主模块的配置信息
-         */
-        ActionInfo mainInfo = Loadings.createInfo(mainModule).mergeWith(fetchDefaultActionInfo());
-        mainInfo.setInjectName(null);
-        mainInfo.setModuleType(null);
-
-        Mvcs.ctx().setMainInfo(mainInfo);
-
-//        // fix issue #1337
-//        Determiner ann = mainModule.getAnnotation(Determiner.class);
-//        EntryDeterminer determiner = null == ann ? new NutEntryDeterminer() : NutConfig.evalObj(config, ann.value(), ann.args());
-
-        /*
          * 准备要加载的模块列表
          */
-        // TODO 为什么用Set呢? 用List不是更快吗?
-        Set<Class<?>> modules = getModuleClasses(config, mainModule);
-
-        if (modules.isEmpty()) {
-            if (log.isWarnEnabled())
-                log.warn("None module classes found!!!");
+        List<ActionInfo> actionInfos = moduleProvider.loadActionInfos();
+        for (ActionInfo ai : actionInfos) {
+            ai.setViewMakers(makers);
+            mapping.add(moduleProvider.getChainMaker(), ai, config);
         }
 
-        int atMethods = 0;
-        /*
-         * 分析所有的子模块
-         */
-        if (log.isDebugEnabled())
-            log.debugf("Use %s as EntryMethodDeterminer", moduleProvider.getDeterminer().getClass().getName());
-        for (Class<?> module : modules) {
-            ActionInfo moduleInfo = Loadings.createInfo(module).mergeWith(mainInfo);
-            for (Method method : module.getMethods()) {
-                if (!moduleProvider.getDeterminer().isEntry(module, method))
-                    continue;
-                // 增加到映射中
-                ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);
-                info.setViewMakers(makers);
-                mapping.add(Mvcs.ctx().getActionChainMaker(), info, config);
-                atMethods++;
-            }
-
-            // 记录pathMap
-            if (null != moduleInfo.getPathMap()) {
-                for (Entry<String, String> en : moduleInfo.getPathMap().entrySet()) {
-                    config.getAtMap().add(en.getKey(), en.getValue());
-                }
-            }
-        }
-
-        if (atMethods == 0) {
+        if (actionInfos.size() == 0) {
             if (log.isWarnEnabled())
                 log.warn("None @At found in any modules class!!");
         } else {
-            log.infof("Found %d module methods", atMethods);
+            log.infof("Found %d module methods", actionInfos.size());
         }
 
         return mapping;
-    }
-
-    /**
-     * 外部提供默认的一些ActionInfo配置
-     * @return
-     */
-    protected  ActionInfo fetchDefaultActionInfo(){
-        return null;
     }
 
     protected void createContext(NutConfig config) {
@@ -290,7 +241,7 @@ public class NutLoading implements Loading {
         }
     }
 
-    protected ViewMaker[] createViewMakers(Class<?> mainModule, Ioc ioc) throws Exception {
+    protected List<ViewMaker> createViewMakers(Class<?> mainModule, Ioc ioc) throws Exception {
         List<ViewMaker> makers = new ArrayList<ViewMaker>();
         makers.addAll(moduleProvider.getViewMakers());
         if (ioc != null) {
@@ -314,7 +265,7 @@ public class NutLoading implements Loading {
             log.debugf("@Views(%s)", sb);
         }
 
-        return makers.toArray(new ViewMaker[makers.size()]);
+        return makers;
     }
 
     public void depose(NutConfig config) {
@@ -350,9 +301,5 @@ public class NutLoading implements Loading {
     @Override
     public ActionInvoker load(ActionContext ac) {
         return mapping.get(ac);
-    }
-
-    protected Set<Class<?>> getModuleClasses(NutConfig config, Class<?> mainModule) {
-        return Loadings.scanModules(config, mainModule);
     }
 }

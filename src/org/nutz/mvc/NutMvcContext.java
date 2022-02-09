@@ -1,6 +1,7 @@
 package org.nutz.mvc;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.nutz.ioc.Ioc;
@@ -21,9 +22,7 @@ public class NutMvcContext extends SimpleContext {
 
     protected ActionChainMaker chainMaker;
 
-    protected ViewMaker[] viewMakers;
-
-    protected ActionInfo mainInfo;
+    protected List<ViewMaker> viewMakers;
 
     public Context reqCtx() {
     	Context ctx = reqThreadLocal.get();
@@ -112,19 +111,11 @@ public class NutMvcContext extends SimpleContext {
         this.chainMaker = acm;
     }
 
-    public void setViewMakers(ViewMaker[] makers) {
+    public void setViewMakers(List<ViewMaker> makers) {
         this.viewMakers = makers;
     }
 
-    public ViewMaker[] getViewMakers() {
+    public List<ViewMaker> getViewMakers() {
         return viewMakers;
-    }
-
-    public ActionInfo getMainInfo() {
-        return mainInfo;
-    }
-
-    public void setMainInfo(ActionInfo mainInfo) {
-        this.mainInfo = mainInfo;
     }
 }
