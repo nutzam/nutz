@@ -161,14 +161,6 @@ public class NutLoading implements Loading {
         Mvcs.ctx().setActionChainMaker(moduleProvider.getChainMaker());
 
         /*
-         * 创建主模块的配置信息
-         */
-        ActionInfo mainInfo = Loadings.createInfo(mainModule).mergeWith(fetchDefaultActionInfo());
-        mainInfo.setInjectName(null);
-        mainInfo.setModuleType(null);
-
-        Mvcs.ctx().setMainInfo(mainInfo);
-        /*
          * 准备要加载的模块列表
          */
         List<ActionInfo> actionInfos = moduleProvider.loadActionInfos();
@@ -185,14 +177,6 @@ public class NutLoading implements Loading {
         }
 
         return mapping;
-    }
-
-    /**
-     * 外部提供默认的一些ActionInfo配置
-     * @return
-     */
-    protected  ActionInfo fetchDefaultActionInfo(){
-        return null;
     }
 
     protected void createContext(NutConfig config) {

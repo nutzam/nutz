@@ -24,8 +24,6 @@ public class NutMvcContext extends SimpleContext {
 
     protected List<ViewMaker> viewMakers;
 
-    protected ActionInfo mainInfo;
-
     public Context reqCtx() {
     	Context ctx = reqThreadLocal.get();
     	if (ctx == null) {
@@ -119,13 +117,5 @@ public class NutMvcContext extends SimpleContext {
 
     public List<ViewMaker> getViewMakers() {
         return viewMakers;
-    }
-
-    public ActionInfo getMainInfo() {
-        return mainInfo;
-    }
-
-    public void setMainInfo(ActionInfo mainInfo) {
-        this.mainInfo = mainInfo;
     }
 }

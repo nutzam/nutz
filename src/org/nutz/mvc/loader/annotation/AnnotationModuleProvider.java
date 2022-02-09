@@ -24,6 +24,7 @@ import java.util.*;
 public class AnnotationModuleProvider implements ModuleProvider {
     private static final Log log = Logs.get();
     private Class<?> mainModule;
+    private ActionInfo mainInfo;
     private NutConfig config;
     private Ioc ioc;
     private SessionProvider sessionProvider;
@@ -313,7 +314,7 @@ public class AnnotationModuleProvider implements ModuleProvider {
                         continue;
                     }
                     if (moduleInfo == null) {
-                        moduleInfo = Loadings.createInfo(type).mergeWith(Mvcs.ctx().getMainInfo());
+                        moduleInfo = Loadings.createInfo(type).mergeWith(fetchMainInfo());
                     }
                     ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);
                     modules.add(info);
@@ -335,6 +336,27 @@ public class AnnotationModuleProvider implements ModuleProvider {
         return modules;
     }
 
+    private ActionInfo fetchMainInfo(){
+        if (mainInfo != null) {
+            return mainInfo;
+        }
+        /*
+         * 创建主模块的配置信息
+         */
+        ActionInfo mainInfo = Loadings.createInfo(mainModule).mergeWith(fetchDefaultActionInfo());
+        mainInfo.setInjectName(null);
+        mainInfo.setModuleType(null);
+        this.mainInfo = mainInfo;
+        return mainInfo;
+    }
+    /**
+     * 外部提供默认的一些ActionInfo配置
+     * @return
+     */
+    protected  ActionInfo fetchDefaultActionInfo(){
+        return null;
+    }
+
     public boolean classIsModule(Class<?> classZ) {
         int classModify = classZ.getModifiers();
         if (!Modifier.isPublic(classModify)
@@ -343,5 +365,7 @@ public class AnnotationModuleProvider implements ModuleProvider {
             return false;
         return true;
     }
+
+
 
 }
