@@ -49,8 +49,7 @@ public class MvcI18n {
      * @return
      */
     public static String messageOrDefault(String key, String defaultValue) {
-        String localizationKey = Mvcs.getLocalizationKey() == null ? Mvcs.getDefaultLocalizationKey() : Mvcs.getLocalizationKey();
-        Map<String, Object> localization = Mvcs.getLocaleMessage(localizationKey);
+        Map<String, Object> localization = Mvcs.getLocaleMessage(Mvcs.getLocalizationKey());
         if (null != localization) {
             Object value = localization.get(key);
             return value == null ? defaultValue : String.valueOf(value);

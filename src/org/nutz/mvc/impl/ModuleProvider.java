@@ -4,6 +4,7 @@ import org.nutz.ioc.Ioc;
 import org.nutz.mvc.Setup;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ModuleProvider {
     /**
@@ -17,4 +18,8 @@ public interface ModuleProvider {
      * @return
      */
     List<Setup> getSetup();
+
+    Map<String, Map<String, Object>> getMessageSet();
+
+    String getDefaultLocalizationKey();
 }

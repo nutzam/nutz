@@ -121,7 +121,14 @@ public abstract class Mvcs {
      * @return 当前会话的本地字符串集合的键值；如果当前 HTTP 会话不存在，则返回 null
      */
     public static String getLocalizationKey() {
-        return (String) getSessionAttrSafe(LOCALE_KEY);
+        String key = (String) getSessionAttrSafe(LOCALE_KEY);
+        if (key == null && localizationManager != null) {
+            key = localizationManager.getDefaultLocal();
+        }
+        if (key == null) {
+            key = getDefaultLocalizationKey();
+        }
+        return key;
     }
 
     /**
@@ -195,13 +202,7 @@ public abstract class Mvcs {
             if (msgss == null && !ctx().localizations.isEmpty())
                 msgss = ctx().getLocalizations();
             if (null != msgss) {
-                Map<String, Object> msgs = null;
-
-                String lKey = Strings.sBlank(Mvcs.getLocalizationKey(), getDefaultLocalizationKey());
-
-                if (!Strings.isBlank(lKey))
-                    msgs = msgss.get(lKey);
-
+                Map<String, Object> msgs = msgss.get(Mvcs.getLocalizationKey());
                 // 没有设定特殊的 Local 名字，随便取一个
                 if (null == msgs) {
                     if (msgss.size() > 0)
@@ -212,13 +213,7 @@ public abstract class Mvcs {
             }
         }
         else {
-            String lKey = Mvcs.getLocalizationKey();
-            if (Strings.isBlank(lKey)) {
-                lKey = localizationManager.getDefaultLocal();
-                if (Strings.isBlank(lKey))
-                    lKey = getDefaultLocalizationKey();
-            }
-            NutMessageMap msg = localizationManager.getMessageMap(lKey);
+            NutMessageMap msg = localizationManager.getMessageMap(Mvcs.getLocalizationKey());
             if (msg != null)
                 req.setAttribute(MSG, msg);
         }
