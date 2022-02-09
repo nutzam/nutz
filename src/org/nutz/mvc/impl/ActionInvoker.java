@@ -14,7 +14,8 @@ import org.nutz.mvc.impl.reqmatcher.DefaultRequestMatcher;
 
 /**
  * 根据 HTTP 请求的方法 (GET|POST|PUT|DELETE) 来调用响应的动作链
- * 
+ * 每个外部接口的调用入口
+ *
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  */

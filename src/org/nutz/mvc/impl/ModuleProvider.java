@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 模块提供者
+ * 模块提供者，负责根据模块配置，解析出所有运行依赖环境和所有的Action
  * 当前实现了基于注解的加载，理论上可以实现基于json、xml等类型的实现
  * @author juqkai(juqkai@gmail.com)
  */
@@ -28,6 +28,13 @@ public interface ModuleProvider {
 
     ActionChainMaker getChainMaker();
 
+
+    /**
+     * 根据 MainModule 中的 '@LoadingBy' 得到一个加载逻辑的实现类
+     *
+     * @return 加载逻辑
+     */
+    Loading createLoading();
 
     Map<String, Map<String, Object>> getMessageSet();
 

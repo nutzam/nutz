@@ -1,13 +1,5 @@
 package org.nutz.mvc.config;
 
-import java.io.File;
-import java.util.Enumeration;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
-
-import javax.servlet.ServletContext;
-
 import org.nutz.Nutz;
 import org.nutz.castor.Castors;
 import org.nutz.ioc.Ioc;
@@ -19,16 +11,19 @@ import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
-import org.nutz.mvc.Loading;
-import org.nutz.mvc.Mvcs;
-import org.nutz.mvc.NutConfig;
-import org.nutz.mvc.NutConfigException;
-import org.nutz.mvc.SessionProvider;
+import org.nutz.mvc.*;
 import org.nutz.mvc.annotation.LoadingBy;
 import org.nutz.mvc.impl.ModuleProvider;
-import org.nutz.mvc.loader.annotation.AnnotationModuleProvider;
 import org.nutz.mvc.impl.NutLoading;
+import org.nutz.mvc.loader.annotation.AnnotationModuleProvider;
 import org.nutz.resource.Scans;
+
+import javax.servlet.ServletContext;
+import java.io.File;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
 
 public abstract class AbstractNutConfig implements NutConfig {
 
@@ -41,54 +36,6 @@ public abstract class AbstractNutConfig implements NutConfig {
     public AbstractNutConfig(ServletContext context) {
         Scans.me().init(context);
         Json.clearEntityCache();
-    }
-
-    public Loading createLoading() {
-        if (log.isInfoEnabled()) {
-            log.infof("Nutz Version : %s ", Nutz.version());
-            log.infof("Nutz.Mvc[%s] is initializing ...", getAppName());
-        }
-        if (log.isDebugEnabled()) {
-            Properties sys = System.getProperties();
-            log.debug("Web Container Information:");
-            log.debugf(" - Default Charset : %s", Encoding.defaultEncoding());
-            log.debugf(" - Current . path  : %s", new File(".").getAbsolutePath());
-            log.debugf(" - Java Version    : %s", sys.get("java.version"));
-            log.debugf(" - File separator  : %s", sys.get("file.separator"));
-            log.debugf(" - Timezone        : %s", sys.get("user.timezone"));
-            log.debugf(" - OS              : %s %s", sys.get("os.name"), sys.get("os.arch"));
-            log.debugf(" - ServerInfo      : %s", getServletContext().getServerInfo());
-            log.debugf(" - Servlet API     : %d.%d",
-                    getServletContext().getMajorVersion(),
-                    getServletContext().getMinorVersion());
-            if (getServletContext().getMajorVersion() > 2
-                    || getServletContext().getMinorVersion() > 4)
-                log.debugf(" - ContextPath     : %s", getServletContext().getContextPath());
-            log.debugf(" - context.tempdir : %s", getAttribute("javax.servlet.context.tempdir"));
-            log.debugf(" - MainModule      : %s", getMainModule().getName());
-        }
-        /*
-         * 确保用户声明了 MainModule
-         */
-        Class<?> mainModule = getMainModule();
-
-        /*
-         * 获取 Loading
-         */
-        LoadingBy by = mainModule.getAnnotation(LoadingBy.class);
-        if (null == by) {
-            if (log.isDebugEnabled())
-                log.debug("Loading by " + NutLoading.class);
-            return new NutLoading();
-        }
-        try {
-            if (log.isDebugEnabled())
-                log.debug("Loading by " + by.value());
-            return Mirror.me(by.value()).born();
-        }
-        catch (Exception e) {
-            throw Lang.wrapThrow(e);
-        }
     }
 
     public Context getLoadingContext() {
@@ -187,6 +134,9 @@ public abstract class AbstractNutConfig implements NutConfig {
     }
 
     public SessionProvider getSessionProvider() {
+        if (sessionProvider == null) {
+            sessionProvider = getModuleProvider().getSessionProvider();
+        }
         return sessionProvider;
     }
 

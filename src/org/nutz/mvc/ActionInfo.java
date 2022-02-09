@@ -13,6 +13,9 @@ import org.nutz.lang.Strings;
 import org.nutz.lang.util.ClassMeta;
 import org.nutz.lang.util.ClassMetaReader;
 
+/**
+ * 每个Action动作的描述
+ */
 public class ActionInfo {
 
     private String inputEncoding;

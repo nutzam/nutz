@@ -124,6 +124,27 @@ public class AnnotationModuleProvider implements ModuleProvider {
         return maker;
     }
 
+
+    public Loading createLoading() {
+        /*
+         * 获取 Loading
+         */
+        LoadingBy by = mainModule.getAnnotation(LoadingBy.class);
+        if (null == by) {
+            if (log.isDebugEnabled())
+                log.debug("Loading by " + NutLoading.class);
+            return new NutLoading();
+        }
+        try {
+            if (log.isDebugEnabled())
+                log.debug("Loading by " + by.value());
+            return Mirror.me(by.value()).born();
+        }
+        catch (Exception e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
+
     @Override
     public Map<String, Map<String, Object>> getMessageSet() {
         Localization lc = mainModule.getAnnotation(Localization.class);
@@ -316,9 +337,9 @@ public class AnnotationModuleProvider implements ModuleProvider {
                         continue;
                     }
                     if (moduleInfo == null) {
-                        moduleInfo = ActionInfoLoading.createInfo(type).mergeWith(fetchMainInfo());
+                        moduleInfo = ActionInfoCreator.createInfo(type).mergeWith(fetchMainInfo());
                     }
-                    ActionInfo info = ActionInfoLoading.createInfo(method).mergeWith(moduleInfo);
+                    ActionInfo info = ActionInfoCreator.createInfo(method).mergeWith(moduleInfo);
                     modules.add(info);
                     if (log.isDebugEnabled()) {
                         log.debugf("   >> add '%s'", type.getName());
@@ -345,7 +366,7 @@ public class AnnotationModuleProvider implements ModuleProvider {
         /*
          * 创建主模块的配置信息
          */
-        ActionInfo mainInfo = ActionInfoLoading.createInfo(mainModule).mergeWith(fetchDefaultActionInfo());
+        ActionInfo mainInfo = ActionInfoCreator.createInfo(mainModule).mergeWith(fetchDefaultActionInfo());
         mainInfo.setInjectName(null);
         mainInfo.setModuleType(null);
         this.mainInfo = mainInfo;

@@ -21,7 +21,7 @@ import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.ObjectInfo;
 import org.nutz.mvc.annotation.*;
 
-public abstract class ActionInfoLoading {
+public abstract class ActionInfoCreator {
 
     private static final Log log = Logs.get();
 

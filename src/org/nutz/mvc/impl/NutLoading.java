@@ -12,31 +12,47 @@ import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.*;
-import org.nutz.mvc.impl.ActionInvoker;
-import org.nutz.mvc.impl.ModuleProvider;
 import org.nutz.mvc.view.DefaultViewMaker;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.Map.Entry;
 
 public class NutLoading implements Loading {
 
     private static final Log log = Logs.get();
+    protected NutConfig config;
     protected UrlMapping mapping = null;
     protected ModuleProvider moduleProvider = null;
 
-    @Override
-    public void init(NutConfig config) {
-        mapping = load(config);
-    }
-
     public UrlMapping load(NutConfig config) {
+        if (log.isInfoEnabled()) {
+            log.infof("Nutz Version : %s ", Nutz.version());
+            log.infof("Nutz.Mvc[%s] is initializing ...", config.getAppName());
+        }
+        if (log.isDebugEnabled()) {
+            Properties sys = System.getProperties();
+            log.debug("Web Container Information:");
+            log.debugf(" - Default Charset : %s", Encoding.defaultEncoding());
+            log.debugf(" - Current . path  : %s", new File(".").getAbsolutePath());
+            log.debugf(" - Java Version    : %s", sys.get("java.version"));
+            log.debugf(" - File separator  : %s", sys.get("file.separator"));
+            log.debugf(" - Timezone        : %s", sys.get("user.timezone"));
+            log.debugf(" - OS              : %s %s", sys.get("os.name"), sys.get("os.arch"));
+            log.debugf(" - ServerInfo      : %s", config.getServletContext().getServerInfo());
+            log.debugf(" - Servlet API     : %d.%d",
+                    config.getServletContext().getMajorVersion(),
+                    config.getServletContext().getMinorVersion());
+            if (config.getServletContext().getMajorVersion() > 2
+                    || config.getServletContext().getMinorVersion() > 4)
+                log.debugf(" - ContextPath     : %s", config.getServletContext().getContextPath());
+            log.debugf(" - context.tempdir : %s", config.getAttribute("javax.servlet.context.tempdir"));
+            log.debugf(" - MainModule      : %s", config.getMainModulePackage());
+        }
+        this.config = config;
         /*
          * 准备返回值
          */
-        UrlMapping mapping;
         Ioc ioc = null;
 
         /*
@@ -62,15 +78,12 @@ public class NutLoading implements Loading {
             /*
              * 组装UrlMapping
              */
-            mapping = evalUrlMapping(config, ioc);
+            mapping = evalUrlMapping(config);
 
             /*
              * 分析本地化字符串
              */
             evalLocalization(config);
-
-            // 初始化SessionProvider
-            config.setSessionProvider(moduleProvider.getSessionProvider());
 
             /*
              * 执行用户自定义 Setup
@@ -104,11 +117,11 @@ public class NutLoading implements Loading {
 
     }
 
-    protected UrlMapping evalUrlMapping(NutConfig config, Ioc ioc) throws Exception {
+    protected UrlMapping evalUrlMapping(NutConfig config) throws Exception {
         /*
          * 创建视图工厂
          */
-        List<ViewMaker> makers = createViewMakers(ioc);
+        List<ViewMaker> makers = createViewMakers();
         Mvcs.ctx().setViewMakers(makers);
 
         /*
@@ -120,7 +133,7 @@ public class NutLoading implements Loading {
         /*
          * 准备 UrlMapping
          */
-        UrlMapping mapping = moduleProvider.getUrlMapping();
+        mapping = moduleProvider.getUrlMapping();
         Mvcs.ctx().setUrlMapping(mapping);
         if (log.isInfoEnabled())
             log.infof("Build URL mapping by %s ...", mapping.getClass().getName());
@@ -129,9 +142,13 @@ public class NutLoading implements Loading {
          * 准备要加载的模块列表
          */
         List<ActionInfo> actionInfos = moduleProvider.loadActionInfos();
+        return putActionInfo(actionInfos);
+    }
+
+    protected UrlMapping putActionInfo(List<ActionInfo> actionInfos){
         for (ActionInfo ai : actionInfos) {
-            ai.setViewMakers(makers);
-            mapping.add(moduleProvider.getChainMaker(), ai, config);
+            ai.setViewMakers(Mvcs.ctx().getViewMakers());
+            mapping.add(Mvcs.ctx().getActionChainMaker(), ai, config);
         }
 
         if (actionInfos.size() == 0) {
@@ -140,7 +157,6 @@ public class NutLoading implements Loading {
         } else {
             log.infof("Found %d module methods", actionInfos.size());
         }
-
         return mapping;
     }
 
@@ -206,9 +222,10 @@ public class NutLoading implements Loading {
         }
     }
 
-    protected List<ViewMaker> createViewMakers(Ioc ioc) throws Exception {
+    protected List<ViewMaker> createViewMakers() throws Exception {
         List<ViewMaker> makers = new ArrayList<ViewMaker>();
         makers.addAll(moduleProvider.getViewMakers());
+        Ioc ioc = moduleProvider.createIoc();
         if (ioc != null) {
             String[] names = ioc.getNames();
             Arrays.sort(names);

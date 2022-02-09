@@ -15,8 +15,8 @@ public class ActionHandler {
 
     public ActionHandler(NutMvcContext ctx) {
         this.config = ctx.getNutConfig();
-        this.loading = config.createLoading();
-        loading.init(config);
+        this.loading = config.getModuleProvider().createLoading();
+        loading.load(config);
     }
 
     public boolean handle(HttpServletRequest req, HttpServletResponse resp) {

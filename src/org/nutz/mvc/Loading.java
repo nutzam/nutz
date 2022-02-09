@@ -3,15 +3,19 @@ package org.nutz.mvc;
 
 import org.nutz.mvc.impl.ActionInvoker;
 
+/**
+ * 根据NutConfig环境里面的配置信息对MVC进行初始化。构建出完成的URL与处理器间的映射关系
+ */
 public interface Loading {
 
     String CONTEXT_NAME = "_NUTZ_LOADING_CONTEXT_";
 
-    void init(NutConfig config);
-
+    /**
+     * 加载路径映射
+     * @param config
+     * @return
+     */
     UrlMapping load(NutConfig config);
-
-    void depose(NutConfig config);
 
     /**
      * 根据 ActionContext 获取一个ActionInvoker
@@ -20,4 +24,6 @@ public interface Loading {
      * @return
      */
     ActionInvoker fetch(ActionContext ac);
+
+    void depose(NutConfig config);
 }
