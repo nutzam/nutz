@@ -25,13 +25,13 @@ import org.nutz.mvc.config.FilterNutConfig;
 
 /**
  * 同 JSP/Serlvet 容器的挂接点
- * 
+ *
  * @author zozoh(zozohtnt@gmail.com)
  * @author juqkai(juqkai@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  */
 public class NutFilter implements Filter {
-	
+
 	protected static Log log;
 
     protected ActionHandler handler;
@@ -45,7 +45,7 @@ public class NutFilter implements Filter {
     protected SessionProvider sp;
 
     private NutFilter2 proxyFilter;//代理老版本的Filter
-    
+
     /**
      * 需要排除的路径前缀
      */
@@ -58,9 +58,9 @@ public class NutFilter implements Filter {
      * 需要排除的固定路径
      */
     protected Set<String> exclusionPaths;
-    
+
     protected ServletContext sc;
-    
+
     public void init(FilterConfig conf) throws ServletException {
     	try {
     	    if ("disable".equals(conf.getInitParameter("fast-class"))) {
@@ -88,7 +88,7 @@ public class NutFilter implements Filter {
 
         FilterNutConfig config = new FilterNutConfig(conf);
         Mvcs.setNutConfig(config);
-        handler = new ActionHandler(config);
+        handler = new ActionHandler(Mvcs.ctx());
         String regx = Strings.sNull(config.getInitParameter("ignore"), IGNORE);
         if (!"null".equalsIgnoreCase(regx)) {
             ignorePtn = Pattern.compile(regx, Pattern.CASE_INSENSITIVE);
@@ -140,7 +140,7 @@ public class NutFilter implements Filter {
         Mvcs.set(null, null, null);
         Mvcs.ctx().removeReqCtx();
     }
-    
+
     /**
      * 过滤请求. 过滤顺序(ignorePtn,exclusionsSuffix,exclusionsPrefix,exclusionPaths)
      * @param matchUrl 待匹配URL
@@ -181,7 +181,7 @@ public class NutFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest)req;
         HttpServletResponse response = (HttpServletResponse)resp;
         String matchUrl = request.getServletPath() + Strings.sBlank(request.getPathInfo());
-        
+
         String markKey = "nutz_ctx_mark";
         Integer mark = (Integer) req.getAttribute(markKey);
     	if (mark != null) {
@@ -189,7 +189,7 @@ public class NutFilter implements Filter {
     	} else {
     		req.setAttribute(markKey, 0);
     	}
-    	
+
         String preName = Mvcs.getName();
         Context preContext = Mvcs.resetALL();
         try {
@@ -222,7 +222,7 @@ public class NutFilter implements Filter {
             }
         }
     }
-    
+
     protected void nextChain(HttpServletRequest req, HttpServletResponse resp, FilterChain chain) throws IOException, ServletException {
     	// 更新 Request 必要的属性
         Mvcs.updateRequestAttributes((HttpServletRequest) req);

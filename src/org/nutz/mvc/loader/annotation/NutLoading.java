@@ -35,6 +35,7 @@ public class NutLoading implements Loading {
 
     private static final Log log = Logs.get();
     protected UrlMapping mapping = null;
+    protected ModuleProvider moduleProvider = null;
 
     @Override
     public void init(NutConfig config) {
@@ -91,7 +92,11 @@ public class NutLoading implements Loading {
             /*
              * 检查 Ioc 容器并创建和保存它
              */
-            ioc = createIoc(config, mainModule);
+            moduleProvider = config.getModuleProvider();
+            ioc = moduleProvider.createIoc();
+            // 保存 Ioc 对象
+            Mvcs.setIoc(ioc);
+
 
             /*
              * 组装UrlMapping
@@ -109,7 +114,7 @@ public class NutLoading implements Loading {
             /*
              * 执行用户自定义 Setup
              */
-            evalSetup(config, mainModule);
+            evalSetup(config);
 
             // 应用完成后执行用户自定义的 CommandLineRunner
             callRunners(ioc);
@@ -271,35 +276,11 @@ public class NutLoading implements Loading {
         return maker;
     }
 
-    protected void evalSetup(NutConfig config, Class<?> mainModule) throws Exception {
-        SetupBy sb = mainModule.getAnnotation(SetupBy.class);
-        if (null != sb) {
-            if (log.isInfoEnabled())
-                log.info("Setup application...");
-            Setup setup = NutConfig.evalObj(config, sb.value(), sb.args());
+    protected void evalSetup(NutConfig config) throws Exception {
+        List<Setup> setups = moduleProvider.getSetup();
+        for (Setup setup : setups) {
             config.setAttributeIgnoreNull(Setup.class.getName(), setup);
             setup.init(config);
-        } else if (config.getIoc() != null) {
-            String[] names = config.getIoc().getNames();
-            Arrays.sort(names);
-            boolean flag = true;
-            for (String name : names) {
-                if (name != null && name.startsWith(Setup.IOCNAME)) {
-                    if (flag) {
-                        flag = false;
-                        if (log.isInfoEnabled())
-                            log.info("Setup application...");
-                    }
-                    log.debug("load Setup from Ioc by name=" + name);
-                    Setup setup = config.getIoc().get(Setup.class, name);
-                    config.setAttributeIgnoreNull(Setup.class.getName(), setup);
-                    setup.init(config);
-                }
-            }
-        } else if (Setup.class.isAssignableFrom(mainModule)) { // MainModule自己就实现了Setup接口呢?
-        	Setup setup = (Setup)Mirror.me(mainModule).born();
-        	config.setAttributeIgnoreNull(Setup.class.getName(), setup);
-        	setup.init(config);
         }
     }
 
@@ -393,34 +374,6 @@ public class NutLoading implements Loading {
         }
 
         return makers.toArray(new ViewMaker[makers.size()]);
-    }
-
-    protected Ioc createIoc(NutConfig config, Class<?> mainModule) throws Exception {
-        IocBy ib = mainModule.getAnnotation(IocBy.class);
-        if (null != ib) {
-            if (log.isDebugEnabled())
-                log.debugf("@IocBy(type=%s, args=%s,init=%s)",
-                           ib.type().getName(),
-                           Json.toJson(ib.args()),
-                           Json.toJson(ib.init()));
-
-            Ioc ioc = Mirror.me(ib.type()).born().create(config, ib.args());
-            // 如果是 Ioc2 的实现，增加新的 ValueMaker
-            if (ioc instanceof Ioc2) {
-                ((Ioc2) ioc).addValueProxyMaker(new ServletValueProxyMaker(config.getServletContext()));
-            }
-
-            // 如果给定了 Ioc 的初始化，则依次调用
-            for (String objName : ib.init()) {
-                ioc.get(null, objName);
-            }
-
-            // 保存 Ioc 对象
-            Mvcs.setIoc(ioc);
-            return ioc;
-        } else if (log.isInfoEnabled())
-            log.info("!!!Your application without @IocBy supporting");
-        return null;
     }
 
     @SuppressWarnings({"all"})

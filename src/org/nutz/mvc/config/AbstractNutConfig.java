@@ -22,6 +22,8 @@ import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.NutConfigException;
 import org.nutz.mvc.SessionProvider;
 import org.nutz.mvc.annotation.LoadingBy;
+import org.nutz.mvc.impl.ModuleProvider;
+import org.nutz.mvc.loader.annotation.AnnotationModuleProvider;
 import org.nutz.mvc.loader.annotation.NutLoading;
 import org.nutz.resource.Scans;
 
@@ -132,6 +134,11 @@ public abstract class AbstractNutConfig implements NutConfig {
         catch (Exception e) {
             throw new NutConfigException(e);
         }
+    }
+
+    @Override
+    public ModuleProvider getModuleProvider() {
+        return new AnnotationModuleProvider(this, this.getMainModule());
     }
 
     public AtMap getAtMap() {

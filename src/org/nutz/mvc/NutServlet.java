@@ -14,7 +14,7 @@ import org.nutz.mvc.config.ServletNutConfig;
 
 /**
  * 挂接到 JSP/Servlet 容器的入口
- * 
+ *
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  * @author juqkai(juqkai@gmail.com)
@@ -23,11 +23,11 @@ import org.nutz.mvc.config.ServletNutConfig;
 public class NutServlet extends HttpServlet {
 
     protected ActionHandler handler;
-    
+
     private String selfName;
-    
+
     private SessionProvider sp;
-    
+
     protected ServletContext sc;
 
     @Override
@@ -38,7 +38,7 @@ public class NutServlet extends HttpServlet {
         Mvcs.set(selfName, null, null);
         NutConfig config = new ServletNutConfig(servletConfig);
         Mvcs.setNutConfig(config);
-        handler = new ActionHandler(config);
+        handler = new ActionHandler(Mvcs.ctx());
         sp = config.getSessionProvider();
     }
 

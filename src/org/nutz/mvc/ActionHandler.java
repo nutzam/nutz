@@ -11,8 +11,10 @@ public class ActionHandler {
 
     private NutConfig config;
 
-    public ActionHandler(NutConfig config) {
-        this.config = config;
+    private NutMvcContext ctx;
+
+    public ActionHandler(NutMvcContext ctx) {
+        this.config = ctx.getNutConfig();
         this.loading = config.createLoading();
         loading.init(config);
     }
