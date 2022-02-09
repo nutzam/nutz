@@ -25,7 +25,6 @@ public class AnnotationModuleProvider implements ModuleProvider {
     private Class<?> mainModule;
     private NutConfig config;
     private Ioc ioc;
-
     private SessionProvider sessionProvider;
     private EntryDeterminer determiner;
     private UrlMapping mapping;

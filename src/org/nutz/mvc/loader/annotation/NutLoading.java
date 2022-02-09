@@ -164,7 +164,9 @@ public class NutLoading implements Loading {
          * 创建主模块的配置信息
          */
         ActionInfo mainInfo = Loadings.createInfo(mainModule).mergeWith(fetchDefaultActionInfo());
-        mainInfo.setMain(true);
+        mainInfo.setInjectName(null);
+        mainInfo.setModuleType(null);
+
         Mvcs.ctx().setMainInfo(mainInfo);
 
 //        // fix issue #1337

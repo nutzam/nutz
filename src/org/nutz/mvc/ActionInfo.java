@@ -15,8 +15,6 @@ import org.nutz.lang.util.ClassMetaReader;
 
 public class ActionInfo {
 
-    private Boolean main = false;
-
     private String inputEncoding;
 
     private String outputEncoding;
@@ -101,10 +99,8 @@ public class ActionInfo {
         okView = null == okView ? parent.okView : okView;
         failView = null == failView ? parent.failView : failView;
         filterInfos = null == filterInfos ? parent.filterInfos : filterInfos;
-        if (!parent.isMain()) {
-            injectName = null == injectName ? parent.injectName : injectName;
-            moduleType = null == moduleType ? parent.moduleType : moduleType;
-        }
+        injectName = null == injectName ? parent.injectName : injectName;
+        moduleType = null == moduleType ? parent.moduleType : moduleType;
         chainName = null == chainName ? parent.chainName : chainName;
 
         // 继承元数据信息
@@ -303,13 +299,5 @@ public class ActionInfo {
 
     public String[] getNamedPathArgs() {
         return namedPathArgs;
-    }
-
-    public Boolean isMain() {
-        return main;
-    }
-
-    public void setMain(Boolean main) {
-        this.main = main;
     }
 }
