@@ -151,7 +151,7 @@ public class NutLoading implements Loading {
         /*
          * 创建视图工厂
          */
-        ViewMaker[] makers = createViewMakers(mainModule, ioc);
+        List<ViewMaker> makers = createViewMakers(mainModule, ioc);
         Mvcs.ctx().setViewMakers(makers);
 
         /*
@@ -168,16 +168,12 @@ public class NutLoading implements Loading {
         mainInfo.setModuleType(null);
 
         Mvcs.ctx().setMainInfo(mainInfo);
-
-//        // fix issue #1337
-//        Determiner ann = mainModule.getAnnotation(Determiner.class);
-//        EntryDeterminer determiner = null == ann ? new NutEntryDeterminer() : NutConfig.evalObj(config, ann.value(), ann.args());
-
         /*
          * 准备要加载的模块列表
          */
         List<ActionInfo> actionInfos = moduleProvider.loadActionInfos();
         for (ActionInfo ai : actionInfos) {
+            ai.setViewMakers(makers);
             mapping.add(moduleProvider.getChainMaker(), ai, config);
         }
 
@@ -261,7 +257,7 @@ public class NutLoading implements Loading {
         }
     }
 
-    protected ViewMaker[] createViewMakers(Class<?> mainModule, Ioc ioc) throws Exception {
+    protected List<ViewMaker> createViewMakers(Class<?> mainModule, Ioc ioc) throws Exception {
         List<ViewMaker> makers = new ArrayList<ViewMaker>();
         makers.addAll(moduleProvider.getViewMakers());
         if (ioc != null) {
@@ -285,7 +281,7 @@ public class NutLoading implements Loading {
             log.debugf("@Views(%s)", sb);
         }
 
-        return makers.toArray(new ViewMaker[makers.size()]);
+        return makers;
     }
 
     public void depose(NutConfig config) {

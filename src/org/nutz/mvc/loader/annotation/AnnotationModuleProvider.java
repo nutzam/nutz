@@ -316,7 +316,6 @@ public class AnnotationModuleProvider implements ModuleProvider {
                         moduleInfo = Loadings.createInfo(type).mergeWith(Mvcs.ctx().getMainInfo());
                     }
                     ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);
-                    info.setViewMakers(getViewMakers().toArray(new ViewMaker[]{}));
                     modules.add(info);
                     if (log.isDebugEnabled()) {
                         log.debugf("   >> add '%s'", type.getName());

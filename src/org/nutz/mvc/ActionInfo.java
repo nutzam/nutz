@@ -29,7 +29,7 @@ public class ActionInfo {
 
     private ObjectInfo<? extends HttpAdaptor> adaptorInfo;
 
-    private ViewMaker[] viewMakers;
+    private List<ViewMaker> viewMakers;
 
     private String okView;
 
@@ -209,11 +209,11 @@ public class ActionInfo {
         this.chainName = chainName;
     }
 
-    public ViewMaker[] getViewMakers() {
+    public List<ViewMaker> getViewMakers() {
         return viewMakers;
     }
 
-    public void setViewMakers(ViewMaker[] makers) {
+    public void setViewMakers(List<ViewMaker> makers) {
         this.viewMakers = makers;
     }
 
