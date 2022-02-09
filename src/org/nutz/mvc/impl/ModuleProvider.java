@@ -33,4 +33,10 @@ public interface ModuleProvider {
     EntryDeterminer getDeterminer();
 
     UrlMapping getUrlMapping();
+
+    /**
+     * 加载当前模块范围内所有的ActionInfo
+     * @return
+     */
+    public List<ActionInfo> loadActionInfos();
 }

@@ -176,45 +176,16 @@ public class NutLoading implements Loading {
         /*
          * 准备要加载的模块列表
          */
-        // TODO 为什么用Set呢? 用List不是更快吗?
-        Set<Class<?>> modules = getModuleClasses(config, mainModule);
-
-        if (modules.isEmpty()) {
-            if (log.isWarnEnabled())
-                log.warn("None module classes found!!!");
+        List<ActionInfo> actionInfos = moduleProvider.loadActionInfos();
+        for (ActionInfo ai : actionInfos) {
+            mapping.add(moduleProvider.getChainMaker(), ai, config);
         }
 
-        int atMethods = 0;
-        /*
-         * 分析所有的子模块
-         */
-        if (log.isDebugEnabled())
-            log.debugf("Use %s as EntryMethodDeterminer", moduleProvider.getDeterminer().getClass().getName());
-        for (Class<?> module : modules) {
-            ActionInfo moduleInfo = Loadings.createInfo(module).mergeWith(mainInfo);
-            for (Method method : module.getMethods()) {
-                if (!moduleProvider.getDeterminer().isEntry(module, method))
-                    continue;
-                // 增加到映射中
-                ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);
-                info.setViewMakers(makers);
-                mapping.add(Mvcs.ctx().getActionChainMaker(), info, config);
-                atMethods++;
-            }
-
-            // 记录pathMap
-            if (null != moduleInfo.getPathMap()) {
-                for (Entry<String, String> en : moduleInfo.getPathMap().entrySet()) {
-                    config.getAtMap().add(en.getKey(), en.getValue());
-                }
-            }
-        }
-
-        if (atMethods == 0) {
+        if (actionInfos.size() == 0) {
             if (log.isWarnEnabled())
                 log.warn("None @At found in any modules class!!");
         } else {
-            log.infof("Found %d module methods", atMethods);
+            log.infof("Found %d module methods", actionInfos.size());
         }
 
         return mapping;
@@ -350,9 +321,5 @@ public class NutLoading implements Loading {
     @Override
     public ActionInvoker load(ActionContext ac) {
         return mapping.get(ac);
-    }
-
-    protected Set<Class<?>> getModuleClasses(NutConfig config, Class<?> mainModule) {
-        return Loadings.scanModules(config, mainModule);
     }
 }
