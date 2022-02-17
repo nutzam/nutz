@@ -41,7 +41,7 @@ public class DatabaseMeta {
             type = DB.H2;
         } else if (proName.startsWith("postgresql")) {
             type = DB.PSQL;
-        } else if (proName.startsWith("mysql")) {
+        } else if (proName.startsWith("mysql") || proName.startsWith("mariadb")) {
             type = DB.MYSQL;
         } else if (proName.startsWith("oracle")) {
             type = DB.ORACLE;
