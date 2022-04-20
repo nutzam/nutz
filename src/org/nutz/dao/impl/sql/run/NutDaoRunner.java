@@ -176,11 +176,21 @@ public class NutDaoRunner implements DaoRunner, Configurable {
     protected DataSource selectDataSource(Transaction t, DataSource master, ConnCallback callback) {
         if (this.slaveDataSource == null)
             return master;
-        if (t == null && callback instanceof DaoInterceptorChain) {
-            DaoInterceptorChain chain = (DaoInterceptorChain)callback;
-            DaoStatement[] sts = chain.getDaoStatements();
-            if (sts.length == 1 && (sts[0].isSelect() || sts[0].isForceExecQuery())) {
-                return slaveDataSource;
+        if(meta.getType() == DB.PSQL){
+            if (callback instanceof DaoInterceptorChain) {
+                DaoInterceptorChain chain = (DaoInterceptorChain)callback;
+                DaoStatement[] sts = chain.getDaoStatements();
+                if (sts.length == 1 && (sts[0].isSelect() || sts[0].isForceExecQuery())) {
+                    return slaveDataSource;
+                }
+            }
+        }else {
+            if (t == null && callback instanceof DaoInterceptorChain) {
+                DaoInterceptorChain chain = (DaoInterceptorChain)callback;
+                DaoStatement[] sts = chain.getDaoStatements();
+                if (sts.length == 1 && (sts[0].isSelect() || sts[0].isForceExecQuery())) {
+                    return slaveDataSource;
+                }
             }
         }
         return master;
