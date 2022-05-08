@@ -10,6 +10,7 @@ import org.nutz.dao.ConnCallback;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.DaoInterceptorChain;
 import org.nutz.dao.DatabaseMeta;
+import org.nutz.dao.DB;
 import org.nutz.dao.impl.DaoRunner;
 import org.nutz.dao.sql.DaoStatement;
 import org.nutz.lang.Configurable;
