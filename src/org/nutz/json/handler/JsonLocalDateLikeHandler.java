@@ -1,6 +1,7 @@
 package org.nutz.json.handler;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
@@ -27,6 +28,9 @@ public class JsonLocalDateLikeHandler extends JsonTypeHandler {
     @Override
     public void toJson(Mirror<?> mirror, Object currentObj, JsonRender r, JsonFormat jf) throws IOException {
         String df = jf.getDateFormatRaw();
+        if (mirror.getType().equals(LocalDate.class)){
+            df = "yyyy-MM-dd";
+        }
         if (df == null)
             df = "yyyy-MM-dd HH:mm:ss.SSS";
         Locale locale = null;
