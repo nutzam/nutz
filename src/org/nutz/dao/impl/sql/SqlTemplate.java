@@ -22,7 +22,7 @@ import org.nutz.lang.Lang;
 
 /**
  * 仿照Spring JdbcTemplate实现nutz的SqlTemplate，方便sql的调用
- * 
+ *
  * @author hzl7652(hzl7652@sina.com)
  */
 public class SqlTemplate {
@@ -45,12 +45,12 @@ public class SqlTemplate {
 
     /**
      * 执行一个SQL更新操作（如插入，更新或删除语句）。
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param params
      *            参数map,无参数时，可为null
-     * 
+     *
      * @return SQL 语句所影响的行数
      */
     public int update(String sql, Map<String, Object> params) {
@@ -59,14 +59,14 @@ public class SqlTemplate {
 
     /**
      * 执行一个SQL更新操作（如插入，更新或删除语句）。
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param vars
      *            变量map，无参数时，可为null
      * @param params
      *            参数map，无参数时，可为null
-     * 
+     *
      * @return SQL 语句所影响的行数
      */
     public int update(String sql, Map<String, Object> vars, Map<String, Object> params) {
@@ -77,12 +77,12 @@ public class SqlTemplate {
 
     /**
      * 执行SQL批量更新操作（如插入，更新或删除语句）。
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param batchValues
      *            批量更新参数集合
-     * 
+     *
      * @return SQL 语句所影响的行数
      */
     public int batchUpdate(String sql, List<Map<String, Object>> batchValues) {
@@ -91,14 +91,14 @@ public class SqlTemplate {
 
     /**
      * 执行SQL批量更新操作（如插入，更新或删除语句）。
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param vars
      *            变量map，无参数时，可为null
      * @param batchValues
      *            批量更新参数集合
-     * 
+     *
      * @return SQL 语句所影响的行数
      */
     public int batchUpdate(String sql,
@@ -124,12 +124,12 @@ public class SqlTemplate {
     /**
      * 执行一个SQL查询操作，结果为一个int形数值。
      * <p>
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param params
      *            参数map，无参数时，可为null
-     * 
+     *
      * @return int数值，当查询为null时返回0
      */
     public int queryForInt(String sql, Map<String, Object> params) {
@@ -138,14 +138,14 @@ public class SqlTemplate {
 
     /**
      * 执行一个SQL查询操作，结果为一个int形数值。
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param vars
      *            变量map，无参数时，可为null
      * @param params
      *            参数map，无参数时，可为null
-     * 
+     *
      * @return int数值，当查询为null时返回0
      */
     public int queryForInt(String sql, Map<String, Object> vars, Map<String, Object> params) {
@@ -157,12 +157,12 @@ public class SqlTemplate {
 
     /**
      * 执行一个SQL查询操作，结果为一个long形数值。
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param params
      *            参数map，无参数时，可为null
-     * 
+     *
      * @return long数值，当查询为null时返回0
      */
     public long queryForLong(String sql, Map<String, Object> params) {
@@ -171,14 +171,14 @@ public class SqlTemplate {
 
     /**
      * 执行一个SQL查询操作，结果为一个long形数值。
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param vars
      *            变量map，无参数时，可为null
      * @param params
      *            参数map，无参数时，可为null
-     * 
+     *
      * @return long数值，当查询为null时返回0
      */
     public long queryForLong(String sql, Map<String, Object> vars, Map<String, Object> params) {
@@ -191,14 +191,14 @@ public class SqlTemplate {
 
     /**
      * 执行一个SQL查询操作，结果为给定对象类型的对象，适用于明确SQL查询结果的类型。
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param params
      *            参数map 无参数时，可为null
      * @param classOfT
      *            对象类型，SQL查询结果所对应的类型，如Date.class等
-     * 
+     *
      * @return 对象，无查询结果时返回null
      */
     public <T> T queryForObject(String sql, Map<String, Object> params, Class<T> classOfT) {
@@ -207,7 +207,7 @@ public class SqlTemplate {
 
     /**
      * 执行一个SQL查询操作，结果为给定对象类型的对象，适用于明确SQL查询结果的类型。
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param vars
@@ -216,7 +216,7 @@ public class SqlTemplate {
      *            参数map，无参数时，可为null
      * @param classOfT
      *            对象类型，SQL查询结果所对应的类型，如Date.class等
-     * 
+     *
      * @return 对象，无查询结果时返回null
      */
     public <T> T queryForObject(String sql,
@@ -238,14 +238,14 @@ public class SqlTemplate {
 
     /**
      * 执行一个SQL查询操作，结果为给定实体的对象。
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param params
      *            参数map，无参数时，可为null
      * @param entity
      *            实体类型，无参数时，可为null
-     * 
+     *
      * @return 对象，无查询结果时返回null
      */
     public <T> T queryForObject(String sql, Map<String, Object> params, Entity<T> entity) {
@@ -254,7 +254,7 @@ public class SqlTemplate {
 
     /**
      * 执行一个SQL查询操作，结果为给定实体的对象。
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param vars
@@ -263,7 +263,7 @@ public class SqlTemplate {
      *            参数map，无参数时，可为null
      * @param entity
      *            实体类型
-     * 
+     *
      * @return 对象，无查询结果时返回null
      */
     public <T> T queryForObject(String sql,
@@ -281,12 +281,12 @@ public class SqlTemplate {
 
     /**
      * 执行一个SQL查询操作，结果为Record的对象。
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param params
      *            参数map，无参数时，可为null
-     * 
+     *
      * @return Record对象，无查询结果时返回null
      */
     public Record queryForRecord(String sql, Map<String, Object> params) {
@@ -295,7 +295,7 @@ public class SqlTemplate {
 
     /**
      * 执行一个SQL查询操作，结果为Record的对象。
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param vars
@@ -315,14 +315,14 @@ public class SqlTemplate {
 
     /**
      * 执行一个SQL查询操作，结果为一组对象。
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param params
      *            参数map，无参数时，可为null
      * @param entity
      *            对象类型，无参数时，可为null
-     * 
+     *
      * @return 对象列表，无查询结果时返回长度为0的List对象
      */
     public <T> List<T> query(String sql, Map<String, Object> params, Entity<T> entity) {
@@ -331,14 +331,14 @@ public class SqlTemplate {
 
     /**
      * 执行一个SQL查询操作，结果为一组对象。
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param params
      *            参数map，无参数时，可为null
      * @param classOfT
      *            对象类类
-     * 
+     *
      * @return 对象列表，无查询结果时返回长度为0的List对象
      */
     public <T> List<T> query(String sql,
@@ -349,7 +349,7 @@ public class SqlTemplate {
 
     /**
      * 执行一个SQL查询操作，结果为一组对象。
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param vars
@@ -358,7 +358,7 @@ public class SqlTemplate {
      *            参数map，无参数时，可为null
      * @param entity
      *            对象类型
-     * 
+     *
      * @return 对象列表，无查询结果时返回长度为0的List对象
      */
     public <T> List<T> query(String sql,
@@ -376,7 +376,7 @@ public class SqlTemplate {
 
     /**
      * 执行一个SQL查询操作，结果为一组对象。
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param vars
@@ -385,7 +385,7 @@ public class SqlTemplate {
      *            参数map，无参数时，可为null
      * @param classOfT
      *            对象类型
-     * 
+     *
      * @return 对象列表，无查询结果时返回长度为0的List对象
      */
     public <T> List<T> queryForList(String sql,
@@ -412,14 +412,14 @@ public class SqlTemplate {
 
     /**
      * 执行一个SQL查询操作，结果为Record对象列表。
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param vars
      *            变量map，无参数时，可为null
      * @param params
      *            参数map，无参数时，可为null
-     * 
+     *
      * @return Record列表，无查询结果时返回长度为0的List对象
      */
     public List<Record> queryRecords(String sql,
@@ -452,12 +452,12 @@ public class SqlTemplate {
      * 创建Sql对象。
      * <p>
      * 在这里处理Array Collection类型参数，方便SQL IN 表达式的设置
-     * 
+     *
      * @param sql
      *            包含变量占位符的SQL
      * @param params
      *            参数map，无参数时，可为null
-     * 
+     *
      * @return Sql对象
      */
     private Sql createSqlObj(String sql, Map<String, Object> params) {
@@ -472,12 +472,12 @@ public class SqlTemplate {
 
     /**
      * 将Array Collection类型参数对应的sql占位符进行处理
-     * 
+     *
      * @param originSql
      *            原包含变量占位符的SQL
      * @param params
      *            参数map，无参数时，可为null
-     * 
+     *
      * @return 包含处理IN表达式的sql
      */
     private String sqlProcess(String originSql, Map<String, Object> params) {
@@ -489,6 +489,10 @@ public class SqlTemplate {
         for (Entry<String, Object> entry : params.entrySet()) {
             String paramName = entry.getKey();
             Object paramObj = entry.getValue();
+
+            if(paramObj == null){
+                continue;
+            }
 
             if (paramObj.getClass().isArray()) {
                 String inSqlExp = inSqlProcess(paramName, paramObj);
@@ -509,10 +513,10 @@ public class SqlTemplate {
 
     /**
      * sql参数处理，在这里处理Array Collection类型参数，方便SQL IN 表达式的设置
-     * 
+     *
      * @param params
      *            参数map，无参数时，可为null
-     * 
+     *
      * @return 包含处理IN表达式的sql
      */
     private Map<String, Object> paramProcess(Map<String, Object> params) {
@@ -522,6 +526,10 @@ public class SqlTemplate {
         for (Entry<String, Object> entry : params.entrySet()) {
             String paramName = entry.getKey();
             Object paramObj = entry.getValue();
+
+            if(paramObj == null){
+                continue;
+            }
 
             if (paramObj.getClass().isArray()) {
                 inParamProcess(paramName, paramObj, newParams);
