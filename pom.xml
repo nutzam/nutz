@@ -5,7 +5,7 @@
     <artifactId>nutz</artifactId>
     <packaging>jar</packaging>
     <name>Nutz</name>
-    <version>1.r.69.v20220703</version>
+    <version>1.r.70-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jetty.version>9.4.34.v20201102</jetty.version>
