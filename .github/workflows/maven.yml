@@ -23,7 +23,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: mvn -Dmaven.test.skip=true -B deploy --file pom.xml -s mvn_settings.xml
+      run: mvn -Dmaven.test.skip=true -B deploy --file pom.xml -s mvn_settings.xml -DS_NUTZMAVEN_USER_ID=${{secrets.S_NUTZMAVEN_USER_ID}} -DS_NUTZMAVEN_USER_PWD=${{secrets.S_NUTZMAVEN_USER_PWD}}
       env:
-        S_NUTZMAVEN_USER_ID: ${{ secrets.S_NUTZMAVEN_USER_ID }}
-        S_NUTZMAVEN_USER_PWD: ${{ secrets.S_NUTZMAVEN_USER_PWD }}
+        S_NUTZMAVEN_USER_ID: ${{secrets.S_NUTZMAVEN_USER_ID}}
+        S_NUTZMAVEN_USER_PWD: ${{secrets.S_NUTZMAVEN_USER_PWD}}
