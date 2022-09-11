@@ -1,14 +1,9 @@
 
 <p align="center"><a href="https://nutz.cn" target="_blank"><img width="100" src="https://github.com/nutzam/nutz/raw/master/doc/ci/logo.png"></a></p>
 
-[![Build Status](https://travis-ci.org/nutzam/nutz.png?branch=master)](https://travis-ci.org/nutzam/nutz)
-[![Circle CI](https://circleci.com/gh/nutzam/nutz/tree/master.svg?style=svg)](https://circleci.com/gh/nutzam/nutz/tree/master)
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/4917/badge.svg)](https://scan.coverity.com/projects/4917/)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.nutz/nutz/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.nutz/nutz/)
-[![codecov.io](http://codecov.io/github/nutzam/nutz/coverage.svg?branch=master)](http://codecov.io/github/nutzam/nutz?branch=master)
 [![GitHub release](https://img.shields.io/github/release/nutzam/nutz.svg)](https://github.com/nutzam/nutz/releases)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
-[![Skywalking Tracing](https://img.shields.io/badge/Skywalking%20Tracing-enable-brightgreen.svg)](https://github.com/OpenSkywalking/skywalking)
 
 ## 项目目标
 
@@ -49,32 +44,8 @@ Nutz遵循Apache协议,完全开源,文档齐全,永远免费(商用也是)
 		</dependency>
 ```
 
-
 详情: [https://nutzam.com/core/basic/maven.html](https://nutzam.com/core/basic/maven.html)
 
-## Gradle 依赖
-
-```gradle
-compile(group: 'org.nutz', name: 'nutz', version:'1.r.68.v20190220')
-```
-
-## 采用Nutz的公司
-
-请看链接 [采用公司](https://github.com/nutzam/nutz/issues/819)
-
-
-## Sponsorship
-
-YourKit supports open source projects with its full-featured Java Profiler.
-YourKit, LLC is the creator of [YourKit Java Profiler](http://www.yourkit.com/java/profiler/index.jsp) 
-and [YourKit .NET Profiler](http://www.yourkit.com/.net/profiler/index.jsp),
-innovative and intelligent tools for profiling Java and .NET applications.
-
-![YourKit Logo](https://cloud.githubusercontent.com/assets/1317309/4507430/7119527c-4b0c-11e4-9245-d72e751e26ee.png)
-
-JetBrains IntelliJ IDEA
-
-http://www.jetbrains.com
 
 ## 关于我们
 
@@ -84,28 +55,4 @@ http://www.jetbrains.com
 
 This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
 <a href="graphs/contributors"><img src="https://opencollective.com/nutz/contributors.svg?width=890&button=false" /></a>
-
-
-## Backers
-
-Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/nutz#backer)]
-
-<a href="https://opencollective.com/nutz#backers" target="_blank"><img src="https://opencollective.com/nutz/backers.svg?width=890"></a>
-
-
-## Sponsors
-
-Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/nutz#sponsor)]
-
-<a href="https://opencollective.com/nutz/sponsor/0/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/0/avatar.svg"></a>
-<a href="https://opencollective.com/nutz/sponsor/1/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/1/avatar.svg"></a>
-<a href="https://opencollective.com/nutz/sponsor/2/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/2/avatar.svg"></a>
-<a href="https://opencollective.com/nutz/sponsor/3/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/3/avatar.svg"></a>
-<a href="https://opencollective.com/nutz/sponsor/4/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/4/avatar.svg"></a>
-<a href="https://opencollective.com/nutz/sponsor/5/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/5/avatar.svg"></a>
-<a href="https://opencollective.com/nutz/sponsor/6/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/6/avatar.svg"></a>
-<a href="https://opencollective.com/nutz/sponsor/7/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/7/avatar.svg"></a>
-<a href="https://opencollective.com/nutz/sponsor/8/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/8/avatar.svg"></a>
-<a href="https://opencollective.com/nutz/sponsor/9/website" target="_blank"><img src="https://opencollective.com/nutz/sponsor/9/avatar.svg"></a>
-
 
