@@ -56,3 +56,6 @@ Nutz遵循Apache协议,完全开源,文档齐全,永远免费(商用也是)
 This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
 <a href="graphs/contributors"><img src="https://opencollective.com/nutz/contributors.svg?width=890&button=false" /></a>
 
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/nutzam/nutz.svg)](https://starchart.cc/nutzam/nutz)
