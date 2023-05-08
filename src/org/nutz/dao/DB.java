@@ -56,6 +56,10 @@ public enum DB {
      */
     DM,
     /**
+     * DM_MYSQL
+     */
+    DM_MYSQL,
+    /**
      * TDengine
      */
     TDENGINE,

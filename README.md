@@ -2,7 +2,6 @@
 <p align="center"><a href="https://nutz.cn" target="_blank"><img width="100" src="https://github.com/nutzam/nutz/raw/master/doc/ci/logo.png"></a></p>
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.nutz/nutz/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.nutz/nutz/)
-[![GitHub release](https://img.shields.io/github/release/nutzam/nutz.svg)](https://github.com/nutzam/nutz/releases)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 ## 项目目标
@@ -40,7 +39,7 @@ Nutz遵循Apache协议,完全开源,文档齐全,永远免费(商用也是)
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.r.68.v20190220</version>
+			<version>1.r.69.v20220703</version>
 		</dependency>
 ```
 

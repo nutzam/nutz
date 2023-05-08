@@ -8,6 +8,8 @@ var ioc = {
 	 */
 	experts : {
 		"h2.*" : "org.nutz.dao.impl.jdbc.h2.H2JdbcExpert",
+		"dm dbms.*" : "org.nutz.dao.impl.jdbc.dm.DmJdbcExpert",
+		"dm mysql.*" : "org.nutz.dao.impl.jdbc.dm.DmMysqlJdbcExpert",
 		"mysql.*" : "org.nutz.dao.impl.jdbc.mysql.MysqlJdbcExpert",
 		"mariadb.*" : "org.nutz.dao.impl.jdbc.mysql.MysqlJdbcExpert",
 		"postgresql.*" : "org.nutz.dao.impl.jdbc.psql.PsqlJdbcExpert",
@@ -22,7 +24,6 @@ var ioc = {
 		".+derby.+" : "org.nutz.dao.impl.jdbc.derby.DerbyJdbcExpert",
 		"gbase.*" : "org.nutz.dao.impl.jdbc.gbase.GBaseJdbcExpert",
 		"sybase.*" : "org.nutz.dao.impl.jdbc.sybase.SybaseIQJdbcExpert",
-		"dm dbms.*" : "org.nutz.dao.impl.jdbc.dm.DmJdbcExpert",
 		"tdengine.*" : "org.nutz.dao.impl.jdbc.tdengine.TDengineJdbcExpert",
 		"clickhouse.*" : "org.nutz.dao.impl.jdbc.clickhouse.ClickhouseJdbcExpert",
 		"xugu.*" : "org.nutz.dao.impl.jdbc.xugu.XuguJdbcExpert"
