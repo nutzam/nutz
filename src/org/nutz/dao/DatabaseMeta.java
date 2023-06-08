@@ -55,6 +55,8 @@ public class DatabaseMeta {
             type = DB.HSQL;
         } else if (proName.contains("derby")) {
             type = DB.DERBY;
+        } else if (proName.contains("kingbase")) {
+            type = DB.KINGBASE;
         } else if (proName.contains("gbase")) {
             type = DB.GBASE;
         } else if (proName.contains("sysbase")) {
