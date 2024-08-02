@@ -1,13 +1,14 @@
 package org.nutz.mvc.impl.contextCollector;
 
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.nutz.lang.Lang;
 import org.nutz.lang.util.Context;
 import org.nutz.mvc.ViewContextCollector;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 请求对象的属性列表
@@ -18,8 +19,9 @@ public class AttrCollector implements ViewContextCollector {
         Map<String, Object> req_attr = new HashMap<String, Object>();
         for (Enumeration<String> en = req.getAttributeNames(); en.hasMoreElements();) {
             String tem = en.nextElement();
-            if (!tem.startsWith("$"))
+            if (!tem.startsWith("$")) {
                 req_attr.put(tem, req.getAttribute(tem));
+            }
         }
         Context ctx = Lang.context();
         ctx.set("a", req_attr);// 兼容最初的写法

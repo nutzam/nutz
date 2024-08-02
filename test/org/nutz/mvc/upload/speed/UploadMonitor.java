@@ -2,11 +2,11 @@ package org.nutz.mvc.upload.speed;
 
 import java.io.PrintStream;
 
-import javax.servlet.http.HttpSession;
-
 import org.nutz.lang.Lang;
 import org.nutz.mvc.upload.UploadInfo;
 import org.nutz.trans.Atom;
+
+import jakarta.servlet.http.HttpSession;
 
 public class UploadMonitor implements Atom {
 
@@ -31,6 +31,7 @@ public class UploadMonitor implements Atom {
         return this;
     }
 
+    @Override
     public void run() {
         while (!done) {
             try {
@@ -42,10 +43,10 @@ public class UploadMonitor implements Atom {
                     }
                     continue;
                 }
-                out.printf(    "\n > %6s%% : %10d / %d",
-                            (info.current / (info.sum / 100)),
-                            info.current,
-                            info.sum);
+                out.printf("\n > %6s%% : %10d / %d",
+                           (info.current / (info.sum / 100)),
+                           info.current,
+                           info.sum);
                 synchronized (lock) {
                     lock.wait(interval);
                 }

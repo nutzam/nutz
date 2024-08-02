@@ -2,8 +2,6 @@ package org.nutz.dao.util.cri;
 
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.impl.sql.pojo.NoParamsPItem;
-import org.nutz.dao.util.lambda.LambdaQuery;
-import org.nutz.dao.util.lambda.PFun;
 
 public class OrderByItem extends NoParamsPItem {
 
@@ -18,6 +16,7 @@ public class OrderByItem extends NoParamsPItem {
         this.by = by;
     }
 
+    @Override
     public void joinSql(Entity<?> en, StringBuilder sb) {
         sb.append(_fmtcolnm(en, name)).append(' ').append(by);
     }

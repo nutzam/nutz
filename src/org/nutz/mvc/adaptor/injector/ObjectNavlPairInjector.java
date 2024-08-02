@@ -2,16 +2,16 @@ package org.nutz.mvc.adaptor.injector;
 
 import java.lang.reflect.Type;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.mapl.Mapl;
 import org.nutz.mvc.adaptor.ParamExtractor;
 import org.nutz.mvc.adaptor.ParamInjector;
 import org.nutz.mvc.adaptor.Params;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 对象导航注入器 默认情况下只有使用 @Param("::") 的情况下才调用这个注入器
@@ -34,14 +34,16 @@ public class ObjectNavlPairInjector implements ParamInjector {
         this.type = type;
     }
 
-    public Object get(    ServletContext sc,
-                        HttpServletRequest req,
-                        HttpServletResponse resp,
-                        Object refer) {
+    @Override
+    public Object get(ServletContext sc,
+                      HttpServletRequest req,
+                      HttpServletResponse resp,
+                      Object refer) {
         ObjectNaviNode no = new ObjectNaviNode();
         String pre = "";
-        if ("".equals(prefix))
+        if ("".equals(prefix)) {
             pre = "node.";
+        }
         ParamExtractor pe = Params.makeParamExtractor(req, refer);
         for (Object name : pe.keys()) {
             String na = (String) name;
@@ -51,7 +53,7 @@ public class ObjectNavlPairInjector implements ParamInjector {
         }
         Object model = no.get();
         return Mapl.maplistToObj(model, type);
-//        return no.inject(mirror);
+        // return no.inject(mirror);
     }
 
 }

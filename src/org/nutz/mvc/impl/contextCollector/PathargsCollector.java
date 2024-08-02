@@ -6,7 +6,7 @@ import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.ViewContextCollector;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 路径参数收集
@@ -15,7 +15,7 @@ public class PathargsCollector implements ViewContextCollector {
     @Override
     public Context collect(HttpServletRequest req, Object obj) {
         ActionContext ac = Mvcs.getActionContext();
-        if (ac != null){
+        if (ac != null) {
             return Lang.context("pathargs", Mvcs.getActionContext().getPathArgs());
         }
         return null;

@@ -22,8 +22,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.time.*;
-import java.util.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
@@ -71,8 +75,9 @@ public abstract class Jdbcs {
             // 如果没有则使用默认的映射文件
             if (null == f) {
                 conf = Json.fromJson(JdbcExpertConfigFile.class, Streams.utf8r(Jdbcs.class.getResourceAsStream("nutz_jdbc_experts.js"))).init();
-            } else
-                conf = Json.fromJson(JdbcExpertConfigFile.class,Streams.fileInr("nutz_jdbc_experts.js")).init();
+            } else {
+                conf = Json.fromJson(JdbcExpertConfigFile.class, Streams.fileInr("nutz_jdbc_experts.js")).init();
+            }
 
             for (String key : conf.getExperts().keySet()) {
                 // 检查一下正则表达式是否正确
@@ -86,8 +91,9 @@ public abstract class Jdbcs {
         catch (Exception e) {
             throw Lang.wrapThrow(e);
         }
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("Jdbcs init complete");
+        }
     }
 
     /**
@@ -161,102 +167,130 @@ public abstract class Jdbcs {
         JdbcExpert re = conf.matchExpert(dbName);
 
         if (null == re) {
-        	log.warnf("unknow database type '%s %s', fallback to MySql 5", productName, version);
-        	re = conf.matchExpert("mysql 5");
+            log.warnf("unknow database type '%s %s', fallback to MySql 5", productName, version);
+            re = conf.matchExpert("mysql 5");
         }
 
         return re;
     }
 
     public static ValueAdaptor getAdaptorBy(Object obj) {
-        if (null == obj)
+        if (null == obj) {
             return Adaptor.asNull;
+        }
         return getAdaptor(Mirror.me(obj));
     }
 
     /**
      * 注册一个自定义ValueAdaptor,若adaptor为null,则取消注册
-     * @param className 类名
-     * @param adaptor 值适配器实例,若为null,则取消注册
+     * 
+     * @param className
+     *            类名
+     * @param adaptor
+     *            值适配器实例,若为null,则取消注册
      * @return 原有的值适配器
      */
     public static ValueAdaptor register(String className, ValueAdaptor adaptor) {
-        if (adaptor == null)
+        if (adaptor == null) {
             return customValueAdaptorMap.remove(className);
+        }
         return customValueAdaptorMap.put(className, adaptor);
     }
 
     public static ValueAdaptor getAdaptor(Mirror<?> mirror) {
         ValueAdaptor custom = customValueAdaptorMap.get(mirror.getType().getName());
-        if (custom != null)
+        if (custom != null) {
             return custom;
+        }
         // String and char
-        if (mirror.isStringLike())
+        if (mirror.isStringLike()) {
             return Jdbcs.Adaptor.asString;
+        }
         // Int
-        if (mirror.isInt())
+        if (mirror.isInt()) {
             return Jdbcs.Adaptor.asInteger;
+        }
         // Boolean
-        if (mirror.isBoolean())
+        if (mirror.isBoolean()) {
             return Jdbcs.Adaptor.asBoolean;
+        }
         // Long
-        if (mirror.isLong())
+        if (mirror.isLong()) {
             return Jdbcs.Adaptor.asLong;
+        }
         // Enum
-        if (mirror.isEnum())
+        if (mirror.isEnum()) {
             return Jdbcs.Adaptor.asEnumChar;
+        }
         // Char
-        if (mirror.isChar())
+        if (mirror.isChar()) {
             return Jdbcs.Adaptor.asChar;
+        }
         // Timestamp
-        if (mirror.isOf(Timestamp.class))
+        if (mirror.isOf(Timestamp.class)) {
             return Jdbcs.Adaptor.asTimestamp;
+        }
         // Byte
-        if (mirror.isByte())
+        if (mirror.isByte()) {
             return Jdbcs.Adaptor.asByte;
+        }
         // Short
-        if (mirror.isShort())
+        if (mirror.isShort()) {
             return Jdbcs.Adaptor.asShort;
+        }
         // Float
-        if (mirror.isFloat())
+        if (mirror.isFloat()) {
             return Jdbcs.Adaptor.asFloat;
+        }
         // Double
-        if (mirror.isDouble())
+        if (mirror.isDouble()) {
             return Jdbcs.Adaptor.asDouble;
+        }
         // BigDecimal
-        if (mirror.isOf(BigDecimal.class))
+        if (mirror.isOf(BigDecimal.class)) {
             return Jdbcs.Adaptor.asBigDecimal;
+        }
         // java.sql.Date
-        if (mirror.isOf(java.sql.Date.class))
+        if (mirror.isOf(java.sql.Date.class)) {
             return Jdbcs.Adaptor.asSqlDate;
+        }
         // java.sql.Time
-        if (mirror.isOf(java.sql.Time.class))
+        if (mirror.isOf(java.sql.Time.class)) {
             return Jdbcs.Adaptor.asSqlTime;
+        }
         // Calendar
-        if (mirror.isOf(Calendar.class))
+        if (mirror.isOf(Calendar.class)) {
             return Jdbcs.Adaptor.asCalendar;
+        }
         // java.util.Date
-        if (mirror.isOf(java.util.Date.class))
+        if (mirror.isOf(java.util.Date.class)) {
             return Jdbcs.Adaptor.asDate;
+        }
         // Blob
-        if (mirror.isOf(Blob.class))
+        if (mirror.isOf(Blob.class)) {
             return new BlobValueAdaptor(conf.getPool());
+        }
         // Clob
-        if (mirror.isOf(Clob.class))
+        if (mirror.isOf(Clob.class)) {
             return new ClobValueAdaptor(conf.getPool());
+        }
         // byte[]
         if (mirror.getType().isArray() && mirror.getType().getComponentType() == byte.class) {
             return Jdbcs.Adaptor.asBytes;
         }
         // inputstream
-        if (mirror.isOf(InputStream.class))
+        if (mirror.isOf(InputStream.class)) {
             return Jdbcs.Adaptor.asBinaryStream;
-        if (mirror.isOf(Reader.class))
+        }
+        if (mirror.isOf(Reader.class)) {
             return Jdbcs.Adaptor.asReader;
-        if (mirror.isLocalDateLike())
+        }
+        if (mirror.isLocalDateLike()) {
             return Adaptor.asLocalDate;
-        if (mirror.isLocalDateTimeLike())
+        }
+        if (mirror.isLocalDateTimeLike()) {
             return Jdbcs.Adaptor.asLocalDateTime;
+        }
         // 默认情况
         return Jdbcs.Adaptor.asString;
     }
@@ -266,10 +300,12 @@ public abstract class Jdbcs {
          * 空值适配器
          */
         public static final ValueAdaptor asNull = new ValueAdaptor() {
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 return null;
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 stat.setNull(i, Types.NULL);
             }
@@ -280,10 +316,12 @@ public abstract class Jdbcs {
          * 字符串适配器
          */
         public static final ValueAdaptor asString = new ValueAdaptor() {
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 return rs.getString(colName);
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 if (null == obj) {
                     stat.setString(i, null);
@@ -297,13 +335,16 @@ public abstract class Jdbcs {
          * 字符适配器
          */
         public static final ValueAdaptor asChar = new ValueAdaptor() {
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 String re = Strings.trim(rs.getString(colName));
-                if (re == null || re.length() == 0)
+                if (re == null || re.length() == 0) {
                     return null;
+                }
                 return re;
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 if (null == obj) {
                     stat.setString(i, null);
@@ -311,12 +352,14 @@ public abstract class Jdbcs {
                     String s;
                     if (obj instanceof Character) {
                         int c = ((Character) obj).charValue();
-                        if (c >= 0 && c <= 32)
+                        if (c >= 0 && c <= 32) {
                             s = " ";
-                        else
+                        } else {
                             s = String.valueOf((char) c);
-                    } else
+                        }
+                    } else {
                         s = obj.toString();
+                    }
                     stat.setString(i, s);
                 }
             }
@@ -326,20 +369,23 @@ public abstract class Jdbcs {
          * 整型适配器
          */
         public static final ValueAdaptor asInteger = new ValueAdaptor() {
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 int re = rs.getInt(colName);
                 return rs.wasNull() ? null : re;
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 if (null == obj) {
                     stat.setNull(i, Types.INTEGER);
                 } else {
                     int v;
-                    if (obj instanceof Number)
+                    if (obj instanceof Number) {
                         v = ((Number) obj).intValue();
-                    else
+                    } else {
                         v = Castors.me().castTo(obj.toString(), int.class);
+                    }
                     stat.setInt(i, v);
                 }
             }
@@ -349,21 +395,24 @@ public abstract class Jdbcs {
          * 大数适配器
          */
         public static final ValueAdaptor asBigDecimal = new ValueAdaptor() {
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 return rs.getBigDecimal(colName);
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 if (null == obj) {
                     stat.setNull(i, Types.BIGINT);
                 } else {
                     BigDecimal v;
-                    if (obj instanceof BigDecimal)
+                    if (obj instanceof BigDecimal) {
                         v = (BigDecimal) obj;
-                    else if (obj instanceof Number)
+                    } else if (obj instanceof Number) {
                         v = BigDecimal.valueOf(((Number) obj).longValue());
-                    else
+                    } else {
                         v = new BigDecimal(obj.toString());
+                    }
                     stat.setBigDecimal(i, v);
                 }
             }
@@ -376,24 +425,27 @@ public abstract class Jdbcs {
          * Adaptor 处理自己这种特殊情况
          */
         public static final ValueAdaptor asBoolean = new ValueAdaptor() {
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 boolean re = rs.getBoolean(colName);
                 return rs.wasNull() ? null : re;
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 if (null == obj) {
                     stat.setNull(i, Types.BOOLEAN);
                 } else {
                     boolean v;
-                    if (obj instanceof Boolean)
+                    if (obj instanceof Boolean) {
                         v = (Boolean) obj;
-                    else if (obj instanceof Number)
+                    } else if (obj instanceof Number) {
                         v = ((Number) obj).intValue() > 0;
-                    else if (obj instanceof Character)
+                    } else if (obj instanceof Character) {
                         v = Character.toUpperCase((Character) obj) == 'T';
-                    else
+                    } else {
                         v = Boolean.valueOf(obj.toString());
+                    }
                     stat.setBoolean(i, v);
                 }
             }
@@ -403,20 +455,23 @@ public abstract class Jdbcs {
          * 长整适配器
          */
         public static final ValueAdaptor asLong = new ValueAdaptor() {
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 long re = rs.getLong(colName);
                 return rs.wasNull() ? null : re;
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 if (null == obj) {
                     stat.setNull(i, Types.INTEGER);
                 } else {
                     long v;
-                    if (obj instanceof Number)
+                    if (obj instanceof Number) {
                         v = ((Number) obj).longValue();
-                    else
+                    } else {
                         v = Castors.me().castTo(obj.toString(), long.class);
+                    }
                     stat.setLong(i, v);
                 }
             }
@@ -426,20 +481,23 @@ public abstract class Jdbcs {
          * 字节适配器
          */
         public static final ValueAdaptor asByte = new ValueAdaptor() {
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 byte re = rs.getByte(colName);
                 return rs.wasNull() ? null : re;
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 if (null == obj) {
                     stat.setNull(i, Types.TINYINT);
                 } else {
                     byte v;
-                    if (obj instanceof Number)
+                    if (obj instanceof Number) {
                         v = ((Number) obj).byteValue();
-                    else
+                    } else {
                         v = Castors.me().castTo(obj.toString(), byte.class);
+                    }
                     stat.setByte(i, v);
                 }
             }
@@ -449,20 +507,23 @@ public abstract class Jdbcs {
          * 短整型适配器
          */
         public static final ValueAdaptor asShort = new ValueAdaptor() {
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 short re = rs.getShort(colName);
                 return rs.wasNull() ? null : re;
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 if (null == obj) {
                     stat.setNull(i, Types.SMALLINT);
                 } else {
                     short v;
-                    if (obj instanceof Number)
+                    if (obj instanceof Number) {
                         v = ((Number) obj).shortValue();
-                    else
+                    } else {
                         v = Castors.me().castTo(obj.toString(), short.class);
+                    }
                     stat.setShort(i, v);
                 }
             }
@@ -472,20 +533,23 @@ public abstract class Jdbcs {
          * 浮点适配器
          */
         public static final ValueAdaptor asFloat = new ValueAdaptor() {
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 float re = rs.getFloat(colName);
                 return rs.wasNull() ? null : re;
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 if (null == obj) {
                     stat.setNull(i, Types.FLOAT);
                 } else {
                     float v;
-                    if (obj instanceof Number)
+                    if (obj instanceof Number) {
                         v = ((Number) obj).floatValue();
-                    else
+                    } else {
                         v = Castors.me().castTo(obj.toString(), float.class);
+                    }
                     stat.setFloat(i, v);
                 }
             }
@@ -495,20 +559,23 @@ public abstract class Jdbcs {
          * 双精度浮点适配器
          */
         public static final ValueAdaptor asDouble = new ValueAdaptor() {
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 double re = rs.getDouble(colName);
                 return rs.wasNull() ? null : re;
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 if (null == obj) {
                     stat.setNull(i, Types.DOUBLE);
                 } else {
                     double v;
-                    if (obj instanceof Number)
+                    if (obj instanceof Number) {
                         v = ((Number) obj).doubleValue();
-                    else
+                    } else {
                         v = Castors.me().castTo(obj.toString(), double.class);
+                    }
                     stat.setDouble(i, v);
                 }
             }
@@ -518,24 +585,28 @@ public abstract class Jdbcs {
          * 日历适配器
          */
         public static final ValueAdaptor asCalendar = new ValueAdaptor() {
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 Timestamp ts = rs.getTimestamp(colName);
-                if (null == ts)
+                if (null == ts) {
                     return null;
+                }
                 Calendar c = Calendar.getInstance();
                 c.setTimeInMillis(ts.getTime());
                 return c;
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 if (null == obj) {
                     stat.setNull(i, Types.TIMESTAMP);
                 } else {
                     Timestamp v;
-                    if (obj instanceof Calendar)
+                    if (obj instanceof Calendar) {
                         v = new Timestamp(((Calendar) obj).getTimeInMillis());
-                    else
+                    } else {
                         v = Castors.me().castTo(obj, Timestamp.class);
+                    }
                     stat.setTimestamp(i, v);
                 }
             }
@@ -545,19 +616,22 @@ public abstract class Jdbcs {
          * 时间戳适配器
          */
         public static final ValueAdaptor asTimestamp = new ValueAdaptor() {
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 return rs.getTimestamp(colName);
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 if (null == obj) {
                     stat.setNull(i, Types.TIMESTAMP);
                 } else {
                     Timestamp v;
-                    if (obj instanceof Timestamp)
+                    if (obj instanceof Timestamp) {
                         v = (Timestamp) obj;
-                    else
+                    } else {
                         v = Castors.me().castTo(obj, Timestamp.class);
+                    }
                     stat.setTimestamp(i, v);
                 }
             }
@@ -567,20 +641,23 @@ public abstract class Jdbcs {
          * 日期适配器
          */
         public static final ValueAdaptor asDate = new ValueAdaptor() {
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 Timestamp ts = rs.getTimestamp(colName);
                 return null == ts ? null : new java.util.Date(ts.getTime());
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 Timestamp v;
                 if (null == obj) {
                     stat.setNull(i, Types.TIMESTAMP);
                 } else {
-                    if (obj instanceof java.util.Date)
+                    if (obj instanceof java.util.Date) {
                         v = new Timestamp(((java.util.Date) obj).getTime());
-                    else
+                    } else {
                         v = Castors.me().castTo(obj, Timestamp.class);
+                    }
                     stat.setTimestamp(i, v);
                 }
             }
@@ -590,19 +667,22 @@ public abstract class Jdbcs {
          * Sql 日期适配器
          */
         public static final ValueAdaptor asSqlDate = new ValueAdaptor() {
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 return rs.getDate(colName);
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 if (null == obj) {
                     stat.setNull(i, Types.DATE);
                 } else {
                     java.sql.Date v;
-                    if (obj instanceof java.sql.Date)
+                    if (obj instanceof java.sql.Date) {
                         v = (java.sql.Date) obj;
-                    else
+                    } else {
                         v = Castors.me().castTo(obj, java.sql.Date.class);
+                    }
                     stat.setDate(i, v);
                 }
             }
@@ -612,19 +692,22 @@ public abstract class Jdbcs {
          * Sql 时间适配器
          */
         public static final ValueAdaptor asSqlTime = new ValueAdaptor() {
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 return rs.getTime(colName);
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 java.sql.Time v;
                 if (null == obj) {
                     stat.setNull(i, Types.TIME);
                 } else {
-                    if (obj instanceof java.sql.Time)
+                    if (obj instanceof java.sql.Time) {
                         v = (java.sql.Time) obj;
-                    else
+                    } else {
                         v = Castors.me().castTo(obj, java.sql.Time.class);
+                    }
                     stat.setTime(i, v);
                 }
             }
@@ -634,11 +717,13 @@ public abstract class Jdbcs {
          * 数字枚举适配器
          */
         public static final ValueAdaptor asEnumInt = new ValueAdaptor() {
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 int re = rs.getInt(colName);
                 return rs.wasNull() ? null : re;
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 if (null == obj) {
                     stat.setNull(i, Types.INTEGER);
@@ -652,10 +737,12 @@ public abstract class Jdbcs {
          * 字符枚举适配器
          */
         public static final ValueAdaptor asEnumChar = new ValueAdaptor() {
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 return rs.getString(colName);
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 if (null == obj) {
                     stat.setString(i, null);
@@ -670,10 +757,12 @@ public abstract class Jdbcs {
          * 默认对象适配器
          */
         public static final ValueAdaptor asObject = new ValueAdaptor() {
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 return rs.getObject(colName);
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 stat.setObject(i, obj);
             }
@@ -684,10 +773,12 @@ public abstract class Jdbcs {
          */
         public static final ValueAdaptor asBytes = new ValueAdaptor() {
 
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 return rs.getBytes(colName);
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int index) throws SQLException {
                 if (null == obj) {
                     stat.setNull(index, Types.BINARY);
@@ -700,48 +791,50 @@ public abstract class Jdbcs {
 
         public static final ValueAdaptor asBinaryStream = new ValueAdaptor() {
 
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
-            	InputStream in = rs.getBinaryStream(colName);
-            	if (in == null) {
-            		return in;
-            	}
-            	try {
-					File f = File.createTempFile("nutzdao_blob", ".tmp");
-					Files.write(f, in);
-					in.close();
-					return new ReadOnceInputStream(f);
-				}
-				catch (IOException e) {
-					throw Lang.wrapThrow(e);
-				}
+                InputStream in = rs.getBinaryStream(colName);
+                if (in == null) {
+                    return in;
+                }
+                try {
+                    File f = File.createTempFile("nutzdao_blob", ".tmp");
+                    Files.write(f, in);
+                    in.close();
+                    return new ReadOnceInputStream(f);
+                }
+                catch (IOException e) {
+                    throw Lang.wrapThrow(e);
+                }
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int index) throws SQLException {
                 if (null == obj) {
                     stat.setNull(index, Types.BINARY);
                 } else {
 
-                	if (obj instanceof ByteArrayInputStream) {
-                		stat.setBinaryStream(index, (InputStream)obj, ((ByteArrayInputStream)obj).available());
-                	} else if (obj instanceof InputStream) {
-                		if (obj instanceof ReadOnceInputStream) {
-                			if (((ReadOnceInputStream)obj).readed) {
-                				throw new DaoException("");
-                			}
-                		}
+                    if (obj instanceof ByteArrayInputStream) {
+                        stat.setBinaryStream(index, (InputStream) obj, ((ByteArrayInputStream) obj).available());
+                    } else if (obj instanceof InputStream) {
+                        if (obj instanceof ReadOnceInputStream) {
+                            if (((ReadOnceInputStream) obj).readed) {
+                                throw new DaoException("");
+                            }
+                        }
                         try {
                             File f = Jdbcs.getFilePool().createFile(".dat");
-                            Streams.writeAndClose(new FileOutputStream(f), (InputStream)obj);
+                            Streams.writeAndClose(new FileOutputStream(f), (InputStream) obj);
                             stat.setBinaryStream(index, new FileInputStream(f), f.length());
                         }
                         catch (FileNotFoundException e) {
-                        	try {
+                            try {
                                 File f = Jdbcs.getFilePool().createFile(".dat");
-                                Streams.writeAndClose(new FileOutputStream(f), (InputStream)obj);
+                                Streams.writeAndClose(new FileOutputStream(f), (InputStream) obj);
                                 stat.setBinaryStream(index, new FileInputStream(f), f.length());
                             }
                             catch (FileNotFoundException e2) {
-                            	throw Lang.impossible();
+                                throw Lang.impossible();
                             }
                         }
                     }
@@ -751,10 +844,12 @@ public abstract class Jdbcs {
 
         public static final ValueAdaptor asReader = new ValueAdaptor() {
 
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 return rs.getCharacterStream(colName);
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int index) throws SQLException {
                 if (null == obj) {
                     stat.setNull(index, Types.BINARY);
@@ -763,39 +858,42 @@ public abstract class Jdbcs {
                 }
             }
         };
-        
-        
+
         public static final ValueAdaptor asLocalDateTime = new ValueAdaptor() {
-            
+
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 Timestamp ts = rs.getTimestamp(colName);
                 return null == ts ? null : LocalDateTime.ofInstant(Instant.ofEpochMilli(ts.getTime()), ZoneId.systemDefault());
             }
 
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 Timestamp v;
                 if (null == obj) {
                     stat.setNull(i, Types.TIMESTAMP);
                 } else {
-                    v = Timestamp.valueOf((LocalDateTime)obj);
+                    v = Timestamp.valueOf((LocalDateTime) obj);
                     stat.setTimestamp(i, v);
                 }
             }
         };
-    
+
         public static final ValueAdaptor asLocalDate = new ValueAdaptor() {
-        
+
+            @Override
             public Object get(ResultSet rs, String colName) throws SQLException {
                 Timestamp ts = rs.getTimestamp(colName);
                 return null == ts ? null : ts.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             }
-        
+
+            @Override
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 Timestamp v;
                 if (null == obj) {
                     stat.setNull(i, Types.TIMESTAMP);
                 } else {
-                    v = Timestamp.valueOf(((LocalDate)obj).atStartOfDay(ZoneId.systemDefault()).toLocalDateTime());
+                    v = Timestamp.valueOf(((LocalDate) obj).atStartOfDay(ZoneId.systemDefault()).toLocalDateTime());
                     stat.setTimestamp(i, v);
                 }
             }
@@ -894,12 +992,13 @@ public abstract class Jdbcs {
          * 上面的都不是？ 那就当作字符串好了，反正可以 toString
          */
         else {
-            if (log.isDebugEnabled()&& ef.getEntity() != null && ef.getEntity().getType() != null)
+            if (log.isDebugEnabled() && ef.getEntity() != null && ef.getEntity().getType() != null) {
                 log.debugf("take field '%s(%s)'(%s) as VARCHAR(%d)",
                            ef.getName(),
                            Lang.getTypeClass(ef.getType()).getName(),
                            ef.getEntity().getType().getName(),
                            Daos.DEFAULT_VARCHAR_WIDTH);
+            }
             ef.setColumnType(ColType.VARCHAR);
             ef.setWidth(Daos.DEFAULT_VARCHAR_WIDTH);
         }
@@ -916,7 +1015,7 @@ public abstract class Jdbcs {
     public static void setCharacterStream(int index, Object obj, PreparedStatement stat) throws SQLException {
         try {
             File f = Jdbcs.getFilePool().createFile(".dat");
-            Streams.writeAndClose(new FileWriter(f), (Reader)obj);
+            Streams.writeAndClose(new FileWriter(f), (Reader) obj);
             stat.setCharacterStream(index, new FileReader(f), f.length());
         }
         catch (FileNotFoundException e) {
@@ -926,7 +1025,7 @@ public abstract class Jdbcs {
             throw Lang.wrapThrow(e);
         }
     }
-    
+
     public static JdbcExpertConfigFile getConf() {
         return conf;
     }
@@ -934,46 +1033,52 @@ public abstract class Jdbcs {
 
 class ReadOnceInputStream extends FilterInputStream implements Serializable {
 
-	private static final long serialVersionUID = -2601685798106193691L;
+    private static final long serialVersionUID = -2601685798106193691L;
 
-	private File f;
+    private File f;
 
-	public boolean readed;
+    public boolean readed;
 
-	protected ReadOnceInputStream(File f) throws FileNotFoundException {
-		super(new FileInputStream(f));
-		this.f = f;
-	}
+    protected ReadOnceInputStream(File f) throws FileNotFoundException {
+        super(new FileInputStream(f));
+        this.f = f;
+    }
 
-	public int read() throws IOException {
-		readed = true;
-		return super.read();
-	}
+    @Override
+    public int read() throws IOException {
+        readed = true;
+        return super.read();
+    }
 
-	public int read(byte[] b) throws IOException {
-		readed = true;
-		return super.read(b);
-	}
+    @Override
+    public int read(byte[] b) throws IOException {
+        readed = true;
+        return super.read(b);
+    }
 
-	public int read(byte[] b, int off, int len) throws IOException {
-		readed = true;
-		return super.read(b, off, len);
-	}
+    @Override
+    public int read(byte[] b, int off, int len) throws IOException {
+        readed = true;
+        return super.read(b, off, len);
+    }
 
-	public void close() throws IOException {
-		super.close();
-		f.delete();
-	}
+    @Override
+    public void close() throws IOException {
+        super.close();
+        f.delete();
+    }
 
-	protected void finalize() throws Throwable {
-		f.delete();
-		super.finalize();
-	}
+    @Override
+    protected void finalize() throws Throwable {
+        f.delete();
+        super.finalize();
+    }
 
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
         Streams.writeAndClose(out, new FileInputStream(f));
     }
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException{
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
         f = Jdbcs.getFilePool().createFile(".dat");
         Files.write(f, in);
     }

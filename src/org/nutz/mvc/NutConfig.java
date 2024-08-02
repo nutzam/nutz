@@ -2,11 +2,11 @@ package org.nutz.mvc;
 
 import java.util.List;
 
-import javax.servlet.ServletContext;
-
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.util.Context;
 import org.nutz.mvc.config.AtMap;
+
+import jakarta.servlet.ServletContext;
 
 /**
  * 这个接口是一个抽象封装
@@ -133,20 +133,20 @@ public interface NutConfig {
     Context getLoadingContext();
 
     void setSessionProvider(SessionProvider provider);
-    
+
     SessionProvider getSessionProvider();
-    
+
     UrlMapping getUrlMapping();
-    
+
     void setUrlMapping(UrlMapping urlMapping);
-    
+
     ActionChainMaker getActionChainMaker();
-    
+
     void setActionChainMaker(ActionChainMaker acm);
-    
+
     ViewMaker[] getViewMakers();
-    
+
     void setViewMakers(ViewMaker[] makers);
-    
+
     void setMainModule(Class<?> mainModule);
 }

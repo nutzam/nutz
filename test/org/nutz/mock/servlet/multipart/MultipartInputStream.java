@@ -7,8 +7,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
-import javax.servlet.ReadListener;
-
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.mock.servlet.MockInputStream;
@@ -16,6 +14,8 @@ import org.nutz.mock.servlet.multipart.inputing.InputingHelper;
 import org.nutz.mock.servlet.multipart.item.EndlMultipartItem;
 import org.nutz.mock.servlet.multipart.item.FileMultipartItem;
 import org.nutz.mock.servlet.multipart.item.ParamMultipartItem;
+
+import jakarta.servlet.ReadListener;
 
 public class MultipartInputStream extends MockInputStream {
 
@@ -49,8 +49,9 @@ public class MultipartInputStream extends MockInputStream {
 
     private String getContentType(String suffixName) {
         String ct = mimes.get(suffixName);
-        if (null == ct)
+        if (null == ct) {
             return "application/octet-stream";
+        }
         return ct;
     }
 
@@ -62,8 +63,9 @@ public class MultipartInputStream extends MockInputStream {
     public int available() throws IOException {
         int re = 0;
         Iterator<MultipartItem> it = items.iterator();
-        while (it.hasNext())
+        while (it.hasNext()) {
             re += it.next().size();
+        }
         return re;
     }
 
@@ -78,6 +80,7 @@ public class MultipartInputStream extends MockInputStream {
         append(fmi);
     }
 
+    @Override
     public void append(String name, String value) {
         append(new ParamMultipartItem(helper, boundary, name, value));
     }
@@ -86,21 +89,25 @@ public class MultipartInputStream extends MockInputStream {
         items.add(items.size() - 1, item);
     }
 
+    @Override
     public int read() throws IOException {
         int d = current.read();
         while (-1 == d) {
-            if (!it.hasNext())
+            if (!it.hasNext()) {
                 return -1;
+            }
             current = it.next();
             d = current.read();
         }
         return d;
     }
 
+    @Override
     public void init() {
         try {
-            for (MultipartItem item : items)
+            for (MultipartItem item : items) {
                 item.init();
+            }
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);
@@ -112,22 +119,26 @@ public class MultipartInputStream extends MockInputStream {
     @Override
     public void close() throws IOException {
         try {
-            for (MultipartItem item : items)
+            for (MultipartItem item : items) {
                 item.close();
+            }
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);
         }
     }
 
+    @Override
     public boolean isFinished() {
         return false;
     }
 
+    @Override
     public boolean isReady() {
         return false;
     }
 
+    @Override
     public void setReadListener(ReadListener readListener) {}
 
 }

@@ -3,10 +3,10 @@ package org.nutz.mvc.adaptor.extractor;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.nutz.lang.Lang;
 import org.nutz.mvc.adaptor.ParamExtractor;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 默认提取器
@@ -21,16 +21,20 @@ public class BaseParamExtractor implements ParamExtractor {
         this.req = req;
     }
 
+    @Override
     public String[] extractor(String name) {
-        if (req == null)
+        if (req == null) {
             return new String[0];
+        }
         return req.getParameterValues(name);
     }
 
+    @Override
     public Set<String> keys() {
-        if (req == null)
+        if (req == null) {
             return new HashSet<String>();
-        return (Set<String>) Lang.enum2collection(req.getParameterNames(), new HashSet<String>());
+        }
+        return Lang.enum2collection(req.getParameterNames(), new HashSet<String>());
     }
 
 }

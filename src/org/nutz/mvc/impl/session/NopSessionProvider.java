@@ -1,9 +1,9 @@
 package org.nutz.mvc.impl.session;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * 使用容器原生的Session实现 == 等于什么都没做.
@@ -11,14 +11,16 @@ import javax.servlet.http.HttpSession;
  */
 public class NopSessionProvider extends AbstractSessionProvider {
 
-	public HttpSession createSession(HttpServletRequest req,
-									 HttpServletResponse resp,
-									 ServletContext servletContext) {
-		//使用容器原生的Session实现 == 等于什么都没做
-		return req.getSession(true);
-	}
+    @Override
+    public HttpSession createSession(HttpServletRequest req,
+                                     HttpServletResponse resp,
+                                     ServletContext servletContext) {
+        // 使用容器原生的Session实现 == 等于什么都没做
+        return req.getSession(true);
+    }
 
-	public HttpSession getExistSession(HttpServletRequest req, HttpServletResponse resp, ServletContext servletContext) {
-	    return req.getSession(false);
-	}
+    @Override
+    public HttpSession getExistSession(HttpServletRequest req, HttpServletResponse resp, ServletContext servletContext) {
+        return req.getSession(false);
+    }
 }

@@ -2,9 +2,9 @@ package org.nutz.mvc;
 
 import java.lang.reflect.Method;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 这是一个处理 HTTP 请求的扩展点。通过它，你可以用任何你想要的方式来为你的入口函数准备参数。 默认的，框架为你提供了三个实现：
@@ -50,16 +50,16 @@ public interface HttpAdaptor {
      * @param resp
      *            响应对象
      * @param pathArgs
-     *            字符串数组，路径参数。详情请参看 <a
-     *            href="http://nutzam.com/core/mvc/url_mapping.html"
+     *            字符串数组，路径参数。详情请参看
+     *            <a href="http://nutzam.com/core/mvc/url_mapping.html"
      *            >路径参数</a>
      * 
      * @return 调用参数数组
      * 
      */
-    Object[] adapt(    ServletContext sc,
-                    HttpServletRequest req,
-                    HttpServletResponse resp,
-                    String[] pathArgs);
+    Object[] adapt(ServletContext sc,
+                   HttpServletRequest req,
+                   HttpServletResponse resp,
+                   String[] pathArgs);
 
 }

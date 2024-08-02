@@ -1,9 +1,9 @@
 package org.nutz.mvc.view;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.nutz.mvc.View;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 组合一个视图以及其渲染对象
@@ -21,6 +21,7 @@ public class ViewWrapper implements View {
 
     private Object data;
 
+    @Override
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
             throws Throwable {
         view.render(req, resp, data);

@@ -4,8 +4,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.Ioc2;
 import org.nutz.ioc.IocContext;
@@ -22,6 +20,8 @@ import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.NutSessionListener;
 import org.nutz.mvc.ioc.RequestIocContext;
 import org.nutz.mvc.ioc.SessionIocContext;
+
+import jakarta.servlet.http.HttpSession;
 
 /**
  * 
@@ -47,7 +47,7 @@ public class ModuleProcessor extends AbstractProcessor {
         moduleType = ai.getModuleType();
         // 直接指定了对象
         if (ai.getModuleObj() != null) {
-        	moduleObj = ai.getModuleObj();
+            moduleObj = ai.getModuleObj();
         }
         // 不使用 Ioc 容器管理模块
         else if (Strings.isBlank(ai.getInjectName())) {
@@ -57,9 +57,10 @@ public class ModuleProcessor extends AbstractProcessor {
                 String className = moduleType.getName();
                 moduleObj = modulesMap.get(className);
                 if (moduleObj == null) {
-                    if (log.isInfoEnabled())
+                    if (log.isInfoEnabled()) {
                         log.info("Create Module obj without Ioc --> "
                                  + moduleType);
+                    }
                     moduleObj = Mirror.me(moduleType).born();
                     modulesMap.put(className, moduleObj);
                 }
@@ -68,10 +69,11 @@ public class ModuleProcessor extends AbstractProcessor {
         // 使用 Ioc 容器管理模块
         else {
             Ioc ioc = config.getIoc();
-            if (null == ioc)
+            if (null == ioc) {
                 throw Lang.makeThrow("Moudle with @InjectName('%s') or @IocBean('%s') but you not declare a Ioc for this app!! Miss @IocBy at MainMdoule??",
                                      injectName,
                                      injectName);
+            }
             injectName = ai.getInjectName();
             if (!ioc.has(injectName)) {
                 log.warnf("Moudle with @InjectName('%s') or @IocBean('%s') but no such ioc bean found!! Pls check your ioc configure!!",
@@ -81,6 +83,7 @@ public class ModuleProcessor extends AbstractProcessor {
         }
     }
 
+    @Override
     public void process(ActionContext ac) throws Throwable {
         RequestIocContext reqContext = null;
         try {
@@ -111,9 +114,9 @@ public class ModuleProcessor extends AbstractProcessor {
                 }
                 /*
                  * 否则，则仅仅简单的从容器获取
-                 */
-                else
+                 */ else {
                     obj = ioc.get(moduleType, injectName);
+                }
                 ac.setModule(obj);
 
             }
@@ -123,14 +126,16 @@ public class ModuleProcessor extends AbstractProcessor {
             doNext(ac);
         }
         finally {
-            if (reqContext != null)
+            if (reqContext != null) {
                 try {
                     reqContext.depose();
                 }
                 catch (Throwable e) {
-                    if (log.isDebugEnabled())
+                    if (log.isDebugEnabled()) {
                         log.debug("ReqContext depose fail?!", e);
+                    }
                 }
+            }
         }
     }
 

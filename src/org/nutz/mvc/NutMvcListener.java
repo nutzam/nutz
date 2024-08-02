@@ -4,10 +4,6 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Enumeration;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.impl.NutIoc;
 import org.nutz.ioc.impl.PropertiesProxy;
@@ -18,6 +14,10 @@ import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.resource.Scans;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 
 /**
  * <p>
@@ -60,11 +60,13 @@ public class NutMvcListener implements ServletContextListener, IocProvider {
      * 返回全局Ioc对象,如果未经初始化, 这里就会抛出异常
      */
     public static Ioc ioc() {
-        if (ioc == null)
+        if (ioc == null) {
             throw new IllegalArgumentException("NutMvcListener NOT init!!! check your web.xml!!");
+        }
         return ioc;
     }
 
+    @Override
     public void contextInitialized(ServletContextEvent event) {
         sc = event.getServletContext();
         Scans.me().init(sc);
@@ -87,7 +89,7 @@ public class NutMvcListener implements ServletContextListener, IocProvider {
         PropertiesProxy pp = new PropertiesProxy();
         Enumeration<String> params = sc.getInitParameterNames();
         while (params.hasMoreElements()) {
-            String name = (String) params.nextElement();
+            String name = params.nextElement();
             if (name.startsWith("nutz-")) {
                 pp.put(name, sc.getInitParameter(name).trim());
             }
@@ -131,13 +133,15 @@ public class NutMvcListener implements ServletContextListener, IocProvider {
     /**
      * 容器销毁时,检查Ioc是否已经关闭,没有的话就关闭之.
      */
+    @Override
     public void contextDestroyed(ServletContextEvent event) {
         if (ioc() != null) {
             Ioc ioc = ioc();
             if (ioc instanceof NutIoc) {
                 boolean deposed = (Boolean) Mirror.me(ioc).getValue(ioc, "deposed");
-                if (!deposed)
+                if (!deposed) {
                     ioc.depose();
+                }
             }
         }
     }
@@ -145,10 +149,12 @@ public class NutMvcListener implements ServletContextListener, IocProvider {
     /**
      * 这里与IocBy结合起来. 注意,这个实现会忽略IocBy的args参数.
      */
+    @Override
     public Ioc create(NutConfig config, String[] args) {
         if (args != null && args.length > 0) {
-            if (log != null)
+            if (log != null) {
                 log.warn("args ignore : " + Arrays.toString(args));
+            }
         }
         return ioc();
     }

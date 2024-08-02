@@ -4,8 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URLDecoder;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.nutz.castor.Castors;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
@@ -14,6 +12,8 @@ import org.nutz.lang.Times;
 import org.nutz.lang.meta.Pair;
 import org.nutz.lang.util.NutMap;
 import org.nutz.mvc.adaptor.injector.NameInjector;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public class QueryStringNameInjector extends NameInjector {
 
@@ -41,7 +41,7 @@ public class QueryStringNameInjector extends NameInjector {
                 // 分析
                 String qs = req.getQueryString();
                 String[] ss = Strings.splitIgnoreBlank(qs, "[&]");
-                if (null != ss)
+                if (null != ss) {
                     for (String s : ss) {
                         Pair<String> p = Pair.create(s);
                         String val = p.getValue();
@@ -57,6 +57,7 @@ public class QueryStringNameInjector extends NameInjector {
                             qsMap.put(p.getName(), val);
                         }
                     }
+                }
                 // 保存
                 req.setAttribute("_nutz_qs_map", qsMap);
             }

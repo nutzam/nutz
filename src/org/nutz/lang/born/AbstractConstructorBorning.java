@@ -10,18 +10,20 @@ public abstract class AbstractConstructorBorning {
 
     protected Constructor<?> c;
     protected FastMethod fm;
-    
+
     public AbstractConstructorBorning(Constructor<?> c) {
         super();
-        if (!c.isAccessible())
+        if (!c.isAccessible()) {
             c.setAccessible(true);
+        }
         this.c = c;
     }
-    
-    protected Object call(Object...args) throws Exception {
+
+    protected Object call(Object... args) throws Exception {
         if (NutConf.USE_FASTCLASS) {
-            if (fm == null)
+            if (fm == null) {
                 fm = FastClassFactory.get(c);
+            }
             return fm.invoke(null, args);
         }
         return c.newInstance(args);

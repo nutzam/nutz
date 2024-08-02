@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.nutz.ioc.annotation.InjectName;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.lang.Lang;
@@ -30,6 +28,7 @@ import org.nutz.mvc.testapp.classes.bean.Issue1069;
 import org.nutz.mvc.testapp.classes.bean.Issue1109;
 import org.nutz.mvc.testapp.classes.bean.Issue1277;
 
+import jakarta.servlet.http.HttpServletRequest;
 import junit.framework.TestCase;
 
 @InjectName
@@ -42,9 +41,10 @@ public class AdaptorTestModule extends BaseWebappTest {
     @At("/github/issue/543")
     public long issue_543(@Param(value = "d", dfmt = "yyyyMMdd") Date d,
                           @Param("..") Issue543 o) {
-        if (d.getTime() != o.d.getTime())
+        if (d.getTime() != o.d.getTime()) {
             throw Lang.impossible();
-//        new Throwable().printStackTrace();
+        }
+        // new Throwable().printStackTrace();
         System.out.println("Hi, hotcode replace");
         return d.getTime();
     }
@@ -75,8 +75,9 @@ public class AdaptorTestModule extends BaseWebappTest {
     @AdaptBy(type = JsonAdaptor.class)
     public String getJsonPetList(@Param("pets") List<Pet> lst) {
         StringBuilder sb = new StringBuilder();
-        for (Pet pet : lst)
+        for (Pet pet : lst) {
             sb.append(',').append(pet.getName());
+        }
         return String.format("pets(%d) %s", lst.size(), "list");
     }
 
@@ -131,28 +132,27 @@ public class AdaptorTestModule extends BaseWebappTest {
         TestCase.assertEquals(123456.0, map.get("abc").doubleValue());
         System.out.println(map.get("abc"));
     }
-    
+
     @At("/default_value")
     @Ok("raw")
-    public int default_value(@Param(value="abc", df="123456")int value) {
-    	return value;
+    public int default_value(@Param(value = "abc", df = "123456") int value) {
+        return value;
     }
 
     @POST
     @AdaptBy(type = JsonAdaptor.class)
     @At("/err_ctx")
     @Ok("raw")
-    public boolean err_ctx(@Param("..")Object obj, AdaptorErrorContext ctx) {
+    public boolean err_ctx(@Param("..") Object obj, AdaptorErrorContext ctx) {
         return ctx == null;
     }
-    
-    //@GET
+
+    // @GET
     @At("/sqldate")
-    public String test_sql_date(@Param("checkDate")java.sql.Date checkDate){
-    	return checkDate.toString();
+    public String test_sql_date(@Param("checkDate") java.sql.Date checkDate) {
+        return checkDate.toString();
     }
-    
-    
+
     @At("/param_without_param")
     @Ok("json:compact")
     public Object test_param_without_param(String uid, String[] uids, HttpServletRequest req) {
@@ -174,52 +174,49 @@ public class AdaptorTestModule extends BaseWebappTest {
 
     @At("/issue1069")
     @Ok("raw")
-    public Object test_issue1069(@Param("..")Issue1069 issue1069) {
+    public Object test_issue1069(@Param("..") Issue1069 issue1069) {
         return issue1069.getShowAdd();
     }
-    
+
     @At("/issue1109")
     @Ok("json")
-    @AdaptBy(type=PairAdaptor.class)
-    public Object issue1109(@Param("::issue")List<Issue1109> pojos) {
+    @AdaptBy(type = PairAdaptor.class)
+    public Object issue1109(@Param("::issue") List<Issue1109> pojos) {
         return pojos;
     }
-    
 
     @At("/issue1267")
     @Ok("raw")
-    @AdaptBy(type=PairAdaptor.class)
-    public long issue1267(@Param("..")Issue1267 issue) {
+    @AdaptBy(type = PairAdaptor.class)
+    public long issue1267(@Param("..") Issue1267 issue) {
         return issue.getTime().getTime();
     }
-    
+
     @At("/issue1277")
     @Ok("json")
-    @AdaptBy(type=PairAdaptor.class)
-    public Object issue1277(@Param("..")Issue1277 issue) {
+    @AdaptBy(type = PairAdaptor.class)
+    public Object issue1277(@Param("..") Issue1277 issue) {
         return issue;
     }
-    
 
     @At("/issue1310")
     @Ok("json")
-    @AdaptBy(type=PairAdaptor.class)
-    public Object issue1310(@Param("::")Issue1277 issue) {
+    @AdaptBy(type = PairAdaptor.class)
+    public Object issue1310(@Param("::") Issue1277 issue) {
         return issue;
     }
-    
-    
+
     @At("/issue13xx")
     @Ok("re")
-    public String re_view_with_NutMap(@Param("..")NutMap map, ViewModel viewModel) {
+    public String re_view_with_NutMap(@Param("..") NutMap map, ViewModel viewModel) {
         viewModel.put("id", 1); // 如果正确, 应该会输出 {id:1}
         map.put("id", 2); // 如果走了NutMap的话,应该输出 {id:2}
         return "json";
     }
-    
+
     @Ok("raw")
     @At("/jdk8/localdt")
-    public String localdatetime(@Param("date")LocalDateTime localDateTime) {
+    public String localdatetime(@Param("date") LocalDateTime localDateTime) {
         System.out.println(localDateTime);
         return localDateTime.toString();
     }

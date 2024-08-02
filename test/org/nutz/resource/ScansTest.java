@@ -1,6 +1,7 @@
 package org.nutz.resource;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,16 +11,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.servlet.Servlet;
-
-import junit.extensions.ActiveTestSuite;
-import junit.extensions.RepeatedTest;
-import junit.extensions.TestSetup;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.nutz.lang.Files;
 import org.nutz.lang.Strings;
+
+import jakarta.servlet.Servlet;
+import junit.extensions.ActiveTestSuite;
+import junit.extensions.RepeatedTest;
+import junit.extensions.TestSetup;
 
 public class ScansTest {
 
@@ -85,7 +85,7 @@ public class ScansTest {
         String testPath = Assert.class.getPackage().getName().replace('.', '/');
         String testFilter = "^.*(Assert|Test)\\.class$";
         List<NutResource> list = Scans.me().scan(testPath, testFilter);
-        //Collections.sort(list);
+        // Collections.sort(list);
         assertEquals(2, list.size());
         assertTrue(list.get(0).getName().endsWith("Assert.class") || list.get(1).getName().endsWith("Assert.class"));
         assertTrue(list.get(0).getName().endsWith("Test.class") || list.get(1).getName().endsWith("Test.class"));
@@ -95,10 +95,11 @@ public class ScansTest {
     @Test
     public void test_classes_in_jar() {
         List<Class<?>> list = Scans.me()
-                                    .scanPackage(    ActiveTestSuite.class,
-                                                    ".*(ActiveTestSuite|RepeatedTest|TestSetup)\\.class$");
+                                   .scanPackage(ActiveTestSuite.class,
+                                                ".*(ActiveTestSuite|RepeatedTest|TestSetup)\\.class$");
         assertEquals(3, list.size());
         Collections.sort(list, new Comparator<Class<?>>() {
+            @Override
             public int compare(Class<?> o1, Class<?> o2) {
                 return o1.getSimpleName().compareTo(o2.getSimpleName());
             }
@@ -128,22 +129,22 @@ public class ScansTest {
         List<NutResource> list = Scans.me().scan(testPath, testFilter);
         assertEquals(1, list.size());
     }
-    
+
     @Test
     public void test_path_in_jar() {
         String testPath = Test.class.getPackage().getName().replace('.', '/');
         List<NutResource> list = Scans.me().scan(testPath, null);
         assertTrue(list.size() > 10);
     }
-    
-//    @Test
-//    public void test_scan_root() {
-//        Scans.me().scan("", ".+\\.xml");
-//    }
-    
+
+    // @Test
+    // public void test_scan_root() {
+    // Scans.me().scan("", ".+\\.xml");
+    // }
+
     @Test
     public void test_resource_jar() throws MalformedURLException {
-    	Scans.me().registerLocation(Servlet.class);
-    	Scans.me().registerLocation(getClass().getClassLoader().getResource("javax/servlet/Servlet.class"));
+        Scans.me().registerLocation(Servlet.class);
+        Scans.me().registerLocation(getClass().getClassLoader().getResource("javax/servlet/Servlet.class"));
     }
 }

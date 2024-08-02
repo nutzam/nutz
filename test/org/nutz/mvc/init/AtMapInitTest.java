@@ -4,12 +4,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-
 import org.junit.Test;
 import org.nutz.mvc.AbstractMvcTest;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.init.conf.MainModuleAtMap;
+
+import jakarta.servlet.ServletException;
 
 public class AtMapInitTest extends AbstractMvcTest {
 
@@ -28,12 +28,12 @@ public class AtMapInitTest extends AbstractMvcTest {
         request.setPathInfo("/atmap/xyz");
         servlet.service(request, response);
         assertEquals("\">>xyz\"", response.getAsString());
-        
+
         Mvcs.set("nutz", request, response);
-        
-//        AtMap am = Mvcs.ctx().atMaps.values().iterator().next();
-//        assertEquals("/atmap/ABC", am.get("at.abc"));
-//        assertEquals("/atmap/xyz", am.get("at.xyz"));
+
+        // AtMap am = Mvcs.ctx().atMaps.values().iterator().next();
+        // assertEquals("/atmap/ABC", am.get("at.abc"));
+        // assertEquals("/atmap/xyz", am.get("at.xyz"));
     }
 
 }

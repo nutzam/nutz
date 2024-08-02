@@ -1,10 +1,10 @@
 package org.nutz.mvc;
 
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
-
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+
+import jakarta.servlet.http.HttpSessionEvent;
+import jakarta.servlet.http.HttpSessionListener;
 
 /**
  * 如果你的应用，在 Session 中保存了一些需要注销的对象，比如你在 Ioc 容器中将一个 DataSource 对象的范围设成
@@ -41,8 +41,10 @@ public final class NutSessionListener implements HttpSessionListener {
         log.info("NutIoc SessionScope is Enable.");
     }
 
+    @Override
     public void sessionCreated(HttpSessionEvent se) {}
 
+    @Override
     public void sessionDestroyed(HttpSessionEvent se) {
         Mvcs.deposeSession(se.getSession());
     }

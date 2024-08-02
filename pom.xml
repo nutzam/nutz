@@ -5,10 +5,10 @@
     <artifactId>nutz</artifactId>
     <packaging>jar</packaging>
     <name>Nutz</name>
-    <version>1.r.70-SNAPSHOT</version>
+    <version>1.r.70-jakarta-SNAPSHOT</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jetty.version>9.4.34.v20201102</jetty.version>
+        <jetty.version>11.0.22</jetty.version>
     </properties>
     <description>Nutz, which is a collections of lightweight frameworks, each of them can be used independently
     </description>
@@ -80,9 +80,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
+           <groupId>jakarta.servlet</groupId>
+		   <artifactId>jakarta.servlet-api</artifactId>
+		   <version>6.1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -138,24 +138,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.jetty.websocket</groupId>
-            <artifactId>websocket-server</artifactId>
-            <version>${jetty.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty.websocket</groupId>
-            <artifactId>javax-websocket-server-impl</artifactId>
-            <version>${jetty.version}</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.eclipse.jetty</groupId>
-                    <artifactId>jetty-jndi</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>apache-jsp</artifactId>
             <version>${jetty.version}</version>
@@ -164,7 +146,7 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>apache-jstl</artifactId>
-            <version>${jetty.version}</version>
+            <version>10.0.22</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -1,7 +1,7 @@
 package org.nutz.mvc.view;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 重定向视图
@@ -21,6 +21,7 @@ public class ServerRedirectView extends AbstractPathView {
         super(dest);
     }
 
+    @Override
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
             throws Exception {
 

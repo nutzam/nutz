@@ -1,5 +1,11 @@
 package org.nutz.mvc.upload.speed;
 
+import static java.lang.System.out;
+import static org.nutz.mock.Mock.servlet.context;
+import static org.nutz.mock.Mock.servlet.insmulti;
+import static org.nutz.mock.Mock.servlet.request;
+import static org.nutz.mock.Mock.servlet.session;
+
 import java.io.File;
 
 import org.junit.Ignore;
@@ -7,11 +13,11 @@ import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Stopwatch;
 import org.nutz.mock.servlet.MockHttpServletRequest;
-import org.nutz.mvc.upload.*;
+import org.nutz.mvc.upload.UploadException;
+import org.nutz.mvc.upload.UploadUnit;
+import org.nutz.mvc.upload.Uploading;
+import org.nutz.mvc.upload.UploadingContext;
 import org.nutz.trans.Atom;
-
-import static org.nutz.mock.Mock.servlet.*;
-import static java.lang.System.*;
 
 @Ignore
 public class UploadingSpeedTest {
@@ -46,6 +52,7 @@ public class UploadingSpeedTest {
         Stopwatch sw = null;
         try {
             sw = Stopwatch.run(new Atom() {
+                @Override
                 public void run() {
                     try {
                         up.parse(req, uc);
@@ -63,8 +70,9 @@ public class UploadingSpeedTest {
         finally {
             mon.stop();
             out.println("\n...Done!");
-            if (null != sw)
+            if (null != sw) {
                 out.println(sw);
+            }
         }
 
     }

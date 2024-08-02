@@ -1,29 +1,31 @@
 package org.nutz.mvc.impl.contextCollector;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
 import org.nutz.lang.util.Context;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.ViewContextCollector;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 共享变量收集器
  */
 public class SharedCollector implements ViewContextCollector {
-    
+
     protected List<ViewContextCollector> list;
     protected boolean hasItem;
 
+    @Override
     public Context collect(HttpServletRequest req, Object obj) {
         Ioc ioc = Mvcs.getIoc();
         Context ctx = Lang.context();
-        if (ioc == null)
+        if (ioc == null) {
             return ctx;
+        }
         if (list == null) {
             List<ViewContextCollector> tmp = new ArrayList<ViewContextCollector>();
             String[] names = ioc.getNamesByType(ViewContextCollector.class);

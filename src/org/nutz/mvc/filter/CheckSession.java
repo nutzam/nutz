@@ -1,12 +1,12 @@
 package org.nutz.mvc.filter;
 
-import javax.servlet.http.HttpSession;
-
 import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionFilter;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.View;
 import org.nutz.mvc.view.ServerRedirectView;
+
+import jakarta.servlet.http.HttpSession;
 
 /**
  * 检查当前 Session，如果存在某一属性，并且不为 null，则通过 <br>
@@ -30,10 +30,12 @@ public class CheckSession implements ActionFilter {
         this.path = path;
     }
 
+    @Override
     public View match(ActionContext context) {
-    	HttpSession session = Mvcs.getHttpSession(false);
-    	if (session == null || null == session.getAttribute(name))
+        HttpSession session = Mvcs.getHttpSession(false);
+        if (session == null || null == session.getAttribute(name)) {
             return new ServerRedirectView(path);
+        }
         return null;
     }
 

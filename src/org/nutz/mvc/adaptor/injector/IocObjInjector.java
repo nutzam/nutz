@@ -1,13 +1,13 @@
 package org.nutz.mvc.adaptor.injector;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Strings;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.adaptor.ParamInjector;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 通过注解 '@IocObj' 可以启用这个参数注入器。
@@ -30,12 +30,15 @@ public class IocObjInjector implements ParamInjector {
         this.objName = objName;
     }
 
+    @Override
     public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
         Ioc ioc = Mvcs.getIoc();
-        if (null == ioc)
+        if (null == ioc) {
             throw new RuntimeException("You need define @IocBy in main module!!!");
-        if (Strings.isBlank(objName))
+        }
+        if (Strings.isBlank(objName)) {
             return ioc.get(objType);
+        }
         return ioc.get(objType, objName);
     }
 

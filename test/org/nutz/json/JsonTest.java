@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -675,10 +674,12 @@ public class JsonTest {
         @Override
         public int hashCode() {
             int id = this.id;
-            if (name != null)
+            if (name != null) {
                 id += name.hashCode();
-            if (alias != null)
+            }
+            if (alias != null) {
                 id += alias.hashCode();
+            }
             return id;
         }
     }
@@ -789,8 +790,9 @@ public class JsonTest {
     }
 
     private InputStreamReader getFileAsInputStreamReader(String fileName) {
-        if (!fileName.startsWith("/"))
+        if (!fileName.startsWith("/")) {
             fileName = "/" + fileName;
+        }
         return new InputStreamReader(getClass().getResourceAsStream(fileName));
     }
 
@@ -1238,7 +1240,6 @@ public class JsonTest {
         Object re = Json.fromJson(json);
         System.out.println(Json.toJson(re));
     }
-    
 
     @Test
     public void test_long_as_string() throws ParseException {
@@ -1247,23 +1248,23 @@ public class JsonTest {
         System.out.println(Json.toJson(map, JsonFormat.full()));
         System.out.println(Json.toJson(map, JsonFormat.full().setLongAsString(true)));
     }
-    
+
     @Test
     public void test_nutzcn_abc() throws IOException {
-    	byte[] buff = Streams.readBytes(getClass().getClassLoader().getResourceAsStream("org/nutz/json/pojo123.json"));
-    	IntelliUserRespVo resp = Json.fromJson(IntelliUserRespVo.class, new String(buff));
-    	assertNotNull(resp);
-    	assertNotNull(resp.getData());
-    	assertTrue(resp.getData().size() > 0);
-    	assertTrue(resp.getData().get(0).getXm() != null);
-    	System.out.println(Json.toJson(resp));
+        byte[] buff = Streams.readBytes(getClass().getClassLoader().getResourceAsStream("org/nutz/json/pojo123.json"));
+        IntelliUserRespVo resp = Json.fromJson(IntelliUserRespVo.class, new String(buff));
+        assertNotNull(resp);
+        assertNotNull(resp.getData());
+        assertTrue(resp.getData().size() > 0);
+        assertTrue(resp.getData().get(0).getXm() != null);
+        System.out.println(Json.toJson(resp));
     }
-    
+
     @Test
     public void test_json_as_array() throws IOException {
-    	String json = "[{age:1}]";
-    	for (int i = 0; i < 100*10000; i++) {
-			Json.fromJsonAsArray(Pet.class, json);
-		}
+        String json = "[{age:1}]";
+        for (int i = 0; i < 100 * 10000; i++) {
+            Json.fromJsonAsArray(Pet.class, json);
+        }
     }
 }

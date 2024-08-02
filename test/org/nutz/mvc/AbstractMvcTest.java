@@ -1,7 +1,5 @@
 package org.nutz.mvc;
 
-import javax.servlet.Servlet;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -11,6 +9,8 @@ import org.nutz.mock.servlet.MockHttpServletResponse;
 import org.nutz.mock.servlet.MockHttpSession;
 import org.nutz.mock.servlet.MockServletConfig;
 import org.nutz.mock.servlet.MockServletContext;
+
+import jakarta.servlet.Servlet;
 
 @Ignore
 public abstract class AbstractMvcTest {
@@ -50,8 +50,9 @@ public abstract class AbstractMvcTest {
 
     @After
     public void destroy() {
-        if (servlet != null)
+        if (servlet != null) {
             servlet.destroy();
+        }
     }
 
 }

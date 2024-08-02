@@ -2,10 +2,10 @@ package org.nutz.mvc.view;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.nutz.mvc.View;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 返回特定的响应码
@@ -79,6 +79,7 @@ public class HttpStatusView implements View {
         return this;
     }
 
+    @Override
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj) {
         HttpEnhanceResponse info = this.info.clone();
 

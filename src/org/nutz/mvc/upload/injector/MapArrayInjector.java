@@ -4,12 +4,12 @@ import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.nutz.lang.Lang;
 import org.nutz.mvc.adaptor.ParamInjector;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class MapArrayInjector implements ParamInjector {
 
@@ -22,12 +22,15 @@ public class MapArrayInjector implements ParamInjector {
 
     private String name;
 
+    @Override
     public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
-        if (refer == null)
+        if (refer == null) {
             return null;
+        }
         Object obj = ((Map<?, ?>) refer).get(name);
-        if (obj == null)
+        if (obj == null) {
             return null;
+        }
 
         if (obj instanceof List) {
             return Lang.collection2array((List<?>) ((List<?>) obj));

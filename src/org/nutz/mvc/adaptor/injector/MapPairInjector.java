@@ -1,16 +1,17 @@
 package org.nutz.mvc.adaptor.injector;
 
-import org.nutz.lang.Lang;
-import org.nutz.lang.Mirror;
-import org.nutz.mvc.adaptor.ParamInjector;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Type;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
+import org.nutz.mvc.adaptor.ParamInjector;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 将整个请求的参数表转换成一个 Map
@@ -31,6 +32,8 @@ public class MapPairInjector implements ParamInjector {
     public MapPairInjector(Type type) {
         this.type = type;
     }
+
+    @Override
     @SuppressWarnings("unchecked")
     public Object get(ServletContext sc,
                       HttpServletRequest req,
@@ -43,7 +46,7 @@ public class MapPairInjector implements ParamInjector {
         } else {
             map = (Map<String, Object>) Mirror.me(type).born();
         }
-        Enumeration<String> enu = (Enumeration<String>) req.getParameterNames();
+        Enumeration<String> enu = req.getParameterNames();
         while (enu.hasMoreElements()) {
             String name = enu.nextElement();
             String[] vs = req.getParameterValues(name);

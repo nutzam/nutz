@@ -7,10 +7,6 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Lang;
 import org.nutz.log.Log;
@@ -25,6 +21,10 @@ import org.nutz.mvc.upload.injector.MapSelfInjector;
 import org.nutz.mvc.upload.injector.ReaderInjector;
 import org.nutz.mvc.upload.injector.TempFileArrayInjector;
 import org.nutz.mvc.upload.injector.TempFileInjector;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 本适配器专门处理 HTTP 文件上传(1.b.44及之后的版本,兼容Html5的流式上传)。 它支持多文件，多参数上传。具体的做法是将 HTTP
@@ -106,58 +106,68 @@ public class UploadAdaptor extends PairAdaptor {
     public UploadingContext getContext() {
         return context;
     }
-    
+
     @Override
     public Object[] adapt(ServletContext sc,
-    					  HttpServletRequest req,
-    					  HttpServletResponse resp,
-    					  String[] pathArgs) {
+                          HttpServletRequest req,
+                          HttpServletResponse resp,
+                          String[] pathArgs) {
 
-    	//临时
-    	if (!Mvcs.getActionContext().getMethod().toGenericString().equals(method.toGenericString())) {
-    		throw new IllegalArgumentException(String.format("Method miss match: expect %s but %s. using Ioc? set singleton=false, pls", method, Mvcs.getActionContext().getMethod()));
-    	}
-    	return super.adapt(sc, req, resp, pathArgs);
+        // 临时
+        if (!Mvcs.getActionContext().getMethod().toGenericString().equals(method.toGenericString())) {
+            throw new IllegalArgumentException(String.format("Method miss match: expect %s but %s. using Ioc? set singleton=false, pls",
+                                                             method,
+                                                             Mvcs.getActionContext().getMethod()));
+        }
+        return super.adapt(sc, req, resp, pathArgs);
     }
 
+    @Override
     @SuppressWarnings("deprecation")
-	protected ParamInjector evalInjectorBy(Type type, Param param) {
+    protected ParamInjector evalInjectorBy(Type type, Param param) {
         // TODO 这里的实现感觉很丑, 感觉可以直接用type进行验证与传递
         // TODO 这里将Type的影响局限在了 github issue #30 中提到的局部范围
         Class<?> clazz = Lang.getTypeClass(type);
         if (clazz == null) {
-            if (log.isWarnEnabled())
+            if (log.isWarnEnabled()) {
                 log.warnf("!!Fail to get Type Class : type=%s , param=%s", type, param);
+            }
             return null;
         }
 
         // Map
-        if (Map.class.isAssignableFrom(clazz))
+        if (Map.class.isAssignableFrom(clazz)) {
             return new MapSelfInjector();
+        }
 
         String pn = null == param ? getParamRealName(curIndex) : param.value();
 
         // File
-        if (File.class.isAssignableFrom(clazz))
+        if (File.class.isAssignableFrom(clazz)) {
             return new org.nutz.mvc.upload.injector.FileInjector(pn);
+        }
         // FileMeta
-        if (FieldMeta.class.isAssignableFrom(clazz))
+        if (FieldMeta.class.isAssignableFrom(clazz)) {
             return new org.nutz.mvc.upload.injector.FileMetaInjector(pn);
+        }
         // TempFile
-        if (TempFile.class.isAssignableFrom(clazz))
+        if (TempFile.class.isAssignableFrom(clazz)) {
             return new TempFileInjector(pn);
+        }
         // InputStream
-        if (InputStream.class.isAssignableFrom(clazz))
+        if (InputStream.class.isAssignableFrom(clazz)) {
             return new InputStreamInjector(pn);
+        }
         // Reader
-        if (Reader.class.isAssignableFrom(clazz))
+        if (Reader.class.isAssignableFrom(clazz)) {
             return new ReaderInjector(pn);
+        }
         // List
-        //if (List.class.isAssignableFrom(clazz)) {
-        //    if (!Strings.isBlank(paramName) && paramName.startsWith("::"))
-        //        return new ObjectNavlPairInjector(paramName.substring(2), type);
-        //    return new MapListInjector(paramName);
-        //}
+        // if (List.class.isAssignableFrom(clazz)) {
+        // if (!Strings.isBlank(paramName) && paramName.startsWith("::"))
+        // return new ObjectNavlPairInjector(paramName.substring(2), type);
+        // return new MapListInjector(paramName);
+        // }
         if (TempFile[].class.isAssignableFrom(clazz)) {
             return new TempFileArrayInjector(pn);
         }
@@ -165,6 +175,7 @@ public class UploadAdaptor extends PairAdaptor {
         return super.evalInjectorBy(type, param);
     }
 
+    @Override
     public Map<String, Object> getReferObject(ServletContext sc,
                                               HttpServletRequest request,
                                               HttpServletResponse response,
@@ -180,15 +191,17 @@ public class UploadAdaptor extends PairAdaptor {
                 throw new UploadException("Content-Type is NULL!!");
             }
             if (contentType.contains("multipart/form-data")) { // 普通表单上传
-                if (log.isDebugEnabled())
+                if (log.isDebugEnabled()) {
                     log.debug("Select Html4 Form upload parser --> " + request.getRequestURI());
+                }
                 Uploading ing = new FastUploading();
                 return ing.parse(request, context);
             }
             if (contentType.contains("application/octet-stream")) { // Html5
                                                                     // 流式上传
-                if (log.isDebugEnabled())
+                if (log.isDebugEnabled()) {
                     log.debug("Select Html5 Stream upload parser --> " + request.getRequestURI());
+                }
                 Uploading ing = new Html5Uploading();
                 return ing.parse(request, context);
             }
@@ -196,7 +209,7 @@ public class UploadAdaptor extends PairAdaptor {
             if (contentType.contains("application/x-www-form-urlencoded")) {
                 log.warn("Using form upload ? You forgot this --> enctype='multipart/form-data' ?");
             }
-            throw new UploadException("Unknow Content-Type : "+ contentType);
+            throw new UploadException("Unknow Content-Type : " + contentType);
         }
         catch (UploadException e) {
             throw Lang.wrapThrow(e);
@@ -205,7 +218,7 @@ public class UploadAdaptor extends PairAdaptor {
             Uploads.removeInfo(request);
         }
     }
-    
+
     @Override
     public void init(ActionInfo ai) {
         if (this.method != null) {

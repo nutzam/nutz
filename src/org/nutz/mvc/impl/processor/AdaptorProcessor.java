@@ -2,10 +2,14 @@ package org.nutz.mvc.impl.processor;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.nutz.mvc.*;
+import org.nutz.mvc.ActionContext;
+import org.nutz.mvc.ActionInfo;
+import org.nutz.mvc.HttpAdaptor;
+import org.nutz.mvc.HttpAdaptor2;
+import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.adaptor.PairAdaptor;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 
@@ -22,11 +26,13 @@ public class AdaptorProcessor extends AbstractProcessor {
         adaptor = evalHttpAdaptor(config, ai);
     }
 
+    @Override
     public void process(ActionContext ac) throws Throwable {
         List<String> phArgs = ac.getPathArgs();
         HttpServletRequest req = ac.getRequest();
-        if (ac.getReferObject() != null)
+        if (ac.getReferObject() != null) {
             req.setAttribute(ActionContext.REFER_OBJECT, ac.getReferObject());
+        }
         Object[] args = adaptor.adapt(ac.getServletContext(),
                                       req,
                                       ac.getResponse(),
@@ -40,12 +46,14 @@ public class AdaptorProcessor extends AbstractProcessor {
 
     protected static HttpAdaptor evalHttpAdaptor(NutConfig config, ActionInfo ai) {
         HttpAdaptor re = evalObj(config, ai.getAdaptorInfo());
-        if (null == re)
+        if (null == re) {
             re = new PairAdaptor();
-        if (re instanceof HttpAdaptor2)
+        }
+        if (re instanceof HttpAdaptor2) {
             ((HttpAdaptor2) re).init(ai);
-        else
+        } else {
             re.init(ai.getMethod());
+        }
         return re;
     }
 }

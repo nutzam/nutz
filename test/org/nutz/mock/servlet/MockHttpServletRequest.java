@@ -8,17 +8,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Vector;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpSession;
-
 import org.nutz.castor.Castors;
 import org.nutz.lang.Lang;
 import org.nutz.mock.Mock;
 import org.nutz.mock.servlet.multipart.MultipartInputStream;
 import org.nutz.mvc.Mvcs;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.http.HttpSession;
 
 public class MockHttpServletRequest extends HttpServletRequestWrapper {
 
@@ -39,6 +39,7 @@ public class MockHttpServletRequest extends HttpServletRequestWrapper {
         return this.dispatcherTarget[0];
     }
 
+    @Override
     public String getContextPath() {
         return contextPath;
     }
@@ -49,6 +50,7 @@ public class MockHttpServletRequest extends HttpServletRequestWrapper {
 
     protected Map<String, String> headers;
 
+    @Override
     public String getHeader(String name) {
         return headers.get(name);
     }
@@ -57,12 +59,14 @@ public class MockHttpServletRequest extends HttpServletRequestWrapper {
         headers.put(name, value.toString());
     }
 
+    @Override
     public Enumeration<String> getHeaderNames() {
         return Lang.enumeration(headers.keySet());
     }
 
     protected String method;
 
+    @Override
     public String getMethod() {
         return method;
     }
@@ -73,6 +77,7 @@ public class MockHttpServletRequest extends HttpServletRequestWrapper {
 
     protected String pathInfo;
 
+    @Override
     public String getPathInfo() {
         return pathInfo;
     }
@@ -83,6 +88,7 @@ public class MockHttpServletRequest extends HttpServletRequestWrapper {
 
     protected String pathTranslated;
 
+    @Override
     public String getPathTranslated() {
         return pathTranslated;
     }
@@ -93,17 +99,20 @@ public class MockHttpServletRequest extends HttpServletRequestWrapper {
 
     // protected String queryString;
 
+    @Override
     public String getQueryString() {
-        if (params.size() == 0)
+        if (params.size() == 0) {
             return null;
+        }
         StringBuilder sb = new StringBuilder();
         for (Entry<String, String[]> entry : params.entrySet()) {
-            if (entry.getValue() == null)
+            if (entry.getValue() == null) {
                 sb.append(entry.getKey()).append("=&");
-            else
+            } else {
                 for (String str : entry.getValue()) {
                     sb.append(entry.getKey()).append("=").append(str).append("&");
                 }
+            }
         }
         return sb.toString();
     }
@@ -114,6 +123,7 @@ public class MockHttpServletRequest extends HttpServletRequestWrapper {
 
     public String remoteUser;
 
+    @Override
     public String getRemoteUser() {
         return remoteUser;
     }
@@ -124,6 +134,7 @@ public class MockHttpServletRequest extends HttpServletRequestWrapper {
 
     protected String requestURI;
 
+    @Override
     public String getRequestURI() {
         return requestURI;
     }
@@ -134,6 +145,7 @@ public class MockHttpServletRequest extends HttpServletRequestWrapper {
 
     protected StringBuffer requestURL;
 
+    @Override
     public StringBuffer getRequestURL() {
         return requestURL;
     }
@@ -142,14 +154,17 @@ public class MockHttpServletRequest extends HttpServletRequestWrapper {
         this.requestURL = requestURL;
     }
 
+    @Override
     public String getRequestedSessionId() {
-        if (session != null)
+        if (session != null) {
             return session.getId();
+        }
         return null;
     }
 
     protected String servletPath;
 
+    @Override
     public String getServletPath() {
         return servletPath;
     }
@@ -158,10 +173,12 @@ public class MockHttpServletRequest extends HttpServletRequestWrapper {
         this.servletPath = servletPath;
     }
 
+    @Override
     public HttpSession getSession() {
         return getSession(true);
     }
 
+    @Override
     public HttpSession getSession(boolean flag) {
         return session;
     }
@@ -173,6 +190,7 @@ public class MockHttpServletRequest extends HttpServletRequestWrapper {
 
     protected Principal userPrincipal;
 
+    @Override
     public Principal getUserPrincipal() {
         return userPrincipal;
     }
@@ -183,20 +201,24 @@ public class MockHttpServletRequest extends HttpServletRequestWrapper {
 
     protected Map<String, Object> attributeMap = new HashMap<String, Object>();
 
+    @Override
     public Object getAttribute(String key) {
         return attributeMap.get(key);
     }
 
+    @Override
     public Enumeration<String> getAttributeNames() {
         return new Vector<String>(attributeMap.keySet()).elements();
     }
 
     protected String characterEncoding;
 
+    @Override
     public String getCharacterEncoding() {
         return characterEncoding;
     }
 
+    @Override
     public int getContentLength() {
         String cl = this.getHeader("content-length");
         try {
@@ -207,12 +229,14 @@ public class MockHttpServletRequest extends HttpServletRequestWrapper {
         }
     }
 
+    @Override
     public String getContentType() {
         return this.getHeader("content-type");
     }
 
     protected ServletInputStream inputStream;
 
+    @Override
     public ServletInputStream getInputStream() throws IOException {
         return inputStream;
     }
@@ -223,7 +247,7 @@ public class MockHttpServletRequest extends HttpServletRequestWrapper {
     }
 
     public MockHttpServletRequest init() {
-        if (null != inputStream)
+        if (null != inputStream) {
             if (inputStream instanceof MultipartInputStream) {
                 ((MultipartInputStream) inputStream).init();
                 this.setCharacterEncoding(((MultipartInputStream) inputStream).getCharset());
@@ -236,12 +260,14 @@ public class MockHttpServletRequest extends HttpServletRequestWrapper {
                     throw Lang.wrapThrow(e);
                 }
             }
+        }
         Mvcs.set("", this, null);
         return this;
     }
 
     protected Map<String, String[]> params = new HashMap<String, String[]>();
 
+    @Override
     public String getParameter(String key) {
         if (params.containsKey(key)) {
             return params.get(key)[0];
@@ -265,14 +291,17 @@ public class MockHttpServletRequest extends HttpServletRequestWrapper {
         params.put(key, new String[]{value});
     }
 
+    @Override
     public Map<String, String[]> getParameterMap() {
         return params;
     }
 
+    @Override
     public Enumeration<String> getParameterNames() {
         return new Vector<String>(params.keySet()).elements();
     }
 
+    @Override
     public String[] getParameterValues(String name) {
         Object param = params.get(name);
         return Castors.me().castTo(param, String[].class);
@@ -280,6 +309,7 @@ public class MockHttpServletRequest extends HttpServletRequestWrapper {
 
     protected String protocol;
 
+    @Override
     public String getProtocol() {
         return protocol;
     }
@@ -288,22 +318,27 @@ public class MockHttpServletRequest extends HttpServletRequestWrapper {
         this.protocol = protocol;
     }
 
+    @Override
     public RequestDispatcher getRequestDispatcher(String dest) {
         return new MockRequestDispatcher(dispatcherTarget, dest);
     }
 
+    @Override
     public void removeAttribute(String key) {
         attributeMap.remove(key);
     }
 
+    @Override
     public void setAttribute(String key, Object value) {
         attributeMap.put(key, value);
     }
 
+    @Override
     public void setCharacterEncoding(String characterEncoding) {
         this.characterEncoding = characterEncoding;
     }
 
+    @Override
     public ServletContext getServletContext() {
         return this.session.getServletContext();
     }

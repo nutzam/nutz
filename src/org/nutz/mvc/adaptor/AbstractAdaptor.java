@@ -7,13 +7,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.nutz.castor.Castors;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
@@ -52,6 +45,13 @@ import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.annotation.ReqHeader;
 import org.nutz.mvc.impl.AdaptorErrorContext;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 /**
  *
  * @author zozoh(zozohtnt@gmail.com)
@@ -77,10 +77,12 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
 
     protected int errCtxIndex;
 
+    @Override
     public void init(ActionInfo ai) {
         init(ai.getMethod(), ai.getParamNames());
     }
 
+    @Override
     public void init(Method method) {
         init(method, Lang.collection2array(MethodParamNamesScaner.getParamNames(method), String.class));
     }
@@ -100,8 +102,9 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
             // AdaptorErrorContext 类型的参数不需要生成注入器，记录下参数的下标就好了
             if (AdaptorErrorContext.class.isAssignableFrom(argTypes[i])) {
                 // 多个 AdaptorErrorContext 类型的参数时，以第一个为准
-                if (errCtxIndex == -1)
+                if (errCtxIndex == -1) {
                     errCtxIndex = i;
+                }
 
                 continue;
             }
@@ -114,7 +117,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
             Cookie cookie = null;
 
             // find @Param & @Attr & @IocObj in current annotations
-            for (int x = 0; x < anns.length; x++)
+            for (int x = 0; x < anns.length; x++) {
                 if (anns[x] instanceof Param) {
                     param = (Param) anns[x];
                     break;
@@ -130,6 +133,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
                 } else if (anns[x] instanceof Cookie) {
                     cookie = (Cookie) anns[x];
                 }
+            }
             // If has @Attr
             if (null != attr) {
                 injs[i] = evalInjectorByAttrScope(attr);
@@ -139,7 +143,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
             // If has @IocObj
             if (null != iocObj) {
                 injs[i] = new IocObjInjector(method.getParameterTypes()[i],
-                        iocObj.value());
+                                             iocObj.value());
                 continue;
             }
 
@@ -154,8 +158,9 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
 
             // And eval as default suport types
             injs[i] = evalInjectorByParamType(argTypes[i]);
-            if (null != injs[i])
+            if (null != injs[i]) {
                 continue;
+            }
             // Eval by sub-classes
             injs[i] = evalInjector(types[i], param);
             // 子类也不能确定，如何适配这个参数，那么做一个标记，如果
@@ -165,20 +170,24 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
                 injs[i] = paramNameInject(method, i);
             }
             if (param != null) {
-            	String tmp = param.df();
-            	if (tmp != null && !tmp.equals(Params.ParamDefaultTag))
-            		defaultValues[i] = tmp;
+                String tmp = param.df();
+                if (tmp != null && !tmp.equals(Params.ParamDefaultTag)) {
+                    defaultValues[i] = tmp;
+                }
             }
         }
     }
 
     private static ParamInjector evalInjectorByAttrScope(Attr attr) {
-        if (attr.scope() == Scope.APP)
+        if (attr.scope() == Scope.APP) {
             return new AppAttrInjector(attr.value());
-        if (attr.scope() == Scope.SESSION)
+        }
+        if (attr.scope() == Scope.SESSION) {
             return new SessionAttrInjector(attr.value());
-        if (attr.scope() == Scope.REQUEST)
+        }
+        if (attr.scope() == Scope.REQUEST) {
             return new RequestAttrInjector(attr.value());
+        }
         return new AllAttrInjector(attr.value());
     }
 
@@ -212,8 +221,9 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
             return new HttpReaderInjector();
         }
         // ViewModel
-        else if (ViewModel.class.isAssignableFrom(type))
+        else if (ViewModel.class.isAssignableFrom(type)) {
             return new ViewModelInjector();
+        }
         return null;
     }
 
@@ -239,14 +249,16 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
 
         Object[] args = new Object[argTypes.length];
 
-        if (args.length != injs.length)
+        if (args.length != injs.length) {
             throw new IllegalArgumentException("args.length != injs.length , You get a bug, pls report it!!");
+        }
 
         AdaptorErrorContext errCtx = null;
         // 也许用户有自己的AdaptorErrorContext实现哦
-        if (errCtxIndex > -1)
+        if (errCtxIndex > -1) {
             errCtx = (AdaptorErrorContext) Mirror.me(argTypes[errCtxIndex])
-                    .born(argTypes.length);
+                                                 .born(argTypes.length);
+        }
 
         Object obj = req.getAttribute(ActionContext.REFER_OBJECT);
         try {
@@ -257,18 +269,19 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
         }
         catch (Throwable e) {
             if (errCtx != null) {
-                if (log.isInfoEnabled())
+                if (log.isInfoEnabled()) {
                     log.info("Adapter Error catched , but I found AdaptorErrorContext param, so, set it to args, and continue", e);
+                }
                 errCtx.setAdaptorError(e, this);
                 for (int i = 0; i < args.length - 1; i++) {
-                	if (args[i] == null) {
-                    	if (defaultValues[i] != null) {
-                    		args[i] = Castors.me().castTo(defaultValues[i], argTypes[i]);
-                    	} else if (argTypes[i].isPrimitive()) {
-                    		args[i] = Lang.getPrimitiveDefaultValue(argTypes[i]);
-                    	}
+                    if (args[i] == null) {
+                        if (defaultValues[i] != null) {
+                            args[i] = Castors.me().castTo(defaultValues[i], argTypes[i]);
+                        } else if (argTypes[i].isPrimitive()) {
+                            args[i] = Lang.getPrimitiveDefaultValue(argTypes[i]);
+                        }
                     }
-				}
+                }
                 args[args.length - 1] = errCtx;
                 return args;
             }
@@ -280,8 +293,9 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
         int len = null == pathArgs ? 0 : pathArgs.length;
         for (int i = 0; i < args.length; i++) {
             // 如果这个参数是 AdaptorErrorContext 类型的，就跳过
-            if (AdaptorErrorContext.class.isAssignableFrom(argTypes[i]))
+            if (AdaptorErrorContext.class.isAssignableFrom(argTypes[i])) {
                 continue;
+            }
 
             Object value = null;
             if (curPathArgIdx < len) { // 路径参数
@@ -295,29 +309,33 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
             }
             catch (Throwable e) {
                 if (errCtx != null) {
-                	log.infof("Adapter Param Error(%s) index=%d", method, i, e);
+                    log.infof("Adapter Param Error(%s) index=%d", method, i, e);
                     errCtx.setError(i, e, method, value, injs[i]); // 先错误保存起来,全部转好了,再判断是否需要抛出
-                } else
+                } else {
                     throw Lang.wrapThrow(e);
+                }
             }
             if (args[i] == null) {
-            	if (defaultValues[i] != null) {
-            		args[i] = Castors.me().castTo(defaultValues[i], argTypes[i]);
-            	} else if (argTypes[i].isPrimitive()) {
-            		args[i] = Lang.getPrimitiveDefaultValue(argTypes[i]);
-            	}
+                if (defaultValues[i] != null) {
+                    args[i] = Castors.me().castTo(defaultValues[i], argTypes[i]);
+                } else if (argTypes[i].isPrimitive()) {
+                    args[i] = Lang.getPrimitiveDefaultValue(argTypes[i]);
+                }
             }
         }
 
         // 看看是否有任何错误
-        if (errCtx == null)
+        if (errCtx == null) {
             return args;
+        }
         for (Throwable err : errCtx.getErrors()) {
-            if (err == null)
+            if (err == null) {
                 continue;
+            }
             if (errCtxIndex > -1) {
-                if (log.isInfoEnabled())
+                if (log.isInfoEnabled()) {
                     log.info("Adapter Param Error catched , but I found AdaptorErrorContext param, so, set it to args, and continue");
+                }
                 args[errCtxIndex] = errCtx;
                 return args;
             }
@@ -345,31 +363,34 @@ public abstract class AbstractAdaptor implements HttpAdaptor2 {
                 Class<?> type = argTypes[index];
                 if (type.isArray()) {
                     return new ArrayInjector(paramName,
-                            null,
-                            type,
-                            null,
-                            null,
-                            true);
+                                             null,
+                                             type,
+                                             null,
+                                             null,
+                                             true);
                 }
-                if (Modifier.isInterface(type.getModifiers()))
+                if (Modifier.isInterface(type.getModifiers())) {
                     return new VoidInjector();
+                }
                 return new NameInjector(paramName,
-                        null,
-                        argTypes[index],
-                        null, null);
-            }
-            else if (log.isInfoEnabled())
+                                        null,
+                                        argTypes[index],
+                                        null,
+                                        null);
+            } else if (log.isInfoEnabled()) {
                 log.infof("Complie without debug info? can't deduce param name. fail back to PathArgInjector!! index=%d > %s",
                           index,
                           method);
-    	}
+            }
+        }
 
         return new PathArgInjector(method.getParameterTypes()[index]);
     }
-    
+
     protected String getParamRealName(int index) {
-        if (paramNames == null || paramNames.length <= index)
+        if (paramNames == null || paramNames.length <= index) {
             return "arg" + index;
+        }
         return paramNames[index];
     }
 }

@@ -2,9 +2,6 @@ package org.nutz.mvc.view;
 
 import java.lang.reflect.Method;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
@@ -17,16 +14,19 @@ import org.nutz.mvc.ViewMaker;
 import org.nutz.mvc.ViewMaker2;
 import org.nutz.mvc.impl.processor.ViewProcessor;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 public class ViewZone implements View {
-    
+
     private static final Log log = Logs.get();
-    
+
     protected ActionInfo ai;
-    
+
     protected View dft;
-    
+
     protected NutConfig config;
-    
+
     protected int index = -1;
 
     public ViewZone(NutConfig config, ActionInfo ai, View dft) {
@@ -40,10 +40,11 @@ public class ViewZone implements View {
         }
     }
 
+    @Override
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj) throws Throwable {
-        if (obj == null)
+        if (obj == null) {
             dft.render(req, resp, obj);
-        else {
+        } else {
             View v = makeView(config, ai, obj.toString(), false);
             if (index > -1) {
                 Object re = Mvcs.getActionContext().getMethodArgs()[index];
@@ -54,10 +55,11 @@ public class ViewZone implements View {
             }
         }
     }
-    
+
     public static View makeView(NutConfig config, ActionInfo ai, String viewType, boolean allowProxy) {
-        if (Strings.isBlank(viewType))
+        if (Strings.isBlank(viewType)) {
             return new VoidView();
+        }
 
         String str = viewType;
         int pos = str.indexOf(':');
@@ -69,27 +71,30 @@ public class ViewZone implements View {
             type = str;
             value = null;
         }
-        
+
         if (allowProxy && "re".equals(type)) {
             View dft = null;
-            if (value != null)
+            if (value != null) {
                 dft = makeView(config, ai, value, false);
+            }
             return new ViewZone(config, ai, dft);
         }
-        
+
         for (ViewMaker maker : ai.getViewMakers()) {
             if (maker instanceof ViewMaker2) {
-                View view = ((ViewMaker2)maker).make(config, ai, type, value);
-                if (view != null)
+                View view = ((ViewMaker2) maker).make(config, ai, type, value);
+                if (view != null) {
                     return view;
+                }
             }
             View view = maker.make(config.getIoc(), type, value);
-            if (null != view)
+            if (null != view) {
                 return view;
+            }
         }
         throw Lang.makeThrow("Can not eval %s(\"%s\") View for %s", viewType, str, ai.getMethod());
     }
-    
+
     public void setIndex(int index) {
         this.index = index;
     }

@@ -1,15 +1,16 @@
 package org.nutz.mvc.impl.contextCollector;
 
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.nutz.lang.Lang;
 import org.nutz.lang.util.Context;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.ViewContextCollector;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * session变量收集

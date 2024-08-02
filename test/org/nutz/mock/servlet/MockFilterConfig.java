@@ -1,16 +1,18 @@
 package org.nutz.mock.servlet;
 
-import javax.servlet.FilterConfig;
+import jakarta.servlet.FilterConfig;
 
 /**
  * 模拟FilterConfig
+ * 
  * @author wendal(wendal1985@gmail.com)
  *
  */
 public class MockFilterConfig extends MockServletObject implements FilterConfig {
-    
+
     private String filterName;
 
+    @Override
     public String getFilterName() {
         return filterName;
     }

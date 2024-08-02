@@ -20,31 +20,33 @@ import org.nutz.mvc.View;
 public class ActionFiltersProcessor extends AbstractProcessor {
 
     protected List<ActionFilter> filters = new ArrayList<ActionFilter>();
-    
+
     protected Processor proxyProcessor;
-    
+
     protected Processor lastProcessor;
-    
+
+    @Override
     public void init(NutConfig config, ActionInfo ai) throws Throwable {
         ObjectInfo<? extends ActionFilter>[] filterInfos = ai.getFilterInfos();
         if (null != filterInfos) {
             for (int i = 0; i < filterInfos.length; i++) {
-            	ActionFilter filter = evalObj(config, filterInfos[i]);
+                ActionFilter filter = evalObj(config, filterInfos[i]);
                 filters.add(filter);
                 if (filter instanceof Processor) {
-            		Processor processor = (Processor)filter;
-                	if (proxyProcessor == null) {
-                		proxyProcessor = processor;
-                		lastProcessor = processor;
-                	} else {
-                		processor.setNext(proxyProcessor);
-                		proxyProcessor = processor;
-                	}
+                    Processor processor = (Processor) filter;
+                    if (proxyProcessor == null) {
+                        proxyProcessor = processor;
+                        lastProcessor = processor;
+                    } else {
+                        processor.setNext(proxyProcessor);
+                        proxyProcessor = processor;
+                    }
                 }
             }
         }
     }
 
+    @Override
     public void process(ActionContext ac) throws Throwable {
         for (ActionFilter filter : filters) {
             View view = filter.match(ac);
@@ -55,11 +57,12 @@ public class ActionFiltersProcessor extends AbstractProcessor {
             }
         }
         if (proxyProcessor == null) {
-        	doNext(ac);
+            doNext(ac);
         } else {
-        	if (lastProcessor != null)
-        		lastProcessor.setNext(next);
-        	proxyProcessor.process(ac);
+            if (lastProcessor != null) {
+                lastProcessor.setNext(next);
+            }
+            proxyProcessor.process(ac);
         }
     }
 }

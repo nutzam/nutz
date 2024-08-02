@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -49,7 +48,6 @@ import java.util.regex.Pattern;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -66,6 +64,8 @@ import org.nutz.lang.util.NutMap;
 import org.nutz.lang.util.NutType;
 import org.nutz.lang.util.Regex;
 import org.nutz.lang.util.SimpleContext;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 这些帮助函数让 Java 的某些常用功能变得更简单
@@ -103,8 +103,9 @@ public abstract class Lang {
 
     public static ComboException comboThrow(Throwable... es) {
         ComboException ce = new ComboException();
-        for (Throwable e : es)
+        for (Throwable e : es) {
             ce.add(e);
+        }
         return ce;
     }
 
@@ -154,8 +155,9 @@ public abstract class Lang {
     public static <T extends Throwable> T makeThrow(Class<T> classOfT,
                                                     String format,
                                                     Object... args) {
-        if (classOfT == RuntimeException.class)
+        if (classOfT == RuntimeException.class) {
             return (T) new RuntimeException(String.format(format, args));
+        }
         return Mirror.me(classOfT).born(String.format(format, args));
     }
 
@@ -184,10 +186,12 @@ public abstract class Lang {
      * @return 运行时异常
      */
     public static RuntimeException wrapThrow(Throwable e) {
-        if (e instanceof RuntimeException)
+        if (e instanceof RuntimeException) {
             return (RuntimeException) e;
-        if (e instanceof InvocationTargetException)
+        }
+        if (e instanceof InvocationTargetException) {
             return wrapThrow(((InvocationTargetException) e).getTargetException());
+        }
         return new RuntimeException(e);
     }
 
@@ -202,30 +206,36 @@ public abstract class Lang {
      */
     @SuppressWarnings("unchecked")
     public static <T extends Throwable> T wrapThrow(Throwable e, Class<T> wrapper) {
-        if (wrapper.isAssignableFrom(e.getClass()))
+        if (wrapper.isAssignableFrom(e.getClass())) {
             return (T) e;
+        }
         return Mirror.me(wrapper).born(e);
     }
 
     public static Throwable unwrapThrow(Throwable e) {
-        if (e == null)
+        if (e == null) {
             return null;
+        }
         if (e instanceof InvocationTargetException) {
             InvocationTargetException itE = (InvocationTargetException) e;
-            if (itE.getTargetException() != null)
+            if (itE.getTargetException() != null) {
                 return unwrapThrow(itE.getTargetException());
+            }
         }
-        if (e instanceof RuntimeException && e.getCause() != null)
+        if (e instanceof RuntimeException && e.getCause() != null) {
             return unwrapThrow(e.getCause());
+        }
         return e;
     }
 
     public static boolean isCauseBy(Throwable e, Class<? extends Throwable> causeType) {
-        if (e.getClass() == causeType)
+        if (e.getClass() == causeType) {
             return true;
+        }
         Throwable cause = e.getCause();
-        if (null == cause)
+        if (null == cause) {
             return false;
+        }
         return isCauseBy(cause, causeType);
     }
 
@@ -245,18 +255,22 @@ public abstract class Lang {
      * @return 是否相等
      */
     public static boolean equals(Object a0, Object a1) {
-        if (a0 == a1)
+        if (a0 == a1) {
             return true;
+        }
 
-        if (a0 == null && a1 == null)
+        if (a0 == null && a1 == null) {
             return true;
+        }
 
-        if (a0 == null || a1 == null)
+        if (a0 == null || a1 == null) {
             return false;
+        }
 
         // 简单的判断是否等于
-        if (a0.equals(a1))
+        if (a0.equals(a1)) {
             return true;
+        }
 
         Mirror<?> mi = Mirror.me(a0);
 
@@ -267,30 +281,35 @@ public abstract class Lang {
 
         // 如果类型就不能互相转换，那么一定是错的
         if (!a0.getClass().isAssignableFrom(a1.getClass())
-            && !a1.getClass().isAssignableFrom(a0.getClass()))
+            && !a1.getClass().isAssignableFrom(a0.getClass())) {
             return false;
+        }
 
         // Map
         if (a0 instanceof Map && a1 instanceof Map) {
             Map<?, ?> m1 = (Map<?, ?>) a0;
             Map<?, ?> m2 = (Map<?, ?>) a1;
-            if (m1.size() != m2.size())
+            if (m1.size() != m2.size()) {
                 return false;
+            }
             for (Entry<?, ?> e : m1.entrySet()) {
                 Object key = e.getKey();
-                if (!m2.containsKey(key) || !equals(m1.get(key), m2.get(key)))
+                if (!m2.containsKey(key) || !equals(m1.get(key), m2.get(key))) {
                     return false;
+                }
             }
             return true;
         }
         // 数组
         else if (a0.getClass().isArray() && a1.getClass().isArray()) {
             int len = Array.getLength(a0);
-            if (len != Array.getLength(a1))
+            if (len != Array.getLength(a1)) {
                 return false;
+            }
             for (int i = 0; i < len; i++) {
-                if (!equals(Array.get(a0, i), Array.get(a1, i)))
+                if (!equals(Array.get(a0, i), Array.get(a1, i))) {
                     return false;
+                }
             }
             return true;
         }
@@ -298,8 +317,9 @@ public abstract class Lang {
         else if (a0 instanceof Collection && a1 instanceof Collection) {
             Collection<?> c0 = (Collection<?>) a0;
             Collection<?> c1 = (Collection<?>) a1;
-            if (c0.size() != c1.size())
+            if (c0.size() != c1.size()) {
                 return false;
+            }
 
             Iterator<?> it0 = c0.iterator();
             Iterator<?> it1 = c1.iterator();
@@ -307,8 +327,9 @@ public abstract class Lang {
             while (it0.hasNext()) {
                 Object o0 = it0.next();
                 Object o1 = it1.next();
-                if (!equals(o0, o1))
+                if (!equals(o0, o1)) {
                     return false;
+                }
             }
 
             return true;
@@ -328,11 +349,13 @@ public abstract class Lang {
      * @return true 包含 false 不包含
      */
     public static <T> boolean contains(T[] array, T ele) {
-        if (null == array)
+        if (null == array) {
             return false;
+        }
         for (T e : array) {
-            if (equals(e, ele))
+            if (equals(e, ele)) {
                 return true;
+            }
         }
         return false;
     }
@@ -345,16 +368,18 @@ public abstract class Lang {
      * @return 输入流所有内容
      */
     public static String readAll(Reader reader) {
-        if (!(reader instanceof BufferedReader))
+        if (!(reader instanceof BufferedReader)) {
             reader = new BufferedReader(reader);
+        }
         try {
             StringBuilder sb = new StringBuilder();
 
             char[] data = new char[64];
             int len;
             while (true) {
-                if ((len = reader.read(data)) == -1)
+                if ((len = reader.read(data)) == -1) {
                     break;
+                }
                 sb.append(data, 0, len);
             }
             return sb.toString();
@@ -463,8 +488,9 @@ public abstract class Lang {
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] arrayUniq(T... eles) {
-        if (null == eles || eles.length == 0)
+        if (null == eles || eles.length == 0) {
             return null;
+        }
         // 记录重复
         HashSet<T> set = new HashSet<T>(eles.length);
         for (T ele : eles) {
@@ -474,8 +500,9 @@ public abstract class Lang {
         T[] arr = (T[]) Array.newInstance(eles[0].getClass(), set.size());
         int index = 0;
         for (T ele : eles) {
-            if (set.remove(ele))
+            if (set.remove(ele)) {
                 Array.set(arr, index++, ele);
+            }
         }
         return arr;
 
@@ -496,14 +523,18 @@ public abstract class Lang {
      * @return 是否为空
      */
     public static boolean isEmpty(Object obj) {
-        if (obj == null)
+        if (obj == null) {
             return true;
-        if (obj.getClass().isArray())
+        }
+        if (obj.getClass().isArray()) {
             return Array.getLength(obj) == 0;
-        if (obj instanceof Collection<?>)
+        }
+        if (obj instanceof Collection<?>) {
             return ((Collection<?>) obj).isEmpty();
-        if (obj instanceof Map<?, ?>)
+        }
+        if (obj instanceof Map<?, ?>) {
             return ((Map<?, ?>) obj).isEmpty();
+        }
         return false;
     }
 
@@ -533,8 +564,9 @@ public abstract class Lang {
      */
     public static <T> ArrayList<T> list(T... eles) {
         ArrayList<T> list = new ArrayList<T>(eles.length);
-        for (T ele : eles)
+        for (T ele : eles) {
             list.add(ele);
+        }
         return list;
     }
 
@@ -547,8 +579,9 @@ public abstract class Lang {
      */
     public static <T> Set<T> set(T... eles) {
         Set<T> set = new HashSet<T>();
-        for (T ele : eles)
+        for (T ele : eles) {
             set.add(ele);
+        }
         return set;
     }
 
@@ -562,13 +595,18 @@ public abstract class Lang {
     @SuppressWarnings("unchecked")
     public static <T> T[] merge(T[]... arys) {
         Queue<T> list = new LinkedList<T>();
-        for (T[] ary : arys)
-            if (null != ary)
-                for (T e : ary)
-                    if (null != e)
+        for (T[] ary : arys) {
+            if (null != ary) {
+                for (T e : ary) {
+                    if (null != e) {
                         list.add(e);
-        if (list.isEmpty())
+                    }
+                }
+            }
+        }
+        if (list.isEmpty()) {
             return null;
+        }
         Class<T> type = (Class<T>) list.peek().getClass();
         return list.toArray((T[]) Array.newInstance(type, list.size()));
     }
@@ -644,8 +682,9 @@ public abstract class Lang {
      */
     public static <T> StringBuilder concatBy(String fmt, T[] objs) {
         StringBuilder sb = new StringBuilder();
-        for (T obj : objs)
+        for (T obj : objs) {
             sb.append(String.format(fmt, obj));
+        }
         return sb;
     }
 
@@ -666,10 +705,12 @@ public abstract class Lang {
      */
     public static <T> StringBuilder concatBy(String ptn, Object c, T[] objs) {
         StringBuilder sb = new StringBuilder();
-        for (T obj : objs)
+        for (T obj : objs) {
             sb.append(String.format(ptn, obj)).append(c);
-        if (sb.length() > 0)
+        }
+        if (sb.length() > 0) {
             sb.deleteCharAt(sb.length() - 1);
+        }
         return sb;
     }
 
@@ -686,12 +727,14 @@ public abstract class Lang {
      */
     public static <T> StringBuilder concat(Object c, T[] objs) {
         StringBuilder sb = new StringBuilder();
-        if (null == objs || 0 == objs.length)
+        if (null == objs || 0 == objs.length) {
             return sb;
+        }
 
         sb.append(objs[0]);
-        for (int i = 1; i < objs.length; i++)
+        for (int i = 1; i < objs.length; i++) {
             sb.append(c).append(objs[i]);
+        }
 
         return sb;
     }
@@ -713,10 +756,12 @@ public abstract class Lang {
         List<T> list = new ArrayList<T>(objs.length);
         Class<?> eleType = null;
         for (T obj : objs) {
-            if (obj == val || (null != obj && null != val && obj.equals(val)))
+            if (obj == val || (null != obj && null != val && obj.equals(val))) {
                 continue;
-            if (null == eleType && obj != null)
+            }
+            if (null == eleType && obj != null) {
                 eleType = obj.getClass();
+            }
             list.add(obj);
         }
         if (list.isEmpty()) {
@@ -738,12 +783,14 @@ public abstract class Lang {
      */
     public static StringBuilder concat(Object c, long[] vals) {
         StringBuilder sb = new StringBuilder();
-        if (null == vals || 0 == vals.length)
+        if (null == vals || 0 == vals.length) {
             return sb;
+        }
 
         sb.append(vals[0]);
-        for (int i = 1; i < vals.length; i++)
+        for (int i = 1; i < vals.length; i++) {
             sb.append(c).append(vals[i]);
+        }
 
         return sb;
     }
@@ -761,12 +808,14 @@ public abstract class Lang {
      */
     public static StringBuilder concat(Object c, int[] vals) {
         StringBuilder sb = new StringBuilder();
-        if (null == vals || 0 == vals.length)
+        if (null == vals || 0 == vals.length) {
             return sb;
+        }
 
         sb.append(vals[0]);
-        for (int i = 1; i < vals.length; i++)
+        for (int i = 1; i < vals.length; i++) {
             sb.append(c).append(vals[i]);
+        }
 
         return sb;
     }
@@ -788,8 +837,9 @@ public abstract class Lang {
      */
     public static <T> StringBuilder concat(int offset, int len, Object c, T[] objs) {
         StringBuilder sb = new StringBuilder();
-        if (null == objs || len < 0 || 0 == objs.length)
+        if (null == objs || len < 0 || 0 == objs.length) {
             return sb;
+        }
 
         if (offset < objs.length) {
             sb.append(objs[offset]);
@@ -809,8 +859,9 @@ public abstract class Lang {
      */
     public static <T> StringBuilder concat(T[] objs) {
         StringBuilder sb = new StringBuilder();
-        for (T e : objs)
+        for (T e : objs) {
             sb.append(e.toString());
+        }
         return sb;
     }
 
@@ -846,8 +897,9 @@ public abstract class Lang {
      */
     public static <T> StringBuilder concat(Object c, Collection<T> coll) {
         StringBuilder sb = new StringBuilder();
-        if (null == coll || coll.isEmpty())
+        if (null == coll || coll.isEmpty()) {
             return sb;
+        }
         return concat(c, coll.iterator());
     }
 
@@ -864,11 +916,13 @@ public abstract class Lang {
      */
     public static <T> StringBuilder concat(Object c, Iterator<T> it) {
         StringBuilder sb = new StringBuilder();
-        if (it == null || !it.hasNext())
+        if (it == null || !it.hasNext()) {
             return sb;
+        }
         sb.append(it.next());
-        while (it.hasNext())
+        while (it.hasNext()) {
             sb.append(c).append(it.next());
+        }
         return sb;
     }
 
@@ -886,9 +940,11 @@ public abstract class Lang {
      * @return 集合对象
      */
     public static <C extends Collection<T>, T> C fill(C coll, T[]... objss) {
-        for (T[] objs : objss)
-            for (T obj : objs)
+        for (T[] objs : objss) {
+            for (T obj : objs) {
                 coll.add(obj);
+            }
+        }
         return coll;
     }
 
@@ -906,8 +962,9 @@ public abstract class Lang {
     public static <T extends Map<Object, Object>> T collection2map(Class<T> mapClass,
                                                                    Collection<?> coll,
                                                                    String keyFieldName) {
-        if (null == coll)
+        if (null == coll) {
             return null;
+        }
         T map = createMap(mapClass);
         if (coll.size() > 0) {
             Iterator<?> it = coll.iterator();
@@ -921,7 +978,7 @@ public abstract class Lang {
                 map.put(key, obj);
             }
         }
-        return (T) map;
+        return map;
     }
 
     /**
@@ -933,10 +990,12 @@ public abstract class Lang {
      */
     @SuppressWarnings("unchecked")
     public static <E> List<E> collection2list(Collection<E> col) {
-        if (null == col)
+        if (null == col) {
             return null;
-        if (col.size() == 0)
+        }
+        if (col.size() == 0) {
             return new ArrayList<E>(0);
+        }
         Class<E> eleType = (Class<E>) col.iterator().next().getClass();
         return collection2list(col, eleType);
     }
@@ -951,11 +1010,13 @@ public abstract class Lang {
      * @return 列表对象
      */
     public static <E> List<E> collection2list(Collection<?> col, Class<E> eleType) {
-        if (null == col)
+        if (null == col) {
             return null;
+        }
         List<E> list = new ArrayList<E>(col.size());
-        for (Object obj : col)
+        for (Object obj : col) {
             list.add(Castors.me().castTo(obj, eleType));
+        }
         return list;
     }
 
@@ -968,10 +1029,12 @@ public abstract class Lang {
      */
     @SuppressWarnings("unchecked")
     public static <E> E[] collection2array(Collection<E> coll) {
-        if (null == coll)
+        if (null == coll) {
             return null;
-        if (coll.size() == 0)
+        }
+        if (coll.size() == 0) {
             return (E[]) new Object[0];
+        }
 
         Class<E> eleType = (Class<E>) Lang.first(coll).getClass();
         return collection2array(coll, eleType);
@@ -988,16 +1051,18 @@ public abstract class Lang {
      */
     @SuppressWarnings("unchecked")
     public static <E> E[] collection2array(Collection<?> col, Class<E> eleType) {
-        if (null == col)
+        if (null == col) {
             return null;
+        }
         Object re = Array.newInstance(eleType, col.size());
         int i = 0;
         for (Iterator<?> it = col.iterator(); it.hasNext();) {
             Object obj = it.next();
-            if (null == obj)
+            if (null == obj) {
                 Array.set(re, i++, null);
-            else
+            } else {
                 Array.set(re, i++, Castors.me().castTo(obj, eleType));
+            }
         }
         return (E[]) re;
     }
@@ -1016,8 +1081,9 @@ public abstract class Lang {
     public static <T extends Map<Object, Object>> T array2map(Class<T> mapClass,
                                                               Object array,
                                                               String keyFieldName) {
-        if (null == array)
+        if (null == array) {
             return null;
+        }
         T map = createMap(mapClass);
         int len = Array.getLength(array);
         if (len > 0) {
@@ -1057,11 +1123,13 @@ public abstract class Lang {
      * @see org.nutz.castor.Castors
      */
     public static <T> List<T> array2list(T[] array) {
-        if (null == array)
+        if (null == array) {
             return null;
+        }
         List<T> re = new ArrayList<T>(array.length);
-        for (T obj : array)
+        for (T obj : array) {
             re.add(obj);
+        }
         return re;
     }
 
@@ -1077,8 +1145,9 @@ public abstract class Lang {
      * @see org.nutz.castor.Castors
      */
     public static <T, E> List<E> array2list(Object array, Class<E> eleType) {
-        if (null == array)
+        if (null == array) {
             return null;
+        }
         int len = Array.getLength(array);
         List<E> re = new ArrayList<E>(len);
         for (int i = 0; i < len; i++) {
@@ -1102,8 +1171,9 @@ public abstract class Lang {
      */
     public static Object array2array(Object array, Class<?> eleType)
             throws FailToCastObjectException {
-        if (null == array)
+        if (null == array) {
             return null;
+        }
         int len = Array.getLength(array);
         Object re = Array.newInstance(eleType, len);
         for (int i = 0; i < len; i++) {
@@ -1126,8 +1196,9 @@ public abstract class Lang {
      */
     public static <T> Object[] array2ObjectArray(T[] args, Class<?>[] pts)
             throws FailToCastObjectException {
-        if (null == args)
+        if (null == args) {
             return null;
+        }
         Object[] newArgs = new Object[args.length];
         for (int i = 0; i < args.length; i++) {
             newArgs[i] = Castors.me().castTo(args[i], pts[i]);
@@ -1148,11 +1219,13 @@ public abstract class Lang {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T> T map2Object(Map<?, ?> src, Class<T> toType)
             throws FailToCastObjectException {
-        if (null == toType)
+        if (null == toType) {
             throw new FailToCastObjectException("target type is Null");
+        }
         // 类型相同
-        if (toType == Map.class)
+        if (toType == Map.class) {
             return (T) src;
+        }
         // 也是一种 Map
         if (Map.class.isAssignableFrom(toType)) {
             Map map;
@@ -1167,8 +1240,9 @@ public abstract class Lang {
 
         }
         // 数组
-        if (toType.isArray())
+        if (toType.isArray()) {
             return (T) Lang.collection2array(src.values(), toType.getComponentType());
+        }
         // List
         if (List.class == toType) {
             return (T) Lang.collection2list(src.values());
@@ -1256,6 +1330,7 @@ public abstract class Lang {
                                                                                       field.getGenericType(),
                                                                                       1);
                     each(v, new Each<Entry>() {
+                        @Override
                         public void invoke(int i, Entry en, int length) {
                             map.put(Castors.me().castTo(en.getKey(), keyType),
                                     Castors.me().castTo(en.getValue(), valType));
@@ -1281,8 +1356,9 @@ public abstract class Lang {
      * @return Map 对象
      */
     public static NutMap map(String str) {
-        if (null == str)
+        if (null == str) {
             return null;
+        }
         str = Strings.trim(str);
         if (!Strings.isEmpty(str)
             && (Strings.isQuoteBy(str, '{', '}') || Strings.isQuoteBy(str, '(', ')'))) {
@@ -1316,8 +1392,9 @@ public abstract class Lang {
                 String key = en.getKey();
                 Object val = en.getValue();
 
-                if (recur)
+                if (recur) {
                     convertMapKey(val, mkc, recur);
+                }
 
                 String newKey = mkc.convertKey(key);
                 map2.put(newKey, val);
@@ -1429,10 +1506,12 @@ public abstract class Lang {
      */
     @SuppressWarnings("unchecked")
     public static List<Object> list4(String str) {
-        if (null == str)
+        if (null == str) {
             return null;
-        if ((str.length() > 0 && str.charAt(0) == '[') && str.endsWith("]"))
+        }
+        if ((str.length() > 0 && str.charAt(0) == '[') && str.endsWith("]")) {
             return (List<Object>) Json.fromJson(str);
+        }
         return (List<Object>) Json.fromJson("[" + str + "]");
     }
 
@@ -1453,8 +1532,9 @@ public abstract class Lang {
      */
     @Deprecated
     public static int length(Object obj) {
-        if (null == obj)
+        if (null == obj) {
             return 0;
+        }
         if (obj.getClass().isArray()) {
             return Array.getLength(obj);
         } else if (obj instanceof Collection<?>) {
@@ -1485,8 +1565,9 @@ public abstract class Lang {
      */
     public static int eleSize(Object obj) {
         // 空指针，就是 0
-        if (null == obj)
+        if (null == obj) {
             return 0;
+        }
         // 数组
         if (obj.getClass().isArray()) {
             return Array.getLength(obj);
@@ -1511,16 +1592,18 @@ public abstract class Lang {
      * @return 第一个代表对象
      */
     public static Object first(Object obj) {
-        if (null == obj)
+        if (null == obj) {
             return obj;
+        }
 
         if (obj instanceof Collection<?>) {
             Iterator<?> it = ((Collection<?>) obj).iterator();
             return it.hasNext() ? it.next() : null;
         }
 
-        if (obj.getClass().isArray())
+        if (obj.getClass().isArray()) {
             return Array.getLength(obj) > 0 ? Array.get(obj, 0) : null;
+        }
 
         return obj;
     }
@@ -1533,8 +1616,9 @@ public abstract class Lang {
      * @return 第一个元素
      */
     public static <T> T first(Collection<T> coll) {
-        if (null == coll || coll.isEmpty())
+        if (null == coll || coll.isEmpty()) {
             return null;
+        }
         return coll.iterator().next();
     }
 
@@ -1546,8 +1630,9 @@ public abstract class Lang {
      * @return 第一个名值对
      */
     public static <K, V> Entry<K, V> first(Map<K, V> map) {
-        if (null == map || map.isEmpty())
+        if (null == map || map.isEmpty()) {
             return null;
+        }
         return map.entrySet().iterator().next();
     }
 
@@ -1602,18 +1687,21 @@ public abstract class Lang {
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static <T> void each(Object obj, boolean loopMap, Each<T> callback) {
-        if (null == obj || null == callback)
+        if (null == obj || null == callback) {
             return;
+        }
         try {
             // 循环开始
-            if (callback instanceof Loop)
-                if (!((Loop) callback).begin())
+            if (callback instanceof Loop) {
+                if (!((Loop) callback).begin()) {
                     return;
+                }
+            }
 
             // 进行循环
             if (obj.getClass().isArray()) {
                 int len = Array.getLength(obj);
-                for (int i = 0; i < len; i++)
+                for (int i = 0; i < len; i++) {
                     try {
                         callback.invoke(i, (T) Array.get(obj, i), len);
                     }
@@ -1621,10 +1709,11 @@ public abstract class Lang {
                     catch (ExitLoop e) {
                         break;
                     }
+                }
             } else if (obj instanceof Collection) {
                 int len = ((Collection) obj).size();
                 int i = 0;
-                for (Iterator<T> it = ((Collection) obj).iterator(); it.hasNext();)
+                for (Iterator<T> it = ((Collection) obj).iterator(); it.hasNext();) {
                     try {
                         callback.invoke(i++, it.next(), len);
                     }
@@ -1632,13 +1721,14 @@ public abstract class Lang {
                     catch (ExitLoop e) {
                         break;
                     }
+                }
             } else if (loopMap && obj instanceof Map) {
                 Map map = (Map) obj;
                 int len = map.size();
                 int i = 0;
                 Class<T> eType = Mirror.getTypeParam(callback.getClass(), 0);
                 if (null != eType && eType != Object.class && eType.isAssignableFrom(Entry.class)) {
-                    for (Object v : map.entrySet())
+                    for (Object v : map.entrySet()) {
                         try {
                             callback.invoke(i++, (T) v, len);
                         }
@@ -1646,9 +1736,10 @@ public abstract class Lang {
                         catch (ExitLoop e) {
                             break;
                         }
+                    }
 
                 } else {
-                    for (Object v : map.entrySet())
+                    for (Object v : map.entrySet()) {
                         try {
                             callback.invoke(i++, (T) ((Entry) v).getValue(), len);
                         }
@@ -1656,6 +1747,7 @@ public abstract class Lang {
                         catch (ExitLoop e) {
                             break;
                         }
+                    }
                 }
             } else if (obj instanceof Iterator<?>) {
                 Iterator<?> it = (Iterator<?>) obj;
@@ -1669,16 +1761,18 @@ public abstract class Lang {
                         break;
                     }
                 }
-            } else
+            } else {
                 try {
                     callback.invoke(0, (T) obj, 1);
                 }
                 catch (ContinueLoop e) {}
                 catch (ExitLoop e) {}
+            }
 
             // 循环结束
-            if (callback instanceof Loop)
+            if (callback instanceof Loop) {
                 ((Loop) callback).end();
+            }
         }
         catch (LoopException e) {
             throw Lang.wrapThrow(e.getCause());
@@ -1698,11 +1792,13 @@ public abstract class Lang {
      * @return 数组元素
      */
     public static <T> T get(T[] array, int index) {
-        if (null == array)
+        if (null == array) {
             return null;
+        }
         int i = index < 0 ? array.length + index : index;
-        if (i < 0 || i >= array.length)
+        if (i < 0 || i >= array.length) {
             return null;
+        }
         return array[i];
     }
 
@@ -1736,12 +1832,15 @@ public abstract class Lang {
      * @return 布尔值
      */
     public static boolean parseBoolean(String s) {
-        if (null == s || s.length() == 0)
+        if (null == s || s.length() == 0) {
             return false;
-        if (s.length() > 5)
+        }
+        if (s.length() > 5) {
             return true;
-        if ("0".equals(s))
+        }
+        if ("0".equals(s)) {
             return false;
+        }
         s = s.toLowerCase();
         return !"false".equals(s) && !"off".equals(s) && !"no".equals(s);
     }
@@ -1764,8 +1863,9 @@ public abstract class Lang {
      */
     public static void quiteSleep(long millisecond) {
         try {
-            if (millisecond > 0)
+            if (millisecond > 0) {
                 Thread.sleep(millisecond);
+            }
         }
         catch (Throwable e) {}
     }
@@ -1808,8 +1908,9 @@ public abstract class Lang {
         }
         // 普通整数
         Long re = Long.parseLong(s);
-        if (Integer.MAX_VALUE >= re && re >= Integer.MIN_VALUE)
+        if (Integer.MAX_VALUE >= re && re >= Integer.MIN_VALUE) {
             return re.intValue();
+        }
         return re;
     }
 
@@ -1818,8 +1919,9 @@ public abstract class Lang {
                                                                 T map,
                                                                 final Map<Object, Object> memo) {
         // 已经转换过了，不要递归转换
-        if (null == obj || memo.containsKey(obj))
+        if (null == obj || memo.containsKey(obj)) {
             return;
+        }
         memo.put(obj, "");
 
         // Fix issue #497
@@ -1850,6 +1952,7 @@ public abstract class Lang {
             else if (mr.isColl()) {
                 final List<Object> list = new ArrayList<Object>(Lang.length(v));
                 Lang.each(v, new Each<Object>() {
+                    @Override
                     public void invoke(int index, Object ele, int length) {
                         __join_ele_to_list_as_map(list, ele, memo);
                     }
@@ -1882,8 +1985,9 @@ public abstract class Lang {
         NutMap re = new NutMap();
         for (Map.Entry<String, Object> en : map.entrySet()) {
             Object v = en.getValue();
-            if (null == v)
+            if (null == v) {
                 continue;
+            }
             Mirror<?> mr = Mirror.me(v);
             // 普通值
             if (mr.isSimple()) {
@@ -1897,6 +2001,7 @@ public abstract class Lang {
             else if (mr.isColl()) {
                 final List<Object> list2 = new ArrayList<Object>(Lang.length(v));
                 Lang.each(v, new Each<Object>() {
+                    @Override
                     public void invoke(int index, Object ele, int length) {
                         __join_ele_to_list_as_map(list2, ele, memo);
                     }
@@ -1945,6 +2050,7 @@ public abstract class Lang {
         else if (mr.isColl()) {
             final List<Object> list2 = new ArrayList<Object>(Lang.length(o));
             Lang.each(o, new Each<Object>() {
+                @Override
                 public void invoke(int index, Object ele, int length) {
                     __join_ele_to_list_as_map(list2, ele, memo);
                 }
@@ -2017,10 +2123,12 @@ public abstract class Lang {
     public static <T> Enumeration<T> enumeration(Collection<T> col) {
         final Iterator<T> it = col.iterator();
         return new Enumeration<T>() {
+            @Override
             public boolean hasMoreElements() {
                 return it.hasNext();
             }
 
+            @Override
             public T nextElement() {
                 return it.next();
             }
@@ -2037,8 +2145,9 @@ public abstract class Lang {
      * @return 集合对象
      */
     public static <T extends Collection<E>, E> T enum2collection(Enumeration<E> enums, T cols) {
-        while (enums.hasMoreElements())
+        while (enums.hasMoreElements()) {
             cols.add(enums.nextElement());
+        }
         return cols;
     }
 
@@ -2051,8 +2160,9 @@ public abstract class Lang {
      */
     public static byte[] toBytes(char[] cs) {
         byte[] bs = new byte[cs.length];
-        for (int i = 0; i < cs.length; i++)
+        for (int i = 0; i < cs.length; i++) {
             bs[i] = (byte) cs[i];
+        }
         return bs;
     }
 
@@ -2065,8 +2175,9 @@ public abstract class Lang {
      */
     public static byte[] toBytes(int[] is) {
         byte[] bs = new byte[is.length];
-        for (int i = 0; i < is.length; i++)
+        for (int i = 0; i < is.length; i++) {
             bs[i] = (byte) is[i];
+        }
         return bs;
     }
 
@@ -2114,22 +2225,30 @@ public abstract class Lang {
      * @return 0/false,如果传入的pClass不是基本类型的类,则返回null
      */
     public static Object getPrimitiveDefaultValue(Class<?> pClass) {
-        if (int.class.equals(pClass))
+        if (int.class.equals(pClass)) {
             return Integer.valueOf(0);
-        if (long.class.equals(pClass))
+        }
+        if (long.class.equals(pClass)) {
             return Long.valueOf(0);
-        if (short.class.equals(pClass))
+        }
+        if (short.class.equals(pClass)) {
             return Short.valueOf((short) 0);
-        if (float.class.equals(pClass))
+        }
+        if (float.class.equals(pClass)) {
             return Float.valueOf(0f);
-        if (double.class.equals(pClass))
+        }
+        if (double.class.equals(pClass)) {
             return Double.valueOf(0);
-        if (byte.class.equals(pClass))
+        }
+        if (byte.class.equals(pClass)) {
             return Byte.valueOf((byte) 0);
-        if (char.class.equals(pClass))
+        }
+        if (char.class.equals(pClass)) {
             return Character.valueOf((char) 0);
-        if (boolean.class.equals(pClass))
+        }
+        if (boolean.class.equals(pClass)) {
             return Boolean.FALSE;
+        }
         return null;
     }
 
@@ -2231,13 +2350,15 @@ public abstract class Lang {
         } else if (type instanceof TypeVariable) {
             TypeVariable tv = (TypeVariable) type;
             Type[] ts = tv.getBounds();
-            if (ts != null && ts.length > 0)
+            if (ts != null && ts.length > 0) {
                 return getTypeClass(ts[0]);
+            }
         } else if (type instanceof WildcardType) {
             WildcardType wt = (WildcardType) type;
             Type[] t_low = wt.getLowerBounds();// 取其下界
-            if (t_low.length > 0)
+            if (t_low.length > 0) {
                 return getTypeClass(t_low[0]);
+            }
             Type[] t_up = wt.getUpperBounds(); // 没有下界?取其上界
             return getTypeClass(t_up[0]);// 最起码有Object作为上界
         }
@@ -2414,7 +2535,7 @@ public abstract class Lang {
     public static String digest(String algorithm, InputStream ins) {
         return fixedHexString(digest2(algorithm, ins));
     }
-    
+
     public static byte[] digest2(String algorithm, InputStream ins) {
         try {
             MessageDigest md = MessageDigest.getInstance(algorithm);
@@ -2437,19 +2558,19 @@ public abstract class Lang {
             Streams.safeClose(ins);
         }
     }
-    
+
     public static String digest(String algorithm, InputStream ins, byte[] keyBytes) {
         return fixedHexString(digest2(algorithm, ins, keyBytes));
     }
-    
+
     public static String digest(String algorithm, File f, byte[] keyBytes) {
         return fixedHexString(digest2(algorithm, Streams.fileIn(f), keyBytes));
     }
-    
+
     public static String digest(String algorithm, String str, byte[] keyBytes) {
         return fixedHexString(digest2(algorithm, Streams.wrap(str.getBytes()), keyBytes));
     }
-    
+
     public static byte[] digest2(String algorithm, InputStream ins, byte[] keyBytes) {
         try {
             SecretKeySpec signingKey = new SecretKeySpec(keyBytes, "Hmac" + algorithm);
@@ -2469,9 +2590,10 @@ public abstract class Lang {
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);
-        } catch (InvalidKeyException e) {
-        	throw Lang.wrapThrow(e);
-		}
+        }
+        catch (InvalidKeyException e) {
+            throw Lang.wrapThrow(e);
+        }
         finally {
             Streams.safeClose(ins);
         }
@@ -2603,7 +2725,7 @@ public abstract class Lang {
      *            要等待的时间 ms
      */
     public static void wait(Object lock, long ms) {
-        if (null != lock)
+        if (null != lock) {
             synchronized (lock) {
                 try {
                     lock.wait(ms);
@@ -2612,6 +2734,7 @@ public abstract class Lang {
                     throw Lang.wrapThrow(e);
                 }
             }
+        }
     }
 
     /**
@@ -2621,10 +2744,11 @@ public abstract class Lang {
      *            锁对象
      */
     public static void notifyAll(Object lock) {
-        if (null != lock)
+        if (null != lock) {
             synchronized (lock) {
                 lock.notifyAll();
             }
+        }
     }
 
     public static void runInAnThread(Runnable runnable) {
@@ -2652,8 +2776,9 @@ public abstract class Lang {
                                              String exclude,
                                              Map<String, String> keyMap) {
         LinkedHashMap<String, Object> dst = new LinkedHashMap<String, Object>();
-        if (source == null || source.isEmpty())
+        if (source == null || source.isEmpty()) {
             return dst;
+        }
 
         Pattern includePattern = include == null ? null : Regex.getPattern(include);
         Pattern excludePattern = exclude == null ? null : Regex.getPattern(exclude);
@@ -2661,19 +2786,23 @@ public abstract class Lang {
         for (Entry<String, Object> en : source.entrySet()) {
             String key = en.getKey();
             if (prefix != null) {
-                if (key.startsWith(prefix))
+                if (key.startsWith(prefix)) {
                     key = key.substring(prefix.length());
-                else
+                } else {
                     continue;
+                }
             }
-            if (includePattern != null && !includePattern.matcher(key).find())
+            if (includePattern != null && !includePattern.matcher(key).find()) {
                 continue;
-            if (excludePattern != null && excludePattern.matcher(key).find())
+            }
+            if (excludePattern != null && excludePattern.matcher(key).find()) {
                 continue;
-            if (keyMap != null && keyMap.containsKey(key))
+            }
+            if (keyMap != null && keyMap.containsKey(key)) {
                 dst.put(keyMap.get(key), en.getValue());
-            else
+            } else {
                 dst.put(key, en.getValue());
+            }
         }
         return dst;
     }
@@ -2686,8 +2815,9 @@ public abstract class Lang {
      * @return 来源ip
      */
     public static String getIP(HttpServletRequest request) {
-        if (request == null)
+        if (request == null) {
             return "";
+        }
         String ip = request.getHeader("X-Forwarded-For");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
@@ -2715,8 +2845,9 @@ public abstract class Lang {
                 }
             }
         }
-        if (Strings.isBlank(ip))
+        if (Strings.isBlank(ip)) {
             return "";
+        }
         if (isIPv4Address(ip) || isIPv6Address(ip)) {
             return ip;
         }
@@ -2744,10 +2875,12 @@ public abstract class Lang {
                                        String lock,
                                        boolean ignoreNull,
                                        boolean ignoreStatic) {
-        if (origin == null)
+        if (origin == null) {
             throw new IllegalArgumentException("origin is null");
-        if (target == null)
+        }
+        if (target == null) {
             throw new IllegalArgumentException("target is null");
+        }
         Pattern at = active == null ? null : Regex.getPattern(active);
         Pattern lo = lock == null ? null : Regex.getPattern(lock);
         Mirror<Object> originMirror = Mirror.me(origin);
@@ -2755,15 +2888,19 @@ public abstract class Lang {
         Field[] fields = targetMirror.getFields();
         for (Field field : originMirror.getFields()) {
             String name = field.getName();
-            if (at != null && !at.matcher(name).find())
+            if (at != null && !at.matcher(name).find()) {
                 continue;
-            if (lo != null && lo.matcher(name).find())
+            }
+            if (lo != null && lo.matcher(name).find()) {
                 continue;
-            if (ignoreStatic && Modifier.isStatic(field.getModifiers()))
+            }
+            if (ignoreStatic && Modifier.isStatic(field.getModifiers())) {
                 continue;
+            }
             Object val = originMirror.getValue(origin, field);
-            if (ignoreNull && val == null)
+            if (ignoreNull && val == null) {
                 continue;
+            }
             for (Field _field : fields) {
                 if (_field.getName().equals(field.getName())) {
                     targetMirror.setValue(target, _field, val);
@@ -2856,21 +2993,25 @@ public abstract class Lang {
 
         public static int getMajorVersion() {
             String ver = getVersionLong();
-            if (Strings.isBlank(ver))
+            if (Strings.isBlank(ver)) {
                 return 6;
+            }
             String[] tmp = ver.split("\\.");
-            if (tmp.length < 2)
+            if (tmp.length < 2) {
                 return 6;
+            }
             int t = Integer.parseInt(tmp[0]);
-            if (t > 1)
+            if (t > 1) {
                 return t;
+            }
             return Integer.parseInt(tmp[1]);
         }
 
         public static boolean isEarlyAccess() {
             String ver = getVersionLong();
-            if (Strings.isBlank(ver))
+            if (Strings.isBlank(ver)) {
                 return false;
+            }
             return ver.contains("-ea");
         }
 
@@ -2923,10 +3064,12 @@ public abstract class Lang {
      * @return 指定字符串的 HmacMD5 值
      */
     public static String hmacmd5(String data, String secret) {
-        if (isEmpty(data))
+        if (isEmpty(data)) {
             throw new NullPointerException("data is null");
-        if (isEmpty(secret))
+        }
+        if (isEmpty(secret)) {
             throw new NullPointerException("secret is null");
+        }
         byte[] bytes = null;
         try {
             SecretKey secretKey = new SecretKeySpec(secret.getBytes(Encoding.UTF8), "HmacMD5");
@@ -2951,10 +3094,12 @@ public abstract class Lang {
      * @return 指定字符串的 HmacSHA256 值
      */
     public static String hmacSHA256(String data, String secret) {
-        if (isEmpty(data))
+        if (isEmpty(data)) {
             throw new NullPointerException("data is null");
-        if (isEmpty(secret))
+        }
+        if (isEmpty(secret)) {
             throw new NullPointerException("secret is null");
+        }
         byte[] bytes = null;
         try {
             SecretKey secretKey = new SecretKeySpec(secret.getBytes(Encoding.UTF8), "HmacSHA256");
@@ -2968,33 +3113,35 @@ public abstract class Lang {
         }
         return fixedHexString(bytes);
     }
-    
+
     /**
      * 获取指定字符串的 HmacSHA256 值
-    *
-    * @param data
-    *            字符串
-    * @param secret
-    *            密钥
-    * @return 指定字符串的 HmacSHA256 值
-    */
-   public static String hmacSHA1(String data, String secret) {
-       if (isEmpty(data))
-           throw new NullPointerException("data is null");
-       if (isEmpty(secret))
-           throw new NullPointerException("secret is null");
-       byte[] bytes = null;
-       try {
-           SecretKey secretKey = new SecretKeySpec(secret.getBytes(Encoding.UTF8), "HmacSHA1");
-           Mac mac = Mac.getInstance(secretKey.getAlgorithm());
-           mac.init(secretKey);
-           bytes = mac.doFinal(data.getBytes(Encoding.UTF8));
-       }
-       catch (Exception e) {
-           e.printStackTrace();
-           throw Lang.wrapThrow(e);
-       }
-       return fixedHexString(bytes);
-   }
-    
+     *
+     * @param data
+     *            字符串
+     * @param secret
+     *            密钥
+     * @return 指定字符串的 HmacSHA256 值
+     */
+    public static String hmacSHA1(String data, String secret) {
+        if (isEmpty(data)) {
+            throw new NullPointerException("data is null");
+        }
+        if (isEmpty(secret)) {
+            throw new NullPointerException("secret is null");
+        }
+        byte[] bytes = null;
+        try {
+            SecretKey secretKey = new SecretKeySpec(secret.getBytes(Encoding.UTF8), "HmacSHA1");
+            Mac mac = Mac.getInstance(secretKey.getAlgorithm());
+            mac.init(secretKey);
+            bytes = mac.doFinal(data.getBytes(Encoding.UTF8));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            throw Lang.wrapThrow(e);
+        }
+        return fixedHexString(bytes);
+    }
+
 }

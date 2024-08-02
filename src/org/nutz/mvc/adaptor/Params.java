@@ -2,8 +2,6 @@ package org.nutz.mvc.adaptor;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.nutz.lang.Mirror;
 import org.nutz.mvc.adaptor.convertor.ArrayParamConvertor;
 import org.nutz.mvc.adaptor.convertor.BooleanParamConvertor;
@@ -11,6 +9,8 @@ import org.nutz.mvc.adaptor.convertor.DateParamConvertor;
 import org.nutz.mvc.adaptor.convertor.StringParamConvertor;
 import org.nutz.mvc.adaptor.extractor.BaseParamExtractor;
 import org.nutz.mvc.adaptor.extractor.MapParamExtractor;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public abstract class Params {
 
@@ -27,11 +27,13 @@ public abstract class Params {
                                                     String datefmt) {
         return makeParamConvertor(type, datefmt, null);
     }
+
     public static ParamConvertor makeParamConvertor(Class<?> type,
                                                     String datefmt,
                                                     String locale) {
-        if (type.isArray())
+        if (type.isArray()) {
             return new ArrayParamConvertor(type.getComponentType());
+        }
 
         Mirror<?> mirror = Mirror.me(type);
         if (mirror.isDateTimeLike()) {

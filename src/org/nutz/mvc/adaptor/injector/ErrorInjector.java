@@ -2,12 +2,12 @@ package org.nutz.mvc.adaptor.injector;
 
 import java.lang.reflect.Method;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.nutz.lang.Lang;
 import org.nutz.mvc.adaptor.ParamInjector;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class ErrorInjector implements ParamInjector {
 
@@ -19,12 +19,13 @@ public class ErrorInjector implements ParamInjector {
         this.index = index;
     }
 
+    @Override
     public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
-        throw Lang.makeThrow(    "Don't know how to inject %s.%s(...[%d]%s...),",
-                                method.getDeclaringClass(),
-                                method.getName(),
-                                index,
-                                method.getParameterTypes()[index]);
+        throw Lang.makeThrow("Don't know how to inject %s.%s(...[%d]%s...),",
+                             method.getDeclaringClass(),
+                             method.getName(),
+                             index,
+                             method.getParameterTypes()[index]);
     }
 
 }

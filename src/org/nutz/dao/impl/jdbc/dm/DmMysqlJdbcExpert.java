@@ -1,5 +1,7 @@
 package org.nutz.dao.impl.jdbc.dm;
 
+import java.util.List;
+
 import org.nutz.dao.DB;
 import org.nutz.dao.Dao;
 import org.nutz.dao.Sqls;
@@ -14,46 +16,47 @@ import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Pojos;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
-
-import java.util.List;
 
 /**
  * @author wizzer.cn
  */
 public class DmMysqlJdbcExpert extends AbstractJdbcExpert {
 
-    private static final Log log = Logs.get();
-
     public DmMysqlJdbcExpert(JdbcExpertConfigFile conf) {
         super(conf);
     }
 
+    @Override
     public String getDatabaseType() {
         return DB.DM_MYSQL.name();
     }
 
+    @Override
     public void formatQuery(Pojo pojo) {
         Pager pager = pojo.getContext().getPager();
         // 需要进行分页
-        if (null != pager && pager.getPageNumber() > 0)
+        if (null != pager && pager.getPageNumber() > 0) {
             pojo.append(Pojos.Items.wrapf(" LIMIT %d, %d", pager.getOffset(), pager.getPageSize()));
+        }
     }
 
+    @Override
     public void formatQuery(Sql sql) {
         Pager pager = sql.getContext().getPager();
         // 需要进行分页
-        if (null != pager && pager.getPageNumber() > 0)
+        if (null != pager && pager.getPageNumber() > 0) {
             sql.setSourceSql(sql.getSourceSql()
-                    + String.format(" LIMIT %d, %d",
-                    pager.getOffset(),
-                    pager.getPageSize()));
+                             + String.format(" LIMIT %d, %d",
+                                             pager.getOffset(),
+                                             pager.getPageSize()));
+        }
     }
 
+    @Override
     public String evalFieldType(MappingField mf) {
-        if (mf.getCustomDbType() != null)
+        if (mf.getCustomDbType() != null) {
             return mf.getCustomDbType();
+        }
         if (mf.getColumnType() == ColType.INT) {
             int width = mf.getWidth();
             if (width <= 0) {
@@ -74,12 +77,14 @@ public class DmMysqlJdbcExpert extends AbstractJdbcExpert {
         return super.evalFieldType(mf);
     }
 
+    @Override
     public boolean createEntity(Dao dao, Entity<?> en) {
         StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
         // 创建字段
         for (MappingField mf : en.getMappingFields()) {
-            if (mf.isReadonly())
+            if (mf.isReadonly()) {
                 continue;
+            }
             sb.append('\n').append(mf.getColumnNameInSql());
             sb.append(' ').append(evalFieldType(mf));
             // 非主键的 @Name，应该加入唯一性约束
@@ -95,8 +100,9 @@ public class DmMysqlJdbcExpert extends AbstractJdbcExpert {
                     sb.append(" NULL");
                 }
 
-                if (mf.isAutoIncreasement())
+                if (mf.isAutoIncreasement()) {
                     sb.append(" IDENTITY(1,1)");
+                }
 
                 if (mf.getColumnType() == ColType.TIMESTAMP) {
                     if (mf.hasDefaultValue()) {
@@ -109,8 +115,9 @@ public class DmMysqlJdbcExpert extends AbstractJdbcExpert {
                         }
                     }
                 } else {
-                    if (mf.hasDefaultValue())
+                    if (mf.hasDefaultValue()) {
                         addDefaultValue(sb, mf);
+                    }
                 }
             }
 
@@ -146,18 +153,22 @@ public class DmMysqlJdbcExpert extends AbstractJdbcExpert {
         return true;
     }
 
+    @Override
     protected String createResultSetMetaSql(Entity<?> en) {
         return "SELECT * FROM " + en.getViewName() + " LIMIT 1";
     }
 
+    @Override
     public boolean canCommentWhenAddIndex() {
         return true;
     }
 
+    @Override
     protected Sql createRelation(Dao dao, LinkField lf) {
         Sql sql = super.createRelation(dao, lf);
-        if (sql == null)
+        if (sql == null) {
             return null;
+        }
         StringBuilder sb = new StringBuilder(sql.getSourceSql());
         return Sqls.create(sb.toString());
     }

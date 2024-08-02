@@ -1,17 +1,30 @@
 package org.nutz.mvc.view;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.nutz.el.El;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.segment.CharSegment;
 import org.nutz.lang.segment.Segment;
 import org.nutz.lang.util.Context;
-import org.nutz.mvc.*;
-import org.nutz.mvc.impl.contextCollector.*;
+import org.nutz.mvc.View;
+import org.nutz.mvc.ViewContextCollector;
+import org.nutz.mvc.impl.contextCollector.AtCollector;
+import org.nutz.mvc.impl.contextCollector.AttrCollector;
+import org.nutz.mvc.impl.contextCollector.ParamCollector;
+import org.nutz.mvc.impl.contextCollector.PathargsCollector;
+import org.nutz.mvc.impl.contextCollector.RefCollector;
+import org.nutz.mvc.impl.contextCollector.ReturnCollector;
+import org.nutz.mvc.impl.contextCollector.ServletContextCollector;
+import org.nutz.mvc.impl.contextCollector.SessionCollector;
+import org.nutz.mvc.impl.contextCollector.SharedCollector;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-import java.util.Map.Entry;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author mawm(ming300 @ gmail.com)
@@ -49,16 +62,18 @@ public abstract class AbstractPathView implements View {
     }
 
     protected String evalPath(HttpServletRequest req, Object obj) {
-        if (null == dest)
+        if (null == dest) {
             return null;
+        }
 
         Context context = Lang.context();
 
         // 解析每个表达式
         if (exps.size() != 0) {
             Context expContext = createContext(req, obj);
-            for (Entry<String, El> en : exps.entrySet())
+            for (Entry<String, El> en : exps.entrySet()) {
                 context.set(en.getKey(), en.getValue().eval(expContext));
+            }
         }
         // 生成解析后的路径
         return Strings.trim(this.dest.render(context).toString());
@@ -67,8 +82,10 @@ public abstract class AbstractPathView implements View {
     /**
      * 为一次 HTTP 请求，创建一个可以被表达式引擎接受的上下文对象
      *
-     * @param req HTTP 请求对象
-     * @param obj 入口函数的返回值
+     * @param req
+     *            HTTP 请求对象
+     * @param obj
+     *            入口函数的返回值
      * @return 上下文对象
      */
     public static Context createContext(HttpServletRequest req, Object obj) {

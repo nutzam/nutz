@@ -3,8 +3,6 @@ package org.nutz.mvc.impl.reqmatcher;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -13,27 +11,31 @@ import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.RequestMatcher;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 public class DefaultRequestMatcher implements RequestMatcher {
-    
+
     private static final Log log = Logs.get();
-    
+
     protected Map<String, ActionChain> chainMap;
-    
+
     protected ActionChain defaultChain;
 
+    @Override
     public void add(String path, ActionInfo ai, ActionChain chain) {
         if (ai.isForSpecialHttpMethod()) {
             for (String httpMethod : ai.getHttpMethods()) {
-                if (chainMap == null)
+                if (chainMap == null) {
                     chainMap = new HashMap<String, ActionChain>();
+                }
                 chainMap.put(httpMethod, chain);
             }
-        }
-        else {
+        } else {
             defaultChain = chain;
         }
     }
 
+    @Override
     public ActionChain match(ActionContext ac) {
         String httpMethod = "";
         if (chainMap != null && !chainMap.isEmpty()) {
@@ -57,8 +59,9 @@ public class DefaultRequestMatcher implements RequestMatcher {
     }
 
     public void addChain(String httpMethod, ActionChain chain) {
-        if (chainMap == null)
+        if (chainMap == null) {
             chainMap = new HashMap<String, ActionChain>();
+        }
         chainMap.put(httpMethod, chain);
     }
 

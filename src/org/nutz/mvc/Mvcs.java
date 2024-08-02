@@ -9,13 +9,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.nutz.Nutz;
 import org.nutz.conf.NutConf;
 import org.nutz.ioc.Ioc;
@@ -29,6 +22,13 @@ import org.nutz.mvc.config.AtMap;
 import org.nutz.mvc.i18n.LocalizationManager;
 import org.nutz.mvc.impl.NutMessageMap;
 import org.nutz.mvc.ioc.SessionIocContext;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Mvc 相关帮助函数
@@ -53,10 +53,10 @@ public abstract class Mvcs {
 
     public static boolean DISABLE_X_POWERED_BY = false;
 
-    public static String X_POWERED_BY = "nutz/"+Nutz.version()+" <nutzam.com>";
-    
+    public static String X_POWERED_BY = "nutz/" + Nutz.version() + " <nutzam.com>";
+
     public static LocalizationManager localizationManager;
-    
+
     public static void setLocalizationManager(LocalizationManager localizationManager) {
         Mvcs.localizationManager = localizationManager;
     }
@@ -66,11 +66,11 @@ public abstract class Mvcs {
     public static Map<String, Object> getLocaleMessage(String local) {
         if (localizationManager != null) {
             return localizationManager.getMessageMap(local);
-        }
-        else {
+        } else {
             Map<String, Map<String, Object>> msgss = getMessageSet();
-            if (null != msgss)
+            if (null != msgss) {
                 return msgss.get(local);
+            }
             return null;
         }
     }
@@ -109,8 +109,9 @@ public abstract class Mvcs {
      */
     public static String getMessage(ServletRequest req, String key) {
         Map<String, String> map = getMessages(req);
-        if (null != map)
+        if (null != map) {
             return map.get(key);
+        }
         return null;
     }
 
@@ -135,8 +136,9 @@ public abstract class Mvcs {
      */
     public static boolean setLocalizationKey(String key) {
         HttpSession sess = getHttpSession();
-        if (null == sess)
+        if (null == sess) {
             return false;
+        }
         sess.setAttribute(LOCALE_KEY, key);
         return true;
     }
@@ -148,8 +150,9 @@ public abstract class Mvcs {
      */
     public static Set<String> getLocalizationKeySet() {
         Map<String, Map<String, Object>> msgss = getMessageSet();
-        if (null == msgss)
+        if (null == msgss) {
             return new HashSet<String>();
+        }
         return msgss.keySet();
     }
 
@@ -191,41 +194,46 @@ public abstract class Mvcs {
         // 初始化本次请求的多国语言字符串
         if (localizationManager == null) {
             Map<String, Map<String, Object>> msgss = getMessageSet();
-            if (msgss == null && !ctx().localizations.isEmpty())
+            if (msgss == null && !ctx().localizations.isEmpty()) {
                 msgss = ctx().localizations.values().iterator().next();
+            }
             if (null != msgss) {
                 Map<String, Object> msgs = null;
 
                 String lKey = Strings.sBlank(Mvcs.getLocalizationKey(), getDefaultLocalizationKey());
 
-                if (!Strings.isBlank(lKey))
+                if (!Strings.isBlank(lKey)) {
                     msgs = msgss.get(lKey);
+                }
 
                 // 没有设定特殊的 Local 名字，随便取一个
                 if (null == msgs) {
-                    if (msgss.size() > 0)
+                    if (msgss.size() > 0) {
                         msgs = msgss.values().iterator().next();
+                    }
                 }
                 // 记录到请求中
                 req.setAttribute(MSG, msgs);
             }
-        }
-        else {
+        } else {
             String lKey = Mvcs.getLocalizationKey();
             if (Strings.isBlank(lKey)) {
                 lKey = localizationManager.getDefaultLocal();
-                if (Strings.isBlank(lKey))
+                if (Strings.isBlank(lKey)) {
                     lKey = getDefaultLocalizationKey();
+                }
             }
             NutMessageMap msg = localizationManager.getMessageMap(lKey);
-            if (msg != null)
+            if (msg != null) {
                 req.setAttribute(MSG, msg);
+            }
         }
 
         // 记录一些数据到请求对象中
         req.setAttribute("base", req.getContextPath());
-        if (NutConf.MVC_ADD_ATTR_$REQUEST)
+        if (NutConf.MVC_ADD_ATTR_$REQUEST) {
             req.setAttribute("$request", req);
+        }
     }
 
     /**
@@ -256,8 +264,9 @@ public abstract class Mvcs {
         }
 
         String url = req.getPathInfo();
-        if (null == url)
+        if (null == url) {
             url = req.getServletPath();
+        }
         return getRequestPathObject(url);
     }
 
@@ -275,8 +284,9 @@ public abstract class Mvcs {
             if (!url.endsWith("/")) {
                 int ll = url.lastIndexOf('/');
                 lio = url.lastIndexOf('.');
-                if (lio < ll)
+                if (lio < ll) {
                     lio = -1;
+                }
             }
             if (lio > 0) {
                 rr.setPath(url.substring(0, lio));
@@ -299,8 +309,9 @@ public abstract class Mvcs {
      *            HTTP 会话对象
      */
     public static void deposeSession(HttpSession session) {
-        if (session != null)
+        if (session != null) {
             new SessionIocContext(session).depose();
+        }
     }
 
     /**
@@ -323,8 +334,9 @@ public abstract class Mvcs {
     public static void write(HttpServletResponse resp, Writer writer, Object obj, JsonFormat format)
             throws IOException {
         resp.setHeader("Cache-Control", "no-cache");
-        if (resp.getContentType() == null)
+        if (resp.getContentType() == null) {
             resp.setContentType("text/plain");
+        }
 
         // by mawm 改为直接采用resp.getWriter()的方式直接输出!
         Json.toJson(writer, obj, format);
@@ -344,8 +356,9 @@ public abstract class Mvcs {
     public static NutMvcContext ctx() {
         ServletContext sc = getServletContext();
         if (sc == null) {
-            if (ctx == null)
+            if (ctx == null) {
                 ctx = new NutMvcContext();
+            }
             return ctx;
         }
         NutMvcContext c = (NutMvcContext) getServletContext().getAttribute("__nutz__mvc__ctx");
@@ -407,8 +420,9 @@ public abstract class Mvcs {
         if (servletContext == null) {
             Mvcs.servletContext.remove();
         }
-        if (def_servletContext == null)
+        if (def_servletContext == null) {
             def_servletContext = servletContext;
+        }
         Mvcs.servletContext.set(servletContext);
     }
 
@@ -429,8 +443,9 @@ public abstract class Mvcs {
      */
     public static ServletContext getServletContext() {
         ServletContext cnt = servletContext.get();
-        if (cnt != null)
+        if (cnt != null) {
             return cnt;
+        }
         return def_servletContext;
     }
 
@@ -511,8 +526,9 @@ public abstract class Mvcs {
 
     public static HttpSession getHttpSession(boolean createNew) {
         HttpServletRequest req = getReq();
-        if (null == req)
+        if (null == req) {
             return null;
+        }
         return req.getSession(createNew);
     }
 
@@ -539,11 +555,11 @@ public abstract class Mvcs {
     public static void setSessionAttrSafe(String key, Object val, boolean sessionCreate) {
         try {
             HttpSession session = getHttpSession(sessionCreate);
-            if (session != null)
+            if (session != null) {
                 session.setAttribute(key, val);
+            }
         }
-        catch (Exception e) {
-        }
+        catch (Exception e) {}
     }
 
     public static NutMap toParamMap(Reader r, String enc) throws IOException {
@@ -553,15 +569,17 @@ public abstract class Mvcs {
             StringBuilder sb = new StringBuilder();
             while (true) {
                 int len = r.read(buf);
-                if (len == 0)
+                if (len == 0) {
                     continue;
+                }
                 if (buf[0] == '&' || len < 0) {
                     String[] tmp = sb.toString().split("=");
                     if (tmp != null && tmp.length == 2) {
                         map.put(URLDecoder.decode(tmp[0], enc), URLDecoder.decode(tmp[1], enc));
                     }
-                    if (len < 0)
+                    if (len < 0) {
                         break;
+                    }
                     sb.setLength(0);
                 } else {
                     sb.append(buf[0]);
@@ -573,6 +591,5 @@ public abstract class Mvcs {
             throw new IOException(e);
         }
     }
-
 
 }

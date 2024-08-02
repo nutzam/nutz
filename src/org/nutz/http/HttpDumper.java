@@ -6,13 +6,13 @@ import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.Iterator;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.nutz.lang.Encoding;
 import org.nutz.log.Logs;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 public class HttpDumper {
     public static void duplicateHttpHeaders(HttpServletRequest request, URLConnection conn) {
@@ -68,8 +68,9 @@ public class HttpDumper {
         Enumeration<?> em = request.getHeaderNames();
         sb.append('\n');
         sb.append("<HEADERS request=\"" + request.getRequestURL().toString());
-        if (null != request.getQueryString())
+        if (null != request.getQueryString()) {
             sb.append("?" + request.getQueryString());
+        }
         sb.append("\"");
         sb.append('\n' + "SESSIONid=\"" + request.getSession().getId() + "\"");
         sb.append('\n' + "ServerName=\"" + request.getServerName() + "\"");
@@ -166,16 +167,17 @@ public class HttpDumper {
                 sb.append("=");
                 sb.append(v);
             }
-            if (en.hasMoreElements())
+            if (en.hasMoreElements()) {
                 sb.append("&");
+            }
         }
-        return String.format(    "%5s:%15s[%5s]%s",
-                                new Object[]{    request.getLocale().toString(),
-                                                request.getRemoteAddr(),
-                                                ((HttpServletRequest) request).getMethod(),
-                                                ((HttpServletRequest) request)    .getRequestURL()
-                                                                                .toString()
-                                                        + (sb.length() > 0    ? "?" + sb.toString()
-                                                                            : "")});
+        return String.format("%5s:%15s[%5s]%s",
+                             new Object[]{request.getLocale().toString(),
+                                          request.getRemoteAddr(),
+                                          request.getMethod(),
+                                          request.getRequestURL()
+                                                 .toString()
+                                                               + (sb.length() > 0 ? "?" + sb.toString()
+                                                                                  : "")});
     }
 }

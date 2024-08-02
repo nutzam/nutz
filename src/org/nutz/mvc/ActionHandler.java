@@ -1,9 +1,9 @@
 package org.nutz.mvc;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.nutz.mvc.impl.ActionInvoker;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class ActionHandler {
 
@@ -24,10 +24,11 @@ public class ActionHandler {
         ac.setRequest(req).setResponse(resp).setServletContext(config.getServletContext());
 
         Mvcs.setActionContext(ac);
-        
+
         ActionInvoker invoker = mapping.get(ac);
-        if (null == invoker)
+        if (null == invoker) {
             return false;
+        }
         return invoker.invoke(ac);
     }
 

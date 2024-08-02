@@ -13,8 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.junit.Test;
 import org.nutz.json.Abc;
 import org.nutz.json.Json;
@@ -29,20 +27,22 @@ import org.nutz.mvc.adaptor.ParamExtractor;
 import org.nutz.mvc.adaptor.Params;
 import org.nutz.mvc.adaptor.injector.ObjectNaviNode;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 /**
  * MapList测试
  * 
  * @author juqkai(juqkai@gmail.com)
  */
 public class MaplTest {
-	
-	@Test
-	public void test_obj_to_simple() {
-		D d = (D) Mapl.maplistToObj(Json.fromJson("{a: [1,2,3], b:\"9\", c: \"yes\"}") ,D.class);
-		assertEquals("[1, 2, 3]", d.a);
-		assertEquals(9, d.b);
-		assertEquals(true, d.c);
-	}
+
+    @Test
+    public void test_obj_to_simple() {
+        D d = (D) Mapl.maplistToObj(Json.fromJson("{a: [1,2,3], b:\"9\", c: \"yes\"}"), D.class);
+        assertEquals("[1, 2, 3]", d.a);
+        assertEquals(9, d.b);
+        assertEquals(true, d.c);
+    }
 
     /**
      * Issue #1355
@@ -51,9 +51,9 @@ public class MaplTest {
     public void test_issue_1355() {
         Object dest;
 
-//        dest = Json.fromJson("{a: ['x',['A','B']]}");
-//        assertEquals("x", Mapl.cell(dest, "'a[0]"));
-        
+        // dest = Json.fromJson("{a: ['x',['A','B']]}");
+        // assertEquals("x", Mapl.cell(dest, "'a[0]"));
+
         dest = Json.fromJson("{a: [[],['A','B']]}");
         assertEquals("A", Mapl.cell(dest, "'a[1][0]"));
 
@@ -475,8 +475,9 @@ public class MaplTest {
 
         ObjectNaviNode no = new ObjectNaviNode();
         String pre = "";
-        if ("".equals(prefix))
+        if ("".equals(prefix)) {
             pre = "node.";
+        }
         ParamExtractor pe = Params.makeParamExtractor(req, refer);
         for (Object name : pe.keys()) {
             String na = (String) name;

@@ -3,12 +3,12 @@ package org.nutz.mvc.adaptor.injector;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.junit.Test;
 import org.nutz.lang.Lang;
 import org.nutz.mock.Mock;
 import org.nutz.mock.servlet.MockHttpServletRequest;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public class NameInjectorTest {
 

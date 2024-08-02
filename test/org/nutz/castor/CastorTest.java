@@ -1,10 +1,13 @@
 package org.nutz.castor;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -12,7 +15,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
-
 import org.junit.Test;
 import org.nutz.NutzEnum;
 import org.nutz.castor.castor.Datetime2String;
@@ -21,8 +23,6 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Times;
 import org.nutz.lang.meta.Email;
 import org.nutz.lang.util.NutMap;
-
-import static org.junit.Assert.*;
 
 public class CastorTest {
 
@@ -510,29 +510,30 @@ public class CastorTest {
         Assert.assertEquals(AlipayNotifyType.StatusSync,
                             Castors.create().castTo("trade_status_sync", AlipayNotifyType.class));
     }
-    
-//    @Test
-//    public void test_locale_date_time() {
-//        {
-//            LocalDateTime dt = Castors.me().castTo("2018-02-20 21:11:51", LocalDateTime.class);
-//            String tmp = Castors.me().castToString(dt);
-//            LocalDateTime dt2 = Castors.me().castTo(tmp, LocalDateTime.class);
-//            assertEquals(dt, dt2);
-//            System.out.println(tmp);
-//        }
-//        {
-//            LocalTime dt = LocalTime.now();
-//            String tmp = Castors.me().castToString(dt);
-//            LocalTime dt2 = Castors.me().castTo(tmp, LocalTime.class);
-//            assertEquals(dt, dt2);
-//            System.out.println(tmp);
-//        }
-//        {
-//            LocalDate dt = LocalDate.now();
-//            String tmp = Castors.me().castToString(dt);
-//            LocalDate dt2 = Castors.me().castTo(tmp, LocalDate.class);
-//            assertEquals(dt, dt2);
-//            System.out.println(tmp);
-//        }
-//    }
+
+    // @Test
+    // public void test_locale_date_time() {
+    // {
+    // LocalDateTime dt = Castors.me().castTo("2018-02-20 21:11:51",
+    // LocalDateTime.class);
+    // String tmp = Castors.me().castToString(dt);
+    // LocalDateTime dt2 = Castors.me().castTo(tmp, LocalDateTime.class);
+    // assertEquals(dt, dt2);
+    // System.out.println(tmp);
+    // }
+    // {
+    // LocalTime dt = LocalTime.now();
+    // String tmp = Castors.me().castToString(dt);
+    // LocalTime dt2 = Castors.me().castTo(tmp, LocalTime.class);
+    // assertEquals(dt, dt2);
+    // System.out.println(tmp);
+    // }
+    // {
+    // LocalDate dt = LocalDate.now();
+    // String tmp = Castors.me().castToString(dt);
+    // LocalDate dt2 = Castors.me().castTo(tmp, LocalDate.class);
+    // assertEquals(dt, dt2);
+    // System.out.println(tmp);
+    // }
+    // }
 }

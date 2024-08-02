@@ -6,12 +6,12 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 import org.nutz.lang.random.R;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class RawView2 extends RawView {
 
@@ -29,11 +29,13 @@ public class RawView2 extends RawView {
         this.maxLen = maxLen;
     }
 
+    @Override
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
             throws Throwable {
         try {
-            if (resp.getContentType() == null)
+            if (resp.getContentType() == null) {
                 resp.setContentType(contentType);
+            }
             resp.addHeader("Connection", "close");
             String rangeStr = req.getHeader("Range");
 
@@ -67,8 +69,7 @@ public class RawView2 extends RawView {
                 writeDownloadRange(in, out, rangeRange);
             } else {
                 String k = R.UU32().substring(0, 11);
-                resp.setCharacterEncoding(null);
-                resp.setHeader("Content-Type", "multipart/byteranges; boundary="+k);
+                resp.setHeader("Content-Type", "multipart/byteranges; boundary=" + k);
                 byte[] SLINE = ("--" + k + "\r\n").getBytes();
                 byte[] CLINE = ("Content-Type: " + contentType + "\r\n").getBytes();
                 // 计算ContentLength,蛋疼啊
@@ -77,11 +78,11 @@ public class RawView2 extends RawView {
                     totolSize += SLINE.length;
                     totolSize += CLINE.length;
                     totolSize += ("Content-Range: " + rangeRange.toString(maxLen) + "\r\n\r\n").getBytes().length;
-                    totolSize +=  "\r\n".getBytes().length;
+                    totolSize += "\r\n".getBytes().length;
                 }
                 totolSize += ("--" + k + "--\r\n").getBytes().length;
                 resp.setHeader("Content-Length", "" + totolSize);
-                
+
                 RangeRange preRangeRange = null;
                 OutputStream out = resp.getOutputStream();
                 out.write("\r\n".getBytes());

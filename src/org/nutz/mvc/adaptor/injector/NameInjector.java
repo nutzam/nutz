@@ -6,16 +6,16 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.nutz.castor.Castors;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.Times;
 import org.nutz.mvc.adaptor.ParamInjector;
+
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class NameInjector implements ParamInjector {
 
@@ -33,9 +33,10 @@ public class NameInjector implements ParamInjector {
                         Type[] paramTypes,
                         String defaultValue) {
         this.klass = Mirror.me(type).getType();
-        if (null == name)
+        if (null == name) {
             throw Lang.makeThrow("Can not accept null as name, type '%s'",
                                  klass.getName());
+        }
         this.name = name;
         if (Strings.isBlank(datefmt) || !Mirror.me(klass).isDateTimeLike()) {
             dfmt = null;
@@ -56,6 +57,7 @@ public class NameInjector implements ParamInjector {
      *            这个参考字段，如果有值，表示是路径参数的值，那么它比 request 里的参数优先
      * @return 注入值
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Object get(ServletContext sc,
                       HttpServletRequest req,
@@ -64,7 +66,7 @@ public class NameInjector implements ParamInjector {
         /*
          * 有 refer 就不能从 http params 里取了
          */
-        if (null != refer)
+        if (null != refer) {
             // Map 对象，详细分析一下
             if (refer instanceof Map<?, ?>) {
                 Object value = ((Map<?, ?>) refer).get(name);
@@ -96,6 +98,7 @@ public class NameInjector implements ParamInjector {
             else {
                 return Castors.me().castTo(refer, klass);
             }
+        }
         /*
          * 直接从 http params 里取
          */
@@ -110,8 +113,9 @@ public class NameInjector implements ParamInjector {
             return Castors.me().castTo(o, klass);
         }
         if (params == null || params.length == 0) {
-        	if (defaultValue != null)
-        		params = new String[]{defaultValue};
+            if (defaultValue != null) {
+                params = new String[]{defaultValue};
+            }
         }
         // 默认用转换器转换
         return Castors.me().castTo(params, klass);
