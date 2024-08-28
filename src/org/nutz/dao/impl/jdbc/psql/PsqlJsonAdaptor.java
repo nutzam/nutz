@@ -17,6 +17,9 @@ import org.nutz.json.JsonFormat;
  * 注意，必要的时候需要给 POJO 添加<b>带一个参数的静态工厂方法</b>或者<b>带一个参数的构造函数</b>，<br>
  * 显示的使用 java.sql.ResultSet 来创建该 POJO，不然会出现无法映射的错误。
  * <p/>
+ * 数据库中默认使用 {@code JsonFormat.tidy()} 格式来保存JSON类型字段的值。
+ * <p/>
+ *
  * <pre>
  * public class Pet {
  *
@@ -58,6 +61,16 @@ import org.nutz.json.JsonFormat;
  */
 public class PsqlJsonAdaptor implements ValueAdaptor {
 
+    private JsonFormat jsonFormat;
+
+    public PsqlJsonAdaptor() {
+        this.jsonFormat = JsonFormat.tidy();
+    }
+
+    public void setJsonFormat(JsonFormat jsonFormat) {
+        this.jsonFormat = jsonFormat;
+    }
+
     public Object get(ResultSet rs, String colName) throws SQLException {
         return rs.getObject(colName);
     }
@@ -66,7 +79,7 @@ public class PsqlJsonAdaptor implements ValueAdaptor {
         if (null == obj) {
             stat.setNull(index, Types.NULL);
         } else {
-            stat.setObject(index, Json.toJson(obj, JsonFormat.tidy()), Types.OTHER);
+            stat.setObject(index, Json.toJson(obj, jsonFormat), Types.OTHER);
         }
     }
 }
