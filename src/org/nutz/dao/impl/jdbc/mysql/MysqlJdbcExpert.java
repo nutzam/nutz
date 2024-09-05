@@ -196,7 +196,12 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
     @Override
     public ValueAdaptor getAdaptor(MappingField ef) {
         if (ColType.MYSQL_JSON == ef.getColumnType()) {
-            return new MysqlJsonAdaptor();
+            ValueAdaptor adaptor = ef.getAdaptor();
+            if (adaptor instanceof MysqlJsonAdaptor) {
+                return adaptor;
+            } else {
+                return new MysqlJsonAdaptor();
+            }
         } else {
             return super.getAdaptor(ef);
         }
