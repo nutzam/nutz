@@ -4,5 +4,5 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({MysqlJsonTest.class})
+@Suite.SuiteClasses({MysqlJsonTest.class, MysqlJsonAdaptorTest.class})
 public class AllMysqlTest {}

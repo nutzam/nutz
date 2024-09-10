@@ -1,12 +1,5 @@
 package org.nutz.dao.impl.entity;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.sql.DataSource;
-
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.annotation.ColType;
 import org.nutz.dao.impl.EntityHolder;
@@ -21,6 +14,12 @@ import org.nutz.lang.inject.InjectToMap;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Map;
+import java.util.Map.Entry;
+
 public class MapEntityMaker {
 
     private static final Log log = Logs.get();
@@ -31,9 +30,18 @@ public class MapEntityMaker {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public <T extends Map<String, ?>> Entity<T> make(String tableName, T map) {
+        return this.make(tableName, map, false, false, null);
+    }
+
+    public <T extends Map<String, ?>> Entity<T> make(String tableName, T map, boolean hasColumnComment, boolean hasTableComment, String tableComment) {
         final NutEntity<T> en = new NutEntity(map.getClass());
         en.setTableName(tableName);
         en.setViewName(tableName);
+        en.setHasColumnComment(hasColumnComment);
+        en.setHasTableComment(hasTableComment);
+        if (tableComment != null) {
+            en.setTableComment(tableComment);
+        }
         boolean check = false;
         for (Entry<String, ?> entry : map.entrySet()) {
             String key = entry.getKey();
@@ -51,7 +59,7 @@ public class MapEntityMaker {
             Object value = entry.getValue();
             Mirror<?> mirror = Mirror.me(value);
             NutMappingField ef = new NutMappingField(en);
-
+            ef.setHasColumnComment(hasColumnComment);
             while (true) {
                 if (key.startsWith("+")) {
                     ef.setAsAutoIncreasement();
@@ -113,13 +121,24 @@ public class MapEntityMaker {
                     ef.setWidth((Integer) w);
                 }
             }
+
+            // 字段备注
+            if (map.containsKey("." + key + ".comment")) {
+                ef.setColumnComment((String) map.get("." + key + ".comment"));
+            }
+
+            // 自定义字段类型
+            if (map.containsKey("." + key + ".customtype")) {
+                ef.setCustomDbType((String) map.get("." + key + ".customtype"));
+            }
+
             ef.setInjecting(new InjectToMap(key)); // 这里比较纠结,回设的时候应该用什么呢?
             ef.setEjecting(new EjectFromMap(entry.getKey()));
 
             if (ef.isAutoIncreasement()
-                && ef.isId()
-                && expert.isSupportAutoIncrement()
-                && !expert.isSupportGeneratedKeys()) {
+                    && ef.isId()
+                    && expert.isSupportAutoIncrement()
+                    && !expert.isSupportGeneratedKeys()) {
                 en.addAfterInsertMacro(expert.fetchPojoId(en, ef));
             }
 
@@ -137,13 +156,11 @@ public class MapEntityMaker {
                 try {
                     conn = dataSource.getConnection();
                     expert.setupEntityField(conn, en);
-                }
-                finally {
+                } finally {
                     if (conn != null)
                         conn.close();
                 }
-            }
-            catch (SQLException e) {
+            } catch (SQLException e) {
                 log.debug(e.getMessage(), e);
             }
         }

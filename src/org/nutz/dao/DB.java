@@ -64,6 +64,10 @@ public enum DB {
      */
     TDENGINE,
     /**
+     * Kingbase
+     */
+    KINGBASE,
+    /**
      * 其他数据库
      */
     OTHER

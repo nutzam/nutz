@@ -169,7 +169,12 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
         if (ef.getMirror().isOf(Blob.class)) {
             return new BlobValueAdaptor3(Jdbcs.getFilePool());
         } else if (ColType.PSQL_JSON == ef.getColumnType()) {
-            return new PsqlJsonAdaptor();
+            ValueAdaptor adaptor = ef.getAdaptor();
+            if (adaptor instanceof PsqlJsonAdaptor) {
+                return adaptor;
+            } else {
+                return new PsqlJsonAdaptor();
+            }
         } else if (ColType.PSQL_ARRAY == ef.getColumnType()) {
             return new PsqlArrayAdaptor(ef.getCustomDbType());
         } else {
