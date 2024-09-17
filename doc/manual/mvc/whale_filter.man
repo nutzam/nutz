@@ -68,7 +68,15 @@ http方法隐式声明
 		...
 	</form>
 	}}}
-	
+
+	或者直接把这个字段放到 form 的 hidden 里面
+
+	{{{<html>
+	<form action="/admin/topic/23" method="post">
+		<input type="hidden" name="_method" value="delete" />
+	</form>
+	}}}
+
 	对应这样的入口方法
 	
 	{{{<JAVA>
@@ -85,6 +93,8 @@ http方法隐式声明
 	{{{
 	http.hidden_method_param=_method
 	}}}
+
+	对应的value仅支持「PUT」、「DELETE」、「PATCH」（不区分大小写），除此之外将会无效.
 
 	顺带说一下, 还有一种方式, "X-HTTP-Method-Override", 可通过下面的配置开启.
 	
