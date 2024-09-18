@@ -3,13 +3,13 @@ package org.nutz.mvc;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -30,7 +30,6 @@ import org.nutz.lang.Each;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
-import org.nutz.lang.util.NutMap;
 import org.nutz.log.LogAdapter;
 import org.nutz.log.Logs;
 import org.nutz.mvc.upload.FastUploading;
@@ -49,6 +48,7 @@ public class WhaleFilter implements Filter {
     private static WhaleFilter _me;
     protected ServletContext sc;
     protected Object uc;
+    private static final List<String> ALLOWED_METHODS = Arrays.asList("DELETE", "PUT", "PATCH");
 
     public static WhaleFilter me() {
         return _me;
@@ -134,28 +134,28 @@ public class WhaleFilter implements Filter {
         // 设置resp的编码
         if (outputEnc != null)
             resp.setCharacterEncoding(outputEnc);
-
         // 如果是POST请求,有很多可以hack的东西
         if ("POST".equals(req.getMethod())) {
+            String methodValue = null;
             // 处理隐藏HTTP METHOD, _method参数模式
             if (methodParam != null) {
-                String qs = req.getQueryString();
-                if (qs != null && qs.contains("_method=")) {
-                    final NutMap map = Mvcs.toParamMap(new StringReader(qs), inputEnc == null ? Charset.defaultCharset().name() : inputEnc);
+                methodValue = req.getParameter(methodParam);
+            }
+            // 处理 X-HTTP-Method-Override
+            else if (allowHTTPMethodOverride) {
+                methodValue = req.getHeader("X-HTTP-Method-Override");
+            }
+
+            // 取得到method的值的时候进行处理
+            if (!Strings.isEmpty(methodValue)) {
+                String method = methodValue.toUpperCase(Locale.ENGLISH);
+                if (ALLOWED_METHODS.contains(method)) {
                     request = new HttpServletRequestWrapper(req) {
                         public String getMethod() {
-                            return map.getString(methodParam);
+                            return method;
                         }
                     };
                 }
-            }
-            // 处理 X-HTTP-Method-Override
-            else if (allowHTTPMethodOverride && req.getHeader("X-HTTP-Method-Override") != null) {
-                request = new HttpServletRequestWrapper(req) {
-                    public String getMethod() {
-                        return req.getHeader("X-HTTP-Method-Override");
-                    }
-                };
             }
 
             // 处理文件上传

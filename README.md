@@ -36,11 +36,11 @@ Nutz遵循Apache协议,完全开源,文档齐全,永远免费(商用也是)
 ### Maven 资源
 
 ```xml
-		<dependency>
-			<groupId>org.nutz</groupId>
-			<artifactId>nutz</artifactId>
-			<version>1.r.69.v20220703</version>
-		</dependency>
+<dependency>
+    <groupId>org.nutz</groupId>
+    <artifactId>nutz</artifactId>
+    <version>1.r.72</version>
+</dependency>
 ```
 
 详情: [https://nutzam.com/core/basic/maven.html](https://nutzam.com/core/basic/maven.html)
