@@ -501,6 +501,9 @@ public class MirrorTest {
 
         List<?> list2;
 
+        List<Map<String, String>> list3;
+
+        Map<String, List<Map<String, ?>>> map3;
     }
 
     @Test
@@ -530,6 +533,14 @@ public class MirrorTest {
         f = Abcc.class.getDeclaredField("name");
         types = Mirror.getGenericTypes(f);
         assertEquals(0, types.length);
+
+        f = Abcc.class.getDeclaredField("list3");
+        types = Mirror.getGenericTypes(f);
+        assertEquals(1, types.length);
+
+        f = Abcc.class.getDeclaredField("map3");
+        types = Mirror.getGenericTypes(f);
+        assertEquals(2, types.length);
     }
 
     public static class TBOC {
