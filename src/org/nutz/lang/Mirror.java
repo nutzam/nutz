@@ -1708,6 +1708,7 @@ public class Mirror<T> {
         Matcher m = PTN.matcher(gts);
         if (m.find()) {
             String s = m.group(2);
+            s = s.replaceAll("<+.*?>+", "");
             String[] ss = Strings.splitIgnoreBlank(s);
             if (ss.length > 0) {
                 Class<?>[] re = new Class<?>[ss.length];
