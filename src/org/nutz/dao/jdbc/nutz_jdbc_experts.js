@@ -14,7 +14,8 @@ var ioc = {
 		"mariadb.*" : "org.nutz.dao.impl.jdbc.mysql.MysqlJdbcExpert",
 		"postgresql.*" : "org.nutz.dao.impl.jdbc.psql.PsqlJdbcExpert",
 		"db2.*" : "org.nutz.dao.impl.jdbc.db2.Db2JdbcExpert",
-		"oracle.*" : "org.nutz.dao.impl.jdbc.oracle.OracleJdbcExpert",
+        "oracle.*" : "org.nutz.dao.impl.jdbc.oracle.OracleJdbcExpert",
+        "yashandb.*" : "org.nutz.dao.impl.jdbc.yashan.YashanJdbcExpert",
 		"kingbasees.*" : "org.nutz.dao.impl.jdbc.oracle.OracleJdbcExpert",
 		"kingbasepsql.*" : "org.nutz.dao.impl.jdbc.psql.PsqlJdbcExpert",
 		// SqlServer2005 --> 9.0 , SqlServer2008 --> 10.0

@@ -60,6 +60,10 @@ public enum DB {
      */
     DM_MYSQL,
     /**
+     * YashanDB
+     */
+    YASHAN,
+    /**
      * TDengine
      */
     TDENGINE,

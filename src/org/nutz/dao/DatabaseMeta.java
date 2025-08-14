@@ -65,6 +65,8 @@ public class DatabaseMeta {
             type = DB.DM;
         } else if (proName.contains("dm mysql")) {
             type = DB.DM_MYSQL;
+        } else if (proName.contains("yashandb")) {
+            type = DB.YASHAN;
         } else if (proName.contains("tdengine")) {
             type = DB.TDENGINE;
         } else {
@@ -165,8 +167,12 @@ public class DatabaseMeta {
     public boolean isDerby() {
         return DB.DERBY == type;
     }
-    
+
     public boolean isDm() {
         return DB.DM == type;
+    }
+
+    public boolean isYashan() {
+        return DB.YASHAN == type;
     }
 }
