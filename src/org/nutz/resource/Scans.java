@@ -492,7 +492,7 @@ public class Scans {
                             continue;
                         if (tmp.contains("Java"))
                             continue;
-                        //jars.add(tmp);
+                        addResourceLocation(ResourceLocation.jar(tmp));
                     }
                     else
                         registerLocation(new URL(url_str.substring(0, url_str.length() - referPath.length())));
