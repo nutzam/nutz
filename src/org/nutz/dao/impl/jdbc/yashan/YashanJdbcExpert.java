@@ -198,6 +198,7 @@ public class YashanJdbcExpert extends AbstractJdbcExpert {
     public String evalFieldType(MappingField mf) {
         if (mf.getCustomDbType() != null)
             return mf.getCustomDbType();
+        int intLen = 4;
         switch (mf.getColumnType()) {
             case BOOLEAN:
                 if (mf.hasDefaultValue())
@@ -208,12 +209,19 @@ public class YashanJdbcExpert extends AbstractJdbcExpert {
             case VARCHAR:
                 // 崖山中 VARCHAR2的宽度单位是字节，加上char才是字符
                 return "VARCHAR2(" + mf.getWidth() + " char)";
+
             case INT:
-                // 用户自定义了宽度
-                if (mf.getWidth() > 0)
-                    return "NUMBER(" + mf.getWidth() + ")";
-                // 用数据库的默认宽度
-                return "NUMBER";
+                int width = mf.getWidth();
+                if (width <= 0) {
+                    return "INT";
+                } else if (width <= 2) {
+                    return "TINYINT";
+                } else if (width <= 4) {
+                    return "SMALLINT";
+                } else if (width <= 8) {
+                    return "INT";
+                }
+                return "BIGINT";
 
             case FLOAT:
                 // 用户自定义了精度
