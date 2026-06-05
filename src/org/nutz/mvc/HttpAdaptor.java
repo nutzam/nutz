@@ -2,9 +2,9 @@ package org.nutz.mvc;
 
 import java.lang.reflect.Method;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 这是一个处理 HTTP 请求的扩展点。通过它，你可以用任何你想要的方式来为你的入口函数准备参数。 默认的，框架为你提供了三个实现：

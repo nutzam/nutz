@@ -8,7 +8,7 @@ import org.nutz.mvc.ActionFilter;
 import org.nutz.mvc.View;
 import org.nutz.mvc.view.VoidView;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 如果是OPTIONS请求，那么返回自定义的Access-Control-Allow-*头部

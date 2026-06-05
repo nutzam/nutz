@@ -5,7 +5,7 @@ import org.nutz.mvc.Loading;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.ViewContextCollector;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 复制全局的上下文对象

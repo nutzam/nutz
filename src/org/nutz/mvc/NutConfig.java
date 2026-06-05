@@ -2,7 +2,7 @@ package org.nutz.mvc;
 
 import java.util.List;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.util.Context;

@@ -2,7 +2,7 @@ package org.nutz.mvc.adaptor;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.nutz.lang.Mirror;
 import org.nutz.mvc.adaptor.convertor.ArrayParamConvertor;

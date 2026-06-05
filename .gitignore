@@ -13,6 +13,7 @@
 /root
 /performance
 /.idea
+/.vscode/
 /build/.gradle
 /build/target/
 /build/gradle-app.setting

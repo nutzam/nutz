@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 public class MockServletObject{
     

@@ -4,7 +4,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.util.Context;
 import org.nutz.mvc.ViewContextCollector;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;

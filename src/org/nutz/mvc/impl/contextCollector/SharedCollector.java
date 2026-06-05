@@ -9,7 +9,7 @@ import org.nutz.mvc.ViewContextCollector;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 共享变量收集器

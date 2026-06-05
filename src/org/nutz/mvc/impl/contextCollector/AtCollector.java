@@ -6,7 +6,7 @@ import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.ViewContextCollector;
 import org.nutz.mvc.config.AtMap;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 

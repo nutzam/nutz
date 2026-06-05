@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.nutz.resource.NutResource;
 

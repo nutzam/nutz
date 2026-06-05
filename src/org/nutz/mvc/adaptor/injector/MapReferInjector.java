@@ -2,9 +2,9 @@ package org.nutz.mvc.adaptor.injector;
 
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.nutz.lang.Strings;
 import org.nutz.lang.inject.Injecting;

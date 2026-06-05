@@ -1,6 +1,6 @@
 package org.nutz.mvc.filter;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionFilter;

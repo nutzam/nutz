@@ -1,7 +1,7 @@
 package org.nutz.mvc.view.redirect;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.Ok;

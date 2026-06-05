@@ -1,6 +1,6 @@
 package org.nutz.mvc.impl;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.nutz.ioc.IocMaking;
 import org.nutz.ioc.ValueProxy;

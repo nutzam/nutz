@@ -2,8 +2,8 @@ package org.nutz.mvc.config;
 
 import java.util.List;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
 
 import org.nutz.mvc.Mvcs;
 

@@ -1,6 +1,6 @@
 package org.nutz.mock.servlet;
 
-import javax.servlet.ServletInputStream;
+import jakarta.servlet.ServletInputStream;
 
 public abstract class MockInputStream extends ServletInputStream {
 

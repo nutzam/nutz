@@ -3,7 +3,7 @@ package org.nutz.mvc.adaptor.extractor;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.nutz.lang.Lang;
 import org.nutz.mvc.adaptor.ParamExtractor;
