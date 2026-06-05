@@ -9,7 +9,7 @@ import java.lang.reflect.Modifier;
 import java.util.Enumeration;
 import java.util.regex.Matcher;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.nutz.lang.stream.StringOutputStream;
 

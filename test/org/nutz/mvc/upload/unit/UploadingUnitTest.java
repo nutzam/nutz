@@ -9,7 +9,7 @@ import static org.nutz.mock.Mock.servlet.session;
 import java.io.File;
 import java.util.Map;
 
-import javax.servlet.ServletInputStream;
+import jakarta.servlet.ServletInputStream;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -2,8 +2,8 @@ package org.nutz.mvc.view;
 
 import java.lang.reflect.Method;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;

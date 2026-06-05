@@ -1,6 +1,6 @@
 package org.nutz.mock.servlet;
 
-import javax.servlet.FilterConfig;
+import jakarta.servlet.FilterConfig;
 
 /**
  * 模拟FilterConfig

@@ -9,7 +9,7 @@ import org.nutz.lang.util.Context;
 import org.nutz.mvc.*;
 import org.nutz.mvc.impl.contextCollector.*;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.Map.Entry;
 

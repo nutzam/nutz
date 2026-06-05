@@ -5,7 +5,7 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 
 import org.nutz.castor.Castors;
 import org.nutz.ioc.Ioc;

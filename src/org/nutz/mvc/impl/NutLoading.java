@@ -55,7 +55,7 @@ public class NutLoading implements Loading {
             if (config.getServletContext().getMajorVersion() > 2
                 || config.getServletContext().getMinorVersion() > 4)
                 log.debugf(" - ContextPath     : %s", config.getServletContext().getContextPath());
-            log.debugf(" - context.tempdir : %s", config.getAttribute("javax.servlet.context.tempdir"));
+            log.debugf(" - context.tempdir : %s", config.getAttribute("jakarta.servlet.context.tempdir"));
             log.debugf(" - MainModule      : %s", config.getMainModule().getName());
         }
         /*

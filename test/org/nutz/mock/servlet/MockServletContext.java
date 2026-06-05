@@ -13,17 +13,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterRegistration;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
-import javax.servlet.ServletRegistration.Dynamic;
-import javax.servlet.SessionCookieConfig;
-import javax.servlet.SessionTrackingMode;
-import javax.servlet.descriptor.JspConfigDescriptor;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterRegistration;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.Servlet;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRegistration;
+import jakarta.servlet.ServletRegistration.Dynamic;
+import jakarta.servlet.SessionCookieConfig;
+import jakarta.servlet.SessionTrackingMode;
+import jakarta.servlet.descriptor.JspConfigDescriptor;
 
 import org.nutz.lang.Lang;
 import org.nutz.log.Log;
@@ -204,19 +204,16 @@ public class MockServletContext extends MockServletObject implements
 
     @Override
     public Dynamic addServlet(String servletName, String className) {
-        
         return null;
     }
 
     @Override
     public Dynamic addServlet(String servletName, Servlet servlet) {
-        
         return null;
     }
 
     @Override
     public Dynamic addServlet(String servletName, Class<? extends Servlet> servletClass) {
-        
         return null;
     }
 
@@ -228,24 +225,22 @@ public class MockServletContext extends MockServletObject implements
 
     @Override
     public Map<String, ? extends ServletRegistration> getServletRegistrations() {
+        return null;
+    }
+
+    @Override
+    public jakarta.servlet.FilterRegistration.Dynamic addFilter(String filterName, String className) {
         
         return null;
     }
 
     @Override
-    public javax.servlet.FilterRegistration.Dynamic addFilter(String filterName, String className) {
-        
+    public jakarta.servlet.FilterRegistration.Dynamic addFilter(String filterName, Filter filter) {
         return null;
     }
 
     @Override
-    public javax.servlet.FilterRegistration.Dynamic addFilter(String filterName, Filter filter) {
-        
-        return null;
-    }
-
-    @Override
-    public javax.servlet.FilterRegistration.Dynamic addFilter(String filterName,
+    public jakarta.servlet.FilterRegistration.Dynamic addFilter(String filterName,
                                                               Class<? extends Filter> filterClass) {
         
         return null;
@@ -253,19 +248,16 @@ public class MockServletContext extends MockServletObject implements
 
     @Override
     public FilterRegistration getFilterRegistration(String filterName) {
-        
         return null;
     }
 
     @Override
     public Map<String, ? extends FilterRegistration> getFilterRegistrations() {
-        
         return null;
     }
 
     @Override
     public SessionCookieConfig getSessionCookieConfig() {
-        
         return null;
     }
 
@@ -274,25 +266,58 @@ public class MockServletContext extends MockServletObject implements
 
     @Override
     public Set<SessionTrackingMode> getDefaultSessionTrackingModes() {
-        
         return null;
     }
 
     @Override
     public Set<SessionTrackingMode> getEffectiveSessionTrackingModes() {
-        
         return null;
     }
 
     @Override
     public JspConfigDescriptor getJspConfigDescriptor() {
-        
         return null;
     }
 
     @Override
     public String getVirtualServerName() {
-        
+        return null;
+    }
+
+    // =====================================================Servlet 4.0+
+
+    @Override
+    public String getRequestCharacterEncoding() {
+        return null;
+    }
+
+    @Override
+    public void setRequestCharacterEncoding(String encoding) {
+        // Mock implementation
+    }
+
+    @Override
+    public String getResponseCharacterEncoding() {
+        return null;
+    }
+
+    @Override
+    public void setResponseCharacterEncoding(String encoding) {
+        // Mock implementation
+    }
+
+    @Override
+    public int getSessionTimeout() {
+        return 30; // Default session timeout in minutes
+    }
+
+    @Override
+    public void setSessionTimeout(int sessionTimeout) {
+        // Mock implementation
+    }
+
+    @Override
+    public Dynamic addJspFile(String servletName, String jspFile) {
         return null;
     }
 

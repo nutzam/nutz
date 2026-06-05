@@ -7,9 +7,9 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Lang;

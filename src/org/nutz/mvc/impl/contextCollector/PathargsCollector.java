@@ -6,7 +6,7 @@ import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.ViewContextCollector;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 路径参数收集

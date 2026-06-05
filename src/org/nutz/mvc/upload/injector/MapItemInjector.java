@@ -3,9 +3,9 @@ package org.nutz.mvc.upload.injector;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.nutz.castor.Castors;
 import org.nutz.mvc.adaptor.injector.NameInjector;

@@ -2,7 +2,7 @@ package org.nutz.mvc.impl.processor;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.nutz.mvc.*;
 import org.nutz.mvc.adaptor.PairAdaptor;

@@ -1,6 +1,6 @@
 package org.nutz.mvc.impl.processor;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.util.Context;

@@ -2,7 +2,7 @@ package org.nutz.mvc.upload.speed;
 
 import java.io.PrintStream;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 import org.nutz.lang.Lang;
 import org.nutz.mvc.upload.UploadInfo;

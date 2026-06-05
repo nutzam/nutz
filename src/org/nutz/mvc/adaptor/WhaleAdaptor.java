@@ -6,9 +6,9 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.nutz.conf.NutConf;
 import org.nutz.filepool.FilePool;
@@ -45,7 +45,7 @@ public class WhaleAdaptor extends PairAdaptor {
 	public WhaleAdaptor(String path) {
         String appRoot = Mvcs.getServletContext().getRealPath("/");
         if (appRoot == null) {
-            appRoot = (String) Mvcs.getServletContext().getAttribute("javax.servlet.context.tmpdir");
+            appRoot = (String) Mvcs.getServletContext().getAttribute("jakarta.servlet.context.tmpdir");
             if (appRoot == null) {
                 appRoot = System.getProperty("java.io.tmpdir");
                 if (appRoot == null)

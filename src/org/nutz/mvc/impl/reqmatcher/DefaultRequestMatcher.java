@@ -3,7 +3,7 @@ package org.nutz.mvc.impl.reqmatcher;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;

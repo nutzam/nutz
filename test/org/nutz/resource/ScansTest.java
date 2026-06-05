@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.servlet.Servlet;
+import jakarta.servlet.Servlet;
 
 import junit.extensions.ActiveTestSuite;
 import junit.extensions.RepeatedTest;
