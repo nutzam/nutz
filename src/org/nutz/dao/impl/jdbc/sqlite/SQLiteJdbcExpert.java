@@ -1,5 +1,10 @@
 package org.nutz.dao.impl.jdbc.sqlite;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.nutz.dao.DB;
@@ -118,5 +123,24 @@ public class SQLiteJdbcExpert extends AbstractJdbcExpert {
                              + String.format(" LIMIT %d, %d",
                                              pager.getOffset(),
                                              pager.getPageSize()));
+    }
+
+    @Override
+    public List<String> getIndexNames(Entity<?> en, Connection conn) throws SQLException {
+        List<String> names = new ArrayList<String>();
+        // SQLite 使用 PRAGMA 语句查询索引列表
+        String sql = "PRAGMA index_list(\"" + en.getTableName() + "\")";
+        PreparedStatement ppstat = conn.prepareStatement(sql);
+        ResultSet rest = ppstat.executeQuery();
+        while (rest.next()) {
+            String index = rest.getString("name");
+            // 过滤掉系统自动生成的索引(主键/唯一约束背后)
+            if (!index.startsWith("sqlite_autoindex_")) {
+                names.add(index);
+            }
+        }
+        rest.close();
+        ppstat.close();
+        return names;
     }
 }

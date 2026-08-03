@@ -885,42 +885,46 @@ public abstract class Daos {
                                                Object t) {
         UpdateIndexSql uis = new UpdateIndexSql();
         List<Sql> sqls = new ArrayList<Sql>();
-        List<String> delIndexs = new ArrayList<String>();
         List<EntityIndex> indexs = en.getIndexes();
         for (EntityIndex index : indexs) {
             String indexName = index.getName(en);
-            // 索引存在, 不要动
-            if (indexsHis.contains(indexName)) {
-                indexsHis.remove(indexName);
+            // 索引存在(忽略大小写), 不要动
+            boolean found = false;
+            Iterator<String> it = indexsHis.iterator();
+            while (it.hasNext()) {
+                if (it.next().equalsIgnoreCase(indexName)) {
+                    it.remove();
+                    found = true;
+                    break;
+                }
             }
             // 不存在,则新增
-            else {
+            if (!found) {
                 sqls.add(dao.getJdbcExpert().createIndexSql(en, index));
             }
         }
         uis.setSqlsAdd(sqls.toArray(new Sql[sqls.size()]));
         // 剩余的,就是要删除的
-        Iterator<String> iterator = indexsHis.iterator();
         List<Sql> delSqls = new ArrayList<Sql>();
-        while (iterator.hasNext()) {
-            String indexName = iterator.next();
-            if (delIndexs.contains(indexName) || Lang.equals("PRIMARY", indexName)) {
+        for (String indexName : indexsHis) {
+            if ("PRIMARY".equalsIgnoreCase(indexName)) {
                 continue;
             }
             MappingField mf = en.getColumn(indexName);
-            if (mf != null) {
-                if (mf.isName()) {
-                    continue;
-                }
+            if (mf != null && mf.isName()) {
+                continue;
             }
             if (dao.meta().isSqlServer()) {
                 delSqls.add(Sqls.createf("DROP INDEX %s.%s",
                                          getTableName(dao, en, t),
                                          indexName));
-            } else {
+            } else if (dao.meta().isMySql()) {
                 delSqls.add(Sqls.createf("ALTER TABLE %s DROP INDEX %s",
                                          getTableName(dao, en, t),
                                          indexName));
+            } else {
+                // H2, PostgreSQL, SQLite, Oracle 等通用写法
+                delSqls.add(Sqls.createf("DROP INDEX %s", indexName));
             }
         }
         uis.setSqlsDel(delSqls.toArray(new Sql[delSqls.size()]));

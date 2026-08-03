@@ -2,6 +2,7 @@ package org.nutz.dao.impl.jdbc.psql;
 
 import java.sql.Blob;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -228,17 +229,24 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
      */
     @Override
     public List<String> getIndexNames(Entity<?> en, Connection conn) throws SQLException {
-
-        String tableName = en.getTableName();
-        String sql = "SELECT * FROM pg_indexes WHERE tablename='" + tableName + "'";
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
-
-        ArrayList<String> indexNames = new ArrayList<String>(17);
+        // 排除主键/唯一约束背后的索引, 避免 migration 时误删
+        String sql = "SELECT i.indexname "
+                     + "FROM pg_indexes i "
+                     + "JOIN pg_class c ON c.relname = i.indexname "
+                     + "JOIN pg_index pgi ON pgi.indexrelid = c.oid "
+                     + "LEFT JOIN pg_constraint con ON con.conindid = c.oid "
+                     + "WHERE i.schemaname = current_schema() "
+                     + "AND LOWER(i.tablename) = LOWER(?) "
+                     + "AND (con.conindid IS NULL OR con.contype NOT IN ('p', 'u'))";
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, en.getTableName());
+        ResultSet rs = pstmt.executeQuery();
+        ArrayList<String> indexNames = new ArrayList<String>();
         while (rs.next()) {
             indexNames.add(rs.getString("indexname"));
         }
-
+        rs.close();
+        pstmt.close();
         return indexNames;
     }
 }
