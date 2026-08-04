@@ -18,10 +18,11 @@ public class ReflectTool {
 	
 	protected static boolean hasLookup = false;
 	protected static Method DEFINE_CLASS;
+	protected static Method LOOKUP_DEFINE_CLASS;
 	protected static ProtectionDomain PROTECTION_DOMAIN;
 	static {
 		try {
-			MethodHandles.lookup();
+			LOOKUP_DEFINE_CLASS = MethodHandles.Lookup.class.getMethod("defineClass", byte[].class);
 			hasLookup = true;
 		}
 		catch (Throwable e) {
@@ -71,7 +72,7 @@ public class ReflectTool {
                                     ClassLoader loader,
                                     ProtectionDomain protectionDomain) throws Exception {
     	if (hasLookup) {
-        	Class c = MethodHandles.lookup().defineClass(b);
+        	Class c = (Class) LOOKUP_DEFINE_CLASS.invoke(MethodHandles.lookup(), b);
             Class.forName(className, true, loader);
             return c;
     	}

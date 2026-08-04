@@ -2,17 +2,90 @@ package org.nutz.http;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.nutz.Nutz;
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+
 public class HttpTest {
+
+    private static HttpServer server;
+    private static String baseUrl;
+
+    @BeforeClass
+    public static void startServer() throws Exception {
+        server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext("/", new HttpHandler() {
+            public void handle(HttpExchange exchange) throws java.io.IOException {
+                String query = exchange.getRequestURI().getQuery();
+                String body = readAll(exchange.getRequestBody());
+                Map<String, String> params = new HashMap<String, String>();
+                parseParams(query, params);
+                parseParams(body, params);
+                String resp;
+                if (params.containsKey("version") || params.containsKey("website")) {
+                    resp = String.format("version: %s, website: %s",
+                                         params.get("version"),
+                                         params.get("website"));
+                } else {
+                    resp = "Hello Nutz";
+                }
+                byte[] data = resp.getBytes(StandardCharsets.UTF_8);
+                exchange.getResponseHeaders().set("Content-Type", "text/plain; charset=UTF-8");
+                exchange.sendResponseHeaders(200, data.length);
+                OutputStream os = exchange.getResponseBody();
+                os.write(data);
+                os.close();
+            }
+        });
+        server.start();
+        baseUrl = "http://127.0.0.1:" + server.getAddress().getPort() + "/";
+    }
+
+    @AfterClass
+    public static void stopServer() {
+        if (server != null)
+            server.stop(0);
+    }
+
+    private static String readAll(InputStream in) throws java.io.IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) != -1)
+            baos.write(buf, 0, len);
+        return baos.toString("UTF-8");
+    }
+
+    private static void parseParams(String data, Map<String, String> params) throws java.io.IOException {
+        if (data == null || data.isEmpty())
+            return;
+        for (String kv : data.split("&")) {
+            int idx = kv.indexOf('=');
+            if (idx > 0) {
+                String key = URLDecoder.decode(kv.substring(0, idx), "UTF-8");
+                String value = URLDecoder.decode(kv.substring(idx + 1), "UTF-8");
+                params.put(key, value);
+            }
+        }
+    }
 
     @Test
     public void testGet() {
-        Response response = Http.get("http://nutztest.herokuapp.com/");
+        Response response = Http.get(baseUrl);
         assertNotNull(response);
         assertNotNull(response.getContent("UTF-8"));
         assertNotNull(response.getContent());
@@ -29,7 +102,7 @@ public class HttpTest {
         Map<String, Object> parms = new HashMap<String, Object>();
         parms.put("version", "NutzTest");
         parms.put("website", Nutz.version());
-        String response = Http.post("http://nutztest.herokuapp.com/", parms, 5 * 1000);
+        String response = Http.post(baseUrl, parms, 5 * 1000);
         assertNotNull(response);
         assertTrue(response.length() > 0);
         // 该post的返回值是"version: #{params[:version]}, website:

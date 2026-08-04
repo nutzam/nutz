@@ -1,14 +1,14 @@
 package org.nutz.dao.test.normal.mysql;
 
-import static org.junit.Assert.assertEquals;
-
 import java.math.BigDecimal;
 
+import org.json.JSONException;
 import org.junit.Test;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 public class MysqlJsonAdaptorTest extends DaoCase {
 
@@ -21,7 +21,7 @@ public class MysqlJsonAdaptorTest extends DaoCase {
     }
 
     @Test
-    public void adapotor() {
+    public void adapotor() throws JSONException {
         if (!dao.meta().isMySql()) {
             return;
         }
@@ -39,10 +39,11 @@ public class MysqlJsonAdaptorTest extends DaoCase {
         org.nutz.dao.entity.Record record = dao.fetch("t_mysql_json_adaptor_test_bean", Cnd.where("id","=",insertId));
         // mysql 在保存 json 格式字段的时候会自动格式化该字段的值
         // mariadb 的话就没问题
-        assertEquals(Json.toJson(result, JsonFormat.tidy()), record.getString("noneAdaptor"));
-        assertEquals(Json.toJson(result, JsonFormat.tidy()), record.getString("noneAdaptor"));
-        assertEquals(Json.toJson(result, JsonFormat.tidy()), record.getString("jsonAdaptor"));
-        assertEquals(Json.toJson(result, JsonFormat.compact()), record.getString("jsonCompactAdaptor"));
-        assertEquals(Json.toJson(result, JsonFormat.tidy()), record.getString("jsonTidyAdaptor"));
+        // MySQL 8 还会对JSON列做规范化(键排序/空格), 所以这里按JSON语义比较(宽松模式,忽略键顺序)
+        String expected = Json.toJson(result, JsonFormat.compact());
+        JSONAssert.assertEquals(expected, record.getString("noneAdaptor"), false);
+        JSONAssert.assertEquals(expected, record.getString("jsonAdaptor"), false);
+        JSONAssert.assertEquals(expected, record.getString("jsonCompactAdaptor"), false);
+        JSONAssert.assertEquals(expected, record.getString("jsonTidyAdaptor"), false);
     }
 }

@@ -35,6 +35,11 @@ public class CreateDropTableTest extends DaoCase {
                         String isNullable = rs.getString(2);
                         String defaultValue = rs.getString(3);
                         String extra = rs.getString(4);
+                        // MariaDB的information_schema会给默认值加引号,统一去掉
+                        if (defaultValue != null && defaultValue.length() > 1
+                            && defaultValue.startsWith("'") && defaultValue.endsWith("'")) {
+                            defaultValue = defaultValue.substring(1, defaultValue.length() - 1);
+                        }
                         if ("ts1".equals(columnName)) {
                             if ((null == defaultValue || "NULL".equalsIgnoreCase(defaultValue))
                                 && "YES".equalsIgnoreCase(isNullable)) {
@@ -57,9 +62,10 @@ public class CreateDropTableTest extends DaoCase {
                         }
                         if ("ts4".equals(columnName)) {
                             if (null != defaultValue
-                                && "CURRENT_TIMESTAMP".equalsIgnoreCase(defaultValue)
+                                && defaultValue.replace("()", "").equalsIgnoreCase("CURRENT_TIMESTAMP")
                                 && "NO".equalsIgnoreCase(isNullable)
-                                && "ON UPDATE CURRENT_TIMESTAMP".equalsIgnoreCase(extra)) {
+                                && extra != null
+                                && extra.toUpperCase().contains("ON UPDATE CURRENT_TIMESTAMP")) {
                                 ts4 = true;
                             }
                         }

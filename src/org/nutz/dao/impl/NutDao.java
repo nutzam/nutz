@@ -52,6 +52,7 @@ import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.sql.GroupBy;
+import org.nutz.dao.sql.OrderBy;
 import org.nutz.dao.sql.PItem;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.PojoCallback;
@@ -908,6 +909,12 @@ public class NutDao extends DaoSupport implements Dao {
                 // MySQL/PgSQL/SqlServer 与 Oracle/H2的结果会不一样,奇葩啊
                 GroupBy gb = ((Criteria) cnd).getGroupBy();
                 pojo.append(gb);
+                // MySQL 8不再保证GROUP BY的隐式排序,带上排序条件以保证结果确定性
+                OrderBy ob = ((Criteria) cnd).getOrderBy();
+                if (null != ob && null != gb && !Strings.isBlank(gb.toSql(en))
+                    && !Strings.isBlank(ob.toSql(en))) {
+                    pojo.append(ob);
+                }
             }
             // 否则暴力获取 WHERE 子句
             else {

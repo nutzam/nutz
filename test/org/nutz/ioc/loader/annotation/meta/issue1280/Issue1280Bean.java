@@ -15,6 +15,8 @@ public class Issue1280Bean {
     public DataSource getDataSource() {
         SimpleDataSource ds = new SimpleDataSource();
         ds.setJdbcUrl("jdbc:h2:mem:nutztest");
+        ds.setUsername("sa");
+        ds.setPassword("");
         return ds;
     }
     

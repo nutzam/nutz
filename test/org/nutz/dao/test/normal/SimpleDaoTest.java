@@ -817,6 +817,7 @@ public class SimpleDaoTest extends DaoCase {
         if (!dao.meta().isMySql())
             return;
         // MySQL/PgSQL/SqlServer 与 Oracle/H2的结果会不一样,奇葩啊
+        dao.clear(Pet.class); // 避免其他用例的残留数据干扰
         for (int i = 0; i < 10; i++) {
             Pet pet = Pet.create(R.UU32());
             pet.setAge(20 + i / 4);
@@ -824,6 +825,7 @@ public class SimpleDaoTest extends DaoCase {
         }
         Cnd cnd = Cnd.where("age", ">", 20);
         cnd.groupBy("age");
+        cnd.asc("age"); // MySQL 8 不再保证GROUP BY的隐式排序
         assertEquals(10, dao.count(Pet.class, null));
         assertEquals(4, dao.count(Pet.class, cnd));
     }

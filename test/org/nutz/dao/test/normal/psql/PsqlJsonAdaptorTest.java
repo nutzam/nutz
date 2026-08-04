@@ -1,14 +1,14 @@
 package org.nutz.dao.test.normal.psql;
 
-import static org.junit.Assert.assertEquals;
-
 import java.math.BigDecimal;
 
+import org.json.JSONException;
 import org.junit.Test;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 public class PsqlJsonAdaptorTest extends DaoCase {
 
@@ -21,7 +21,7 @@ public class PsqlJsonAdaptorTest extends DaoCase {
     }
 
     @Test
-    public void adapotor() {
+    public void adapotor() throws JSONException {
         if (!dao.meta().isPostgresql()) {
             return;
         }
@@ -37,11 +37,11 @@ public class PsqlJsonAdaptorTest extends DaoCase {
         int insertId = dao.insert(testBean).getId();
 
         org.nutz.dao.entity.Record record = dao.fetch("t_psql_json_adaptor_test_bean", Cnd.where("id","=",insertId));
-        // 设置成 jsonb 格式的时候会自动格式化该字段的值
-        assertEquals(Json.toJson(result, JsonFormat.tidy()), record.getString("noneAdaptor"));
-        assertEquals(Json.toJson(result, JsonFormat.tidy()), record.getString("noneAdaptor"));
-        assertEquals(Json.toJson(result, JsonFormat.tidy()), record.getString("jsonAdaptor"));
-        assertEquals(Json.toJson(result, JsonFormat.compact()), record.getString("jsonCompactAdaptor"));
-        assertEquals(Json.toJson(result, JsonFormat.tidy()), record.getString("jsonTidyAdaptor"));
+        // 设置成 jsonb 格式的时候会自动格式化该字段的值(键顺序/空格), 所以按JSON语义比较
+        String expected = Json.toJson(result, JsonFormat.compact());
+        JSONAssert.assertEquals(expected, record.getString("noneAdaptor"), false);
+        JSONAssert.assertEquals(expected, record.getString("jsonAdaptor"), false);
+        JSONAssert.assertEquals(expected, record.getString("jsonCompactAdaptor"), false);
+        JSONAssert.assertEquals(expected, record.getString("jsonTidyAdaptor"), false);
     }
 }

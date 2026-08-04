@@ -6,18 +6,79 @@ name: Java CI with Maven
 on:
   push:
     branches: [ "master" ]
+  pull_request:
 
 jobs:
-  build:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - db: h2
+            properties: |
+              driver=org.h2.Driver
+              username=sa
+              password=
+              url=jdbc:h2:mem:nutztest;DB_CLOSE_DELAY=-1
+          - db: mysql
+            properties: |
+              driver=com.mysql.cj.jdbc.Driver
+              url=jdbc:mysql://127.0.0.1:3308/nutztest?zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2b8
+              username=root
+              password=root
+          - db: postgresql
+            properties: |
+              driver=org.postgresql.Driver
+              url=jdbc:postgresql://127.0.0.1:5432/nutztest
+              username=postgres
+              password=root
+          - db: mariadb
+            properties: |
+              driver=org.mariadb.jdbc.Driver
+              url=jdbc:mariadb://127.0.0.1:3307/nutztest
+              username=root
+              password=root
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    - name: Start test databases (docker)
+      run: |
+        docker run -d --name nutz-mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=nutztest \
+          -p 3308:3306 mysql:8 \
+          --sql-mode=ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+        docker run -d --name nutz-postgres -e POSTGRES_PASSWORD=root -e POSTGRES_DB=nutztest \
+          -p 5432:5432 postgres:16
+        docker run -d --name nutz-mariadb -e MARIADB_ROOT_PASSWORD=root -e MARIADB_DATABASE=nutztest \
+          -p 3307:3306 mariadb:11
+        until docker exec nutz-mysql mysql -uroot -proot nutztest -e "SELECT 1"; do echo 'waiting for mysql...'; sleep 2; done
+        until docker exec nutz-postgres psql -U postgres -d nutztest -c "SELECT 1"; do echo 'waiting for postgres...'; sleep 2; done
+        until docker exec nutz-mariadb mariadb -uroot -proot nutztest -e "SELECT 1"; do echo 'waiting for mariadb...'; sleep 2; done
+    - name: Configure test datasource (${{ matrix.db }})
+      shell: bash
+      run: |
+        cat > test/nutz-test.properties <<'EOF'
+        ${{ matrix.properties }}
+        EOF
+    - name: Test with Maven
+      run: mvn -B test --file pom.xml
 
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: test
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 11
-      uses: actions/setup-java@v3
+    - uses: actions/checkout@v4
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
       with:
-        java-version: '11'
+        java-version: '17'
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven

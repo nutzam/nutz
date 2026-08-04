@@ -1,0 +1,47 @@
+# Nutz 测试用数据库环境
+# 用法: docker compose up -d
+# 然后把 test/nutz-test.properties 指向对应数据库(参考 test/tmpl.nutz-test.properties)
+services:
+  mysql:
+    image: mysql:8
+    container_name: nutz-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: nutztest
+    ports:
+      - "3308:3306"
+    # 去掉 NO_ZERO_DATE/NO_ZERO_IN_DATE, 兼容 Nutz 对 TIMESTAMP DEFAULT 0 的建表行为
+    command: --sql-mode=ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  postgres:
+    image: postgres:16
+    container_name: nutz-postgres
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: nutztest
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  mariadb:
+    image: mariadb:11
+    container_name: nutz-mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: nutztest
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10

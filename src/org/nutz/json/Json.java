@@ -29,6 +29,7 @@ import org.nutz.json.handler.JsonMirrorHandler;
 import org.nutz.json.handler.JsonNumberHandler;
 import org.nutz.json.handler.JsonPojoHandler;
 import org.nutz.json.handler.JsonStringLikeHandler;
+import org.nutz.json.handler.JsonThrowableHandler;
 import org.nutz.json.impl.JsonEntityFieldMakerImpl;
 import org.nutz.json.impl.JsonRenderImpl;
 import org.nutz.lang.Files;
@@ -477,6 +478,7 @@ public class Json {
         handlers.add(new JsonBooleanHandler());
         handlers.add(new JsonStringLikeHandler());
         handlers.add(new JsonDateTimeHandler());
+        handlers.add(new JsonThrowableHandler());
         try {
             Class.forName("java.time.temporal.TemporalAccessor");
             handlers.add(new JsonLocalDateLikeHandler());
